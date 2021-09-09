@@ -1,0 +1,50 @@
+{
+	"name": "SonarQube",
+	"type": "quality",
+	"collectorSchedule": 1,
+	"processorSchedule": 6,
+	"attributes": {
+		"url": {
+			"custom": false,
+			"displayName": "Server URL",
+			"mandatory": true,
+			"type": "string",
+			"position": 1,
+			"helpText": "Provide the full URL to access the SonarQube server. e.g. http://my.server.host:port"
+		},
+		"userName": {
+			"custom": false,
+			"displayName": "User Name",
+			"mandatory": true,
+			"type": "string",
+			"position": 2,
+			"helpText": "The user should have permissions to access and read all information about your project and the metrics collected."
+		},
+		"appToken": {
+			"custom": false,
+			"displayName": "App Token",
+			"mandatory": true,
+			"type": "password",
+			"position": 3,
+			"helpText": "Provide the application token generated for the user to programatically access the project."
+		},
+		"projectName": {
+			"custom": false,
+			"displayName": "Project Name",
+			"mandatory": true,
+			"type": "list",
+			"options": { "dynamic": "server" },
+			"position": 4,
+			"helpText": "Click the connect button to fetch projects from server. Select from the list of projects fetched."
+		},
+		"metrics": {
+			"custom": false,
+			"displayName": "Metrics To Collect",
+			"mandatory": true,
+			"type": "multi-list",
+			"options": { "dynamic": "server" },
+			"position": 5,
+			"helpText": "Click the connect button to fetch the metrics available on the server. Select one or metrics that needs to be fetched."
+		}
+	}
+}

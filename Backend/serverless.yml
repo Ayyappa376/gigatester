@@ -1,0 +1,72 @@
+service: doitright-backend
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  stage: ${opt:stage, 'development'}
+  region: us-east-1
+  memorySize: 2048 # In MB, Max is 10240 MB.
+  timeout: 60 # Note: API Gateway current maximum is 30 seconds
+  logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
+  environment:
+    DB_ENV: ${env:NODE_ENV, self:provider.stage}
+    logLevel: ${self:custom.loglevel.${self:provider.stage}}
+  iamRoleStatements:
+    - Effect: 'Allow'
+      Action:
+        - 'apigateway:*'
+      Resource:
+        - 'arn:aws:apigateway:${self:provider.region}::/restapis*'
+#  apiGateway:
+#    shouldStartNameWithService: false
+
+plugins:
+  - serverless-plugin-typescript
+  - serverless-offline
+  - serverless-aws-documentation
+  - serverless-stack-output
+
+package:
+  include:
+    - src/**/!(*.spec).js
+#  exclude:
+#    - node_modules/**/*
+#  individually: true
+
+functions:
+  app:
+    handler: src/app.handler
+    events:
+      - http: ANY /
+      - http: 'ANY /{proxy+}'
+
+#  app:
+#    handler: assessment/src/app.handler
+#    package:
+#      include:
+#        - assessment/src/**/!(*.spec).js
+#        - common/src/**/!(*.spec).js
+#    events:
+#      - http: ANY /assess
+#      - http: 'ANY /{proxy+}/assess'
+
+#  metrics:
+#    handler: metrics/src/appMetrics.handler
+#    package:
+#      include:
+#        - metrics/src/**/!(*.spec).js
+#        - common/src/**/!(*.spec).js
+#    events:
+#      - http: ANY /metrics
+#      - http: 'ANY /{proxy+}/metrics'
+
+# https://serverless.readme.io/docs/best-practices
+# https://serverless-stack.com/chapters/organizing-serverless-projects.html
+
+custom:
+  output:
+    file: .serverless/output.json
+  loglevel:
+    development: 'info' # error/warn/info/debug
+    qa: 'info' # error/warn/info/debug
+    production: 'warn'  # error/warn/info/debug

@@ -1,0 +1,40 @@
+{
+	"name": "Jenkins",
+	"type": "cicd",
+	"collectorSchedule": 1,
+	"processorSchedule": 6,
+	"attributes": {
+		"url": {
+			"custom": false,
+			"displayName": "Server URL",
+			"mandatory": true,
+			"type": "string",
+			"position": 1,
+			"helpText": "Provide the full URL to access the Jenkins server. e.g. http://my.server.host:port"
+		},
+		"userName": {
+			"custom": false,
+			"displayName": "User Name",
+			"mandatory": true,
+			"type": "string",
+			"position": 2,
+			"helpText": "The user should have permissions to access and read all information about your project or job."
+		},
+		"password": {
+			"custom": false,
+			"displayName": "Password",
+			"mandatory": true,
+			"type": "password",
+			"position": 3
+		},
+		"job": {
+			"custom": false,
+			"displayName": "Job Name",
+			"mandatory": true,
+			"type": "list",
+			"options": { "dynamic": "server" },
+			"position": 4,
+			"helpText": "Click the connect button to fetch projects from server. Select from the list of projects fetched."
+		}
+	}
+}

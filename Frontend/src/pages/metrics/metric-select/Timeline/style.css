@@ -1,0 +1,59 @@
+.button-container {
+  display: flex;
+  justify-content: center;
+}
+
+.input {
+  height: 1rem !important;
+}
+
+.toolbar {
+  padding: 5px !important;
+}
+
+.selected {
+  background-color: #3379ff !important;
+  color: #ffffff;
+  border: 1px solid #818181;
+  padding: 3px 3px !important;
+  margin-left: 5px !important;
+  border-radius: 2px !important;
+  cursor: pointer;
+}
+
+.durationBtn {
+  background-color: #ffffff !important;
+  border: 1px solid #818181;
+  font-weight: 500 !important;
+  padding: 3px 3px !important;
+  margin-left: 5px !important;
+  border-radius: 2px !important;
+  cursor: pointer;
+}
+
+button:active {
+  background-color: #6b9fff !important;
+}
+
+.react-daterange-picker {
+  position: absolute !important;
+  height: 23px !important;
+  border-bottom: none !important;
+}
+
+.react-daterange-picker__inputGroup {
+  margin-bottom: 28px !important;
+}
+
+.MuiTableCell-sizeSmall {
+  padding: 6px 12px 6px 12px !important;
+}
+
+.class1 {
+  font-size: small;
+}
+
+.apexcharts-tooltip {
+  background-color: #f3f3f3 !important;
+  color: #000000 !important;
+}

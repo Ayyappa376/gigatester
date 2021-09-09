@@ -1,0 +1,48 @@
+{
+	"name": "AWSCodeCommit",
+	"type": "repository",
+	"collectorSchedule": 1,
+	"processorSchedule": 6,
+	"attributes": {
+		"url": {
+			"custom": false,
+			"displayName": "Server URL",
+			"mandatory": true,
+			"type": "string",
+			"position": 1,
+			"helpText": "Provide the full URL to access the AWS CodeCommit server. e.g. https://url.to.codecommit.server"
+		},
+		"userName": {
+			"custom": false,
+			"displayName": "Access Key Id",
+			"mandatory": true,
+			"type": "password",
+			"position": 2,
+			"helpText": "The user should have permissions to access and read all information about your project's repository."
+		},
+		"password": {
+			"custom": false,
+			"displayName": "Secret Access Key",
+			"mandatory": true,
+			"type": "password",
+			"position": 3
+		},
+		"region": {
+			"custom": false,
+			"displayName": "Region",
+			"mandatory": true,
+			"type": "string",
+			"position": 4,
+			"helpText": "Provide the AWS region where your codecommit is located in."
+		},
+		"repoName": {
+			"custom": false,
+			"displayName": "Repository Name",
+			"mandatory": true,
+			"type": "list",
+			"options": { "dynamic": "server" },
+			"position": 5,
+			"helpText": "Click the connect button to fetch repositories from server. Select from the list of repositories fetched."
+		}
+	}
+}
