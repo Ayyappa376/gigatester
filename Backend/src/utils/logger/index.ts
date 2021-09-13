@@ -5,7 +5,7 @@ import { NextFunction, Request, Response } from 'express';
 
 export const appLogger: bunyan = bunyan.createLogger({
     level: <bunyan.LogLevelString>process.env.logLevel,
-    name: 'doitright-backend',
+    name: 'gigatester-backend',
     serializers: bunyan.stdSerializers,
     src: true,
     stream: process.stdout

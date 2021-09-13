@@ -8,7 +8,7 @@ const port = '9000';
 //const password = 'Nim314bus';
 const apiToken = '';
 const auth = `${apiToken}`; //<api_token>
-const project = 'DoItRight';
+const project = 'GigaTester';
 const baseURL = `http://${host}:${port}/api/`; //http://<host>:<port>/api/
 
 const metrics = 'ncloc,coverage,new_violations'; //comma seperated list of metrics keys

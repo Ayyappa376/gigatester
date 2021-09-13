@@ -4,7 +4,7 @@ import * as bunyan from 'bunyan';
 
 export const appLogger: bunyan = bunyan.createLogger({
     level: <bunyan.LogLevelString> ((process.env.NODE_ENV === 'development') ? 'info' : 'warn'),
-    name: 'doitright-collectors',
+    name: 'gigatester-collectors',
     serializers: bunyan.stdSerializers,
     src: true,
     streams: [
@@ -15,14 +15,14 @@ export const appLogger: bunyan = bunyan.createLogger({
         {
             level: 'info',
             type: 'rotating-file',
-            path: './logs/doitright.log',
+            path: './logs/gigatester.log',
             period: '1d',   // "ms" (milliseconds), "h" (hours), "d" (days), "w" (weeks), "m" (months), "y" (years)
             count: 30        // keep 30 back copies
         },
         {
             level: 'fatal',
             type: 'rotating-file',
-            path: './logs/doitright-fatal.log',
+            path: './logs/gigatester-fatal.log',
             period: '1w',   // "ms" (milliseconds), "h" (hours), "d" (days), "w" (weeks), "m" (months), "y" (years)
             count: 5        // keep 5 back copies
         }
@@ -40,7 +40,7 @@ export function setLogLevelToDebug() {
 
 export const installLogger: bunyan = bunyan.createLogger({
     level: <bunyan.LogLevelString> 'info',
-    name: 'doitright-collectors-install',
+    name: 'gigatester-collectors-install',
     serializers: bunyan.stdSerializers,
     src: true,
     streams: [
@@ -51,7 +51,7 @@ export const installLogger: bunyan = bunyan.createLogger({
         {
             level: 'info',
             type: 'rotating-file',
-            path: './logs/doitright-collectors-install.log',
+            path: './logs/gigatester-collectors-install.log',
             period: '1d',   // "ms" (milliseconds), "h" (hours), "d" (days), "w" (weeks), "m" (months), "y" (years)
             count: 5        // keep 5 back copies
         }

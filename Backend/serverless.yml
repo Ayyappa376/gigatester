@@ -1,4 +1,4 @@
-service: doitright-backend
+service: gigatester-backend
 
 provider:
   name: aws

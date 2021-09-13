@@ -3,7 +3,7 @@ aws.config.update({ region: 'us-east-1' });
 var documentClient = new aws.DynamoDB.DocumentClient();
 var ses = new aws.SES({ region: "us-east-1" });
 
-exports.handler = (event,context,callback) => {
+exports.handler = (event, context, callback) => {
   console.log(event.request);
 
   //add to database
@@ -37,12 +37,12 @@ var mail_params = {
     },
     Message: {
       Body: {
-        Text: { Data: "New user " + event.request.userAttributes.email + " has registered on dev.doitright.io" },
+        Text: { Data: "New user " + event.request.userAttributes.email + " has registered on dev.gigatester.io" },
       },
 
       Subject: { Data: "New user registered" },
     },
-    Source: "no-reply@dev.doitright.io",
+    Source: "no-reply@dev.gigatester.io",
   };
 
   console.log("Sending mail", mail_params);

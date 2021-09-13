@@ -9,7 +9,7 @@ async function install() {
   //read the .env file
   //create a blank CollectorConfig document in DynamoDB
   //initialise the mappings for different indexes in elasticsearch
-  //write(copy and modify) the doitright.service file in the appropriate location
+  //write(copy and modify) the gigatester.service file in the appropriate location
   //process runtime arguments
   /*	var myArgs = process.argv.slice(2);
 	if(myArgs.length > 0) {

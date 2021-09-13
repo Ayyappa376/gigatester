@@ -1,5 +1,5 @@
 {
-  "name": "doitright-backend",
+  "name": "gigatester-backend",
   "version": "1.0.0",
   "description": "Devops maturity measuring tool",
   "main": "handler.js",

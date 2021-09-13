@@ -9,7 +9,7 @@ export function parseSubDomain(request: Request, response: Response, next: NextF
     appLogger.info({originalURL}, 'In parseSubDomain');
 
     let subdomain = (originalURL) ? getSubDomainOfURL(originalURL) : '';
-    if ((subdomain === '') || (subdomain === 'doitright')) {
+    if ((subdomain === '') || (subdomain === 'gigatester')) {
         //set subdomain to default_subdomain
         appLogger.warn({subdomain}, 'Defaulting to %s', defaultSubdomain);
         subdomain = defaultSubdomain;

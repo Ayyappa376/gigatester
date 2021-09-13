@@ -35,7 +35,7 @@ const GA_id_prod = 'UA-154108167-2';
 const GA_id_dev = 'UA-154108167-1';
 const GA_id_beta = 'UA-154108167-3';
 
-const DoItRight = (props: IDoitrightProps) => {
+const GigaTester = (props: IDoitrightProps) => {
   const userData = useSelector((state: IRootState) => state.user.userDetails);
   const removeUserData = useActions(removeUserDetails);
   const env = process.env.REACT_APP_STAGE;
@@ -98,4 +98,4 @@ const DoItRight = (props: IDoitrightProps) => {
   );
 };
 
-export default DoItRight;
+export default GigaTester;

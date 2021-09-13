@@ -7,7 +7,7 @@ const host = `pinimbus.atlassian.net`;
 const email = 'gargi.basak@pinimbus.com';
 const token = 'edDUapfZR3ZiDe1IhBk4E32A';
 const auth = `${email}:${token}`; //email@example.com:<api_token>
-const project = 'DoItRight';
+const project = 'GigaTester';
 const baseURL = `https://${host}/rest/api/3/`; //https://<site-url>/rest/api/3/<resource-name>
 const header = 'Accept: application/json';
 
