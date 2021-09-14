@@ -12,14 +12,16 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Snackbar,
+  SnackbarContent,
   Tooltip,
 } from '@material-ui/core';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
 import { useSelector } from 'react-redux';
+import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
-import Notification from '../../../common/notification';
 import { ADMIN_HOME } from '../../../pages/admin';
 import DropDown from '../../common/dropDown';
 import { ModalComponent } from '../../modal';
@@ -92,6 +94,10 @@ const CreateQuestion = (props: any) => {
     emptyAnswer,
   ]);
   const [questionPosted, setQuestionPosted] = useState(false);
+  const [failure, setFailure] = useState(false);
+  const [failureMessage, setFailureMessage] = useState(
+    <Text tid='somethingWentWrong' />
+  );
   const [numberOfOptions, setNumberOfOptions] = useState(2);
   const [proposedNumberOfOptions, setProposedNumberOfOptions] = useState(0);
   const [weightageFactorArray, setWeightFactorArray] = useState([1, 2]);
@@ -112,11 +118,8 @@ const CreateQuestion = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: '',
-    type: '',
-  });
+  let msgFailure = failureMessage;
+  let msgSuccess = <Text tid='questionIsCreated' />;
 
   const handleAnswerChangeValue = (event: any, i: number) => {
     const answerCopy = [...answerVariable];
@@ -136,19 +139,13 @@ const CreateQuestion = (props: any) => {
     let iteration = 0;
     for (const answer of answerVariable) {
       if (answer.answer === '') {
-        setNotify({
-          isOpen: true,
-          message: 'answerCannotBeBlank',
-          type: 'error',
-        });
+        setFailure(true);
+        setFailureMessage(<Text tid='answerCannotBeBlank' />);
         return false;
       }
       if (!weightageFactorArray.includes(answer.weightageFactor)) {
-        setNotify({
-          isOpen: true,
-          message: 'weightageFactorCannotBeBlank',
-          type: 'error',
-        });
+        setFailure(true);
+        setFailureMessage(<Text tid='weightageFactorCannotBeBlank' />);
         return false;
       }
       answerVariable.forEach((el, i: number) => {
@@ -169,36 +166,24 @@ const CreateQuestion = (props: any) => {
       return true;
     }
     if (!validAnswer) {
-      setNotify({
-        isOpen: true,
-        message: 'answerMustBeUnique',
-        type: 'error',
-      });
+      setFailure(true);
+      setFailureMessage(<Text tid='answerMustBeUnique' />);
       return false;
     }
-    setNotify({
-      isOpen: true,
-      message: 'useDistinctWeightages',
-      type: 'error',
-    });
+    setFailure(true);
+    setFailureMessage(<Text tid='useDistinctWeightages' />);
     return false;
   };
 
   const validatePostData = () => {
     if (postData.question === '') {
-      setNotify({
-        isOpen: true,
-        message: 'questionCannotBeEmpty',
-        type: 'error',
-      });
+      setFailure(true);
+      setFailureMessage(<Text tid='questionCannotBeEmpty' />);
       return {};
     }
     if (answerVariable.length < 2) {
-      setNotify({
-        isOpen: true,
-        message: 'atleastTwoAnswerOptions',
-        type: 'error',
-      });
+      setFailure(true);
+      setFailureMessage(<Text tid='atleastTwoAnswerOptions' />);
       return {};
     }
     const answersValid = validateAnswers();
@@ -206,11 +191,8 @@ const CreateQuestion = (props: any) => {
       return {};
     }
     if (postData.comments === '') {
-      setNotify({
-        isOpen: true,
-        message: 'recommendationsCannotBeEmpty',
-        type: 'error',
-      });
+      setFailure(true);
+      setFailureMessage(<Text tid='recommendationsCannotBeEmpty' />);
       return {};
     }
     const answersData: IAnswers = {};
@@ -238,19 +220,13 @@ const CreateQuestion = (props: any) => {
           const object = JSON.parse(perror);
           if (object.code === 400) {
             setQuestionPosted(true);
-            setNotify({
-              isOpen: true,
-              message: object.apiError.msg,
-              type: 'error',
-            });
+            setFailureMessage(object.apiError.msg);
+            setFailure(true);
           } else if (object.code === 401) {
             props.history.push('/relogin');
           } else {
-            setNotify({
-              isOpen: true,
-              message: 'somethingWentWrong',
-              type: 'error',
-            });
+            setFailureMessage(<Text tid='somethingWentWrong' />);
+            setFailure(true);
           }
         });
     }
@@ -347,6 +323,10 @@ const CreateQuestion = (props: any) => {
     }
   };
 
+  const handleClose = () => {
+    setFailure(false);
+  };
+
   const renderChooseNumberOfOptions = () => {
     return (
       <DropDown
@@ -408,11 +388,20 @@ const CreateQuestion = (props: any) => {
 
   const questionComponent = () => {
     if (questionPosted) {
-      setNotify({
-        isOpen: true,
-        message: 'questionIsCreated',
-        type: 'success',
-      });     
+      return (
+        <Fragment>
+          <Success message={msgSuccess} />
+          <div className='bottomButtonsContainer'>
+            <Button
+              className={classes.backButton}
+              variant='outlined'
+              onClick={resetState}
+            >
+              <Text tid='goBack' />
+            </Button>
+          </div>
+        </Fragment>
+      );
     }
     return (
       <Fragment>
@@ -630,7 +619,19 @@ const CreateQuestion = (props: any) => {
             <Text tid='submit' />
           </Button>
         </div>
-        <Notification notify={notify} setNotify={setNotify} />
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={failure}
+          onClose={handleClose}
+          autoHideDuration={9000}
+        >
+          <SnackbarContent
+            style={{
+              backgroundColor: '#dd0000',
+            }}
+            message={msgFailure}
+          />
+        </Snackbar>
         <ModalComponent
           openModal={openConfirmationModal}
           message={'deleteTheExtraNumberOfOptionsFromTheEnd'}

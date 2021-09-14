@@ -22,7 +22,6 @@ import { useSelector } from 'react-redux';
 import { IUserParams, IUserAttributes } from '../../../model/admin/create-user';
 import { withRouter } from 'react-router-dom';
 import { buttonStyle } from '../../../common/common';
-import Notification from '../../../common/notification';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 
@@ -65,14 +64,16 @@ const useStyles = makeStyles((theme) => ({
 
 const CreateUser = (props: any) => {
   const classes = useStyles();
+  const [newUserPosted, setNewUserPosted] = useState(false);
+  const [failure, setFailure] = useState(false);
+  const [failureMessage, setFailureMessage] = useState(
+    <Text tid='somethingWentWrong' />
+  );
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: '',
-    type: '',
-  });
+  let msgFailure = failureMessage;
+  let msgSuccess = <Text tid='userProfileIsCreated' />;
 
   const [
     createUserParams,
@@ -123,30 +124,19 @@ const CreateUser = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        setUserParamState({});
-        setNotify({
-          isOpen: true,
-          message: 'userProfileIsCreated',
-          type: 'success',
-        })
+        setNewUserPosted(true);
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 400) {
-          setNotify({
-            isOpen: true,
-            message: object.apiError.msg,
-            type: 'error',
-          });
+          setFailureMessage(object.apiError.msg);
+          setFailure(true);
         } else if (object.code === 401) {
           props.history.push('/relogin');
         } else {
-          setNotify({
-            isOpen: true,
-            message: 'somethingWentWrong',
-            type: 'error',
-          });
+          setFailureMessage(<Text tid='somethingWentWrong' />);
+          setFailure(true);
         }
       });
   };
@@ -362,7 +352,30 @@ const CreateUser = (props: any) => {
     }
   };
 
+  const handleClose = () => {
+    setFailure(false);
+  };
+
   const renderFormData = () => {
+    if (newUserPosted) {
+      return (
+        <Fragment>
+          <Success message={msgSuccess} />
+          <div className='bottomButtonsContainer'>
+            <Button
+              className={classes.backButton}
+              variant='outlined'
+              onClick={() => {
+                setNewUserPosted(false);
+                setUserParamState({});
+              }}
+            >
+              <Text tid='goBack' />
+            </Button>
+          </div>
+        </Fragment>
+      );
+    }
     return (
       <Fragment>
         <Grid container spacing={3}>
@@ -396,7 +409,19 @@ const CreateUser = (props: any) => {
             </Button>
           )}
         </div>
-        <Notification notify={notify} setNotify={setNotify} />
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={failure}
+          onClose={handleClose}
+          autoHideDuration={9000}
+        >
+          <SnackbarContent
+            style={{
+              backgroundColor: '#dd0000',
+            }}
+            message={msgFailure}
+          />
+        </Snackbar>
       </Fragment>
     );
   };
