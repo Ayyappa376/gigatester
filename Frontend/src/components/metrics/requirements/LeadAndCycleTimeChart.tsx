@@ -1,58 +1,75 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import { Box, Typography, Container, makeStyles } from '@material-ui/core';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
-import { ALL_TEAMS } from '../../../pages/metrics/metric-select/metricsList';
+import { ALL } from '../../../pages/metrics/metric-select';
 import { IReqLTCTDataItem } from '../../../model/metrics/requirementsData';
 import Loader from '../../loader';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Text } from '../../../common/Language';
-import './style.css';
-
-const useStyles = makeStyles((theme) => ({
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-}));
+import '../../../css/metrics/style.css';
 
 export default function LeadAndCycleTimeChart(props: any) {
-  const classes = useStyles();
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
   const [ltctData, setLtCtData] = useState<IReqLTCTDataItem[]>([]);
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
+  const [userMsg, setUserMsg] = useState('Loading...');
+  const history = useHistory();
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange]);
+    setLtCtData([]);
+    setUserMsg('Loading...');
+  }, [
+    props.focusTeam,
+    props.focusService,
+    props.focusSubService,
+    props.focusServiceType,
+    props.selectedDateRange,
+    props.itemType,
+    props.itemPriority,
+  ]);
 
   const fetchData = () => {
-    let { timeline, focusTeam, selectedDateRange } = props;
-    let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day'
-          ? '/api/metrics/reqs/ltct'
-          : `/api/metrics/reqs/ltct?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/reqs/ltct?teamId=${focusTeam.toString()}`
-          : `/api/metrics/reqs/ltct?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
+    let { timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, itemType, itemPriority, selectedDateRange } = props;
+    
+    let url: string = '/api/metrics/reqs/ltct';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+      joiner = '&';
+    }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (itemType[0] !== ALL) {
+      url = `${url}${joiner}type=${itemType.toString()}`;
+      joiner = '&';
+    }
+    if (itemPriority[0] !== ALL) {
+      url = `${url}${joiner}priority=${itemPriority.toString()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
     }
 
     Http.get({
@@ -60,21 +77,28 @@ export default function LeadAndCycleTimeChart(props: any) {
       state: stateVariable,
     })
       .then((response: any) => {
-        setLtCtData(
-          response.sort((a: any, b: any) => {
-            return a.timestamp <= b.timestamp ? -1 : 1;
-          })
-        );
-        setLoader(false);
+        if (response) {
+          setTimeout(() => {
+            setUserMsg('');
+          }, 10000);
+          setLtCtData(
+            response.sort((a: any, b: any) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setLoader(false);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
-        } else {
-          setFailureMsg(true);
+          history.push('/relogin')
         }
       });
   };
@@ -86,14 +110,18 @@ export default function LeadAndCycleTimeChart(props: any) {
     ltctData.map((data: any) => {
       totalLeadTime.push([
         data.timestamp,
-        data.issueCount ? data.totalLeadTime / data.issueCount : 0,
+        data.issueCount
+          ? Math.round(data.totalLeadTime / (data.issueCount * 60))
+          : 0, //converting to average hours
       ]);
     });
 
     ltctData.map((data: any) => {
       totalCycleTime.push([
         data.timestamp,
-        data.issueCount ? data.totalCycleTime / data.issueCount : 0,
+        data.issueCount
+          ? Math.round(data.totalCycleTime / (data.issueCount * 60))
+          : 0, //converting to average hours
       ]);
     });
 
@@ -107,14 +135,6 @@ export default function LeadAndCycleTimeChart(props: any) {
           name: 'Cycle Time',
           data: totalCycleTime,
         },
-        // {
-        //   name: 'Lead time benchmark',
-        //   data: data3,
-        // },
-        // {
-        //   name: 'Cycle time benchmark',
-        //   data: data4,
-        // },
       ],
       options: {
         chart: {
@@ -126,10 +146,10 @@ export default function LeadAndCycleTimeChart(props: any) {
             show: false,
           },
         },
-        colors: ['#000080', '#CA6F1E', '#F26A1E', '#EDD041'],
+        colors: ['#FFC300', '#CA6F1E', '#F26A1E', '#EDD041'],
         stroke: {
           curve: 'smooth',
-          width: 1.5,
+          width: 2,
         },
         legend: {
           position: 'top',
@@ -150,16 +170,39 @@ export default function LeadAndCycleTimeChart(props: any) {
         yaxis: {
           labels: {
             formatter: (value: number) => {
-              return (value / 60).toFixed();
+              return value.toFixed();
             },
           },
           title: {
-            text: 'Number of Hours',
+            text: 'Time in Hours',
           },
         },
         tooltip: {
           x: {
-            format: 'dd/MM/yy',
+            format: 'dd MMM yyyy',
+          },
+          y: {
+            formatter: function (value: number) {
+              if (value > 24) {
+                let days: string = (value / 24).toFixed();
+                let hrs: string = (value % 24).toFixed();
+                return days + ' days ' + hrs + ' hrs';
+              } else {
+                return value.toFixed() + ' hrs';
+              }
+            },
+          },
+        },
+        noData: {
+          text: userMsg,
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#000000',
+            fontSize: '12.5px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
           },
         },
       },
@@ -171,17 +214,14 @@ export default function LeadAndCycleTimeChart(props: any) {
     <div id='chart'>
       <div id='chart-timeline'>
         <Fragment>
-          <Typography
-            variant='subtitle2'
-            style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
-          >
+          <Typography variant='subtitle2' className='subTitleMetricStyle'>
             <Box fontWeight={700} mb={loader || failureMsg ? 1.5 : 0}>
               <Text tid='leadTime-CycleTime' />
             </Box>
           </Typography>
         </Fragment>
         {loader ? (
-          <Container className={classes.loader}>
+          <Container className='loaderStyle'>
             <Loader />
           </Container>
         ) : failureMsg ? (

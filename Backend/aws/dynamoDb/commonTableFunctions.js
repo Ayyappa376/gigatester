@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 exports.copyTableByBackupAndRestoreTo = (ddbHandle, tableName, copyTableName) => {
 	let backupName = tableName + '_bk';
 	
@@ -57,6 +59,37 @@ exports.deleteAndRecreateTable = (ddbHandle, tableName, createTableCallback) => 
 					createTableCallback(ddbHandle, tableName);
 				}
 			});
+		}
+	});
+}
+
+exports.exportAllDataToFileAsJSON = (docClient, tableName, exportDir) => {
+	let params = {
+		TableName: tableName,
+	}
+	recursiveScanAndExport(docClient, params, `${exportDir}/${tableName}.json`);
+}
+
+function recursiveScanAndExport (docClient, params, fileNameWithPath) {
+	docClient.scan(params, (err, data) => {
+		if (err) {
+		  console.error("Error reading table " + params.TableName, err);
+		}
+		if(data) {
+			fs.appendFileSync(
+				fileNameWithPath,
+				JSON.stringify(data.Items, null, 2),
+				err => {
+					console.error("Error writing to file " + fileNameWithPath, err);
+				}
+			);
+			if (data.LastEvaluatedKey) {
+				const newParams = params;
+				newParams.ExclusiveStartKey = data.LastEvaluatedKey;
+				recursiveScanAndExport(docClient, newParams, fileNameWithPath);
+			}
+		} else {
+			console.log("No data in database.")
 		}
 	});
 }

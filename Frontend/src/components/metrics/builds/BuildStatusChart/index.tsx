@@ -1,63 +1,84 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Http } from '../../../../utils';
 import { IRootState } from '../../../../reducers';
-import { ALL_TEAMS } from '../../../../pages/metrics/metric-select/metricsList';
-import { IBuildsDataItem } from '../../../../model/metrics/buildsData';
+import { ALL } from '../../../../pages/metrics/metric-select';
+import { IBuildsGraphDataItem } from '../../../../model/metrics/buildsData';
 import AreaChart from './AreaChart';
 
 export default function BuildChart(props: any) {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [buildsData, setBuildsData] = useState<IBuildsDataItem[]>([]);
+  const [buildsData, setBuildsData] = useState<IBuildsGraphDataItem[]>([]);
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
+  const [userMsg, setUserMsg] = useState('Loading...');
+  const history = useHistory();
 
-  useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
+  useEffect(() => {  
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange]);
+    setBuildsData([]);
+    setUserMsg('Loading...');
+  }, [props.focusTeam, props.focusService, props.focusSubService, props.focusServiceType/*props.serviceAndSubService*/, props.selectedDateRange]);
 
   const fetchData = () => {
-    let { timeline, focusTeam, selectedDateRange } = props;
-    let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day'
-          ? '/api/metrics/builds/graph'
-          : `/api/metrics/builds/graph?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/builds/graph?teamId=${focusTeam.toString()}`
-          : `/api/metrics/builds/graph?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
+    let { timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService/*serviceAndSubService*/, selectedDateRange } = props;
+    let url: string = '/api/metrics/builds/graph';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.join()}`;
+      joiner = '&';
     }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
+    }
+
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setBuildsData(
-          response.sort((a: any, b: any) => {
-            return a.timestampEnd <= b.timestampEnd ? -1 : 1;
-          })
-        );
-        setLoader(false);
+        if (response) {
+          setTimeout(() => {
+            setUserMsg('');
+          }, 10000);
+          setBuildsData(
+            response.sort((a: IBuildsGraphDataItem, b: IBuildsGraphDataItem) => {
+              return a.timestampEnd - b.timestampEnd;
+            })
+          );
+          setLoader(false);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
+          history.push('/relogin')       
         } else {
-          setFailureMsg(true);
+          history.push('/error')
         }
       });
   };
@@ -65,34 +86,46 @@ export default function BuildChart(props: any) {
   const getBuildsCount = () => {
     const successBuilds: any[] = [];
     const failureBuilds: any[] = [];
-    const otherBuilds: any[] = [];
+    const inprogressBuilds: any[] = [];
+//    const otherBuilds: any[] = [];
 
-    buildsData.map((data: any) => {
+    let totalSuccessBuilds: number = 0;
+    let totalFailedBuilds: number = 0;
+    let totalInProgressBuilds: number = 0;
+
+    buildsData.map((data: IBuildsGraphDataItem) => {
       successBuilds.push([data.timestampEnd, data.countSuccessBuilds]);
-    });
+      totalSuccessBuilds += data.countSuccessBuilds;
 
-    buildsData.map((data: any) => {
       failureBuilds.push([data.timestampEnd, data.countFailBuilds]);
+      totalFailedBuilds += data.countFailBuilds;
+
+      inprogressBuilds.push([data.timestampEnd, data.countInProgressBuilds]);
+      totalInProgressBuilds += data.countInProgressBuilds;
     });
 
-    buildsData.map((data: any) => {
-      otherBuilds.push([data.timestampEnd, data.countOtherBuilds]);
-    });
+//    buildsData.map((data: IBuildsGraphDataItem) => {
+//      otherBuilds.push([data.timestampEnd, data.countOtherBuilds]);
+//    });
 
     const dataSet = {
       series: [
         {
-          name: 'Successful Build',
+          name: `Successful (${totalSuccessBuilds})`,
           data: successBuilds,
         },
         {
-          name: 'Failed Build',
+          name: `Failed (${totalFailedBuilds})`,
           data: failureBuilds,
         },
         {
-          name: 'Other Build',
-          data: otherBuilds,
+          name: `In Progress (${totalInProgressBuilds})`,
+          data: inprogressBuilds,
         },
+//        {
+//          name: 'Other Build',
+//          data: otherBuilds,
+//        },
       ],
 
       options: {
@@ -113,7 +146,7 @@ export default function BuildChart(props: any) {
             },
           },
         },
-        colors: ['#00ad6b', '#fc6a26', '#000080'],
+        colors: ['#00ad6b', '#fc0d05',/* '#fc7f26',*/ '#edb500'],
         dataLabels: {
           enabled: false,
         },
@@ -136,10 +169,37 @@ export default function BuildChart(props: any) {
         },
         yaxis: {
           floating: false,
+          title: {
+            text: 'Counts',
+          },
         },
         tooltip: {
+          inverseOrder: true,
           x: {
             format: 'dd MMM yyyy',
+          },
+          y: {
+            formatter: function (value: number) {
+              return value;
+            },
+            title: {
+              formatter: (seriesName: string) => {
+                let name = seriesName.split(' (')[0];
+                return `${name}:`;
+              }
+            },
+          },
+        },
+        noData: {
+          text: userMsg,
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#000000',
+            fontSize: '12.5px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
           },
         },
       },

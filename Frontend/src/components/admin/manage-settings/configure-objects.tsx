@@ -32,8 +32,8 @@ import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
 import {
-  EDIT_SETTINGS_TEAM_CONFIG,
-  EDIT_SETTINGS_USER_CONFIG,
+  //  EDIT_SETTINGS_TEAM_CONFIG,
+  //  EDIT_SETTINGS_USER_CONFIG,
   MANAGE_SETTINGS,
 } from '../../../pages/admin';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -47,37 +47,22 @@ import {
 import { LightTooltip } from '../../common/tooltip';
 import { ModalComponent } from '../../modal';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 import './style.css';
 
 const NEW_ATTR_KEY_PREFIX = 'newAttr';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
   },
-  grid: {
-    marginTop: theme.spacing(2),
-  },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
-  },
-  // numberTextField: {
-  //   borderBottom: 'none!important',
-  //   boxShadow: 'none!important',
-  // },
   formContainer: {
     display: 'flex',
     flexWrap: 'wrap',
   },
-  // dateTextField: {
-  //   marginLeft: theme.spacing(1),
-  //   marginRight: theme.spacing(1),
-  //   width: 200,
-  // },
   iconButton: {
     margin: theme.spacing(1),
     ...buttonStyle,
@@ -85,78 +70,38 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: '100%',
   },
-  // formControlCheckboxes: {
-  //   minWidth: '100%',
-  //   marginLeft: '10px',
-  // },
-  // flexContainer: {
-  //   display: 'flex',
-  // },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  // numberInput: { marginTop: '-14px' },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  // tableBodyText: {
-  //   color: '#808080',
-  // },
-  tableCell: {
-    borderRadius: '0px',
-    paddingBottom: '7px',
-    paddingTop: '7px',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
   },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   typography: {
     padding: theme.spacing(2),
-    width: '310px',
+    width: '320px',
   },
   customTooltip: {
     maxWidth: 150,
     fontSize: '12px',
     backgroundColor: '#4c4c4c',
+  },
+  addButton: {
+    marginTop: '20px',
+    marginLeft: '40px',
+    minWidth: '30%',
+    ...buttonStyle,
+  },
+  cancelButton: {
+    marginTop: '20px',
+    float: 'right',
+    marginRight: '40px',
+    minWidth: '30%',
+    ...buttonStyle,
   },
 }));
 
@@ -187,7 +132,7 @@ const EditSettingsObjectConfig = (props: any) => {
     return state;
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='teamAttributesUpdatedSuccessfully' />;
+  let msgSuccess = <Text tid={`${props.objType}.UpdatedSuccessfully`} />
 
   const fetchAttributes = () => {
     setBackdropOpen(true);
@@ -405,17 +350,17 @@ const EditSettingsObjectConfig = (props: any) => {
     newValue: string,
     originalValuesSring: string
   ): boolean => {
-    const newValueModified = newValue.replace(/[\. \-]/g, '').toLowerCase();
+    const newValueModified = newValue.replace(/[. -]/g, '').toLowerCase();
     const origValList = originalValuesSring.split(',');
     for (var i = 0; i < origValList.length; i++) {
-      const valModified = origValList[i].replace(/[\. \-]/g, '').toLowerCase();
-      if (valModified == newValueModified) {
+      const valModified = origValList[i].replace(/[. -]/g, '').toLowerCase();
+      if (valModified === newValueModified) {
         return true;
       }
     }
-    for (var i = 0; i < tags.length; i++) {
-      const valModified = tags[i].replace(/[\. \-]/g, '').toLowerCase();
-      if (valModified == newValueModified) {
+    for (var j = 0; j < tags.length; j++) {
+      const valModified = tags[j].replace(/[. -]/g, '').toLowerCase();
+      if (valModified === newValueModified) {
         return true;
       }
     }
@@ -487,7 +432,7 @@ const EditSettingsObjectConfig = (props: any) => {
               onKeyUp={(event) =>
                 event.key === 'Enter' ? addTags(event, el) : null
               }
-              placeholder='Type and press Enter to add option'
+              placeholder='Press Enter key to input typed option'
             />
           </div>
 
@@ -499,22 +444,17 @@ const EditSettingsObjectConfig = (props: any) => {
             onClick={(event: any) => {
               handleAttrOptionsChange(event, el);
             }}
-            style={{ marginTop: '20px', marginLeft: '40px', ...buttonStyle }}
+            className={classes.addButton}
             variant='outlined'
             color='primary'
             size='small'
             disabled={false /*uniqueOption*/}
           >
-            <Text tid='done' />
+            <Text tid='add' />
           </Button>
           <Button
             onClick={handleClosePopover}
-            style={{
-              marginTop: '20px',
-              float: 'right',
-              marginRight: '40px',
-              ...buttonStyle,
-            }}
+            className={classes.cancelButton}
             variant='outlined'
             color='primary'
             size='small'
@@ -534,7 +474,7 @@ const EditSettingsObjectConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
         >
           <TextField
             type='string'
@@ -551,7 +491,7 @@ const EditSettingsObjectConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
         >
           <FormControl className={classes.formControl}>
             <Select
@@ -585,7 +525,7 @@ const EditSettingsObjectConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
           style={{ paddingRight: 0 }}
         >
           {attr.type === 'list' ||
@@ -621,7 +561,7 @@ const EditSettingsObjectConfig = (props: any) => {
           component='th'
           scope='row'
           align='left'
-          className={classes.tableCell}
+          className='tableCell'
           style={{ paddingLeft: 0 }}
         >
           {attr.type === 'list' ||
@@ -649,7 +589,7 @@ const EditSettingsObjectConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
         >
           <div>
             <FormControlLabel
@@ -671,7 +611,7 @@ const EditSettingsObjectConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
         >
           {attr.custom ? (
             <div style={{ marginTop: '10px', cursor: 'pointer' }}>
@@ -705,7 +645,7 @@ const EditSettingsObjectConfig = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -721,11 +661,7 @@ const EditSettingsObjectConfig = (props: any) => {
     }
     return (
       <Fragment>
-        <Container
-          maxWidth='lg'
-          component='div'
-          classes={{ root: classes.containerRoot }}
-        >
+        <Container maxWidth='lg' component='div' className='containerRoot'>
           <Backdrop className={classes.backdrop} open={backdropOpen}>
             <CircularProgress color='inherit' />
           </Backdrop>
@@ -733,11 +669,7 @@ const EditSettingsObjectConfig = (props: any) => {
             <Grid container spacing={3}>
               <Grid item sm={6}>
                 <Typography variant='h6'>
-                  {props.objType === EDIT_SETTINGS_TEAM_CONFIG
-                    ? 'Configure Team Attributes'
-                    : props.objType === EDIT_SETTINGS_USER_CONFIG
-                    ? 'Configure User Attributes'
-                    : 'Configure Attributes'}
+                  <Text tid={`admin.settings.${props.objType}.name`} />
                 </Typography>
               </Grid>
               <Grid item sm={6} />
@@ -748,38 +680,38 @@ const EditSettingsObjectConfig = (props: any) => {
               </Grid>
             </Grid>
           </div>
-          <Paper style={{ width: '100%', marginTop: '20px' }}>
+          <Paper className='tableArea'>
             <form
               className={classes.formContainer}
               noValidate
               autoComplete='off'
             >
-              <Table className={classes.table}>
-                <TableHead className={classes.tableHead}>
+              <Table className='table'>
+                <TableHead className='tableHead'>
                   <TableRow>
-                    <TableCell className={classes.tableHeadCell}>
-                      <Typography className={classes.tableHeadText}>
+                    <TableCell className='tableHeadCell'>
+                      <Typography className='tableHeadText'>
                         <Text tid='displayedLabel' />
                       </Typography>
                     </TableCell>
-                    <TableCell align='center' className={classes.tableHeadCell}>
-                      <Typography className={classes.tableHeadText}>
+                    <TableCell align='center' className='tableHeadCell'>
+                      <Typography className='tableHeadText'>
                         <Text tid='type' />
                       </Typography>
                     </TableCell>
-                    <TableCell align='center' className={classes.tableHeadCell}>
-                      <Typography className={classes.tableHeadText}>
+                    <TableCell align='center' className='tableHeadCell'>
+                      <Typography className='tableHeadText'>
                         <Text tid='options' />
                       </Typography>
                     </TableCell>
-                    <TableCell align='left' className={classes.tableHeadCell} />
-                    <TableCell align='center' className={classes.tableHeadCell}>
-                      <Typography className={classes.tableHeadText}>
+                    <TableCell align='left' className='tableHeadCell' />
+                    <TableCell align='center' className='tableHeadCell'>
+                      <Typography className='tableHeadText'>
                         <Text tid='mandatory?' />
                       </Typography>
                     </TableCell>
-                    <TableCell align='center' className={classes.tableHeadCell}>
-                      <Typography className={classes.tableHeadText}>
+                    <TableCell align='center' className='tableHeadCell'>
+                      <Typography className='tableHeadText'>
                         <Text tid='delete' />
                       </Typography>
                     </TableCell>
@@ -792,7 +724,7 @@ const EditSettingsObjectConfig = (props: any) => {
                 </TableBody>
                 <TableFooter>
                   <TableRow style={{ margin: '10px', cursor: 'pointer' }}>
-                    <TableCell className={classes.tableHeadCell}>
+                    <TableCell className='tableHeadCell'>
                       <Button
                         className={classes.iconButton}
                         startIcon={<AddIcon />}
@@ -809,7 +741,7 @@ const EditSettingsObjectConfig = (props: any) => {
               </Table>
             </form>
           </Paper>
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -856,7 +788,7 @@ const EditSettingsObjectConfig = (props: any) => {
       {fetchedData ? (
         renderAttributesEditor()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

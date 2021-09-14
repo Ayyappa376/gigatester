@@ -31,7 +31,6 @@ const Auth = (props: any) => {
   const userStatus = useSelector((state: IRootState) => {
     return state.user;
   });
-  
   useEffect(() => {
     if (userStatus.idToken) {
       if (userStatus.team != null) {
@@ -77,7 +76,7 @@ const Auth = (props: any) => {
           roles: tokenInfo['cognito:groups'],
         });
       } else {
-        console.log('Error while setting in local storage--');
+        console.error('Error while setting in local storage--');
       }
     }
   }, []);

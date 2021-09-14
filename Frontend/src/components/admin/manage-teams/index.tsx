@@ -29,88 +29,24 @@ import SearchControl from '../../common/searchControl';
 import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    marginTop: '28px',
-    position: 'relative',
-    left: '45%',
-    minWidth: '10%',
-    ...buttonStyle,
-  },
-  grid: {
-    marginTop: theme.spacing(2),
-  },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   actionsBlock: {
     display: 'flex',
     flexWrap: 'wrap',
     marginLeft: '20%',
   },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tableCell: {
-    borderRadius: '0px',
-    padding: '7px 20px 7px 8px',
-  },
-  title: {
-    marginTop: '17px',
-  },
-  sortLabelIcon: {
-    opacity: 0.3,
-    color: 'white',
   },
 }));
 
@@ -172,12 +108,6 @@ const ManageTeams = (props: any) => {
         } else {
           props.history.push('/error');
         }
-        //   return a.active === 'true' ? -1 : 1
-        // // })
-        // setFetchTeams(true)
-        // setAllTeams(response)
-        // setTeams(response)
-        // setBackdropOpen(false)
       })
       .catch((error: any) => {
         const perror = JSON.stringify(error);
@@ -249,13 +179,10 @@ const ManageTeams = (props: any) => {
   }, [order, orderBy]);
 
   function compareStatus(a: any, b: any) {
-    // console.log('a.active:', a.active);
     if (a.active === 'true' && b.active === 'false') {
-      // console.log(1);
       return -1;
     }
     if (a.active === 'false' && b.active === 'true') {
-      // console.log(2);
       return 1;
     }
     return 0;
@@ -273,11 +200,9 @@ const ManageTeams = (props: any) => {
 
   function compareStatusD(a: any, b: any) {
     if (a.active === 'true' && b.active === 'false') {
-      // console.log(3);
       return 1;
     }
     if (a.active === 'false' && b.active === 'true') {
-      // console.log(4);
       return -1;
     }
     return 0;
@@ -398,13 +323,7 @@ const ManageTeams = (props: any) => {
   const renderTeamsTable = () => {
     return (
       <Fragment>
-        <Container
-          maxWidth='md'
-          component='div'
-          classes={{
-            root: classes.containerRoot,
-          }}
-        >
+        <Container maxWidth='md' component='div' className='containerRoot'>
           <Backdrop className={classes.backdrop} open={backdropOpen}>
             <CircularProgress color='inherit' />
           </Backdrop>
@@ -425,43 +344,37 @@ const ManageTeams = (props: any) => {
               </Grid>
             </Grid>
           </div>
-          <Paper style={{ width: '100%', marginTop: '20px' }}>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
+          <Paper className='tableArea'>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
+                  <TableCell className='tableHeadCell'>
                     <TableSortLabel
-                      classes={{
-                        icon: classes.sortLabelIcon,
-                      }}
                       active={orderBy === 'team'}
                       direction={orderBy === 'team' ? order : 'asc'}
                       onClick={() => {
                         handleRequestSort('team');
                       }}
                     >
-                      <Typography className={classes.tableHeadText}>
+                      <Typography className='tableHeadText'>
                         <Text tid='team' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='actions' />
                     </Typography>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell}>
+                  <TableCell align='center' className='tableHeadCell'>
                     <TableSortLabel
-                      classes={{
-                        icon: classes.sortLabelIcon,
-                      }}
                       active={orderBy === 'status'}
                       direction={orderBy === 'status' ? order : 'asc'}
                       onClick={() => {
                         handleRequestSort('status');
                       }}
                     >
-                      <Typography className={classes.tableHeadText}>
+                      <Typography className='tableHeadText'>
                         <Text tid='status' />
                       </Typography>
                     </TableSortLabel>
@@ -488,13 +401,13 @@ const ManageTeams = (props: any) => {
                       <TableCell
                         component='th'
                         scope='row'
-                        className={classes.tableCell}
+                        className='tableCell'
                       >
-                        <Typography className={classes.tableBodyText}>
+                        <Typography className='tableBodyText'>
                           {row.teamName}
                         </Typography>
                       </TableCell>
-                      <TableCell align='center' className={classes.tableCell}>
+                      <TableCell align='center' className='tableCell'>
                         <div className={classes.actionsBlock}>
                           {row.active === 'true' ? (
                             <Fragment>
@@ -560,7 +473,8 @@ const ManageTeams = (props: any) => {
                       <TableCell
                         component='th'
                         scope='row'
-                        className={classes.tableCell}
+                        align='center'
+                        className='tableCell'
                       >
                         {row.active === 'true' ? (
                           <CheckCircleIcon
@@ -586,7 +500,7 @@ const ManageTeams = (props: any) => {
               handleChange={handlePaginationClick}
             />
           </Fragment>
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -615,7 +529,7 @@ const ManageTeams = (props: any) => {
           renderTeamsTable()
         )
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

@@ -1,9 +1,11 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import {
+  createMuiTheme,
   Typography,
   Grid,
   makeStyles,
   Container,
+  MuiThemeProvider,
   Paper,
   Table,
   TableHead,
@@ -31,10 +33,21 @@ import SearchControl from '../../common/searchControl';
 import { getDate } from '../../../utils/data';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
+
+const theme = createMuiTheme({
+  overrides: {
+    MuiTableCell: {
+      root: {
+        padding: 12,
+      },
+    },
+  },
+});
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     left: '45%',
     minWidth: '10%',
@@ -43,37 +56,9 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     marginTop: theme.spacing(2),
   },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   formControl: {
+    top: 1,
     minWidth: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
   },
   actionsBlock: {
     display: 'flex',
@@ -81,31 +66,15 @@ const useStyles = makeStyles((theme) => ({
     marginLeft: '40%',
   },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tableCell: {
-    borderRadius: '0px',
-    paddingBottom: '7px',
-    paddingTop: '7px',
   },
   buttons: {
     ...buttonStyle,
@@ -264,13 +233,7 @@ const ManageQuestion = (props: any) => {
 
   const renderQuestionsTable = () => {
     return (
-      <Container
-        maxWidth='md'
-        component='div'
-        classes={{
-          root: classes.containerRoot,
-        }}
-      >
+      <Container maxWidth='md' component='div' className='containerRoot'>
         <Backdrop className={classes.backdrop} open={backdropOpen}>
           <CircularProgress color='inherit' />
         </Backdrop>
@@ -321,79 +284,87 @@ const ManageQuestion = (props: any) => {
             </Grid>
           </Grid>
         </div>
-        <Paper style={{ width: '100%', marginTop: '20px' }}>
-          <Table className={classes.table}>
-            <TableHead className={classes.tableHead}>
-              <TableRow>
-                <TableCell className={classes.tableHeadCell}>
-                  <Typography className={classes.tableHeadText}>
-                    <Text tid='question' />
-                  </Typography>
-                </TableCell>
-                <TableCell align='center' className={classes.tableHeadCell}>
-                  <Typography className={classes.tableHeadText}>
-                    <Text tid='lastUpdate' />
-                  </Typography>
-                </TableCell>
-                <TableCell align='center' className={classes.tableHeadCell}>
-                  <Typography className={classes.tableHeadText}>
-                    <Text tid='actions' />
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {questions.map((row: any, index: number) => {
-                if (index < itemLimit.lowerLimit) {
-                  return;
-                }
-                if (index > itemLimit.upperLimit) {
-                  return;
-                }
-                if (row.question) {
-                  return (
-                    <TableRow
-                      key={row.id}
-                      /* style={index % 2 ? { background : '#EFEFEF' } : { background : 'white' }} */
-                    >
-                      <TableCell
-                        component='th'
-                        scope='row'
-                        className={classes.tableCell}
-                      >
-                        <Typography className={classes.tableBodyText}>
-                          {row.question}
-                        </Typography>
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        scope='row'
-                        className={classes.tableCell}
-                        align='center'
-                      >
-                        <Typography className={classes.tableBodyText}>
-                          {row.lastModifiedOn
-                            ? getDate(row.lastModifiedOn)
-                            : '-'}
-                        </Typography>
-                      </TableCell>
-                      <TableCell align='center'>
-                        <Button
-                          variant='outlined'
-                          className={classes.buttons}
-                          onClick={() => {
-                            props.editQuestionClicked(row);
-                          }}
+        <Paper className='tableArea'>
+          <MuiThemeProvider theme={theme}>
+            <Table className='table'>
+              <TableHead className='tableHead'>
+                <TableRow>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='question' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell
+                    align='center'
+                    className='tableHeadCell'
+                    style={{ minWidth: '150px' }}
+                  >
+                    <Typography className='tableHeadText'>
+                      <Text tid='lastUpdate' />
+                    </Typography>
+                  </TableCell>
+
+                  <TableCell
+                    align='center'
+                    className='tableHeadCell'
+                    style={{ minWidth: '150px' }}
+                  >
+                    <Typography className='tableHeadText'>
+                      <Text tid='actions' />
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {questions.map((row: any, index: number) => {
+                  if (index < itemLimit.lowerLimit) {
+                    return;
+                  }
+                  if (index > itemLimit.upperLimit) {
+                    return;
+                  }
+                  if (row.question) {
+                    return (
+                      <TableRow key={row.id}>
+                        <TableCell
+                          component='th'
+                          scope='row'
+                          className='tableCell'
                         >
-                          <Text tid='edit' /> <ArrowForwardIcon />
-                        </Button>
-                      </TableCell>
-                    </TableRow>
-                  );
-                }
-              })}
-            </TableBody>
-          </Table>
+                          <Typography className='tableBodyText'>
+                            {row.question}
+                          </Typography>
+                        </TableCell>
+                        <TableCell
+                          component='th'
+                          scope='row'
+                          className='tableCell'
+                          align='center'
+                        >
+                          <Typography className='tableBodyText'>
+                            {row.lastModifiedOn
+                              ? getDate(row.lastModifiedOn)
+                              : '-'}
+                          </Typography>
+                        </TableCell>
+                        <TableCell align='center'>
+                          <Button
+                            variant='outlined'
+                            className={classes.buttons}
+                            onClick={() => {
+                              props.editQuestionClicked(row);
+                            }}
+                          >
+                            <Text tid='edit' /> <ArrowForwardIcon />
+                          </Button>
+                        </TableCell>
+                      </TableRow>
+                    );
+                  }
+                })}
+              </TableBody>
+            </Table>
+          </MuiThemeProvider>
         </Paper>
         <Fragment>
           <RenderPagination
@@ -404,7 +375,7 @@ const ManageQuestion = (props: any) => {
             handleChange={handlePaginationClick}
           />
         </Fragment>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'
@@ -422,7 +393,7 @@ const ManageQuestion = (props: any) => {
       {responseReceived ? (
         renderQuestionsTable()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

@@ -7,25 +7,25 @@ import {
   Checkbox,
   Button,
   makeStyles,
+  MuiThemeProvider,
   FormControl,
   InputLabel,
   Select,
   MenuItem,
-  Snackbar,
-  SnackbarContent,
   Tooltip,
 } from '@material-ui/core';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
 import { useSelector } from 'react-redux';
-import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
+import Notification from '../../../common/notification';
 import { ADMIN_HOME } from '../../../pages/admin';
 import DropDown from '../../common/dropDown';
 import { ModalComponent } from '../../modal';
 import InfoIcon from '@material-ui/icons/Info';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 export const numberOfOptionsArray = [2, 3, 4, 5, 6, 7];
 
@@ -57,13 +57,13 @@ export interface IQuestionDetails {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
   },
   grid: {
-    marginTop: theme.spacing(1),
+    marginTop: theme.spacing(2),
   },
   formContainer: {
     display: 'flex',
@@ -73,35 +73,12 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: '100%',
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
-  },
-  numberInput: { marginTop: '-14px' },
-  dropdown: {
-    minWidth: '100%',
-  },
-  infoIcon: {
-    paddingTop: '15px',
-    paddingLeft: 'inherit',
-    float: 'right',
-    cursor: 'pointer',
-  },
-  smallFlexContainer: {
-    display: 'flex',
-  },
-  infoIcon2: {
-    paddingTop: '8px',
-    cursor: 'pointer',
   },
 }));
 
@@ -115,10 +92,6 @@ const CreateQuestion = (props: any) => {
     emptyAnswer,
   ]);
   const [questionPosted, setQuestionPosted] = useState(false);
-  const [failure, setFailure] = useState(false);
-  const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
-  );
   const [numberOfOptions, setNumberOfOptions] = useState(2);
   const [proposedNumberOfOptions, setProposedNumberOfOptions] = useState(0);
   const [weightageFactorArray, setWeightFactorArray] = useState([1, 2]);
@@ -139,8 +112,11 @@ const CreateQuestion = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionIsCreated' />;
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
 
   const handleAnswerChangeValue = (event: any, i: number) => {
     const answerCopy = [...answerVariable];
@@ -160,13 +136,19 @@ const CreateQuestion = (props: any) => {
     let iteration = 0;
     for (const answer of answerVariable) {
       if (answer.answer === '') {
-        setFailure(true);
-        setFailureMessage(<Text tid='answerCannotBeBlank' />);
+        setNotify({
+          isOpen: true,
+          message: 'answerCannotBeBlank',
+          type: 'error',
+        });
         return false;
       }
       if (!weightageFactorArray.includes(answer.weightageFactor)) {
-        setFailure(true);
-        setFailureMessage(<Text tid='weightageFactorCannotBeBlank' />);
+        setNotify({
+          isOpen: true,
+          message: 'weightageFactorCannotBeBlank',
+          type: 'error',
+        });
         return false;
       }
       answerVariable.forEach((el, i: number) => {
@@ -187,24 +169,36 @@ const CreateQuestion = (props: any) => {
       return true;
     }
     if (!validAnswer) {
-      setFailure(true);
-      setFailureMessage(<Text tid='answerMustBeUnique' />);
+      setNotify({
+        isOpen: true,
+        message: 'answerMustBeUnique',
+        type: 'error',
+      });
       return false;
     }
-    setFailure(true);
-    setFailureMessage(<Text tid='useDistinctWeightages' />);
+    setNotify({
+      isOpen: true,
+      message: 'useDistinctWeightages',
+      type: 'error',
+    });
     return false;
   };
 
   const validatePostData = () => {
     if (postData.question === '') {
-      setFailure(true);
-      setFailureMessage(<Text tid='questionCannotBeEmpty' />);
+      setNotify({
+        isOpen: true,
+        message: 'questionCannotBeEmpty',
+        type: 'error',
+      });
       return {};
     }
     if (answerVariable.length < 2) {
-      setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoAnswerOptions' />);
+      setNotify({
+        isOpen: true,
+        message: 'atleastTwoAnswerOptions',
+        type: 'error',
+      });
       return {};
     }
     const answersValid = validateAnswers();
@@ -212,8 +206,11 @@ const CreateQuestion = (props: any) => {
       return {};
     }
     if (postData.comments === '') {
-      setFailure(true);
-      setFailureMessage(<Text tid='recommendationsCannotBeEmpty' />);
+      setNotify({
+        isOpen: true,
+        message: 'recommendationsCannotBeEmpty',
+        type: 'error',
+      });
       return {};
     }
     const answersData: IAnswers = {};
@@ -241,13 +238,19 @@ const CreateQuestion = (props: any) => {
           const object = JSON.parse(perror);
           if (object.code === 400) {
             setQuestionPosted(true);
-            setFailureMessage(object.apiError.msg);
-            setFailure(true);
+            setNotify({
+              isOpen: true,
+              message: object.apiError.msg,
+              type: 'error',
+            });
           } else if (object.code === 401) {
             props.history.push('/relogin');
           } else {
-            setFailureMessage(<Text tid='somethingWentWrong' />);
-            setFailure(true);
+            setNotify({
+              isOpen: true,
+              message: 'somethingWentWrong',
+              type: 'error',
+            });
           }
         });
     }
@@ -344,10 +347,6 @@ const CreateQuestion = (props: any) => {
     }
   };
 
-  const handleClose = () => {
-    setFailure(false);
-  };
-
   const renderChooseNumberOfOptions = () => {
     return (
       <DropDown
@@ -357,7 +356,7 @@ const CreateQuestion = (props: any) => {
         value={numberOfOptions}
         list={numberOfOptionsArray}
         label={'Choose Total Number Of Options'}
-        dropDownClass={classes.dropdown}
+        dropDownClass='dropdownWidth'
       />
     );
   };
@@ -390,7 +389,7 @@ const CreateQuestion = (props: any) => {
                 value={el.weightageFactor}
                 list={weightageFactorArray}
                 label={'Choose Weightage Factor'}
-                dropDownClass={classes.dropdown}
+                dropDownClass='dropdownWidth'
               />
             </Grid>
           </Grid>
@@ -409,24 +408,15 @@ const CreateQuestion = (props: any) => {
 
   const questionComponent = () => {
     if (questionPosted) {
-      return (
-        <Fragment>
-          <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
-            <Button
-              className={classes.backButton}
-              variant='outlined'
-              onClick={resetState}
-            >
-              <Text tid='goBack' />
-            </Button>
-          </div>
-        </Fragment>
-      );
+      setNotify({
+        isOpen: true,
+        message: 'questionIsCreated',
+        type: 'success',
+      });     
     }
     return (
       <Fragment>
-        <Grid container spacing={3}>
+        <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={12} sm={12}>
             <TextField
               required
@@ -441,25 +431,24 @@ const CreateQuestion = (props: any) => {
           </Grid>
         </Grid>
         <br />
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3}>
           <Grid item xs={3} sm={3}>
             {renderChooseNumberOfOptions()}
           </Grid>
-          <Grid item xs={8} sm={8} />
-          <Grid item xs={1} sm={1}>
-            {
+          <Grid item xs={6} sm={6} />
+          <Grid item xs={3} sm={3}>
+            <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography style={{ width: '17vw', fontSize: '11px' }}>
+                  <Typography className='tooltipTitleStyle'>
                     <Text tid='selectTheWeightageFactor' />
                   </Typography>
                 }
+                placement='right'
               >
-                <div className={classes.infoIcon}>
-                  <InfoIcon style={{ fontSize: 23 }} />
-                </div>
+                <InfoIcon className='infoIconStyle' />
               </Tooltip>
-            }
+            </MuiThemeProvider>
           </Grid>
         </Grid>
         {answerVariable.map((el: IAnswer, i: number) => renderAnswers(el, i))}
@@ -525,110 +514,105 @@ const CreateQuestion = (props: any) => {
             </FormControl>
           </Grid>
         </Grid>
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={3}>
-            <div className={classes.numberInput}>
-              <TextField
-                type='number'
-                id='thresholdScore'
-                name='thresholdScore'
-                label='Threshold Score'
-                fullWidth
-                value={postData.thresholdScore}
-                onChange={updateThresholdScore}
-                InputProps={{ disableUnderline: true }}
-              />
-            </div>
+            {/* <div className={classes.numberInput}> */}
+            <TextField
+              type='number'
+              id='thresholdScore'
+              name='thresholdScore'
+              label='Threshold Score'
+              fullWidth
+              value={postData.thresholdScore}
+              onChange={updateThresholdScore}
+              InputProps={{ disableUnderline: true }}
+            />
+            {/* </div> */}
           </Grid>
         </Grid>
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={3}>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={postData.type === 'multi-select'}
-                    onChange={changeMultiSelect}
-                    value='multi-select'
-                  />
-                }
-                label={
-                  <Typography color='textSecondary'>
-                    <Text tid='multiSelect' />
-                  </Typography>
-                }
-              />
-            </div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={postData.type === 'multi-select'}
+                  onChange={changeMultiSelect}
+                  value='multi-select'
+                />
+              }
+              label={
+                <Typography color='textSecondary'>
+                  <Text tid='multiSelect' />
+                </Typography>
+              }
+            />
           </Grid>
           <Grid item xs={12} sm={3}>
-            <div className={classes.numberInput}>
-              <TextField
-                required
-                type='number'
-                id='numberOfAnswers'
-                name='numberOfAnswers'
-                label='Number Of Answers'
-                fullWidth
-                value={postData.numberOfAnswers}
-                onChange={updateNumberOfAnswers}
-                disabled={postData.type === 'select'}
-                InputProps={{ disableUnderline: true }}
-              />
-            </div>
+            {/* <div className={classes.numberInput}> */}
+            <TextField
+              required
+              type='number'
+              id='numberOfAnswers'
+              name='numberOfAnswers'
+              label='Number Of Answers'
+              fullWidth
+              value={postData.numberOfAnswers}
+              onChange={updateNumberOfAnswers}
+              disabled={postData.type === 'select'}
+              InputProps={{ disableUnderline: true }}
+            />
+            {/* </div> */}
+          </Grid>
+        </Grid>
+        <Grid container spacing={3}>
+          <Grid item xs={12} sm={6}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={postData.NA}
+                  onChange={changeNaFlag}
+                  value='na'
+                />
+              }
+              label={
+                <Typography color='textSecondary'>
+                  <Text tid='addNotApplicableOption' />
+                </Typography>
+              }
+            />
           </Grid>
         </Grid>
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={12} sm={6}>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={postData.NA}
-                    onChange={changeNaFlag}
-                    value='na'
-                  />
-                }
-                label={
-                  <Typography color='textSecondary'>
-                    <Text tid='addNotApplicableOption' />
-                  </Typography>
-                }
-              />
-            </div>
-          </Grid>
-        </Grid>
-        <Grid container spacing={3} className={classes.grid}>
-          <Grid item xs={12} sm={6}>
-            <div className={classes.smallFlexContainer}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={postData.reason}
-                    onChange={changeReasonFlag}
-                    value='reason'
-                  />
-                }
-                label={
-                  <Typography color='textSecondary'>
-                    <Text tid='reason' />
-                  </Typography>
-                }
-              />
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={postData.reason}
+                  onChange={changeReasonFlag}
+                  value='reason'
+                />
+              }
+              label={
+                <Typography color='textSecondary'>
+                  <Text tid='reason' />
+                </Typography>
+              }
+            />
+            <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography style={{ width: '14vw', fontSize: '11px' }}>
+                  <Typography className='tooltipTitleStyle'>
                     <Text tid='reasonForThisSelection' />
                   </Typography>
                 }
+                placement='right'
               >
-                <div className={classes.infoIcon2}>
-                  <InfoIcon style={{ fontSize: 23 }} />
-                </div>
+                <InfoIcon className='infoIconStyle' />
               </Tooltip>
-            </div>
+            </MuiThemeProvider>
           </Grid>
         </Grid>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'
@@ -646,19 +630,7 @@ const CreateQuestion = (props: any) => {
             <Text tid='submit' />
           </Button>
         </div>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={failure}
-          onClose={handleClose}
-          autoHideDuration={9000}
-        >
-          <SnackbarContent
-            style={{
-              backgroundColor: '#dd0000',
-            }}
-            message={msgFailure}
-          />
-        </Snackbar>
+        <Notification notify={notify} setNotify={setNotify} />
         <ModalComponent
           openModal={openConfirmationModal}
           message={'deleteTheExtraNumberOfOptionsFromTheEnd'}

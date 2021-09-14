@@ -1,8 +1,6 @@
 // tslint:disable: all
 
 import React, { useEffect, useState } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import Container from '@material-ui/core/Container';
 import { Redirect } from 'react-router-dom';
 import {
   useActions,
@@ -13,13 +11,20 @@ import {
 } from '../../actions';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
-import { Typography, Tooltip, TableSortLabel } from '@material-ui/core';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
+import {
+  Container,
+  makeStyles,
+  MuiThemeProvider,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  TableSortLabel,
+  Tooltip,
+  Typography,
+} from '@material-ui/core';
 import { fetchAssessmentHistory } from '../../actions';
 import 'react-circular-progressbar/dist/styles.css';
 import { Loader } from '../../components';
@@ -28,7 +33,9 @@ import { default as MaterialLink } from '@material-ui/core/Link';
 // import { orderBy } from 'lodash';
 import { getDateTime } from '../../utils/data';
 import Title from '../../components/admin/dashboard/common/title';
+import { tooltipTheme } from '../../common/common';
 import { Text } from '../../common/Language';
+import '../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   containerRoot: {
@@ -36,25 +43,9 @@ const useStyles = makeStyles((theme) => ({
     position: 'relative',
     flexDirection: 'column',
     alignItems: 'center',
-    width: '100%',
+    width: '80%',
     top: '120px',
     paddingBottom: theme.spacing(4),
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
   },
   root: {
     width: '100%',
@@ -65,10 +56,6 @@ const useStyles = makeStyles((theme) => ({
   firstColumn: {
     maxWidth: '200px',
     overflow: 'hidden',
-  },
-  sortLabelIcon: {
-    opacity: 0.3,
-    color: 'white',
   },
   title: {
     minWidth: '100%',
@@ -276,7 +263,7 @@ function ViewAssessment(props: any) {
     // setAssessmentHistory(true)
     return (
       <Container
-        maxWidth='md'
+        maxWidth='lg'
         component='div'
         classes={{
           root: classes.containerRoot,
@@ -357,7 +344,7 @@ function ViewAssessment(props: any) {
     if (Object.keys(assessmentHistory.data.assessments).length === 0) {
       return (
         <Container
-          maxWidth='md'
+          maxWidth='lg'
           component='div'
           classes={{
             root: classes.containerRoot,
@@ -372,7 +359,7 @@ function ViewAssessment(props: any) {
 
     return (
       <Container
-        maxWidth='md'
+        maxWidth='lg'
         component='div'
         classes={{
           root: classes.containerRoot,
@@ -384,89 +371,69 @@ function ViewAssessment(props: any) {
           </Title>
         </div>
         <Paper className={classes.root}>
-          <Table className={classes.table}>
-            <TableHead className={classes.tableHead}>
+          <Table className='table'>
+            <TableHead className='tableHead'>
               <TableRow>
-                <TableCell className={classes.tableHeadCell}>
+                <TableCell className='tableHeadCell'>
                   <TableSortLabel
-                    classes={{
-                      icon: classes.sortLabelIcon,
-                    }}
                     active={orderBy === 'team'}
                     direction={orderBy === 'team' ? order : 'asc'}
                     onClick={() => {
                       handleRequestSort('team');
                     }}
                   >
-                    <Typography className={classes.tableHeadText}>
+                    <Typography className='tableHeadText'>
                       <Text tid='team' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
-                <TableCell align='center' className={classes.tableHeadCell}>
+                <TableCell align='center' className='tableHeadCell'>
                   <TableSortLabel
-                    classes={{
-                      icon: classes.sortLabelIcon,
-                    }}
                     active={orderBy === 'name'}
                     direction={orderBy === 'name' ? order : 'asc'}
                     onClick={() => {
                       handleRequestSort('name');
                     }}
                   >
-                    <Typography className={classes.tableHeadText}>
+                    <Typography className='tableHeadText'>
                       <Text tid='assessment' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
-                <TableCell align='center' className={classes.tableHeadCell}>
+                <TableCell align='center' className='tableHeadCell'>
                   <TableSortLabel
-                    classes={{
-                      icon: classes.sortLabelIcon,
-                    }}
                     active={orderBy === 'date'}
                     direction={orderBy === 'date' ? order : 'asc'}
                     onClick={() => {
                       handleRequestSort('date');
                     }}
                   >
-                    <Typography className={classes.tableHeadText}>
+                    <Typography className='tableHeadText'>
                       <Text tid='dateSubmitted' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
-                <TableCell align='center' className={classes.tableHeadCell}>
+                <TableCell align='center' className='tableHeadCell'>
                   <TableSortLabel
-                    classes={{
-                      icon: classes.sortLabelIcon,
-                    }}
                     active={orderBy === 'score'}
                     direction={orderBy === 'score' ? order : 'asc'}
                     onClick={() => {
                       handleRequestSort('score');
                     }}
                   >
-                    <Typography className={classes.tableHeadText}>
+                    <Typography className='tableHeadText'>
                       <Text tid='score' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
-                <TableCell align='center' className={classes.tableHeadCell}>
-                  {/* <TableSortLabel
-                                            classes = {{
-                                                icon: classes.sortLabelIcon
-                                            }}
-                                            active={orderBy === 'level'}
-                                            direction={orderBy === 'score' ? order : 'asc'}
-                                            onClick={() => {handleRequestSort('level')}}
-                                        > */}
-                  <Typography className={classes.tableHeadText}>
+                <TableCell align='center' className='tableHeadCell'>
+                  <Typography className='tableHeadText'>
                     <Text tid='level' />
                   </Typography>
                   {/* </TableSortLabel> */}
                 </TableCell>
-                <TableCell align='center' className={classes.tableHeadCell}>
-                  <Typography className={classes.tableHeadText}>
+                <TableCell align='center' className='tableHeadCell'>
+                  <Typography className='tableHeadText'>
                     <Text tid='linkToAssessment' />
                   </Typography>
                 </TableCell>
@@ -489,35 +456,37 @@ function ViewAssessment(props: any) {
                         scope='row'
                         className={classes.firstColumn}
                       >
-                        <Typography className={classes.tableBodyText}>
+                        <Typography className='tableBodyText'>
                           {row.team ? row.team : 'NA'}
                         </Typography>
                       </TableCell>
                       <TableCell align='center'>
-                        <Tooltip
-                          title={
-                            <Typography>
+                        <MuiThemeProvider theme={tooltipTheme}>
+                          <Tooltip
+                            title={
+                              <Typography className='tooltipTitleStyle'>
+                                {row.assessmentName ? row.assessmentName : 'NA'}
+                              </Typography>
+                            }
+                          >
+                            <Typography className='tableBodyText'>
                               {row.assessmentName ? row.assessmentName : 'NA'}
                             </Typography>
-                          }
-                        >
-                          <Typography className={classes.tableBodyText}>
-                            {row.assessmentName ? row.assessmentName : 'NA'}
-                          </Typography>
-                        </Tooltip>
+                          </Tooltip>
+                        </MuiThemeProvider>
                       </TableCell>
                       <TableCell align='center'>
-                        <Typography className={classes.tableBodyText}>
+                        <Typography className='tableBodyText'>
                           {row.dateSubmit ? getDateTime(row.dateSubmit) : 'NA'}
                         </Typography>
                       </TableCell>
                       <TableCell align='center'>
-                        <Typography className={classes.tableBodyText}>
+                        <Typography className='tableBodyText'>
                           {row.result ? `${row.result!.percentage}%` : 'NA'}
                         </Typography>
                       </TableCell>
                       <TableCell align='center'>
-                        <Typography className={classes.tableBodyText}>
+                        <Typography className='tableBodyText'>
                           {row.result ? row.result!.level : 'NA'}
                         </Typography>
                       </TableCell>
@@ -534,7 +503,7 @@ function ViewAssessment(props: any) {
   }
   return (
     <Container
-      maxWidth='md'
+      maxWidth='lg'
       component='div'
       classes={{
         root: classes.containerRoot,

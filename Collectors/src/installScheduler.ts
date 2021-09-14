@@ -32,9 +32,11 @@ async function install() {
   await createIndex(getTableNameForOrg(config.qualityIndex), getQualityIndexProperties());
   installLogger.info('Quality index created');
   await createIndex(getTableNameForOrg(config.incidentIndex), getIncidentIndexProperties());
-  installLogger.info('State index created');
+  installLogger.info('Incident index created');
   await createIndex(getTableNameForOrg(config.stateIndex), getStateIndexProperties());
   installLogger.info('State index created');
+  await createIndex(getTableNameForOrg(config.gitlabCommitIndex), getGitLabCommitIndexProperties());
+  installLogger.info('GitlabCommit index created');
 
   //write(copy and modify) the doitright.service file in the appropriate location
 }
@@ -78,6 +80,24 @@ function getRepoIndexProperties() {
 		acceptState: { type: 'keyword' },
 		raisedOn: { type: 'date', format: 'epoch_second' },
 		reviewedOn: { type: 'date', format: 'epoch_second' },
+		url: { type: 'text' }
+	};
+}
+
+function getGitLabCommitIndexProperties() {
+	return {
+		teamId: { type: 'keyword' },
+		servicePath: { type: 'keyword' },
+		projectName: { type: 'keyword' },
+		repoName: { type: 'keyword' },
+		ref: {type: 'keyword' },
+		commitId: { type: 'keyword' },
+		committedBy: { type: 'keyword' },
+		pipelineId: { type: 'keyword' },
+		pipelineStatus: { type: 'keyword' },
+		commitDate: { type: 'date', format: 'epoch_second' },
+		pipelineStartDate: { type: 'date', format: 'epoch_second' },
+		pipelineEndDate: { type: 'date', format: 'epoch_second' },
 		url: { type: 'text' }
 	};
 }

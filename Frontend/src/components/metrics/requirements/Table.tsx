@@ -21,7 +21,7 @@ import {
 } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
@@ -30,27 +30,10 @@ import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
 import { IReqListDataItem } from '../../../model/metrics/requirementsData';
-import {
-  ALL_PRIORITIES,
-  ALL_TEAMS,
-  ALL_TYPES,
-} from '../../../pages/metrics/metric-select/metricsList';
+import { ALL } from '../../../pages/metrics/metric-select';
 import { getDateTime } from '../../../utils/data';
 import { Text } from '../../../common/Language';
-import './style.css';
-
-interface Data {
-  closedOn: number;
-  createdOn: number;
-  itemId: string;
-  itemPriority: string;
-  itemType: string;
-  projectName: string;
-  startedOn: number;
-  status: string;
-  teamId: string;
-  url: string;
-}
+import '../../../css/metrics/style.css';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -88,7 +71,7 @@ function stableSort(array: any[], comparator: (a: any, b: any) => number) {
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof Data;
+  id: keyof IReqListDataItem;
   label: string;
   numeric: boolean;
 }
@@ -96,48 +79,14 @@ interface HeadCell {
 const headCells: HeadCell[] = [
   { id: 'itemId', numeric: false, disablePadding: true, label: 'itemId' },
   { id: 'itemType', numeric: false, disablePadding: true, label: 'itemType' },
-  {
-    id: 'itemPriority',
-    numeric: false,
-    disablePadding: true,
-    label: 'itemPriority',
-  },
-  {
-    id: 'teamId',
-    numeric: false,
-    disablePadding: false,
-    label: 'team',
-  },
-  {
-    id: 'projectName',
-    numeric: false,
-    disablePadding: false,
-    label: 'project',
-  },
-  {
-    id: 'createdOn',
-    numeric: true,
-    disablePadding: false,
-    label: 'createdOn',
-  },
-  {
-    id: 'startedOn',
-    numeric: true,
-    disablePadding: false,
-    label: 'startedOn',
-  },
-  {
-    id: 'closedOn',
-    numeric: true,
-    disablePadding: false,
-    label: 'closedOn',
-  },
-  {
-    id: 'status',
-    numeric: false,
-    disablePadding: false,
-    label: 'status',
-  },
+  { id: 'itemPriority', numeric: false, disablePadding: true, label: 'itemPriority' },
+  { id: 'teamId', numeric: false, disablePadding: false, label: 'team' },
+  { id: 'service', numeric: false, disablePadding: false, label: 'service' },
+  { id: 'projectName', numeric: false, disablePadding: false, label: 'project' },
+  { id: 'createdOn', numeric: true, disablePadding: false, label: 'createdOn' },
+  { id: 'startedOn', numeric: true, disablePadding: false, label: 'startedOn' },
+  { id: 'closedOn', numeric: true, disablePadding: false, label: 'closedOn' },
+  { id: 'status', numeric: false, disablePadding: false, label: 'status' },
 ];
 
 interface EnhancedTableProps {
@@ -145,7 +94,7 @@ interface EnhancedTableProps {
   numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof IReqListDataItem
   ) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
@@ -155,7 +104,7 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { classes, order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property: keyof Data) => (
+  const createSortHandler = (property: keyof IReqListDataItem) => (
     event: React.MouseEvent<unknown>
   ) => {
     onRequestSort(event, property);
@@ -169,19 +118,16 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             key={headCell.id}
             align='center'
             sortDirection={orderBy === headCell.id ? order : false}
-            className={classes.tableHeadText}
+            className='tableHeadMetrics'
             rowSpan={1}
           >
             <TableSortLabel
-              classes={{
-                icon: classes.sortLabelIcon,
-              }}
               hideSortIcon={true}
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              <label className={classes.tableHeadText}>
+              <label className='tableHeadMetrics'>
                 <Text tid={headCell.label} />
               </label>
             </TableSortLabel>
@@ -205,27 +151,8 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {
       minWidth: 300,
     },
-    tableHeadText: {
-      backgroundColor: '#3CB1DC',
-      color: '#FFFFFF',
-      fontSize: '14px',
-      borderRadius: '0px',
-      cursor: 'pointer',
-      lineHeight: 1.2,
-    },
-    sortLabelIcon: {
-      opacity: 0.4,
-      color: 'white !important',
-    },
     container: {
       maxHeight: 208,
-    },
-    loader: {
-      marginTop: '50px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '100%',
     },
   })
 );
@@ -323,7 +250,7 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 export default function RequirementsTable(props: any) {
   const classes = useStyles();
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof Data>('itemId');
+  const [orderBy, setOrderBy] = useState<keyof IReqListDataItem>('itemId');
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -333,6 +260,8 @@ export default function RequirementsTable(props: any) {
   const [reqListData, setReqListData] = useState<IReqListDataItem[]>([]);
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
+  const [loadingTimeline, setLoadingTimeline] = useState(true);
+  const history = useHistory();
 
   const StyledTableRow = withStyles((theme: Theme) =>
     createStyles({
@@ -346,7 +275,7 @@ export default function RequirementsTable(props: any) {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof Data
+    property: keyof IReqListDataItem
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -354,87 +283,78 @@ export default function RequirementsTable(props: any) {
   };
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
+    setLoadingTimeline(true);
+    setReqListData([]);
     fetchData();
   }, [
     props.focusTeam,
+    props.focusService,
+    props.focusSubService,
+    props.focusServiceType,
     props.itemType,
     props.itemPriority,
     props.selectedDateRange,
   ]);
 
   const fetchData = () => {
-    let {
-      timeline,
-      focusTeam,
-      itemType,
-      itemPriority,
-      selectedDateRange,
-    } = props;
-    let url: string = '';
-    let itemFilterCondition =
-      itemType[0] !== ALL_TYPES &&
-      itemPriority[0] === ALL_PRIORITIES &&
-      timeline !== 'one_day'
-        ? `/api/metrics/reqs/list?type=${itemType.toString()}&fromDate=${
-            selectedDateRange.fromDate
-          }&toDate=${selectedDateRange.toDate}`
-        : itemType[0] !== ALL_TYPES &&
-          itemPriority[0] !== ALL_PRIORITIES &&
-          timeline !== 'one_day'
-        ? `/api/metrics/reqs/list?type=${itemType.toString()}&priority=${itemPriority.toString()}&fromDate=${
-            selectedDateRange.fromDate
-          }&toDate=${selectedDateRange.toDate}`
-        : itemType[0] === ALL_TYPES &&
-          itemPriority[0] !== ALL_PRIORITIES &&
-          timeline !== 'one_day'
-        ? `/api/metrics/reqs/list?priority=${itemPriority.toString()}&fromDate=${
-            selectedDateRange.fromDate
-          }&toDate=${selectedDateRange.toDate}`
-        : `/api/metrics/reqs/list?type=${itemType.toString()}&priority=${itemPriority.toString()}`;
-
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day' &&
-        itemType[0] === ALL_TYPES &&
-        itemPriority[0] === ALL_PRIORITIES
-          ? `/api/metrics/reqs/list`
-          : itemType[0] === ALL_TYPES &&
-            itemPriority[0] === ALL_PRIORITIES &&
-            timeline !== 'one_day'
-          ? `/api/metrics/reqs/list?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`
-          : itemFilterCondition;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/reqs/list?teamId=${focusTeam.toString()}`
-          : itemType[0] === ALL_TYPES &&
-            itemPriority[0] === ALL_PRIORITIES &&
-            timeline !== 'one_day'
-          ? `/api/metrics/reqs/list?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`
-          : itemFilterCondition;
+    let { timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, itemType, itemPriority, selectedDateRange } =
+      props;
+    let url: string = '/api/metrics/reqs/list';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+      joiner = '&';
     }
-
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (itemType[0] !== ALL) {
+      url = `${url}${joiner}type=${itemType.toString()}`;
+      joiner = '&';
+    }
+    if (itemPriority[0] !== ALL) {
+      url = `${url}${joiner}priority=${itemPriority.toString()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
+    }
+  
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setReqListData(response);
-        setLoader(false);
+        if (response) {
+          setReqListData(response);
+          setLoader(false);
+          setLoadingTimeline(false);
+        } else {
+          setLoader(false);
+          setLoadingTimeline(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setLoadingTimeline(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
-        } else {
-          setFailureMsg(true);
+          history.push('/relogin')
         }
       });
   };
@@ -485,42 +405,49 @@ export default function RequirementsTable(props: any) {
               rowCount={Number(reqListData)}
             />
             <TableBody style={{ overflow: 'auto', paddingTop: '10px' }}>
-              {stableSort(reqListData, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <StyledTableRow key={index}>
-                      <TableCell align='center'>
-                        <a
-                          href={row.url}
-                          target='_blank'
-                          style={{ textDecoration: 'underline' }}
-                        >
-                          {row.itemId}
-                        </a>
-                      </TableCell>
-                      <TableCell align='center'>{row.itemType}</TableCell>
-                      <TableCell align='center'>{row.itemPriority}</TableCell>
-                      <TableCell align='center'>{row.teamId}</TableCell>
-                      <TableCell align='center'>{row.projectName}</TableCell>
-                      <TableCell align='center'>
-                        {row.createdOn ? getDateTime(row.createdOn) : '-'}
-                      </TableCell>
-                      <TableCell align='center'>
-                        {row.startedOn
-                          ? getDateTime(row.startedOn * 1000)
-                          : '-'}
-                      </TableCell>
-                      <TableCell align='center'>
-                        {row.closedOn ? getDateTime(row.closedOn * 1000) : '-'}
-                      </TableCell>
-                      <TableCell align='center'>{row.status}</TableCell>
-                    </StyledTableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
+              {reqListData.length ? (
+                stableSort(reqListData, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <TableCell align='center'>
+                          <a
+                            href={row.url}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            style={{ textDecoration: 'underline' }}
+                          >
+                            {row.itemId}
+                          </a>
+                        </TableCell>
+                        <TableCell align='center'>{row.itemType}</TableCell>
+                        <TableCell align='center'>{row.itemPriority}</TableCell>
+                        <TableCell align='center'>{row.teamId}</TableCell>
+                        <TableCell align='center'>{row.service}</TableCell>
+                        <TableCell align='center'>{row.projectName}</TableCell>
+                        <TableCell align='center'>
+                          {row.createdOn ? getDateTime(row.createdOn) : '-'}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {row.startedOn
+                            ? getDateTime(row.startedOn * 1000)
+                            : '-'}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {row.closedOn
+                            ? getDateTime(row.closedOn * 1000)
+                            : '-'}
+                        </TableCell>
+                        <TableCell align='center'>{row.status}</TableCell>
+                      </StyledTableRow>
+                    );
+                  })
+              ) : (
                 <TableRow style={{ height: 33 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={9} align='center'>
+                    {loadingTimeline ? 'Loading...' : 'No Records Found'}
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -544,17 +471,13 @@ export default function RequirementsTable(props: any) {
 
   return (
     <div className={classes.root}>
-      <Typography variant='subtitle2'>
-        <Box
-          fontWeight={700}
-          fontFamily='Helvetica, Arial, sans-serif'
-          mb={props.loader || props.failureMsg ? 2 : 1.5}
-        >
+      <Typography variant='subtitle2' className='subTitleMetricStyle'>
+        <Box fontWeight={700} mb={props.loader || props.failureMsg ? 2 : 1.5}>
           <Text tid='requirementsDetails' />
         </Box>
       </Typography>
       {loader ? (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       ) : failureMsg ? (

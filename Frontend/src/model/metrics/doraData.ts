@@ -1,5 +1,5 @@
 export interface IDeploymentDataItem {
-  countSuccessBuilds: number;
+  countBuilds: number;
   timestamp: number;
 }
 
@@ -19,6 +19,11 @@ export interface IChangeFailureRateDataItem {
   countFailBuilds: number;
   timestamp: number;
   totalBuilds: number;
+}
+
+export interface ITrendDataItem {
+  timestamp: number;
+  value: number;
 }
 
 export const LEAD_TIME_STATUS_CLOSED = 'Closed';

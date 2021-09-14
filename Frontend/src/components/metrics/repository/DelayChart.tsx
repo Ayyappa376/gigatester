@@ -1,32 +1,18 @@
 import React, { useState, useEffect, Fragment } from 'react';
-import { Box, Typography, Container, makeStyles } from '@material-ui/core';
-import { Redirect } from 'react-router-dom';
+import { Box, Typography, Container } from '@material-ui/core';
+import { useHistory } from 'react-router-dom';
 import ReactApexChart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
-import {
-  ALL_TEAMS,
-  ALL_NAMES,
-} from '../../../pages/metrics/metric-select/metricsList';
+import { ALL } from '../../../pages/metrics/metric-select';
 import { IRepoPullReqWaitTimeDataItem } from '../../../model/metrics/repositoryData';
 import Loader from '../../loader';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { Text } from '../../../common/Language';
-import './style.css';
+import '../../../css/metrics/style.css';
 
-const useStyles = makeStyles((theme) => ({
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-}));
-
-export default function PullRequestChart(props: any) {
-  const classes = useStyles();
+export default function DelayChart(props: any) {
   const [delayCount, setDelayCount] = useState<Object[]>([]);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
@@ -36,13 +22,14 @@ export default function PullRequestChart(props: any) {
   >([]);
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
+  const [userMsg, setUserMsg] = useState('Loading...');
+  const history = useHistory();
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
     fetchData();
-  }, [props.focusTeam, props.committerName, props.selectedDateRange]);
+    setDisplayData([]);
+    setUserMsg('Loading...');
+  }, [props.focusTeam, props.focusService, props.focusSubService, props.focusServiceType, props.committerName, props.selectedDateRange]);
 
   useEffect(() => {
     var delayCount = displayData.map((data: any) => {
@@ -57,53 +44,63 @@ export default function PullRequestChart(props: any) {
   }, [displayData]);
 
   const fetchData = () => {
-    let { selectedDateRange, timeline, focusTeam, committerName } = props;
-    let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        committerName[0] === ALL_NAMES && timeline === 'one_day'
-          ? '/api/metrics/repos/delayGraph'
-          : committerName[0] === ALL_NAMES && timeline !== 'one_day'
-          ? `/api/metrics/repos/delayGraph?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`
-          : timeline === 'one_day'
-          ? `/api/metrics/repos/delayGraph?committer=${committerName.toString()}`
-          : `/api/metrics/repos/delayGraph?committer=${committerName.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    } else if (committerName[0] === ALL_NAMES) {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/repos/delayGraph?teamId=${focusTeam.toString()}`
-          : `/api/metrics/repos/delayGraph?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    } else if (timeline === 'one_day' && committerName[0] !== ALL_NAMES) {
-      url = `/api/metrics/repos/delayGraph?committer=${committerName.toString()}`;
-    } else {
-      url = `/api/metrics/repos/delayGraph?committer=${committerName.toString()}&fromDate=${
-        selectedDateRange.fromDate
-      }&toDate=${selectedDateRange.toDate}`;
+    let { selectedDateRange, timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, committerName } = props;
+    let url: string = '/api/metrics/repos/delayGraph';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+      joiner = '&';
     }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (committerName[0] !== ALL) {
+      url = `${url}${joiner}committer=${committerName.toString()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
+    }
+
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setDisplayData(
-          response.sort((a: any, b: any) => {
-            return a.timestampEnd <= b.timestampEnd ? -1 : 1;
-          })
-        );
-        setLoader(false);
+        if (response) {
+          setTimeout(() => {
+            setUserMsg('');
+          }, 10000);
+          setDisplayData(
+            response.sort((a: any, b: any) => {
+              return a.timestampEnd - b.timestampEnd;
+            })
+          );
+          setLoader(false);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
-        } else {
-          setFailureMsg(true);
+          history.push('/relogin')
         }
       });
   };
@@ -133,7 +130,6 @@ export default function PullRequestChart(props: any) {
         enabled: false,
       },
       fill: {
-        curve: 'smooth',
         opacity: 1,
       },
       markers: {
@@ -148,7 +144,7 @@ export default function PullRequestChart(props: any) {
       yaxis: {
         labels: {
           formatter: (value: number) => {
-            return (value / 60).toFixed();
+            return value.toFixed();
           },
         },
         title: {
@@ -159,6 +155,23 @@ export default function PullRequestChart(props: any) {
         x: {
           format: 'dd MMM yyyy',
         },
+        y: {
+          formatter: function (value: number) {
+            return (value / 60).toFixed() + ' ' + 'Hrs';
+          },
+        },
+      },
+      noData: {
+        text: userMsg,
+        align: 'center',
+        verticalAlign: 'middle',
+        offsetX: 0,
+        offsetY: 0,
+        style: {
+          color: '#000000',
+          fontSize: '12.5px',
+          fontFamily: 'Helvetica, Arial, sans-serif',
+        },
       },
     },
   };
@@ -167,17 +180,14 @@ export default function PullRequestChart(props: any) {
     <div id='chart'>
       <div id='chart-timeline'>
         <Fragment>
-          <Typography
-            variant='subtitle2'
-            style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
-          >
+          <Typography variant='subtitle2' className='subTitleMetricStyle'>
             <Box fontWeight={700} mb={loader || failureMsg ? 1.5 : 0}>
               <Text tid='waitTime' />
             </Box>
           </Typography>
         </Fragment>
         {loader ? (
-          <Container className={classes.loader}>
+          <Container className='loaderStyle'>
             <Loader />
           </Container>
         ) : failureMsg ? (

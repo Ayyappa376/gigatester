@@ -31,6 +31,15 @@
 			"defaultValue": "All",
 			"position": 3,
 			"helpText": "Connect to the server to fetch the projects list. Select from the list of projects fetched."
+		},
+		"ref": {
+			"custom": false,
+			"displayName": "Delivery Branch or Tag Pattern",
+			"mndatory": true,
+			"type": "string",
+			"defalutValue": "master",
+			"position": 4,
+			"helpText": "Provide the name or regular expression pattern to indentify the branch or tag which is used to run production delivery pipeline."
 		}
 	}
 }

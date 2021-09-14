@@ -1,4 +1,5 @@
-const env = process.env.REACT_APP_STAGE;
+// const env = process.env.REACT_APP_STAGE;
+import { createMuiTheme } from '@material-ui/core';
 
 export const buttonStyle = {
   color: '#042E5B',
@@ -24,3 +25,15 @@ export const timelineList = [
   { id: 'ytd', name: 'YTD' },
   { id: 'all', name: 'ALL' },
 ];
+
+export const tooltipTheme = createMuiTheme({
+  overrides: {
+    MuiTooltip: {
+      tooltip: {
+        color: '#ffffff',
+        backgroundColor: '#000000',
+        width: '15vw',
+      },
+    },
+  },
+});

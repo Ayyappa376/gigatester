@@ -7,6 +7,7 @@ import {
   Checkbox,
   Button,
   makeStyles,
+  MuiThemeProvider,
   FormControl,
   InputLabel,
   Select,
@@ -21,7 +22,7 @@ import { IRootState } from '../../../reducers';
 import { useSelector } from 'react-redux';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
 import {
   IQuestionDetails,
   IAnswer,
@@ -32,10 +33,11 @@ import DropDown from '../../common/dropDown';
 import { ModalComponent } from '../../modal';
 import InfoIcon from '@material-ui/icons/Info';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
@@ -51,35 +53,12 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: '100%',
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
-  },
-  numberInput: { marginTop: '-14px' },
-  dropdown: {
-    minWidth: '100%',
-  },
-  infoIcon: {
-    paddingTop: '15px',
-    paddingLeft: 'inherit',
-    float: 'right',
-    cursor: 'pointer',
-  },
-  smallFlexContainer: {
-    display: 'flex',
-  },
-  infoIcon2: {
-    paddingTop: '8px',
-    cursor: 'pointer',
   },
 }));
 
@@ -363,7 +342,7 @@ const EditQuestion = (props: any) => {
                 value={el.weightageFactor}
                 list={weightageFactorArray}
                 label={'Choose Weightage Factor'}
-                dropDownClass={classes.dropdown}
+                dropDownClass='dropdownWidth'
               />
             </Grid>
           </Grid>
@@ -381,7 +360,7 @@ const EditQuestion = (props: any) => {
         value={numberOfOptions}
         list={numberOfOptionsArray}
         label={'Choose Total Number Of Options'}
-        dropDownClass={classes.dropdown}
+        dropDownClass='dropdownWidth'
       />
     );
   };
@@ -391,7 +370,7 @@ const EditQuestion = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -423,25 +402,24 @@ const EditQuestion = (props: any) => {
           </Grid>
         </Grid>
         <br />
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3}>
           <Grid item xs={3} sm={3}>
             {renderChooseNumberOfOptions()}
           </Grid>
-          <Grid item xs={8} sm={8} />
-          <Grid item xs={1} sm={1}>
-            {
+          <Grid item xs={6} sm={6} />
+          <Grid item xs={3} sm={3}>
+            <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography style={{ width: '17vw', fontSize: '11px' }}>
+                  <Typography className='tooltipTitleStyle'>
                     <Text tid='selectTheWeightageFactor' />
                   </Typography>
                 }
+                placement='right'
               >
-                <div className={classes.infoIcon}>
-                  <InfoIcon style={{ fontSize: 23 }} />
-                </div>
+                <InfoIcon className='infoIconStyle' />
               </Tooltip>
-            }
+            </MuiThemeProvider>
           </Grid>
         </Grid>
         {answerVariable.map((el: IAnswer, i: number) => renderAnswers(el, i))}
@@ -510,57 +488,51 @@ const EditQuestion = (props: any) => {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={3}>
-            <div className={classes.numberInput}>
-              <TextField
-                type='number'
-                id='thresholdScore'
-                name='thresholdScore'
-                label='Threshold Score'
-                fullWidth
-                value={postData.thresholdScore}
-                onChange={updateThresholdScore}
-                InputProps={{ disableUnderline: true }}
-              />
-            </div>
+            <TextField
+              type='number'
+              id='thresholdScore'
+              name='thresholdScore'
+              label='Threshold Score'
+              fullWidth
+              value={postData.thresholdScore}
+              onChange={updateThresholdScore}
+              InputProps={{ disableUnderline: true }}
+            />
           </Grid>
         </Grid>
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={3}>
-            <div>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={postData.type === 'multi-select'}
-                    onChange={changeMultiSelect}
-                    value='multi-select'
-                  />
-                }
-                label={
-                  <Typography color='textSecondary'>
-                    <Text tid='multiSelect' />
-                  </Typography>
-                }
-              />
-            </div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={postData.type === 'multi-select'}
+                  onChange={changeMultiSelect}
+                  value='multi-select'
+                />
+              }
+              label={
+                <Typography color='textSecondary'>
+                  <Text tid='multiSelect' />
+                </Typography>
+              }
+            />
           </Grid>
           <Grid item xs={12} sm={3}>
-            <div className={classes.numberInput}>
-              <TextField
-                required
-                type='number'
-                id='numberOfAnswers'
-                name='numberOfAnswers'
-                label='Number Of Answers'
-                fullWidth
-                value={postData.numberOfAnswers}
-                onChange={updateNumberOfAnswers}
-                disabled={postData.type === 'select'}
-                InputProps={{ disableUnderline: true }}
-              />
-            </div>
+            <TextField
+              required
+              type='number'
+              id='numberOfAnswers'
+              name='numberOfAnswers'
+              label='Number Of Answers'
+              fullWidth
+              value={postData.numberOfAnswers}
+              onChange={updateNumberOfAnswers}
+              disabled={postData.type === 'select'}
+              InputProps={{ disableUnderline: true }}
+            />
           </Grid>
         </Grid>
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3}>
           <Grid item xs={12} sm={6}>
             <div>
               <FormControlLabel
@@ -582,36 +554,37 @@ const EditQuestion = (props: any) => {
         </Grid>
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={12} sm={6}>
-            <div className={classes.smallFlexContainer}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    checked={postData.reason}
-                    onChange={changeReasonFlag}
-                    value='reason'
-                  />
-                }
-                label={
-                  <Typography color='textSecondary'>
-                    <Text tid='reason' />
-                  </Typography>
-                }
-              />
+            {/* <div className={classes.smallFlexContainer}> */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={postData.reason}
+                  onChange={changeReasonFlag}
+                  value='reason'
+                />
+              }
+              label={
+                <Typography color='textSecondary'>
+                  <Text tid='reason' />
+                </Typography>
+              }
+            />
+            <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography style={{ width: '14vw', fontSize: '11px' }}>
+                  <Typography className='tooltipTitleStyle'>
                     <Text tid='reasonForThisSelection' />
                   </Typography>
                 }
+                placement='right'
               >
-                <div className={classes.infoIcon2}>
-                  <InfoIcon style={{ fontSize: 23 }} />
-                </div>
+                <InfoIcon className='infoIconStyle' />
               </Tooltip>
-            </div>
+            </MuiThemeProvider>
+            {/* </div> */}
           </Grid>
         </Grid>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'

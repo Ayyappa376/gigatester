@@ -67,6 +67,9 @@ export const mapTeamAssessmet = (
         assessmentName: assessmentNameVersionMap[key][0].assessmentName
           ? assessmentNameVersionMap[key][0].assessmentName
           : '',
+        type: assessmentNameVersionMap[key][0].type
+          ? assessmentNameVersionMap[key][0].type
+          : '',
         questionnaireVersion: assessmentNameVersionMap[key][0]
           .questionnaireVersion
           ? assessmentNameVersionMap[key][0].questionnaireVersion

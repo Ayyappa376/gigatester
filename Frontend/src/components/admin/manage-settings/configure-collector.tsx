@@ -2,7 +2,10 @@ import React, { useEffect, useState, Fragment } from 'react';
 import { withRouter } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import {
+  ExpansionPanel,
+  ExpansionPanelSummary,
   Typography,
+  ExpansionPanelDetails,
   Grid,
   TextField,
   Container,
@@ -15,19 +18,22 @@ import {
   InputLabel,
   Checkbox,
   FormControlLabel,
+  Paper,
 } from '@material-ui/core';
 import { IRootState } from '../../../reducers';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { MANAGE_SETTINGS } from '../../../pages/admin';
 import Success from '../../success-page';
 import { buttonStyle } from '../../../common/common';
 import {
-  IFieldConfigAttributes,
+  // IFieldConfigAttributes,
   ICollectorConfigDetails,
   ICollectorConfig,
 } from '../../../model/system';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 import './style.css';
 
 const drawerWidth = 240;
@@ -41,62 +47,38 @@ const useStyles = makeStyles((theme) => ({
     flexShrink: 0,
   },
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
   },
-  grid: {
-    marginTop: theme.spacing(2),
-  },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
-  },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
   },
-  circularProgress: {
-    display: 'flex',
+  rootp: {
+    width: '100%',
+    padding: '10px 0px'
+  },
+  nonHighlighted: {
+    color: 'inherit',
+    backgroundColor: 'inherit',
+  },
+  smallColumn: {
+    // flexBasis: '12.5%',
+      flexBasis: '10%',
+  },
+  detailsNonHighlighted: {
     alignItems: 'center',
-    justifyContent: 'center',
   },
-  buttons: {
-    float: 'right',
-    ...buttonStyle,
-  },
-  root: {
-    maxWidth: 800,
-    margin: '15px 0',
-    cursor: 'pointer',
-  },
+  helpText: { fontSize: '12px', color: '#808080' },
 }));
 
 const EditSettingsCollectorConfig = (props: any) => {
@@ -116,7 +98,7 @@ const EditSettingsCollectorConfig = (props: any) => {
     return state;
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='collectorsUpdatedSuccessfully' />;
+  let msgSuccess = <Text tid={`${props.objType}.UpdatedSuccessfully`} />;
 
   const fetchCollectorAttributes = () => {
     setBackdropOpen(true);
@@ -256,12 +238,134 @@ const EditSettingsCollectorConfig = (props: any) => {
     setImmediateRun(tempRunList);
   };
 
+  const handleChangeValue = (
+    event: any,
+    colKey: string,
+    colIndex: number,
+    attrKey: string
+  ) => {
+    let temp: ICollectorConfigDetails = { ...collectors };
+    temp[colKey][colIndex].attributes[attrKey].defaultValue = event.target.value;
+    setCollectors(temp);
+  };
+
+  const renderAttribute = (collector: ICollectorConfig, colKey: string, colIndex: number, attrKey: string) => {
+    const collectorAttr: any = collector.attributes[attrKey];
+    return (
+      <div className={classes.rootp}>
+        <TextField
+          required={collectorAttr.mandatory}
+          type='string'
+          id={`field_${colKey}_${colIndex}_${attrKey}`}
+          name={`field_${colKey}_${colIndex}_${attrKey}`}
+          value={collectorAttr.defaultValue}
+          label={collectorAttr.displayName}
+          onChange={(event: any) =>
+            handleChangeValue(event, colKey, colIndex, attrKey)
+          }
+          fullWidth
+          autoComplete='off'
+          className='textFieldStyle'
+        />
+        <Typography
+          key={`help_${colKey}_${colIndex}_${attrKey}`}
+          className={classes.helpText}
+        >
+          {collectorAttr.helpText
+            ? collectorAttr.helpText
+            : ''}
+        </Typography>
+      </div>
+    );
+  };
+
+  const renderCollectorsDetails = (colKey: string, colIndex: number, collector: ICollectorConfig) => {
+    return (
+      <ExpansionPanel className={classes.title}>
+        <ExpansionPanelSummary
+          expandIcon={<ExpandMoreIcon />}
+          aria-controls='panel1c-content'
+          id='panel1c-header'
+          className={classes.nonHighlighted}
+        >
+          <Typography variant='h6' gutterBottom>
+            {collector.name}
+          </Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails className={classes.detailsNonHighlighted}>
+        <div style={{ display: 'block', width: '100%' }}>
+          <Grid container alignItems='center'>
+            <Grid item sm={1}>
+              <InputLabel>
+                Run every {/*<Text tid='runEvery' />*/}
+              </InputLabel>
+            </Grid>
+            <Grid item sm={1}>
+              <TextField
+                required={true}
+                type='number'
+                id={`schedule_${collector.name}`}
+                name={`schedule_${collector.name}`}
+                value={collector.collectorSchedule}
+                label={''}
+                onChange={(event: any) =>
+                  handleCollectorScheduleChange(event, colKey, colIndex)
+                }
+                autoComplete='off'
+                InputProps={{
+                  inputProps: { min: 1, max: 24 },
+                  disableUnderline: true,
+                }}
+                className='textFieldStyle'
+                style={{
+                  paddingLeft: '8px',
+                  paddingRight: '8px',
+                }}
+              />
+            </Grid>
+            <Grid item sm={2}>
+              <InputLabel>
+                hours {/*<Text tid='hours' />*/}
+              </InputLabel>
+            </Grid>
+            <Grid item sm={3} />
+            <Grid item sm={5}>
+              <FormControlLabel
+                style={{ paddingLeft: '36px' }}
+                control={
+                  <Checkbox
+                    checked={
+                      immediateRun[collectors[colKey][colIndex].name]
+                    }
+                    onChange={(event: any) => {
+                      handleToggleImmediateRun(event, colKey, colIndex);
+                    }}
+                    value='true'
+                  />
+                }
+                label={'Schedule for Immediate Run'}
+              />
+            </Grid>
+          </Grid>
+          {Object.keys(collector.attributes).map((attrKey: string, i: number) =>
+            (
+              <Grid item sm={12} key={i}>
+                {renderAttribute(collector, colKey, colIndex, attrKey)}
+              </Grid>
+            )
+          )}
+          </div>
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    );
+  }
+
   const renderCollectorsEditor = () => {
     if (collectorsPosted) {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -276,11 +380,7 @@ const EditSettingsCollectorConfig = (props: any) => {
       );
     }
     return (
-      <Container
-        maxWidth='lg'
-        component='div'
-        classes={{ root: classes.containerRoot }}
-      >
+      <Container maxWidth='lg' component='div' className='containerRoot'>
         <Backdrop className={classes.backdrop} open={backdropOpen}>
           <CircularProgress color='inherit' />
         </Backdrop>
@@ -288,7 +388,7 @@ const EditSettingsCollectorConfig = (props: any) => {
           <Grid container spacing={3}>
             <Grid item sm={12}>
               <Typography variant='h6' gutterBottom className={classes.title}>
-                Collector Schedules:
+                <Text tid={`admin.settings.${props.objType}.name`} />
               </Typography>
               <Typography color='textSecondary'>
                 (Note: give a number between 1 and 24)
@@ -297,56 +397,20 @@ const EditSettingsCollectorConfig = (props: any) => {
             <Grid item sm={12}>
               {Object.keys(collectors).map((colKey: string) =>
                 collectors[colKey].map(
-                  (collector: ICollectorConfig, colIndex: number) => (
-                    <div style={{ padding: '10px' }} key={colIndex}>
-                      <InputLabel>{collector.name}:</InputLabel>
-                      Run every
-                      <TextField
-                        required={true}
-                        type='number'
-                        id={`schedule_${collector.name}`}
-                        name={`schedule_${collector.name}`}
-                        value={collector.collectorSchedule}
-                        label={''}
-                        onChange={(event: any) =>
-                          handleCollectorScheduleChange(event, colKey, colIndex)
-                        }
-                        autoComplete='off'
-                        InputProps={{
-                          inputProps: { min: 1, max: 24 },
-                          disableUnderline: true,
-                        }}
-                        className={classes.textField}
-                        style={{
-                          paddingLeft: '8px',
-                          paddingRight: '8px',
-                        }}
-                      />
-                      hours
-                      <FormControlLabel
-                        style={{ paddingLeft: '36px' }}
-                        control={
-                          <Checkbox
-                            checked={
-                              immediateRun[collectors[colKey][colIndex].name]
-                            }
-                            onChange={(event: any) => {
-                              handleToggleImmediateRun(event, colKey, colIndex);
-                            }}
-                            value='true'
-                          />
-                        }
-                        label={'Schedule for Immediate Run'}
-                      />
-                    </div>
-                  )
+                  (collector: ICollectorConfig, colIndex: number) => {
+                    return (
+                      <div key={colIndex} className={classes.rootp}>
+                        {renderCollectorsDetails(colKey, colIndex, collector)}
+                      </div>
+                    );
+                  }                 
                 )
               )}
             </Grid>
           </Grid>
         </div>
         {collectors && (
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -387,7 +451,7 @@ const EditSettingsCollectorConfig = (props: any) => {
       {fetchedData ? (
         renderCollectorsEditor()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

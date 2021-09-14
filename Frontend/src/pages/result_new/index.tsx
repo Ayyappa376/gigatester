@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 // tslint:disable: all
 import CircularProgress from '@material-ui/core/CircularProgress';
 import Container from '@material-ui/core/Container';
-import { RouteComponentProps, Redirect } from 'react-router-dom';
+import { /* RouteComponentProps, */ Redirect } from 'react-router-dom';
 import { useActions } from '../../actions';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
@@ -72,7 +72,7 @@ function Result(props: any) {
     return (
       <Fragment>
         <CircularProgress className={classes.progress} />
-        <Typography variant='h4'>
+        <Typography variant='h5'>
           <Text tid='loadingResult' />
         </Typography>
       </Fragment>

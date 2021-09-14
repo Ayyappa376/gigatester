@@ -45,31 +45,12 @@ const useStyles = makeStyles((theme) => ({
   label: {
     margin: theme.spacing(15),
   },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#11BEEC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
   icon: {
     marginRight: '5px',
     fontSize: '52px',
   },
   buttons: {
     ...buttonStyle,
-  },
-  tableCell: {
-    padding: '12px',
   },
 }));
 
@@ -182,16 +163,16 @@ const AssessmentSelect = (props: any) => {
         <TeamSelectionDropDown />
         {questionnaire.questionnaireSelected.length > 0 ? (
           <Paper style={{ width: '100%' }}>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='assessments' />
                     </Typography>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='linkToAssessments' />
                     </Typography>
                   </TableCell>
@@ -199,17 +180,13 @@ const AssessmentSelect = (props: any) => {
               </TableHead>
               <TableBody>
                 {questionnaire.questionnaires.map((row: any, index: number) => (
-                  <TableRow key={row.questionnaireId}>
-                    <TableCell
-                      component='th'
-                      scope='row'
-                      className={classes.tableCell}
-                    >
-                      <Typography className={classes.tableBodyText}>
+                  <TableRow key={index}>
+                    <TableCell component='th' scope='row' className='tableCell'>
+                      <Typography className='tableBodyText'>
                         {row.displayName}
                       </Typography>
                     </TableCell>
-                    <TableCell align='center' className={classes.tableCell}>
+                    <TableCell align='center' className='tableCell'>
                       <Button
                         variant='outlined'
                         className={classes.buttons}

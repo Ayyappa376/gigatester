@@ -1,4 +1,4 @@
-import React, { useEffect, Fragment } from 'react';
+import React, { useEffect } from 'react';
 import ApexCharts from 'apexcharts';
 import Chart from 'react-apexcharts';
 import { Box, Typography, Container, Grid } from '@material-ui/core';
@@ -7,7 +7,7 @@ import AlertTitle from '@material-ui/lab/AlertTitle';
 import Loader from '../../loader';
 import { getFullDate } from '../../../utils/data';
 import { Text } from '../../../common/Language';
-import '../style.css';
+import '../../../css/metrics/style.css';
 
 export default function AreaChart(props) {
   const { level, totalCount, loader, failureMsg } = props;
@@ -176,7 +176,7 @@ export default function AreaChart(props) {
                   <Text tid='deploymentFrequency' />
                 </Grid>
                 <Grid item xs={3}>
-                  <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>
+                  <span className='doraSubTitles'>
                     <Text tid='level' />:
                   </span>{' '}
                   <span
@@ -187,25 +187,39 @@ export default function AreaChart(props) {
                         ? 'levelHighColor'
                         : level === 'Medium'
                         ? 'levelMediumColor'
-                        : 'levelLowColor'
+                        : level === 'low'
+                        ? 'levelLowColor'
+                        : 'levelNAColor'
                     }
                   >
-                    {props.level}
+                    {level}
                   </span>
                 </Grid>
                 <Grid item xs={4}>
-                  <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>
+                  <span className='doraSubTitles'>
                     <Text tid='totalCount' />
-                  </span>{' '}
+                   </span>{' '}
                   <span className='countText'>
-                    {totalCount && totalCount.toFixed()}
+                    {totalCount && totalCount.toFixed(2)}
+                  </span>{' '}
+                  <span  className='countText'>
+                    <Text tid={level === 'Elite'
+                        ? 'levelPerDay'
+                        : level === 'High'
+                        ? 'levelPerWeek'
+                        : level === 'Medium'
+                        ? 'levelPerMonth'
+                        : level === 'low'
+                        ? 'levelPerMonth'
+                        : 'levelPerDay'
+                    }/>
                   </span>
                 </Grid>
               </Grid>
             </Box>
           </Typography>
           {loader ? (
-            <Container className='loader'>
+            <Container className='loaderStyle'>
               <Loader />
             </Container>
           ) : failureMsg ? (

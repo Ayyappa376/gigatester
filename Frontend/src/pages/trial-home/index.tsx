@@ -18,6 +18,7 @@ import { IRootState } from '../../reducers';
 import * as constantValues from '../../common/constantValues';
 import { Loader } from '../../components';
 import { Text } from '../../common/Language';
+import '../../css/assessments/style.css';
 
 const useStyles = makeStyles({
   root: {
@@ -36,13 +37,6 @@ const useStyles = makeStyles({
     minHeight: '30vh',
     textAlign: 'center',
     padding: '30px',
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
   },
 });
 
@@ -145,7 +139,7 @@ const TrialHome = (props: any) => {
           root: classes.root,
         }}
       >
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       </Container>
@@ -160,7 +154,7 @@ const TrialHome = (props: any) => {
           root: classes.root,
         }}
       >
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       </Container>

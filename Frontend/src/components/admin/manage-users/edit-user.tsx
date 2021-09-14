@@ -25,6 +25,7 @@ import { MANAGE_USERS } from '../../../pages/admin';
 import { ModalComponent } from '../../modal';
 import { buttonStyle } from '../../../common/common';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -39,45 +40,31 @@ const MenuProps = {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
   },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
     marginRight: '20px',
   },
   deleteButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
     marginLeft: '20px',
   },
   makeAdminButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
     marginLeft: '20px',
-  },
-  grid: {
-    marginTop: theme.spacing(2),
-  },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
   },
   formControl: {
     minWidth: '100%',
@@ -89,13 +76,6 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  numberInput: { marginTop: '-14px' },
 }));
 
 const EditUser = (props: any) => {
@@ -307,12 +287,12 @@ const EditUser = (props: any) => {
             onChange={handleChangeValue}
             fullWidth
             autoComplete='off'
-            className={classes.textField}
+            className='textFieldStyle'
           />
         );
       case 'number':
         return (
-          <div className={classes.numberInput}>
+          <div className='numberInput'>
             <TextField
               required={element.Mandatory}
               type='number'
@@ -324,7 +304,7 @@ const EditUser = (props: any) => {
               fullWidth
               autoComplete='off'
               InputProps={{ disableUnderline: true }}
-              className={classes.textField}
+              className='textFieldStyle'
             />
           </div>
         );
@@ -412,7 +392,7 @@ const EditUser = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -430,7 +410,7 @@ const EditUser = (props: any) => {
       return (
         <Fragment>
           <Success message={<Text tid='userProfileDeletedSuccessfully' />} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -447,7 +427,7 @@ const EditUser = (props: any) => {
 
     return (
       <Fragment>
-        <Grid container spacing={3} className={classes.grid}>
+        <Grid container spacing={3}>
           {Object.keys(userState!.config).map((el) => {
             return (
               <Grid key={el} item xs={12}>
@@ -456,7 +436,7 @@ const EditUser = (props: any) => {
             );
           })}
         </Grid>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'
@@ -533,7 +513,7 @@ const EditUser = (props: any) => {
       {userDataFetched ? (
         renderForm()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

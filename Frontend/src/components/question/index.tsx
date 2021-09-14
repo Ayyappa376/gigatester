@@ -678,7 +678,7 @@ function QuestionRender(props: IQuestionProps) {
     return (
       <Fragment>
         <CircularProgress className={classes.progress} />
-        <Typography variant='h4'>
+        <Typography variant='h5'>
           <Text tid='loadingQuestion' />
         </Typography>
       </Fragment>
@@ -759,12 +759,12 @@ function QuestionRender(props: IQuestionProps) {
 
   useEffect(() => {
     if (timerExpiry) {
-      const questionData = assesMentQuestion.data;
-      const { id } = questionData!;
-      const defaultSelectedOption:
-        | ISelectedOption
-        | undefined = getDefaultSelectedOption(id);
-      const hasSelectionChanged = getHasSelectionChanged(defaultSelectedOption);
+      // const questionData = assesMentQuestion.data;
+      // const { id } = questionData!;
+      // const defaultSelectedOption:
+      //   | ISelectedOption
+      //   | undefined = getDefaultSelectedOption(id);
+      // const hasSelectionChanged = getHasSelectionChanged(defaultSelectedOption);
       const resultUrl = `/result/${assesmentId}`;
       setNextUrl(resultUrl);
       const submitSuccess = handleSubmit();

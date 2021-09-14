@@ -1,6 +1,6 @@
-import React, { useState, Fragment } from 'react';
+import React, { Fragment } from 'react';
 import DatetimeRangePicker from 'react-datetime-range-picker';
-import './calendar.css';
+import '../../../../css/metrics/calendar.css';
 
 export default function Calendar(props) {
   const onChangeDateRange = (dateRange) => {

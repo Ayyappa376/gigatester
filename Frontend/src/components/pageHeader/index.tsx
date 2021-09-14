@@ -123,6 +123,11 @@ const dashboardMenu = [
   { link: 'questionwiseMetrics', name: 'questionWiseMetrics' },
 ];
 
+const trendsMenu = [
+  { link: 'assessmentWise', name: 'assessmentWise' },
+  { link: 'teamWise', name: 'teamWise' },
+];
+
 const PageHeader = (props: any) => {
   const classes = useStyles();
   const userStatus = useSelector((state: IRootState) => {
@@ -147,6 +152,7 @@ const PageHeader = (props: any) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [anchorMetricsEl, setAnchorMetricsEl] = useState(null);
   const [anchorDashboardEl, setAnchorDashboardEl] = useState(null);
+  const [anchorTrendsEl, setAnchorTrendsEl] = useState(null);
   const [openModalLogout, setOpenModalLogout] = useState(false);
   const [openModalLeavePage, setOpenModalLeavePage] = useState(false);
   const [focusURL, setFocusURL] = useState('');
@@ -156,8 +162,6 @@ const PageHeader = (props: any) => {
   const [pageRedirectState, setPageRedirectState] = useState<PageRedirectState>(
     { type: '' }
   );
-
-  let logoutMsg = <Text tid='wantToLogout' />;
 
   let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
@@ -251,12 +255,26 @@ const PageHeader = (props: any) => {
     props.history.push('/admin/dashboard');
   }
 
+  function handleTrendsMenuClick(event: any) {
+    setAnchorTrendsEl(event.currentTarget);
+    setAdminPageState(false);
+    props.history.push('/trends');
+  }
+
   const handleDashboardMenuClose = () => {
     setAnchorDashboardEl(null);
   };
 
   const handleDashboardMenuOptionClick = () => {
     handleDashboardMenuClose();
+  };
+
+  const handleTrendsMenuClose = () => {
+    setAnchorTrendsEl(null);
+  };
+
+  const handleTrendsMenuOptionClick = () => {
+    handleTrendsMenuClose();
   };
 
   const handleAdminButtonClick = () => {
@@ -278,6 +296,12 @@ const PageHeader = (props: any) => {
   const leaveDashboardMenu = () => {
     setTimeout(() => {
       setAnchorDashboardEl(null);
+    }, timeoutLength);
+  };
+
+  const leaveTrendsMenu = () => {
+    setTimeout(() => {
+      setAnchorTrendsEl(null);
     }, timeoutLength);
   };
 
@@ -509,6 +533,86 @@ const PageHeader = (props: any) => {
                   spy={true}
                   smooth={true}
                   onClick={handleDashboardMenuOptionClick}
+                >
+                  {<Text tid={menuList.name} />}
+                </Link>
+              </MenuItem>
+            );
+          })}
+        </Menu>
+      );
+    }
+    return;
+  };
+
+  const renderTrendsPage = () => {
+    if (!userStatus.roles) {
+      return;
+    }
+    if (
+      userStatus.roles!.indexOf('Admin') !== -1 ||
+      userStatus.roles!.indexOf('Manager') !== -1
+    ) {
+      if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
+        return (
+          <div className='header-item'>
+            <Tooltip
+              title={
+                <Typography>
+                  <Text tid='notAvailableDuringThisAssessment' />
+                </Typography>
+              }
+            >
+              <Typography className={classes.headerItemDisabled}>
+                <Text tid='trends' />
+              </Typography>
+            </Tooltip>
+          </div>
+        );
+      }
+      return (
+        <div className='header-item'>
+          <Typography
+            onClick={handleTrendsMenuClick}
+            className={classes.headerItem}
+          >
+            <Text tid='trends' />
+          </Typography>
+        </div>
+      );
+    }
+    return;
+  };
+
+  const renderTrendsMenuItems = () => {
+    if (!userStatus.roles) {
+      return;
+    }
+    if (
+      userStatus.roles!.indexOf('Admin') !== -1 ||
+      userStatus.roles!.indexOf('Manager') !== -1
+    ) {
+      return (
+        <Menu
+          id='menu-list-grow'
+          anchorEl={anchorTrendsEl}
+          keepMounted
+          open={Boolean(anchorTrendsEl)}
+          onClose={handleTrendsMenuClose}
+          MenuListProps={{
+            onMouseLeave: leaveTrendsMenu,
+          }}
+          className={classes.menu}
+        >
+          {trendsMenu.map((menuList: any, index: number) => {
+            return (
+              <MenuItem className={classes.menuitem} key={index}>
+                <Link
+                  activeClass='active'
+                  to={menuList.link}
+                  spy={true}
+                  smooth={true}
+                  onClick={handleTrendsMenuOptionClick}
                 >
                   {<Text tid={menuList.name} />}
                 </Link>
@@ -760,6 +864,8 @@ const PageHeader = (props: any) => {
               {renderMetricsMenuItems()}
               {renderDashboardPage()}
               {renderDashboardMenuItems()}
+              {renderTrendsPage()}
+              {renderTrendsMenuItems()}
               {renderViewAssessment()}
               {renderMenuItems()}
               <div className='header-item last-item'>{renderUserStatus()}</div>

@@ -5,6 +5,7 @@ import {
   Grid,
   Paper,
   makeStyles,
+  MuiThemeProvider,
   Typography,
   Link,
   Tooltip,
@@ -32,7 +33,7 @@ import { Loader } from '../..';
 import { HorizontalBarChart } from './questions-chart/horizontal_bar_graph';
 import PieChartEvent from './pie-chart/pieChartEventTable';
 import CategoryBarChartEvent from './category-bar-chart/categoryBarChartEventTable';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
 import QuestionChartEvent from './questions-chart/questionChartEventTable';
 import Scroll from 'react-scroll';
 import CSVicon from '../../../logo/iconcsv.png';
@@ -45,6 +46,7 @@ import { processResultsTableData } from './results-table/processResultsTableData
 import { processQuestionReportData } from './questions-chart/processQuestionReportData';
 import { HtmlTooltip } from '../../common/htmlTooltip';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const scroll = Scroll.animateScroll;
 
@@ -59,23 +61,10 @@ export interface IQuestionIdentifier {
 }
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-  },
-  toolbar: {
-    paddingRight: 24, // keep right padding when drawer closed
-  },
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(4),
     position: 'relative',
-    top: '100px',
-  },
-  container2: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(4),
-    position: 'relative',
-    top: '10px',
   },
   paper: {
     padding: theme.spacing(2),
@@ -100,18 +89,11 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '80%',
   },
   questionFormControl: {
-    maxWidth: '900px',
+    maxWidth: '50%',
   },
   title: {
     paddingBottom: '20px',
     display: 'flex',
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
   },
   messagePage: {
     marginTop: '20%',
@@ -121,12 +103,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
   },
   colorReviewBox: {
-    minWidth: '10px',
-    maxWidth: '10px',
-    minHeight: '10px',
-    maxHeight: '10px',
-    marginRight: '5px',
-    marginTop: '5px',
+    width: '10px',
+    height: '10px',
+    margin: '6px',
   },
   backButton: {
     position: 'relative',
@@ -139,14 +118,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     alignItems: 'center',
   },
-  infoIcon: {
-    margin: 'auto',
+  infoIconStyle: {
+    margin: '3px 6px',
     float: 'right',
     cursor: 'pointer',
-  },
-  topScrollContainer: {
-    paddingTop: '110px !important',
-    marginTop: '-85px !important',
   },
 }));
 
@@ -172,15 +147,13 @@ const Dashboard = (props: any) => {
     assessmentReportsFetched,
     setAssessmentReportsFetched,
   ] = React.useState(false);
-  const [assessmentReports, setAssessmentReports] = React.useState<any | null>(
-    null
-  );
+  const [assessmentReports, setAssessmentReports] = useState<any | null>(null);
   const [assessmentTypeAndVersion, setAssessmentTypeAndVersion] = useState('');
   const [questionnaires, setQuestionnaires] = useState<any>(null);
   const userDetails = useSelector((state: IRootState) => {
     return state.user;
   });
-  const [teamList, setTeamList] = React.useState<Object[]>([]);
+  const [teamList, setTeamList] = useState<Object[]>([]);
   const [mappedTeams, setMappedTeams] = useState<string[]>([]);
   const [focusTeam, setFocusTeam] = useState('all');
   const [focusQuestion, setFocusQuestion] = useState<IQuestionIdentifier>({
@@ -259,7 +232,8 @@ const Dashboard = (props: any) => {
 
   const getQuestionnaires = () => {
     Http.get({
-      url: `/api/v2/assignment?teamId=${userDetails.team}&dashboard=true`,
+      //      url: `/api/v2/assignment?teamId=${userDetails.team}&dashboard=true`,
+      url: `/api/v2/assignment?dashboard=true`,
       state: stateVariable,
     })
       .then((response: any) => {
@@ -493,7 +467,7 @@ const Dashboard = (props: any) => {
       <Grid
         container
         spacing={3}
-        className={classes.topScrollContainer}
+        className='topScrollContainerAsssessment'
         id='overallMaturity'
       >
         <Grid item xs={12} sm={8} md={8} lg={9}>
@@ -501,17 +475,18 @@ const Dashboard = (props: any) => {
             <div className={classes.title}>
               <Title>
                 <Text tid='overallMaturity' />
-                <Tooltip
-                  title={
-                    <Typography>
-                      <Text tid='interactWithCharts' />
-                    </Typography>
-                  }
-                >
-                  <div className={classes.infoIcon}>
-                    <InfoIcon style={{ fontSize: 23 }} />
-                  </div>
-                </Tooltip>
+                <MuiThemeProvider theme={tooltipTheme}>
+                  <Tooltip
+                    title={
+                      <Typography className='tooltipTitleStyle'>
+                        <Text tid='interactWithChart' />
+                      </Typography>
+                    }
+                    placement='right'
+                  >
+                    <InfoIcon className={classes.infoIconStyle} />
+                  </Tooltip>
+                </MuiThemeProvider>
               </Title>
             </div>
             <div>
@@ -548,26 +523,29 @@ const Dashboard = (props: any) => {
               color='textSecondary'
               className={classes.depositContext}
             >
-              on{' '}
+              as on{' '}
               {`${date.getDate()} ${
                 months[date.getMonth()]
               }, ${date.getFullYear()}`}
             </Typography>
-            <Tooltip
-              title={
-                <Typography>
-                  <Text tid='downloadReport' />
-                </Typography>
-              }
-            >
-              <div>
-                <img
-                  src={CSVicon}
-                  style={{ cursor: 'pointer' }}
-                  onClick={teamReport}
-                />
-              </div>
-            </Tooltip>
+            <MuiThemeProvider theme={tooltipTheme}>
+              <Tooltip
+                title={
+                  <Typography className='tooltipTitleStyle'>
+                    <Text tid='downloadReport' />
+                  </Typography>
+                }
+              >
+                <div>
+                  <img
+                    src={CSVicon}
+                    style={{ cursor: 'pointer' }}
+                    onClick={teamReport}
+                  />
+                </div>
+              </Tooltip>
+            </MuiThemeProvider>
+
             <br />
             <div
               style={{
@@ -598,7 +576,7 @@ const Dashboard = (props: any) => {
       <Grid
         container
         spacing={3}
-        className={classes.topScrollContainer}
+        className='topScrollContainerAsssessment'
         id='categorywiseMaturity'
       >
         <Grid item xs={12}>
@@ -606,6 +584,18 @@ const Dashboard = (props: any) => {
             <div className={classes.title}>
               <Title>
                 <Text tid='categoryWiseMaturity' />
+                <MuiThemeProvider theme={tooltipTheme}>
+                  <Tooltip
+                    title={
+                      <Typography className='tooltipTitleStyle'>
+                        <Text tid='interactWithChart' />
+                      </Typography>
+                    }
+                    placement='right'
+                  >
+                    <InfoIcon className={classes.infoIconStyle} />
+                  </Tooltip>
+                </MuiThemeProvider>
               </Title>
             </div>
             <BarChart
@@ -635,7 +625,7 @@ const Dashboard = (props: any) => {
     return (
       <Grid container spacing={3}>
         <Grid item xs={12}>
-          <Paper variant='outlined' square>
+          <Paper variant='outlined' square style={{ maxWidth: '50%' }}>
             {answerArray.map((el: string, i: number) => {
               return (
                 <Fragment key={i}>
@@ -667,7 +657,7 @@ const Dashboard = (props: any) => {
       <Grid
         container
         spacing={3}
-        className={classes.topScrollContainer}
+        className='topScrollContainerAsssessment'
         id='performanceMetrics'
       >
         <Grid item xs={12}>
@@ -683,22 +673,20 @@ const Dashboard = (props: any) => {
                       <Fragment>
                         <Typography>
                           <strong>
-                            <Text tid='bestPerformingAreas' />
+                            <Text tid='bestPerformingAreas' /> &nbsp;
                           </strong>
                           {bestPerformingTooltipText}
                         </Typography>
                         <Typography>
                           <strong>
-                            <Text tid='areasForImprovement' />
+                            <Text tid='areasForImprovement' /> &nbsp;
                           </strong>
                           {areasNeedingFocusTooltipText}
                         </Typography>
                       </Fragment>
                     }
                   >
-                    <div>
-                      <InfoIcon style={{ fontSize: 23, margin: '3px 3px' }} />
-                    </div>
+                    <InfoIcon className={classes.infoIconStyle} />
                   </HtmlTooltip>
                 </div>
               </Grid>
@@ -719,7 +707,7 @@ const Dashboard = (props: any) => {
       <Grid
         container
         spacing={3}
-        className={classes.topScrollContainer}
+        className='topScrollContainerAsssessment'
         id='questionwiseMetrics'
       >
         <Grid item xs={12}>
@@ -727,6 +715,18 @@ const Dashboard = (props: any) => {
             <div className={classes.title}>
               <Title>
                 <Text tid='questionWiseMetrics' />
+                <MuiThemeProvider theme={tooltipTheme}>
+                  <Tooltip
+                    title={
+                      <Typography className='tooltipTitleStyle'>
+                        <Text tid='interactWithChart' />
+                      </Typography>
+                    }
+                    placement='right'
+                  >
+                    <InfoIcon className={classes.infoIconStyle} />
+                  </Tooltip>
+                </MuiThemeProvider>
               </Title>
             </div>
             <FormControl className={classes.questionFormControl}>
@@ -846,13 +846,7 @@ const Dashboard = (props: any) => {
 
   const renderLoader = () => {
     return (
-      <Container
-        maxWidth='md'
-        component='div'
-        classes={{
-          root: classes.loader,
-        }}
-      >
+      <Container maxWidth='md' component='div' className='loaderStyle'>
         <Loader />
       </Container>
     );
@@ -974,7 +968,7 @@ const Dashboard = (props: any) => {
                         key={`${opt.questionnaireId}+${opt.version}`}
                         value={`${opt.questionnaireId}+${opt.version}`}
                       >
-                        {`${opt.displayName} v${opt.version}`}
+                        {`${opt.displayName} - v${opt.version}`}
                       </MenuItem>
                     );
                   })}
@@ -1017,10 +1011,7 @@ const Dashboard = (props: any) => {
   return (
     // tslinassessmentReports.teamt:disable-next-line: jsx-wrap-multiline
     <Fragment>
-      <Container
-        maxWidth='md'
-        className={props.source === 'admin' ? '' : classes.container}
-      >
+      <Container maxWidth='md' className={classes.container} style={{ top: props.sideMenu ? '0px' : '100px' }}>
         {questionnairesFetch && questionnaires && questionnaires.length <= 0
           ? renderUnmappedAssessmentDashboard()
           : assessmentReportsFetched && assessmentReports

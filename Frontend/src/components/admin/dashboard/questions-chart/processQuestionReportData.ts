@@ -14,8 +14,8 @@ export const processQuestionReportData =
       let answerArray = Object.keys(questionList[question.id].answers);
       if (questionList[question.id] && !questionList[question.id]!.randomize) {
         answerArray = answerArray.sort((a, b) => {
-          return questionList[question.id].answers[a].weightage >
-            questionList[question.id].answers[b].weightage ?
+          return questionList[question.id].answers[a].weightageFactor >
+            questionList[question.id].answers[b].weightageFactor ?
             1 : -1
         })
       }
@@ -52,16 +52,12 @@ export const processQuestionReportData =
               // In assessmentDetails structure, questionIds are questionId and version concatenated ex: ques8010001_1
               const ques: string | undefined = Object.keys(assessment.assessmentDetails).find((q, i) => q.startsWith(question.id));
               if(ques) {
-                const answer = assessment.assessmentDetails[ques].answers[0];
-                graphData.datasets[0].data[answerArray.indexOf(answer)] =
-                  graphData.datasets[0].data[answerArray.indexOf(answer)] + 1;
+                if (assessment.assessmentDetails[ques].answers[0] != '@N/A') {
+                  assessment.assessmentDetails[ques].answers.forEach((answer: string) => {
+                    graphData.datasets[0].data[answerArray.indexOf(answer)] += 1;
+                  })
+                }
               }
-//              const questionIdVersion = `${question.id}_${question.version}`
-//              if (assessment.assessmentDetails[questionIdVersion]) {
-//                const answer = assessment.assessmentDetails[questionIdVersion].answers[0];
-//                graphData.datasets[0].data[answerArray.indexOf(answer)] =
-//                  graphData.datasets[0].data[answerArray.indexOf(answer)] + 1;
-//              }
             }
           })
         }

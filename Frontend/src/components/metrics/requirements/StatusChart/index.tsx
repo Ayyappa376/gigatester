@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { getFullDate } from '../../../../utils/data';
 import { IRootState } from '../../../../reducers';
 import { IReqStatusDataItem } from '../../../../model/metrics/requirementsData';
 import { Http } from '../../../../utils';
-import {
-  ALL_PRIORITIES,
-  ALL_TEAMS,
-  ALL_TYPES,
-} from '../../../../pages/metrics/metric-select/metricsList';
+import { ALL } from '../../../../pages/metrics/metric-select';
 import SplineAreaChart from './SplineAreaChart';
 
-export default function PullRequestChart(props: any) {
+export default function ReqStatusChart(props: any) {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
@@ -20,7 +16,11 @@ export default function PullRequestChart(props: any) {
     IReqStatusDataItem[]
   >([]);
   const [failureMsg, setFailureMsg] = useState(false);
+  // const [fromDate, setFromDate] = useState(0);
+  // const [toDate, setToDate] = useState(0);
   const [loader, setLoader] = useState(true);
+  const [userMsg, setUserMsg] = useState('Loading...');
+  const history = useHistory();
 
   let date = new Date();
   let yesterday = new Date(date.getTime() - 1 * 24 * 60 * 60 * 1000);
@@ -42,92 +42,83 @@ export default function PullRequestChart(props: any) {
 
   useEffect(() => {
     updateData(props.timeline);
-    fetchData();
+    fetchData();    
   }, [props.customDate, props.timeline]);
-
+  
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
+    // setFromDate(props.selectedDateRange.fromDate);
+    // setToDate(props.selectedDateRange.toDate);
+    setRequirementStatusData([]);
+    setUserMsg('Loading...');
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange]);
+  }, [props.focusTeam, props.focusService, props.focusSubService, props.focusServiceType, props.itemType, props.itemPriority, props.selectedDateRange]);
 
   const fetchData = () => {
-    let {
-      timeline,
-      focusTeam,
-      itemType,
-      itemPriority,
-      selectedDateRange,
-    } = props;
-    let url: string = '';
-    let itemFilterCondition =
-      itemType[0] !== ALL_TYPES &&
-      itemPriority[0] === ALL_PRIORITIES &&
-      timeline !== 'one_day'
-        ? `/api/metrics/reqs/status?type=${itemType.toString()}&fromDate=${
-            selectedDateRange.fromDate
-          }&toDate=${selectedDateRange.toDate}`
-        : itemType[0] !== ALL_TYPES &&
-          itemPriority[0] !== ALL_PRIORITIES &&
-          timeline !== 'one_day'
-        ? `/api/metrics/reqs/status?type=${itemType.toString()}&priority=${itemPriority.toString()}&fromDate=${
-            selectedDateRange.fromDate
-          }&toDate=${selectedDateRange.toDate}`
-        : itemType[0] === ALL_TYPES &&
-          itemPriority[0] !== ALL_PRIORITIES &&
-          timeline !== 'one_day'
-        ? `/api/metrics/reqs/status?priority=${itemPriority.toString()}&fromDate=${
-            selectedDateRange.fromDate
-          }&toDate=${selectedDateRange.toDate}`
-        : `/api/metrics/reqs/status?type=${itemType.toString()}&priority=${itemPriority.toString()}`;
+    let { timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, itemType, itemPriority, selectedDateRange } = props;
 
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day' &&
-        itemType[0] === ALL_TYPES &&
-        itemPriority[0] === ALL_PRIORITIES
-          ? `/api/metrics/reqs/status`
-          : itemType[0] === ALL_TYPES &&
-            itemPriority[0] === ALL_PRIORITIES &&
-            timeline !== 'one_day'
-          ? `/api/metrics/reqs/status?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`
-          : itemFilterCondition;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/reqs/status?teamId=${focusTeam.toString()}`
-          : itemType[0] === ALL_TYPES &&
-            itemPriority[0] === ALL_PRIORITIES &&
-            timeline !== 'one_day'
-          ? `/api/metrics/reqs/status?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`
-          : itemFilterCondition;
-    }
+      let url: string = '/api/metrics/reqs/status';
+      let joiner = '?';
+      if (focusTeam[0] !== ALL) {
+        url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+        joiner = '&';
+      }
+      if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+        url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+        joiner = '&';
+      } else if (focusService[0] !== ALL) {
+        url = `${url}${joiner}service=${focusService.join()}`;
+        joiner = '&';
+      } else if (focusSubService[0] !== ALL) {
+        url = `${url}${joiner}service=${focusSubService.join()}`;
+        joiner = '&';
+      }
+      if (focusServiceType[0] !== ALL) {
+        url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+        joiner = '&';
+      }
+      if (itemType[0] !== ALL) {
+        url = `${url}${joiner}type=${itemType.toString()}`;
+        joiner = '&';
+      }
+      if (itemPriority[0] !== ALL) {
+        url = `${url}${joiner}priority=${itemPriority.toString()}`;
+        joiner = '&';
+      }
+      if (timeline !== 'one_day') {
+        url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+        joiner = '&';
+      }
 
-    Http.get({
-      url,
-      state: stateVariable,
-    })
-      .then((response: any) => {
-        setRequirementStatusData(
-          response.sort((a: any, b: any) => {
-            return a.timestamp <= b.timestamp ? -1 : 1;
-          })
-        );
-        setLoader(false);
+      Http.get({
+        url,
+        state: stateVariable,
       })
-      .catch((error) => {
-        setLoader(false);
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          return <Redirect to='/relogin' />;
-        } else {
+        .then((response: any) => {
+          if (response) {
+            setTimeout(() => {
+              setUserMsg('');
+            }, 10000);
+            setRequirementStatusData(
+              response.sort((a: any, b: any) => {
+                return a.timestamp - b.timestamp;
+              })
+            );
+            setLoader(false);
+          } else {
+            setLoader(false);
+            setFailureMsg(true);
+          }
+        })
+        .catch((error) => {
+          setLoader(false);
           setFailureMsg(true);
-        }
+          const perror = JSON.stringify(error);
+          const object = JSON.parse(perror);
+          if (object.code === 401) {
+            history.push('/relogin')
+          }
       });
+    // }
   };
 
   const getDateRange = (dateRange: any) => {
@@ -217,7 +208,7 @@ export default function PullRequestChart(props: any) {
           data: countInProgress,
         },
         {
-          name: 'New',
+          name: 'Open',
           data: countNew,
         },
       ],
@@ -234,9 +225,9 @@ export default function PullRequestChart(props: any) {
         },
         stroke: {
           curve: 'smooth',
-          width: 1,
+          width: 2,
         },
-        colors: ['#00ad6b', '#000080', '#E8E002'],
+        colors: ['#00ad6b', '#FFC300', '#808080'],
         legend: {
           position: 'top',
           horizontalAlign: 'right',
@@ -247,13 +238,32 @@ export default function PullRequestChart(props: any) {
             enabled: false,
           },
         },
-        tooltip: {
-          x: {
-            format: 'dd/MM/yy HH:mm',
+        yaxis: {
+          title: {
+            text: 'Counts',
           },
         },
-        fill: {
-          type: 'solid',
+        tooltip: {
+          x: {
+            format: 'dd MMM yyyy',
+          },
+          y: {
+            formatter: function (value: number) {
+              return value;
+            },
+          },
+        },
+        noData: {
+          text: userMsg,
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#000000',
+            fontSize: '12.5px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+          },
         },
       },
     };

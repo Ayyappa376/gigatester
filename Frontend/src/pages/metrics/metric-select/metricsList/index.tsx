@@ -35,18 +35,14 @@ import {
   QualityTable,
 } from '../../../../components/metrics/quality';
 import { Http } from '../../../../utils';
-import { IRepoPullRaiserList } from '../../../../model/metrics/repositoryData';
-import { IReqDataItem } from '../../../../model/metrics/requirementsData';
+// import { IRepoDataItemLists } from '../../../../model/metrics/repositoryData';
+// import { IReqDataItemLists } from '../../../../model/metrics/requirementsData';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CheckBoxOutlineBlankIcon from '@material-ui/icons/CheckBoxOutlineBlank';
 import CheckBoxIcon from '@material-ui/icons/CheckBox';
+import { ALL } from '../index';
 import { Text } from '../../../../common/Language';
-import '../style.css';
-
-export const ALL_TEAMS = 'All';
-export const ALL_NAMES = 'All';
-export const ALL_TYPES = 'All';
-export const ALL_PRIORITIES = 'All';
+import '../../../../css/metrics/style.css';
 
 const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
 const checkedIcon = <CheckBoxIcon fontSize='small' />;
@@ -57,6 +53,30 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(2),
     position: 'relative',
     top: '70px',
+  },
+  container_1_Style: {
+    border: '1px solid #c1c1c1',
+    marginTop: '40px',
+    paddingBottom: '10px',
+    borderRadius: '5px',
+    boxShadow: '0px 0px 2px #a2a2a2',
+    backgroundColor: '#f1f4ff',
+  },
+  container_2_Style: {
+    border: '1px solid #c1c1c1',
+    marginTop: '40px',
+    paddingBottom: '10px',
+    borderRadius: '5px',
+    boxShadow: '0px 0px 2px #a2a2a2',
+    backgroundColor: '#e0e0e0',
+  },
+  container_3_Style: {
+    border: '1px solid #c1c1c1',
+    marginTop: '20px',
+    paddingBottom: '10px',
+    borderRadius: '5px',
+    boxShadow: '0px 0px 2px #a2a2a2',
+    backgroundColor: '#e0e0e0',
   },
   paper: {
     padding: theme.spacing(2),
@@ -77,9 +97,15 @@ const useStyles = makeStyles((theme) => ({
     color: '#525252',
     fontSize: '14px',
   },
-  topScrollContainer: {
-    paddingTop: '100px !important',
-    marginTop: '-85px !important',
+  loadingErrorLabel: {
+    color: '#f44336',
+    paddingTop: '5px',
+  },
+  margin_top_25: {
+    marginTop: '25px',
+  },
+  margin_top_15: {
+    marginTop: '15px',
   },
 }));
 
@@ -97,9 +123,9 @@ let todayEnd = new Date(
 
 const MetricsList = (props: any) => {
   const classes = useStyles();
-  const [committerName, setCommitterName] = useState<string[]>([ALL_NAMES]);
-  const [itemType, setItemType] = useState<string[]>([ALL_TYPES]);
-  const [itemPriority, setItemPriority] = useState<string[]>([ALL_PRIORITIES]);
+  const [committerName, setCommitterName] = useState<string[]>([ALL]);
+  const [itemType, setItemType] = useState<string[]>([ALL]);
+  const [itemPriority, setItemPriority] = useState<string[]>([ALL]);
   const [buildStatus, setBuildStatus] = useState({ status: 0 }); // using bitwise operator for 3 bits, all set to 1s.
   const [buildsDateRange, setBuildsDateRange] = useState({});
   const [reposDateRange, setReposDateRange] = useState({
@@ -111,7 +137,6 @@ const MetricsList = (props: any) => {
     toDate: 0,
   });
   const [qualityDateRange, setqualityDateRange] = useState({});
-  const [reqItemData, setReqItemData] = useState<IReqDataItem[]>([]);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
@@ -136,28 +161,25 @@ const MetricsList = (props: any) => {
   const [reposTimeline, setReposTimeline] = useState('one_day');
   const [requirementsTimeline, setRequirementsTimeline] = useState('one_day');
   const [qualityTimeline, setQualityTimeline] = useState('one_day');
-  const [committersList, setCommittersList] = useState<IRepoPullRaiserList[]>(
-    []
-  );
-  const [committersListFailureMsg, setCommittersListFailureMsg] = useState(
-    false
-  );
-  const [itemTypeList, setItemTypeList] = useState<{ type: string }[]>([]);
-  const [itemPriorityList, setItemPriorityList] = useState<
-    { priority: string }[]
-  >([]);
+  const [committersList, setCommittersList] = useState<string[]>([]);
+  const [committersListFailureMsg, setCommittersListFailureMsg] = useState(false);
+  //  const [reqItemData, setReqItemData] = useState<IReqDataItem[]>([]);
+  const [itemTypesList, setItemTypesList] = useState<string[]>([]);
+  const [itemPrioritiesList, setItemPrioritiesList] = useState<string[]>([]);
   const [itemListFailureMsg, setItemListFailureMsg] = useState(false);
 
-  useEffect(() => {
-    getRequirementItemTypePriority();
-  }, [props.focusTeam, itemType, itemPriority, requirementsDateRange]);
+  // useEffect(() => {
+  //   //    getRequirementItemTypePriority();
+  // }, [props.focusTeam, itemType, itemPriority, requirementsDateRange]);
 
   useEffect(() => {
     getCommittersList();
-    window.scrollTo(0, 0);
+    getRequirementItemTypePriority();
+    window.scrollTo(0, props.verticalScroll);
+    //    window.scrollTo(0, 0);
   }, []);
 
-  useEffect(() => {
+  /*  useEffect(() => {
     let itemType = [];
     let itemPriority = [];
     if (reqItemData.length) {
@@ -174,16 +196,28 @@ const MetricsList = (props: any) => {
     }
     setItemTypeList(
       itemType.sort((a: any, b: any) => {
-        return a.type.toUpperCase() <= b.type.toUpperCase() ? -1 : 1;
+        if(! a.type) {
+          return -1;
+        }
+        if(! b.type) {
+          return 1;
+        }
+        return a.type.localeCompare(b.type);
       })
     );
     setItemPriorityList(
       itemPriority.sort((a: any, b: any) => {
-        return a.priority <= b.priority ? -1 : 1;
+        if(! a.priority) {
+          return -1;
+        }
+        if(! b.priority) {
+          return 1;
+        }
+        return a.priority - b.priority;
       })
     );
   }, [reqItemData]);
-
+*/
   const handleLegendClick = (seriesIndex: any) => {
     const temp = { ...buildStatus };
     if (seriesIndex === 0) {
@@ -195,7 +229,7 @@ const MetricsList = (props: any) => {
       temp.status = temp.status ^ 2;
     }
     if (seriesIndex === 2) {
-      //toggle the third bit for other builds status
+      //toggle the third bit for in-progress builds status
       temp.status = temp.status ^ 4;
     }
     setBuildStatus(temp);
@@ -210,11 +244,8 @@ const MetricsList = (props: any) => {
     })
       .then((response: any) => {
         setCommittersList(
-          response.sort((a: any, b: any) => {
-            return a.committerName.toUpperCase() <=
-              b.committerName.toUpperCase()
-              ? -1
-              : 1;
+          response.committerName.sort((a: string, b: string) => {
+            return a.localeCompare(b);
           })
         );
       })
@@ -229,8 +260,39 @@ const MetricsList = (props: any) => {
       });
   };
 
+  const getRequirementItemTypePriority = () => {
+    let url: string = '/api/metrics/reqs/itip';
+
+    Http.get({
+      url,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        //        setReqItemData(response);
+        setItemTypesList(
+          response.itemType.sort((a: string, b: string) => {
+            return a.localeCompare(b);
+          })
+        );
+        setItemPrioritiesList(
+          response.itemPriority.sort((a: string, b: string) => {
+            return a.localeCompare(b);
+          })
+        );
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          setItemListFailureMsg(true);
+        }
+      });
+  };
+
   const getCommitterName = (event: any, values: any) => {
-    let names = values.map((value: any) => {
+    /*    let names = values.map((value: any) => {
       return value.committerName;
     });
     if (names.length === 0) {
@@ -242,10 +304,20 @@ const MetricsList = (props: any) => {
     } else {
       setCommitterName(names);
     }
+  */
+    if (values.length === 0) {
+      values.push('All');
+      setCommitterName(values);
+    } else if (values[0] === 'All' && values.length > 1) {
+      values.shift();
+      setCommitterName(values);
+    } else {
+      setCommitterName(values);
+    }
   };
 
   const getItemType = (event: any, values: any) => {
-    let types = values.map((item: any) => {
+    /*    let types = values.map((item: any) => {
       return item.type;
     });
     if (types.length === 0) {
@@ -257,10 +329,20 @@ const MetricsList = (props: any) => {
     } else {
       setItemType(types);
     }
+  */
+    if (values.length === 0) {
+      values.push('All');
+      setItemType(values);
+    } else if (values[0] === 'All' && values.length > 1) {
+      values.shift();
+      setItemType(values);
+    } else {
+      setItemType(values);
+    }
   };
 
   const getItemPriority = (event: any, values: any) => {
-    let priority = values.map((item: any) => {
+    /*    let priority = values.map((item: any) => {
       return item.priority;
     });
     if (priority.length === 0) {
@@ -272,27 +354,16 @@ const MetricsList = (props: any) => {
     } else {
       setItemPriority(priority);
     }
-  };
-
-  const getRequirementItemTypePriority = () => {
-    let url: string = '/api/metrics/reqs/itip';
-
-    Http.get({
-      url,
-      state: stateVariable,
-    })
-      .then((response: any) => {
-        setReqItemData(response);
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          setItemListFailureMsg(true);
-        }
-      });
+*/
+    if (values.length === 0) {
+      values.push('All');
+      setItemPriority(values);
+    } else if (values[0] === 'All' && values.length > 1) {
+      values.shift();
+      setItemPriority(values);
+    } else {
+      setItemPriority(values);
+    }
   };
 
   const getBuildsCustomDates = (dateRange: any) => {
@@ -337,24 +408,13 @@ const MetricsList = (props: any) => {
 
   return (
     <Grid container spacing={1}>
-      <Grid
-        container
-        style={{
-          border: '1px solid #c1c1c1',
-          marginTop: '20px',
-          paddingBottom: '10px',
-          borderRadius: '5px',
-          boxShadow: '0px 0px 2px #a2a2a2',
-          backgroundColor: '#e0e0e0',
-        }}
-        spacing={2}
-      >
+      <Grid container className={classes.container_3_Style} spacing={2}>
         <Grid
           item
           xs={12}
           md={6}
           lg={6}
-          className={classes.topScrollContainer}
+          className='topScrollContainerMetrics'
           id='build'
         >
           <Typography variant='h6'>
@@ -362,7 +422,7 @@ const MetricsList = (props: any) => {
             <div className={classes.toolbar}>
               <BuildsTimeline
                 buildsTimeline={buildsTimeline}
-                buildsCustomDate={buildsCustomDate}
+                //                buildsCustomDate={buildsCustomDate}
                 updateBuildsData={(buildsTimeline: any) =>
                   updateBuildsData(buildsTimeline)
                 }
@@ -378,14 +438,19 @@ const MetricsList = (props: any) => {
           <Paper className={fixedHeightPaper}>
             <BuildChart
               focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
               getBuildsDateRange={(dateRange: any) =>
                 setBuildsDateRange(dateRange)
               }
-              timeline={buildsTimeline}
               customDate={buildsCustomDate}
               handleLegendClick={(seriesIndex: any) =>
                 handleLegendClick(seriesIndex)
               }
+              timeline={buildsTimeline}
               selectedDateRange={buildsDateRange}
             />
           </Paper>
@@ -393,8 +458,13 @@ const MetricsList = (props: any) => {
         <Grid item xs={12} md={7} lg={7}>
           <Paper className={fixedHeightPaper}>
             <BuildTable
-              buildStatus={buildStatus}
               focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
+              buildStatus={buildStatus}
               timeline={buildsTimeline}
               selectedDateRange={buildsDateRange}
             />
@@ -402,24 +472,13 @@ const MetricsList = (props: any) => {
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        style={{
-          border: '1px solid #c1c1c1',
-          marginTop: '40px',
-          paddingBottom: '10px',
-          borderRadius: '5px',
-          boxShadow: '0px 0px 2px #a2a2a2',
-          backgroundColor: '#f1f4ff',
-        }}
-        spacing={2}
-      >
+      <Grid container className={classes.container_1_Style} spacing={2}>
         <Grid
           item
           xs={12}
           md={6}
           lg={6}
-          className={classes.topScrollContainer}
+          className='topScrollContainerMetrics'
           id='repository'
         >
           <Typography variant='h6'>
@@ -427,7 +486,7 @@ const MetricsList = (props: any) => {
             <div className={classes.toolbar}>
               <ReposTimeline
                 reposTimeline={reposTimeline}
-                reposCustomDate={reposCustomDate}
+                //                reposCustomDate={reposCustomDate}
                 updateReposData={(reposTimeline: any) =>
                   updateReposData(reposTimeline)
                 }
@@ -438,19 +497,19 @@ const MetricsList = (props: any) => {
             </div>
           </Typography>
         </Grid>
-        <Grid item xs={12} md={2} lg={2} style={{ marginTop: '15px' }}>
+        <Grid item xs={12} md={2} lg={2} className={classes.margin_top_25}>
           <InputLabel className={classes.selectNameBox}>
             <Text tid='filterByCommitter' />
           </InputLabel>
         </Grid>
-        <Grid item xs={12} md={3} lg={3} style={{ marginTop: '5px' }}>
+        <Grid item xs={12} md={3} lg={3} className={classes.margin_top_15}>
           <Autocomplete
             multiple
-            id='checkboxes-tags-demo'
+            id='checkboxes-filterByCommitter'
             limitTags={1}
             options={committersList}
             disableCloseOnSelect
-            getOptionLabel={(option) => option.committerName}
+            getOptionLabel={(option) => option}
             onChange={getCommitterName}
             renderOption={(option, { selected }) => (
               <Fragment>
@@ -460,7 +519,7 @@ const MetricsList = (props: any) => {
                   style={{ marginRight: 8 }}
                   checked={selected}
                 />
-                {option.committerName}
+                {option}
               </Fragment>
             )}
             renderInput={(params) => (
@@ -472,8 +531,8 @@ const MetricsList = (props: any) => {
             )}
           />
           {committersListFailureMsg && (
-            <InputLabel style={{ color: '#f44336', paddingTop: '5px' }}>
-              <Text tid='errorInLoadingCommittersList' />
+            <InputLabel className={classes.loadingErrorLabel}>
+              <Text tid='errorInLoadingList' />
             </InputLabel>
           )}
         </Grid>
@@ -482,9 +541,14 @@ const MetricsList = (props: any) => {
           <Paper className={fixedHeightPaper} style={{ overflowX: 'hidden' }}>
             <PullRequestChart
               focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
+              committerName={committerName}
               customDate={reposCustomDate}
               timeline={reposTimeline}
-              committerName={committerName}
               getReposDateRange={(dateRange: any) =>
                 setReposDateRange(dateRange)
               }
@@ -494,8 +558,13 @@ const MetricsList = (props: any) => {
         <Grid item xs={12} md={3} lg={3}>
           <Paper className={fixedHeightPaper}>
             <DelayChart
-              committerName={committerName}
               focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
+              committerName={committerName}
               timeline={reposTimeline}
               selectedDateRange={reposDateRange}
             />
@@ -505,6 +574,11 @@ const MetricsList = (props: any) => {
           <Paper className={fixedHeightPaper}>
             <RepositoryTable
               focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
               committerName={committerName}
               timeline={reposTimeline}
               selectedDateRange={reposDateRange}
@@ -513,24 +587,13 @@ const MetricsList = (props: any) => {
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        style={{
-          border: '1px solid #c1c1c1',
-          marginTop: '40px',
-          paddingBottom: '10px',
-          borderRadius: '5px',
-          boxShadow: '0px 0px 2px #a2a2a2',
-          backgroundColor: '#e0e0e0',
-        }}
-        spacing={2}
-      >
+      <Grid container className={classes.container_2_Style} spacing={2}>
         <Grid
           item
           xs={12}
           md={6}
           lg={6}
-          className={classes.topScrollContainer}
+          className='topScrollContainerMetrics'
           id='requirements'
         >
           <Typography variant='h6'>
@@ -538,7 +601,7 @@ const MetricsList = (props: any) => {
             <div className={classes.toolbar}>
               <RequirementsTimeline
                 requirementsTimeline={requirementsTimeline}
-                requirementsCustomDate={requirementsCustomDate}
+                //                requirementsCustomDate={requirementsCustomDate}
                 updateRequirementsData={(requirementsTimeline: any) =>
                   updateRequirementsData(requirementsTimeline)
                 }
@@ -549,19 +612,19 @@ const MetricsList = (props: any) => {
             </div>
           </Typography>
         </Grid>
-        <Grid item xs={6} md={1} lg={1} style={{ marginTop: '15px' }}>
+        <Grid item xs={6} md={1} lg={1} className={classes.margin_top_25}>
           <InputLabel className={classes.selectNameBox}>
             <Text tid='itemType' />:
           </InputLabel>
         </Grid>
-        <Grid item xs={6} md={2} lg={2} style={{ marginTop: '5px' }}>
+        <Grid item xs={6} md={2} lg={2} className={classes.margin_top_15}>
           <Autocomplete
             multiple
-            id='checkboxes-tags-demo'
+            id='checkboxes-itemType'
             limitTags={1}
-            options={itemTypeList}
+            options={itemTypesList}
             disableCloseOnSelect
-            getOptionLabel={(option) => option.type}
+            getOptionLabel={(option) => option}
             onChange={getItemType}
             renderOption={(option, { selected }) => (
               <Fragment>
@@ -571,7 +634,7 @@ const MetricsList = (props: any) => {
                   style={{ marginRight: 8 }}
                   checked={selected}
                 />
-                {option.type}
+                {option}
               </Fragment>
             )}
             renderInput={(params) => (
@@ -583,24 +646,24 @@ const MetricsList = (props: any) => {
             )}
           />
           {itemListFailureMsg && (
-            <InputLabel style={{ color: '#f44336', paddingTop: '5px' }}>
-              <Text tid='errorInLoadingItemList' />
+            <InputLabel className={classes.loadingErrorLabel}>
+              <Text tid='errorInLoadingList' />
             </InputLabel>
           )}
         </Grid>
-        <Grid item xs={6} md={1} lg={1} style={{ marginTop: '15px' }}>
+        <Grid item xs={6} md={1} lg={1} className={classes.margin_top_25}>
           <InputLabel className={classes.selectNameBox}>
             <Text tid='itemPriority' />:
           </InputLabel>
         </Grid>
-        <Grid item xs={6} md={2} lg={2} style={{ marginTop: '5px' }}>
+        <Grid item xs={6} md={2} lg={2} className={classes.margin_top_15}>
           <Autocomplete
             multiple
-            id='checkboxes-tags-demo'
+            id='checkboxes-itemPriority'
             limitTags={1}
-            options={itemPriorityList}
+            options={itemPrioritiesList}
             disableCloseOnSelect
-            getOptionLabel={(option) => option.priority}
+            getOptionLabel={(option) => option}
             onChange={getItemPriority}
             renderOption={(option, { selected }) => (
               <Fragment>
@@ -610,7 +673,7 @@ const MetricsList = (props: any) => {
                   style={{ marginRight: 8 }}
                   checked={selected}
                 />
-                {option.priority}
+                {option}
               </Fragment>
             )}
             renderInput={(params) => (
@@ -626,26 +689,36 @@ const MetricsList = (props: any) => {
         <Grid item xs={12} md={6} lg={6}>
           <Paper className={fixedHeightPaper} style={{ overflowX: 'hidden' }}>
             <ReqStatusChart
+              focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
               itemType={itemType}
               itemPriority={itemPriority}
-              focusTeam={props.focusTeam}
               customDate={requirementsCustomDate}
-              selectedDateRange={requirementsDateRange}
-              timeline={requirementsTimeline}
               getRequirementsDateRange={(dateRange: any) =>
                 setRequirementsDateRange(dateRange)
               }
+              timeline={requirementsTimeline}
+              selectedDateRange={requirementsDateRange}
             />
           </Paper>
         </Grid>
         <Grid item xs={12} md={6} lg={6}>
           <Paper className={fixedHeightPaper}>
             <LeadAndCycleTimeChart
+              focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
               itemType={itemType}
               itemPriority={itemPriority}
-              focusTeam={props.focusTeam}
-              selectedDateRange={requirementsDateRange}
               timeline={requirementsTimeline}
+              selectedDateRange={requirementsDateRange}
             />
           </Paper>
         </Grid>
@@ -653,33 +726,27 @@ const MetricsList = (props: any) => {
           <Paper className={fixedHeightPaper}>
             <RequirementsTable
               focusTeam={props.focusTeam}
-              reqItemData={reqItemData}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
               itemType={itemType}
               itemPriority={itemPriority}
+              timeline={requirementsTimeline}
               selectedDateRange={requirementsDateRange}
             />
           </Paper>
         </Grid>
       </Grid>
 
-      <Grid
-        container
-        style={{
-          border: '1px solid #c1c1c1',
-          marginTop: '40px',
-          paddingBottom: '10px',
-          borderRadius: '5px',
-          boxShadow: '0px 0px 2px #a2a2a2',
-          backgroundColor: '#f1f4ff',
-        }}
-        spacing={2}
-      >
+      <Grid container className={classes.container_1_Style} spacing={2}>
         <Grid
           item
           xs={12}
           md={6}
           lg={6}
-          className={classes.topScrollContainer}
+          className='topScrollContainerMetrics'
           id='quality'
         >
           <Typography variant='h6'>
@@ -687,7 +754,7 @@ const MetricsList = (props: any) => {
             <div className={classes.toolbar}>
               <QualityTimeline
                 qualityTimeline={qualityTimeline}
-                qualityCustomDate={qualityCustomDate}
+                //                qualityCustomDate={qualityCustomDate}
                 updateQualityData={(qualityTimeline: any) =>
                   updateQualityData(qualityTimeline)
                 }
@@ -704,12 +771,17 @@ const MetricsList = (props: any) => {
           <Paper className={fixedHeightPaper} style={{ overflowX: 'hidden' }}>
             <QualityReport
               focusTeam={props.focusTeam}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
               customDate={qualityCustomDate}
-              selectedDateRange={qualityDateRange}
-              timeline={qualityTimeline}
               getQualityDateRange={(dateRange: any) =>
                 setqualityDateRange(dateRange)
               }
+              timeline={qualityTimeline}
+              selectedDateRange={qualityDateRange}
             />
           </Paper>
         </Grid>
@@ -717,8 +789,13 @@ const MetricsList = (props: any) => {
           <Paper className={fixedHeightPaper}>
             <QualityTable
               focusTeam={props.focusTeam}
-              selectedDateRange={qualityDateRange}
+              focusService={props.focusService}
+//              serviceAndSubService={props.serviceAndSubService}
+              focusSubService={props.focusSubService}
+              focusServiceType={props.focusServiceType}
+              joinServiceAndSubService={props.joinServiceAndSubService}
               timeline={qualityTimeline}
+              selectedDateRange={qualityDateRange}
             />
           </Paper>
         </Grid>

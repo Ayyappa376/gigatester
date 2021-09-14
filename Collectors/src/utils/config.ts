@@ -17,6 +17,7 @@ export const config = {
 	//elasticsearch indexes
 	stateIndex: 'state-data',
 	buildIndex: 'build-data',
+	gitlabCommitIndex: 'gitlab-commit-data',
 	incidentIndex: 'incident-data',
 	qualityIndex: 'quality-data',
 	repoIndex: 'repo-data',

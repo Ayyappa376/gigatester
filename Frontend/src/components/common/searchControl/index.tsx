@@ -23,7 +23,6 @@ const useStyles = makeStyles((theme) => ({
     padding: 10,
   },
   searchRoot: {
-    padding: '2px 4px',
     display: 'flex',
     alignItems: 'center',
     backgroundColor: 'inherit',

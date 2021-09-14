@@ -62,7 +62,7 @@ export function searchAll<T>(
           ? { bool: { filter: filters } }
           : { bool: { filter: filters, must_not: notFilters } };
 
-      // first we do a dummy search to find the data size
+      // first we do a dummy search to find the data size TODO: try using count method
       esClient.search(
         {
           body: {
@@ -121,7 +121,7 @@ export function searchAllCount(
           : { bool: { filter: filters, must_not: notFilters } };
 
       // first we do a dummy search to find the data size
-      esClient.search(
+      esClient.search(// TODO: try using count method instead of search
         {
           body: {
             from: 0,
@@ -146,7 +146,7 @@ export function searchAllCount(
 export function fetchAll<T>(indexName: string): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
-      // first we do a dummy search to find the data size
+      // first we do a dummy search to find the data size TODO: try using count method
       esClient.search(
         {
           body: {
@@ -196,7 +196,7 @@ export function fetchAllCount(indexName: string): Promise<number> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
       // first we do a dummy search to find the data size
-      esClient.search(
+      esClient.search(// TODO: try using count method instead of search
         {
           body: {
             from: 0,
@@ -221,11 +221,11 @@ export function fetchAllCount(indexName: string): Promise<number> {
 export function fetchFields<T>(indexName: string, fields: any[]): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
-      // first we do a dummy search to find the data size
+      // first we do a dummy search to find the data size TODO: try using count method
       esClient.search(
         {
           body: {
-            _source: fields,
+            _source: fields, //TODO: try using stored_fields attribute of search method
             from: 0,
             query: { match_all: {} },
             size: 1,
@@ -255,6 +255,67 @@ export function fetchFields<T>(indexName: string, fields: any[]): Promise<T> {
               index: indexName,
             },
             function (err1, resp1) {
+              if (err1) {
+                appLogger.error(err1);
+                return reject(err1);
+              }
+
+              return resolve(resp1.body.hits.hits);
+            }
+          );
+        }
+      );
+    }
+  );
+}
+
+export function searchSorted<T>(
+  indexName: string,
+  filters: any,
+  notFilters: any,
+  sort: string[]
+): Promise<T> {
+  return new Promise(
+    (resolve: (item: any) => void, reject: (err: any) => any): any => {
+      const query =
+        !notFilters || notFilters === []
+          ? { bool: { filter: filters } }
+          : { bool: { filter: filters, must_not: notFilters } };
+
+      // first we do a dummy search to find the data size TODO: try using count method
+      esClient.search(
+        {
+          body: {
+            query,
+          },
+          from: 0,
+          index: indexName,
+          size: 1,
+          sort,
+        },
+        function (err, resp) {
+          if (err) {
+            appLogger.error(err);
+            return reject(err);
+          }
+
+          const total = resp.body.hits.total.value;
+          if (total === 0) {
+            return resolve([]);
+          }
+
+          // then do a search for all the documents
+          esClient.search(
+            {
+              body: {
+                query,
+              },
+              from: 0,
+              index: indexName,
+              size: total,
+              sort,
+            },
+            function (err1: any, resp1: any) {
               if (err1) {
                 appLogger.error(err1);
                 return reject(err1);

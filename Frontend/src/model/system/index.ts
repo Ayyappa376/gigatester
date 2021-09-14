@@ -25,6 +25,7 @@ export interface IFieldConfigAttributes {
   mandatory: boolean;
   type: string;
   options?: any;
+  defaultValue?: string;
   position?: number;
   helpText?: string;
 }
@@ -32,6 +33,7 @@ export interface IFieldConfigAttributes {
 export interface IGeneralConfigDetails {
   levels: ILevelAttributes[];
   performanceMetricsConstant: number;
+  archiveDays: number;
 }
 
 export interface ILevelAttributes {

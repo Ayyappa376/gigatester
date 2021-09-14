@@ -58,7 +58,15 @@
 			"defaultValue": "",
 			"position": 6,
 			"helpText": "Name of the pipeline stage that is the rollback stage of the deployment to the production environment. Value is case sensitive."
-		}		
-
+		},
+		"failureWindow": {
+			"custom": false,
+			"displayName": "Failure window (in hrs)",
+			"mandatory": true,
+			"type": "number",
+			"defaultValue": 48,
+			"position": 7,
+			"helpText": "The period in hours within which any incident will mark this deployment as failure."
+		}
 	}
 }

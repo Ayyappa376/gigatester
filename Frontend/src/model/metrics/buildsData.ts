@@ -1,3 +1,4 @@
+/*
 export interface IBuildsDataItem {
     buildNum: number;
     teamId: string;
@@ -7,7 +8,33 @@ export interface IBuildsDataItem {
     timestamp: number;
     url: string;
 }
-
-export const STATUS_PASS = 'SUCCESS';
-export const STATUS_FAIL = 'FAILURE';
-export const STATUS_OTHER = 'OTHER'; //Like Aborted or Error etc.
+*/
+export interface IBuildsGraphDataItem {
+    countFailBuilds: number;
+    countInProgressBuilds: number;
+    countOtherBuilds: number;
+    countSuccessBuilds: number;
+    timestampEnd: number;
+}
+  
+export interface IBuildsListDataItem {
+    buildNum: number;
+    duration: number;
+    endTimestamp: number;
+    projectName: string;
+    service: string;
+    startTimestamp: number;
+    status: string;
+    teamId: string;
+    url: string;
+}
+  
+export const STATUS_SUCCESS = 'SUCCESS';
+export const STATUS_FAILED = 'FAILED';
+export const STATUS_CANCELED = 'CANCELED';
+export const STATUS_INPROGRESS = 'IN_PROGRESS';
+export const STATUS_SKIPPED = 'SKIPPED';
+export const STATUS_PENDING = 'PENDING';
+export const STATUS_SCHEDULED = 'SCHEDULED';
+export const STATUS_OTHER = 'OTHER';
+  

@@ -1,17 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Http } from '../../../../utils';
 import { IRootState } from '../../../../reducers';
 import { getFullDate } from '../../../../utils/data';
-import {
-  ALL_TEAMS,
-  ALL_NAMES,
-} from '../../../../pages/metrics/metric-select/metricsList';
+import { ALL } from '../../../../pages/metrics/metric-select';
 import { IRepoPullReqsDataItem } from '../../../../model/metrics/repositoryData';
 import PieChart from './PieChart';
 
-var selectedDateRange = { fromDate: 0, toDate: 0 };
+let selectedDateRange = { fromDate: 0, toDate: 0 };
+let initialPullRequestData = [
+  {
+    commitsAccepted: 0,
+    commitsCreated: 0,
+    commitsPending: 0,
+    commitsRejected: 0,
+    committerName: '',
+    projectName: '',
+    teamId: '',
+    timestampEnd: 0,
+    url: '',
+  },
+];
 
 export default function PullRequestChart(props: any) {
   const [acceptedCount, setAcceptedCount] = useState(0);
@@ -20,20 +30,12 @@ export default function PullRequestChart(props: any) {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [displayData, setDisplayData] = useState<IRepoPullReqsDataItem[]>([
-    {
-      commitsAccepted: 0,
-      commitsCreated: 0,
-      commitsPending: 0,
-      commitsRejected: 0,
-      committerName: '',
-      projectName: '',
-      teamId: '',
-      timestampEnd: 0,
-      url: '',
-    },
-  ]);
+  const [displayData, setDisplayData] = useState<IRepoPullReqsDataItem[]>(
+    initialPullRequestData
+  );
   const [loader, setLoader] = useState(true);
+  const [failureMsg, setFailureMsg] = useState(false);
+  const history = useHistory();
 
   let date = new Date();
   let yesterday = new Date(date.getTime() - 1 * 24 * 60 * 60 * 1000);
@@ -52,20 +54,20 @@ export default function PullRequestChart(props: any) {
   let ytd = `01 Jan ${date.getFullYear()}`;
   let custom_from_date = getFullDate(props.customDate[0]);
   let custom_to_date = getFullDate(props.customDate[1]);
-  const [failureMsg, setFailureMsg] = useState(false);
+  
 
   useEffect(() => {
     updateData(props.timeline);
     fetchData();
+    setDisplayData(initialPullRequestData);
+    // setUserMsg('Loading...');
   }, [props.customDate, props.timeline, props.committerName]);
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
     fetchData();
-  }, [props.focusTeam]);
-
+    setDisplayData(initialPullRequestData);
+  }, [props.focusTeam, props.focusService, props.focusSubService, props.focusServiceType]);
+  
   useEffect(() => {
     let acceptedCount = displayData
       .map((a: any) => a.commitsAccepted)
@@ -148,71 +150,66 @@ export default function PullRequestChart(props: any) {
   };
 
   const fetchData = () => {
-    let { timeline, focusTeam, committerName } = props;
-    let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        committerName[0] === ALL_NAMES && timeline === 'one_day'
-          ? '/api/metrics/repos/pullRequestsGraph'
-          : committerName[0] === ALL_NAMES && timeline !== 'one_day'
-          ? `/api/metrics/repos/pullRequestsGraph?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`
-          : timeline === 'one_day'
-          ? `/api/metrics/repos/pullRequestsGraph?committer=${committerName.toString()}`
-          : `/api/metrics/repos/pullRequestsGraph?committer=${committerName.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    } else if (committerName[0] === ALL_NAMES) {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/repos/pullRequestsGraph?teamId=${focusTeam.toString()}`
-          : `/api/metrics/repos/pullRequestsGraph?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    } else if (committerName[0] !== ALL_NAMES) {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/repos/pullRequestsGraph?committer=${committerName.toString()}`
-          : `/api/metrics/repos/pullRequestsGraph?committer=${committerName.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
+    let { timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, committerName } = props;
+    let url: string = '/api/metrics/repos/pullRequestsGraph';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+      joiner = '&';
     }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (committerName[0] !== ALL) {
+      url = `${url}${joiner}committer=${committerName.toString()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
+    }
+
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        getPullRequestStatus(response);
-        setLoader(false);
+        if (response) {
+          // setTimeout(() => {
+          //   setUserMsg('');
+          // }, 10000);
+          getPullRequestStatus(response);
+          setLoader(false);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
-        } else {
-          setFailureMsg(true);
+          history.push('/relogin')
         }
       });
   };
 
   const getPullRequestStatus = (pullRequestStatus: any) => {
     setDisplayData(
-      pullRequestStatus.length > 0
-        ? pullRequestStatus
-        : [
-            {
-              commitsAccepted: 0,
-              commitsCreated: 0,
-              commitsPending: 0,
-              commitsRejected: 0,
-              committerName: '',
-              projectName: '',
-              teamId: '',
-              timestampEnd: 0,
-              url: '',
-            },
-          ]
+      pullRequestStatus.length > 0 ? pullRequestStatus : initialPullRequestData
     );
   };
 
@@ -229,7 +226,7 @@ export default function PullRequestChart(props: any) {
       legend: {
         position: 'bottom',
       },
-      colors: ['#00ad6b', '#fc6a26', '#000080'],
+      colors: ['#00ad6b', '#fc6a26', '#FFC300'],
       labels: ['Accepted', 'Rejected', 'Pending'],
       states: {
         hover: {
@@ -237,12 +234,6 @@ export default function PullRequestChart(props: any) {
             type: 'none',
             value: 0.15,
           },
-        },
-      },
-      tooltip: {
-        style: {
-          backgroundColor: 'white',
-          color: 'black',
         },
       },
     },

@@ -21,73 +21,26 @@ import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { withRouter } from 'react-router-dom';
 import { buttonStyle } from '../../../common/common';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     left: '45%',
     minWidth: '10%',
     ...buttonStyle,
   },
-  grid: {
-    marginTop: theme.spacing(2),
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tableCell: {
-    borderRadius: '0px',
-    paddingBottom: '7px',
-    paddingTop: '7px',
   },
   buttons: {
     ...buttonStyle,
@@ -140,27 +93,21 @@ const ManageSettings = (props: any) => {
   const renderSettingsTable = () => {
     return (
       <Fragment>
-        <Container
-          maxWidth='md'
-          component='div'
-          classes={{
-            root: classes.containerRoot,
-          }}
-        >
+        <Container maxWidth='md' component='div' className='containerRoot'>
           <Backdrop className={classes.backdrop} open={backdropOpen}>
             <CircularProgress color='inherit' />
           </Backdrop>
-          <Paper style={{ width: '100%', marginTop: '15px' }}>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
+          <Paper className='tableArea'>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='settingType' />
                     </Typography>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='actions' />
                     </Typography>
                   </TableCell>
@@ -170,7 +117,7 @@ const ManageSettings = (props: any) => {
                 {allSettings.map((row: any, index: number) => {
                   return (
                     <TableRow
-                      key={row.type}
+                      key={index}
                       style={
                         index % 2
                           ? { background: '#EFEFEF' }
@@ -180,16 +127,16 @@ const ManageSettings = (props: any) => {
                       <TableCell
                         component='th'
                         scope='row'
-                        className={classes.tableCell}
+                        className='tableCell'
                       >
-                        <Typography className={classes.tableBodyText}>
-                          {row.name}
+                        <Typography className='tableBodyText'>
+                          <Text tid={`admin.settings.${row.type}.name`} />
                         </Typography>
                       </TableCell>
                       <TableCell
                         component='th'
                         scope='row'
-                        className={classes.tableCell}
+                        className='tableCell'
                         align='center'
                       >
                         <Button
@@ -216,7 +163,7 @@ const ManageSettings = (props: any) => {
               </TableBody>
             </Table>
           </Paper>
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -235,7 +182,7 @@ const ManageSettings = (props: any) => {
       {responseReceived ? (
         renderSettingsTable()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

@@ -3,7 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import { Typography, Tooltip, TableSortLabel } from '@material-ui/core';
+import {
+  MuiThemeProvider,
+  Typography,
+  Tooltip,
+  TableSortLabel,
+} from '@material-ui/core';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
@@ -14,7 +19,9 @@ import 'react-circular-progressbar/dist/styles.css';
 import { IAssessmentListItem } from '../../../../model';
 import { withRouter } from 'react-router-dom';
 import { getDateTime } from '../../../../utils/data';
+import { tooltipTheme } from '../../../../common/common';
 import { Text } from '../../../../common/Language';
+import '../../../../css/assessments/style.css';
 
 interface IAssessmentArrayItem {
   data: IAssessmentListItem;
@@ -22,28 +29,6 @@ interface IAssessmentArrayItem {
 }
 
 const useStyles = makeStyles((theme) => ({
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
   root: {
     width: '100%',
     marginTop: theme.spacing(3),
@@ -53,10 +38,6 @@ const useStyles = makeStyles((theme) => ({
   firstColumn: {
     maxWidth: '200px',
     overflow: 'hidden',
-  },
-  sortLabelIcon: {
-    opacity: 0.8,
-    color: 'white',
   },
 }));
 
@@ -262,88 +243,70 @@ function CategoryBarChartEvent(props: any) {
   };
 
   return (
-    <Container
-      maxWidth='md'
-      component='div'
-      classes={{
-        root: classes.containerRoot,
-      }}
-    >
+    <Container maxWidth='md' component='div' className='containerRoot'>
       <div style={{ width: '97%' }}>
         <Typography variant='h4' color='primary' gutterBottom>
           {props.focusCategory}
         </Typography>
       </div>
       <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead className={classes.tableHead}>
+        <Table className='table'>
+          <TableHead className='tableHead'>
             <TableRow>
-              <TableCell className={classes.tableHeadCell}>
+              <TableCell className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'name'}
                   direction={orderBy === 'name' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('name');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='takenBy' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
+              <TableCell align='center' className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'date'}
                   direction={orderBy === 'date' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('date');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='dateSubmitted' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
+              <TableCell align='center' className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'team'}
                   direction={orderBy === 'team' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('team');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='team' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
+              <TableCell align='center' className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'score'}
                   direction={orderBy === 'score' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('score');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='score' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
-                <Typography className={classes.tableHeadText}>Level</Typography>
+              <TableCell align='center' className='tableHeadCell'>
+                <Typography className='tableHeadText'>Level</Typography>
               </TableCell>
             </TableRow>
           </TableHead>
@@ -362,20 +325,22 @@ function CategoryBarChartEvent(props: any) {
                   scope='row'
                   className={classes.firstColumn}
                 >
-                  <Tooltip
-                    title={
-                      <Typography>
+                  <MuiThemeProvider theme={tooltipTheme}>
+                    <Tooltip
+                      title={
+                        <Typography className='tooltipTitleStyle'>
+                          {row.data.userId ? row.data.userId : 'NA'}
+                        </Typography>
+                      }
+                    >
+                      <Typography className='tableBodyText'>
                         {row.data.userId ? row.data.userId : 'NA'}
                       </Typography>
-                    }
-                  >
-                    <Typography className={classes.tableBodyText}>
-                      {row.data.userId ? row.data.userId : 'NA'}
-                    </Typography>
-                  </Tooltip>
+                    </Tooltip>
+                  </MuiThemeProvider>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
+                  <Typography className='tableBodyText'>
                     {row.data.dateSubmit
                       ? getDateTime(row.data.dateSubmit)
                       : row.data.date
@@ -384,18 +349,16 @@ function CategoryBarChartEvent(props: any) {
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
-                    {row.team}
-                  </Typography>
+                  <Typography className='tableBodyText'>{row.team}</Typography>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
+                  <Typography className='tableBodyText'>
                     {row.data.result!.categoryWiseResults[props.focusCategory]
                       .percentage + '%'}
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
+                  <Typography className='tableBodyText'>
                     {getLevel(
                       row.data.result!.categoryWiseResults[props.focusCategory]
                         .percentage

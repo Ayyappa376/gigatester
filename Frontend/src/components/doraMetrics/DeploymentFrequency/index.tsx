@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
-import { ALL_TEAMS } from '../../../pages/metrics/metric-select/metricsList';
-import { IDeploymentDataItem } from '../../../model/metrics/doraData';
+import { IDeploymentDataItem, ITrendDataItem } from '../../../model/metrics/doraData';
 import AreaChart from './AreaChart';
 
 export default function DeploymentFrequency(props: any) {
@@ -14,88 +13,101 @@ export default function DeploymentFrequency(props: any) {
   const [deploymentGraphData, setDeploymentGraphData] = useState<
     IDeploymentDataItem[]
   >([]);
+  const [trendData, setTrendData] = useState<
+    ITrendDataItem[]
+  >([]);
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
   const [totalCount, setTotalCount] = useState(0);
   const [level, setLevel] = useState('');
+  const history = useHistory();
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange]);
+    setDeploymentGraphData([]);
+    setTrendData([]);
+  }, [props.queryParams]);
 
   const fetchData = () => {
-    let { timeline, focusTeam, selectedDateRange } = props;
-    let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day'
-          ? '/api/metrics/dora/deployment'
-          : `/api/metrics/dora/deployment?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/dora/deployment?teamId=${focusTeam.toString()}`
-          : `/api/metrics/dora/deployment?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    }
+    let { queryParams } = props;
+    let url : string = '';
+    url = queryParams ? `/api/metrics/dora/deployment${queryParams}` : `/api/metrics/dora/deployment`;
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setDeploymentGraphData(
-          response.graphData.sort((a: any, b: any) => {
-            return a.timestampEnd <= b.timestampEnd ? -1 : 1;
-          })
-        );
-        setLoader(false);
-        setTotalCount(response.aggregateValue);
-        setLevel(response.level);
+        if (response) {
+          setDeploymentGraphData(
+            response.graphData.sort((a: IDeploymentDataItem, b: IDeploymentDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setTrendData(
+            response.trendData.sort((a: ITrendDataItem, b: ITrendDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setLoader(false);
+          setTotalCount(response.aggregateValue);
+          setLevel(response.level);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
+          history.push('/relogin')       
         } else {
-          setFailureMsg(true);
+          history.push('/error')
         }
       });
   };
 
   const getCount = () => {
-    const successfulDeployments: any[] = [];
+    const deployments: any[] = [];
+    const trends: any[] = [];
 
-    deploymentGraphData.map((data: any) => {
-      successfulDeployments.push([data.timestamp, data.countSuccessBuilds]);
+    deploymentGraphData.map((data: IDeploymentDataItem) => {
+      deployments.push([data.timestamp, data.countBuilds]);
     });
+
+    trendData.map((data: ITrendDataItem) => {
+      trends.push([data.timestamp, data.value]);
+    });
+//    console.log(trendData);
+//    console.log(deploymentGraphData);
 
     const dataSet = {
       series: [
         {
-          name: 'Successful Build',
-          data: successfulDeployments,
+          name: 'Deployments Frequency',
+          type: 'area',
+          data: deployments,
+        },
+        {
+          name: 'Trends',
+          type: 'line',
+          data: trends,
         },
       ],
 
       options: {
         chart: {
-          id: 'area-datetime',
+          id: 'deplopment_frequency',
           type: 'area',
-          stacked: true,
-          zoom: {
-            autoScaleYaxis: true,
-          },
+          stacked: false,
+          height: 230,
           toolbar: {
             show: false,
           },
         },
-        colors: ['#00ad6b'],
+        colors: ['#017a78', '#edb500'],
         dataLabels: {
           enabled: false,
         },
@@ -104,12 +116,14 @@ export default function DeploymentFrequency(props: any) {
           width: 1,
         },
         fill: {
-          curve: 'smooth',
           type: 'solid',
+          opacity: 2,
         },
         legend: {
-          position: 'top',
-          horizontalAlign: 'right',
+          show: false,
+        },
+        markers: {
+          size: 0,
         },
         xaxis: {
           type: 'datetime',
@@ -119,13 +133,35 @@ export default function DeploymentFrequency(props: any) {
         },
         yaxis: {
           title: {
-            text: 'Number of Counts',
+            text: 'Number of Deployments',
           },
-          decimalsInFloat: 0,
+          labels: {
+            formatter: function (value: number) {
+              return value.toFixed(2);
+            }
+          },
         },
         tooltip: {
+          enabledOnSeries:[0],
           x: {
             format: 'dd MMM yyyy',
+          },
+          y: {
+            formatter: function (value: number) {
+              return value;
+            },
+          },
+        },
+        noData: {
+          text: 'Loading...',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#000000',
+            fontSize: '12.5px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
           },
         },
       },

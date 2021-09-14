@@ -22,6 +22,7 @@ import {
 } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 import FirstPageIcon from '@material-ui/icons/FirstPage';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
@@ -30,15 +31,16 @@ import { getDateTime } from '../../../utils/data';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
 import {
-  IBuildsDataItem,
-  STATUS_PASS,
-  STATUS_FAIL,
-  STATUS_OTHER,
+  IBuildsListDataItem,
+  STATUS_FAILED,
+//  STATUS_OTHER,
+  STATUS_SUCCESS,
+  STATUS_INPROGRESS,
 } from '../../../model/metrics/buildsData';
 import Loader from '../../loader';
-import { ALL_TEAMS } from '../../../pages/metrics/metric-select/metricsList';
+import { ALL } from '../../../pages/metrics/metric-select';
 import { Text } from '../../../common/Language';
-import './style.css';
+import '../../../css/metrics/style.css';
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -76,7 +78,7 @@ function stableSort(array: any[], comparator: (a: any, b: any) => number) {
 
 interface HeadCell {
   disablePadding: boolean;
-  id: keyof IBuildsDataItem;
+  id: keyof IBuildsListDataItem;
   label: string;
   numeric: boolean;
 }
@@ -84,25 +86,12 @@ interface HeadCell {
 const headCells: HeadCell[] = [
   { id: 'buildNum', numeric: false, disablePadding: true, label: 'buildId' },
   { id: 'teamId', numeric: true, disablePadding: false, label: 'team' },
-  {
-    id: 'projectName',
-    numeric: true,
-    disablePadding: false,
-    label: 'project',
-  },
+  { id: 'service', numeric: false, disablePadding: false, label: 'service' },
+  { id: 'projectName', numeric: true, disablePadding: false, label: 'project' },
   { id: 'status', numeric: true, disablePadding: false, label: 'status' },
-  {
-    id: 'timestamp',
-    numeric: true,
-    disablePadding: false,
-    label: 'timestamp',
-  },
-  {
-    id: 'duration',
-    numeric: true,
-    disablePadding: false,
-    label: 'duration',
-  },
+  { id: 'startTimestamp', numeric: true, disablePadding: false, label: 'startTimestamp' },
+  { id: 'endTimestamp', numeric: true, disablePadding: false, label: 'endTimestamp' },
+  { id: 'duration', numeric: true, disablePadding: false, label: 'duration' },
 ];
 
 interface EnhancedTableProps {
@@ -110,7 +99,7 @@ interface EnhancedTableProps {
   numSelected: number;
   onRequestSort: (
     event: React.MouseEvent<unknown>,
-    property: keyof IBuildsDataItem
+    property: keyof IBuildsListDataItem
   ) => void;
   onSelectAllClick: (event: React.ChangeEvent<HTMLInputElement>) => void;
   order: Order;
@@ -120,11 +109,10 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { classes, order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property: keyof IBuildsDataItem) => (
-    event: React.MouseEvent<unknown>
-  ) => {
-    onRequestSort(event, property);
-  };
+  const createSortHandler =
+    (property: keyof IBuildsListDataItem) => (event: React.MouseEvent<unknown>) => {
+      onRequestSort(event, property);
+    };
 
   return (
     <TableHead>
@@ -134,18 +122,15 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             key={headCell.id}
             align='center'
             sortDirection={orderBy === headCell.id ? order : false}
-            className={classes.tableHeadText}
+            className='tableHeadMetrics'
           >
             <TableSortLabel
-              classes={{
-                icon: classes.sortLabelIcon,
-              }}
               hideSortIcon={true}
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              <label className={classes.tableHeadText}>
+              <label className='tableHeadMetrics'>
                 <Text tid={headCell.label} />
               </label>
             </TableSortLabel>
@@ -169,27 +154,9 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {
       minWidth: 350,
     },
-    tableHeadText: {
-      backgroundColor: '#3CB1DC',
-      color: '#FFFFFF',
-      fontSize: '14px',
-      borderRadius: '0px',
-      cursor: 'pointer',
-      lineHeight: 1.2,
-    },
-    sortLabelIcon: {
-      opacity: 0.4,
-      color: 'white !important',
-    },
+
     container: {
       maxHeight: 200,
-    },
-    loader: {
-      marginTop: '50px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '100%',
     },
   })
 );
@@ -287,90 +254,112 @@ function TablePaginationActions(props: TablePaginationActionsProps) {
 const BuildTable = (props: any) => {
   const classes = useStyles();
   const [order, setOrder] = useState<Order>('asc');
-  const [orderBy, setOrderBy] = useState<keyof IBuildsDataItem>('buildNum');
+  const [orderBy, setOrderBy] = useState<keyof IBuildsListDataItem>('buildNum');
   const [selected, setSelected] = useState<string[]>([]);
   const [page, setPage] = useState(0);
   const [passedBuild, setPassedBuild] = useState(true);
   const [failedBuild, setFailedBuild] = useState(true);
+  const [rollbackBuild, setRollbackBuild] = useState(true);
   const [otherBuild, setOtherBuild] = useState(true);
   const [rowsPerPage, setRowsPerPage] = useState(5);
-  const [buildsData, setBuildsData] = useState<IBuildsDataItem[]>([]);
-  const [displayData, setDisplayData] = useState<IBuildsDataItem[]>([]);
+  const [buildsData, setBuildsData] = useState<IBuildsListDataItem[]>([]);
+  const [displayData, setDisplayData] = useState<IBuildsListDataItem[]>([]);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
+  const [loadingTimeline, setLoadingTimeline] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
+    setLoadingTimeline(true);
+    setDisplayData([]);
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange]);
+  }, [props.focusTeam, props.focusService, props.focusSubService, props.focusServiceType, props.selectedDateRange]);
 
   useEffect(() => {
-    if ((props.buildStatus.status & 1) === 1) {
+    let { buildStatus } = props;
+    if ((buildStatus.status & 1) === 1) {
       setPassedBuild(!passedBuild);
     }
-    if ((props.buildStatus.status & 2) === 2) {
+    if ((buildStatus.status & 2) === 2) {
       setFailedBuild(!failedBuild);
     }
-    if ((props.buildStatus.status & 4) === 4) {
-      setOtherBuild(!otherBuild);
+    if ((buildStatus.status & 4) === 4) {
+      setRollbackBuild(!rollbackBuild);
     }
+//    if ((props.buildStatus.status & 8) === 8) {
+//      setOtherBuild(!otherBuild);
+//    }
   }, [props.buildStatus]);
 
   useEffect(() => {
-    let temp: IBuildsDataItem[] = [];
-    buildsData.map((data: IBuildsDataItem) => {
-      if (
-        (passedBuild && data.status === STATUS_PASS) ||
-        (failedBuild && data.status === STATUS_FAIL) ||
-        (otherBuild && data.status === STATUS_OTHER)
+    let temp: IBuildsListDataItem[] = [];
+    buildsData.map((data: IBuildsListDataItem) => {
+      if ((passedBuild && data.status === STATUS_SUCCESS)
+        || (failedBuild && data.status === STATUS_FAILED)
+        || (rollbackBuild && data.status === STATUS_INPROGRESS)
+//        || (otherBuild && data.status === STATUS_OTHER)
       ) {
         temp.push(data);
       }
     });
     setDisplayData(temp);
-  }, [passedBuild, failedBuild, otherBuild]);
+  }, [passedBuild, failedBuild, rollbackBuild, otherBuild]);
 
   const fetchData = () => {
-    let { timeline, focusTeam, selectedDateRange } = props;
-    let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day'
-          ? '/api/metrics/builds/list'
-          : `/api/metrics/builds/list?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/builds/list?teamId=${focusTeam.toString()}`
-          : `/api/metrics/builds/list?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
+    let { timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, selectedDateRange } = props;
+    let url: string = '/api/metrics/builds/list';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+      joiner = '&';
     }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
+    }
+
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setBuildsData(response);
-        setLoader(false);
-        setPassedBuild(true);
-        setFailedBuild(true);
-        setOtherBuild(true);
-        setDisplayData(response);
+        if (response) {
+          setBuildsData(response);
+          setLoader(false);
+          setLoadingTimeline(false);
+          setPassedBuild(true);
+          setFailedBuild(true);
+          setOtherBuild(true);
+          setDisplayData(response);
+        } else {
+          setLoader(false);
+          setLoadingTimeline(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setLoadingTimeline(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          props.history.push('/relogin');
+          history.push('/relogin')       
         } else {
-          setFailureMsg(true);
+          history.push('/error')
         }
       });
   };
@@ -387,7 +376,7 @@ const BuildTable = (props: any) => {
 
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
-    property: keyof IBuildsDataItem
+    property: keyof IBuildsListDataItem
   ) => {
     const isAsc = orderBy === property && order === 'asc';
     setOrder(isAsc ? 'desc' : 'asc');
@@ -412,6 +401,14 @@ const BuildTable = (props: any) => {
   ) => {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
+  };
+
+  const convertMinsToHrsMins = (mins: number) => {
+    let hours: any = Math.floor(mins / 60);
+    let minutes: any = mins % 60;
+    hours = hours < 10 ? '0' + hours : hours;
+    minutes = minutes < 10 ? '0' + minutes : minutes;
+    return `${hours}:${minutes}`;
   };
 
   const emptyRows =
@@ -439,40 +436,50 @@ const BuildTable = (props: any) => {
               rowCount={Number(buildsData)}
             />
             <TableBody style={{ overflow: 'auto' }}>
-              {stableSort(displayData, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <StyledTableRow key={index}>
-                      <TableCell align='center'>
-                        <a
-                          href={row.url}
-                          target='_blank'
-                          style={{ textDecoration: 'underline' }}
-                        >
-                          {row.buildNum}
-                        </a>
-                      </TableCell>
-                      <TableCell align='center'>{row.teamId}</TableCell>
-                      <TableCell align='center'>{row.projectName}</TableCell>
-                      <TableCell align='center'>{row.status}</TableCell>
-                      <TableCell align='center'>
-                        {row.timestamp ? getDateTime(row.timestamp) : '-'}
-                      </TableCell>
-                      <TableCell align='center'>{row.duration}</TableCell>
-                    </StyledTableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
+              {displayData.length ? (
+                stableSort(displayData, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row: IBuildsListDataItem, index: number) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <TableCell align='center'>
+                          <a
+                            href={row.url}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            style={{ textDecoration: 'underline' }}
+                          >
+                            {row.buildNum}
+                          </a>
+                        </TableCell>
+                        <TableCell align='center'>{row.teamId}</TableCell>
+                        <TableCell align='center'>{row.service}</TableCell>
+                        <TableCell align='center'>{row.projectName}</TableCell>
+                        <TableCell align='center'>{row.status}</TableCell>
+                        <TableCell align='center'>
+                          {row.startTimestamp ? getDateTime(row.startTimestamp) : '-'}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {row.endTimestamp ? getDateTime(row.endTimestamp) : '-'}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {convertMinsToHrsMins(row.duration)}
+                        </TableCell>
+                      </StyledTableRow>
+                    );
+                  })
+              ) : (
                 <TableRow style={{ height: 33 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={6} align='center'>
+                    {loadingTimeline ? 'Loading...' : 'No Records Found'}
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
           </Table>
         </TableContainer>
         <TablePagination
-          // labelRowsPerPage='Records per page'
+          labelRowsPerPage='Records per page'
           rowsPerPageOptions={[5, 10, 20, 50]}
           component='div'
           count={displayData.length}
@@ -492,14 +499,14 @@ const BuildTable = (props: any) => {
       <Typography variant='subtitle2'>
         <Box
           fontWeight={700}
-          fontFamily='Helvetica, Arial, sans-serif'
+          className='subTitleMetricStyle'
           mb={props.loader || props.failureMsg ? 2 : 1.5}
         >
           <Text tid='buildsDetails' />
         </Box>
       </Typography>
       {loader ? (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       ) : failureMsg ? (

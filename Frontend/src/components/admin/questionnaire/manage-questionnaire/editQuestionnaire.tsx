@@ -5,6 +5,7 @@ import {
   TextField,
   Button,
   makeStyles,
+  MuiThemeProvider,
   SnackbarContent,
   Snackbar,
   FormControlLabel,
@@ -14,7 +15,7 @@ import {
   CircularProgress,
   Tooltip,
 } from '@material-ui/core';
-import { buttonStyle } from '../../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../../common/common';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
 import { MANAGE_QUESTIONNAIRES } from '../../../../pages/admin';
@@ -33,12 +34,13 @@ import InfoIcon from '@material-ui/icons/Info';
 import { useActions, setAppBarCenterText } from '../../../../actions';
 import DropDown from '../../../common/dropDown';
 import { Text } from '../../../../common/Language';
+import '../../../../css/assessments/style.css';
 
 const warningTimePercentageArray = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
 const useStyles = makeStyles((theme) => ({
-  lastButton: {
-    marginTop: '28px',
+  button: {
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
@@ -47,62 +49,9 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     marginTop: theme.spacing(2),
   },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
-  },
-  // formContainer: {
-  //   display: 'flex',
-  //   flexWrap: 'wrap',
-  //   marginTop: '10px',
-  // },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  button: {
-    marginTop: '28px',
-    position: 'relative',
-    minWidth: '10%',
-    marginRight: '20px',
-    ...buttonStyle,
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  description: {
-    marginTop: '10px',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },
-  smallFlexContainer: {
-    display: 'flex',
-  },
-  infoIcon: {
-    paddingTop: '8px',
-    cursor: 'pointer',
-  },
-  numberInput: { marginTop: '-14px' },
-  numberInputOutlinedTextBox: { marginTop: '7px' },
-  dropdown: {
-    minWidth: '100%',
-  },
-  centerAligned: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rightAligned: {
-    float: 'right',
   },
 }));
 
@@ -494,6 +443,7 @@ const EditQuestionnaire = (props: any) => {
   };
 
   const renderMapQuestions = () => {
+    props.handleMapQuestionStandalone(props.questionnaire);
     return (
       <MapQuestionsToQuestionnaires
         questionnaire={`${props.questionnaire.name} v${props.questionnaire.version}`}
@@ -586,7 +536,7 @@ const EditQuestionnaire = (props: any) => {
         value={postData.warningTimePercentage}
         list={warningTimePercentageArray}
         label={'Choose the warning time(%)'}
-        dropDownClass={classes.dropdown}
+        dropDownClass='dropdownWidth'
       />
     );
   };
@@ -604,24 +554,22 @@ const EditQuestionnaire = (props: any) => {
     }
     warningTimeMinutes = Math.floor(warningTimeMinutes);
     return (
-      <div className={classes.numberInput}>
-        <TextField
-          className={classes.textField}
-          multiline
-          disabled
-          fullWidth
-          value={`Warning Time : ${warningTimeMinutes} ${
-            warningTimeMinutes === 1 ? 'minute' : 'minutes'
-          }`}
-          variant='outlined'
-        />
-      </div>
+      <TextField
+        className='textFieldStyle'
+        multiline
+        disabled
+        fullWidth
+        value={`Warning Time : ${warningTimeMinutes} ${
+          warningTimeMinutes === 1 ? 'minute' : 'minutes'
+        }`}
+        variant='outlined'
+      />
     );
   };
 
   const renderRandomizeCheckbox = () => {
     return (
-      <div className={classes.smallFlexContainer}>
+      <div>
         <FormControlLabel
           control={
             <Checkbox
@@ -632,93 +580,89 @@ const EditQuestionnaire = (props: any) => {
           }
           label={<Typography color='textSecondary'>Randomize</Typography>}
         />
-        <Tooltip
-          title={
-            <Typography style={{ width: '15vw', fontSize: '11px' }}>
-              <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheAssessment' />
-            </Typography>
-          }
-        >
-          <div className={classes.infoIcon}>
-            <InfoIcon style={{ fontSize: 23 }} />
-          </div>
-        </Tooltip>
+        <MuiThemeProvider theme={tooltipTheme}>
+          <Tooltip
+            title={
+              <Typography className='tooltipTitleStyle'>
+                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheAssessment' />
+              </Typography>
+            }
+          >
+            <InfoIcon className='infoIconStyle' />
+          </Tooltip>
+        </MuiThemeProvider>
       </div>
     );
   };
 
   const renderHideResultCheckbox = () => {
     return (
-      <div className={classes.centerAligned}>
-        <div className={classes.smallFlexContainer}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={postData.hideResult}
-                onChange={changeHideResult}
-                value='hideResult'
-                disabled={postData.showRecommendations}
-              />
-            }
-            label={<Typography color='textSecondary'>Hide Result</Typography>}
-          />
+      <div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={postData.hideResult}
+              onChange={changeHideResult}
+              value='hideResult'
+              disabled={postData.showRecommendations}
+            />
+          }
+          label={<Typography color='textSecondary'>Hide Result</Typography>}
+        />
+        <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography style={{ width: '18vw', fontSize: '11px' }}>
+              <Typography className='tooltipTitleStyle'>
                 <Text tid='resultWillNotBeDisplayedAtTheEndOfTheAssessment' />
                 <br />
                 <strong>
-                  <Text tid='note' />
+                  <Text tid='note' /> &nbsp;
                 </strong>
                 <Text tid='optionDisabledWhenShowRecommendationsSelected' />
               </Typography>
             }
           >
-            <div className={classes.infoIcon}>
-              <InfoIcon style={{ fontSize: 23 }} />
-            </div>
+            <InfoIcon className='infoIconStyle' />
           </Tooltip>
-        </div>
+        </MuiThemeProvider>
       </div>
     );
   };
 
   const renderShowRecommendationCheckbox = () => {
     return (
-      <div className={classes.rightAligned}>
-        <div className={classes.smallFlexContainer}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={postData.showRecommendations}
-                onChange={changeShowRecommendations}
-                value='Show Recommendation'
-                disabled={postData.timeOut || postData.hideResult}
-              />
-            }
-            label={
-              <Typography color='textSecondary'>
-                <Text tid='showRecommendations' />
-              </Typography>
-            }
-          />
+      <div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={postData.showRecommendations}
+              onChange={changeShowRecommendations}
+              value='Show Recommendation'
+              disabled={postData.timeOut || postData.hideResult}
+            />
+          }
+          label={
+            <Typography color='textSecondary'>
+              <Text tid='showRecommendations' />
+            </Typography>
+          }
+        />
+        <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography style={{ width: '19vw', fontSize: '11px' }}>
+              <Typography className='tooltipTitleStyle'>
                 <Text tid='recommendationsWillBeDisplayed' />
                 <br />
                 <strong>
-                  <Text tid='note' />
-                </strong>{' '}
+                  <Text tid='note' /> &nbsp;
+                </strong>
                 <Text tid='hideResultSelected' />
               </Typography>
             }
           >
-            <div className={classes.infoIcon}>
-              <InfoIcon style={{ fontSize: 23 }} />
-            </div>
+            <InfoIcon className='infoIconStyle' />
           </Tooltip>
-        </div>
+        </MuiThemeProvider>
       </div>
     );
   };
@@ -728,9 +672,9 @@ const EditQuestionnaire = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
-              className={classes.lastButton}
+              className={classes.button}
               variant='outlined'
               onClick={handleSuccessPageBackButton}
             >
@@ -758,7 +702,7 @@ const EditQuestionnaire = (props: any) => {
               onChange={handleNameChange}
               disabled={true}
               fullWidth
-              className={classes.textField}
+              className='textFieldStyle'
             />
           </Grid>
           <Grid item xs={12}>
@@ -772,11 +716,9 @@ const EditQuestionnaire = (props: any) => {
               onChange={handleDescriptionChange}
               variant='outlined'
               fullWidth
-              className={classes.description}
             />
           </Grid>
         </Grid>
-        <br />
         {categoryArray.map((el: string, i: number) => {
           return renderCategories(el, i);
         })}
@@ -788,7 +730,6 @@ const EditQuestionnaire = (props: any) => {
               name='benchmarkScore'
               label='Benchmark Score'
               value={postData.benchmarkScore}
-              className={classes.description}
               onChange={handleBenchmarkScoreChange}
               InputProps={{ disableUnderline: true }}
               fullWidth
@@ -797,7 +738,7 @@ const EditQuestionnaire = (props: any) => {
         </Grid>
         <Grid container spacing={5} className={classes.grid}>
           <Grid item xs={3}>
-            <div className={classes.smallFlexContainer}>
+            <div>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -809,26 +750,27 @@ const EditQuestionnaire = (props: any) => {
                 }
                 label={<Typography color='textSecondary'>Timed</Typography>}
               />
-              <Tooltip
-                title={
-                  <Typography style={{ width: '14vw', fontSize: '11px' }}>
-                    <Text tid='assessmentWillBeTimed' />
-                    <br />
-                    <strong>
-                      <Text tid='note' />
-                    </strong>{' '}
-                    <Text tid='optionDisabledWhenShowRecommendationsSelected.' />
-                  </Typography>
-                }
-              >
-                <div className={classes.infoIcon}>
-                  <InfoIcon style={{ fontSize: 23 }} />
-                </div>
-              </Tooltip>
+              <MuiThemeProvider theme={tooltipTheme}>
+                <Tooltip
+                  title={
+                    <Typography className='tooltipTitleStyle'>
+                      <Text tid='assessmentWillBeTimed' />
+
+                      <br />
+                      <strong>
+                        <Text tid='note' /> &nbsp;
+                      </strong>
+                      <Text tid='optionDisabledWhenShowRecommendationsSelected' />
+                    </Typography>
+                  }
+                >
+                  <InfoIcon className='infoIconStyle' />
+                </Tooltip>
+              </MuiThemeProvider>
             </div>
           </Grid>
           <Grid item xs={3}>
-            <div className={classes.numberInput}>
+            <div className='numberInput'>
               <TextField
                 required={postData.timeOut ? false : true}
                 type='number'
@@ -840,7 +782,7 @@ const EditQuestionnaire = (props: any) => {
                 onChange={updateTimeOutTime}
                 disabled={postData.timeOut ? false : true}
                 InputProps={{ disableUnderline: true }}
-                className={classes.textField}
+                className='textFieldStyle'
               />
             </div>
           </Grid>
@@ -850,9 +792,7 @@ const EditQuestionnaire = (props: any) => {
             {renderWarningTimePercentageDropDown()}
           </Grid>
           <Grid item xs={3}>
-            <div className={classes.numberInputOutlinedTextBox}>
-              {renderWarningTime()}
-            </div>
+            {renderWarningTime()}
           </Grid>
         </Grid>
         <Grid container spacing={3} className={classes.grid}>
@@ -866,7 +806,7 @@ const EditQuestionnaire = (props: any) => {
             {renderShowRecommendationCheckbox()}
           </Grid>
         </Grid>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.button}
             variant='outlined'
@@ -886,7 +826,7 @@ const EditQuestionnaire = (props: any) => {
             <Text tid='save' />
           </Button>
           <Button
-            className={classes.lastButton}
+            className={classes.button}
             onClick={handleMapQuestionsButton}
             variant='outlined'
           >
@@ -912,7 +852,7 @@ const EditQuestionnaire = (props: any) => {
           questionnaireComponent()
         )
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

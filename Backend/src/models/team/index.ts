@@ -5,8 +5,8 @@ export interface TeamInfo {
     createdOn?: number;
     manager?: string;
     managerId?: string;
-    metrics: MetricsTool[];
-    order: [string];
+    metrics?: MetricsTool[];
+    order: string[];
     services?: ServiceInfo[];
     teamId: string;
     teamName: string;

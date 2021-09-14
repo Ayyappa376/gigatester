@@ -8,7 +8,6 @@ import {
   TableCell,
   Typography,
   TableBody,
-  Checkbox,
   Button,
   Snackbar,
   SnackbarContent,
@@ -28,6 +27,7 @@ import { withRouter } from 'react-router-dom';
 import { ModalComponent } from '../../../modal';
 import { getDate } from '../../../../utils/data';
 import { Text } from '../../../../common/Language';
+import '../../../../css/assessments/style.css';
 
 export interface Questionnaire {
   active?: boolean;
@@ -55,39 +55,11 @@ export interface CategoriesMap {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     left: '45%',
     minWidth: '10%',
     ...buttonStyle,
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
   },
   actionsBlock: {
     display: 'flex',
@@ -95,31 +67,15 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
   },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tableCell: {
-    borderRadius: '0px',
-    paddingBottom: '7px',
-    paddingTop: '7px',
   },
 }));
 
@@ -133,9 +89,6 @@ const ManageQuestionnaires = (props: any) => {
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
   //    const [deleteQuestionnaireName, setDeleteQuestionnaireName] = useState('');
-  const userDetails = useSelector((state: IRootState) => {
-    return state.user;
-  });
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
@@ -233,42 +186,36 @@ const ManageQuestionnaires = (props: any) => {
   const renderPage = () => {
     return (
       <Fragment>
-        <Container
-          maxWidth='md'
-          component='div'
-          classes={{
-            root: classes.containerRoot,
-          }}
-        >
+        <Container maxWidth='md' component='div' className='containerRoot'>
           <Backdrop className={classes.backdrop} open={backdropOpen}>
             <CircularProgress color='inherit' />
           </Backdrop>
-          <Paper style={{ width: '100%', marginTop: '15px' }}>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
+          <Paper className='tableArea'>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='questionnaires' />
                     </Typography>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell} align='center'>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell' align='center'>
+                    <Typography className='tableHeadText'>
                       <Text tid='version' />
                     </Typography>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell} align='center'>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell' align='center'>
+                    <Typography className='tableHeadText'>
                       <Text tid='actions' />
                     </Typography>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell} align='center'>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell' align='center'>
+                    <Typography className='tableHeadText'>
                       <Text tid='published' />
                     </Typography>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell} align='center'>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell' align='center'>
+                    <Typography className='tableHeadText'>
                       <Text tid='modifiedOn' />
                     </Typography>
                   </TableCell>
@@ -284,30 +231,22 @@ const ManageQuestionnaires = (props: any) => {
                         : { background: 'white' }
                     }
                   >
-                    <TableCell
-                      component='th'
-                      scope='row'
-                      className={classes.tableCell}
-                    >
-                      <Typography className={classes.tableBodyText}>
+                    <TableCell component='th' scope='row' className='tableCell'>
+                      <Typography className='tableBodyText'>
                         {row.name}
                       </Typography>
                     </TableCell>
                     <TableCell
                       component='th'
                       scope='row'
-                      className={classes.tableCell}
+                      className='tableCell'
                       align='center'
                     >
-                      <Typography className={classes.tableBodyText}>
+                      <Typography className='tableBodyText'>
                         {row.version ? row.version : 1}
                       </Typography>
                     </TableCell>
-                    <TableCell
-                      component='th'
-                      scope='row'
-                      className={classes.tableCell}
-                    >
+                    <TableCell component='th' scope='row' className='tableCell'>
                       <div className={classes.actionsBlock}>
                         <MaterialLink
                           href='#'
@@ -352,7 +291,7 @@ const ManageQuestionnaires = (props: any) => {
                     <TableCell
                       component='th'
                       scope='row'
-                      className={classes.tableCell}
+                      className='tableCell'
                       align='center'
                     >
                       {row.active ? (
@@ -365,9 +304,9 @@ const ManageQuestionnaires = (props: any) => {
                       component='th'
                       scope='row'
                       align='center'
-                      className={classes.tableCell}
+                      className='tableCell'
                     >
-                      <Typography className={classes.tableBodyText}>
+                      <Typography className='tableBodyText'>
                         {row.active
                           ? row.publishedOn
                             ? getDate(row.publishedOn)
@@ -382,7 +321,7 @@ const ManageQuestionnaires = (props: any) => {
               </TableBody>
             </Table>
           </Paper>
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -419,7 +358,7 @@ const ManageQuestionnaires = (props: any) => {
       {fetchQuestionnaires ? (
         renderPage()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

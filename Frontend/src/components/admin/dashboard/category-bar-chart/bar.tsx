@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Bar } from 'react-chartjs-2';
 import { makeStyles } from '@material-ui/styles';
 import { Container } from '@material-ui/core';
@@ -33,6 +33,7 @@ interface IProps {
 }
 const useStyles = makeStyles((theme) => ({
   root: {
+    marginLeft: '10%',
     width: '80%',
     height: '80%',
   },

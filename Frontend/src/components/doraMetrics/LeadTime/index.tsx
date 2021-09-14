@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Redirect } from 'react-router-dom';
-import ReactApexChart from 'react-apexcharts';
+import { useHistory } from 'react-router-dom';
+//import ReactApexChart from 'react-apexcharts';
+import Chart from 'react-apexcharts';
 import { Box, Typography, Container, Grid } from '@material-ui/core';
 import { Alert, AlertTitle } from '@material-ui/lab';
 import Loader from '../../loader';
 import { useSelector } from 'react-redux';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
-import { ALL_TEAMS } from '../../../pages/metrics/metric-select/metricsList';
-import { ILeadTimeDataItem } from '../../../model/metrics/doraData';
+import { ILeadTimeDataItem, ITrendDataItem } from '../../../model/metrics/doraData';
 import { Text } from '../../../common/Language';
-import '../style.css';
+import '../../../css/metrics/style.css';
 
 export default function LeadTime(props: any) {
   const stateVariable = useSelector((state: IRootState) => {
@@ -19,110 +19,133 @@ export default function LeadTime(props: any) {
   const [leadTimeGraphData, setLeadTimeGraphData] = useState<
     ILeadTimeDataItem[]
   >([]);
+  const [trendData, setTrendData] = useState<
+    ITrendDataItem[]
+  >([]);
   const [loader, setLoader] = useState(true);
   const [failureMsg, setFailureMsg] = useState(false);
   const [averageTime, setAverageTime] = useState('');
   const [level, setLevel] = useState('');
+  const history = useHistory();
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange]);
+    setLeadTimeGraphData([]);
+    setTrendData([]);
+  }, [props.queryParams]);
 
   const fetchData = () => {
-    let { timeline, focusTeam, selectedDateRange } = props;
+    let { queryParams } = props;
     let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day'
-          ? '/api/metrics/dora/leadTime'
-          : `/api/metrics/dora/leadTime?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/dora/leadTime?teamId=${focusTeam.toString()}`
-          : `/api/metrics/dora/leadTime?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    }
-
+    url = queryParams ? `/api/metrics/dora/leadTime${queryParams}` : `/api/metrics/dora/leadTime`;
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setLeadTimeGraphData(
-          response.graphData.sort((a: any, b: any) => {
-            return a.timestamp <= b.timestamp ? -1 : 1;
-          })
-        );
-        setLoader(false);
-        getAverageTimeInHours(response.aggregateValue);
-        setLevel(response.level);
+        if (response) {
+          setLeadTimeGraphData(
+            response.graphData.sort((a: ILeadTimeDataItem, b: ILeadTimeDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setTrendData(
+            response.trendData.sort((a: ITrendDataItem, b: ITrendDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setLoader(false);
+          getAverageTimeInHours(response.aggregateValue);
+          setLevel(response.level);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
+          history.push('/relogin')
         } else {
-          setFailureMsg(true);
+          history.push('/error')
         }
       });
   };
 
-  const getAverageTimeInHours = (minutes: number) => {
-    setAverageTime(
-      (minutes / 60).toFixed() + ':' + (minutes % 60).toFixed() + ' ' + 'Hrs'
-    );
+  const getAverageTimeInHours = (totalMinutes: number) => {
+    let hours: number = (totalMinutes / 60);
+    let minutes: string = (totalMinutes % 60).toFixed(0);
+
+    if (hours >= 24) {
+      let days: string = (hours / 24).toFixed(0);
+      let hrs: string = (hours % 24).toFixed(0);
+      setAverageTime(`${days} days ${hrs}:${minutes} hrs`);
+    } else {
+      setAverageTime(`${hours.toFixed(0)}:${minutes} hrs`);
+    }
   };
 
   const getLeadCount = () => {
     const totalLeadTime: any[] = [];
+    const trends: any[] = [];
 
-    leadTimeGraphData.map((data: any) => {
+    leadTimeGraphData.map((data: ILeadTimeDataItem) => {
       totalLeadTime.push([
         data.timestamp,
         data.issueCount > 0
-          ? Math.round(data.totalLeadTime / data.issueCount)
+          ? Math.round(data.totalLeadTime / (data.issueCount * 60)) //converting to average hours
           : 0,
       ]);
+    });
+
+    trendData.map((data: ITrendDataItem) => {
+      trends.push([data.timestamp, data.value]);
     });
 
     const dataSet = {
       series: [
         {
-          name: 'Lead Time',
+          name: 'Lead Time for Changes',
+          type: 'area',
           data: totalLeadTime,
+        },
+        {
+          name: 'Trends',
+          type: 'line',
+          data: trends,
         },
       ],
       options: {
         chart: {
-          id: 'chart2',
-          type: 'line',
+          id: 'lead_time',
+          type: 'area',
+          stacked: false,
           height: 230,
           toolbar: {
-            autoSelected: 'pan',
+//            autoSelected: 'pan',
             show: false,
           },
         },
-        colors: ['#000080'],
-        stroke: {
-          curve: 'smooth',
-          width: 2,
-        },
-        legend: {
-          position: 'top',
-          horizontalAlign: 'right',
-        },
+        colors: ['#FFC300', '#edb500'],
         dataLabels: {
           enabled: false,
         },
+        stroke: {
+          curve: 'smooth',
+          width: 1,
+        },
         fill: {
+          type: 'solid',
           opacity: 2,
+        },
+        legend: {
+          show: false,
+        },
+        markers: {
+          size: 0,
         },
         xaxis: {
           type: 'datetime',
@@ -133,16 +156,40 @@ export default function LeadTime(props: any) {
         yaxis: {
           labels: {
             formatter: (value: number) => {
-              return (value / 60).toFixed();
+              return value.toFixed(2);
             },
           },
           title: {
-            text: 'Number of Hours',
+            text: 'Avg. Lead Time (in hours)',
           },
         },
         tooltip: {
+          enabledOnSeries:[0],
           x: {
-            format: 'dd/MM/yy',
+            format: 'dd MMM yyyy',
+          },
+          y: {
+            formatter: function (value: number) {
+              if (value > 24) {
+                let days: string = (value / 24).toFixed(0);
+                let hrs: string = (value % 24).toFixed(2);
+                return days + ' days ' + hrs + ' hrs';
+              } else {
+                return value.toFixed(2) + ' hrs';
+              }
+            },
+          },
+        },
+        noData: {
+          text: 'Loading...',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#000000',
+            fontSize: '12.5px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
           },
         },
       },
@@ -164,7 +211,7 @@ export default function LeadTime(props: any) {
                   <Text tid='leadTimeForChanges' />
                 </Grid>
                 <Grid item xs={3}>
-                  <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>
+                  <span className='doraSubTitles'>
                     <Text tid='level' />:
                   </span>{' '}
                   <span
@@ -175,14 +222,16 @@ export default function LeadTime(props: any) {
                         ? 'levelHighColor'
                         : level === 'Medium'
                         ? 'levelMediumColor'
-                        : 'levelLowColor'
+                        : level === 'low'
+                        ? 'levelLowColor'
+                        : 'levelNAColor'
                     }
                   >
                     {level}
                   </span>
                 </Grid>
                 <Grid item xs={4}>
-                  <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>
+                  <span className='doraSubTitles'>
                     <Text tid='averageTime' />
                   </span>{' '}
                   <span className='countText'>
@@ -193,7 +242,7 @@ export default function LeadTime(props: any) {
             </Box>
           </Typography>
           {loader ? (
-            <Container className='loader'>
+            <Container className='loaderStyle'>
               <Loader />
             </Container>
           ) : failureMsg ? (
@@ -204,10 +253,10 @@ export default function LeadTime(props: any) {
               <Text tid='somethingWentWrong' />
             </Alert>
           ) : (
-            <ReactApexChart
+            <Chart
               options={getLeadCount().options}
               series={getLeadCount().series}
-              type='line'
+              type='area'
               height={250}
             />
           )}

@@ -19,7 +19,6 @@ import {
   Tooltip,
   Container,
   Grid,
-  Paper,
 } from '@material-ui/core';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DashboardIcon from '@material-ui/icons/Dashboard';
@@ -67,23 +66,24 @@ import './style.css';
 export const ADMIN_HOME = 'admin-home';
 export const DASHBOARD = 'dashboard';
 export const CREATE_USER = 'create-user';
-export const MANAGE_USERS = 'manage-users';
+export const MANAGE_USERS = 'manageUsers';
 export const EDIT_USER = 'edit-user';
 export const CREATE_TEAM = 'create-team';
-export const MANAGE_TEAMS = 'manage-teams';
+export const MANAGE_TEAMS = 'manageTeams';
 export const EDIT_TEAM = 'edit-team';
 export const ASSIGN_ASSESSMENT = 'assign-assessment';
 export const MAP_METRICS_TOOLS = 'map-metrics-tools';
 export const CREATE_QUESTIONNAIRE = 'create-questionnaire';
-export const MANAGE_QUESTIONNAIRES = 'manage-questionnaires';
+export const MANAGE_QUESTIONNAIRES = 'manageQuestionnaire';
 export const EDIT_QUESTIONNAIRE = 'edit-assessment';
 export const CREATE_QUESTION = 'create-question';
-export const MANAGE_QUESTION = 'manage-question';
+export const MANAGE_QUESTION = 'manageQuestions';
 export const EDIT_QUESTION = 'edit-question';
 export const FEEDBACK = 'feedback';
 export const MANAGE_SETTINGS = 'manage-settings';
 export const EDIT_SETTINGS_USER_CONFIG = 'UserConfig';
 export const EDIT_SETTINGS_TEAM_CONFIG = 'TeamConfig';
+export const EDIT_SETTINGS_SERVICE_CONFIG = 'ServiceConfig';
 export const EDIT_SETTINGS_GENERAL_CONFIG = 'GeneralConfig';
 export const EDIT_SETTINGS_COLLECTOR_CONFIG = 'CollectorConfig';
 const drawerWidth = 220;
@@ -240,10 +240,12 @@ export default function Admin() {
 
   const switchToAdminHome = (event: any) => {
     setButtonValue(ADMIN_HOME);
+    setTitle('')
   };
 
   const switchPage = (pageName: string) => {
     setButtonValue(pageName);
+    setTitle(pageName)
   };
 
   const handleDashboard = () => {
@@ -316,6 +318,7 @@ export default function Admin() {
     setButtonValue(EDIT_QUESTIONNAIRE);
     setFocusQuestionnaire(questionnaire);
     setMapQuestionStandalone(true);
+    setTitle('manageQuestionnaire');
   };
 
   const handleCreateQuestion = () => {
@@ -427,7 +430,7 @@ export default function Admin() {
       case ADMIN_HOME:
         return renderDefault();
       case DASHBOARD:
-        return <Dashboard source='admin' />;
+        return <Dashboard sideMenu={true} />;
       case CREATE_USER:
         return <CreateUser goBack={switchToAdminHome} />;
       case MANAGE_USERS:
@@ -441,7 +444,7 @@ export default function Admin() {
       case EDIT_USER:
         return <EditUser user={focusUserName} goBack={switchPage} />;
       case CREATE_TEAM:
-        return <CreateTeam goBack={switchPage} />;
+        return <CreateTeam goBack={switchToAdminHome} />;
       case MANAGE_TEAMS:
         return (
           <ManageTeams
@@ -452,13 +455,13 @@ export default function Admin() {
           />
         );
       case EDIT_TEAM:
-        return <EditTeam teamName={focusTeamName} goBack={switchPage} />;
+        return <EditTeam teamName={focusTeamName} goBack={switchPage} mapMetricsClicked={handleMapMetricsClicked} />;
       case ASSIGN_ASSESSMENT:
         return <AssignAssessment teamId={focusTeamName} goBack={switchPage} />;
       case MAP_METRICS_TOOLS:
         return <MapMetricsTools teamId={focusTeamName} goBack={switchPage} />;
       case CREATE_QUESTIONNAIRE:
-        return <CreateQuestionnaire goBack={switchPage} />;
+        return <CreateQuestionnaire goBack={switchToAdminHome} />;
       case MANAGE_QUESTIONNAIRES:
         return (
           <ManageAssessments
@@ -471,12 +474,13 @@ export default function Admin() {
         return (
           <EditAssessment
             questionnaire={focusQuestionnaire}
+            handleMapQuestionStandalone={switchToMapQuestionsStandalone}
             goBack={switchPage}
             isMapQuestions={mapQuestionStandalone}
           />
         );
       case CREATE_QUESTION:
-        return <CreateQuestion goBack={switchPage} />;
+        return <CreateQuestion goBack={switchToAdminHome} />;
       case MANAGE_QUESTION:
         return (
           <ManageQuestion
@@ -489,7 +493,7 @@ export default function Admin() {
           <EditQuestion question={focusQuestionData} goBack={switchPage} />
         );
       case FEEDBACK:
-        return <AdminFeedback goBack={switchPage} />;
+        return <AdminFeedback goBack={switchToAdminHome} />;
       case MANAGE_SETTINGS:
         return (
           <ManageSettings
@@ -499,6 +503,7 @@ export default function Admin() {
         );
       case EDIT_SETTINGS_USER_CONFIG:
       case EDIT_SETTINGS_TEAM_CONFIG:
+      case EDIT_SETTINGS_SERVICE_CONFIG:  
         return (
           <EditSettingsObjectConfig objType={buttonValue} goBack={switchPage} />
         );

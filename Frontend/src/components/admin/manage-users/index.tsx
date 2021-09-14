@@ -17,6 +17,7 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  MuiThemeProvider,
   Tooltip,
   TableSortLabel,
 } from '@material-ui/core';
@@ -27,74 +28,35 @@ import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { withRouter } from 'react-router-dom';
 import SearchControl from '../../common/searchControl';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
 import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { getDate } from '../../../utils/data';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     left: '45%',
     minWidth: '10%',
     ...buttonStyle,
   },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   formControl: {
     minWidth: '100%',
   },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
   firstColumn: {
     maxWidth: '150px',
@@ -110,10 +72,6 @@ const useStyles = makeStyles((theme) => ({
   },
   buttons: {
     ...buttonStyle,
-  },
-  sortLabelIcon: {
-    opacity: 0.3,
-    color: 'white',
   },
 }));
 
@@ -443,13 +401,7 @@ const ManageUsers = (props: any) => {
   const renderUsersTable = () => {
     return (
       <Fragment>
-        <Container
-          maxWidth='lg'
-          component='div'
-          classes={{
-            root: classes.containerRoot,
-          }}
-        >
+        <Container maxWidth='lg' component='div' className='containerRoot'>
           <Backdrop className={classes.backdrop} open={backdropOpen}>
             <CircularProgress color='inherit' />
           </Backdrop>
@@ -494,76 +446,64 @@ const ManageUsers = (props: any) => {
               </Grid>
             </Grid>
           </div>
-          <Paper style={{ width: '100%', marginTop: '20px' }}>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
+          <Paper className='tableArea'>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
+                  <TableCell className='tableHeadCell'>
                     <TableSortLabel
-                      classes={{
-                        icon: classes.sortLabelIcon,
-                      }}
                       active={orderBy === 'name'}
                       direction={orderBy === 'name' ? order : 'asc'}
                       onClick={() => {
                         handleRequestSort('name');
                       }}
                     >
-                      <Typography className={classes.tableHeadText}>
+                      <Typography className='tableHeadText'>
                         <Text tid='user' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
+                  <TableCell align='center' className='tableHeadCell'>
                     <TableSortLabel
-                      classes={{
-                        icon: classes.sortLabelIcon,
-                      }}
                       active={orderBy === 'date'}
                       direction={orderBy === 'date' ? order : 'asc'}
                       onClick={() => {
                         handleRequestSort('date');
                       }}
                     >
-                      <Typography className={classes.tableHeadText}>
+                      <Typography className='tableHeadText'>
                         <Text tid='createdOn' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
+                  <TableCell align='center' className='tableHeadCell'>
                     <TableSortLabel
-                      classes={{
-                        icon: classes.sortLabelIcon,
-                      }}
                       active={orderBy === 'roles'}
                       direction={orderBy === 'roles' ? order : 'asc'}
                       onClick={() => {
                         handleRequestSort('roles');
                       }}
                     >
-                      <Typography className={classes.tableHeadText}>
+                      <Typography className='tableHeadText'>
                         <Text tid='roles' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
+                  <TableCell align='center' className='tableHeadCell'>
                     <TableSortLabel
-                      classes={{
-                        icon: classes.sortLabelIcon,
-                      }}
                       active={orderBy === 'team'}
                       direction={orderBy === 'team' ? order : 'asc'}
                       onClick={() => {
                         handleRequestSort('team');
                       }}
                     >
-                      <Typography className={classes.tableHeadText}>
+                      <Typography className='tableHeadText'>
                         <Text tid='team' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='actions' />
                     </Typography>
                   </TableCell>
@@ -588,16 +528,22 @@ const ManageUsers = (props: any) => {
                           scope='row'
                           className={classes.firstColumn}
                         >
-                          <Tooltip
-                            title={<Typography>{row.emailId}</Typography>}
-                          >
-                            <Typography className={classes.tableBodyText}>
-                              {row.emailId}
-                            </Typography>
-                          </Tooltip>
+                          <MuiThemeProvider theme={tooltipTheme}>
+                            <Tooltip
+                              title={
+                                <Typography className='tooltipTitleStyle'>
+                                  {row.emailId}
+                                </Typography>
+                              }
+                            >
+                              <Typography className='tableBodyText'>
+                                {row.emailId}
+                              </Typography>
+                            </Tooltip>
+                          </MuiThemeProvider>
                         </TableCell>
                         <TableCell component='th' scope='row' align='center'>
-                          <Typography className={classes.tableBodyText}>
+                          <Typography className='tableBodyText'>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
                           </Typography>
                         </TableCell>
@@ -607,7 +553,7 @@ const ManageUsers = (props: any) => {
                           align='center'
                           className={classes.rolesColumn}
                         >
-                          <Typography className={classes.tableBodyText}>
+                          <Typography className='tableBodyText'>
                             {row.roles ? commaSeparators(row.roles) : 'Member'}
                           </Typography>
                         </TableCell>
@@ -617,7 +563,7 @@ const ManageUsers = (props: any) => {
                           align='center'
                           className={classes.teamsColumn}
                         >
-                          <Typography className={classes.tableBodyText}>
+                          <Typography className='tableBodyText'>
                             {commaSeparators(row.teams)}
                           </Typography>
                         </TableCell>
@@ -649,7 +595,7 @@ const ManageUsers = (props: any) => {
               handleChange={handlePaginationClick}
             />
           </Fragment>
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -668,7 +614,7 @@ const ManageUsers = (props: any) => {
       {responseReceived ? (
         renderUsersTable()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

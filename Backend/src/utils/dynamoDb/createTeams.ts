@@ -64,13 +64,9 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
     throw err;
   }
 
-  //add id to services
-  if(teamData.services) {
-    addIdToServices(teamData.services);
-  }
-
-  const item: any = {
+  const item: TeamInfo = {
     active: 'true',
+    createdBy: userId,
     createdOn: new Date().getTime(),
     manager: teamData.manager,
     managerId: managerId[0].id,
@@ -79,6 +75,12 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
     teamId: teamData.teamName,
     teamName: teamData.teamName,
   };
+
+  //remove inactive services and add id, createdBy and createdOn info and add the services field
+  if(teamData.services) {
+    item.services = processServices(teamData.services, userId);
+//    addIdToServices(teamData.services);
+  }
 
   Object.keys(teamData).forEach((val, i) => {
     if (
@@ -91,7 +93,8 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
         val === 'orgId' ||
         val === 'teamName' ||
         val === 'manager' ||
-        val === 'managerId'
+        val === 'managerId' ||
+        val === 'services'
       )
     ) {
       if (teamData[val].length > 0 && typeof teamData[val] === 'object') {
@@ -130,18 +133,33 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
   );
 };
 
-//add id to each services if it doesn't already exist
-const addIdToServices = (services: ServiceInfo[]) => {
+//remove inactive services and add id, createdBy and createdOn info it doesn't already exist
+const processServices = (services: ServiceInfo[], userId: string): ServiceInfo[] => {
+  const servicesNewList: ServiceInfo[] = [];
   services.forEach((service: ServiceInfo) => {
-    if(! service.id) {
-      const partialName = service.name.replace(/\s/g, '').substring(0, 4);
-      const rand = generate(10);
-      service.id = `${partialName}_${rand}`;
-    }
-    if(service.services) {
-      addIdToServices(service.services);
+    if(service.active === 'true') {
+      const newService: any = {};
+      Object.keys(service).forEach((val, i) => {
+        newService[val] = service[val];
+      });
+
+      if(! service.id) {
+        const partialName = service.name.replace(/\s/g, '').substring(0, 4);
+        const rand = generate(10);
+        newService.id = `${partialName}_${rand}`;
+        newService.createdBy = userId;
+        newService.createdOn = new Date().getTime();
+      }
+
+      if(service.services) {
+        newService.services = processServices(service.services, userId);
+      }
+
+      servicesNewList.push(newService);
     }
   });
+
+  return servicesNewList;
 };
 
 //fetch team Config from dynamoDb and fill in the options
@@ -262,9 +280,10 @@ export const updateTeam = async (updateInfo: TeamInfo, userId: string) => {
     throw err;
   }
 
-  //add id to services
+  //remove inactive services and add id, createdBy and createdOn info and add the services field
   if(updateInfo.services) {
-    addIdToServices(updateInfo.services);
+    updateInfo.services = processServices(updateInfo.services, userId);
+//    addIdToServices(updateInfo.services);
   }
 
   EAN['#order'] = 'order';
@@ -301,7 +320,6 @@ export const updateTeam = async (updateInfo: TeamInfo, userId: string) => {
         updateInfo[val].forEach((ele: any, j: number) => {
           if ((typeof(ele) === 'string') && (ele.match(regex))) {
             item.push(ele.split('Other:')[1]);
-            // updateTeamConfig(teamData.orgId, item[val][j]);
           } else {
             item.push(ele);
           }

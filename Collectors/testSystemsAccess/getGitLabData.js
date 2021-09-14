@@ -16,15 +16,17 @@ const { exec } = require('child_process');
 const host = `p-gp2-gitlab-1.imovetv.com`; //gitlab oss
 const token = 'zNgXNYQCjJmMj4ageSBx'; //gitlab oss
 const baseURL = `http://${host}/api/v4/`; //gitlab oss
-const projectId = '246'; //'300'; //gitlab oss
-const pipelineId = '61805'; //gitlab oss
-const commitSHA = '5e0c4e5a';
-const branchName = 'master';
+const groupId = '';
+const projectId = '246'; //'18'; //'300'; //gitlab oss
+const pipelineId = '980'; //'61805'; //gitlab oss
+//const commitSHA = '0fda4b20'; //'5e0c4e5a';
+const branchName = 'add-test-coverage';
+const commitId = '5eb54021663d1928d313bcb5007c71a9e2213735';
 
 //const host = 'gitlab.com'; //gitlab saas
 //const token = '972H4rpDnsyF9YB7tsBN'; //gitlab saas
-//const groupId = '12282487'; //'11001516/groups/12253548/groups/12282487'; //only for gitlab saas
 //const baseURL = `https://${host}/api/v4/`; //gitlab saas
+//const groupId = '12282487'; //'11001516/groups/12253548/groups/12282487'; //only for gitlab saas
 //const projectId = '27209474'; //'25066110'; //gitlab saas
 //const pipelineId = ''; //gitlab saas
 
@@ -50,8 +52,11 @@ var getAllMergeRequestsOfProjectCreatedBeforeAfter = `projects/${projectId}/merg
 var getAllMergeRequestsOfProjectUpdatedBeforeAfter = `projects/${projectId}/merge_requests?scope=all&updated_after=${fromDate}&updated_before=${toDate}`;
 
 var getAllCommits = `projects/${projectId}/repository/commits`;
-var getCommitDetailsBySHA = `projects/${projectId}/repository/commits/${commitSHA}`;
-var getCommitDetailsByBranch = `projects/${projectId}/repository/commits/${branchName}`;
+var getAllCommitsOfBranch = `projects/${projectId}/repository/commits?ref_name=${branchName}`;
+var getCommitDetailsById = `projects/${projectId}/repository/commits/${commitId}`;
+//var getCommitDetailsBySHA = `projects/${projectId}/repository/commits/${commitSHA}`;
+//var getCommitDetailsByBranch = `projects/${projectId}/repository/commits/${branchName}`;
+var getAllRefsOfCommit = `projects/${projectId}/repository/commits/${commitId}/refs`;
 
 var getAllGroups = `groups`;
 var getForGroup = `groups/${groupId}/`;
@@ -72,7 +77,7 @@ var getPipelineJobsOfProject = `projects/${projectId}/pipelines/${pipelineId}/jo
 
 //httpRequest.httpRequest('GET', `${baseURL}${getAllProjects}?private_token=${token}`)
 //httpRequest.httpRequest('GET', `${baseURL}${getForGroup}${getAllSubGroupsOfGroup}`, undefined, undefined, header) //gitlab saas
-httpRequest.httpRequest('GET', `${baseURL}${getAllCommits}`, undefined, undefined, header) //gitlab oss
+httpRequest.httpRequest('GET', `${baseURL}${getAllCommitsOfBranch}`, undefined, undefined, header) //gitlab oss
 //httpRequest.httpRequest('GET', `${url}`, undefined, undefined, header)
 .then((data) => {
   console.log(data.statusCode);

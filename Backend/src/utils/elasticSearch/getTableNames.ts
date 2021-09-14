@@ -19,3 +19,7 @@ export function getQualityTableName(): string {
 export function getIncidentTableName(): string {
   return `${config.defaults.orgId}_${config.metricsTables.incidentTable}`;
 }
+
+export function getGitlabCommitTableName(): string {
+  return `${config.defaults.orgId}_${config.metricsTables.gitlabCommitTable}`;
+}

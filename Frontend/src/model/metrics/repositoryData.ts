@@ -21,8 +21,8 @@ export interface IRepoPullReqWaitTimeDataItem {
   totalClosureTime: number;
 }
 
-export interface IRepoPullRaiserList {
-  committerName: string;
+export interface IRepoDataItemLists {
+  committerName: string[];
 }
 
 export const STATUS_RAISED = 'Raised';

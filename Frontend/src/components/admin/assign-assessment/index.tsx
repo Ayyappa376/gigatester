@@ -23,40 +23,14 @@ import Success from '../../success-page';
 import { MANAGE_TEAMS } from '../../../pages/admin';
 import { buttonStyle } from '../../../common/common';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableCell: {
-    borderRadius: '0px',
-    padding: '7px 20px 7px 8px',
-  },
-  tableBodyText: {
-    color: '#808080',
   },
   containerRoot: {
     marginTop: '50px',
@@ -67,17 +41,11 @@ const useStyles = makeStyles((theme) => ({
     paddingBottom: theme.spacing(4),
   },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
-  },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 }));
 
@@ -176,7 +144,7 @@ const AssignAssessment = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -201,16 +169,16 @@ const AssignAssessment = (props: any) => {
           }}
         >
           <Paper style={{ width: '100%' }}>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='assessments' />
                     </Typography>
                   </TableCell>
-                  <TableCell className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='select' />
                     </Typography>
                   </TableCell>
@@ -226,20 +194,12 @@ const AssignAssessment = (props: any) => {
                         : { background: 'white' }
                     }
                   >
-                    <TableCell
-                      component='th'
-                      scope='row'
-                      className={classes.tableCell}
-                    >
-                      <Typography className={classes.tableBodyText}>
+                    <TableCell component='th' scope='row' className='tableCell'>
+                      <Typography className='tableBodyText'>
                         {row.displayName}
                       </Typography>
                     </TableCell>
-                    <TableCell
-                      component='th'
-                      scope='row'
-                      className={classes.tableCell}
-                    >
+                    <TableCell component='th' scope='row' className='tableCell'>
                       <Checkbox
                         onClick={() => {
                           questionnaireSelected(row);
@@ -252,7 +212,7 @@ const AssignAssessment = (props: any) => {
               </TableBody>
             </Table>
           </Paper>
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -293,7 +253,7 @@ const AssignAssessment = (props: any) => {
       {assessments !== null ? (
         renderPage()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

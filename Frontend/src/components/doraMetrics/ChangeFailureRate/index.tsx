@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { IRootState } from '../../../reducers';
-import { IReqStatusDataItem } from '../../../model/metrics/requirementsData';
+import { IChangeFailureRateDataItem, ITrendDataItem } from '../../../model/metrics/doraData';
 import { Http } from '../../../utils';
-import { ALL_TEAMS } from '../../../pages/metrics/metric-select/metricsList';
 import SplineAreaChart from './SplineAreaChart';
 
 export default function ChangeFailureRate(props: any) {
@@ -12,90 +11,106 @@ export default function ChangeFailureRate(props: any) {
     return state;
   });
   const [failureRateGraphData, setFailureRateGraphData] = useState<
-    IReqStatusDataItem[]
+    IChangeFailureRateDataItem[]
+  >([]);
+  const [trendData, setTrendData] = useState<
+    ITrendDataItem[]
   >([]);
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
   const [aggregateValue, setAggregateValue] = useState(0);
   const [level, setLevel] = useState('');
-
+  const history = useHistory();
+  
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange]);
+    setFailureRateGraphData([]);
+    setTrendData([]);
+  }, [props.queryParams]);
 
   const fetchData = () => {
-    let { timeline, focusTeam, selectedDateRange } = props;
+    let { queryParams } = props;
     let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day'
-          ? '/api/metrics/dora/changeFailureRate'
-          : `/api/metrics/dora/changeFailureRate?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/dora/changeFailureRate?teamId=${focusTeam.toString()}`
-          : `/api/metrics/dora/changeFailureRate?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    }
-
+    url = queryParams ? `/api/metrics/dora/changeFailureRate${queryParams}` : `/api/metrics/dora/changeFailureRate`;
+    
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setFailureRateGraphData(
-          response.graphData.sort((a: any, b: any) => {
-            return a.timestamp <= b.timestamp ? -1 : 1;
-          })
-        );
-        setLoader(false);
-        setAggregateValue(response.aggregateValue);
-        setLevel(response.level);
+        if (response) {
+          setFailureRateGraphData(
+            response.graphData.sort((a: IChangeFailureRateDataItem, b: IChangeFailureRateDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setTrendData(
+            response.trendData.sort((a: ITrendDataItem, b: ITrendDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setLoader(false);
+          setAggregateValue(response.aggregateValue);
+          setLevel(response.level);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
+          history.push('/relogin')       
         } else {
-          setFailureMsg(true);
+          history.push('/error')
         }
       });
   };
 
   const getChangeFailureRate = () => {
     const failureRate: any[] = [];
-    failureRateGraphData.map((data: any) => {
-      failureRate.push({
-        x: data.timestamp,
-        y:
-          data.totalBuilds > 0
-            ? Math.round((data.countFailBuilds / data.totalBuilds) * 100)
-            : 0,
-      });
+    const trends: any[] = [];
+
+    failureRateGraphData.map((data: IChangeFailureRateDataItem) => {
+      failureRate.push([
+        data.timestamp,
+        data.totalBuilds > 0
+          ? Math.round((data.countFailBuilds / data.totalBuilds) * 100)
+          : 0,
+      ]);
+    });
+
+    trendData.map((data: ITrendDataItem) => {
+      trends.push([data.timestamp, data.value]);
     });
 
     const dataSet = {
       series: [
         {
           name: 'Failure Rate',
+          type: 'area',
           data: failureRate,
+        },
+        {
+          name: 'Trends',
+          type: 'line',
+          data: trends,
         },
       ],
       options: {
         chart: {
-          height: 250,
+          id: 'change-fail-rate',
           type: 'area',
+          stacked: false,
+          height: 230,
           toolbar: {
             show: false,
           },
         },
+        colors: ['#017a78', '#edb500'],
         dataLabels: {
           enabled: false,
         },
@@ -103,10 +118,15 @@ export default function ChangeFailureRate(props: any) {
           curve: 'smooth',
           width: 1,
         },
-        colors: ['#fc6a26'],
+        fill: {
+          type: 'solid',
+          opacity: 2,
+        },
         legend: {
-          position: 'top',
-          horizontalAlign: 'right',
+          show: false,
+        },
+        markers: {
+          size: 0,
         },
         xaxis: {
           type: 'datetime',
@@ -116,17 +136,37 @@ export default function ChangeFailureRate(props: any) {
         },
         yaxis: {
           title: {
-            text: 'Rate in Percentage',
+            text: 'Failure Rate (in %)',
           },
           decimalsInFloat: 0,
-        },
-        tooltip: {
-          x: {
-            format: 'dd/MM/yy HH:mm',
+          labels: {
+            formatter: function (value: number) {
+              return value.toFixed(2);
+            }
           },
         },
-        fill: {
-          type: 'solid',
+        tooltip: {
+          enabledOnSeries:[0],
+          x: {
+            format: 'dd MMM yyyy',
+          },
+          y: {
+            formatter: function (value: number) {
+              return value.toFixed(2) + '%';
+            },
+          },
+        },
+        noData: {
+          text: 'Loading...',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#000000',
+            fontSize: '12.5px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
+          },
         },
       },
     };
@@ -137,7 +177,7 @@ export default function ChangeFailureRate(props: any) {
     <SplineAreaChart
       getChangeFailureRate={() => getChangeFailureRate()}
       failureMsg={failureMsg}
-      // loader={loader}
+      loader={loader}
       aggregateValue={aggregateValue}
       level={level}
     />

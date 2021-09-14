@@ -1,5 +1,6 @@
-import { devConfig } from './devConfig';
 import { betaConfig } from './betaConfig';
+import { devConfig } from './devConfig';
+import { dishintConfig } from './dishintConfig';
 import { localConfig } from './localConfig';
 import { prodConfig } from './prodConfig';
 import { qaConfig } from './qaConfig';
@@ -14,6 +15,8 @@ if (env === 'Dev') {
     apiHostUrl = qaConfig.apiHostUrl;
 } else if (env === 'Prod') {
     apiHostUrl = prodConfig.apiHostUrl;
+} else if (env === 'Dishint') {
+    apiHostUrl = dishintConfig.apiHostUrl;
 } else {
     apiHostUrl = localConfig.apiHostUrl;
 }

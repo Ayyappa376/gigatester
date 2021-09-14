@@ -23,6 +23,7 @@ import {
   InputLabel,
 } from '@material-ui/core';
 import { IRootState } from '../../../reducers';
+import { ChromePicker } from 'react-color';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { MANAGE_SETTINGS } from '../../../pages/admin';
@@ -33,20 +34,14 @@ import { buttonStyle } from '../../../common/common';
 import { ILevelAttributes, IGeneralConfigDetails } from '../../../model/system';
 import { LightTooltip } from '../../common/tooltip';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
-  },
-  grid: {
-    marginTop: theme.spacing(2),
-  },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
   },
   formContainer: {
     display: 'flex',
@@ -56,58 +51,27 @@ const useStyles = makeStyles((theme) => ({
     margin: theme.spacing(1),
     ...buttonStyle,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableCell: {
-    borderRadius: '0px',
-    paddingBottom: '7px',
-    paddingTop: '7px',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
   },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
+  popover: {
+    position: 'absolute',
+    zIndex: 2,
+  },
+  cover: {
+    position: 'fixed',
+    top: '0px',
+    right: '0px',
+    bottom: '0px',
+    left: '0px',
   },
 }));
 
@@ -119,16 +83,17 @@ const EditSettingsGeneralConfig = (props: any) => {
     lowerLimit: 0,
     upperLimit: 0,
   };
-  const [fetchedData, setFetchedData] = React.useState(false);
+  const [fetchedData, setFetchedData] = useState(false);
   const [
     resultAttributes,
     setResultAttributes,
-  ] = React.useState<IGeneralConfigDetails>({
+  ] = useState<IGeneralConfigDetails>({
     levels: [],
     performanceMetricsConstant: 3,
+    archiveDays: 0,
   });
   const [attributesPosted, setAttributesPosted] = useState(false);
-  const [backdropOpen, setBackdropOpen] = React.useState(false);
+  const [backdropOpen, setBackdropOpen] = useState(false);
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
@@ -136,8 +101,11 @@ const EditSettingsGeneralConfig = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
+  const [displayColorPicker, setDisplayColorPicker] = useState(false);
+  const [displayColorRow, setDisplayColorRow] = useState(0);
+
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='generalSettingsUpdatedSuccessfully' />;
+  let msgSuccess = <Text tid={`${props.objType}.UpdatedSuccessfully`} />;
 
   const fetchResultAttributes = () => {
     setBackdropOpen(true);
@@ -177,7 +145,7 @@ const EditSettingsGeneralConfig = (props: any) => {
   const handleSubmit = () => {
     if (validatePostData()) {
       Http.post({
-        url: `/api/v2/settings/general`,
+        url: `/api/v2/settings/${props.objType}`,
         body: {
           ...resultAttributes,
         },
@@ -309,9 +277,30 @@ const EditSettingsGeneralConfig = (props: any) => {
     setResultAttributes(attrMap);
   };
 
+  const handleAttrColorChange = (color: any, i: number) => {
+    const attrMap: IGeneralConfigDetails = { ...resultAttributes };
+    attrMap.levels[i].color = color.hex.toUpperCase();
+    setResultAttributes(attrMap);
+  };
+
+  const openColorPicker = (index: number) => {
+    setDisplayColorPicker(!displayColorPicker);
+    setDisplayColorRow(index);
+  };
+
+  const closeColorPicker = () => {
+    setDisplayColorPicker(false);
+  };
+
   const handlePerformanceMetricsConstantChange = (event: any) => {
     const attrMap: IGeneralConfigDetails = { ...resultAttributes };
     attrMap.performanceMetricsConstant = event.target.value;
+    setResultAttributes(attrMap);
+  };
+  
+  const handleArchiveDaysChange = (event: any) => {
+    const attrMap: IGeneralConfigDetails = { ...resultAttributes };
+    attrMap.archiveDays = event.target.value;
     setResultAttributes(attrMap);
   };
 
@@ -326,7 +315,7 @@ const EditSettingsGeneralConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
         >
           <TextField
             type='string'
@@ -344,7 +333,7 @@ const EditSettingsGeneralConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
         >
           <TextField
             type='number'
@@ -363,7 +352,7 @@ const EditSettingsGeneralConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
         >
           <TextField
             type='number'
@@ -382,7 +371,37 @@ const EditSettingsGeneralConfig = (props: any) => {
           component='th'
           scope='row'
           align='center'
-          className={classes.tableCell}
+          className='tableCell'
+        >
+          <TextField
+            type='string'
+            id={`${i}_color`}
+            name={`${i}_color`}
+            value={attr.color}
+            onClick={() => {
+              openColorPicker(i);
+            }}
+            fullWidth
+            autoComplete='off'
+          />
+          {displayColorPicker && displayColorRow === i ? (
+            <div className={classes.popover}>
+              <div className={classes.cover} onClick={closeColorPicker} />
+              <ChromePicker
+                onChange={(event: any) => {
+                  handleAttrColorChange(event, i);
+                }}
+                color={attr.color}
+                disableAlpha={true}
+              />
+            </div>
+          ) : null}
+        </TableCell>
+        <TableCell
+          component='th'
+          scope='row'
+          align='center'
+          className='tableCell'
         >
           <div style={{ marginTop: '10px', cursor: 'pointer' }}>
             <IconButton
@@ -411,7 +430,7 @@ const EditSettingsGeneralConfig = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -426,14 +445,19 @@ const EditSettingsGeneralConfig = (props: any) => {
       );
     }
     return (
-      <Container
-        maxWidth='lg'
-        component='div'
-        classes={{ root: classes.containerRoot }}
-      >
+      <Container maxWidth='lg' component='div' className='containerRoot'>
         <Backdrop className={classes.backdrop} open={backdropOpen}>
           <CircularProgress color='inherit' />
         </Backdrop>
+        <div style={{ width: '100%' }}>
+          <Grid container spacing={3}>
+            <Grid item sm={12}>
+              <Typography variant='h6'>
+                <Text tid={`admin.settings.${props.objType}.name`} />
+              </Typography>
+            </Grid>
+          </Grid>
+        </div>
         <form className={classes.formContainer} noValidate autoComplete='off'>
           <Paper style={{ width: '100%', marginTop: '20px', padding: '10px' }}>
             <Grid item sm={12}>
@@ -441,26 +465,31 @@ const EditSettingsGeneralConfig = (props: any) => {
                 <Text tid='scoreIndexSettings' />
               </Typography>
             </Grid>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='levelName' />
                     </Typography>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='lowerLimit' />
                     </Typography>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='upperLimit' />
                     </Typography>
                   </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='levelColor' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='delete' />
                     </Typography>
                   </TableCell>
@@ -474,7 +503,7 @@ const EditSettingsGeneralConfig = (props: any) => {
               {resultAttributes.levels.length <= 3 && (
                 <TableFooter>
                   <TableRow style={{ margin: '10px', cursor: 'pointer' }}>
-                    <TableCell className={classes.tableHeadCell}>
+                    <TableCell className='tableHeadCell'>
                       <Button
                         className={classes.iconButton}
                         startIcon={<AddIcon />}
@@ -509,12 +538,27 @@ const EditSettingsGeneralConfig = (props: any) => {
                   id={'cutoffNum'}
                   name={'cutoffNum'}
                   value={resultAttributes.performanceMetricsConstant}
-                  // style={{width: '50%'}}
-                  // label={'Number of areas to highlight in performance metrics'}
                   onChange={(event: any) => {
                     handlePerformanceMetricsConstantChange(event);
                   }}
-                  // fullWidth
+                  autoComplete='off'
+                  InputProps={{ disableUnderline: true }}
+                />
+              </Grid>
+              <Grid item sm={6}>
+                <InputLabel>
+                  <Text tid='archiveBeforeDays' />
+                </InputLabel>
+              </Grid>
+              <Grid item sm={6}>
+                <TextField
+                  type='number'
+                  id={'archiveNum'}
+                  name={'archiveNum'}
+                  value={resultAttributes.archiveDays}
+                  onChange={(event: any) => {
+                    handleArchiveDaysChange(event);
+                  }}
                   autoComplete='off'
                   InputProps={{ disableUnderline: true }}
                 />
@@ -522,7 +566,7 @@ const EditSettingsGeneralConfig = (props: any) => {
             </Grid>
           </Paper>
         </form>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'
@@ -567,7 +611,7 @@ const EditSettingsGeneralConfig = (props: any) => {
       {fetchedData ? (
         renderAttributesEditor()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

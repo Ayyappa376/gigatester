@@ -4,6 +4,7 @@ import {
   Grid,
   Button,
   makeStyles,
+  MuiThemeProvider,
   SnackbarContent,
   Snackbar,
   FormControlLabel,
@@ -13,7 +14,7 @@ import {
   Tooltip,
   TextField,
 } from '@material-ui/core';
-import { buttonStyle } from '../../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../../common/common';
 import { ADMIN_HOME } from '../../../../pages/admin';
 import { Http } from '../../../../utils';
 import { useSelector } from 'react-redux';
@@ -29,6 +30,7 @@ import { ModalComponent } from '../../../modal';
 import InfoIcon from '@material-ui/icons/Info';
 import DropDown from '../../../common/dropDown';
 import { Text } from '../../../../common/Language';
+import '../../../../css/assessments/style.css';
 
 const warningTimePercentageArray = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
@@ -52,7 +54,7 @@ export interface IQuestionnaireData {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
@@ -60,30 +62,12 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     marginTop: theme.spacing(2),
   },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
-  },
-  // formContainer: {
-  //   display: 'flex',
-  //   flexWrap: 'wrap',
-  //   marginTop: '10px',
-  // },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
-  },
-  description: {
-    marginTop: '10px',
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
@@ -98,27 +82,6 @@ const useStyles = makeStyles((theme) => ({
     bottom: '0px',
     left: '0px',
     fontSize: '14px',
-  },
-  smallFlexContainer: {
-    display: 'flex',
-  },
-  infoIcon: {
-    paddingTop: '8px',
-    cursor: 'pointer',
-  },
-  numberInput: { marginTop: '-14px' },
-  numberInputOutlinedTextBox: { marginTop: '7px' },
-  dropdown: {
-    minWidth: '100%',
-  },
-  centerAligned: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  rightAligned: {
-    float: 'right',
   },
 }));
 
@@ -562,7 +525,7 @@ const CreateQuestionnaire = (props: any) => {
         value={postData.warningTimePercentage}
         list={warningTimePercentageArray}
         label={'Choose the warning time(%)'}
-        dropDownClass={classes.dropdown}
+        dropDownClass='dropdownWidth'
       />
     );
   };
@@ -580,9 +543,9 @@ const CreateQuestionnaire = (props: any) => {
     }
     warningTimeMinutes = Math.floor(warningTimeMinutes);
     return (
-      <div className={classes.numberInput}>
+      <div>
         <TextField
-          className={classes.textField}
+          className='textFieldStyle'
           multiline
           disabled
           fullWidth
@@ -597,7 +560,7 @@ const CreateQuestionnaire = (props: any) => {
 
   const renderRandomizeCheckbox = () => {
     return (
-      <div className={classes.smallFlexContainer}>
+      <div>
         <FormControlLabel
           control={
             <Checkbox
@@ -612,97 +575,93 @@ const CreateQuestionnaire = (props: any) => {
             </Typography>
           }
         />
-        <Tooltip
-          title={
-            <Typography style={{ width: '15vw', fontSize: '11px' }}>
-              <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheAssessment' />
-            </Typography>
-          }
-        >
-          <div className={classes.infoIcon}>
-            <InfoIcon style={{ fontSize: 23 }} />
-          </div>
-        </Tooltip>
+        <MuiThemeProvider theme={tooltipTheme}>
+          <Tooltip
+            title={
+              <Typography className='tooltipTitleStyle'>
+                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheAssessment' />
+              </Typography>
+            }
+          >
+            <InfoIcon className='infoIconStyle' />
+          </Tooltip>
+        </MuiThemeProvider>
       </div>
     );
   };
 
   const renderHideResultCheckbox = () => {
     return (
-      <div className={classes.centerAligned}>
-        <div className={classes.smallFlexContainer}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={postData.hideResult}
-                onChange={changeHideResult}
-                value='hideResult'
-                disabled={postData.showRecommendations}
-              />
-            }
-            label={
-              <Typography color='textSecondary'>
-                <Text tid='hideResult' />
-              </Typography>
-            }
-          />
+      <div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={postData.hideResult}
+              onChange={changeHideResult}
+              value='hideResult'
+              disabled={postData.showRecommendations}
+            />
+          }
+          label={
+            <Typography color='textSecondary'>
+              <Text tid='hideResult' />
+            </Typography>
+          }
+        />
+        <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography style={{ width: '18vw', fontSize: '11px' }}>
+              <Typography className='tooltipTitleStyle'>
                 <Text tid='resultWillNotBeDisplayedAtTheEndOfTheAssessment' />
                 <br />
                 <strong>
-                  <Text tid='note' />
+                  <Text tid='note' /> &nbsp;
                 </strong>
                 <Text tid='optionDisabledWhenShowRecommendationsSelected' />
               </Typography>
             }
           >
-            <div className={classes.infoIcon}>
-              <InfoIcon style={{ fontSize: 23 }} />
-            </div>
+            <InfoIcon className='infoIconStyle' />
           </Tooltip>
-        </div>
+        </MuiThemeProvider>
       </div>
     );
   };
 
   const renderShowRecommendationCheckbox = () => {
     return (
-      <div className={classes.rightAligned}>
-        <div className={classes.smallFlexContainer}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={postData.showRecommendations}
-                onChange={changeShowRecommendations}
-                value='Show Recommendation'
-                disabled={postData.timeOut || postData.hideResult}
-              />
-            }
-            label={
-              <Typography color='textSecondary'>
-                <Text tid='showRecommendations' />
-              </Typography>
-            }
-          />
+      <div>
+        <FormControlLabel
+          control={
+            <Checkbox
+              checked={postData.showRecommendations}
+              onChange={changeShowRecommendations}
+              value='Show Recommendation'
+              disabled={postData.timeOut || postData.hideResult}
+            />
+          }
+          label={
+            <Typography color='textSecondary'>
+              <Text tid='showRecommendations' />
+            </Typography>
+          }
+        />
+        <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography style={{ width: '19vw', fontSize: '11px' }}>
+              <Typography className='tooltipTitleStyle'>
                 <Text tid='recommendationsWillBeDisplayed' />
                 <br />
                 <strong>
-                  <Text tid='note' />
+                  <Text tid='note' /> &nbsp;
                 </strong>
                 <Text tid='hideResultSelected' />
               </Typography>
             }
           >
-            <div className={classes.infoIcon}>
-              <InfoIcon style={{ fontSize: 23 }} />
-            </div>
+            <InfoIcon className='infoIconStyle' />
           </Tooltip>
-        </div>
+        </MuiThemeProvider>
       </div>
     );
   };
@@ -712,7 +671,7 @@ const CreateQuestionnaire = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
@@ -741,7 +700,7 @@ const CreateQuestionnaire = (props: any) => {
               value={postData.name}
               onChange={handleNameChange}
               fullWidth
-              className={classes.textField}
+              className='textFieldStyle'
             />
           </Grid>
           <Grid item xs={12} sm={6}>
@@ -766,13 +725,11 @@ const CreateQuestionnaire = (props: any) => {
               variant='outlined'
               label='Questionnaire description'
               value={postData.description}
-              className={classes.description}
               onChange={handleDescriptionChange}
               fullWidth
             />
           </Grid>
         </Grid>
-        <br />
         {categoryArray.map((el: string, i: number) => {
           return renderCategories(el, i);
         })}
@@ -784,17 +741,15 @@ const CreateQuestionnaire = (props: any) => {
               name='benchmarkScore'
               label='Benchmark Score'
               value={postData.benchmarkScore}
-              className={classes.description}
               onChange={handleBenchmarkScoreChange}
               InputProps={{ disableUnderline: true }}
               fullWidth
             />
           </Grid>
         </Grid>
-        <br />
         <Grid container spacing={5} className={classes.grid}>
           <Grid item xs={3}>
-            <div className={classes.smallFlexContainer}>
+            <div>
               <FormControlLabel
                 control={
                   <Checkbox
@@ -810,27 +765,27 @@ const CreateQuestionnaire = (props: any) => {
                   </Typography>
                 }
               />
-              <Tooltip
-                title={
-                  <Typography style={{ width: '14vw', fontSize: '11px' }}>
-                    <Text tid='assessmentWillBeTimed' />
+              <MuiThemeProvider theme={tooltipTheme}>
+                <Tooltip
+                  title={
+                    <Typography className='tooltipTitleStyle'>
+                      <Text tid='assessmentWillBeTimed' />
 
-                    <br />
-                    <strong>
-                      <Text tid='note' />
-                    </strong>
-                    <Text tid='optionDisabledWhenShowRecommendationsSelected.' />
-                  </Typography>
-                }
-              >
-                <div className={classes.infoIcon}>
-                  <InfoIcon style={{ fontSize: 23 }} />
-                </div>
-              </Tooltip>
+                      <br />
+                      <strong>
+                        <Text tid='note' /> &nbsp;
+                      </strong>
+                      <Text tid='optionDisabledWhenShowRecommendationsSelected' />
+                    </Typography>
+                  }
+                >
+                  <InfoIcon className='infoIconStyle' />
+                </Tooltip>
+              </MuiThemeProvider>
             </div>
           </Grid>
           <Grid item xs={3}>
-            <div className={classes.numberInput}>
+            <div className='numberInput'>
               <TextField
                 required={postData.timeOut ? false : true}
                 type='number'
@@ -842,7 +797,7 @@ const CreateQuestionnaire = (props: any) => {
                 onChange={updateTimeOutTime}
                 disabled={postData.timeOut ? false : true}
                 InputProps={{ disableUnderline: true }}
-                className={classes.textField}
+                className='textFieldStyle'
               />
             </div>
           </Grid>
@@ -852,9 +807,7 @@ const CreateQuestionnaire = (props: any) => {
             {renderWarningTimePercentageDropDown()}
           </Grid>
           <Grid item xs={3}>
-            <div className={classes.numberInputOutlinedTextBox}>
-              {renderWarningTime()}
-            </div>
+            {renderWarningTime()}
           </Grid>
         </Grid>
         <Grid container spacing={3} className={classes.grid}>
@@ -868,7 +821,7 @@ const CreateQuestionnaire = (props: any) => {
             {renderShowRecommendationCheckbox()}
           </Grid>
         </Grid>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'

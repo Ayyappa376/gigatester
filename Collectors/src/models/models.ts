@@ -133,3 +133,24 @@ export interface IncidentDatabaseDataItem {
     url: string;
   }
 
+//all commit data
+export interface CommitDatabaseDataItem {
+    commitDate: number;
+    commitId: string;
+    committedBy: string;
+    pipelineEndDate?: number;
+    pipelineId?: string;
+    pipelineStartDate?: number;
+    pipelineStatus?: string;
+    projectName: string;
+    ref?: string;
+    repoName: string;
+    servicePath: string;
+    teamId: string;
+    url: string;
+  }
+
+  export const COMMIT_STATUS_SUCCESS = 'success';
+  export const COMMIT_STATUS_FAILED = 'failed';
+  export const COMMIT_STATUS_INPROGRESS = 'running';
+

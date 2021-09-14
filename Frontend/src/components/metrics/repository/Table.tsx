@@ -20,7 +20,7 @@ import {
   useTheme,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
@@ -31,12 +31,9 @@ import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import LastPageIcon from '@material-ui/icons/LastPage';
 import { IRepoPullReqsDataItem } from '../../../model/metrics/repositoryData';
-import {
-  ALL_TEAMS,
-  ALL_NAMES,
-} from '../../../pages/metrics/metric-select/metricsList';
+import { ALL } from '../../../pages/metrics/metric-select';
 import { Text } from '../../../common/Language';
-import './style.css';
+import '../../../css/metrics/style.css';
 
 interface Data {
   projectName: string;
@@ -137,11 +134,10 @@ interface EnhancedTableProps {
 
 function EnhancedTableHead(props: EnhancedTableProps) {
   const { classes, order, orderBy, onRequestSort } = props;
-  const createSortHandler = (property: keyof Data) => (
-    event: React.MouseEvent<unknown>
-  ) => {
-    onRequestSort(event, property);
-  };
+  const createSortHandler =
+    (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
+      onRequestSort(event, property);
+    };
 
   return (
     <TableHead>
@@ -151,19 +147,16 @@ function EnhancedTableHead(props: EnhancedTableProps) {
             key={headCell.id}
             align='center'
             sortDirection={orderBy === headCell.id ? order : false}
-            className={classes.tableHeadText}
+            className='tableHeadMetrics'
             rowSpan={1}
           >
             <TableSortLabel
-              classes={{
-                icon: classes.sortLabelIcon,
-              }}
               hideSortIcon={true}
               active={orderBy === headCell.id}
               direction={orderBy === headCell.id ? order : 'asc'}
               onClick={createSortHandler(headCell.id)}
             >
-              <label className={classes.tableHeadText}>
+              <label className='tableHeadMetrics'>
                 <Text tid={headCell.label} />
               </label>
             </TableSortLabel>
@@ -187,27 +180,8 @@ const useStyles = makeStyles((theme: Theme) =>
     table: {
       minWidth: 300,
     },
-    tableHeadText: {
-      backgroundColor: '#3CB1DC',
-      color: '#FFFFFF',
-      fontSize: '14px',
-      borderRadius: '0px',
-      cursor: 'pointer',
-      lineHeight: 1.2,
-    },
-    sortLabelIcon: {
-      opacity: 0.4,
-      color: 'white !important',
-    },
     container: {
       maxHeight: 208,
-    },
-    loader: {
-      marginTop: '50px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '100%',
     },
   })
 );
@@ -317,6 +291,8 @@ export default function RepositoryTable(props: any) {
   );
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
+  const [loadingTimeline, setLoadingTimeline] = useState(true);
+  const history = useHistory();
 
   const StyledTableRow = withStyles((theme: Theme) =>
     createStyles({
@@ -338,56 +314,72 @@ export default function RepositoryTable(props: any) {
   };
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
+    setLoadingTimeline(true);
+    setRepositoryData([]);
     fetchData();
-  }, [props.focusTeam, props.selectedDateRange, props.committerName]);
+  }, [
+    props.focusTeam,
+    props.focusService,
+    props.focusSubService,
+    props.focusServiceType,
+    props.selectedDateRange,
+    props.committerName,
+  ]);
 
   const fetchData = () => {
-    let { focusTeam, committerName, timeline, selectedDateRange } = props;
-    let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        committerName[0] === ALL_NAMES && timeline === 'one_day'
-          ? '/api/metrics/repos/repositoryList'
-          : committerName[0] === ALL_NAMES && timeline !== 'one_day'
-          ? `/api/metrics/repos/repositoryList?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`
-          : timeline === 'one_day'
-          ? `/api/metrics/repos/repositoryList?committer=${committerName.toString()}`
-          : `/api/metrics/repos/repositoryList?committer=${committerName.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    } else if (committerName[0] === ALL_NAMES) {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/repos/repositoryList?teamId=${focusTeam.toString()}`
-          : `/api/metrics/repos/repositoryList?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    } else if (timeline === 'one_day' && committerName[0] !== ALL_NAMES) {
-      url = `/api/metrics/repos/repositoryList?committer=${committerName.toString()}`;
-    } else {
-      url = `/api/metrics/repos/repositoryList?committer=${committerName.toString()}&fromDate=${
-        selectedDateRange.fromDate
-      }&toDate=${selectedDateRange.toDate}`;
+    let { focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, committerName, timeline, selectedDateRange } = props;
+    let url: string = '/api/metrics/repos/repositoryList';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+      joiner = '&';
     }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (committerName[0] !== ALL) {
+      url = `${url}${joiner}committer=${committerName.toString()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
+    }
+    
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setRepositoryData(response);
-        setLoader(false);
+        if (response) {
+          setRepositoryData(response);
+          setLoader(false);
+          setLoadingTimeline(false);
+        } else {
+          setLoader(false);
+          setLoadingTimeline(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error: any) => {
         setLoader(false);
+        setLoadingTimeline(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
-        } else {
-          setFailureMsg(true);
+          history.push('/relogin')
         }
       });
   };
@@ -437,37 +429,45 @@ export default function RepositoryTable(props: any) {
               rowCount={Number(repositoryData)}
             />
             <TableBody style={{ overflow: 'auto' }}>
-              {stableSort(repositoryData, getComparator(order, orderBy))
-                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .map((row, index) => {
-                  return (
-                    <StyledTableRow key={index}>
-                      <TableCell align='center'>
-                        <a
-                          href={row.url}
-                          target='_blank'
-                          style={{ textDecoration: 'underline' }}
-                        >
-                          {row.projectName}
-                        </a>
-                      </TableCell>
-                      <TableCell align='center' style={{ minWidth: '100px' }}>
-                        {row.teamId}
-                      </TableCell>
-                      <TableCell align='center'>{row.committerName}</TableCell>
-                      <TableCell align='center'>{row.commitsCreated}</TableCell>
-                      <TableCell align='center'>
-                        {row.commitsAccepted}
-                      </TableCell>
-                      <TableCell align='center'>
-                        {row.commitsRejected}
-                      </TableCell>
-                    </StyledTableRow>
-                  );
-                })}
-              {emptyRows > 0 && (
+              {repositoryData.length ? (
+                stableSort(repositoryData, getComparator(order, orderBy))
+                  .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                  .map((row, index) => {
+                    return (
+                      <StyledTableRow key={index}>
+                        <TableCell align='center'>
+                          <a
+                            href={row.url}
+                            target='_blank'
+                            rel='noopener noreferrer'
+                            style={{ textDecoration: 'underline' }}
+                          >
+                            {row.projectName}
+                          </a>
+                        </TableCell>
+                        <TableCell align='center' style={{ minWidth: '100px' }}>
+                          {row.teamId}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {row.committerName}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {row.commitsCreated}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {row.commitsAccepted}
+                        </TableCell>
+                        <TableCell align='center'>
+                          {row.commitsRejected}
+                        </TableCell>
+                      </StyledTableRow>
+                    );
+                  })
+              ) : (
                 <TableRow style={{ height: 33 * emptyRows }}>
-                  <TableCell colSpan={6} />
+                  <TableCell colSpan={6} align='center'>
+                    {loadingTimeline ? 'Loading...' : 'No Records Found'}
+                  </TableCell>
                 </TableRow>
               )}
             </TableBody>
@@ -491,16 +491,13 @@ export default function RepositoryTable(props: any) {
 
   return (
     <div className={classes.root}>
-      <Typography
-        variant='subtitle2'
-        style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
-      >
+      <Typography variant='subtitle2' className='subTitleMetricStyle'>
         <Box fontWeight={700} mb={loader || failureMsg ? 2 : 1.5}>
           <Text tid='pullRequestDetails' />
         </Box>
       </Typography>
       {loader ? (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       ) : failureMsg ? (

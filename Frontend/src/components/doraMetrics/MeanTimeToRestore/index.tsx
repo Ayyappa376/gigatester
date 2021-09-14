@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Box, Typography, Container, Grid } from '@material-ui/core';
-import { Redirect } from 'react-router-dom';
-import ReactApexChart from 'react-apexcharts';
+import { useHistory } from 'react-router-dom';
+//import ReactApexChart from 'react-apexcharts';
+import Chart from 'react-apexcharts';
 import { useSelector } from 'react-redux';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
-import { ALL_TEAMS } from '../../../pages/metrics/metric-select/metricsList';
-import { IMeanTimeToRestoreDataItem } from '../../../model/metrics/doraData';
+import { IMeanTimeToRestoreDataItem, ITrendDataItem } from '../../../model/metrics/doraData';
 import Loader from '../../loader';
 import Alert from '@material-ui/lab/Alert';
 import AlertTitle from '@material-ui/lab/AlertTitle';
 import { Text } from '../../../common/Language';
-import '../style.css';
+import '../../../css/metrics/style.css';
 
 export default function MTTR(props: any) {
   const stateVariable = useSelector((state: IRootState) => {
@@ -20,105 +20,130 @@ export default function MTTR(props: any) {
   const [mttrGraphData, setMttrGraphData] = useState<
     IMeanTimeToRestoreDataItem[]
   >([]);
+  const [trendData, setTrendData] = useState<
+    ITrendDataItem[]
+  >([]);
   const [failureMsg, setFailureMsg] = useState(false);
   const [loader, setLoader] = useState(true);
   const [averageTime, setAverageTime] = useState('');
   const [level, setLevel] = useState('');
+  const history = useHistory();
 
   useEffect(() => {
-    if (props.focusTeam[0] === 'All' && props.focusTeam.length > 1) {
-      props.focusTeam.shift();
-    }
     fetchData();
-  }, [props.focusTeam, props.committerName, props.selectedDateRange]);
+    setMttrGraphData([]);
+    setTrendData([]);
+  }, [props.queryParams]);
 
   const fetchData = () => {
-    let { timeline, focusTeam, selectedDateRange } = props;
+    let { queryParams } = props;
     let url: string = '';
-    if (focusTeam[0] === ALL_TEAMS) {
-      url =
-        timeline === 'one_day'
-          ? '/api/metrics/dora/mttr'
-          : `/api/metrics/dora/mttr?fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-    } else {
-      url =
-        timeline === 'one_day'
-          ? `/api/metrics/dora/mttr?teamId=${focusTeam.toString()}`
-          : `/api/metrics/dora/mttr?teamId=${focusTeam.toString()}&fromDate=${
-              selectedDateRange.fromDate
-            }&toDate=${selectedDateRange.toDate}`;
-    }
+    url = queryParams ? `/api/metrics/dora/mttr${queryParams}` : `/api/metrics/dora/mttr`;
 
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
-        setMttrGraphData(
-          response.graphData.sort((a: any, b: any) => {
-            return a.timestamp <= b.timestamp ? -1 : 1;
-          })
-        );
-        setLoader(false);
-        getAverageTimeInHours(response.aggregateValue);
-        setLevel(response.level);
+        if (response) {
+          setMttrGraphData(
+            response.graphData.sort((a: IMeanTimeToRestoreDataItem, b: IMeanTimeToRestoreDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setTrendData(
+            response.trendData.sort((a: ITrendDataItem, b: ITrendDataItem) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setLoader(false);
+          getAverageTimeInHours(response.aggregateValue);
+          setLevel(response.level);
+        } else {
+          setLoader(false);
+          setFailureMsg(true);
+        }
       })
       .catch((error) => {
         setLoader(false);
+        setFailureMsg(true);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          return <Redirect to='/relogin' />;
+          history.push('/relogin')
         } else {
-          setFailureMsg(true);
+          history.push('/error')
         }
       });
   };
 
-  const getAverageTimeInHours = (minutes: number) => {
-    setAverageTime(
-      (minutes / 60).toFixed() + ':' + (minutes % 60).toFixed() + ' ' + 'Hrs'
-    );
+  const getAverageTimeInHours = (totalMinutes: number) => {
+    let hours: number = (totalMinutes / 60);
+    let minutes: string = (totalMinutes % 60).toFixed(0);
+
+    if (hours >= 24) {
+      let days: string = (hours / 24).toFixed(0);
+      let hrs: string = (hours % 24).toFixed(0);
+      setAverageTime(`${days} days ${hrs}:${minutes} hrs`);
+    } else {
+      setAverageTime(`${hours.toFixed(0)}:${minutes} hrs`);
+    }
   };
 
   const getMttrCount = () => {
     const mttr: any[] = [];
+    const trends: any[] = [];
 
-    mttrGraphData.map((data: any) => {
+    mttrGraphData.map((data: IMeanTimeToRestoreDataItem) => {
       mttr.push([
         data.timestamp,
         data.issueCount > 0
-          ? Math.round(data.totalRestoreTime / data.issueCount)
+          ? Math.round(data.totalRestoreTime / (data.issueCount * 60)) //convert to average hours
           : 0,
       ]);
+    });
+
+    trendData.map((data: ITrendDataItem) => {
+      trends.push([data.timestamp, data.value]);
     });
 
     let dataSet = {
       series: [
         {
-          name: 'Mean Time in Hours',
+          name: 'Mean Time to Restore',
+          type: 'area',
           data: mttr,
+        },
+        {
+          name: 'Trends',
+          type: 'line',
+          data: trends,
         },
       ],
       options: {
         chart: {
-          id: 'areachart-2',
-          type: 'line',
+          id: 'mttr',
+          type: 'area',
+          stacked: false,
           height: 230,
           toolbar: {
             show: false,
           },
         },
-        colors: ['#CA6F1E'],
-        stroke: {
-          curve: 'smooth',
-          width: 2,
-        },
+        colors: ['#FFC300', '#edb500'],
         dataLabels: {
           enabled: false,
         },
+        stroke: {
+          curve: 'smooth',
+          width: 1,
+        },
         fill: {
-          opacity: 1,
+          type: 'solid',
+          opacity: 2,
+        },
+        legend: {
+          show: false,
         },
         markers: {
           size: 0,
@@ -132,16 +157,40 @@ export default function MTTR(props: any) {
         yaxis: {
           labels: {
             formatter: (value: number) => {
-              return (value / 60).toFixed();
+              return value.toFixed(2);
             },
           },
           title: {
-            text: 'Number of Hours',
+            text: 'Mean Time (in hours)',
           },
         },
         tooltip: {
+          enabledOnSeries:[0],
           x: {
             format: 'dd MMM yyyy',
+          },
+          y: {
+            formatter: function (value: number) {
+              if (value > 24) {
+                let days: string = (value / 24).toFixed(0);
+                let hrs: string = (value % 24).toFixed(2);
+                return days + ' days ' + hrs + ' hrs';
+              } else {
+                return value.toFixed(2) + ' hrs';
+              }
+            },
+          },
+        },
+        noData: {
+          text: 'Loading...',
+          align: 'center',
+          verticalAlign: 'middle',
+          offsetX: 0,
+          offsetY: 0,
+          style: {
+            color: '#000000',
+            fontSize: '12.5px',
+            fontFamily: 'Helvetica, Arial, sans-serif',
           },
         },
       },
@@ -163,7 +212,7 @@ export default function MTTR(props: any) {
                   <Text tid='meanTimeToRestore' />
                 </Grid>
                 <Grid item xs={3}>
-                  <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>
+                  <span className='doraSubTitles'>
                     <Text tid='level' />:
                   </span>{' '}
                   <span
@@ -174,14 +223,16 @@ export default function MTTR(props: any) {
                         ? 'levelHighColor'
                         : level === 'Medium'
                         ? 'levelMediumColor'
-                        : 'levelLowColor'
+                        : level === 'low'
+                        ? 'levelLowColor'
+                        : 'levelNAColor'
                     }
                   >
                     {level}
                   </span>
                 </Grid>
                 <Grid item xs={4}>
-                  <span style={{ fontWeight: 'normal', fontStyle: 'italic' }}>
+                  <span className='doraSubTitles'>
                     <Text tid='averageTime' />
                   </span>{' '}
                   <span className='countText'>
@@ -192,7 +243,7 @@ export default function MTTR(props: any) {
             </Box>
           </Typography>
           {loader ? (
-            <Container className='loader'>
+            <Container className='loaderStyle'>
               <Loader />
             </Container>
           ) : failureMsg ? (
@@ -203,10 +254,10 @@ export default function MTTR(props: any) {
               <Text tid='somethingWentWrong' />
             </Alert>
           ) : (
-            <ReactApexChart
+            <Chart
               options={getMttrCount().options}
               series={getMttrCount().series}
-              type='line'
+              type='area'
               height={250}
             />
           )}

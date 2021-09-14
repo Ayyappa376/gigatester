@@ -18,6 +18,7 @@ import { Loader } from '../../..';
 import { sortTable } from './tableSort';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import InfoIcon from '@material-ui/icons/Info';
+import '../../../../css/assessments/style.css';
 
 export interface IResultsTable {
   [questionId: string]: ResultsTableItem;
@@ -33,18 +34,11 @@ export interface ResultsTableItem {
     [weightage: string]: number;
   };
   sortFactor: number;
-//  totalFactor?: number;
+  //  totalFactor?: number;
   constant?: number;
 }
 
 const useStyles = makeStyles((theme) => ({
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   categoryPanel: {
     marginBottom: '5px',
     height: '30%',
@@ -111,20 +105,14 @@ const ResultsTable = (props: any) => {
           setTopAssessments(data);
         })
         .catch((e) => {
-          console.log(e);
+          console.error(e);
         });
     }
   }, [props.data, props.constant]);
 
   if (!props.data) {
     return (
-      <Container
-        maxWidth='md'
-        component='div'
-        classes={{
-          root: classes.loader,
-        }}
-      >
+      <Container maxWidth='md' component='div' className='loaderStyle'>
         <Loader />
       </Container>
     );

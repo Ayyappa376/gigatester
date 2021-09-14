@@ -39,7 +39,28 @@ export interface RepoDatabaseDataItem {
   url: string;
 }
 
+//all commit data
+export interface CommitDatabaseDataItem {
+  commitDate: number;
+  commitId: string;
+  committedBy: string;
+  pipelineEndDate?: number;
+  pipelineId?: string;
+  pipelineStartDate?: number;
+  pipelineStatus?: string;
+  projectName: string;
+  ref?: string;
+  repoName: string;
+  servicePath: string;
+  teamId: string;
+  url: string;
+}
+
 export const STATUS_CLOSED = 'CLOSED';
 export const STATUS_OPEN = 'OPEN';
 export const STATE_ACCEPTED = 'ACCEPTED';
 export const STATE_REJECTED = 'REJECTED';
+
+export const COMMIT_STATUS_SUCCESS = 'success';
+export const COMMIT_STATUS_FAILED = 'failed';
+export const COMMIT_STATUS_INPROGRESS = 'running';

@@ -22,7 +22,9 @@ import { useSelector } from 'react-redux';
 import { IUserParams, IUserAttributes } from '../../../model/admin/create-user';
 import { withRouter } from 'react-router-dom';
 import { buttonStyle } from '../../../common/common';
+import Notification from '../../../common/notification';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -37,28 +39,17 @@ const MenuProps = {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
   },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     ...buttonStyle,
     marginRight: '20px',
-  },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
   },
   formControl: {
     minWidth: '100%',
@@ -70,27 +61,18 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  numberInput: { marginTop: '-14px' },
 }));
 
 const CreateUser = (props: any) => {
   const classes = useStyles();
-  const [newUserPosted, setNewUserPosted] = useState(false);
-  const [failure, setFailure] = useState(false);
-  const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
-  );
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='userProfileIsCreated' />;
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
 
   const [
     createUserParams,
@@ -141,19 +123,30 @@ const CreateUser = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        setNewUserPosted(true);
+        setUserParamState({});
+        setNotify({
+          isOpen: true,
+          message: 'userProfileIsCreated',
+          type: 'success',
+        })
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 400) {
-          setFailureMessage(object.apiError.msg);
-          setFailure(true);
+          setNotify({
+            isOpen: true,
+            message: object.apiError.msg,
+            type: 'error',
+          });
         } else if (object.code === 401) {
           props.history.push('/relogin');
         } else {
-          setFailureMessage(<Text tid='somethingWentWrong' />);
-          setFailure(true);
+          setNotify({
+            isOpen: true,
+            message: 'somethingWentWrong',
+            type: 'error',
+          });
         }
       });
   };
@@ -273,12 +266,12 @@ const CreateUser = (props: any) => {
             onChange={handleChangeValue}
             fullWidth
             autoComplete='off'
-            className={classes.textField}
+            className='textFieldStyle'
           />
         );
       case 'number':
         return (
-          <div className={classes.numberInput}>
+          <div className='numberInput'>
             <TextField
               required={element.Mandatory}
               type='number'
@@ -290,7 +283,7 @@ const CreateUser = (props: any) => {
               fullWidth
               autoComplete='off'
               InputProps={{ disableUnderline: true }}
-              className={classes.textField}
+              className='textFieldStyle'
             />
           </div>
         );
@@ -369,30 +362,7 @@ const CreateUser = (props: any) => {
     }
   };
 
-  const handleClose = () => {
-    setFailure(false);
-  };
-
   const renderFormData = () => {
-    if (newUserPosted) {
-      return (
-        <Fragment>
-          <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
-            <Button
-              className={classes.backButton}
-              variant='outlined'
-              onClick={() => {
-                setNewUserPosted(false);
-                setUserParamState({});
-              }}
-            >
-              <Text tid='goBack' />
-            </Button>
-          </div>
-        </Fragment>
-      );
-    }
     return (
       <Fragment>
         <Grid container spacing={3}>
@@ -404,7 +374,7 @@ const CreateUser = (props: any) => {
             );
           })}
         </Grid>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'
@@ -426,19 +396,7 @@ const CreateUser = (props: any) => {
             </Button>
           )}
         </div>
-        <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-          open={failure}
-          onClose={handleClose}
-          autoHideDuration={9000}
-        >
-          <SnackbarContent
-            style={{
-              backgroundColor: '#dd0000',
-            }}
-            message={msgFailure}
-          />
-        </Snackbar>
+        <Notification notify={notify} setNotify={setNotify} />
       </Fragment>
     );
   };
@@ -452,7 +410,7 @@ const CreateUser = (props: any) => {
       {createUserParams !== null ? (
         renderForm()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

@@ -15,25 +15,27 @@ import ErrorPage from './error_page';
 import Admin from './admin';
 import TrialHome from './trial-home';
 import TrialClose from './trial-close';
+import Trends from './trends';
 import MetricSelect from './metrics/metric-select';
 
 export {
-  Assesment,
-  Home,
-  Auth,
   About,
-  Result,
-  Logout,
-  ViewAssessment,
-  AssessmentDetail,
-  ViewTeams,
-  TeamAssessments,
-  Relogin,
-  TeamSelect,
-  AssessmentSelect,
-  ErrorPage,
   Admin,
-  TrialHome,
-  TrialClose,
+  Assesment,
+  AssessmentDetail,
+  AssessmentSelect,
+  Auth,
+  ErrorPage,
+  Home,
+  Logout,
   MetricSelect,
+  Relogin,
+  Result,
+  TeamAssessments,
+  TeamSelect,
+  TrialClose,
+  TrialHome,
+  Trends,
+  ViewAssessment,
+  ViewTeams,
 };

@@ -68,6 +68,7 @@ export const config: Config = {
   },
   metricsTables: {
     buildTable: 'build-data',
+    gitlabCommitTable: 'gitlab-commit-data',
     incidentTable: 'incident-data',
     qualityTable: 'quality-data',
     repoTable: 'repo-data',

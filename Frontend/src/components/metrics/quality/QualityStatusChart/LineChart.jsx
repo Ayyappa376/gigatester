@@ -5,23 +5,10 @@ import { Alert, AlertTitle } from '@material-ui/lab';
 import Loader from '../../../loader';
 import { getFullDate } from '../../../../utils/data';
 import { Text } from '../../../../common/Language';
-import '../style.css';
-
-const useStyles = makeStyles((theme) => ({
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-}));
+import '../../../../css/metrics/style.css';
 
 export default function LineChart(props) {
-  const classes = useStyles();
-
   let date = new Date();
-  let today = getFullDate(date);
   let yesterday = new Date(date.getTime() - 1 * 24 * 60 * 60 * 1000);
   let one_week = getFullDate(
     new Date(date.getTime() - 7 * 24 * 60 * 60 * 1000)
@@ -106,10 +93,7 @@ export default function LineChart(props) {
     <div id='chart'>
       <div id='chart-timeline'>
         <Fragment>
-          <Typography
-            variant='subtitle2'
-            style={{ fontFamily: 'Helvetica, Arial, sans-serif' }}
-          >
+          <Typography variant='subtitle2' className='subTitleMetricStyle'>
             <Box
               fontWeight={700}
               mb={props.loader || props.failureMsg ? 1.5 : 0}
@@ -119,7 +103,7 @@ export default function LineChart(props) {
           </Typography>
         </Fragment>
         {props.loader ? (
-          <Container className={classes.loader}>
+          <Container className='loaderStyle'>
             <Loader />
           </Container>
         ) : props.failureMsg ? (

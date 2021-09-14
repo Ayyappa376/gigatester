@@ -2,7 +2,9 @@ import React, { useState, useEffect, Fragment } from 'react';
 import {
   Grid,
   makeStyles,
+  MuiThemeProvider,
   TextField,
+  Typography,
   Button,
   FormControl,
   Container,
@@ -13,20 +15,27 @@ import {
   Chip,
   Snackbar,
   SnackbarContent,
+  Tooltip,
 } from '@material-ui/core';
-import { fetchTeamParameters } from '../../../actions/admin/create-team-action';
-import { useActions } from '../../../actions';
+import ClearIcon from '@material-ui/icons/Clear';
+import AddIcon from '@material-ui/icons/Add';
+import { default as MaterialLink } from '@material-ui/core/Link';
+//import { fetchTeamParameters } from '../../../actions/admin/create-team-action';
+//import { useActions } from '../../../actions';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { ITeamAttributes, ITeamParams } from '../../../model';
+import { IServiceInfo, /*ITeamAttributes*/IFieldConfigAttributes, ITeamParams, ITeamConfig } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
 import { ADMIN_HOME } from '../../../pages/admin';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
+const MAX_SERVICE_HIERARCHY_LEVEL = 2;
+const OTHER_STRING = 'Other';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -40,28 +49,28 @@ const MenuProps = {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
-    position: 'relative',
-    minWidth: '10%',
-    ...buttonStyle,
-  },
-  backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  textField: {
-    borderBottom: 'none!important',
-    boxShadow: 'none!important',
+  backButton: {
+    marginTop: '36px',
+    position: 'relative',
+    minWidth: '10%',
+    marginRight: '20px',
+    ...buttonStyle,
   },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
+  grid: {
+    marginTop: theme.spacing(2),
+    width: '90%'
+  },
+  grid2: {
+    marginTop: theme.spacing(2),
+    marginLeft: theme.spacing(5),
+    border: '1px solid #dadde9',
+    width: '95%'
   },
   formControl: {
     minWidth: '100%',
@@ -73,40 +82,33 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  smallGrid: {
-    marginTop: '6px',
-  },
-  numberInput: { marginTop: '-14px' },
+//  smallGrid: {
+//    marginTop: '12px',
+//  },
 }));
 
 const CreateTeam = (props: any) => {
   const classes = useStyles();
   const [teamPosted, setTeamPosted] = useState(false);
-  const getTeamParams = useActions(fetchTeamParameters);
+//  const getTeamParams = useActions(fetchTeamParameters);
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
+  const [teamDataFetched, setTeamDataFetched] = useState(false);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [
-    createTeamParams,
-    setCreateTeamParams,
-  ] = React.useState<ITeamParams | null>(null);
-  const [teamParamState, setTeamParamState] = React.useState<any>({});
+  const [teamState, setTeamState] = React.useState<ITeamParams | undefined>();
+//  const [createTeamParams, setCreateTeamParams] =
+    React.useState<ITeamParams | null>(null);
+//  const [teamParamState, setTeamParamState] = React.useState<any>({});
   let msgFailure = failureMessage;
   let msgSuccess = <Text tid='teamIsCreated' />;
 
-  useEffect(() => {
-    getTeamParams();
-  }, []);
+//  useEffect(() => {
+//    getTeamParams();
+//  }, []);
 
   useEffect(() => {
     Http.get({
@@ -114,23 +116,30 @@ const CreateTeam = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        setCreateTeamParams(response);
+        response.values = {};
+        setTeamState(response);
+        setTeamDataFetched(true);
+//        setCreateTeamParams(response);
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
           props.history.push('/relogin');
+        } else {
+          props.history.push('/error');
         }
+        setFailure(true);
       });
   }, []);
 
   const handleSubmit = () => {
-    const postData = createTeamParams;
-    if (postData) {
-      postData['values'] = teamParamState;
-      postData['orgId'] = createTeamParams ? createTeamParams['orgId'] : '';
-    }
+//    const postData = createTeamParams;
+//    if (postData) {
+//      postData['values'] = teamParamState;
+//      postData['orgId'] = createTeamParams ? createTeamParams['orgId'] : '';
+//    }
+    const postData = teamState;
     Http.post({
       url: `/api/v2/admin/createteam`,
       body: {
@@ -138,105 +147,192 @@ const CreateTeam = (props: any) => {
       },
       state: stateVariable,
     })
-      .then((response: any) => {
-        setTeamPosted(true);
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 400) {
-          setFailureMessage(object.apiError.msg);
-          setFailure(true);
-        } else if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          setFailureMessage(<Text tid='somethingWentWrong' />);
-          setFailure(true);
+    .then((response: any) => {
+      setTeamPosted(true);
+    })
+    .catch((error) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+        setFailure(true);
+      } else if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setFailure(true);
+      }
+    });
+  };
+
+  const resetTeamState = () => {
+    if (teamState) {
+      const temp: any = { ...teamState };
+      temp.values = {};
+      setTeamState(temp);
+    }
+  };
+
+  const getMultiListOtherTextValue = (values: any) => {
+    let ret_value = '';
+    if (values) {
+      values.forEach((el: string) => {
+        if (el.includes(`${OTHER_STRING}:`)) {
+          ret_value = el.substring(6);
         }
       });
+    }
+    return ret_value;
   };
 
   function mandatoryFieldsCheck(): boolean {
-    let countFilledElements = 0;
-    let totalCount = 0;
+    let check: boolean = true;
     // tslint:disable-next-line: ter-arrow-parens
-    Object.keys(createTeamParams!.config).map((el) => {
-      if (createTeamParams!.config[el].Mandatory) {
-        if (teamParamState && teamParamState[el]) {
-          if (createTeamParams!.config[el].type === 'multi-list') {
-            if (teamParamState[el].length > 0) {
-              countFilledElements = countFilledElements + 1;
-            }
-          } else {
-            countFilledElements = countFilledElements + 1;
-          }
+    if (!teamState) {
+      return false;
+    }
+    Object.keys(teamState.teamConfig).map((el) => {
+      if (teamState.teamConfig[el].mandatory) {
+        if (!teamState.values || !teamState.values[el]) {
+          check = false;
+        } else if ((teamState.teamConfig[el].type === 'multi-list') &&
+          (teamState.values[el].length === 0)) {
+            check = false;
         }
-        totalCount = totalCount + 1;
       }
     });
-    if (totalCount === countFilledElements) {
-      return true;
+
+    if(teamState.values && teamState.values.services && ! mandatoryServicesFieldsCheck(teamState.values.services)) {
+      check = false;
     }
-    return false;
+    return check;
   }
 
-  const handleChangeValue = (event: any) => {
-    if (teamParamState) {
-      const temp: any = { ...teamParamState };
-      temp[event.target.name] = event.target.value;
-      setTeamParamState(temp);
+  function mandatoryServicesFieldsCheck(services: IServiceInfo[]): boolean {
+    let check: boolean = true;
+
+    if (!teamState) {
+      return false;
+    }
+
+    services.forEach((service: IServiceInfo) => {
+      Object.keys(teamState.serviceConfig).map((el) => {
+        if (teamState.serviceConfig[el].mandatory) {
+          if (!service[el]) {
+            check = false;
+          } else if ((service[el].type === 'multi-list') && (service[el].length === 0)) {
+              check = false;
+          }
+        }
+      });
+  
+      if(service.services && ! mandatoryServicesFieldsCheck(service.services)) {
+        check = false;
+      }
+    });
+    return check;
+  }
+
+  const handleChangeValue = (event: any, key: string, indexPath: number[]) => {
+    if (teamState) {
+      const temp: ITeamParams | null | undefined = { ...teamState };
+      let values: any = temp.values;
+      for(let i: number = 0; i < indexPath.length; i++) {
+        if(values && values.services) {
+          values = values.services[indexPath[i]];
+        } else {
+          values = null;
+        }
+      }
+
+      if(values) {
+        values[key] = event.target.value;
+        setTeamState(temp);
+      }
     }
   };
 
-  const handleChangeOtherValueList = (event: any) => {
-    if (teamParamState) {
-      const temp: any = { ...teamParamState };
-      if (event.target.value === '') {
-        temp[event.target.name] = 'Other';
-      } else {
-        temp[event.target.name] = event.target.value;
+  const handleChangeOtherValueList = (event: any, key: string, indexPath: number[]) => {
+    if (teamState) {
+      const temp: ITeamParams | null | undefined = { ...teamState };
+      let values: any = temp.values;
+      for(let i: number = 0; i < indexPath.length; i++) {
+        if(values && values.services) {
+          values = values.services[indexPath[i]];
+        } else {
+          values = null;
+        }
       }
-      setTeamParamState(temp);
+
+      if(values) {
+        if (event.target.value === '') {
+          values[key] = OTHER_STRING;
+        } else {
+          values[key] = event.target.value;
+        }
+        setTeamState(temp);
+      }
     }
   };
 
   const returnIndexOfOther = (array: string[]) => {
     let index = -1;
     array.forEach((el, i) => {
-      if (el.includes('Other')) {
+      if (el.includes(OTHER_STRING)) {
         index = i;
       }
     });
     return index;
   };
 
-  const handleChangeOtherMultilist = (event: any) => {
-    if (teamParamState) {
-      const temp: any = { ...teamParamState };
-      // const updatedString = 'Other' + ':' + event.target.value;
-      const updatedString = `Other: ${event.target.value}`;
-      const valueArray = temp[event.target.name] || [];
-      const indexOfOther = returnIndexOfOther(valueArray);
-      valueArray[indexOfOther] = updatedString;
-      temp[event.target.name] = valueArray;
-      setTeamParamState(temp);
+  const handleChangeOtherMultilist = (event: any, key: string, indexPath: number[]) => {
+    if (teamState) {
+      const temp: ITeamParams | null | undefined = { ...teamState };
+      let values: any = temp.values;
+      for(let i: number = 0; i < indexPath.length; i++) {
+        if(values && values.services) {
+          values = values.services[indexPath[i]];
+        } else {
+          values = null;
+        }
+      }
+
+      if(values) {
+        const updatedString = `${OTHER_STRING}: ${event.target.value}`;
+        const valueArray = values[key] || [];
+        const indexOfOther = returnIndexOfOther(valueArray);
+        valueArray[indexOfOther] = updatedString;
+        values[key] = valueArray;
+        setTeamState(temp);
+      }
     }
   };
 
-  const handleChangeMultiValue = (event: any) => {
-    if (teamParamState) {
-      const temp: any = { ...teamParamState };
-      let valueArray = temp[event.target.name] || [];
-      valueArray = [...event.target.value];
-      temp[event.target.name] = valueArray;
-      setTeamParamState(temp);
+  const handleChangeMultiValue = (event: any, key: string, indexPath: number[]) => {
+    if (teamState) {
+      const temp: ITeamParams | null | undefined = { ...teamState };
+      let values: any = temp.values;
+      for(let i: number = 0; i < indexPath.length; i++) {
+        if(values && values.services) {
+          values = values.services[indexPath[i]];
+        } else {
+          values = null;
+        }
+      }
+
+      if(values) {
+        let valueArray = values[key] || [];
+        valueArray = [...event.target.value];
+        values[key] = valueArray;
+        setTeamState(temp);
+       }
     }
   };
 
   const includesOther = (array: string[]) => {
     let otherExist = false;
     array.forEach((el) => {
-      if (el.includes('Other')) {
+      if (el.includes(OTHER_STRING)) {
         otherExist = true;
       }
     });
@@ -246,78 +342,237 @@ const CreateTeam = (props: any) => {
   const renderChips = (selected: any) => {
     return (
       <div className={classes.chips}>
-        {(selected as string[]).map((value) => (
-          <Chip key={value} label={value} className={classes.chip} />
-        ))}
+        {(selected as string[]).map((value) => {
+          const val = value.includes(`${OTHER_STRING}:`) ? OTHER_STRING : value;
+          return <Chip key={val} label={val} className={classes.chip} />;
+        })}
       </div>
     );
   };
 
-  const renderElements = (el: string) => {
-    const element: ITeamAttributes = createTeamParams!.config[el];
-    const values = teamParamState ? teamParamState : null;
+  const removeOthersText = (values: string[]) => {
+    const val = values.map((el) => {
+      if (el.includes(`${OTHER_STRING}:`)) {
+        return OTHER_STRING;
+      }
+      return el;
+    });
+    return val;
+  };
+
+  const addService = (indexPath: number[]) => {
+    if (teamState) {
+      const temp: ITeamParams | null | undefined = { ...teamState };
+      let values: any = temp.values;
+      for(let i: number = 0; i < indexPath.length; i++) {
+        if(values && values.services) {
+          values = values.services[indexPath[i]];
+        } else {
+          values = null;
+        }
+      }
+
+      if(values) {
+        if(!values.services) {
+          values.services = [];
+        }
+        values.services.push({name: '', active: 'true'});
+        setTeamState(temp);
+      }
+    }
+  }
+
+  const deleteService = (indexPath: number[]) => {
+    if (teamState) {
+      const temp: ITeamParams | null | undefined = { ...teamState };
+      let values: any = temp.values;
+      for(let i: number = 0; i < indexPath.length; i++) {
+        if(values && values.services) {
+          values = values.services[indexPath[i]];
+        } else {
+          values = null;
+        }
+      }
+
+      if(values) {
+        values.active = 'false';
+        setTeamState(temp);
+      }
+    }
+  }
+
+  // const editMetrics = (indexPath: number[]) => {
+  // }
+
+  const renderElements = (key: string, config: ITeamConfig, values: any, indexPath: number[]) => {
+    const element: IFieldConfigAttributes = config[key];
+    console.log(key);
+    console.log(element)
+//    const values = teamParamState ? teamParamState : null;
     switch (element.type) {
       case 'string':
         return (
           <TextField
-            required={element.Mandatory}
+            required={element.mandatory}
             type='string'
-            id={el}
-            name={el}
-            value={values ? (values[el] ? values[el] : '') : ''}
+            id={`${key}_${indexPath.join('_')}`}
+            name={`${key}_${indexPath.join('_')}`}
+            value={values ? (values[key] ? values[key] : '') : ''}
             label={element.displayName}
-            onChange={handleChangeValue}
+            onChange={(event) => handleChangeValue(event, key, indexPath)}
             fullWidth
             autoComplete='off'
-            className={classes.textField}
+            className='textFieldStyle'
           />
         );
       case 'number':
         return (
-          <div className={classes.numberInput}>
+          <div className='numberInput'>
             <TextField
-              required={element.Mandatory}
+              required={element.mandatory}
               type='number'
-              id={el}
-              name={el}
-              value={values ? (values[el] ? values[el] : '') : ''}
+              id={`${key}_${indexPath.join('_')}`}
+              name={`${key}_${indexPath.join('_')}`}
+              value={values ? (values[key] ? values[key] : '') : ''}
               label={element.displayName}
-              onChange={handleChangeValue}
+              onChange={(event) => handleChangeValue(event, key, indexPath)}
               fullWidth
               autoComplete='off'
               InputProps={{ disableUnderline: true }}
-              className={classes.textField}
+              className='textFieldStyle'
             />
           </div>
         );
-
       case 'list':
         return (
           <Fragment>
             <FormControl className={classes.formControl}>
               <InputLabel
-                id='demo-simple-select-label'
-                required={element.Mandatory}
+                id={`label_${key}_${indexPath.join('_')}`}
+                required={element.mandatory}
               >
                 {element.displayName}
               </InputLabel>
               <Select
-                name={el}
+                name={`select_${key}_${indexPath.join('_')}`}
                 value={
                   values
-                    ? values[el]
+                    ? values[key]
                       ? element.options
-                        ? element.options.includes(values[el])
-                          ? values[el]
-                          : 'Other'
-                        : 'Other'
+                        ? element.options.custom
+                          ? element.options.custom.split(',').includes(values[key])
+                            ? values[key]
+                            : OTHER_STRING
+                          : element.options.customFixed
+                            ? element.options.customFixed.split(',').includes(values[key])
+                              ? values[key]
+                              : OTHER_STRING
+                            : OTHER_STRING
+                        : OTHER_STRING
                       : ''
                     : ''
                 }
-                onChange={handleChangeValue}
+                onChange={(event) => handleChangeValue(event, key, indexPath)}
               >
-                {element.options ? (
-                  element.options.map((opt: string) => {
+                {element.options && element.options.custom ? (
+                  element.options.custom.split(',').map((opt: string) => {
+                    return (
+                      <MenuItem key={opt} value={opt}>
+                        {opt}
+                      </MenuItem>
+                    );
+                  })
+                ) : (
+                  element.options && element.options.customFixed ? (
+                    element.options.customFixed.split(',').map((opt: string) => {
+                      return (
+                        <MenuItem key={opt} value={opt}>
+                          {opt}
+                        </MenuItem>
+                      );
+                    })
+                  ) : (
+                    <div />
+                  )
+                )}
+                <MenuItem key={OTHER_STRING} value={OTHER_STRING}>
+                  <Text tid='other' />
+                </MenuItem>
+              </Select>
+            </FormControl>
+            <TextField
+              required={element.mandatory}
+              type='string'
+              id={`text_${key}_${indexPath.join('_')}`}
+              name={`text_${key}_${indexPath.join('_')}`}
+              disabled={
+                !(
+                  values &&
+                  values[key] &&
+                  element.options &&
+                  ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
+                  (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
+                )
+              }
+              label={`(specify, if ${OTHER_STRING})`}
+              value={
+                  values &&
+                  values[key] &&
+                  element.options &&
+                  ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
+                  (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
+                  ? values[key] === OTHER_STRING
+                    ? ''
+                    : values[key]
+                  : ''
+                }
+              onChange={(event) => handleChangeOtherValueList(event, key, indexPath)}
+              autoComplete='off'
+              className='textFieldStyle'
+            />
+          </Fragment>
+        );
+      case 'list-no-others':
+        return (
+          <FormControl className={classes.formControl}>
+            <InputLabel
+              id={`label_${key}_${indexPath.join('_')}`}
+              required={element.mandatory}
+            >
+              {element.displayName}
+            </InputLabel>
+            <Select
+              name={`select_${key}_${indexPath.join('_')}`}
+              value={
+                values
+                  ? values[key]
+                    ? element.options
+                      ? element.options.custom
+                        ? element.options.custom.split(',').includes(values[key])
+                          ? values[key]
+                          : ''
+                        : element.options.customFixed
+                          ? element.options.customFixed.split(',').includes(values[key])
+                            ? values[key]
+                            : ''
+                          : ''
+                      : ''
+                    : ''
+                  : ''
+              }
+              onChange={(event) => handleChangeValue(event, key, indexPath)}
+            >
+              {element.options && element.options.custom ? (
+                element.options.custom.split(',').map((opt: string) => {
+                  return (
+                    <MenuItem key={opt} value={opt}>
+                      {opt}
+                    </MenuItem>
+                  );
+                })
+              ) : (
+                element.options && element.options.customFixed ? (
+                  element.options.customFixed.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -326,66 +581,7 @@ const CreateTeam = (props: any) => {
                   })
                 ) : (
                   <div />
-                )}
-                <MenuItem key={'Other'} value={'Other'}>
-                  <Text tid='other' />
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              required={element.Mandatory}
-              type='string'
-              id={el}
-              name={el}
-              disabled={
-                !(
-                  values &&
-                  values[el] &&
-                  element.options &&
-                  !element.options.includes(values[el])
                 )
-              }
-              label={'(specify, if Others)'}
-              onChange={handleChangeOtherValueList}
-              autoComplete='off'
-              className={classes.textField}
-            />
-          </Fragment>
-        );
-      case 'list-no-others':
-        return (
-          <FormControl className={classes.formControl}>
-            <InputLabel
-              id='demo-simple-select-label'
-              required={element.Mandatory}
-            >
-              {element.displayName}
-            </InputLabel>
-            <Select
-              name={el}
-              value={
-                values
-                  ? values[el]
-                    ? element.options
-                      ? element.options.includes(values[el])
-                        ? values[el]
-                        : ''
-                      : ''
-                    : ''
-                  : ''
-              }
-              onChange={handleChangeValue}
-            >
-              {element.options ? (
-                element.options.map((opt: string) => {
-                  return (
-                    <MenuItem key={opt} value={opt}>
-                      {opt}
-                    </MenuItem>
-                  );
-                })
-              ) : (
-                <div />
               )}
             </Select>
           </FormControl>
@@ -395,49 +591,72 @@ const CreateTeam = (props: any) => {
           <Fragment>
             <FormControl className={classes.formControl}>
               <InputLabel
-                id='demo-mutiple-chip-label'
-                required={element.Mandatory}
+                id={`label_${key}_${indexPath.join('_')}`}
+                required={element.mandatory}
               >
                 {element.displayName}
               </InputLabel>
               <Select
-                id='demo-mutiple-chip'
-                name={el}
+                id={`select_${key}_${indexPath.join('_')}`}
+                name={`select${key}_${indexPath.join('_')}`}
                 multiple
                 value={
                   values
-                    ? values[el]
-                      ? values[el] !== ''
-                        ? values[el]
+                    ? values[key]
+                      ? values[key] !== ''
+                        ? removeOthersText(values[key])
                         : []
                       : []
                     : []
                 }
-                onChange={handleChangeMultiValue}
+                onChange={(event) => handleChangeMultiValue(event, key, indexPath)}
                 input={<Input id='select-multiple-chip' />}
                 renderValue={renderChips}
                 MenuProps={MenuProps}
               >
-                {element.options.map((opt: any) => (
-                  <MenuItem key={opt} value={opt}>
-                    {opt}
-                  </MenuItem>
-                ))}
-                <MenuItem key={'Other'} value={'Other'}>
+                {element.options && element.options.custom ? (
+                  element.options.custom.split(',').map((opt: string) => {
+                    return (
+                      <MenuItem key={opt} value={opt}>
+                        {opt}
+                      </MenuItem>
+                    );
+                  })
+                ) : (
+                  element.options && element.options.customFixed ? (
+                    element.options.customFixed.split(',').map((opt: string) => {
+                      return (
+                        <MenuItem key={opt} value={opt}>
+                          {opt}
+                        </MenuItem>
+                      );
+                    })
+                  ) : (
+                    <div />
+                  )
+                )}
+                <MenuItem key={OTHER_STRING} value={OTHER_STRING}>
                   <Text tid='other' />
                 </MenuItem>
               </Select>
             </FormControl>
             <TextField
-              required={element.Mandatory}
+              required={element.mandatory}
               type='string'
-              id={el}
-              name={el}
-              disabled={!(values && values[el] && includesOther(values[el]))}
-              label={'(specify, if Others)'}
-              onChange={handleChangeOtherMultilist}
+              id={`text_${key}_${indexPath.join('_')}`}
+              name={`text_${key}_${indexPath.join('_')}`}
+              disabled={!(values && values[key] && includesOther(values[key]))}
+              value={
+                values
+                  ? values[key]
+                    ? getMultiListOtherTextValue(values[key])
+                    : ''
+                  : ''
+              }
+              label={`(specify, if ${OTHER_STRING})`}
+              onChange={(event) => handleChangeOtherMultilist(event, key, indexPath)}
               autoComplete='off'
-              className={classes.textField}
+              className='textFieldStyle'
             />
           </Fragment>
         );
@@ -448,18 +667,105 @@ const CreateTeam = (props: any) => {
     setFailure(false);
   };
 
+  const renderService = (service: IServiceInfo, indexPath: number[]) => {
+    return (
+      <Fragment>
+        <Grid item xs={11}>
+          {Object.keys(teamState!.serviceConfig).map((el: string) => {
+            return (
+              <div key={el} style={{ padding: '5px' }}>
+                {renderElements(el, teamState!.serviceConfig, service, indexPath)}
+              </div>
+            );
+          })}
+        </Grid>
+        <Grid item xs={1}>
+          <div style={{ cursor: 'pointer' }}>
+            <MuiThemeProvider theme={tooltipTheme}>
+              <Tooltip
+                title={
+                  <Typography
+                    style={{
+                      fontSize: '12px',
+                      textAlign: 'center',
+                    }}
+                  >
+                    Delete Component
+                  </Typography>
+                }
+              >
+                <Typography>
+                  <ClearIcon
+                    onClick={() => {
+                      deleteService(indexPath);
+                    }}
+                  />
+                </Typography>
+              </Tooltip>
+            </MuiThemeProvider>          
+          </div>
+        </Grid>
+        {(indexPath.length < MAX_SERVICE_HIERARCHY_LEVEL) ?
+          (
+            <Grid container spacing={3} className={classes.grid}>
+              <Typography color='textSecondary' style={{paddingLeft: '25px'}}>
+                Service Sub-Components
+              </Typography>
+              {service.services && service.services.map((subService: IServiceInfo, index: number) => {
+                if(subService.active === 'true') {
+                  return (
+                    <Grid container spacing={3} className={classes.grid2}>
+                      {renderService(subService, [...indexPath, index])}
+                    </Grid>
+                  );
+                }
+              })}
+              <Grid item xs={1}>
+                <div style={{ cursor: 'pointer' }}>
+                  <MuiThemeProvider theme={tooltipTheme}>
+                    <Tooltip
+                      title={
+                        <Typography
+                          style={{
+                            fontSize: '12px',
+                            textAlign: 'center',
+                          }}
+                        >
+                          Add Service Sub-Component
+                        </Typography>
+                      }
+                    >
+                      <Typography>
+                        <AddIcon
+                          fontSize='large'
+                          onClick={() => {
+                            addService(indexPath);
+                          }}
+                        />{' '}
+                      </Typography>
+                    </Tooltip>
+                  </MuiThemeProvider>
+                </div>
+              </Grid>
+            </Grid>
+          ) : (<div/>)
+        }
+      </Fragment>
+    );
+  }
+
   const renderFormData = () => {
     if (teamPosted) {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className={classes.bottomButtonsContainer}>
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.backButton}
               variant='outlined'
               onClick={() => {
                 setTeamPosted(false);
-                setTeamParamState({});
+                resetTeamState();
               }}
             >
               <Text tid='goBack' />
@@ -470,18 +776,57 @@ const CreateTeam = (props: any) => {
     }
     return (
       <Fragment>
-        <Grid container>
-          {Object.keys(createTeamParams!.config).map((el) => {
+        <Grid container spacing={3} className={classes.grid}>
+          {Object.keys(teamState!.teamConfig).map((el) => {
             return (
-              <Grid key={el} container className={classes.smallGrid}>
-                <Grid key={el} item xs={5}>
-                  {renderElements(el)}
-                </Grid>
+              <Grid key={el} item xs={12}>
+                {renderElements(el, teamState!.teamConfig, teamState!.values, [])}
               </Grid>
             );
           })}
+          <Grid container spacing={3} className={classes.grid}>
+            <Typography  color='textSecondary' style={{paddingLeft: '25px'}}>
+              Service Components
+            </Typography>
+            {teamState!.values!.services && teamState!.values!.services.map((service: IServiceInfo, index: number) => {
+              if(service.active === 'true') {
+                return (
+                  <Grid container spacing={3} className={classes.grid2}>
+                    {renderService(service, [index])}
+                  </Grid>
+                );
+              }
+            })}
+            <Grid item xs={1}>
+              <div style={{ cursor: 'pointer' }}>
+                <MuiThemeProvider theme={tooltipTheme}>
+                  <Tooltip
+                    title={
+                      <Typography
+                        style={{
+                          fontSize: '12px',
+                          textAlign: 'center',
+                        }}
+                      >
+                        Add Service Component
+                      </Typography>
+                    }
+                  >
+                  <Typography>
+                    <AddIcon
+                      fontSize='large'
+                      onClick={() => {
+                        addService([]);
+                      }}
+                      />{' '}
+                    </Typography>
+                  </Tooltip>
+                </MuiThemeProvider>
+              </div>
+            </Grid>
+          </Grid>
         </Grid>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'
@@ -528,10 +873,10 @@ const CreateTeam = (props: any) => {
 
   return (
     <Fragment>
-      {createTeamParams !== null ? (
+      {teamDataFetched ? (
         renderForm()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

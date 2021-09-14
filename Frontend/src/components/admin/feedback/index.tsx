@@ -8,6 +8,7 @@ import {
   Container,
   Backdrop,
   CircularProgress,
+  MuiThemeProvider,
   Typography,
   Paper,
   Table,
@@ -23,13 +24,14 @@ import {
 import { ADMIN_HOME } from '../../../pages/admin';
 import { Loader } from '../..';
 // import { default as MaterialLink } from '@material-ui/core/Link';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { getDate } from '../../../utils/data';
 import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     left: '45%',
     minWidth: '10%',
@@ -38,61 +40,16 @@ const useStyles = makeStyles((theme) => ({
   grid: {
     marginTop: theme.spacing(2),
   },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   backButton: {
-    marginTop: '28px',
+    marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
     marginRight: '20px',
     ...buttonStyle,
   },
-  bottomButtonsContainer: {
-    minWidth: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
-  },
-  circularProgress: {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  tableCell: {
-    borderRadius: '0px',
-    paddingBottom: '7px',
-    paddingTop: '7px',
   },
   firstColumn: {
     maxWidth: '150px',
@@ -144,107 +101,101 @@ const AdminFeedback = (props: any) => {
   const renderFeedbackTable = () => {
     // console.log(assessments);
     return (
-      <Container
-        maxWidth='lg'
-        component='div'
-        classes={{
-          root: classes.containerRoot,
-        }}
-      >
+      <Container maxWidth='lg' component='div' className='containerRoot'>
         <Backdrop className={classes.backdrop} open={backdropOpen}>
           <CircularProgress color='inherit' />
         </Backdrop>
-        <div style={{ width: '100%' }}>
-          <Paper style={{ width: '100%', marginTop: '15px' }}>
-            <Table className={classes.table}>
-              <TableHead className={classes.tableHead}>
-                <TableRow>
-                  <TableCell className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
-                      <Text tid='user' />
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
-                      <Text tid='assessment' />
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
-                      <Text tid='date' />
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
-                      <Text tid='rating' />
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='center' className={classes.tableHeadCell}>
-                    <Typography className={classes.tableHeadText}>
-                      <Text tid='comments' />
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {assessments.assessmentHistory.map(
-                  (row: AssessmentDocument, index: number) => {
-                    return (
-                      <TableRow key={row.userId}>
-                        <TableCell
-                          component='th'
-                          scope='row'
-                          className={classes.firstColumn}
-                        >
+        <Paper className='tableArea'>
+          <Table className='table'>
+            <TableHead className='tableHead'>
+              <TableRow>
+                <TableCell className='tableHeadCell'>
+                  <Typography className='tableHeadText'>
+                    <Text tid='user' />
+                  </Typography>
+                </TableCell>
+                <TableCell align='center' className='tableHeadCell'>
+                  <Typography className='tableHeadText'>
+                    <Text tid='assessment' />
+                  </Typography>
+                </TableCell>
+                <TableCell align='center' className='tableHeadCell'>
+                  <Typography className='tableHeadText'>
+                    <Text tid='date' />
+                  </Typography>
+                </TableCell>
+                <TableCell align='center' className='tableHeadCell'>
+                  <Typography className='tableHeadText'>
+                    <Text tid='rating' />
+                  </Typography>
+                </TableCell>
+                <TableCell align='center' className='tableHeadCell'>
+                  <Typography className='tableHeadText'>
+                    <Text tid='comments' />
+                  </Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {assessments.assessmentHistory.map(
+                (row: AssessmentDocument, index: number) => {
+                  return (
+                    <TableRow key={index}>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        className={classes.firstColumn}
+                      >
+                        <MuiThemeProvider theme={tooltipTheme}>
                           <Tooltip
                             title={<Typography>{row.userId}</Typography>}
                           >
-                            <Typography className={classes.tableBodyText}>
+                            <Typography className='tableBodyText'>
                               {row.userId}
                             </Typography>
                           </Tooltip>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography className={classes.tableBodyText}>
-                            {row.assessmentName}
-                          </Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography className={classes.tableBodyText}>
-                            {row.dateSubmit ? getDate(row.dateSubmit) : '-'}
-                          </Typography>
-                        </TableCell>
-                        <TableCell component='th' scope='row' align='center'>
-                          <Typography className={classes.tableBodyText}>
-                            {row.feedback.rating}
-                          </Typography>
-                        </TableCell>
-                        <TableCell
-                          align='center'
-                          className={classes.commentsColumn}
-                        >
-                          <Typography className={classes.tableBodyText}>
-                            {row.feedback.comment}
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    );
-                  }
-                )}
-              </TableBody>
-            </Table>
-          </Paper>
-          <div className={classes.bottomButtonsContainer}>
-            <Button
-              className={classes.backButton}
-              variant='outlined'
-              onClick={() => {
-                props.goBack(ADMIN_HOME);
-              }}
-            >
-              <Text tid='goBack' />
-            </Button>
-          </div>
+                        </MuiThemeProvider>
+                      </TableCell>
+                      <TableCell component='th' scope='row' align='center'>
+                        <Typography className='tableBodyText'>
+                          {row.assessmentName}
+                        </Typography>
+                      </TableCell>
+                      <TableCell component='th' scope='row' align='center'>
+                        <Typography className='tableBodyText'>
+                          {row.dateSubmit ? getDate(row.dateSubmit) : '-'}
+                        </Typography>
+                      </TableCell>
+                      <TableCell component='th' scope='row' align='center'>
+                        <Typography className='tableBodyText'>
+                          {row.feedback.rating}
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        align='center'
+                        className={classes.commentsColumn}
+                      >
+                        <Typography className='tableBodyText'>
+                          {row.feedback.comment}
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  );
+                }
+              )}
+            </TableBody>
+          </Table>
+        </Paper>
+        <div className='bottomButtonsContainer'>
+          <Button
+            className={classes.backButton}
+            variant='outlined'
+            onClick={() => {
+              props.goBack(ADMIN_HOME);
+            }}
+          >
+            <Text tid='goBack' />
+          </Button>
         </div>
       </Container>
     );
@@ -255,7 +206,7 @@ const AdminFeedback = (props: any) => {
       {responseReceived ? (
         renderFeedbackTable()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

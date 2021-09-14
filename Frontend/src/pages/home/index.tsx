@@ -39,7 +39,7 @@ const useStyles = makeStyles({
     display: 'flex',
   },
   loader: {
-    top: '240px',
+    paddingTop: '120px',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'center',

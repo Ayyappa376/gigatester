@@ -34,11 +34,11 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
-import { buttonStyle } from '../../common/common';
+import { buttonStyle, tooltipTheme } from '../../common/common';
 import { Text } from '../../common/Language';
-import html2canvas from 'html2canvas';
+// import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
-import { OptionsStore } from '@progress/kendo-drawing';
+// import { OptionsStore } from '@progress/kendo-drawing';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
 
@@ -209,9 +209,8 @@ const useStyles = makeStyles((theme) => ({
     color: 'white',
   },
   infoIcon: {
-    paddingTop: '3px',
-    marginLeft: '2px',
-    cursor: 'pointer',
+    padding: '3px',
+    // marginLeft: '3px',
   },
   rightAlign: {
     display: 'flex',
@@ -367,7 +366,7 @@ function AssessmentView(props: IAssessmentViewProps) {
     const {
       question,
       answers,
-      category,
+      // category,
       comment,
       options,
       randomize,
@@ -726,17 +725,20 @@ function AssessmentView(props: IAssessmentViewProps) {
                   <Text tid='categoryWiseScore' />
                 </Typography>
                 {props.benchmarkScore ? (
-                  <Tooltip
-                    title={
-                      <Typography>
-                        <Text tid='benchmarkScoreLineIndicatesTheBenchmarkScore' />
-                      </Typography>
-                    }
-                  >
-                    <div className={classes.infoIcon}>
-                      <InfoIcon style={{ fontSize: 23 }} />
-                    </div>
-                  </Tooltip>
+                  <MuiThemeProvider theme={tooltipTheme}>
+                    <Tooltip
+                      title={
+                        <Typography className='tooltipTitleStyle'>
+                          <Text tid='benchmarkScoreLineIndicatesTheBenchmarkScore' />
+                        </Typography>
+                      }
+                      placement='right'
+                    >
+                      <div style={{ paddingLeft: '5px' }}>
+                        <InfoIcon style={{ fontSize: 23 }} />
+                      </div>
+                    </Tooltip>
+                  </MuiThemeProvider>
                 ) : (
                   <div />
                 )}

@@ -1,4 +1,4 @@
-import { IResponseData, rgbColors } from '../common/common';
+import { IResponseData } from '../common/common';
 import { IPieDisplayData } from './pie';
 
 export const processPieChartData = (
@@ -93,7 +93,7 @@ export const processPieChartData = (
       }
     });
   } catch (err) {
-    console.log('Exception:', err);
+    console.error('Exception:', err);
   }
   return pieData;
 };

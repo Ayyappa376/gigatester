@@ -18,6 +18,7 @@ import { useActions, saveUserTeam } from '../../actions';
 import AutoCompleteComponent from '../../components/common/autocomplete';
 import DropDown from '../../components/common/dropDown';
 import { Text } from '../../common/Language';
+import '../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
   containerRoot: {
@@ -63,13 +64,6 @@ const useStyles = makeStyles((theme) => ({
   },
   text: {
     marginTop: '30px',
-  },
-  loader: {
-    marginTop: '50px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
   },
 }));
 
@@ -257,7 +251,7 @@ const TeamSelect = (props: any) => {
       {teamsFetched ? (
         renderPage()
       ) : (
-        <Container className={classes.loader}>
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

@@ -20,7 +20,7 @@ import {
   responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
-import { calculateDeploymentTrend } from './trendData';
+import { calculateTrend } from './trendData';
 
 interface DORADataRequest {
   headers: {
@@ -110,7 +110,7 @@ async function handler(
     const err = new Error('Invalid Request');
     appLogger.error(err);
     return responseBuilder.badRequest(err, response);
-  } catch (err) {
+  } catch (err: any) {
     appLogger.info(err);
     return responseBuilder.internalServerError(err, response);
   }
@@ -127,7 +127,8 @@ function getDORADeploymentResp(data: DeploymentDataItem[], fromDate: Date, toDat
     aggregateValue: 0,
     graphData: data,
     level: DORA_LEVEL_LOW,
-    trendData: calculateDeploymentTrend(data)
+//    trendData: calculateDeploymentTrend(data)
+    trendData: calculateTrend(data, (elm) => elm.timestamp, (elm) => elm.countBuilds)
   };
   let totalDeployments = 0;
   data.forEach(
@@ -164,7 +165,11 @@ function getDORALeadTimeResp(data: LeadTimeDataItem[]): DORADataItem {
     aggregateValue: 0,
     graphData: data,
     level: DORA_LEVEL_LOW,
-    trendData: []
+    trendData: calculateTrend(
+      data,
+      (elm) => elm.timestamp,
+      (elm) => (elm.issueCount > 0) ? Math.round(elm.totalLeadTime/elm.issueCount) : 0
+    )
   };
   let totalLeadTime = 0;
   let issueCount = 0;
@@ -203,7 +208,11 @@ function getDORAMeanTimeToRestoreResp(
     aggregateValue: 0,
     graphData: data,
     level: DORA_LEVEL_LOW,
-    trendData: []
+    trendData: calculateTrend(
+      data,
+      (elm) => elm.timestamp,
+      (elm) => (elm.issueCount > 0) ? Math.round(elm.totalRestoreTime/elm.issueCount) : 0
+    )
   };
   let totalRestoreTime = 0;
   let issueCount = 0;
@@ -242,7 +251,11 @@ function getDORAChangeFailureRateResp(
     aggregateValue: 0,
     graphData: data,
     level: DORA_LEVEL_LOW,
-    trendData: []
+    trendData: calculateTrend(
+      data,
+      (elm) => elm.timestamp,
+      (elm) => (elm.totalBuilds > 0) ? Math.round((elm.countFailBuilds/elm.totalBuilds) * 100) : 0
+    )
   };
   let totalFailBuilds = 0;
   let totalBuilds = 0;

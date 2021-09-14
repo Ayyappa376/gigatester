@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import {
+  MuiThemeProvider,
   Typography,
   Tooltip,
   TableSortLabel,
@@ -26,7 +27,9 @@ import { withRouter } from 'react-router-dom';
 import AssessmentDetails from '../../../../pages/assessment-detail';
 import CloseIcon from '@material-ui/icons/Close';
 import { getDateTime } from '../../../../utils/data';
+import { tooltipTheme } from '../../../../common/common';
 import { Text } from '../../../../common/Language';
+import '../../../../css/assessments/style.css';
 
 // interface IProps {
 //   responseData: IResponseData;
@@ -40,12 +43,6 @@ interface IAssessmentArrayItem {
 }
 
 const useStyles = makeStyles((theme) => ({
-  containerRoot: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    width: '100%',
-  },
   scoreContainer: {
     marginTop: '20px',
     width: '300px',
@@ -61,22 +58,6 @@ const useStyles = makeStyles((theme) => ({
   userLevelScores: {
     color: '#808080',
   },
-  table: {
-    minWidth: 650,
-    fontSize: '16px',
-  },
-  tableHead: {
-    backgroundColor: '#3CB1DC',
-  },
-  tableHeadText: {
-    color: '#FFFFFF',
-  },
-  tableHeadCell: {
-    borderRadius: '0px',
-  },
-  tableBodyText: {
-    color: '#808080',
-  },
   root: {
     width: '100%',
     marginTop: theme.spacing(3),
@@ -86,10 +67,6 @@ const useStyles = makeStyles((theme) => ({
   firstColumn: {
     maxWidth: '200px',
     overflow: 'hidden',
-  },
-  sortLabelIcon: {
-    opacity: 0.8,
-    color: 'white',
   },
   appBar: {
     position: 'relative',
@@ -308,88 +285,70 @@ function PieChartEvent(props: any) {
   };
 
   return (
-    <Container
-      maxWidth='md'
-      component='div'
-      classes={{
-        root: classes.containerRoot,
-      }}
-    >
+    <Container maxWidth='md' component='div' className='containerRoot'>
       <Paper className={classes.root}>
-        <Table className={classes.table}>
-          <TableHead className={classes.tableHead}>
+        <Table className='table'>
+          <TableHead className='tableHead'>
             <TableRow>
-              <TableCell className={classes.tableHeadCell}>
+              <TableCell className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'name'}
                   direction={orderBy === 'name' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('name');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='takenBy' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
+              <TableCell align='center' className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'date'}
                   direction={orderBy === 'date' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('date');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='dateSubmitted' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
+              <TableCell align='center' className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'team'}
                   direction={orderBy === 'team' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('team');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='team' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
+              <TableCell align='center' className='tableHeadCell'>
                 <TableSortLabel
-                  classes={{
-                    icon: classes.sortLabelIcon,
-                  }}
                   active={orderBy === 'score'}
                   direction={orderBy === 'score' ? order : 'asc'}
                   onClick={() => {
                     handleRequestSort('score');
                   }}
                 >
-                  <Typography className={classes.tableHeadText}>
+                  <Typography className='tableHeadText'>
                     <Text tid='score' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
-                <Typography className={classes.tableHeadText}>
+              <TableCell align='center' className='tableHeadCell'>
+                <Typography className='tableHeadText'>
                   <Text tid='level' />
                 </Typography>
               </TableCell>
-              <TableCell align='center' className={classes.tableHeadCell}>
-                <Typography className={classes.tableHeadText}>
+              <TableCell align='center' className='tableHeadCell'>
+                <Typography className='tableHeadText'>
                   <Text tid='action' />
                 </Typography>
               </TableCell>
@@ -410,20 +369,22 @@ function PieChartEvent(props: any) {
                   scope='row'
                   className={classes.firstColumn}
                 >
-                  <Tooltip
-                    title={
-                      <Typography>
+                  <MuiThemeProvider theme={tooltipTheme}>
+                    <Tooltip
+                      title={
+                        <Typography className='tooltipTitleStyle'>
+                          {row.data.userId ? row.data.userId : 'NA'}
+                        </Typography>
+                      }
+                    >
+                      <Typography className='tableBodyText'>
                         {row.data.userId ? row.data.userId : 'NA'}
                       </Typography>
-                    }
-                  >
-                    <Typography className={classes.tableBodyText}>
-                      {row.data.userId ? row.data.userId : 'NA'}
-                    </Typography>
-                  </Tooltip>
+                    </Tooltip>
+                  </MuiThemeProvider>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
+                  <Typography className='tableBodyText'>
                     {row.data.dateSubmit
                       ? getDateTime(row.data.dateSubmit)
                       : row.data.date
@@ -432,17 +393,15 @@ function PieChartEvent(props: any) {
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
-                    {row.team}
-                  </Typography>
+                  <Typography className='tableBodyText'>{row.team}</Typography>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
+                  <Typography className='tableBodyText'>
                     {row.data.result ? `${row.data.result!.percentage}%` : 'NA'}
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>
-                  <Typography className={classes.tableBodyText}>
+                  <Typography className='tableBodyText'>
                     {row.data.result ? row.data.result!.level : 'NA'}
                   </Typography>
                 </TableCell>

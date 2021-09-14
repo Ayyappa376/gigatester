@@ -34,20 +34,19 @@ function AssessmentDetails(props: any) {
       ? props.match.params.assessmentId
       : ''
     : '';
-  const [prevPath, setPrevPath] = useState<string>(
-    props.location
-      ? props.location.state
+
+  const prevPath: string = props.location
+    ? props.location.state
+      ? props.location.state.prevPath
         ? props.location.state.prevPath
-          ? props.location.state.prevPath
-          : ''
         : ''
       : ''
-  );
+    : '';
 
   useEffect(() => {
     let isResult: boolean = false;
-    if (props.location && props.location.state) {
-      if (props.location.state.prevPath.includes('result')) {
+    if (prevPath !== '') {
+      if (prevPath.includes('result')) {
         isResult = true;
       }
     }

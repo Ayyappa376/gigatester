@@ -11,6 +11,7 @@ import {
   FormControl,
   Select,
   MenuItem,
+  MuiThemeProvider,
   ExpansionPanel,
   ExpansionPanelSummary,
   Typography,
@@ -21,7 +22,7 @@ import {
   InputBase,
   IconButton,
 } from '@material-ui/core';
-import { buttonStyle } from '../../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../../common/common';
 import { Http } from '../../../../utils';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../../reducers';
@@ -33,12 +34,12 @@ import DoneIcon from '@material-ui/icons/Done';
 import { ModalComponent } from '../../../modal';
 import ClearIcon from '@material-ui/icons/Clear';
 import SearchIcon from '@material-ui/icons/Search';
-import { debounce } from 'lodash';
 import RenderPagination from '../../../common/pagination';
 import PageSizeDropDown from '../../../common/page-size-dropdown';
 import FilterListIcon from '@material-ui/icons/FilterList';
 import { LightTooltip } from '../../../common/tooltip';
 import { Text } from '../../../../common/Language';
+import '../../../../css/assessments/style.css';
 
 export interface ICategoriesMap {
   [questionId: string]: string;
@@ -51,13 +52,6 @@ const useStyles = makeStyles((theme: Theme) =>
     root: {
       margin: 'auto',
     },
-    paper: {
-      minWidth: '100%',
-      minHeight: 500,
-      maxHeight: 500,
-      overflow: 'auto',
-      backgroundColor: '#F4F5F5',
-    },
     subPaper: {
       minWidth: '95%',
       minHeight: '10%',
@@ -67,34 +61,18 @@ const useStyles = makeStyles((theme: Theme) =>
       color: 'inherit',
       backgroundColor: 'inherit',
     },
-    button: {
-      margin: theme.spacing(0.5, 0),
-    },
     submitButton: {
-      marginTop: '28px',
+      marginTop: '36px',
       position: 'relative',
       minWidth: '10%',
       ...buttonStyle,
     },
     backButton: {
-      marginTop: '28px',
+      marginTop: '36px',
       position: 'relative',
       minWidth: '10%',
       marginRight: '20px',
       ...buttonStyle,
-    },
-    bottomButtonsContainer: {
-      minWidth: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-    },
-    loader: {
-      marginTop: '50px',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      width: '100%',
     },
     formControl: {
       minWidth: '100%',
@@ -103,17 +81,6 @@ const useStyles = makeStyles((theme: Theme) =>
       width: '100%',
       marginTop: '4px',
     },
-    // headingp: {
-    //   fontSize: theme.typography.pxToRem(20),
-    //   fontWeight: theme.typography.fontWeightRegular,
-    //   color: 'white',
-    // },
-    // expandedDiv: {
-    //   backgroundColor: '#F4F5F5',
-    //   width: '100%',
-    //   height: '100%',
-    //   padding: '0px',
-    // },
     column: {
       flexBasis: '25%',
     },
@@ -130,25 +97,10 @@ const useStyles = makeStyles((theme: Theme) =>
       borderLeft: `2px solid ${theme.palette.divider}`,
       padding: theme.spacing(1, 2),
     },
-    // link: {
-    //   color: theme.palette.primary.main,
-    //   textDecoration: 'none',
-    //   '&:hover': {
-    //     textDecoration: 'underline',
-    //   },
-    // // },
-    // heading: {
-    //   fontSize: theme.typography.pxToRem(15),
-    // },
     secondaryHeading: {
       fontSize: theme.typography.pxToRem(15),
       color: theme.palette.text.secondary,
     },
-    // icon: {
-    //   verticalAlign: 'bottom',
-    //   height: 20,
-    //   width: 20,
-    // },
     detailsHighlighted: {
       alignItems: 'center',
       backgroundColor: HIGHLIGHT_BACKGROUND_COLOR,
@@ -220,7 +172,6 @@ const MapQuestionsToQuestionnaires = (props: any) => {
     []
   );
   // const [backdropOpen, setBackdropOpen] = useState(false);
-  const [focusQuestionnaire, setFocusQuestionnaire] = useState('0000');
   const [categoriesMap, setCategoriesMap] = useState<ICategoriesMap>(
     props.categoriesMap ? props.categoriesMap : {}
   );
@@ -239,11 +190,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
   });
 
   useEffect(() => {
-    // setBackdropOpen(true);
-    let url: string = `/api/v2/admin/createquestion?type=${focusQuestionnaire}`;
-    if (focusQuestionnaire === '0000') {
-      url = '/api/v2/admin/createquestion';
-    }
+    let url: string = '/api/v2/admin/createquestion';
     Http.get({
       url,
       state: stateVariable,
@@ -391,14 +338,14 @@ const MapQuestionsToQuestionnaires = (props: any) => {
     setIsNoResultFound(false);
   };
 
-  const debouncedEvent = debounce((event) => {
-    updateSearchQuery(event);
-  }, 500);
+  // const debouncedEvent = debounce((event) => {
+  //   updateSearchQuery(event);
+  // }, 500);
 
-  const debounceEvent = (event: any) => {
-    event.persist();
-    debouncedEvent(event);
-  };
+  // const debounceEvent = (event: any) => {
+  //   event.persist();
+  //   debouncedEvent(event);
+  // };
 
   const updateSearchQuery = (event: any) => {
     setSearchString(event.target.value);
@@ -469,7 +416,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
   const renderAnswers = (answers: any) => {
     const answerKeys = Object.keys(answers);
     answerKeys.sort((a, b) => {
-      return answers[a].weightage > answers[b].weightage ? 1 : -1;
+      return answers[a].weightageFactor > answers[b].weightageFactor ? 1 : -1;
     });
     return (
       <Fragment>
@@ -540,17 +487,19 @@ const MapQuestionsToQuestionnaires = (props: any) => {
               </Fragment>
             ) : (
               <Fragment>
-                <Tooltip
-                  title={
-                    <Typography>
-                      <Text tid='mapTheQuestion' />
+                <MuiThemeProvider theme={tooltipTheme}>
+                  <Tooltip
+                    title={
+                      <Typography className='tooltipTitleStyle'>
+                        <Text tid='mapTheQuestion' />
+                      </Typography>
+                    }
+                  >
+                    <Typography variant='caption'>
+                      <Text tid='selectTheCategoryForThisQuestion' />
                     </Typography>
-                  }
-                >
-                  <Typography variant='caption'>
-                    <Text tid='selectTheCategoryForThisQuestion' />
-                  </Typography>
-                </Tooltip>
+                  </Tooltip>
+                </MuiThemeProvider>
               </Fragment>
             )}
             <br />
@@ -698,7 +647,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           </Fragment>
         )}
         <div className={classes.paginationContainer}>{renderPagination()}</div>
-        <div className={classes.bottomButtonsContainer}>
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.backButton}
             variant='outlined'
@@ -730,7 +679,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
         {responseReceived ? (
           <Fragment>{renderQuestionMap()}</Fragment>
         ) : (
-          <Container className={classes.loader}>
+          <Container className='loaderStyle'>
             <Loader />
           </Container>
         )}

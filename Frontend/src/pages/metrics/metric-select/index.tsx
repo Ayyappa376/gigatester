@@ -26,17 +26,16 @@ import { useSelector } from 'react-redux';
 import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
 import { Text } from '../../../common/Language';
+import '../../../css/metrics/style.css';
 
-export const ALL_TEAMS = 'All';
-export const ALL_NAMES = 'All';
+export const ALL = 'All';
 
 const useStyles = makeStyles((theme) => ({
   container: {
     paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
+    paddingBottom: theme.spacing(3),
     position: 'relative',
     top: '100px',
-    // backgroundColor: '#f7f7f7',
   },
   paper: {
     padding: theme.spacing(2),
@@ -45,7 +44,6 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     paddingBottom: 0,
     border: '1px solid #b6b6b6',
-    // boxShadow: '0px 0px 4px #a2a2a2',
   },
   doraMetricsContainer: {
     border: '1px solid #b1b1b1',
@@ -62,10 +60,6 @@ const useStyles = makeStyles((theme) => ({
     fontSize: '12px !important',
     fontWeight: 'bold',
     display: 'initial',
-  },
-  topScrollContainer: {
-    paddingTop: '100px !important',
-    marginTop: '-85px !important',
   },
   viewMoreText: {
     color: 'blue',
@@ -92,11 +86,17 @@ let todayEnd = new Date(
 );
 
 const MetricDetails = (props: any) => {
+
   const classes = useStyles();
-  // const [status, setBuildStatus] = useState({ status: 0 }); // using bitwise operator for 3 bits, all set to 1s.
-  const [dateRange, setDateRange] = useState({});
-  const [focusTeam, setFocusTeam] = useState<string[]>([ALL_TEAMS]);
+  const [dateRange, setDateRange] = useState({fromDate:'', toDate:''});
+  const [focusTeam, setFocusTeam] = useState<string[]>([ALL]);
+  const [focusService, setFocusService] = useState<string[]>([ALL]);
+  const [focusSubService, setFocusSubService] = useState<string[]>([ALL]);
+  const [focusServiceType, setFocusServiceType] = useState<string[]>([ALL]);
   const [teamList, setTeamList] = useState<Object[]>([]);
+  const [serviceList, setServiceList] = useState<Object[]>([]);
+  const [subServiceList, setSubServiceList] = useState<Object[]>([]);
+  const [serviceTypeList, setServiceTypeList] = useState<Object[]>([]);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
@@ -105,15 +105,60 @@ const MetricDetails = (props: any) => {
   const [teamsFailureMsg, setTeamsListFailureMsg] = useState(false);
   const [metricType, setMetricType] = useState('doraMetrics');
   const [timeline, setTimeline] = useState('one_day');
+  const [queryParams, setQueryParams] = useState('')
+  const [verticalScroll, setVerticalScroll] = useState(0);
 
   useEffect(() => {
     getTeams();
     window.scrollTo(0, 0);
+    setMetricType(props.metricType);
   }, []);
 
   useEffect(() => {
+    getQueryParams()
+  }, [dateRange, focusTeam, focusService, focusSubService, focusServiceType])
+
+  const getQueryParams = () => {
+    let params: string = '';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      params = `${params}${joiner}teamId=${focusTeam.join()}`;
+      joiner = '&';
+    }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      params = `${params}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      params = `${params}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      params = `${params}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      params = `${params}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      params = `${params}${joiner}fromDate=${dateRange.fromDate}&toDate=${dateRange.toDate}`;
+      joiner = '&';
+    }
+    setQueryParams(params);
+  }
+
+  useEffect(() => {
+    updateSubServiceList(serviceList);
+  }, [focusService]);
+
+  useEffect(() => {
+    let tempServiceList = updateServiceList(teamList);
+    updateSubServiceList(tempServiceList);
+  }, [focusTeam]);
+
+  useEffect(() => {
     setMetricType(props.metricType);
-  }, [props.metricType]);
+    window.scrollTo(0, 0);
+  }, [props.metricType, props.metricSelection]);
 
   const getTeams = () => {
     Http.get({
@@ -126,11 +171,11 @@ const MetricDetails = (props: any) => {
         });
         setTeamList(
           teamListCopy.sort((a: any, b: any) => {
-            return a.teamName.toUpperCase() <= b.teamName.toUpperCase()
-              ? -1
-              : 1;
+            return a.teamName.localeCompare(b.teamName);
           })
         );
+        let serviceListCopy = updateServiceList(teamListCopy);
+        updateSubServiceList(serviceListCopy);
       })
       .catch((error: any) => {
         const perror = JSON.stringify(error);
@@ -143,17 +188,88 @@ const MetricDetails = (props: any) => {
       });
   };
 
-  const getFocusTeam = (event: any) => {
-    let selectedTeams = event.target.value;
+  const joinServiceAndSubService = (): string => {
+    let dataList: string[] = [];
+    focusService.forEach((serviceId: string) => {
+      let service: any = serviceList.find((elem: any) => elem.id === serviceId);
+      if ((service !== undefined) && service.services) {
+        service.services.forEach((subService: any) => {
+          if(focusSubService.indexOf(subService.id) > -1) {
+            dataList.push(`${serviceId}/${subService.id}`);
+          }
+        });
+      } else {
+        dataList.push(serviceId);
+      }
+    });
+    return dataList.join();
+  };
+
+  const updateServiceList = (tempTeamList: any[]): any[] => {
+    let tempServiceList: any[] = [];
+    tempTeamList.forEach((team: any) => {
+      if((team.services) && ((focusTeam[0] === ALL) || (focusTeam.indexOf(team.teamId) > -1))) {
+        tempServiceList = tempServiceList.concat(team.services);
+      }
+    });
+    setServiceList(tempServiceList);
+
+    return tempServiceList;
+  };
+
+  const updateSubServiceList = (tempServiceList: any[]): any[] => {
+    let tempSubServiceList: any[] = [];
+    tempServiceList.forEach((service: any) => {
+      if((service.services) && ((focusService[0] === ALL) || (focusService.indexOf(service.id) > -1))) {
+        tempSubServiceList = tempSubServiceList.concat(service.services);
+      }
+    });
+    setSubServiceList(tempSubServiceList);
+
+    return tempSubServiceList;
+  };
+
+  const updateFocusTeam = (event: any) => {
+    let selectedTeams: string[] = event.target.value;
+
     if (selectedTeams.length === 0) {
-      selectedTeams.push('All');
-      setFocusTeam(selectedTeams);
-    } else if (selectedTeams[0] === 'All' && selectedTeams.length > 1) {
-      selectedTeams.shift();
-      setFocusTeam(selectedTeams);
-    } else {
-      setFocusTeam(selectedTeams);
+      selectedTeams.push(ALL);
+    } else if (selectedTeams[0] === ALL && selectedTeams.length > 1) {
+        selectedTeams.shift();
     }
+    setFocusTeam(selectedTeams);
+  };
+
+  const updateFocusService = (event: any) => {
+  let selectedServices: string[] = event.target.value;
+
+  if (selectedServices.length === 0) {
+    selectedServices.push(ALL);
+  } else if (selectedServices[0] === ALL && selectedServices.length > 1) {
+    selectedServices.shift();
+  }
+  setFocusService(selectedServices);
+};
+
+const updateFocusSubService = (event: any) => {
+  let selectedSubServices: string[] = event.target.value;
+
+  if (selectedSubServices.length === 0) {
+    selectedSubServices.push(ALL);
+  } else if (selectedSubServices[0] === ALL && selectedSubServices.length > 1) {
+    selectedSubServices.shift();
+  }
+  setFocusSubService(selectedSubServices);
+};
+
+const updateFocusServiceType = (event: any) => {
+    let selectedServiceType: string[] = event.target.value;
+    if (selectedServiceType.length === 0) {
+      selectedServiceType.push(ALL);
+    } else if (selectedServiceType[0] === ALL && selectedServiceType.length > 1) {
+      selectedServiceType.shift();
+    }
+    setFocusServiceType(selectedServiceType);
   };
 
   const getDoraMetricsCustomDates = (dateRange: any) => {
@@ -175,11 +291,11 @@ const MetricDetails = (props: any) => {
             xs={12}
             md={6}
             lg={6}
-            className={classes.topScrollContainer}
+            className='topScrollContainerMetrics'
             id='doraMetrics'
           >
             <Typography variant='h6'>
-              <Text tid='doraMetrics:' />
+              <Text tid='doraMetrics' />:
               <div className={classes.toolbar}>
                 <DoraMetricsTimeline
                   timeline={timeline}
@@ -201,14 +317,30 @@ const MetricDetails = (props: any) => {
               style={{ backgroundColor: '#f1f4ff' }}
             >
               <DeploymentFrequency
-                focusTeam={focusTeam}
                 timeline={timeline}
                 customDate={customDate}
+                queryParams={queryParams}
                 getDateRange={(dateRange: any) => setDateRange(dateRange)}
-                selectedDateRange={dateRange}
               />
               <InputLabel
-                onClick={() => setMetricType('build')}
+                onClick={() => {
+                  setMetricType('build');
+                  setVerticalScroll(0);
+                }}
+                className={classes.viewMoreText}
+              >
+                <Text tid='viewMore' />
+              </InputLabel>
+            </Paper>
+          </Grid>           
+          <Grid item xs={12} md={6} lg={6}>
+            <Paper className={fixedHeightPaper}>
+              <LeadTime queryParams={queryParams} />
+              <InputLabel
+                onClick={() => {
+                  setMetricType('requirements');
+                  setVerticalScroll(950);
+                }}
                 className={classes.viewMoreText}
               >
                 <Text tid='viewMore' />
@@ -217,31 +349,12 @@ const MetricDetails = (props: any) => {
           </Grid>
           <Grid item xs={12} md={6} lg={6}>
             <Paper className={fixedHeightPaper}>
-              <LeadTime
-                timeline={timeline}
-                focusTeam={focusTeam}
-                customDate={customDate}
-                selectedDateRange={dateRange}
-              />
+              <MTTR queryParams={queryParams}/>
               <InputLabel
-                onClick={() => setMetricType('requirements')}
-                className={classes.viewMoreText}
-              >
-                <Text tid='viewMore' />
-              </InputLabel>
-            </Paper>
-          </Grid>
-
-          <Grid item xs={12} md={6} lg={6}>
-            <Paper className={fixedHeightPaper}>
-              <MTTR
-                timeline={timeline}
-                focusTeam={focusTeam}
-                customDate={customDate}
-                selectedDateRange={dateRange}
-              />
-              <InputLabel
-                onClick={() => setMetricType('build')}
+                onClick={() => {
+                  setMetricType('quality');
+                  setVerticalScroll(1800);
+                }}
                 className={classes.viewMoreText}
               >
                 <Text tid='viewMore' />
@@ -253,14 +366,12 @@ const MetricDetails = (props: any) => {
               className={fixedHeightPaper}
               style={{ backgroundColor: '#f1f4ff' }}
             >
-              <ChangeFailureRate
-                timeline={timeline}
-                focusTeam={focusTeam}
-                customDate={customDate}
-                selectedDateRange={dateRange}
-              />
+              <ChangeFailureRate queryParams={queryParams} />
               <InputLabel
-                onClick={() => setMetricType('build')}
+                onClick={() => {
+                  setMetricType('gitRepository');
+                  setVerticalScroll(500);
+                }}
                 className={classes.viewMoreText}
               >
                 <Text tid='viewMore' />
@@ -283,32 +394,42 @@ const MetricDetails = (props: any) => {
     },
   };
 
-  return (
+  return (    
     <Fragment>
       <Container maxWidth='lg' className={classes.container}>
         <Grid container spacing={2} style={{ paddingTop: '5px' }}>
-          <Grid item xs={12} md={9} lg={9}>
+          <Grid item xs={12} md={2} lg={2}>
             <InputLabel
-              id='demo-simple-select-label'
-              style={{ color: '#525252' }}
+              id='team-select-label'
+              style={{ color: '#525252', fontSize: '14px' }}
             >
-              <Text tid='chooseTeam' />: &nbsp;&nbsp;&nbsp;
+              <Text tid='team' />: &nbsp;
               <Select
-                labelId='demo-mutiple-checkbox-label'
-                id='demo-mutiple-checkbox'
+                labelId='team-multi-checkbox-label'
+                id='team-multi-checkbox'
                 multiple
                 value={focusTeam}
-                onChange={getFocusTeam}
+                onChange={updateFocusTeam/*getFocusTeam*/}
                 input={<Input />}
                 renderValue={(selected) => (selected as string[]).join(', ')}
                 MenuProps={MenuProps}
-                style={{ width: '25%', paddingLeft: '5px' }}
+                style={{ width: '70%' }}
               >
+                {/*teamList.map((opt: any, i: number) => {
+                  return (
+                    <MenuItem key={i} value={opt.teamName}>
+                      <Checkbox
+                        checked={focusTeam.indexOf(opt.teamName) > -1}
+                      />
+                      <ListItemText primary={opt.teamName} />
+                    </MenuItem>
+                  );
+                })*/}
                 {teamList.map((opt: any, i: number) => {
                   return (
                     <MenuItem key={i} value={opt.teamId}>
                       <Checkbox
-                        checked={focusTeam.indexOf(opt.teamName) > -1}
+                        checked={focusTeam.indexOf(opt.teamId) > -1}
                       />
                       <ListItemText primary={opt.teamName} />
                     </MenuItem>
@@ -322,23 +443,109 @@ const MetricDetails = (props: any) => {
               )}
             </InputLabel>
           </Grid>
-          <Grid item xs={12} md={3} lg={3}>
-            {metricType !== 'doraMetrics' &&
-              props.metricType === 'doraMetrics' && (
-                <InputLabel
-                  onClick={() => setMetricType('doraMetrics')}
-                  className={classes.doraMetricsLinkText}
-                >
-                  <Text tid='doraMetrics' />
-                </InputLabel>
-              )}
+          <Grid item xs={12} md={4} lg={4}>
+            <InputLabel
+              id='service-select-label'
+              style={{ color: '#525252', fontSize: '14px' }}
+            >
+              Service Component: &nbsp;
+              <Select
+                labelId='service-multi-checkbox-label'
+                id='service-multi-checkbox'
+                multiple
+                value={focusService}
+                onChange={updateFocusService}
+                input={<Input />}
+                renderValue={(selected) => (selected as string[]).join(', ')}
+                MenuProps={MenuProps}
+                style={{ width: '60%' }}
+              >
+                {serviceList.map((opt: any, i: number) => {
+                  return (
+                    <MenuItem key={i} value={opt.id}>
+                      <Checkbox
+                        checked={focusService.indexOf(opt.id) > -1}
+                      />
+                      <ListItemText primary={opt.name} />
+                    </MenuItem>
+                  );
+                })}
+              </Select>            
+            </InputLabel>
+          </Grid>
+          <Grid item xs={12} md={4} lg={4}>
+            <InputLabel
+              id='subservice-select-label'
+              style={{ color: '#525252', fontSize: '14px' }}
+            >
+              Service Sub Component: &nbsp;
+              <Select
+                labelId='subservice-multi-checkbox-label'
+                id='subservice-multi-checkbox'
+                multiple
+                value={focusSubService}
+                onChange={updateFocusSubService}
+                input={<Input />}
+                renderValue={(selected) => (selected as string[]).join(', ')}
+                MenuProps={MenuProps}
+                style={{ width: '55%' }}
+              >
+                {subServiceList.map((opt: any, i: number) => {
+                  return (
+                    <MenuItem key={i} value={opt.id}>
+                      <Checkbox
+                        checked={focusSubService.indexOf(opt.id) > -1}
+                      />
+                      <ListItemText primary={opt.name} />
+                    </MenuItem>
+                  );
+                })}
+              </Select>              
+            </InputLabel>
+          </Grid>
+          <Grid item xs={12} md={2} lg={2}>
+            <InputLabel
+              id='servicetype-select-label'
+              style={{ color: '#525252', fontSize: '14px' }}
+            >
+              Service Type: &nbsp;
+              <Select
+                labelId='servicetype-multi-checkbox-label'
+                id='servicetype-multi-checkbox'
+                multiple
+                value={focusServiceType}
+                onChange={updateFocusServiceType}
+                input={<Input />}
+                renderValue={(selected) => (selected as string[]).join(', ')}
+                MenuProps={MenuProps}
+                style={{ width: '50%' }}
+              >
+                {serviceTypeList.map((opt: any, i: number) => {
+                  return (
+                    <MenuItem key={i} value={opt.id}>
+                      <Checkbox
+                        checked={focusServiceType.indexOf(opt.id) > -1}
+                      />
+                      <ListItemText primary={opt.name} />
+                    </MenuItem>
+                  );
+                })}
+              </Select>
+            </InputLabel>
           </Grid>
         </Grid>
 
         {metricType === 'doraMetrics' && props.metricType === 'doraMetrics' ? (
           doraMetricsPage()
         ) : (
-          <MetricsList focusTeam={focusTeam} metricType={props.metricType} />
+          <MetricsList
+            focusTeam={focusTeam}
+            focusService={focusService}
+            focusSubService={focusSubService}
+            focusServiceType={focusServiceType}
+            joinServiceAndSubService={joinServiceAndSubService}
+            verticalScroll={verticalScroll}
+          />
         )}
       </Container>
     </Fragment>

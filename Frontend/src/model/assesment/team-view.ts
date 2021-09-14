@@ -13,6 +13,7 @@ export interface IAssessmentTeamView {
 export interface ITeamAssessment {
   teamName: string;
   assessmentName: string;
+  type: string;
   questionnaireVersion: string;
   averageScore: number;
   //  maxScore: number;
