@@ -1,17 +1,9 @@
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger } from '@utils/index';
+import { appLogger, getArchiveTime } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { AssessmentDocument } from './createNewAssessmentDocument';
 
 import { scan } from './sdk';
-
-function getStartOfMonth(): number {
-  const date = new Date();
-  date.setMonth(date.getMonth() - 3);
-  date.setDate(1);
-  date.setHours(0, 0, 0);
-  return date.getTime();
-}
 
 function getUserTypeParams(userId: string): DynamoDB.ScanInput {
   if (!userId) {
@@ -32,20 +24,36 @@ function getUserTypeParams(userId: string): DynamoDB.ScanInput {
   };
 }
 
-function getTeamTypeParams(teamMembers: string[] | undefined) {
+async function getTeamTypeParams(teamMembers: string[] | undefined): Promise<DynamoDB.ScanInput> {
   if (!teamMembers) {
     const err = new Error('teamMembers missing');
     appLogger.error(err);
     throw err;
   }
 
+  const archiveTime: number = await getArchiveTime();
+  if(archiveTime > 0) {
+    return <DynamoDB.ScanInput>{
+      Limit: Number.MAX_SAFE_INTEGER,
+      ScanFilter: {
+        date: {
+          AttributeValueList: [archiveTime],
+          ComparisonOperator: 'GE',
+        },
+        result: {
+          ComparisonOperator: 'NOT_NULL',
+        },
+        userId: {
+          AttributeValueList: teamMembers,
+          ComparisonOperator: 'IN',
+        },
+      },
+      TableName: TableNames.getAssessmentsTableName(),
+    };
+  }
   return <DynamoDB.ScanInput>{
     Limit: Number.MAX_SAFE_INTEGER,
     ScanFilter: {
-      date: {
-        AttributeValueList: [getStartOfMonth()],
-        ComparisonOperator: 'GE',
-      },
       result: {
         ComparisonOperator: 'NOT_NULL',
       },
@@ -80,11 +88,11 @@ const getAssessmentHistory = async ({
       params = getUserTypeParams(userId);
       break;
     case 'manager':
-      // params = getManagerTypeParams();
-      params = getTeamTypeParams(teamMembers);
+      // params = await getManagerTypeParams();
+      params = await getTeamTypeParams(teamMembers);
       break;
     case 'team':
-      params = getTeamTypeParams(teamMembers);
+      params = await getTeamTypeParams(teamMembers);
       break;
     default:
       throw new Error('Invalid type');

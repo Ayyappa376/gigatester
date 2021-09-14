@@ -3,6 +3,154 @@ import * as https from 'https';
 import { URL } from 'url';
 import { appLogger } from './logger';
 
+const supportedRequestTypes: string[] = ['GET', 'POST', 'PUT', 'HEAD'];
+const MAX_RETRY = 3;
+const TIMEOUT_TIME = 30000; //30 seconds
+
+export const httpRequest = (reqType: string, url: string, body: any = undefined, auth: any = undefined, headers: any = undefined): Promise<any> => {
+    const reqTypeUpperCase = reqType.toUpperCase();
+    if (!supportedRequestTypes.includes(reqTypeUpperCase)) {
+        const err: Error = new Error(`Invalid reqType: ${reqType} for ${url}`);
+        appLogger.error(err);
+        throw err;
+    }
+
+    let urlObject: URL;
+
+    try {
+        urlObject = new URL(url);
+    } catch (err) {
+        appLogger.error({err}, `Invalid url ${url}`);
+        throw err;
+    }
+
+    let protocolObj: any = http;
+    if(urlObject.protocol.startsWith('https')) {
+        protocolObj = https;
+    } else if(urlObject.protocol.startsWith('http')) {
+        protocolObj = http;
+    } else {
+        const err: Error = new Error(`Unsupported protocol ${urlObject.protocol} in ${url}`);
+        appLogger.error(err);
+        throw err;
+    }
+
+    if (body && reqTypeUpperCase !== 'POST' && reqTypeUpperCase !== 'PUT') {
+//        const err: Error = new Error(`Invalid use of the body parameter while using the ${reqType} method.`);
+        appLogger.warn(`Ignoring body for ${reqType} request for ${url}.`);
+//        throw err;
+    }
+
+    const options: any = {
+        hostname: urlObject.hostname,
+        method: reqType,
+        path: urlObject.pathname + urlObject.search,
+        protocol: urlObject.protocol,
+        timeout: TIMEOUT_TIME,
+    };
+
+    if(urlObject.port) {
+        options.port = urlObject.port;
+    }
+
+    if(headers) {
+        options.headers = headers;
+    }
+
+    if (body && (reqTypeUpperCase === 'POST' || reqTypeUpperCase === 'PUT')) {
+        if(options.headers) {
+            options.headers.set('Content-Length', Buffer.byteLength(body));
+        } else {
+            options.headers = {'Content-Length':Buffer.byteLength(body)};
+        }
+    }
+
+    if(auth) {
+        options.auth = auth;
+    }
+
+    return sendRequest(protocolObj, reqTypeUpperCase, options, body);
+};
+
+const sendRequest = (protocolObj: any, reqTypeUpperCase: string, options: any, body: any = undefined, retryNum: number = 1) => {
+    appLogger.info(`Try ${retryNum} of ${MAX_RETRY} for url ${options.protocol}//${options.hostname}${options.path}`);
+    return new Promise(async (resolve, reject) => {
+
+        // Reject on max retry limit exceeded.
+        if(retryNum > MAX_RETRY) {
+            reject(`Try ${retryNum} exceeded max retries ${MAX_RETRY} for url ${options.protocol}//${options.hostname}${options.path}`);
+        }
+
+        //if retrying then wait for a random time and then retry
+        if(retryNum > 1) {
+            await new Promise((resolve1) => setTimeout(resolve1, 2000));
+        }
+
+        const clientRequest = protocolObj.request(options, (incomingMessage: any) => {
+
+            // Retry on response error.
+            incomingMessage.on('error', (err: any) => {
+                appLogger.error({err}, `Error receiving response from ${options.protocol}//${options.hostname}${options.path}. Will retry.`);
+//                return sendRequest(protocolObj, reqTypeUpperCase, options, body, retryNum + 1);
+                //Retry on server error
+                if(incomingMessage.statusCode >= 500) {
+                    appLogger.error(`Received status code ${incomingMessage.statusCode} from ${options.protocol}//${options.hostname}${options.path}. Will retry.`);
+                    return sendRequest(protocolObj, reqTypeUpperCase, options, body, retryNum + 1);
+                }
+
+                return reject(err);
+            });
+
+            // Response object.
+            const response: {body: any; buffers: any[]; headers: any; statusCode: number|undefined } = {
+                body: '',
+                buffers: [],
+                headers: incomingMessage.headers,
+                statusCode: incomingMessage.statusCode
+            };
+
+            // Collect response body data.
+            incomingMessage.on('data', (chunk: any) => {
+                appLogger.info(`Received response data from ${options.protocol}//${options.hostname}${options.path}`);
+                response.buffers.push(chunk);
+            });
+
+            // Resolve on end.
+            incomingMessage.on('end', () => {
+                appLogger.info({statusCode: response.statusCode}, `End of response from ${options.protocol}//${options.hostname}${options.path}`);
+                if (response.buffers.length) {
+                    response.body = Buffer.concat(response.buffers).toString();
+                }
+
+                resolve(response);
+            });
+            return;
+        });
+        appLogger.debug({clientRequest});
+
+        // Retry on request error.
+        clientRequest.on('error', (err: any) => {
+            appLogger.error({err}, `Error sending request to ${options.protocol}//${options.hostname}${options.path}. Will retry.`);
+            return sendRequest(protocolObj, reqTypeUpperCase, options, body, retryNum + 1);
+        });
+
+        // Write request body if present.
+        if (body && (reqTypeUpperCase === 'POST' || reqTypeUpperCase === 'PUT')) {
+            clientRequest.write(body);
+            appLogger.info(`Sent body for ${options.protocol}//${options.hostname}${options.path}`);
+        }
+
+        // Close HTTP connection.
+        clientRequest.end();
+    });
+};
+
+/*
+import * as http from 'http';
+import * as https from 'https';
+import { URL } from 'url';
+import { appLogger } from './logger';
+
 const supportedRequestTypes: string[] = ['GET', 'POST', 'HEAD'];
 
 export const httpRequest = (reqType: string, url: string, body: any = undefined, auth: any = undefined, headers: any = undefined): Promise<any> => {
@@ -24,9 +172,9 @@ export const httpRequest = (reqType: string, url: string, body: any = undefined,
     }
 
     let protocolObj: any = http;
-    if(urlObject.protocol === 'https') {
+    if(urlObject.protocol.startsWith('https')) {
         protocolObj = https;
-    } else if(urlObject.protocol === 'http') {
+    } else if(urlObject.protocol.startsWith('http')) {
         protocolObj = http;
     } else {
         const err: Error = new Error(`Unsupported protocol ${urlObject.protocol}`);
@@ -44,8 +192,12 @@ export const httpRequest = (reqType: string, url: string, body: any = undefined,
         hostname: urlObject.hostname,
         method: reqType,
         path: url,
-        port: urlObject.port
+//        port: urlObject.port
     };
+
+    if(urlObject.port) {
+        options.port = urlObject.port;
+    }
 
     if(headers) {
         options.headers = headers;
@@ -55,7 +207,7 @@ export const httpRequest = (reqType: string, url: string, body: any = undefined,
         if(options.headers) {
             options.headers.set('Content-Length', Buffer.byteLength(body));
         } else {
-            options.headers = {'Content-Length':Buffer.byteLength(body)};
+            options.headers = {'Content-Length': Buffer.byteLength(body)};
         }
     }
 
@@ -69,26 +221,27 @@ export const httpRequest = (reqType: string, url: string, body: any = undefined,
 
             // Reject on response error.
             incomingMessage.on('error', (error: any) => {
-                appLogger.error(error);
+                appLogger.error(error, 'Error receiving response');
                 reject(error);
             });
 
             // Response object.
-            const response: {body: any; headers: any; statusCode: number|undefined } = {
-                body: [],
+            const response: {body: any; buffers: any[]; headers: any; statusCode: number|undefined } = {
+                body: '',
+                buffers: [],
                 headers: incomingMessage.headers,
                 statusCode: incomingMessage.statusCode
             };
 
             // Collect response body data.
             incomingMessage.on('data', (chunk: any) => {
-                response.body.push(chunk);
+                response.buffers.push(chunk);
             });
 
             // Resolve on end.
             incomingMessage.on('end', () => {
-                if (response.body.length) {
-                    response.body = response.body.join();
+                if (response.buffers.length) {
+                    response.body = Buffer.concat(response.buffers).toString();
                 }
 
                 resolve(response);
@@ -97,7 +250,7 @@ export const httpRequest = (reqType: string, url: string, body: any = undefined,
 
         // Reject on request error.
         clientRequest.on('error', (error: any) => {
-            appLogger.error(error);
+            appLogger.error(error, 'Error sending request');
             reject(error);
         });
 
@@ -110,82 +263,4 @@ export const httpRequest = (reqType: string, url: string, body: any = undefined,
         clientRequest.end();
     });
 };
-
-/*
-import * as http from 'http';
-import { URL } from 'url';
-
-export const httpRequest = (reqType: string, url: string, body: any = null, auth: any = null): Promise<any> => {
-	reqType = reqType.toUpperCase();
-    if (!['GET', 'POST', 'HEAD'].includes(reqType)) {
-        throw new Error(`Invalid reqType: ${reqType}`);
-    }
-
-    let urlObject: URL;
-
-    try {
-        urlObject = new URL(url);
-    } catch (error) {
-        throw new Error(`Invalid url ${url}`);
-    }
-
-    if (body && reqType !== 'POST') {
-        throw new Error(`Invalid use of the body parameter while using the ${reqType} method.`);
-    }
-
-    let options: any = {
-        method: reqType,
-        hostname: urlObject.hostname,
-        port: urlObject.port,
-        path: url
-    };
-
-    if (body) {
-        options.headers = {'Content-Length':Buffer.byteLength(body)};
-    }
-
-    if(auth) {
-        options.auth = auth;
-    }
-
-    return new Promise((resolve, reject) => {
-
-        const clientRequest = http.request(options, (incomingMessage) => {
-
-            // Response object.
-            let response: {statusCode: number|undefined; headers: http.IncomingHttpHeaders, body: any} = {
-                statusCode: incomingMessage.statusCode,
-                headers: incomingMessage.headers,
-                body: []
-            };
-
-            // Collect response body data.
-            incomingMessage.on('data', chunk => {
-                response.body.push(chunk);
-            });
-
-            // Resolve on end.
-            incomingMessage.on('end', () => {
-                if (response.body.length) {
-                    response.body = response.body.join();
-                }
-
-                resolve(response);
-            });
-        });
-
-        // Reject on request error.
-        clientRequest.on('error', error => {
-            reject(error);
-        });
-
-        // Write request body if present.
-        if (body) {
-            clientRequest.write(body);
-        }
-
-        // Close HTTP connection.
-        clientRequest.end();
-    });
-}
 */

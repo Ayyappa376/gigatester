@@ -1,6 +1,11 @@
 import { API, Handler } from '@apis/index';
 import { QualityGraphDataItem, QualityListDataItem } from '@models/index';
-import { appLogger, getQualityGraphData, getQualityListData, responseBuilder } from '@utils/index';
+import {
+  appLogger,
+  getQualityGraphData,
+  getQualityListData,
+  responseBuilder,
+} from '@utils/index';
 import { Response } from 'express';
 
 interface QualityDataRequest {
@@ -16,6 +21,7 @@ interface QualityDataRequest {
   };
   query: {
     fromDate?: string;
+    service?: string;
     teamId?: string;
     toDate?: string;
   };
@@ -47,6 +53,10 @@ async function handler(
       const key: string = 'teamIds';
       data[key] = query.teamId.split(',');
     }
+    if (query.service) {
+      const key: string = 'services';
+      data[key] = query.service.split(',');
+    }
     if (query.fromDate) {
       const key: string = 'fromDate';
       data[key] = new Date(parseInt(query.fromDate, 10));
@@ -57,9 +67,7 @@ async function handler(
     }
 
     if (params.type === 'graph') {
-      const result: QualityGraphDataItem[] = await getQualityGraphData(
-        data
-      );
+      const result: QualityGraphDataItem[] = await getQualityGraphData(data);
       appLogger.debug({ result });
       return responseBuilder.ok(result, response);
     }

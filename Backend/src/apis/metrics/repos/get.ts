@@ -1,14 +1,14 @@
 import { API, Handler } from '@apis/index';
 import {
+  RepoDataItemLists,
   RepoPullRaiserDataItem,
-  RepoPullRaiserList,
   RepoPullReqLifeDataItem,
   RepoPullReqsDataItem,
 } from '@models/index';
 import {
   appLogger,
+  getRepoDataItemLists,
   getRepoPullRaiserData,
-  getRepoPullRaiserList,
   getRepoPullReqLifeData,
   getRepoPullReqsData,
   responseBuilder,
@@ -29,6 +29,7 @@ interface ReposDataRequest {
   query: {
     committer?: string;
     fromDate?: string;
+    service?: string;
     teamId?: string;
     toDate?: string;
   };
@@ -61,6 +62,10 @@ async function handler(
       const key: string = 'teamIds';
       data[key] = query.teamId.split(',');
     }
+    if (query.service) {
+      const key: string = 'services';
+      data[key] = query.service.split(',');
+    }
     if (query.committer) {
       const key: string = 'committers';
       data[key] = query.committer.split(',');
@@ -75,7 +80,7 @@ async function handler(
     }
 
     if (params.type === 'committersList') {
-      const result: RepoPullRaiserList[] = await getRepoPullRaiserList(fields);
+      const result: RepoDataItemLists = await getRepoDataItemLists(fields);
       appLogger.debug({ result });
       return responseBuilder.ok(result, response);
     }

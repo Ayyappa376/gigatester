@@ -1,39 +1,37 @@
-var http = require('http');
+var httpRequest = require('./httpRequest');
 
-var host = 'localhost';
-var port = '7990';
-var url = 'http://' + host + ':' + port;
-var auth = 'user:password';
-var repo = 'my-repo';
-var project = 'my-proj';
-var branch = 'master';
+// https://developer.atlassian.com/bitbucket/api/2/reference/resource/
 
-var latestCommits = `/rest/api/1.0/projects/${project}/repos/${repo}/commits/?until=${branch}`;
+const host = `p-bitbucket.imovetv.com`;
+const email = 'slingdevopscoe@dish.com'; //'service-cmw@sling.com';
+const token = 'DevopsCOE'; //'fL9kXGVPXBovJ6Yb7faXDpLsqWYDTibwffW8cbxpX2gtMH3xE7Ue2AWzAOqR9yk';
+const auth = `${email}:${token}`; //email@example.com:<api_token>
+const project = 'AA';
+const baseURL = `https://${host}/rest/api/latest/`; //https://<site-url>/rest/api/1.0/<path-to-resource>
+const header = 'Accept: application/json';
+const repo = 'search-service'; //'lcache_salt' 'acache_salt' 'helper_scripts' 'ffmpeg-fingerprint' 'exoplayer' 'dyna_qa' 'jeremy_diagrams' 'dynapack';
+const commitId = 'b28fdaa4a7c';
+const pullId = '48';
+const pageLimit = 5; //max limit can be 1000
 
-var options = {
-  host: host,
-  port: port,
-  method: 'GET',
-  path: url + latestCommits,
-  auth: auth,
-};
+//state is OPEN, DECLINED or MERGED
 
-callback = function (response) {
-  var str = '';
+var getAllProjects = 'projects';
+var getAllProjectsByPage = `projects?start=0&limit=${pageLimit}`;
+var getAllReposOfProj = `projects/${project}/repos`;
+var getAllReposOfProjByPage = `projects/${project}/repos?start=0&limit=${pageLimit}`;
+var getAllBranchsOfRepo = `projects/${project}/repos/${repo}/branches`;
+var getDefaultBranchOfRepo = `projects/${project}/repos/${repo}/branches/default`;
+var getAllCommitsOfRepo = `projects/${project}/repos/${repo}/commits`;
+var getCommitDetailsOfRepo = `projects/${project}/repos/${repo}/commits/${commitId}`;
+var getAllPullRequestsOfRepo = `projects/${project}/repos/${repo}/pull-requests`;
+var getAllPullRequestsOfRepoByPage = `projects/${project}/repos/${repo}/pull-requests?state=ALL&start=1&limit=${pageLimit}`;
+var getPullRequestDetailsOfRepo = `projects/${project}/repos/${repo}/pull-requests/${pullId}`;
 
-  //another chunk of data has been received, so append it to `str`
-  response.on('data', function (chunk) {
-    str += chunk;
-  });
+httpRequest.httpRequest('GET', baseURL + getAllReposOfProj , undefined, auth, { Accept: 'application/json' })
+.then((data) => console.log(prettyPrint(data.body)))
+.catch((err) => console.log(err));
 
-  //the whole response has been received, so we just print it out here
-  response.on('end', function () {
-    console.log(str);
-  });
-};
-
-http.request(options, callback).end();
-
-// check the cides at https://nodejs.dev/learn/making-http-requests-with-nodejs
-// https://stackoverflow.com/questions/3905126/how-to-use-http-client-in-node-js-if-there-is-basic-authorization
-// https://gist.github.com/justlaputa/5634984
+function prettyPrint(jsonString) {
+  return JSON.stringify(JSON.parse(jsonString), null, 2);
+}

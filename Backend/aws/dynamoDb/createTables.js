@@ -6,7 +6,7 @@ const questionsTableFunctions  = require('./questionsTableFunctions');
 const teamTableFunctions  = require('./teamTableFunctions');
 const userAssessmentsTableFunctions  = require('./userAssessmentsTableFunctions');
 
-let subdomainPrefix = "qa";
+let subdomainPrefix = "dish";
 let myArgs = process.argv.slice(2);
 if(myArgs.length > 0) {
 	subdomainPrefix = myArgs[0];
@@ -14,7 +14,7 @@ if(myArgs.length > 0) {
 
 let config = {
   "apiVersion": "2012-08-10",
-  "region":"us-east-1",
+  "region":"us-west-2",
 }
 
 if(subdomainPrefix === 'local') {
@@ -55,6 +55,6 @@ function createAllTables() {
 }
 
 function insertDefaultData() {
-	configsTableFunctions.insertConfigsTableData(ddb, CONFIGS_TABLE);	
-	teamTableFunctions.insertTeamTableData(ddb, TEAM_TABLE);
+	configsTableFunctions.insertConfigsTableData(ddb, CONFIGS_TABLE, subdomainPrefix);	
+	teamTableFunctions.insertTeamTableData(ddb, TEAM_TABLE, subdomainPrefix);
 }

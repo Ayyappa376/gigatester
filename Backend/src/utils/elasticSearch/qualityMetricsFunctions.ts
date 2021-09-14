@@ -14,18 +14,24 @@ interface ESQualityDatabaseDataItem {
 
 export const getQualityListData = async ({
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<QualityListDataItem[]> => {
-  appLogger.info({ getQualityListData: { teamIds, fromDate, toDate } });
+  appLogger.info({ getQualityListData: { teamIds, services, fromDate, toDate } });
   const filters: any[] = [];
   if(teamIds) {
     filters.push({terms: { teamId: teamIds } });
 //    filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
+  }
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
 
   const finalResult: QualityListDataItem[] = [];
@@ -58,6 +64,7 @@ export const getQualityListData = async ({
       // qualityGates: res._source.qualityGates,
       reliability: res._source.reliability,
       security: res._source.security,
+      service: res._source.servicePath,
       // size: res._source.size,
       // tests: res._source.tests,
       teamId: res._source.teamId,
@@ -82,6 +89,7 @@ export const getQualityListData = async ({
       // qualityGates: 0,
       reliability: 0,
       security: 0,
+      service: '',
       // size: 0,
       // tests: 0,
       teamId: '',
@@ -99,6 +107,7 @@ export const getQualityListData = async ({
       // data.qualityGates += item.qualityGates;
       data.reliability += item.reliability;
       data.security += item.security;
+      data.service = item.service;
       // data.size += item.size;
       // data.tests += item.size;
       data.teamId = item.teamId;
@@ -125,18 +134,24 @@ export const getQualityListData = async ({
 
 export const getQualityGraphData = async ({
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<QualityGraphDataItem[]> => {
-  appLogger.info({ getQualityGraphData: { teamIds, fromDate, toDate } });
+  appLogger.info({ getQualityGraphData: { teamIds, services, fromDate, toDate } });
   const filters: any[] = [];
   if(teamIds) {
     filters.push({terms: { teamId: teamIds } });
 //    filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
+  }
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
 
   const finalResult: QualityGraphDataItem[] = [];

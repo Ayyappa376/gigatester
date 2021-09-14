@@ -2,6 +2,7 @@ import {
   CollectorConfigDetails,
   ConfigItem,
   GeneralConfigDetails,
+  ServiceConfigDetails,
   TeamConfigDetails,
   UserConfigDetails,
 } from '@models/index';
@@ -9,22 +10,35 @@ import { config } from '@root/config';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { get, update } from './sdk';
+import { get, scan, update } from './sdk';
 
 const SYSTEM_CONFIG = 'SystemConfig';
 const USER_CONFIG = 'UserConfig';
 const TEAM_CONFIG = 'TeamConfig';
+const SERVICE_CONFIG = 'ServiceConfig';
 const GENERAL_CONFIG = 'GeneralConfig';
 const COLLECTOR_CONFIG = 'CollectorConfig';
 
 export const getAllConfigTypes = async (orgId: string): Promise<any> => {
-  const configTypes = [
-    { type: USER_CONFIG, name: 'Configure User Attributes' },
-    { type: TEAM_CONFIG, name: 'Configure Team Attributes' },
-    { type: GENERAL_CONFIG, name: 'Configure General Settings' },
-    { type: COLLECTOR_CONFIG, name: 'Configure Collector Settings' },
-  ];
-  return configTypes;
+  const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
+    AttributesToGet: [
+      'type',
+    ],
+    ScanFilter: {
+      orgId: {
+        AttributeValueList: [ orgId ],
+        ComparisonOperator: 'EQ',
+      },
+      type: {
+        AttributeValueList: [ SYSTEM_CONFIG ],
+        ComparisonOperator: 'NE',
+      }
+    },
+    TableName: TableNames.getConfigsTableName(),
+  });
+
+  appLogger.info({ getAllConfigTypes_scan_params: params });
+  return scan<any>(params);
 };
 
 const getConfig = async (orgId: string, type: string): Promise<ConfigItem> => {
@@ -49,6 +63,9 @@ export const getUserConfig = async (orgId: string): Promise<ConfigItem> =>
 export const getTeamConfig = async (orgId: string): Promise<ConfigItem> =>
   getConfig(orgId, TEAM_CONFIG);
 
+export const getServiceConfig = async (orgId: string): Promise<ConfigItem> =>
+  getConfig(orgId, SERVICE_CONFIG);
+
 export const getGeneralConfig = async (orgId: string): Promise<ConfigItem> =>
   getConfig(orgId, GENERAL_CONFIG);
 
@@ -61,6 +78,7 @@ const setConfig = async (
   configDetails:
     | UserConfigDetails
     | TeamConfigDetails
+    | ServiceConfigDetails
     | GeneralConfigDetails
     | CollectorConfigDetails
 ): Promise<ConfigItem> => {
@@ -89,6 +107,11 @@ export const setTeamConfig = async (
   configDetails: TeamConfigDetails
 ): Promise<ConfigItem> => setConfig(orgId, TEAM_CONFIG, configDetails);
 
+export const setServiceConfig = async (
+  orgId: string,
+  configDetails: ServiceConfigDetails
+): Promise<ConfigItem> => setConfig(orgId, SERVICE_CONFIG, configDetails);
+
 export const setGeneralConfig = async (
   orgId: string,
   configDetails: GeneralConfigDetails
@@ -108,6 +131,11 @@ export const getResultLevels = async () => {
 export const getPerformanceMetricsConstant = async () => {
   const orgId = config.defaults.orgId;
   const generalConfig: ConfigItem = await getGeneralConfig(orgId);
-  return (<GeneralConfigDetails>generalConfig.config)
-    .performanceMetricsConstant;
+  return (<GeneralConfigDetails>generalConfig.config).performanceMetricsConstant;
+};
+
+export const getArchiveDays = async () => {
+  const orgId = config.defaults.orgId;
+  const generalConfig: ConfigItem = await getGeneralConfig(orgId);
+  return (<GeneralConfigDetails>generalConfig.config).archiveDays;
 };

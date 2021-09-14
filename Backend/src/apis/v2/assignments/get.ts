@@ -5,7 +5,7 @@ import { Response } from 'express';
 export interface GetAssignment {
   headers: {
     user: {
-      'cognito:groups': string;
+      'cognito:groups': string[];
       email: string;
     };
   };
@@ -26,6 +26,17 @@ async function handler(request: GetAssignment, response: Response) {
   // const userName = userId;
   try {
     const assignmentDetails: any = query.manage
+      ? await getAssignments(query.teamId, false)
+      : query.dashboard
+        ? await getAssignments('admin', true)
+        : await getAssignments(
+          headers.user['cognito:groups'][0] === 'Admin'
+            ? 'admin'
+            : query.teamId,
+          false
+        );
+/*
+    const assignmentDetails: any = query.manage
       ? await getAssignments(query.teamId, query.dashboard)
       : await getAssignments(
           headers.user['cognito:groups'][0] === 'Admin'
@@ -33,6 +44,7 @@ async function handler(request: GetAssignment, response: Response) {
             : query.teamId,
           query.dashboard
         );
+*/
     appLogger.info({ getAssignments: assignmentDetails });
     return responseBuilder.ok(assignmentDetails, response);
   } catch (err) {

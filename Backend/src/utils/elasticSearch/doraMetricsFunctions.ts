@@ -1,31 +1,20 @@
 import {
-  //  BuildDatabaseDataItem,
   ChangeFailureRateDataItem,
   DeploymentDataItem,
-  //  LEAD_TIME_STATUS_CLOSED,
+  IncidentDatabaseDataItem,
   LeadTimeDataItem,
   MeanTimeToRestoreDataItem,
   REQ_STATUS_CLOSED,
-  REQ_TYPE_BUGS,
+//  REQ_TYPE_BUG,
   ReqDatabaseDataItem,
-  RESULT_FAIL,
-  RESULT_PASS,
-  STATUS_BUILT,
+  STATUS_FAILED,
+  STATUS_INPROGRESS,
+  STATUS_SUCCESS,
 } from '@models/index';
 import { appLogger } from '@utils/index';
 import { formIntervals } from '../common';
-import { getBuildTableName, getReqTableName } from './getTableNames';
+import { getBuildTableName, getIncidentTableName, getReqTableName } from './getTableNames';
 import { searchAll, searchAllCount } from './sdk';
-
-/*
-interface ESBuildDatabaseDataItem {
-  _id: string;
-  _index: string;
-  _score: number;
-  _source: BuildDatabaseDataItem;
-  _type: string;
-}
-*/
 
 interface ESReqDatabaseDataItem {
   _id: string;
@@ -35,20 +24,34 @@ interface ESReqDatabaseDataItem {
   _type: string;
 }
 
+interface ESIncidentDatabaseDataItem {
+  _id: string;
+  _index: string;
+  _score: number;
+  _source: IncidentDatabaseDataItem;
+  _type: string;
+}
+
 export const getDeploymentGraphData = async ({
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<DeploymentDataItem[]> => {
-  appLogger.info({ getDeploymentGraphData: { teamIds, fromDate, toDate } });
+  appLogger.info({ getDeploymentGraphData: { teamIds, services, fromDate, toDate } });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //    filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
+  }
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
 
   const finalResult: DeploymentDataItem[] = [];
@@ -63,24 +66,16 @@ export const getDeploymentGraphData = async ({
     };
     const filters1 = [
       ...filters,
-      { range: { timestamp: timestampRange } },
-      { term: { status: STATUS_BUILT } },
-      { term: { result: RESULT_PASS } },
+      { range: { endTimestamp: timestampRange } },
+      { term: { status: STATUS_SUCCESS } },
     ];
     appLogger.debug({
       getDeploymentGraphData_searchAllCount_filters1: filters1,
     });
     result = await searchAllCount(getBuildTableName(), filters1, []);
     appLogger.debug({ getDeploymentGraphData_searchAllCount_result: result });
-    //    result.forEach((res: ESBuildDatabaseDataItem) => {
-    //      if (res._source.status === STATUS_BUILT) {
-    //        if (res._source.result === RESULT_PASS) {
-    //          data.countSuccessBuilds += 1;
-    //        }
-    //      }
-    //    });
     const data: DeploymentDataItem = {
-      countSuccessBuilds: result,
+      countBuilds: result,
       timestamp: intervals[i].getTime(),
     };
     finalResult.push(data);
@@ -90,18 +85,24 @@ export const getDeploymentGraphData = async ({
 
 export const getLeadTimeGraphData = async ({
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<LeadTimeDataItem[]> => {
-  appLogger.info({ getLeadTimeGraphData: { teamIds, fromDate, toDate } });
+  appLogger.info({ getLeadTimeGraphData: { teamIds, services, fromDate, toDate } });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
+  }
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
 
   const finalResult: LeadTimeDataItem[] = [];
@@ -145,20 +146,26 @@ export const getLeadTimeGraphData = async ({
 
 export const getMeanTimeToRestoreGraphData = async ({
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<MeanTimeToRestoreDataItem[]> => {
   appLogger.info({
-    getMeanTimeToRestoreGraphData: { teamIds, fromDate, toDate },
+    getMeanTimeToRestoreGraphData: { teamIds, services, fromDate, toDate },
   });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
+  }
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
 
   const finalResult: MeanTimeToRestoreDataItem[] = [];
@@ -170,32 +177,32 @@ export const getMeanTimeToRestoreGraphData = async ({
       timestamp: intervals[i].getTime(),
       totalRestoreTime: 0,
     };
-    let result: ESReqDatabaseDataItem[] = [];
+    let result: ESIncidentDatabaseDataItem[] = [];
 
-    const closedOnRange = {
+    const endedOnRange = {
       gt: Math.floor(intervals[i - 1].getTime() / 1000),
       lte: Math.floor(intervals[i].getTime() / 1000),
     };
-    //    const filters1 = [...filters, { range: { closedOn: closedOnRange } }, {term: { status: REQ_STATUS_CLOSED.toLowerCase()} }];
+    //    const filters1 = [...filters, { range: { endTime: endedOnRange } }, {term: { status: REQ_STATUS_CLOSED.toLowerCase()} }];
     const filters1 = [
       ...filters,
-      { range: { closedOn: closedOnRange } },
-      { term: { status: REQ_STATUS_CLOSED } },
-      { term: { itemType: REQ_TYPE_BUGS } },
+      { range: { endTime: endedOnRange } },
+//      { term: { status: REQ_STATUS_CLOSED } },
+//      { term: { itemType: REQ_TYPE_BUG } },
     ];
     appLogger.debug({
       getMeanTimeToRestoreGraphData_searchAll_filters1: filters1,
     });
-    result = await searchAll<ESReqDatabaseDataItem[]>(
-      getReqTableName(),
+    result = await searchAll<ESIncidentDatabaseDataItem[]>(
+      getIncidentTableName(),
       filters1,
       []
     );
     appLogger.debug({ getMeanTimeToRestoreGraphData_searchAll_result: result });
     data.issueCount += result.length;
-    result.forEach((res: ESReqDatabaseDataItem) => {
-      data.totalRestoreTime += res._source.closedOn
-        ? Math.floor((res._source.closedOn - res._source.createdOn) / 60) //approximated to nearest minute
+    result.forEach((res: ESIncidentDatabaseDataItem) => {
+      data.totalRestoreTime += res._source.endTime
+        ? Math.floor((res._source.endTime - res._source.startTime) / 60) //approximated to nearest minute
         : 0;
     });
     finalResult.push(data);
@@ -205,10 +212,12 @@ export const getMeanTimeToRestoreGraphData = async ({
 
 export const getChangeFailureRateGraphData = async ({
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<ChangeFailureRateDataItem[]> => {
@@ -219,6 +228,10 @@ export const getChangeFailureRateGraphData = async ({
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //    filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
+  }
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
 
   const finalResult: ChangeFailureRateDataItem[] = [];
@@ -239,8 +252,8 @@ export const getChangeFailureRateGraphData = async ({
     };
     const filters1 = [
       ...filters,
-      { range: { timestamp: timestampRange } },
-      { term: { status: STATUS_BUILT } },
+      { range: { endTimestamp: timestampRange } },
+      { terms: { status: [STATUS_SUCCESS, STATUS_FAILED, STATUS_INPROGRESS] } },
     ];
     //    const filters1 = [...filters, { range: { timestamp: timestampRange } }];
     appLogger.debug({
@@ -250,9 +263,8 @@ export const getChangeFailureRateGraphData = async ({
     //    appLogger.debug({ getChangeFailureRateGraphData_searchAllCount_result: result });
     const filters2 = [
       ...filters,
-      { range: { timestamp: timestampRange } },
-      { term: { status: STATUS_BUILT } },
-      { term: { result: RESULT_FAIL } },
+      { range: { endTimestamp: timestampRange } },
+      { term: { status: STATUS_FAILED } },
     ];
     appLogger.debug({
       getChangeFailureRateGraphData_searchAllCount_filters2: filters2,

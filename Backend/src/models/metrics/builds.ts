@@ -1,39 +1,53 @@
 export interface BuildGraphDataItem {
   countFailBuilds: number;
+  countInProgressBuilds: number;
   countOtherBuilds: number;
   countSuccessBuilds: number;
-  //    projectName: string;
-  //    teamId: string;
   timestampEnd: number;
-  //    timestampStart: number;
 }
 
 export interface BuildListDataItem {
   buildNum: number;
   duration: number;
+  endTimestamp: number;
   projectName: string;
+  service: string;
+  startTimestamp: number;
   status: string;
   teamId: string;
-  timestamp: number;
   url: string;
 }
 
 export interface BuildDatabaseDataItem {
   buildNum: number;
   duration: number;
+  endTimestamp?: number; // or date
+  pauseDuration?: number;
   projectName: string;
-  repoBranch: string;
-  repoURL: string;
-  result: string;
-  status: boolean;
+  servicePath: string;
+  stages: BuildDatabaseStageDataItem[];
+  startTimestamp: number; // or date
+  status: string;
   teamId: string;
-  timestamp: number;
   url: string;
 }
 
-export const RESULT_PASS = 'SUCCESS';
-export const RESULT_FAIL = 'FAILURE';
-export const RESULT_INPROGRESS = 'IN PROGRESS';
-export const RESULT_OTHER = 'OTHER'; //Like Aborted, In Progress or Error etc.
-export const STATUS_BUILDING = true;
-export const STATUS_BUILT = false;
+export interface BuildDatabaseStageDataItem {
+  duration: number;
+  endTimestamp?: number;
+  pauseDuration?: number;
+  stageId: number;
+  stageName: string;
+  startTimestamp: number;
+  status: string;
+}
+
+export const STATUS_SUCCESS = 'SUCCESS';
+export const STATUS_FAILED = 'FAILED';
+export const STATUS_CANCELED = 'CANCELED';
+export const STATUS_INPROGRESS = 'IN_PROGRESS';
+export const STATUS_SKIPPED = 'SKIPPED';
+export const STATUS_PENDING = 'PENDING';
+export const STATUS_BLOCKED = 'BLOCKED';
+export const STATUS_SCHEDULED = 'SCHEDULED';
+export const STATUS_OTHER = 'OTHER';

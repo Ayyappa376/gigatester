@@ -3,8 +3,7 @@
 }
 
 export interface ConfigItem {
-    config: SystemConfigDetails | UserConfigDetails | TeamConfigDetails | GeneralConfigDetails | CollectorConfigDetails;
-    name: string;
+    config: SystemConfigDetails | UserConfigDetails | TeamConfigDetails | ServiceConfigDetails | GeneralConfigDetails | CollectorConfigDetails;
     orgId: string;
     type: string;
 }
@@ -24,15 +23,23 @@ export interface TeamConfigDetails {
     [key: string]: FieldConfigAttributes;
 }
 
+export interface ServiceConfigDetails {
+    [key: string]: FieldConfigAttributes;
+}
+
 export interface FieldConfigAttributes {
     custom: boolean;
+    defaultValue?: string;
     displayName: string;
+    helpText?: string;
     mandatory: boolean;
     options?: any;
+    position?: number;
     type: string;
 }
 
 export interface GeneralConfigDetails {
+    archiveDays: number;
     levels: LevelAttributes[];
     performanceMetricsConstant: number;
 }

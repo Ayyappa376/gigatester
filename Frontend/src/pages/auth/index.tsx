@@ -31,6 +31,7 @@ const Auth = (props: any) => {
   const userStatus = useSelector((state: IRootState) => {
     return state.user;
   });
+  
   useEffect(() => {
     if (userStatus.idToken) {
       if (userStatus.team != null) {

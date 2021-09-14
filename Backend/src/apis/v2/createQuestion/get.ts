@@ -6,7 +6,7 @@ import {
   responseBuilder,
   getQuestionsForQuestionnaire,
   getAllQuestions,
-  getSimilarQuestionSearchResults,
+  // getSimilarQuestionSearchResults,
 } from '@utils/index';
 import { Response } from 'express';
 // import uuidv1 from 'uuid/v1';
@@ -38,10 +38,10 @@ async function handler(request: GetQuestions, response: Response) {
     return responseBuilder.forbidden(err, response);
   }
 
-  if (query.type === 'keyword') {
-    const searchResult = await getSimilarQuestionSearchResults(query.question);
-    return responseBuilder.ok(searchResult, response);
-  }
+  // if (query.type === 'keyword') {
+  //   const searchResult = await getSimilarQuestionSearchResults(query.question);
+  //   return responseBuilder.ok(searchResult, response);
+  // }
   const questionList: Question[] = query.type
     ? await getQuestionsForQuestionnaire(query.type)
     : await getAllQuestions();

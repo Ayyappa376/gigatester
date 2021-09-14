@@ -10,8 +10,7 @@ import { Response } from 'express';
 export interface GetAssessmentAndTeamDetails {
   headers: {
     user: {
-      'cognito:groups': string;
-      'cognito:username': string;
+      'cognito:groups': string[];
       email: string;
     };
   };
@@ -32,9 +31,7 @@ async function handler(
   try {
     const assessmentDetails: any = await getAssessments(
       headers.user['cognito:groups']
-        ? headers.user['cognito:groups'][0] === 'Admin'
-          ? 'admin'
-          : query.teamId
+        ? headers.user['cognito:groups'][0]
         : query.teamId
     );
 
@@ -45,7 +42,6 @@ async function handler(
           : headers.user.email
         : headers.user.email
     );
-
     return responseBuilder.ok(assessmentDetails, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');

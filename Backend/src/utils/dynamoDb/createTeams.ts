@@ -1,12 +1,15 @@
 //import { config } from '@root/config';
 import {
   AllotedTeam,
-  CreateTeamConfig,
+  ConfigItem,
+//  CreateTeamConfig,
   MetricsTool,
+  ServiceInfo,
   TeamInfo,
 } from '@models/index';
+import { generate } from '@utils/common';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, fetchManagers, getTeamConfig } from '@utils/index';
+import { appLogger, fetchManagers, getServiceConfig, getTeamConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { addUserToTeam } from './addUserToTeam';
 import { getUserDocumentFromEmail } from './getUserDocument';
@@ -61,6 +64,11 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
     throw err;
   }
 
+  //add id to services
+  if(teamData.services) {
+    addIdToServices(teamData.services);
+  }
+
   const item: any = {
     active: 'true',
     createdOn: new Date().getTime(),
@@ -88,9 +96,9 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
     ) {
       if (teamData[val].length > 0 && typeof teamData[val] === 'object') {
         item[val] = new Array();
-        teamData[val].forEach((ele: string, j: number) => {
-          if (ele.match(regex)) {
-            item[val].push(ele.split('Other:')[1]);
+        teamData[val].forEach((ele: any, j: number) => {
+          if ((typeof(ele) === 'string') && (ele.match(regex))) {
+              item[val].push(ele.split('Other:')[1]);
             // updateTeamConfig(teamData.orgId, item[val][j]);
           } else {
             item[val].push(ele);
@@ -122,14 +130,28 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
   );
 };
 
+//add id to each services if it doesn't already exist
+const addIdToServices = (services: ServiceInfo[]) => {
+  services.forEach((service: ServiceInfo) => {
+    if(! service.id) {
+      const partialName = service.name.replace(/\s/g, '').substring(0, 4);
+      const rand = generate(10);
+      service.id = `${partialName}_${rand}`;
+    }
+    if(service.services) {
+      addIdToServices(service.services);
+    }
+  });
+};
+
 //fetch team Config from dynamoDb and fill in the options
 export const getCreateTeamConfig = async (
   orgId: string
-): Promise<CreateTeamConfig> => {
-  const teamConfig = await getTeamConfig(orgId);
+): Promise<ConfigItem> => {
+  const teamConfig: ConfigItem = await getTeamConfig(orgId);
   appLogger.info({ getTeamConfig: teamConfig });
 
-  const configDetails = {};
+/*  const configDetails = {};
   Object.keys(teamConfig.config).forEach((val: any) => {
     configDetails[val] = {};
     configDetails[val].displayName = teamConfig.config[val].displayName;
@@ -155,9 +177,22 @@ export const getCreateTeamConfig = async (
     }
   });
 
-  const createTeamConfig: CreateTeamConfig = { config: configDetails, orgId };
-  createTeamConfig.config.manager.options = await fetchManagers();
-  return createTeamConfig;
+  const createTeamConfig: ConfigItem = { config: configDetails, orgId };
+*/
+  const managers = await fetchManagers();
+  const key = 'manager';
+  teamConfig.config[key].options = { custom: managers.join(',') };
+  return teamConfig;
+};
+
+//fetch team Config from dynamoDb and fill in the options
+export const getCreateServiceConfig = async (
+  orgId: string
+): Promise<ConfigItem> => {
+  const serviceConfig: ConfigItem = await getServiceConfig(orgId);
+  appLogger.info({ getServiceConfig: serviceConfig });
+
+  return serviceConfig;
 };
 
 // fetch team info
@@ -227,9 +262,15 @@ export const updateTeam = async (updateInfo: TeamInfo, userId: string) => {
     throw err;
   }
 
+  //add id to services
+  if(updateInfo.services) {
+    addIdToServices(updateInfo.services);
+  }
+
   EAN['#order'] = 'order';
   EAV[':order'] = ['admin', updateInfo.manager];
   SET += `#order = :order`;
+
   Object.keys(updateInfo).forEach((val, i) => {
     if (
       !(
@@ -257,8 +298,8 @@ export const updateTeam = async (updateInfo: TeamInfo, userId: string) => {
         typeof updateInfo[val] === 'object'
       ) {
         const item = new Array();
-        updateInfo[val].forEach((ele: string, j: number) => {
-          if (ele.match(regex)) {
+        updateInfo[val].forEach((ele: any, j: number) => {
+          if ((typeof(ele) === 'string') && (ele.match(regex))) {
             item.push(ele.split('Other:')[1]);
             // updateTeamConfig(teamData.orgId, item[val][j]);
           } else {
@@ -300,17 +341,18 @@ export const updateTeam = async (updateInfo: TeamInfo, userId: string) => {
 
 //Update team metrics tools -- used by SetMetricsTools API
 export const updateTeamMetrics = async (
+  teamId: string,
   metricsTools: MetricsTool[],
-  teamId: string
+  services: ServiceInfo[]
 ) => {
   const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
-    ExpressionAttributeNames: { '#metrics': 'metrics' },
-    ExpressionAttributeValues: { ':metrics': metricsTools },
+    ExpressionAttributeNames: { '#metrics': 'metrics', '#services': 'services' },
+    ExpressionAttributeValues: { ':metrics': metricsTools, ':services': services },
     Key: {
       teamId,
     },
     TableName: TableNames.getTeamTableName(),
-    UpdateExpression: 'SET #metrics = :metrics',
+    UpdateExpression: 'SET #metrics = :metrics, #services = :services',
   });
 
   appLogger.info({ updateTeam_update_params: params });

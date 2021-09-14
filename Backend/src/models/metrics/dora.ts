@@ -1,5 +1,5 @@
 export interface DeploymentDataItem {
-  countSuccessBuilds: number;
+  countBuilds: number;
   timestamp: number;
 }
 
@@ -21,12 +21,22 @@ export interface ChangeFailureRateDataItem {
   totalBuilds: number;
 }
 
-export interface DORADataItem {
-  aggregateValue: number;
-  graphData: DeploymentDataItem[] | LeadTimeDataItem[] | MeanTimeToRestoreDataItem[] | ChangeFailureRateDataItem[];
-  level: string;
+export interface TrendDataItem {
+  timestamp: number;
+  value: number;
 }
 
+export interface DORADataItem {
+  aggregateValue: number;
+  graphData: DeploymentDataItem[]
+    | LeadTimeDataItem[]
+    | MeanTimeToRestoreDataItem[]
+    | ChangeFailureRateDataItem[];
+  level: string;
+  trendData: TrendDataItem[];
+}
+
+export const DORA_LEVEL_NA = 'N/A';
 export const DORA_LEVEL_ELITE = 'Elite';
 export const DORA_LEVEL_HIGH = 'High';
 export const DORA_LEVEL_LOW = 'Low';

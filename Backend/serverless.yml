@@ -1,24 +1,70 @@
+# --------- Start of dish env --------------
+# service: gigatester-backend
+
+# provider:
+#   name: aws
+#   runtime: nodejs12.x
+#   stage: ${opt:stage, 'development'}
+#   region: us-west-2
+#   memorySize: 2048 # In MB, Max is 10240 MB.
+#   timeout: 60 # Note: API Gateway current maximum is 30 seconds
+#   logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
+#   environment:
+#     DB_ENV: ${env:NODE_ENV, self:provider.stage}
+#     logLevel: ${self:custom.loglevel.${self:provider.stage}}
+#   role: arn:aws:iam::625253786752:role/DoItRightExecutionRole
+#   vpc:
+#     securityGroupIds:
+#       - sg-0eb92d06b4b02be6d
+#     subnetIds:
+#       - subnet-0f52a4e082552df2d
+
+# plugins:
+#   - serverless-plugin-typescript
+#   - serverless-offline
+#   - serverless-aws-documentation
+#   - serverless-stack-output
+
+# package:
+#   include:
+#     - src/**/!(*.spec).js
+
+# functions:
+#   app:
+#     handler: src/app.handler
+#     events:
+#       - http: ANY /
+#       - http: 'ANY /{proxy+}'
+
+# custom:
+#   output:
+#     file: .serverless/output.json
+#   loglevel:
+#     development: 'info' # error/warn/info/debug
+#     qa: 'info' # error/warn/info/debug
+#     production: 'info'  # error/warn/info/debug
+# ---------------- End of dish env -----------------------
+
+# ---------------- Start of pinimbus env -----------------
 service: gigatester-backend
 
 provider:
   name: aws
   runtime: nodejs12.x
   stage: ${opt:stage, 'development'}
-  region: us-east-1
+  region: us-east-1  #change based on where to deploy
   memorySize: 2048 # In MB, Max is 10240 MB.
   timeout: 60 # Note: API Gateway current maximum is 30 seconds
   logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
   environment:
     DB_ENV: ${env:NODE_ENV, self:provider.stage}
     logLevel: ${self:custom.loglevel.${self:provider.stage}}
-  iamRoleStatements:
-    - Effect: 'Allow'
-      Action:
-        - 'apigateway:*'
-      Resource:
-        - 'arn:aws:apigateway:${self:provider.region}::/restapis*'
-#  apiGateway:
-#    shouldStartNameWithService: false
+iamRoleStatements:
+   - Effect: 'Allow'
+     Action:
+       - 'apigateway:*'
+     Resource:
+       - 'arn:aws:apigateway:${self:provider.region}::/restapis*'
 
 plugins:
   - serverless-plugin-typescript
@@ -29,9 +75,6 @@ plugins:
 package:
   include:
     - src/**/!(*.spec).js
-#  exclude:
-#    - node_modules/**/*
-#  individually: true
 
 functions:
   app:
@@ -40,6 +83,15 @@ functions:
       - http: ANY /
       - http: 'ANY /{proxy+}'
 
+custom:
+  output:
+    file: .serverless/output.json
+  loglevel:
+    development: 'info' # error/warn/info/debug
+    qa: 'info' # error/warn/info/debug
+    production: 'info'  # error/warn/info/debug
+
+# ------- Restructuring changes - not yet used --------
 #  app:
 #    handler: assessment/src/app.handler
 #    package:
@@ -63,10 +115,4 @@ functions:
 # https://serverless.readme.io/docs/best-practices
 # https://serverless-stack.com/chapters/organizing-serverless-projects.html
 
-custom:
-  output:
-    file: .serverless/output.json
-  loglevel:
-    development: 'info' # error/warn/info/debug
-    qa: 'info' # error/warn/info/debug
-    production: 'warn'  # error/warn/info/debug
+# ------------ End of pinimbus env -----------

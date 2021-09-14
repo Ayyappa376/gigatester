@@ -3,42 +3,62 @@
 const { Client } = require('@elastic/elasticsearch');
 const {config} = require('./config');
 
-const esClient = new Client({ node: config.elasticSearchURL });
+const esClient = new Client({
+  node: config.elasticSearchURL,
+  auth: {
+    username: config.elasticSearchUser,
+    password: config.elasticSearchPass
+  }
+});
+
+/*
+addtestData().catch(console.error);
 
 async function addtestData(){
-	//create mapping to ensure data consistency
-	await createIndexMappings();
-/*
+
+	//generateDataFor(team, services, projs, dateStartStr, dateEndStr, typeList, numPriorities, maxItems)
 	// **** Data for dev environment ****
-	//generateDataFor(team, proj, dateStartStr, dateEndStr, typeList, numPriorities, maxItems)
-	await generateDataFor("abc", "Products", "December 1, 2020", "February 28, 2021", ['Features', 'Bugs'], 3, 5);
-	await generateDataFor("Alpha", "Cloud Services", "October 1, 2020", "November 30, 2020", ['Features', 'Bugs', 'Tasks'], 3, 5);
-	await generateDataFor("Team-1", "Automations", "April 7, 2020", "November 20, 2020", ['Requirement', 'Issues'], 3, 5);
-	await generateDataFor("Team-2", "DevOps Services", "June 1, 2020", "August 25, 2020", ['Features', 'Bugs'], 4, 5);
-	generateDataFor("test team", "DevOpsMetricsBuild", "October 1, 2020", "October 10, 2020", ['Requirement', 'Issues'], 3, 5);
-	generateDataFor("Gteam", "DoItRightBuild", "October 1, 2020", "October 10, 2020", ['Story', 'Bugs', 'Tasks'], 3, 5);
-*/
+	await generateDataForTeam("abc", ["prod1", "prod2"], ["Prod1", "Prod2"], "January 1, 2021", "September 30, 2021", ['Features', 'Bugs'], 3, 5);
+	await generateDataForTeam("Alpha", ["Cloud Services", "Search Services"], ["Cloud-Services", "Search-Services"], "October 1, 2020", "March 30, 2021", ['Features', 'Bugs', 'Tasks'], 3, 5);
+	await generateDataForTeam("Team-1", ["Automations", "AI", "BigData"], ["Automations", "AI", "BigData"], "August 7, 2020", "August 24, 2021", ['Requirement', 'Issues'], 3, 5);
+	await generateDataForTeam("Team-2", ["Devops", "Data centers"], ["DevOps Services", "Data Centers"], "December 1, 2020", "February 31, 2021", ['Features', 'Bugs'], 4, 5);
+	await generateDataForTeam("test team", ["DevOpsMetrics"], ["DevOpsMetricsBuild"], "October 1, 2020", "September 30, 2021", ['Requirement', 'Issues'], 3, 5);
+	await generateDataFor("Testing", ["Testing"], ["Testing"], "August 1, 2020", "September 30, 2021", ['Story', 'Bugs', 'Tasks'], 3, 5);
+
 	// **** Data for beta environment ****
-	//generateDataFor(team, proj, dateStartStr, dateEndStr, maxBuildsPerDay)
-	await generateDataFor("Truminds", "Development", "November 10, 2020", "February 28, 2021", ['Story', 'Bugs', 'Tasks'], 3, 5);
+	await generateDataFor("Truminds", ["Development"], ["Development"], "November 10, 2020", "September 30, 2021", ['Story', 'Bugs', 'Tasks'], 3, 5);
 	await generateDataFor("Testing", "Testing", "August 1, 2020", "December 26, 2020", ['Features', 'Bugs'], 4, 5);
 
 	//We need to force an index refresh at this point, otherwise we will not get any result in the consequent search
-	await esClient.indices.refresh({ index: `${config.env}_${config.buildIndex}`});
+	await esClient.indices.refresh({ index: `${config.env}_${config.reqIndex}`});
+}
+*/
+
+exports.addReqTestDataFor = async function (team, services, projs, startDateStr, endDateStr) {
+    generateDataForTeam(team, services, projs, startDateStr, endDateStr, ['Story', 'Feature', 'Bug', 'Task', 'Issue', ], 5, Math.floor(Math.random() * 3) + 3);
+
+	//We need to force an index refresh at this point, otherwise we will not get any result in the consequent search
+	await esClient.indices.refresh({ index: `${config.env}_${config.reqIndex}`});
 }
 
-async function generateDataFor(team, proj, dateStartStr, dateEndStr, typeList, numPriorities, maxItems) {
+async function generateDataForTeam(team, services, projs, dateStartStr, dateEndStr, typeList, numPriorities, maxItems) {
+	for(i = 0; i < services.length; i++) {
+		generateDataFor(team, services[i], projs[i], dateStartStr, dateEndStr, typeList, numPriorities, maxItems);
+	}
+}
+
+async function generateDataFor(team, service, proj, dateStartStr, dateEndStr, typeList, numPriorities, maxItems) {
 	startDate = new Date(dateStartStr);
 	endDate = new Date(dateEndStr);
 	startItemNum = 1;
 	for(var date = startDate; date <= endDate; date.setDate(date.getDate() + 1)) {
 		numItemOnDay = Math.floor(Math.random() * maxItems) + 1;
-		await generateData(team, proj, date, numItemOnDay, startItemNum, typeList, numPriorities);
+		await generateData(team, service, proj, date, numItemOnDay, startItemNum, typeList, numPriorities);
 		startItemNum += numItemOnDay;
 	}
 }
 
-async function generateData(team, proj, date, itemCount, startItemNum, typeList, numPriorities) {
+async function generateData(team, service, proj, date, itemCount, startItemNum, typeList, numPriorities) {
 	var gap = Math.floor(16 * 3600000 / itemCount);
 	var baseHour = 7 * 3600000;
 	for(var i = 0; i < itemCount; i++) {
@@ -47,23 +67,24 @@ async function generateData(team, proj, date, itemCount, startItemNum, typeList,
 		var type = typeList[Math.floor(Math.random() * typeList.length)];
 		var toss = Math.random();
 		if(toss < 0.334) {
-			await putData(team, proj, startItemNum + i, priority, type, createDate, null, null);
+			await putData(team, service, proj, startItemNum + i, priority, type, createDate, null, null);
 		} else if(toss < 0.667) {
 			var startDate = new Date(createDate.getTime() + Math.floor(Math.random() * 4*24*3600000));
-			await putData(team, proj, startItemNum + i, priority, type, createDate, startDate, null);
+			await putData(team, service, proj, startItemNum + i, priority, type, createDate, startDate, null);
 		} else {
 			var startDate = new Date(createDate.getTime() + Math.floor(Math.random() * 4*24*3600000));
 			var closeDate = new Date(startDate.getTime() + Math.floor(Math.random() * 4*24*3600000));
-			await putData(team, proj, startItemNum + i, priority, type, createDate, startDate, closeDate);
+			await putData(team, service, proj, startItemNum + i, priority, type, createDate, startDate, closeDate);
 		}
 	}
 }
 
-async function putData(team, proj, itemId, priority, type, createDate, startDate, closeDate) {
+async function putData(team, service, proj, itemId, priority, type, createDate, startDate, closeDate) {
 	await esClient.index({
 		index: `${config.env}_${config.reqIndex}`,
 		body: {
 		    teamId: team, //string [keyword]
+			servicePath: service, //string [keyword]
 		    projectName: proj, //string [keyword]
 		    itemId: itemId.toString(), //string [keyword]
 		    itemPriority: priority.toString(), //string [keyword]
@@ -78,28 +99,3 @@ async function putData(team, proj, itemId, priority, type, createDate, startDate
 		}
 	});
 }
-
-async function createIndexMappings() {
-	await esClient.indices.create({
-		index: `${config.env}_${config.reqIndex}`,
-		body: {
-			mappings: {
-				properties: {
-					teamId: { type: 'keyword' },
-					projectName: { type: 'keyword' },
-					itemId: { type: 'keyword' },
-					itemPriority: { type: 'keyword' },
-					itemType: { type: 'keyword' },
-					status: { type: 'keyword' },
-					closedOn: { type: 'date', format: 'epoch_second' },
-					createdOn: { type: 'date', format: 'epoch_second' },
-					startedOn: { type: 'date', format: 'epoch_second' },
-					url: { type: 'text' }
-				}
-			}
-		}
-	})
-}
-
-addtestData().catch(console.error);
-

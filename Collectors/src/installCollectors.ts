@@ -10,8 +10,10 @@ async function install() {
   //process runtime arguments
   var myArgs = process.argv.slice(2);
   if (myArgs.length > 0) {
+    installLogger.info(`Installing ${myArgs[0]} collector....`);
     const collectorDetailsFile = `./conf/${myArgs[0]}.json`;
-    // Read the file, and pass it to your callback
+    // Read the configuration file, and write configuration to DynamoDB
+    installLogger.info(`Reading configuration file.`);
     const data: string = fs.readFileSync(collectorDetailsFile, {
       encoding: 'utf8',
       flag: 'r',

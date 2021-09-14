@@ -56,21 +56,20 @@ export const createAssignment = async (userId: string, data: any) => {
 
 export const getAssignments = async (
   teamId: string,
-  forDashboard?: boolean
+  allVersions?: boolean
 ): Promise<any> => {
   const questionnaires: AssignmentsQuestionnaireDetails[] = (
     await getQuestionnaire()
-  ).map((questionnaireList: any) => {
-    appLogger.info({ getQuestionnaire: questionnaireList });
-    return {
-      displayName: questionnaireList.name,
-      questionnaireId: questionnaireList.questionnaireId,
-      version: questionnaireList.version,
-    };
-  });
+  ).map((aQuestionnaire: any) => ({
+      displayName: aQuestionnaire.name,
+      questionnaireId: aQuestionnaire.questionnaireId,
+      version: aQuestionnaire.version,
+    })
+  );
+  appLogger.info({ getQuestionnaire: questionnaires });
   let questionnaireFiltered: AssignmentsQuestionnaireDetails[] = [];
-  // This condition is to provide all the questionnaire versions to the dashboard.
-  if (forDashboard) {
+  // This condition is to provide all the questionnaire versions.
+  if (allVersions) {
     questionnaireFiltered = questionnaires;
   } else {
     for (const questionnaire of questionnaires) {
@@ -95,7 +94,7 @@ export const getAssignments = async (
   appLogger.info({ getResultConfig: userLevels });
   if (teamId === 'admin') {
     const questionnaireSelected: string[] = questionnaireFiltered.map(
-      (map: any) => map.questionnaireId
+      (item: any) => item.questionnaireId
     );
     return {
       questionnaireSelected,
@@ -138,7 +137,7 @@ export const getAssessments = async (teamId: string): Promise<any> => {
 
   const userLevels = await getResultLevels();
   appLogger.info({ getResultConfig: userLevels });
-  if (teamId === 'admin') {
+  if (teamId === 'Admin' || teamId === 'Manager') {
     const questionnaireSelected: string[] = questionnaireFiltered.map(
       (map: any) => map.questionnaireId
     );
@@ -166,6 +165,7 @@ export const getAssessments = async (teamId: string): Promise<any> => {
   }));
 };
 
+/*
 export const getQuestionnairesAssignedPrev = async (
   teamId: string
 ): Promise<any> => {
@@ -183,6 +183,7 @@ export const getQuestionnairesAssignedPrev = async (
     res.map((assignments: any) => assignments.questionnaireId)
   );
 };
+*/
 
 export const getQuestionnairesAssigned = async (
   teamId: string

@@ -1,7 +1,7 @@
 import {
   RepoDatabaseDataItem,
+  RepoDataItemLists,
   RepoPullRaiserDataItem,
-  RepoPullRaiserList,
   RepoPullReqLifeDataItem,
   RepoPullReqsDataItem,
   STATE_ACCEPTED,
@@ -24,23 +24,28 @@ interface ESRepoDatabaseDataItem {
 export const getRepoPullReqsData = async ({
   committers,
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   committers?: string[];
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<RepoPullReqsDataItem[]> => {
   appLogger.info({
-    getRepoPullReqsData: { teamIds, committers, fromDate, toDate },
+    getRepoPullReqsData: { teamIds, services, committers, fromDate, toDate },
   });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
   }
-
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
+  }
   if (committers) {
     filters.push({ terms: { raisedBy: committers } });
     //        filters.push({terms: { raisedBy: committers.map((name: string) => name.toLowerCase()) } });
@@ -118,23 +123,28 @@ export const getRepoPullReqsData = async ({
 export const getRepoPullReqLifeData = async ({
   committers,
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   committers?: string[];
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<RepoPullReqLifeDataItem[]> => {
   appLogger.info({
-    getRepoPullReqLifeData: { teamIds, committers, fromDate, toDate },
+    getRepoPullReqLifeData: { teamIds, services, committers, fromDate, toDate },
   });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
   }
-
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
+  }
   if (committers) {
     filters.push({ terms: { raisedBy: committers } });
     //        filters.push({terms: { raisedBy: committers.map((name: string) => name.toLowerCase()) } });
@@ -188,23 +198,28 @@ export const getRepoPullReqLifeData = async ({
 export const getRepoPullRaiserData = async ({
   committers,
   fromDate,
+  services,
   teamIds,
   toDate,
 }: {
   committers?: string[];
   fromDate: Date;
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
 }): Promise<RepoPullRaiserDataItem[]> => {
   appLogger.info({
-    getRepoPullRaiserData: { teamIds, committers, fromDate, toDate },
+    getRepoPullRaiserData: { teamIds, services, committers, fromDate, toDate },
   });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
   }
-
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
+  }
   if (committers) {
     filters.push({ terms: { raisedBy: committers } });
     //        filters.push({terms: { raisedBy: committers.map((name: string) => name.toLowerCase()) } });
@@ -239,6 +254,7 @@ export const getRepoPullRaiserData = async ({
         commitsRejected: 0,
         committerName: item._source.raisedBy,
         projectName: item._source.projectName,
+        service: item._source.servicePath,
         teamId: item._source.teamId,
         //                timestampEnd: toDate.getTime(),
         url: item._source.url,
@@ -276,6 +292,7 @@ export const getRepoPullRaiserData = async ({
         commitsRejected: 0,
         committerName: item._source.raisedBy,
         projectName: item._source.projectName,
+        service: item._source.servicePath,
         teamId: item._source.teamId,
         //                timestampEnd: toDate.getTime(),
         url: item._source.url,
@@ -309,6 +326,7 @@ export const getRepoPullRaiserData = async ({
         commitsRejected: 1,
         committerName: item._source.raisedBy,
         projectName: item._source.projectName,
+        service: item._source.servicePath,
         teamId: item._source.teamId,
         //                timestampEnd: toDate.getTime(),
         url: item._source.url,
@@ -324,12 +342,12 @@ export const getRepoPullRaiserData = async ({
   return finalResult;
 };
 
-export const getRepoPullRaiserList = async (
+export const getRepoDataItemLists = async (
   fields: any[]
-): Promise<RepoPullRaiserList[]> => {
-  const finalResult: RepoPullRaiserList[] = [];
-  const aggrMap: { [key: string]: RepoPullRaiserList } = {};
-
+): Promise<RepoDataItemLists> => {
+//  const finalResult: RepoPullRaiserList[] = [];
+//  const aggrMap: { [key: string]: RepoPullRaiserList } = {};
+  const finalCommittersList: string[] = [];
   let result: ESRepoDatabaseDataItem[] = [];
 
   result = await fetchFields<ESRepoDatabaseDataItem[]>(
@@ -338,15 +356,18 @@ export const getRepoPullRaiserList = async (
   );
 
   result.forEach((item: ESRepoDatabaseDataItem) => {
-    const key: string = `${item._source.raisedBy}`;
-    const data: RepoPullRaiserList = {
-      committerName: item._source.raisedBy,
-    };
-    aggrMap[key] = data;
+    if(! finalCommittersList.includes(item._source.raisedBy)) {
+      finalCommittersList.push(item._source.raisedBy);
+    }
+  //  const key: string = `${item._source.raisedBy}`;
+  //  const data: RepoPullRaiserList = {
+  //    committerName: item._source.raisedBy,
+  //  };
+  //  aggrMap[key] = data;
   });
 
-  Object.keys(aggrMap).map((key: string) => {
-    finalResult.push(aggrMap[key]);
-  });
-  return finalResult;
+//  Object.keys(aggrMap).map((key: string) => {
+//    finalResult.push(aggrMap[key]);
+//  });
+  return {committerName: finalCommittersList};
 };

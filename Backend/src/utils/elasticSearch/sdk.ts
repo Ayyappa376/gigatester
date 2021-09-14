@@ -1,11 +1,17 @@
 /* **** WRAPPER FUNCTIONS FOR ACCESSING ELASTICSEARCH **** */
 
 import { Client } from '@elastic/elasticsearch';
+import { config } from '@root/config';
 import { appLogger } from '@utils/index';
 
-//const esURL = 'http://localhost:9200';
-const esURL = 'http://ec2-34-234-42-134.compute-1.amazonaws.com:9200';
-const esClient: Client = new Client({ node: esURL });
+//const esClient: Client = new Client({ node: config.esURL });
+const esClient = new Client({
+  auth: {
+    password: config.elasticsearch.password,
+    username: config.elasticsearch.username,
+  },
+  node: config.elasticsearch.url,
+});
 
 /* this is a paged search*/
 export function search<T>(
@@ -37,7 +43,7 @@ export function search<T>(
             return reject(err);
           }
 
-          return resolve(resp.body);
+          return resolve(resp.body.hit.hits);
         }
       );
     }

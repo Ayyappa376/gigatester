@@ -8,13 +8,13 @@ exports.createCognitoUsersTable = (ddb, tableName) => {
 	let params = {
 	    AttributeDefinitions: [
 	        {
-	            AttributeName: "userId",
+	            AttributeName: "id",
 	            AttributeType: "S",
 	        },
 	    ],
 	    KeySchema: [
 	        {
-	            AttributeName: "userId",
+	            AttributeName: "id",
 	            KeyType: "HASH",
 	        },
 	    ],

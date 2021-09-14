@@ -204,9 +204,7 @@ export const downloadAssessmentReports = async (
   version?: string
 ): Promise<any> => {
   let myResult: any[] = new Array();
-  const teamsManagedByUser: string[] = await getTeamIds(
-    userId
-  );
+  const teamsManagedByUser: string[] = await getTeamIds(userId);
   if (teamsManagedByUser.length === 0 && !isAdmin) {
     return {};
   }

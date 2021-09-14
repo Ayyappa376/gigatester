@@ -29,6 +29,7 @@ export interface QualityListDataItem {
   security: number;
   // size: number;
   // tests: number;
+  service: string;
   teamId: string;
 //  timestamp: number;
   url: string;
@@ -47,6 +48,7 @@ export interface QualityDatabaseDataItem {
   security: number;
   // size: number;
   // tests: number;
+  servicePath: string;
   teamId: string;
   timestamp: number;
   url: string;

@@ -13,34 +13,33 @@ export interface IStateDatabaseItem {
 	toolName: string;
 	teamId: string;
 	project: string;
-	url: string;
+//	url: string;
 	lastAccessed: number;
 	details?: any;
 }
 
 export const getLastState = async (
-	{toolName, teamId, project, url}: {toolName: string, teamId: string, project: string, url: string}
+	{toolName, teamId, project}: {toolName: string, teamId: string, project: string}
 ): Promise<IStateDatabaseItem> => {
     return new Promise((resolve: (item: any) => void, reject: (err: any) => any): any => {
-		appLogger.info('getLastState function', {toolName, teamId, project, url});
+//		appLogger.info('getLastState function', {toolName, teamId, project});
 		const filters: any[] = [
 			{ term: { toolName: toolName } },
 			{ term: { teamId: teamId } },
-			{ term: { project: project } },
-			{ term: { url: url } }
+			{ term: { project: project } }
 		];
 	
-		esDBFuncs.search<ESStateDataItem[]>(getTableNameForOrg(config.stateIndex), filters, [], 10, 0)
+		esDBFuncs.searchAll<ESStateDataItem[]>(getTableNameForOrg(config.stateIndex), filters, [])
 		.then( (result: ESStateDataItem[] )	=> {
-			appLogger.info(result);
+//			appLogger.info(result);
 			if(!result || result.length == 0) {
-				return resolve([]);
+				return resolve(null);
 			} else {
 				return resolve(result[0]._source);
 			}
 		})
 		.catch((err: any) => {
-			appLogger.error(err);
+			appLogger.error({err, filters: filters}, "Error getting last state");
 			return reject(err);
 		})
 	})
@@ -48,21 +47,20 @@ export const getLastState = async (
 
 export const setLastState = async (state: IStateDatabaseItem): Promise<any> => {
     return new Promise((resolve: (item: any) => void, reject: (err: any) => any): any => {
-		appLogger.info('getLastState function', {state});
+//		appLogger.info('setLastState function', {state});
 		const filters: any[] = [
 			{ term: { toolName: state.toolName } },
 			{ term: { teamId: state.teamId } },
-			{ term: { project: state.project } },
-			{ term: { url: state.url } }
+			{ term: { project: state.project } }
 		];
 
-		esDBFuncs.update(getTableNameForOrg(config.stateIndex), filters, state)
+		esDBFuncs.updateOrInsert(getTableNameForOrg(config.stateIndex), filters, [], state)
 		.then( (result: any )	=> {
-			appLogger.info(result);
+//			appLogger.info(result);
 			return resolve(result);
 		})
 		.catch((err: any) => {
-			appLogger.error(err);
+			appLogger.error({err, filters: filters, stateItem: state}, "Error setting last state");
 			return reject(err);
 		})
 	})

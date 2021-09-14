@@ -1,8 +1,10 @@
 exports.config = {
-	env: 'beta',
+	env: 'dev',
 	region: 'us-east-1',
 //	elasticSearchURL: 'http://localhost:9200',
 	elasticSearchURL: 'http://ec2-34-234-42-134.compute-1.amazonaws.com:9200',
+	elasticSearchUser: 'doitright-user',
+	elasticSearchPass: 'pinimbus',
 
 	teamTable: 'Team',
 

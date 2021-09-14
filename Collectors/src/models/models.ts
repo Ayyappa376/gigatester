@@ -1,7 +1,6 @@
 //CollectorConfig structure from Config table in dynamoDB
 export interface ConfigItem {
     config: CollectorConfigDetails;
-//    name: string;
     orgId: string;
     type: string;
 }
@@ -20,26 +19,48 @@ export interface CollectorConfig {
     type: string;
 }
 
+//team metrics tools details from Team table in dynamoDB
+export interface IMetricsTool {
+    toolName: string;
+    toolType: string;
+    enabled: boolean;
+    [keyName: string]: any;
+}
+
 //all build data
 export interface BuildDatabaseDataItem {
-    buildNum: number;
-    duration: number;
-    projectName: string;
-    repoBranch?: string;
-    repoURL?: string;
-    result: string;
-    status: boolean;
     teamId: string;
-    timestamp: number; // or date
+    servicePath: string;
+    buildNum: number;
+    projectName: string;
+    stages: BuildDatabaseStageDataItem[];
+    status: string;
+    startTimestamp: number; // or date
+    endTimestamp?: number; // or date
+    duration: number;
+    pauseDuration?: number;
     url: string;
 }
 
-export const RESULT_PASS = 'SUCCESS';
-export const RESULT_FAIL = 'FAILURE';
-export const RESULT_INPROGRESS = 'IN PROGRESS';
-export const RESULT_OTHER = 'OTHER'; //Like Aborted, In Progress or Error etc.
-export const STATUS_BUILDING = true;
-export const STATUS_BUILT = false;
+export interface BuildDatabaseStageDataItem {
+    stageName: string;
+    stageId: number;
+    status: string;
+    startTimestamp: number;
+    endTimestamp?: number;
+    duration: number;
+    pauseDuration?: number;
+}
+
+export const STATUS_SUCCESS = 'SUCCESS';
+export const STATUS_FAILED = 'FAILED';
+export const STATUS_CANCELED = 'CANCELED';
+export const STATUS_INPROGRESS = 'IN_PROGRESS';
+export const STATUS_SKIPPED = 'SKIPPED';
+export const STATUS_PENDING = 'PENDING';
+export const STATUS_BLOCKED = 'BLOCKED';
+export const STATUS_SCHEDULED = 'SCHEDULED';
+export const STATUS_OTHER = 'OTHER';
 
 //all repository data
 export interface RepoDatabaseDataItem {
@@ -48,8 +69,10 @@ export interface RepoDatabaseDataItem {
     pullId: number; //or string
     raisedBy: string;
     raisedOn: number; //or date
+    repoName: string;
 //    reviewedBy: string;
     reviewedOn?: number; //or date
+    servicePath: string;
     status: string;
     teamId: string;
     url: string;
@@ -68,57 +91,45 @@ export const STATUS_REJECTED = 'Rejected';
 export interface ReqDatabaseDataItem {
   closedOn?: number;
   createdOn: number;
-  // cycleTime?: number; //cycle time = timestampClosedOn - timestampStartedOn
   itemId: string;
   itemPriority: string;
   itemType: string;
-  // leadTime?: number; //lead time = timestampClosedOn - timestampCreatedOn
   projectName: string;
+  servicePath: string;
   startedOn?: number;
   status: string;
   teamId: string;
   url: string;
 }
 
-export const REQ_STATUS_NEW = 'To Do'; //should be 'To Do'
-//export const REQ_STATUS_ASSIGNED = 'Assigned';
-export const REQ_STATUS_INPROGRESS = 'In Progress'; //should be 'In Progress'
-//export const REQ_STATUS_TESTING = 'Testing';
-export const REQ_STATUS_CLOSED = 'Done'; //should be 'Done'
-export const REQ_TYPE_BUGS = 'Bugs';
+export const REQ_STATUS_NEW = 'To Do';
+export const REQ_STATUS_INPROGRESS = 'In Progress';
+export const REQ_STATUS_CLOSED = 'Done';
+export const REQ_TYPE_BUG = 'Bug';
 export const REQ_TYPE_STORY = 'Story';
 
 //all quality data
 export interface QualityDatabaseDataItem {
-  teamId: string,
-  projectName: string,
   metrics: string;
+  projectName: string,
+  servicePath: string;
+  teamId: string,
   timestamp: number;
-  value: number;
   url:string;
+  value: number;
 }
 
-/*
-exports.TeamsMetricsConfig = [
-	{
-		teamId: "Gteam",
-		metrics: [
-			{
-				toolName: "Jenkins",
-				url: "ec2-107-21-184-82.compute-1.amazonaws.com:8080",
-				username: "JenkinsAdmin",
-				password: "3.14Nimbus",
-				job: "DoItRightBuild"
-			},
-			{
-				toolName: "AWSCodeCommit",
-				url: "https://codecommit.us-east-1.amazonaws.com",
-				username: "AKIAQ2S4FEWF4257FMNV",
-				password: "6DngNkAklr8MVc5n+7aKo2jrtBpzOSYOxe+Vh8AL",
-				region: 'us-east-1',
-				repoName: 'opsai'
-			}
-		]
-	}
-];
-*/
+//all incident data
+export interface IncidentDatabaseDataItem {
+    endTime?: number;
+    itemId: string;
+    itemPriority: string;
+    itemType: string;
+    projectName: string;
+    servicePath: string;
+    startTime: number;
+    status: string;
+    teamId: string;
+    url: string;
+  }
+

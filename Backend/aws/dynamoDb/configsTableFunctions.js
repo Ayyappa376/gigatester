@@ -1,7 +1,10 @@
 const mainTableName = 'Configs';
-const appClientIdValue = "6dr7paonmudqfqsvpnqiuepb8d";
-const appClientURLValue = "qadoitright.auth.us-east-1.amazoncognito.com";
-const userpoolIdValue = "us-east-1_OGtCgSmi6";
+//const appClientIdValue = "6dr7paonmudqfqsvpnqiuepb8d";
+//const appClientURLValue = "qadoitright.auth.us-east-1.amazoncognito.com";
+//const userpoolIdValue = "us-east-1_OGtCgSmi6";
+const appClientIdValue = "5u9hhct8g0narp24g5h5m2su2q";
+const appClientURLValue = "dishdoitright.auth.us-west-2.amazoncognito.com";
+const userpoolIdValue = "us-west-2_TIkBZQsxv";
 
 exports.getConfigsTableNameFor = (tablePrefix) => {
 	return tablePrefix + '_' + mainTableName;
@@ -46,7 +49,7 @@ exports.createConfigsTable = (ddb, tableName) => {
 	});
 }
 
-exports.insertConfigsTableData = (ddb, tableName) => {
+exports.insertConfigsTableData = (ddb, tableName, tablePrefix) => {
 	let params = {
 		TableName: tableName
 	};
@@ -92,29 +95,28 @@ exports.insertConfigsTableData = (ddb, tableName) => {
 				});
 
 				let params4 = {
-					Item: getGeneralConfig(tablePrefix),
+					Item: getServiceConfig(tablePrefix),
 					TableName: tableName
 				 };
 				ddb.putItem(params4, function(err, data) {
+				    if (err) {
+				        console.error("Error: Failed to insert ServiceConfig into table" + tableName, err);
+				    } else {
+				        console.log("Successfully inserted ServiceConfig into table " + tableName);
+				    }
+				});
+
+				let params5= {
+					Item: getGeneralConfig(tablePrefix),
+					TableName: tableName
+				 };
+				ddb.putItem(params5, function(err, data) {
 				    if (err) {
 				        console.error("Error: Failed to insert GeneralConfig into table" + tableName, err);
 				    } else {
 				        console.log("Successfully inserted GeneralConfig into table " + tableName);
 				    }
 				});
-/*
-				let params5 = {
-					Item: getCollectorConfig(tablePrefix),
-					TableName: tableName
-				 };
-				ddb.putItem(params5, function(err, data) {
-				    if (err) {
-				        console.error("Error: Failed to insert CollectorConfig into table" + tableName, err);
-				    } else {
-				        console.log("Successfully inserted CollectorConfig into table " + tableName);
-				    }
-				});
-*/
 			}
 		}
 	});
@@ -194,154 +196,62 @@ function getTeamConfig(tablePrefix) {
 	};
 }
 
-function getGeneralConfig(tablePrefix) {
+function getServiceConfig(tablePrefix) {
 	return {
 		"orgId": { S: tablePrefix },
-		"type": { S: "userLevels" },
+		"type": { S: "ServiceConfig" },
 		"config": { M: {
-			"levels": { L: [
-					{ M: {
-						"name": "Beginner",
-						"lowerLimit": { N: 0 },
-						"upperLimit": { N: 30 }
-					} },
-					{ M: {
-						"name": "Intermediate",
-						"lowerLimit": { N: 31 },
-						"upperLimit": { N: 70 }
-					} },
-					{ M: {
-						"name": "High",
-						"lowerLimit": { N: 71 },
-						"upperLimit": { N: 90 }
-					} },
-					{ M: {
-						"name": "Elite",
-						"lowerLimit": { N: 91 },
-						"upperLimit": { N: 100 }
-					} },
-				]},
-			"performanceMetricsConstant": { N: 3 }
-		}}
+				"name": { M: {
+					"custom": {BOOL: false },
+					"displayName": { S: "Service Name" },
+					"mandatory": { BOOL: true },
+					"type": { S: "string" }
+				} },
+				"type": { M: {
+					"custom": { BOOL: false },
+					"displayName": { S: "Service Type" },
+					"mandatory": { BOOL: false },
+					"type": { S: "list-no-others" },
+					"options": { M: { "custom": { S: "Not Applicable" } } }
+				} },
+			}
+		}
 	};
 }
 
-/*
-function getCollectorConfig(tablePrefix) {
+function getGeneralConfig(tablePrefix) {
 	return {
 		"orgId": { S: tablePrefix },
-		"type": { S: "CollectorConfig" },
+		"type": { S: "GeneralConfig" },
 		"config": { M: {
-			"cicd": { L: [
+			"levels": { L: [
 					{ M: {
-						"attributes": { M: {
-							"job": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "Jenkins Job" },
-								"mandatory": { BOOL: true },
-								"type": { S: "string" }
-							}},
-							"password": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "Password" },
-								"mandatory": { BOOL: true },
-								"type": { S: "password" }
-							}},
-							"url": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "URL" },
-								"mandatory": { BOOL: true },
-								"type": { S: "string" }
-							}},
-							"userName": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "User Name" },
-								"mandatory": { BOOL: true },
-								"type": { S: "string" }
-							}}
-						}}
+						"name": { S: "Beginner" },
+						"lowerLimit": { N: 0 },
+						"upperLimit": { N: 30 },
+						"color": { S: "#949494"}
 					} },
 					{ M: {
-						"collectorSchedule": { S: "0***" }
+						"name": { S: "Intermediate" },
+						"lowerLimit": { N: 31 },
+						"upperLimit": { N: 70 },
+						"color": { S: "#E7B417"}
 					} },
 					{ M: {
-						"name": { S: "Jenkins" }
+						"name": { S: "High" },
+						"lowerLimit": { N: 71 },
+						"upperLimit": { N: 90 },
+						"color": { S: "#60BC60"}
 					} },
 					{ M: {
-						"processorSchedule": { S: "00**" },
+						"name": { S: "Elite" },
+						"lowerLimit": { N: 91 },
+						"upperLimit": { N: 100 },
+						"color": { S: "#017530"}
 					} },
 				]},
-				"repository": { L: [
-					{ M: {
-						"attributes": { M: {
-							"region": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "Jenkins Job" },
-								"mandatory": { BOOL: true },
-								"type": { S: "string" }
-							}},
-							"password": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "Password" },
-								"mandatory": { BOOL: true },
-								"type": { S: "password" }
-							}},
-							"url": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "URL" },
-								"mandatory": { BOOL: true },
-								"type": { S: "string" }
-							}},
-							"userName": { M: {
-								"custom": {BOOL: false },
-								"displayName": { S: "User Name" },
-								"mandatory": { BOOL: true },
-								"type": { S: "string" }
-							}}
-						}}
-					} },
-					{ M: {
-						"collectorSchedule": { S: "0***" }
-					} },
-					{ M: {
-						"name": { S: "AWSCodeCommit" }
-					} },
-					{ M: {
-						"processorSchedule": { S: "00**" },
-					} },
-				]},
-				"requirements": { L: [
-					{ M: {
-						"password": { M: {
-							"custom": {BOOL: false },
-							"displayName": { S: "Password" },
-							"mandatory": { BOOL: true },
-							"type": { S: "password" }
-						}},
-						"url": { M: {
-							"custom": {BOOL: false },
-							"displayName": { S: "URL" },
-							"mandatory": { BOOL: true },
-							"type": { S: "string" }
-						}},
-						"userName": { M: {
-							"custom": {BOOL: false },
-							"displayName": { S: "User Name" },
-							"mandatory": { BOOL: true },
-							"type": { S: "string" }
-						}}
-					} },
-					{ M: {
-						"collectorSchedule": { S: "0***" }
-					} },
-					{ M: {
-						"name": { S: "AWSCodeCommit" }
-					} },
-					{ M: {
-						"processorSchedule": { S: "00**" },
-					} },
-				]},
-		}}		
+			"performanceMetricsConstant": { N: 3 },
+			"archiveDays": {N: 0}
+		}}
 	};
 }
-*/

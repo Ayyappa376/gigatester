@@ -230,7 +230,7 @@ export const questionnaireToxlsx = async (questionnaireId: string) => {
       const ansNo = `A${j}`;
       result[i][`${ansNo}-ID`] = ans;
       result[i][`${ansNo}-Answer`] = ques.answers[ans].answer;
-      result[i][`${ansNo}-Weightage`] = ques.answers[ans].weightage;
+      result[i][`${ansNo}-Weightage`] = ques.answers[ans].weightageFactor;
     });
     const numberOfAnswers = Object.keys(ques.answers).length;
     if (Object.keys(ques.answers).length < maxAnswersCount) {

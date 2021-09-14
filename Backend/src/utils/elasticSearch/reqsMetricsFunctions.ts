@@ -3,7 +3,7 @@ import {
   REQ_STATUS_INPROGRESS,
   REQ_STATUS_NEW,
   ReqDatabaseDataItem,
-  ReqDataItem,
+  ReqDataItemLists,
   ReqListDataItem,
   ReqLTCTDataItem,
   ReqStatusDataItem,
@@ -24,33 +24,37 @@ interface ESReqDatabaseDataItem {
 export const getReqStatusData = async ({
   fromDate,
   priorities,
+  services,
   teamIds,
   toDate,
   types,
 }: {
   fromDate: Date;
   priorities?: string[];
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
   types?: string[];
 }): Promise<ReqStatusDataItem[]> => {
   appLogger.info({
-    getReqStatusData: { teamIds, priorities, types, fromDate, toDate },
+    getReqStatusData: { teamIds, services, priorities, types, fromDate, toDate },
   });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
   }
-
-  if (priorities) {
-    filters.push({ terms: { priority: priorities } });
-    //        filters.push({terms: { priority: priorities.map((name: string) => name.toLowerCase()) } });
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
-
+  if (priorities) {
+    filters.push({ terms: { itemPriority: priorities } });
+    //        filters.push({terms: { itemPriority: priorities.map((name: string) => name.toLowerCase()) } });
+  }
   if (types) {
-    filters.push({ terms: { type: types } });
-    //        filters.push({terms: { type: types.map((name: string) => name.toLowerCase()) } });
+    filters.push({ terms: { itemType: types } });
+    //        filters.push({terms: { itemType: types.map((name: string) => name.toLowerCase()) } });
   }
 
   const finalResult: ReqStatusDataItem[] = [];
@@ -131,33 +135,37 @@ export const getReqStatusData = async ({
 export const getReqLTCTData = async ({
   fromDate,
   priorities,
+  services,
   teamIds,
   toDate,
   types,
 }: {
   fromDate: Date;
   priorities?: string[];
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
   types?: string[];
 }): Promise<ReqLTCTDataItem[]> => {
   appLogger.info({
-    getReqLTCTData: { teamIds, priorities, types, fromDate, toDate },
+    getReqLTCTData: { teamIds, services, priorities, types, fromDate, toDate },
   });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
   }
-
-  if (priorities) {
-    filters.push({ terms: { priority: priorities } });
-    //        filters.push({terms: { priority: priorities.map((name: string) => name.toLowerCase()) } });
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
-
+  if (priorities) {
+    filters.push({ terms: { itemPriority: priorities } });
+    //        filters.push({terms: { itemPriority: priorities.map((name: string) => name.toLowerCase()) } });
+  }
   if (types) {
-    filters.push({ terms: { type: types } });
-    //        filters.push({terms: { type: types.map((name: string) => name.toLowerCase()) } });
+    filters.push({ terms: { itemType: types } });
+    //        filters.push({terms: { itemType: types.map((name: string) => name.toLowerCase()) } });
   }
 
   const finalResult: ReqLTCTDataItem[] = [];
@@ -208,30 +216,37 @@ export const getReqLTCTData = async ({
 export const getReqListData = async ({
   fromDate,
   priorities,
+  services,
   teamIds,
   toDate,
   types,
 }: {
   fromDate: Date;
   priorities?: string[];
+  services?: string[];
   teamIds?: string[];
   toDate: Date;
   types?: string[];
 }): Promise<ReqListDataItem[]> => {
+  appLogger.info({
+    getReqListData: { teamIds, services, priorities, types, fromDate, toDate },
+  });
   const filters: any[] = [];
   if (teamIds) {
     filters.push({ terms: { teamId: teamIds } });
     //        filters.push({terms: { teamId: teamIds.map((id: string) => id.toLowerCase()) } });
   }
-
-  if (priorities) {
-    filters.push({ terms: { priority: priorities } });
-    //        filters.push({terms: { priority: priorities.map((name: string) => name.toLowerCase()) } });
+  if (services) {
+    const serviceRegexp: string = services.map((service: string) => `.*${service}.*`).join('|');
+    filters.push({ regexp: { servicePath: serviceRegexp } });
   }
-
+  if (priorities) {
+    filters.push({ terms: { itemPriority: priorities } });
+    //        filters.push({terms: { itemPriority: priorities.map((name: string) => name.toLowerCase()) } });
+  }
   if (types) {
-    filters.push({ terms: { type: types } });
-    //        filters.push({terms: { type: types.map((name: string) => name.toLowerCase()) } });
+    filters.push({ terms: { itemType: types } });
+    //        filters.push({terms: { itemType: types.map((name: string) => name.toLowerCase()) } });
   }
 
   const finalResult: ReqListDataItem[] = [];
@@ -269,12 +284,11 @@ export const getReqListData = async ({
       const data: ReqListDataItem = {
         closedOn: res._source.closedOn,
         createdOn: res._source.createdOn,
-        //                cycleTime: //timestampClosedOn - timestampStartedOn
         itemId: res._source.itemId,
         itemPriority: res._source.itemPriority,
         itemType: res._source.itemType,
-        //                leadTime: timestampClosedOn - timestampCreatedOn
         projectName: res._source.projectName,
+        service: res._source.servicePath,
         startedOn: res._source.startedOn,
         status: res._source.status,
         teamId: res._source.teamId,
@@ -286,24 +300,35 @@ export const getReqListData = async ({
   return finalResult;
 };
 
-export const getReqItemData = async (fields: any[]): Promise<ReqDataItem[]> => {
-  const finalResult: ReqDataItem[] = [];
+export const getReqDataItemLists = async (fields: any[]): Promise<ReqDataItemLists> => {
+//  const finalResult: ReqDataItem[] = [];
+  const finalItemTypeList: string[] = [];
+  const finalPriorityList: string[] = [];
   let result: ESReqDatabaseDataItem[] = [];
 
   result = await fetchFields<ESReqDatabaseDataItem[]>(
     getReqTableName(),
     fields
   );
-  appLogger.debug({ getReqListData_searchAll_result: result });
+  appLogger.debug({ getReqItemData_fetchFields_result: result });
 
-  const data: ReqDataItem = {
-    itemPriority: result
-      .map((item) => item._source.itemPriority)
-      .filter((value, index, self) => self.indexOf(value) === index),
-    itemType: result
-      .map((item) => item._source.itemType)
-      .filter((value, index, self) => self.indexOf(value) === index),
-  };
-  finalResult.push(data);
-  return finalResult;
+  result.forEach((item: ESReqDatabaseDataItem) => {
+    if(! finalItemTypeList.includes(item._source.itemType)) {
+      finalItemTypeList.push(item._source.itemType);
+    }
+    if(! finalPriorityList.includes(item._source.itemPriority)) {
+      finalPriorityList.push(item._source.itemPriority);
+    }
+  });
+
+//    const data: ReqDataItem = {
+//    itemPriority: result
+//      .map((item) => item._source.itemPriority)
+//      .filter((value, index, self) => self.indexOf(value) === index),
+//    itemType: result
+//      .map((item) => item._source.itemType)
+//      .filter((value, index, self) => self.indexOf(value) === index),
+//  };
+//  finalResult.push(data);
+  return {itemPriority: finalPriorityList, itemType: finalItemTypeList};
 };

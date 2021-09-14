@@ -11,29 +11,33 @@ import { invalidRouteHandler } from './invalidRouteHandler';
 import { parseSubDomain } from './parseSubDomain';
 import { tokenValidator } from './tokenValidator';
 
-type Middleware = (request: Request, response: Response, next: NextFunction) => void;
+type Middleware = (
+  request: Request,
+  response: Response,
+  next: NextFunction
+) => void;
 
 export function registerInitialMiddlewares(application: Application): void {
-    const middlewares: Middleware[] = [
-        cors(config.cors),
-        bodyParser.json(),
-        bodyParser.urlencoded({ extended: true }),
-        commonResponseHeaders,
-        logRequest,
-        logResponse,
-        parseSubDomain,
-        initializeLoggerAndConfig,
-        tokenValidator
-    ];
+  const middlewares: Middleware[] = [
+    cors(config.cors),
+    bodyParser.json(),
+    bodyParser.urlencoded({ extended: true }),
+    commonResponseHeaders,
+    logRequest,
+    logResponse,
+    parseSubDomain,
+    initializeLoggerAndConfig,
+    tokenValidator,
+  ];
 
-    application.use(middlewares);
+  application.use(middlewares);
 }
 
 export function registerTrailerMiddlewares(application: Application): void {
-    //catch all unmatched routes handler
-    application.use(invalidRouteHandler);
+  //catch all unmatched routes handler
+  application.use(invalidRouteHandler);
 
-    //error handler for any errors not already caught
-    application.use(catchAllErrorHandler);
-//    application.use((error: Error, request: Request, response: Response, next: NextFunction): void  => responseBuilder.internalServerError(error, response));
+  //error handler for any errors not already caught
+  application.use(catchAllErrorHandler);
+  //    application.use((error: Error, request: Request, response: Response, next: NextFunction): void  => responseBuilder.internalServerError(error, response));
 }

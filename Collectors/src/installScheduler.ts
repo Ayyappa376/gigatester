@@ -1,62 +1,139 @@
 //import * as fs from 'fs';
-import { installLogger } from './utils';
-//import { CollectorConfig, ConfigItem } from './models';
-//import { getCollectorsConfig, setCollectorsConfig } from './dynamoDB';
+import { config, getTableNameForOrg, installLogger } from './utils';
+import { CollectorConfigDetails, ConfigItem } from './models';
+import { getCollectorsConfig, setCollectorsConfig } from './dynamoDB';
+import { createIndex } from './elasticsearch';
 
 install().catch((err) => installLogger.error(err));
 
 async function install() {
-  //read the .env file
-  //create a blank CollectorConfig document in DynamoDB
-  //initialise the mappings for different indexes in elasticsearch
-  //write(copy and modify) the gigatester.service file in the appropriate location
-  //process runtime arguments
-  /*	var myArgs = process.argv.slice(2);
-	if(myArgs.length > 0) {
-		const collectorDetailsFile = `./conf/${myArgs[0]}.json`;
-		// Read the file, and pass it to your callback
-		const data: string = fs.readFileSync(collectorDetailsFile, {encoding:'utf8', flag:'r'});
-		const collectorDetails = JSON.parse(data);
-		console.log(collectorDetails);
-		installLogger.info({collectorDetails});
-		execute(collectorDetails);
-	} else {
-		console.log('collector name as argument required');
-		installLogger.info("No collector name mentioned. Please provide the collector name as argument.");
-	}
-*/
+  //create a blank CollectorConfig document in DynamoDB if it is not already there
+  installLogger.info('Checking CollectorConfig entry');
+  getCollectorsConfig()
+    .then((data: ConfigItem) => {
+      //console.log('Received: ', data);
+      installLogger.info({ ConfigItem: data }, 'Received collector config');
+	  if(typeof data === 'undefined') {
+	    //console.log('Writing: ', {});
+    	installLogger.info('Writing empty collector config');
+      	setCollectorsConfig(<CollectorConfigDetails>{});
+	  }
+    })
+    .catch((err: any) => installLogger.error(err));
+
+  //initialise the mappings for different indexes in elasticsearch if it is not already there
+  installLogger.info('Creating mappings for elasticsearch indices');
+  await createIndex(getTableNameForOrg(config.buildIndex), getCICDIndexProperties());
+  installLogger.info('CICD index created');
+  await createIndex(getTableNameForOrg(config.repoIndex), getRepoIndexProperties());
+  installLogger.info('Repo index created');
+  await createIndex(getTableNameForOrg(config.reqIndex), getReqIndexProperties());
+  installLogger.info('Req index created');
+  await createIndex(getTableNameForOrg(config.qualityIndex), getQualityIndexProperties());
+  installLogger.info('Quality index created');
+  await createIndex(getTableNameForOrg(config.incidentIndex), getIncidentIndexProperties());
+  installLogger.info('State index created');
+  await createIndex(getTableNameForOrg(config.stateIndex), getStateIndexProperties());
+  installLogger.info('State index created');
+
+  //write(copy and modify) the doitright.service file in the appropriate location
 }
-/*
-async function execute(collectorDetails: CollectorConfig) {
-	getCollectorsConfig()
-	.then((data: ConfigItem) => {
-		console.log("Received: ", data);
-		installLogger.info({ConfigItem: data}, "Received collector config");
-		let nextCollectorRun = Date.now();
-		let nextProcessorRun = Date.now();
-		Object.keys(data.config).forEach( (key: string) => {
-			if (key === collectorDetails.type) {
-				data.config[key].forEach( (colDetails: CollectorConfig, index: number) => {
-					//remove the collector configuration if it already exists
-					if (colDetails.name === collectorDetails.name) {
-						nextCollectorRun = colDetails.nextCollectorRunTimestamp;
-						nextProcessorRun = colDetails.nextProcessorRunTimestamp;
-						data.config[key].splice(index, 1);
-					}
-				});
+
+function getCICDIndexProperties() {
+	return {
+		teamId: { type: 'keyword' },
+		servicePath: { type: 'keyword' },
+		projectName: { type: 'keyword' },
+		buildNum: { type: 'integer' },
+		stages: {
+			type: 'nested',
+			properties: {
+				stageName: { type: 'keyword'},
+				stageId: { type: 'integer' },
+				status: { type: 'keyword' },
+				startTimestamp: { type: 'date', format: 'epoch_second' },
+				endTimestamp: { type: 'date', format: 'epoch_second' },
+				duration: { type: 'integer' },
+				pauseDuration: { type: 'integer' },	
 			}
-		});
-		//now add the configuration of the collector we are installing
-		collectorDetails.nextCollectorRunTimestamp = nextCollectorRun;
-		collectorDetails.nextProcessorRunTimestamp = nextProcessorRun;
-		if(! Object.keys(data.config).includes(collectorDetails.type)) {
-			data.config[collectorDetails.type] = [];
-		}
-		data.config[collectorDetails.type].push(collectorDetails);
-		console.log("Writing: ", data);
-		installLogger.info({ConfigItem: data}, "Writing collector config");
-		setCollectorsConfig(data.config);
-	})
-	.catch( (err: any) => installLogger.error(err) );
+		},
+		startTimestamp: { type: 'date', format: 'epoch_second' },
+		endTimestamp: { type: 'date', format: 'epoch_second' },
+		duration: { type: 'integer' },
+		pauseDuration: { type: 'integer' },
+		status: { type: 'keyword' },
+		url: { type: 'text' },
+	};
 }
-*/
+
+function getRepoIndexProperties() {
+	return {
+		teamId: { type: 'keyword' },
+		servicePath: { type: 'keyword' },
+		projectName: { type: 'keyword' },
+		repoName: { type: 'keyword' },
+		raisedBy: { type: 'keyword' },
+		pullId: { type: 'integer' }, //keyword
+		status: { type: 'keyword' },
+		acceptState: { type: 'keyword' },
+		raisedOn: { type: 'date', format: 'epoch_second' },
+		reviewedOn: { type: 'date', format: 'epoch_second' },
+		url: { type: 'text' }
+	};
+}
+
+function getReqIndexProperties() {
+	return {
+		teamId: { type: 'keyword' },
+		servicePath: { type: 'keyword' },
+		projectName: { type: 'keyword' },
+		itemId: { type: 'keyword' },
+		itemPriority: { type: 'keyword' },
+		itemType: { type: 'keyword' },
+		status: { type: 'keyword' },
+		closedOn: { type: 'date', format: 'epoch_second' },
+		createdOn: { type: 'date', format: 'epoch_second' },
+		startedOn: { type: 'date', format: 'epoch_second' },
+		url: { type: 'text' }
+	};
+}
+
+function getQualityIndexProperties() {
+	return {
+		teamId: { type: 'keyword' },
+		servicePath: { type: 'keyword' },
+		projectName: { type: 'keyword' },
+//		buildNum: { type: 'integer' },
+		timestamp: { type: 'date', format: 'epoch_second' },
+		coverage: { type: 'short' },
+		duplications: { type: 'short' },
+		maintainability: { type: 'short' },
+		reliability: { type: 'short' },
+		security: { type: 'short' },
+		url: { type: 'text' }
+	};
+}
+
+function getIncidentIndexProperties() {
+	return {
+		teamId: { type: 'keyword' },
+		servicePath: { type: 'keyword' },
+		projectName: { type: 'keyword' },
+		itemId: { type: 'keyword' },
+		itemPriority: { type: 'keyword' },
+		itemType: { type: 'keyword' },
+		status: { type: 'keyword' },
+		startTime: { type: 'date', format: 'epoch_second' },
+		endTime: { type: 'date', format: 'epoch_second' },
+		url: { type: 'text' }
+	};
+}
+
+function getStateIndexProperties() {
+	return {
+		toolName: { type: 'keyword' },
+		teamId: { type: 'keyword' },
+		servicePath: { type: 'keyword' },
+		project:{ type: 'keyword' },
+	};
+}

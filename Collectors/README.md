@@ -1,4 +1,4 @@
-# About GigaTester Collectors and their Scheduler
+# About DoItRight Collectors and their Scheduler
 
 The Collectors and Scheduler are simple javascript files written using typescript and run using nodejs.
 The code also includes installers for the Collectors and Scheduler which initializes the resources needed to run them and sets them up to run as linux service.
@@ -17,7 +17,7 @@ The code also includes installers for the Collectors and Scheduler which initial
 2. **Install typescript as a globally available package:**
 
 ```bash
-npm install ï¿½g typescript
+npm install –g typescript
 ```
 
 3. **Setup AWS credentials: **_(You will need this for the AWSCodeCommit and AWSPipeline collectors)_

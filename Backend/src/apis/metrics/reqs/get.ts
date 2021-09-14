@@ -1,13 +1,13 @@
 import { API, Handler } from '@apis/index';
 import {
-  ReqDataItem,
+  ReqDataItemLists,
   ReqListDataItem,
   ReqLTCTDataItem,
   ReqStatusDataItem,
 } from '@models/index';
 import {
   appLogger,
-  getReqItemData,
+  getReqDataItemLists,
   getReqListData,
   getReqLTCTData,
   getReqStatusData,
@@ -29,6 +29,7 @@ interface ReqsDataRequest {
   query: {
     fromDate?: string;
     priority?: string;
+    service?: string;
     teamId?: string;
     toDate?: string;
     type?: string;
@@ -61,6 +62,10 @@ async function handler(
     if (query.teamId) {
       const key: string = 'teamIds';
       data[key] = query.teamId.split(',');
+    }
+    if (query.service) {
+      const key: string = 'services';
+      data[key] = query.service.split(',');
     }
     if (query.priority) {
       const key: string = 'priorities';
@@ -95,7 +100,7 @@ async function handler(
       return responseBuilder.ok(result, response);
     }
     if (params.type === 'itip') {
-      const result: ReqDataItem[] = await getReqItemData(fields);
+      const result: ReqDataItemLists = await getReqDataItemLists(fields);
       appLogger.info({ result });
       return responseBuilder.ok(result, response);
     }

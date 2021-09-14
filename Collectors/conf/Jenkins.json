@@ -9,32 +9,63 @@
 			"displayName": "Server URL",
 			"mandatory": true,
 			"type": "string",
+			"defaultValue": "",
 			"position": 1,
 			"helpText": "Provide the full URL to access the Jenkins server. e.g. http://my.server.host:port"
 		},
 		"userName": {
 			"custom": false,
-			"displayName": "User Name",
+			"displayName": "Username/Email",
 			"mandatory": true,
 			"type": "string",
+			"defaultValue": "",
 			"position": 2,
-			"helpText": "The user should have permissions to access and read all information about your project or job."
+			"helpText": "This user should have permissions to access and read all information about your projects or jobs."
 		},
 		"password": {
 			"custom": false,
 			"displayName": "Password",
 			"mandatory": true,
 			"type": "password",
+			"defaultValue": "",
 			"position": 3
 		},
 		"job": {
 			"custom": false,
-			"displayName": "Job Name",
+			"displayName": "Project Name",
 			"mandatory": true,
-			"type": "list",
+			"type": "multi-list",
 			"options": { "dynamic": "server" },
+			"defaultValue": "All",
 			"position": 4,
-			"helpText": "Click the connect button to fetch projects from server. Select from the list of projects fetched."
-		}
+			"helpText": "Connect to the server to fetch the projects list. Select from the list of projects fetched."
+		},
+		"startStage": {
+			"custom": false,
+			"displayName": "Start Stage Name",
+			"mandatory": true,
+			"type": "string",
+			"defaultValue": "",
+			"position": 5,
+			"helpText": "Name of the pipeline stage that is the first stage of the deployment to the production environment. Value is case sensitive."
+		},
+		"endStage": {
+			"custom": false,
+			"displayName": "End Stage Name",
+			"mandatory": true,
+			"type": "string",
+			"defaultValue": "",
+			"position": 6,
+			"helpText": "Name of the pipeline stage that is the last stage of the deployment to the production environment. Value is case sensitive."
+		},
+		"rollbackStage": {
+			"custom": false,
+			"displayName": "Rollback Stage Name",
+			"mandatory": true,
+			"type": "string",
+			"defaultValue": "",
+			"position": 7,
+			"helpText": "Name of the pipeline stage that is the rollback stage of the deployment to the production environment. Value is case sensitive."
+		}		
 	}
 }

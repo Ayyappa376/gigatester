@@ -1,7 +1,14 @@
 import { Client } from '@elastic/elasticsearch';
-import { appLogger, getElasticSearchURL } from '../utils';
+import { appLogger, getElasticSearchPassword, getElasticSearchURL, getElasticSearchUsername } from '../utils';
 
-const esClient: Client = new Client({ node: getElasticSearchURL() });
+//const esClient: Client = new Client({ node: getElasticSearchURL() });
+const esClient = new Client({
+  auth: {
+    password: getElasticSearchPassword(),
+    username: getElasticSearchUsername(),
+  },
+  node: getElasticSearchURL(),
+});
 
 export const createIndex = async (indexName: string, properties: any) => {
   await esClient.indices.create({
@@ -105,28 +112,43 @@ export const insertBulk = async (indexName: string, dataset: any[]) => {
 }*/
 };
 
-//TODO: implement
+//updates or inserts the given data based on the result returned by the search with the given filters
+//updates all the documents that matches the search filters
+//if no document matches the search filters then inserts the document. 
 export const updateOrInsert = async (
   indexName: string,
-  query: any,
+  filters: any,
+  notFilters: any,
   data: any
 ) => {
+  searchAll<any[]>(indexName, filters, notFilters)
+  .then((result: any[] )	=> {
+    appLogger.info(result);
+    if(!result || result.length == 0) {
+      insert(indexName, data);
+    } else {
+      for(let i = 0; i < result.length; i += 1) {
+        update(indexName, result[i]._id, data);
+      }
+    }
+  })
+  .catch((err: any) => {
+    appLogger.error(err);
+  })
+};
+
+//simple update when we know the id of the document to update
+export const update = async (indexName: string, oldId: string, data: any) => {
   await esClient.update({
     index: indexName,
-    id: '1',
+    id: oldId,
     refresh: true,
-    body: {
-      // can contain either script or doc here
-      doc: {
-        name: 'new_name',
-      },
-      doc_as_upsert: true,
-    },
+    body: { doc: data },
   });
 };
 
 //TODO: implement
-export const update = async (indexName: string, query: any, data: any) => {
+export const updateByScript = async (indexName: string, query: any, data: any) => {
   await esClient.updateByQuery({
     index: indexName,
     refresh: true,
@@ -192,7 +214,7 @@ export function search<T>(
             return reject(err);
           }
 
-          return resolve(resp.body);
+          return resolve(resp.body.hits.hits);
         }
       );
     }
@@ -257,6 +279,41 @@ export function searchAll<T>(
   );
 }
 
+export function searchAllCount(
+  indexName: string,
+  filters: any,
+  notFilters: any
+): Promise<number> {
+  return new Promise(
+    (resolve: (item: number) => void, reject: (err: any) => any): any => {
+      const query =
+        !notFilters || notFilters === []
+          ? { bool: { filter: filters } }
+          : { bool: { filter: filters, must_not: notFilters } };
+
+      // first we do a dummy search to find the data size
+      esClient.search(
+        {
+          body: {
+            from: 0,
+            query,
+            size: 1,
+          },
+          index: indexName,
+        },
+        function (err, resp) {
+          if (err) {
+            appLogger.error(err);
+            return reject(err);
+          }
+
+          return resolve(resp.body.hits.total.value);
+        }
+      );
+    }
+  );
+}
+
 export function fetchAll<T>(indexName: string): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
@@ -305,6 +362,33 @@ export function fetchAll<T>(indexName: string): Promise<T> {
     }
   );
 }
+
+export function fetchAllCount(indexName: string): Promise<number> {
+  return new Promise(
+    (resolve: (item: any) => void, reject: (err: any) => any): any => {
+      // first we do a dummy search to find the data size
+      esClient.search(
+        {
+          body: {
+            from: 0,
+            query: { match_all: {} },
+            size: 1,
+          },
+          index: indexName,
+        },
+        function (err, resp) {
+          if (err) {
+            appLogger.error(err);
+            return reject(err);
+          }
+
+          return resolve(resp.body.hits.total.value);
+        }
+      );
+    }
+  );
+}
+
 /*
 var allRecords = [];
 
@@ -335,6 +419,7 @@ client.search({
   }
 });
  */
+/*
 export function fieldAll<T>(indexName: string): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
@@ -383,3 +468,4 @@ export function fieldAll<T>(indexName: string): Promise<T> {
     }
   );
 }
+*/

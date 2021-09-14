@@ -509,16 +509,16 @@ const ManageTeams = (props: any) => {
                                 </Typography>
                               </MaterialLink>
                               <Typography>&nbsp;|&nbsp;</Typography>
-                              <MaterialLink
+                              {/* <MaterialLink
                                 href='#'
                                 onClick={() => {
                                   props.mapMetricsClicked(row.teamId);
                                 }}
-                              >
+                              > */}
                                 <Typography>
                                   <Text tid='editMetrics' />
                                 </Typography>
-                              </MaterialLink>
+                              {/* </MaterialLink> */}
                               <Typography>&nbsp;|&nbsp;</Typography>
                               <MaterialLink
                                 href='#'

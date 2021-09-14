@@ -1,12 +1,12 @@
 import { API, Handler } from '@apis/index';
-import { CreateTeamConfig, TeamInfo } from '@models/index';
+import { /*CreateTeamConfig,*/ TeamInfo } from '@models/index';
 import { createTeam } from '@root/utils/dynamoDb/createTeams';
 import { appLogger, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface AddTeams {
   body: {
-    config: CreateTeamConfig;
+//    config: CreateTeamConfig;
     orgId: string;
     values: TeamInfo;
   };

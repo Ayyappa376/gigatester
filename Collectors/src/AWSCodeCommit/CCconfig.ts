@@ -1,15 +1,14 @@
 export const CCconfig = {
-	name: "AWSCodeCommit",
-//	codeCommitTable: 'codeCommitData',
-//	codeCommitTable: 'repoData',
+	name: "AWSCodeCommit"
 };
 
 export interface IAWSCodeCommitJobInfo {
 	teamId: string;
+	servicePath: string;
 	toolName: string;
-	url: string;
-	userName: string;
-	password: string;
-	region: string;
-	repoName: string;
+	url: {value: string};
+	userName: {value: string};
+	password: {value: string};
+	region: {value: string};
+	repoName: {value: string[]; options: {[key: string]: string}};
 }

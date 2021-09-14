@@ -4,13 +4,14 @@ export const Jconfig = {
 
 export interface IJIRAJobInfo {
 	teamId: string;
+	servicePath: string;
 	toolName: string;
-	projectName: string;
-	url: string;
-	email: string;
-	appToken: string;
-	items: string[];
-	newState: string;
-	startState: string;
-	closeState: string;
+	projectName: {value: string[]; options: {[key: string]: string}};
+	url: {value: string};
+	email: {value: string};
+	appToken: {value: string};
+	items: {value: string[]; options: {[key: string]: string}};
+	newState: {value: string; options: {[key: string]: string}};
+	startState: {value: string; options: {[key: string]: string}};
+	closeState: {value: string; options: {[key: string]: string}};
 }

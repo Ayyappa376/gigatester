@@ -14,7 +14,7 @@ import {
   getTeamIds,
   getTeamIdsByQuestionnaire,
   getTeamMembers,
-//  getTeamsMappedToQuestionnaire,
+  //  getTeamsMappedToQuestionnaire,
   getUserAllAssessment,
   getUserDocument,
   responseBuilder,
@@ -117,9 +117,9 @@ async function handler(
         );
         appLogger.info({ getQuestionnaireId: questionnaireDetails });
         //TODO: list of teams are not proper, use the teams managed by the logged in user.
-//        const teamsMappedToQuestionnaire = await getTeamsMappedToQuestionnaire(
-//          questionnaireId
-//        );
+        //        const teamsMappedToQuestionnaire = await getTeamsMappedToQuestionnaire(
+        //          questionnaireId
+        //        );
         const questions: string[] = questionnaireDetails.questions;
         const categoryQues = {};
         const questionsDetails = {};
@@ -150,7 +150,7 @@ async function handler(
         return responseBuilder.ok(
           {
             categoryList: categoryQues,
-//            mappedTeams: teamsMappedToQuestionnaire,
+            //            mappedTeams: teamsMappedToQuestionnaire,
             mappedTeams: teamsManagedByUser,
             performanceMetricsConstant,
             questionsDetails,
@@ -165,7 +165,7 @@ async function handler(
       return responseBuilder.ok(
         {
           teams: assessmentHistoryAllTeams,
-          userLevels
+          userLevels,
         },
         response
       );

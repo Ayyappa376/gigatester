@@ -22,9 +22,9 @@ interface ESRepoDatabaseDataItem {
 
 module.exports = (input: any, callback: (err: any, data: any) => void) => {
 	try {
-		appLogger.info('AWSCodeCommit Collector', {input: input});
-		getDataFor(input);
-		callback(null, "AWSCodeCommit Collector exiting");
+		appLogger.info('AWSCodeCommit Collector executing', {input: input});
+		getDataFor(input)
+		.then(() => callback(null, "AWSCodeCommit Collector exiting"));
 	} catch(err) {
 		appLogger.error(err);
 		callback(new Error("AWSCodeCommit Collector existed with error"), null);
@@ -42,21 +42,27 @@ function execute(jobs) {
 }
 */
 
-async function getDataFor(job: IAWSCodeCommitJobInfo) {
+async function getDataFor(jobDetails: IAWSCodeCommitJobInfo) {
 	let options = {
 		'apiVersion': '2015-04-13',
-		'region': job.region,
-		'endpoint': job.url,
-		'accessKeyId': job.userName,
-		'secretAccessKey': job.password
+		'region': jobDetails.region.value,
+		'endpoint': jobDetails.url.value,
+		'accessKeyId': jobDetails.userName.value,
+		'secretAccessKey': jobDetails.password.value
 	}
 	const codecommit: AWS.CodeCommit = new AWS.CodeCommit(options);
 
-	getAllPullData(codecommit, job.teamId, job.repoName, job.region);
-//	getLastCommitOfBranch(codecommit, job.repoName, 'master');
+	let repos: string[] = jobDetails.repoName.value;
+	if((repos.length > 0) && (repos[0] === 'All')) {
+		repos = Object.keys(jobDetails.repoName.options);
+	}
+	repos.forEach((repo: string) => {
+		getAllPullData(codecommit, jobDetails, repo);
+	})
+
 }
 
-function getAllPullData(ccHandle: AWS.CodeCommit, teamId: string, repoName: string, region: string) {
+function getAllPullData(ccHandle: AWS.CodeCommit, jobDetails: IAWSCodeCommitJobInfo, repoName: string) {
 	const params = {
 		repositoryName: repoName
 	};
@@ -69,7 +75,7 @@ function getAllPullData(ccHandle: AWS.CodeCommit, teamId: string, repoName: stri
 				//don't fetch data again if the pull request is already fetched and its status is closed
 				var filters = {
 					term: {
-						teamId: teamId.toLowerCase(),
+						teamId: jobDetails.teamId.toLowerCase(),
 						projectName: repoName.toLowerCase(),
 						pullId: parseInt(id, 10),
 						status: STATUS_CLOSED.toLowerCase()
@@ -77,14 +83,14 @@ function getAllPullData(ccHandle: AWS.CodeCommit, teamId: string, repoName: stri
 				};
 				const result: ESRepoDatabaseDataItem[] = await esDBFuncs.searchAll(getTableNameForOrg(config.repoIndex), filters, []);
 				if(!result || result.length === 0) {
-					getPullData(ccHandle, teamId, repoName, region, id);
+					getPullData(ccHandle, jobDetails, repoName, id);
 				}
 			});
 		}
 	});
 }
 
-function getPullData(ccHandle: AWS.CodeCommit, teamId: string, repoName: string, region: string, pullId: string) {
+function getPullData(ccHandle: AWS.CodeCommit, jobDetails: IAWSCodeCommitJobInfo, repoName: string, pullId: string) {
 	const params = {
 		pullRequestId: pullId
 	};
@@ -99,7 +105,7 @@ function getPullData(ccHandle: AWS.CodeCommit, teamId: string, repoName: string,
 				data.pullRequest.pullRequestTargets.forEach( (target: AWS.CodeCommit.PullRequestTarget) => {
 					if(target.sourceCommit) {
 						if (target.destinationReference === 'refs/heads/master') {
-							getCommitData(ccHandle, teamId, repoName, region, data.pullRequest, target.sourceCommit, target.mergeMetadata);
+							getCommitData(ccHandle, jobDetails, repoName, data.pullRequest, target.sourceCommit, target.mergeMetadata);
 //						} else {
 //							getCommitData(ccHandle, teamId, repoName, region, data.pullRequest, target.sourceCommit, undefined);
 						}
@@ -154,7 +160,7 @@ async function getCommitData(ccHandle, repoName, branchName, commitId) {
 	}
 }
 */
-function getCommitData(ccHandle: AWS.CodeCommit, teamId: string, repoName: string, region: string, pullData: AWS.CodeCommit.PullRequest, sourceCommitId: string, mergeMetadata:  AWS.CodeCommit.MergeMetadata | undefined) {
+function getCommitData(ccHandle: AWS.CodeCommit, jobDetails: IAWSCodeCommitJobInfo, repoName: string, pullData: AWS.CodeCommit.PullRequest, sourceCommitId: string, mergeMetadata:  AWS.CodeCommit.MergeMetadata | undefined) {
 	var params = {
 		commitId: sourceCommitId,
 		repositoryName: repoName
@@ -163,28 +169,29 @@ function getCommitData(ccHandle: AWS.CodeCommit, teamId: string, repoName: strin
 		if (err) {
 			appLogger.error(err, err.stack);
 		} else {
-			storePullDataInDB(teamId, repoName, region, pullData, data.commit, mergeMetadata);
+			storePullDataInDB(jobDetails, repoName, pullData, data.commit, mergeMetadata);
 		}
 	});
 }
 
-async function storePullDataInDB(teamId: string, repoName: string, region: string, pullDetails: AWS.CodeCommit.PullRequest, sourceCommitDetails: AWS.CodeCommit.Commit | undefined, mergeMetadata:  AWS.CodeCommit.MergeMetadata | undefined) {
+async function storePullDataInDB(jobDetails: IAWSCodeCommitJobInfo, repoName: string, pullDetails: AWS.CodeCommit.PullRequest, sourceCommitDetails: AWS.CodeCommit.Commit | undefined, mergeMetadata:  AWS.CodeCommit.MergeMetadata | undefined) {
 	if(pullDetails.pullRequestId && pullDetails.creationDate) {
 		//if the same pull request with the same status already exists then update it otherwise insert it
-		var filters = {
-			term: {
-				teamId: teamId.toLowerCase(),
-				projectName: repoName.toLowerCase(),
-				pullId: parseInt(pullDetails.pullRequestId, 10),
-//				status: pullDetails.pullRequestStatus ? pullDetails.pullRequestStatus.toLowerCase() : STATUS_OPEN.toLowerCase(),
-			}
-		};
+		const filters: any[] = [
+			{ term: { teamId: jobDetails.teamId } },
+			{ term: { servicePath: jobDetails.servicePath } },
+			{ term: { projectName: repoName } },
+			{ term: { pullId: parseInt(pullDetails.pullRequestId, 10) } }
+		];
+
 		const item: RepoDatabaseDataItem = {
-			teamId,
+			teamId: jobDetails.teamId,
+			servicePath: jobDetails.servicePath,
 			projectName: repoName,
 			pullId: parseInt(pullDetails.pullRequestId, 10),
+			repoName: repoName,
 			status: pullDetails.pullRequestStatus ? pullDetails.pullRequestStatus : STATUS_OPEN,
-			url: `https://console.aws.amazon.com/codesuite/codecommit/repositories?region=${region}`,
+			url: `https://console.aws.amazon.com/codesuite/codecommit/repositories?region=${jobDetails.region.value}`,
 			raisedOn: Math.floor(pullDetails.creationDate.getTime() / 1000), 
 			raisedBy: (sourceCommitDetails && sourceCommitDetails.committer && sourceCommitDetails.committer.name) ? sourceCommitDetails.committer.name : 'unknown',
 		}
@@ -193,7 +200,7 @@ async function storePullDataInDB(teamId: string, repoName: string, region: strin
 			item.reviewedOn = pullDetails.lastActivityDate ? Math.floor(pullDetails.lastActivityDate.getTime() / 1000) : Math.floor(pullDetails.creationDate.getTime() / 1000);
 		}
 		appLogger.info("Storing Pull item :", item);
-		await esDBFuncs.updateOrInsert(getTableNameForOrg(config.repoIndex), filters, item);
+		await esDBFuncs.updateOrInsert(getTableNameForOrg(config.repoIndex), filters, [], item);
 	}
 }
 

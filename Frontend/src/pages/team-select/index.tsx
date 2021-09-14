@@ -200,12 +200,12 @@ const TeamSelect = (props: any) => {
     return (
       <Container className={classes.containerRoot}>
         <Card className={classes.container}>
-          <img className={classes.image} src={biglogo} alt='DoItRight logo' />
+          <img className={classes.image} src={biglogo} alt='GigaTester logo' />
           <Typography className={classes.heading} variant='h2'>
             <Text tid='welcomeTo' />
           </Typography>
           <Typography className={classes.heading2} variant='h3'>
-            <Text tid='doItRight.io' />
+            <Text tid='gigaTester.io' />
           </Typography>
           <Typography className={classes.text}>
             <Text tid='selectYourDepartment' />

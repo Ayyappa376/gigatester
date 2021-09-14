@@ -4,10 +4,11 @@ export const SQconfig = {
 
 export interface ISonarJobInfo {
 	teamId: string;
+	servicePath: string;
 	toolName: string;
-	projectName: string;
-	url: string;
-	userName: string;
-	appToken: string;
-	metrics: string[];
+	projectName: {value: string[]; options: {[key: string]: string}};
+	url: {value: string};
+	userName: {value: string};
+	appToken: {value: string};
+	metrics: {value: string[]; options: {[key: string]: string}};
 }

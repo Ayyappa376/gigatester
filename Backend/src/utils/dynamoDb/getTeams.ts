@@ -33,17 +33,17 @@ export const getTeams2 = async (userId: string): Promise<TeamInfo[]> => {
     const teamNames: string[] = [];
     const userTeams = await getUserTeams(userId);
     userTeams.forEach((userTeam) => {
-      if(!teamNames.includes(userTeam.name)) {
+      if (!teamNames.includes(userTeam.name)) {
         teamNames.push(userTeam.name);
       }
     });
-    appLogger.info({getTeams2: { userId, teamNames }});
+    appLogger.info({ getTeams2: { userId, teamNames } });
 
     params = <DynamoDB.ScanInput>{
       ScanFilter: {
         teamName: {
-            AttributeValueList: teamNames,
-            ComparisonOperator: 'IN',
+          AttributeValueList: teamNames,
+          ComparisonOperator: 'IN',
         },
       },
       TableName: TableNames.getTeamTableName(),
@@ -63,17 +63,17 @@ export const getTeamIds = async (userId: string): Promise<any> => {
     const teamNames: string[] = [];
     const userTeams = await getUserTeams(userId);
     userTeams.forEach((userTeam) => {
-      if(!teamNames.includes(userTeam.name)) {
+      if (!teamNames.includes(userTeam.name)) {
         teamNames.push(userTeam.name);
       }
     });
-    appLogger.info({getTeamIds: { userId, teamNames }});
+    appLogger.info({ getTeamIds: { userId, teamNames } });
 
     params = <DynamoDB.ScanInput>{
       ScanFilter: {
         teamName: {
-            AttributeValueList: teamNames,
-            ComparisonOperator: 'IN',
+          AttributeValueList: teamNames,
+          ComparisonOperator: 'IN',
         },
       },
       TableName: TableNames.getTeamTableName(),

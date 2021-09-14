@@ -1,22 +1,28 @@
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger } from '@utils/index';
+import { appLogger, getArchiveDays } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { AssessmentDocument } from './createNewAssessmentDocument';
 import { getQuestionnaire } from './getQuestionnaire';
 import { scan } from './sdk';
 
-// AWS.config.update({
-//   region: 'us-east-1',
-//   endpoint: 'http://localhost:8000',
-// });
-
-function getStartOfMonth(): number {
+/*
+export function getStartOfMonth(): number {
   const date = new Date();
   date.setFullYear(date.getFullYear() - 1);
   // date.setMonth(date.getMonth() - 3);
   date.setDate(1);
   date.setHours(0, 0, 0);
   return date.getTime();
+}
+*/
+export async function getArchiveTime(): Promise<number> {
+  const archiveDays: number = await getArchiveDays();
+  if(archiveDays > 0) {
+    const date = new Date();
+    date.setDate(date.getDate() - archiveDays);
+    return date.getTime();
+  }
+  return 0;
 }
 
 function getAssessmentResultByQuestionnaire(
@@ -43,19 +49,32 @@ function getAssessmentResultByQuestionnaire(
   };
 }
 
-function getUserTypeParams(userId: string): DynamoDB.ScanInput {
+async function getUserTypeParams(userId: string): Promise<DynamoDB.ScanInput> {
   if (!userId) {
     const err = new Error('userId missing');
     appLogger.error(err);
     throw err;
   }
+  const archiveTime: number = await getArchiveTime();
+  if(archiveTime > 0) {
+    return <DynamoDB.ScanInput>{
+      Limit: Number.MAX_SAFE_INTEGER,
+      ScanFilter: {
+        date: {
+          AttributeValueList: [archiveTime],
+          ComparisonOperator: 'GE',
+        },
+        userId: {
+          AttributeValueList: [userId],
+          ComparisonOperator: 'EQ',
+        },
+      },
+      TableName: TableNames.getAssessmentsTableName(),
+    };
+  }
   return <DynamoDB.ScanInput>{
     Limit: Number.MAX_SAFE_INTEGER,
     ScanFilter: {
-      date: {
-        AttributeValueList: [getStartOfMonth()],
-        ComparisonOperator: 'GE',
-      },
       userId: {
         AttributeValueList: [userId],
         ComparisonOperator: 'EQ',
@@ -65,22 +84,45 @@ function getUserTypeParams(userId: string): DynamoDB.ScanInput {
   };
 }
 
-function getTeamTypeParamsWithQuestionnaireId(
+async function getTeamTypeParamsWithQuestionnaireId(
   teamMembers: string[] | undefined,
   questionnaireId: string | undefined,
   questionnaireVersion: string | undefined
-) {
+): Promise<DynamoDB.ScanInput> {
   if (!teamMembers || !questionnaireId) {
     throw new Error('teamMembers/questionnaireId missing');
   }
   const version = questionnaireVersion ? questionnaireVersion : '1';
 
+  const archiveTime: number = await getArchiveTime();
+  if(archiveTime > 0) {
+    return <DynamoDB.ScanInput>{
+      ScanFilter: {
+        date: {
+          AttributeValueList: [archiveTime],
+          ComparisonOperator: 'GE',
+        },
+        questionnaireVersion: {
+          AttributeValueList: [version],
+          ComparisonOperator: 'EQ',
+        },
+        result: {
+          ComparisonOperator: 'NOT_NULL',
+        },
+        type: {
+          AttributeValueList: [questionnaireId],
+          ComparisonOperator: 'EQ',
+        },
+        userId: {
+          AttributeValueList: teamMembers,
+          ComparisonOperator: 'IN',
+        },
+      },
+      TableName: TableNames.getAssessmentsTableName(),
+    };
+  }
   return <DynamoDB.ScanInput>{
     ScanFilter: {
-      date: {
-        AttributeValueList: [getStartOfMonth()],
-        ComparisonOperator: 'GE',
-      },
       questionnaireVersion: {
         AttributeValueList: [version],
         ComparisonOperator: 'EQ',
@@ -101,19 +143,42 @@ function getTeamTypeParamsWithQuestionnaireId(
   };
 }
 
-function getTeamNameTypeParamsWithQuestionnaireId(
+async function getTeamNameTypeParamsWithQuestionnaireId(
   team: string | undefined,
   questionnaireId: string | undefined,
   questionnaireVersion: string | undefined
-) {
+): Promise<DynamoDB.ScanInput> {
   const version = questionnaireVersion ? questionnaireVersion : '1';
 
+  const archiveTime: number = await getArchiveTime();
+  if(archiveTime > 0) {
+    return <DynamoDB.ScanInput>{
+      ScanFilter: {
+        date: {
+          AttributeValueList: [archiveTime],
+          ComparisonOperator: 'GE',
+        },
+        questionnaireVersion: {
+          AttributeValueList: [version],
+          ComparisonOperator: 'EQ',
+        },
+        result: {
+          ComparisonOperator: 'NOT_NULL',
+        },
+        team: {
+          AttributeValueList: [team],
+          ComparisonOperator: 'EQ',
+        },
+        type: {
+          AttributeValueList: [questionnaireId],
+          ComparisonOperator: 'EQ',
+        },
+      },
+      TableName: TableNames.getAssessmentsTableName(),
+    };
+  }
   return <DynamoDB.ScanInput>{
     ScanFilter: {
-      date: {
-        AttributeValueList: [getStartOfMonth()],
-        ComparisonOperator: 'GE',
-      },
       questionnaireVersion: {
         AttributeValueList: [version],
         ComparisonOperator: 'EQ',
@@ -134,21 +199,40 @@ function getTeamNameTypeParamsWithQuestionnaireId(
   };
 }
 
-function getTypeParamsWithQuestionnaireId(
+async function getTypeParamsWithQuestionnaireId(
   questionnaireId: string | undefined,
   questionnaireVersion: string | undefined
-) {
+): Promise<DynamoDB.ScanInput> {
   if (!questionnaireId) {
     throw new Error('questionnaireId missing');
   }
   const version = questionnaireVersion ? questionnaireVersion : '1';
 
+  const archiveTime: number = await getArchiveTime();
+  if(archiveTime > 0) {
+    return <DynamoDB.ScanInput>{
+      ScanFilter: {
+        date: {
+          AttributeValueList: [archiveTime],
+          ComparisonOperator: 'GE',
+        },
+        questionnaireVersion: {
+          AttributeValueList: [version],
+          ComparisonOperator: 'EQ',
+        },
+        result: {
+          ComparisonOperator: 'NOT_NULL',
+        },
+        type: {
+          AttributeValueList: [questionnaireId],
+          ComparisonOperator: 'EQ',
+        },
+      },
+      TableName: TableNames.getAssessmentsTableName(),
+    };
+  }
   return <DynamoDB.ScanInput>{
     ScanFilter: {
-      date: {
-        AttributeValueList: [getStartOfMonth()],
-        ComparisonOperator: 'GE',
-      },
       questionnaireVersion: {
         AttributeValueList: [version],
         ComparisonOperator: 'EQ',
@@ -176,20 +260,36 @@ function getTypeParamsForFeedback() {
   };
 }
 
-function getTeamTypeParams(teamMembers: string[] | undefined) {
+async function getTeamTypeParams(teamMembers: string[] | undefined): Promise<DynamoDB.ScanInput> {
   if (!teamMembers) {
     const err = new Error('teamMembers missing');
     appLogger.error(err);
     throw err;
   }
 
+  const archiveTime: number = await getArchiveTime();
+  if(archiveTime > 0) {
+    return <DynamoDB.ScanInput>{
+      Limit: Number.MAX_SAFE_INTEGER,
+      ScanFilter: {
+        date: {
+          AttributeValueList: [archiveTime],
+          ComparisonOperator: 'GE',
+        },
+        result: {
+          ComparisonOperator: 'NOT_NULL',
+        },
+        userId: {
+          AttributeValueList: teamMembers,
+          ComparisonOperator: 'IN',
+        },
+      },
+      TableName: TableNames.getAssessmentsTableName(),
+    };
+  }
   return <DynamoDB.ScanInput>{
     Limit: Number.MAX_SAFE_INTEGER,
     ScanFilter: {
-      date: {
-        AttributeValueList: [getStartOfMonth()],
-        ComparisonOperator: 'GE',
-      },
       result: {
         ComparisonOperator: 'NOT_NULL',
       },
@@ -202,14 +302,30 @@ function getTeamTypeParams(teamMembers: string[] | undefined) {
   };
 }
 
-function getTeamNameTypeParams(team: string | undefined) {
+async function getTeamNameTypeParams(team: string | undefined): Promise<DynamoDB.ScanInput> {
+  const archiveTime: number = await getArchiveTime();
+  if(archiveTime > 0) {
+    return <DynamoDB.ScanInput>{
+      Limit: Number.MAX_SAFE_INTEGER,
+      ScanFilter: {
+        date: {
+          AttributeValueList: [archiveTime],
+          ComparisonOperator: 'GE',
+        },
+        result: {
+          ComparisonOperator: 'NOT_NULL',
+        },
+        team: {
+          AttributeValueList: [team],
+          ComparisonOperator: 'EQ',
+        },
+      },
+      TableName: TableNames.getAssessmentsTableName(),
+    };
+  }
   return <DynamoDB.ScanInput>{
     Limit: Number.MAX_SAFE_INTEGER,
     ScanFilter: {
-      date: {
-        AttributeValueList: [getStartOfMonth()],
-        ComparisonOperator: 'GE',
-      },
       result: {
         ComparisonOperator: 'NOT_NULL',
       },
@@ -290,23 +406,23 @@ export const getAssessmentHistory = async ({
   let params: DynamoDB.ScanInput;
   switch (type) {
     case 'user':
-      params = getUserTypeParams(userId);
+      params = await getUserTypeParams(userId);
       break;
     case 'manager':
-      // params = getManagerTypeParams();
-      params = getTeamTypeParams(teamMembers);
+      // params = await getManagerTypeParams();
+      params = await getTeamTypeParams(teamMembers);
       break;
     case 'team':
       // Here we require team members
-      params = getTeamTypeParams(teamMembers);
+      params = await getTeamTypeParams(teamMembers);
       break;
     case 'team_name':
       // Here we require team name
-      params = getTeamNameTypeParams(team);
+      params = await getTeamNameTypeParams(team);
       break;
     case 'qid':
       //get all assessment for a questionnaireId used in dashboard
-      params = getTeamTypeParamsWithQuestionnaireId(
+      params = await getTeamTypeParamsWithQuestionnaireId(
         teamMembers,
         questionnaireId,
         questionnaireVersion
@@ -314,7 +430,7 @@ export const getAssessmentHistory = async ({
       break;
     case 'qid_team':
       //get all assessment for a questionnaireId and a team used in dashboard
-      params = getTeamNameTypeParamsWithQuestionnaireId(
+      params = await getTeamNameTypeParamsWithQuestionnaireId(
         team,
         questionnaireId,
         questionnaireVersion
@@ -330,7 +446,7 @@ export const getAssessmentHistory = async ({
       break;
     case 'all_teams':
       //get all assessment for a questionnaireId for all the teams used in dashboard
-      params = getTypeParamsWithQuestionnaireId(
+      params = await getTypeParamsWithQuestionnaireId(
         questionnaireId,
         questionnaireVersion
       );

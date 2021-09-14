@@ -21,6 +21,7 @@ interface BuildsDataRequest {
   };
   query: {
     fromDate?: string;
+    service?: string;
     teamId?: string;
     toDate?: string;
   };
@@ -51,6 +52,10 @@ async function handler(
     if (query.teamId) {
       const key: string = 'teamIds';
       data[key] = query.teamId.split(',');
+    }
+    if (query.service) {
+      const key: string = 'services';
+      data[key] = query.service.split(',');
     }
     if (query.fromDate) {
       const key: string = 'fromDate';

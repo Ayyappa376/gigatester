@@ -35,7 +35,7 @@ exports.createTeamTable = (ddb, tableName) => {
 	});
 }
 
-exports.insertTeamTableData = (ddb, tableName) => {
+exports.insertTeamTableData = (ddb, tableName, tablePrefix) => {
 	let params = {
 		TableName: tableName
 	};

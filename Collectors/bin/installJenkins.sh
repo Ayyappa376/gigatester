@@ -1,1 +1,1 @@
-node ./build/installCollectors.js Jenkins
+export NODE_ENV=dishint && node ./build/installCollectors.js Jenkins

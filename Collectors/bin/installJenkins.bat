@@ -1,1 +1,1 @@
-node .\build\installCollectors.js Jenkins
+set NODE_ENV=dishint&& node .\build\installCollectors.js Jenkins

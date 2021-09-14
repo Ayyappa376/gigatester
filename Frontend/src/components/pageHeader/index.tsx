@@ -324,7 +324,7 @@ const PageHeader = (props: any) => {
       <div className='header-item'>
         <Typography
           className={classes.headerItem}
-          onClick={handleMetricsMenuClick}
+          // onClick={handleMetricsMenuClick}
         >
           <Text tid='metrics' />
         </Typography>

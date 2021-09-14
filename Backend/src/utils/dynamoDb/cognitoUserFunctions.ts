@@ -141,7 +141,7 @@ export const getCognitoUser = async (cognitoUser: string): Promise<any> =>
       UserPoolId: config.cognito.userPoolId,
       Username: cognitoUser,
     };
-    appLogger.debug({adminDisableUser_params: params});
+    appLogger.debug({ adminDisableUser_params: params });
     cognitoidentityserviceprovider.adminGetUser(
       params,
       (err: any, data: any) => {
@@ -172,7 +172,7 @@ export const updateCognitoUserToLowerCase = async (
       UserPoolId: config.cognito.userPoolId,
       Username: cognitoUser,
     };
-    appLogger.debug({adminDisableUser_params: params});
+    appLogger.debug({ adminDisableUser_params: params });
     cognitoidentityserviceprovider.adminUpdateUserAttributes(
       params,
       (err: any, data: any) => {

@@ -15,3 +15,7 @@ export function getReqTableName(): string {
 export function getQualityTableName(): string {
   return `${config.defaults.orgId}_${config.metricsTables.qualityTable}`;
 }
+
+export function getIncidentTableName(): string {
+  return `${config.defaults.orgId}_${config.metricsTables.incidentTable}`;
+}
