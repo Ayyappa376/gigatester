@@ -13,7 +13,6 @@ export const useInput = (initialValue: string) => {
         // @ts-ignore
         setValue(event.target.value);
       },
-      required: true,
     },
   };
 };

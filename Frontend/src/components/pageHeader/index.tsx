@@ -29,7 +29,6 @@ import { Link } from 'react-scroll';
 // import LanguageSelector from '../language-selection-dropdown/index';
 import { Text } from '../../common/Language';
 import SignInForm from '../signInForm';
-// import SignupForm from '../signUpForm';
 
 const timeoutLength = 50;
 
@@ -165,8 +164,6 @@ const PageHeader = (props: any) => {
     { type: '' }
   );
   const [openSignin, setOpenSignin] = useState(false);
-  const [openSignup, setOpenSignup] = useState(false);
-
   // let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
   // redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
@@ -184,17 +181,7 @@ const PageHeader = (props: any) => {
     );
   }
 
-
-  // console.log('userStatus', userStatus);
-
   const onLogin = () => {
-    // window.open(
-    //   redirectUrl,
-    //   '_self',
-    //   `toolbar=no, location=no, directories=no, status=no, menubar=no,
-    //         scrollbars=no, resizable=no, copyhistory=no, width=${500},
-    //         height=${5000}, top=${300}, left=${300}`
-    // );
     setOpenSignin(true)
   };
 

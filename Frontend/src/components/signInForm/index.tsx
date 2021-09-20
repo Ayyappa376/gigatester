@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, { useState } from 'react';
 import {
   Box,
   Button,
@@ -11,7 +11,6 @@ import {
   DialogContent,
   DialogTitle,
   Grid,
-  IconButton,
   Link,
   Snackbar,
   TextField,
@@ -24,18 +23,21 @@ import MuiAlert from '@material-ui/lab/Alert';
 import { Auth } from "aws-amplify";
 import jwtDecode from 'jwt-decode';
 import { useHistory } from "react-router-dom";
+import { Text } from '../../common/Language';
 import { useInput } from "../../utils/form";
+import SignupForm from '../signUpForm';
 
 function Alert(props: any) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
 }
 
 export default function SignInForm(props: any) {
-  const [loading, setLoading] = React.useState(false);
-  const [dialogOpen, setDialogOpen] = React.useState(props.openSignin)
-  const [snackbarOpen, setSnackbarOpen] = React.useState(false);
-  const [errorMessage, setErrorMessage] = React.useState('')
+  const [loading, setLoading] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(props.openSignin)
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('')
   const saveUserData = useActions(saveUserDetails);
+  const [dialogPage, setDialogPage] = useState('signIn');
   const history = useHistory();
 
   const { value: email, bind: bindEmail } = useInput("");
@@ -88,75 +90,87 @@ export default function SignInForm(props: any) {
     setSnackbarOpen(false);
   };
 
+  const onSignUp = () => {
+    setDialogPage('signUp')
+  }
+
+  const getSignInForm = (page: string) => {
+    setDialogPage(page)
+  }
+
   return (
-    <Dialog open={dialogOpen} aria-labelledby="form-dialog-title" onClose={closeDialog} >
-      <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}>Sign In</DialogTitle>
+    <Dialog open={dialogOpen} aria-labelledby="form-dialog-title" onClose={closeDialog} fullWidth={dialogPage === 'signUp'} >
+      <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}><Text tid={dialogPage} /></DialogTitle>
       <DialogContent>
-        <Container component="main" maxWidth="xs">
-          <CssBaseline />
-          <Box>
-            <Box component="form" onSubmit={handleSubmit} >
-              <TextField
-                margin="dense"
-                fullWidth
-                id="email"
-                label="Email"
-                name="email"
-                type="email"
-                autoComplete="email"
-                {...bindEmail}
-                autoFocus
-              />
-              <TextField
-                margin="dense"
-                fullWidth
-                name="password"
-                label="Password"
-                type="password"
-                id="password"
-                {...bindPassword}
-                autoComplete="current-password"
-              />
-              <FormControlLabel
-                control={<Checkbox value="remember" color="primary" />}
-                label="Remember me"
-              />
-              <br />
-              <br />
-              <Button
-                variant="contained"
-                color="primary"
-                size="medium"
-                type="submit"
-                disabled={loading}
-                style={{ textAlign: "center" }}
-              >
-                {loading && <CircularProgress size={20} style={{ marginRight: 20 }} />}
-                Login
-              </Button>
-              <br />
-              <br />
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
+        {dialogPage === 'signIn' ?
+          <Container component="main" maxWidth="xs">
+            <CssBaseline />
+            <Box>
+              <Box component="form" onSubmit={handleSubmit} >
+                <TextField
+                  required
+                  margin="dense"
+                  fullWidth
+                  id="email"
+                  label="Email"
+                  type="email"
+                  {...bindEmail}
+                  autoFocus
+                />
+                <TextField
+                  required
+                  margin="dense"
+                  fullWidth
+                  label="Password"
+                  type="password"
+                  id="password"
+                  {...bindPassword}
+                />
+                <FormControlLabel
+                  control={<Checkbox value="remember" color="primary" />}
+                  label="Remember me"
+                />
+                <br />
+                <br />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  size="medium"
+                  type="submit"
+                  disabled={loading}
+                  style={{ textAlign: "center" }}
+                >
+                  {loading && <CircularProgress size={20} style={{ marginRight: 20 }} />}
+                  Login
+                </Button>
+                <br />
+                <br />
+                <Grid container>
+                  <Grid item xs>
+                    <Link href="#" variant="body2">
+                      Forgot password?
+                    </Link>
+                  </Grid>
+                  <Grid item>
+                    <Link
+                      component="button"
+                      variant="body2"
+                      onClick={onSignUp}>
+                      {"Don't have an account? Sign Up"}
+                    </Link>
+                  </Grid>
                 </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Don't have an account? Sign Up"}
-                  </Link>
-                </Grid>
-              </Grid>
-              <br />
+                <br />
+              </Box>
             </Box>
-          </Box>
-          <Snackbar open={snackbarOpen} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} onClose={closeAlert} >
-            <Alert onClose={closeAlert} severity="error">
-              {errorMessage}
-            </Alert>
-          </Snackbar>
-        </Container>
+            <Snackbar open={snackbarOpen} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} onClose={closeAlert} >
+              <Alert onClose={closeAlert} severity="error">
+                {errorMessage}
+              </Alert>
+            </Snackbar>
+          </Container> :
+          <SignupForm getSignInForm={getSignInForm} />
+        }
       </DialogContent>
     </Dialog>
   );

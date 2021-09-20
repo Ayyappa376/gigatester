@@ -393,5 +393,7 @@
   "ServiceConfig.UpdatedSuccessfully": "Service Setting Updated Successfully",
   "GeneralConfig.UpdatedSuccessfully": "General Setting Updated Successfully",
   "CollectorConfig.UpdatedSuccessfully": "Collector Setting Updated Successfully",
-  "noToolsAreMapped": "No Tools are Mapped"
+  "noToolsAreMapped": "No Tools are Mapped",
+  "signIn": "Sign In",
+  "signUp": "Sign Up"
 }

@@ -34,7 +34,6 @@ function getStyles(name: any, personName: any, theme: any) {
   };
 }
 
-
 export default function WorkDetailsForm() {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
@@ -47,8 +46,8 @@ export default function WorkDetailsForm() {
     <React.Fragment>
       <Grid container spacing={3}>
         <Grid item xs={12}>
-        <FormControl required style = {{ width: '100%' }}>
-          <InputLabel id="demo-simple-select-required-label">Device Details</InputLabel>
+          <FormControl required style={{ width: '100%' }}>
+            <InputLabel id="demo-simple-select-required-label">Device Details</InputLabel>
             <Select
               labelId="demo-mutiple-name-label"
               id="demo-mutiple-name"
@@ -57,6 +56,7 @@ export default function WorkDetailsForm() {
               onChange={(e) => handleChange(e)}
               input={<Input />}
               MenuProps={MenuProps}
+              readOnly
             >
               {names.map((name) => (
                 <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
@@ -78,17 +78,15 @@ export default function WorkDetailsForm() {
               <MenuItem value={20}>Twenty</MenuItem>
               <MenuItem value={30}>Thirty</MenuItem>
             </Select> */}
-          </FormControl>         
+          </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-        <FormControl required style = {{ width: '100%' }}>
-          <InputLabel id="demo-simple-select-required-label">Testing Experience</InputLabel>
+          <FormControl required style={{ width: '100%' }}>
+            <InputLabel id="demo-simple-select-required-label">Testing Experience</InputLabel>
             <Select
               labelId="demo-simple-select-required-label"
               id="demo-simple-select-required"
-              // value={age}
-              // onChange={handleChange}
-              // className={classes.selectEmpty}
+              readOnly
             >
               <MenuItem value="">
                 <em>None</em>
@@ -100,14 +98,12 @@ export default function WorkDetailsForm() {
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
-        <FormControl required style = {{ width: '100%' }}>
-          <InputLabel id="demo-simple-select-required-label">Product Testing Experience</InputLabel>
+          <FormControl required style={{ width: '100%' }}>
+            <InputLabel id="demo-simple-select-required-label">Product Testing Experience</InputLabel>
             <Select
               labelId="demo-simple-select-required-label"
               id="demo-simple-select-required"
-              // value={age}
-              // onChange={handleChange}
-              // className={classes.selectEmpty}
+              readOnly
             >
               <MenuItem value="">
                 <em>None</em>
@@ -117,8 +113,8 @@ export default function WorkDetailsForm() {
               <MenuItem value={30}>Thirty</MenuItem>
             </Select>
           </FormControl>
-        </Grid>        
-      </Grid>       
+        </Grid>
+      </Grid>
     </React.Fragment>
   );
 }
