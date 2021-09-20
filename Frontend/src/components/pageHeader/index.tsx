@@ -356,7 +356,7 @@ const PageHeader = (props: any) => {
       <div className='header-item'>
         <Typography
           className={classes.headerItem}
-          // onClick={handleMetricsMenuClick}
+        // onClick={handleMetricsMenuClick}
         >
           <Text tid='metrics' />
         </Typography>
@@ -779,6 +779,10 @@ const PageHeader = (props: any) => {
     setOpenModalLeavePage(false);
   };
 
+  const getSignInState = (state: boolean) => {
+    setOpenSignin(state);
+  }
+
   const renderHomeButton = () => {
     if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
       return (
@@ -905,8 +909,8 @@ const PageHeader = (props: any) => {
         handleModalYesClicked={modalYesClickedLeavePage}
         handleModalNoClicked={modalNoClickedLeavePage}
       />
-      {openSignin &&      
-        <SignInForm openSignin={openSignin} />
+      {openSignin &&
+        <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
       }
     </Fragment>
   );

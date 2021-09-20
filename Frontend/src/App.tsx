@@ -28,11 +28,10 @@ import { useActions, removeUserDetails } from './actions';
 import { IRootState } from './reducers';
 import ReactGA from 'react-ga';
 import Amplify from "aws-amplify";
-import { COGNITO } from "./components/auth/auth-config";
 import Dashboard from './components/admin/dashboard';
 import { LanguageProvider } from './common/Language';
 
-interface IDoitrightProps {}
+interface IDoitrightProps { }
 
 const GA_id_prod = 'UA-154108167-2';
 const GA_id_dev = 'UA-154108167-1';
@@ -40,10 +39,17 @@ const GA_id_beta = 'UA-154108167-3';
 
 const GigaTester = (props: IDoitrightProps) => {
   const userData = useSelector((state: IRootState) => state.user.userDetails);
-  const removeUserData = useActions(removeUserDetails);  
+  const systemDetails = useSelector((state: IRootState) => state.systemDetails);
+  const removeUserData = useActions(removeUserDetails);
   const [metricType, setMetricType] = useState('doraMetrics');
   const [metricSelection, setMetricSelection] = useState(true);
   const env = process.env.REACT_APP_STAGE;
+
+  Amplify.configure({
+    aws_cognito_region: 'us-east-1',
+    aws_user_pools_id: systemDetails.userpoolId,
+    aws_user_pools_web_client_id: systemDetails.appClientId,
+  });
 
   useEffect(() => {
     if (userData) {
@@ -68,12 +74,6 @@ const GigaTester = (props: IDoitrightProps) => {
     }
     ReactGA.pageview(window.location.pathname + window.location.search);
   }, []);
-
-  Amplify.configure({
-    aws_cognito_region: COGNITO.REGION,
-    aws_user_pools_id: COGNITO.USER_POOL_ID,
-    aws_user_pools_web_client_id: COGNITO.APP_CLIENT_ID,
-  });
 
   const getMetricsType = (type: any) => {
     setMetricSelection(!metricSelection)
@@ -119,7 +119,7 @@ const GigaTester = (props: IDoitrightProps) => {
         <Route
           exact
           path='/metricSelect'
-          render={() => <MetricSelect metricType={metricType} metricSelection={metricSelection}/>}
+          render={() => <MetricSelect metricType={metricType} metricSelection={metricSelection} />}
         />
       </Router>
     </LanguageProvider>

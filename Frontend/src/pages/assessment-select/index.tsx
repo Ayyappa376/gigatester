@@ -58,9 +58,9 @@ const AssessmentSelect = (props: any) => {
   const classes = useStyles();
   const [questionnaire, setQuestionnaire] = React.useState<any>({});
   const [questionnaireFetched, setQuestionnaireFetched] = React.useState(false);
-  // const teamName = useSelector((state: IRootState) => {
-  //   return state.user.team;
-  // });
+  const teamName = useSelector((state: IRootState) => {
+    return state.user.team;
+  });
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
@@ -69,12 +69,12 @@ const AssessmentSelect = (props: any) => {
   const setAssessmentDataFail = useActions(setSelectAssessmentDataFailure);
   const setAssessmentDataStart = useActions(setSelectAssessmentDataStart);
   const setDisplayLeftText = useActions(setAppBarLeftText);
-  let teamName = 'Others';
+
   // let signUpUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
   // signUpUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
 
-  useEffect(() => {    
+  useEffect(() => {
     setDisplayLeftText('');
     if (teamName) {
       setAssessmentDataStart();
@@ -85,7 +85,6 @@ const AssessmentSelect = (props: any) => {
         state: stateVariable,
       })
         .then((response: any) => {
-          // console.log(response);
           response.questionnaires.sort((a: any, b: any) => {
             return a.displayName > b.displayName ? 1 : -1;
           });
@@ -100,15 +99,14 @@ const AssessmentSelect = (props: any) => {
           }
         })
         .catch((error: any) => {
-          // console.log(error);
           setAssessmentDataFail(error);
           const perror = JSON.stringify(error);
           const object = JSON.parse(perror);
-          // if (object.code === 401) {
-          //   props.history.push('/relogin');
-          // } else {
-          //   props.history.push('/error');
-          // }
+          if (object.code === 401) {
+            props.history.push('/relogin');
+          } else {
+            props.history.push('/error');
+          }
         });
     } else {
       if (systemDetails.mode === constantValues.TRIAL_MODE) {
@@ -153,8 +151,6 @@ const AssessmentSelect = (props: any) => {
       state: questionnaireId,
     });
   };
-
-  // console.log('questionnaireFetched', questionnaireFetched)
 
   if (questionnaireFetched) {
     return (
