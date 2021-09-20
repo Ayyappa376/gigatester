@@ -28,6 +28,8 @@ import { buttonStyle } from '../../common/common';
 import { Link } from 'react-scroll';
 // import LanguageSelector from '../language-selection-dropdown/index';
 import { Text } from '../../common/Language';
+import SignInForm from '../signInForm';
+// import SignupForm from '../signUpForm';
 
 const timeoutLength = 50;
 
@@ -162,10 +164,12 @@ const PageHeader = (props: any) => {
   const [pageRedirectState, setPageRedirectState] = useState<PageRedirectState>(
     { type: '' }
   );
+  const [openSignin, setOpenSignin] = useState(false);
+  const [openSignup, setOpenSignup] = useState(false);
 
-  let redirectUrl: string;
+  // let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
-  redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
+  // redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
 
   if (
     props.location.pathname === '/' ||
@@ -180,14 +184,18 @@ const PageHeader = (props: any) => {
     );
   }
 
-  const onClick = () => {
-    window.open(
-      redirectUrl,
-      '_self',
-      `toolbar=no, location=no, directories=no, status=no, menubar=no,
-            scrollbars=no, resizable=no, copyhistory=no, width=${500},
-            height=${5000}, top=${300}, left=${300}`
-    );
+
+  // console.log('userStatus', userStatus);
+
+  const onLogin = () => {
+    // window.open(
+    //   redirectUrl,
+    //   '_self',
+    //   `toolbar=no, location=no, directories=no, status=no, menubar=no,
+    //         scrollbars=no, resizable=no, copyhistory=no, width=${500},
+    //         height=${5000}, top=${300}, left=${300}`
+    // );
+    setOpenSignin(true)
   };
 
   const logoutModalActivate = () => {
@@ -216,7 +224,7 @@ const PageHeader = (props: any) => {
             </Typography>
           </Tooltip>
         ) : (
-          <Typography onClick={onClick} className={classes.headerItem}>
+          <Typography onClick={onLogin} className={classes.headerItem}>
             <Text tid='login' />
           </Typography>
         )}
@@ -233,11 +241,11 @@ const PageHeader = (props: any) => {
     setAnchorEl(null);
   };
 
-  const handleMetricsMenuClick = (event: any) => {
-    setAnchorMetricsEl(event.currentTarget);
-    setAdminPageState(false);
-    props.history.push('/metricSelect');
-  };
+  // const handleMetricsMenuClick = (event: any) => {
+  //   setAnchorMetricsEl(event.currentTarget);
+  //   setAdminPageState(false);
+  //   props.history.push('/metricSelect');
+  // };
 
   const handleMetricsMenuClose = () => {
     setAnchorMetricsEl(null);
@@ -897,6 +905,9 @@ const PageHeader = (props: any) => {
         handleModalYesClicked={modalYesClickedLeavePage}
         handleModalNoClicked={modalNoClickedLeavePage}
       />
+      {openSignin &&      
+        <SignInForm openSignin={openSignin} />
+      }
     </Fragment>
   );
 };

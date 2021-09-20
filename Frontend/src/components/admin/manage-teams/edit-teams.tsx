@@ -352,7 +352,7 @@ const EditTeam = (props: any) => {
         valueArray = [...event.target.value];
         values[key] = valueArray;
         setTeamState(temp);
-       }
+      }
     }
   };
 

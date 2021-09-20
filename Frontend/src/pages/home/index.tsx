@@ -56,6 +56,8 @@ const Home = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => state);
   const setCurrentPageValue = useActions(setCurrentPage);
 
+  // console.log(userStatus);
+
   useEffect(() => {
     setCurrentPageValue('');
     if (

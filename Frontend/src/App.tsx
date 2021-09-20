@@ -27,6 +27,8 @@ import { useSelector } from 'react-redux';
 import { useActions, removeUserDetails } from './actions';
 import { IRootState } from './reducers';
 import ReactGA from 'react-ga';
+import Amplify from "aws-amplify";
+import { COGNITO } from "./components/auth/auth-config";
 import Dashboard from './components/admin/dashboard';
 import { LanguageProvider } from './common/Language';
 
@@ -66,6 +68,12 @@ const GigaTester = (props: IDoitrightProps) => {
     }
     ReactGA.pageview(window.location.pathname + window.location.search);
   }, []);
+
+  Amplify.configure({
+    aws_cognito_region: COGNITO.REGION,
+    aws_user_pools_id: COGNITO.USER_POOL_ID,
+    aws_user_pools_web_client_id: COGNITO.APP_CLIENT_ID,
+  });
 
   const getMetricsType = (type: any) => {
     setMetricSelection(!metricSelection)
