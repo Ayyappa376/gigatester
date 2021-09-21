@@ -181,6 +181,7 @@ const AssessmentSelect = (props: any) => {
               </TableHead>
               <TableBody>
                 {questionnaire.questionnaires.map((row: any, index: number) => (
+                  questionnaire.questionnaireSelected.includes(row.questionnaireId) &&
                   <TableRow key={index}>
                     <TableCell component='th' scope='row' className='tableCell'>
                       <Typography className='tableBodyText'>
@@ -191,11 +192,6 @@ const AssessmentSelect = (props: any) => {
                       <Button
                         variant='outlined'
                         className={classes.buttons}
-                        disabled={
-                          !questionnaire.questionnaireSelected.includes(
-                            row.questionnaireId
-                          )
-                        }
                         onClick={() => {
                           linkClicked(row.questionnaireId, row.version);
                         }}

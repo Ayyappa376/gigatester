@@ -5,8 +5,8 @@ import '../../../css/assessments/style.css';
 export default function BasicDetailsForm(props: any) {
   return (
     <React.Fragment>
-      <Grid container spacing={3}>
-        <Grid item xs={12} sm={6}>
+      <Grid container spacing={1}>
+        <Grid item xs={12} sm={5}>
           <TextField
             required
             id="standard-basic"
@@ -15,7 +15,8 @@ export default function BasicDetailsForm(props: any) {
             {...props.bindFirstName}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={2} />
+        <Grid item xs={12} sm={5}>
           <TextField
             id="lastName"
             label="Last name"
@@ -40,7 +41,7 @@ export default function BasicDetailsForm(props: any) {
             {...props.bindAddress2}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={5}>
           <TextField
             required
             id="city"
@@ -49,56 +50,52 @@ export default function BasicDetailsForm(props: any) {
             {...props.bindCity}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={2} />
+        <Grid item xs={12} sm={5}>
           <FormControl required style={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-required-label">State</InputLabel>
             <Select
               labelId="demo-simple-select-required-label"
               id="demo-simple-select-required"
               {...props.bindState}
-              // disabled
-              readOnly
-            // value={age}
-            // onChange={handleChange}
-            // className={classes.selectEmpty}
             >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={'alabama'}>Alabama</MenuItem>
+              <MenuItem value={'alaska'}>Alaska</MenuItem>
+              <MenuItem value={'arizona'}>Arizona</MenuItem>
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={5}>
           <TextField
             required
             id="zip"
-            label="Zip / Postal code"
+            label="Zip / Postal Code"
             fullWidth
             {...props.bindZip}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={2} />
+        <Grid item xs={12} sm={5}>
           <FormControl required style={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-required-label">Country</InputLabel>
             <Select
               labelId="demo-simple-select-required-label"
               id="demo-simple-select-required"
               {...props.bindCountry}
-              readOnly
             >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={'unitedStates'}>United States</MenuItem>
+              {/* <MenuItem value={20}>Twenty</MenuItem>
+              <MenuItem value={30}>Thirty</MenuItem> */}
             </Select>
           </FormControl>
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={5}>
           <TextField
             required
             id="email"
@@ -108,7 +105,8 @@ export default function BasicDetailsForm(props: any) {
             {...props.bindEmail}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={2} />
+        <Grid item xs={12} sm={5}>
           <TextField
             id="phone"
             label="Phone Number"
@@ -117,7 +115,7 @@ export default function BasicDetailsForm(props: any) {
             {...props.bindPhone}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={5}>
           <TextField
             required
             id="password"
@@ -127,16 +125,14 @@ export default function BasicDetailsForm(props: any) {
             {...props.bindPassword}
           />
         </Grid>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={2} />
+        <Grid item xs={12} sm={5}>
           <TextField
             required
             id="confirmPassword"
-            name="confirmPassword"
             type="password"
             label="Confirm Password"
             fullWidth
-            autoComplete="confirmPassword"
-            variant="standard"
             {...props.bindConfirmPassword}
           />
         </Grid>

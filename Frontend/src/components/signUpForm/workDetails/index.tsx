@@ -2,17 +2,15 @@ import * as React from 'react';
 import { FormControl, Grid, Input, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 
-const names = [
-  'Oliver Hansen',
-  'Van Henry',
-  'April Tucker',
-  'Ralph Hubbard',
-  'Omar Alexander',
-  'Carlos Abbott',
-  'Miriam Wagner',
-  'Bradley Wilkerson',
-  'Virginia Andrews',
-  'Kelly Snyder',
+const teams = [
+  'Abc',
+  'Alpha',
+  'Others',
+];
+
+const devices = [
+  'DVR',
+  'Receiver',
 ];
 
 const ITEM_HEIGHT = 48;
@@ -34,7 +32,7 @@ function getStyles(name: any, personName: any, theme: any) {
   };
 }
 
-export default function WorkDetailsForm() {
+export default function WorkDetailsForm(props: any) {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
 
@@ -45,39 +43,39 @@ export default function WorkDetailsForm() {
   return (
     <React.Fragment>
       <Grid container spacing={3}>
-        <Grid item xs={12}>
+        <Grid item xs={12} sm={6}>
+          <FormControl required style={{ width: '100%' }}>
+            <InputLabel id="demo-simple-select-required-label">Team</InputLabel>
+            <Select
+              labelId="demo-mutiple-name-label"
+              id="demo-mutiple-name"
+              multiple
+              {...props.bindTeams}
+              MenuProps={MenuProps}
+            >
+              {teams.map((name) => (
+                <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
+                  {name}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        </Grid>
+        <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-required-label">Device Details</InputLabel>
             <Select
               labelId="demo-mutiple-name-label"
               id="demo-mutiple-name"
               multiple
-              value={personName}
-              onChange={(e) => handleChange(e)}
-              input={<Input />}
-              MenuProps={MenuProps}
-              readOnly
+              {...props.bindDevices}
             >
-              {names.map((name) => (
+              {devices.map((name) => (
                 <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
                   {name}
                 </MenuItem>
               ))}
             </Select>
-            {/* <Select
-              labelId="demo-simple-select-required-label"
-              id="demo-simple-select-required"
-              // value={age}
-              // onChange={handleChange}
-              // className={classes.selectEmpty}
-            >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
-            </Select> */}
           </FormControl>
         </Grid>
         <Grid item xs={12} sm={6}>
@@ -86,7 +84,7 @@ export default function WorkDetailsForm() {
             <Select
               labelId="demo-simple-select-required-label"
               id="demo-simple-select-required"
-              readOnly
+              {...props.bindTestingExperience}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -103,7 +101,7 @@ export default function WorkDetailsForm() {
             <Select
               labelId="demo-simple-select-required-label"
               id="demo-simple-select-required"
-              readOnly
+              {...props.bindProdTestExperience}
             >
               <MenuItem value="">
                 <em>None</em>

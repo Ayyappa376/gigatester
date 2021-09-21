@@ -4,7 +4,7 @@ import { Auth } from "aws-amplify";
 import MuiAlert from '@material-ui/lab/Alert';
 import BasicDetailsForm from './basicDetails';
 import WorkDetailsForm from './workDetails';
-import { useInput } from "../../utils/form";
+import { useInput, useInputArray } from "../../utils/form";
 
 const steps = ['Basic Details', 'Work Details'];
 
@@ -30,6 +30,23 @@ export default function SignupForm(props: any) {
   const { value: phone, bind: bindPhone } = useInput("");
   const { value: password, bind: bindPassword } = useInput("");
   const { value: confirmPassword, bind: bindConfirmPassword } = useInput("");
+  const { value: teams, bind: bindTeams } = useInputArray([]);
+  const { value: devices, bind: bindDevices } = useInputArray([]);
+  const { value: testingExperience, bind: bindTestingExperience } = useInput("");
+  const { value: prodTestExperience, bind: bindProdTestExperience } = useInput("");
+
+  // console.log(firstName, lastName, address1, address2, city, state, zip, country, email, phone, password, confirmPassword)
+  // console.log(teams, devices, testingExperience, prodTestExperience);
+
+  const validateEmail = (email: string) => {
+    const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    return re.test(String(email).toLowerCase());
+  }
+
+  const validatePassword = (password: string) => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{5,20})/;
+    return re.test(password);
+  }
 
   const getStepContent = (step: number) => {
     switch (step) {
@@ -49,7 +66,12 @@ export default function SignupForm(props: any) {
           bindConfirmPassword={bindConfirmPassword}
         />;
       case 1:
-        return <WorkDetailsForm />;
+        return <WorkDetailsForm
+          bindTeams={bindTeams}
+          bindDevices={bindDevices}
+          bindTestingExperience={bindTestingExperience}
+          bindProdTestExperience={bindProdTestExperience}
+        />;
       default:
         throw new Error('Unknown step');
     }
@@ -58,7 +80,15 @@ export default function SignupForm(props: any) {
   const handleNext = async (action: string) => {
     if (action === 'Next') {
       if ((email && password) && (password === confirmPassword)) {
-        setActiveStep(activeStep + 1);
+        if (validateEmail(email) && validatePassword(password)) {
+          setActiveStep(activeStep + 1);
+        } else if (!validateEmail(email)) {
+          setSnackbarOpen(true)
+          setValidationMsg('Please enter a valid email');
+        } else if (!validatePassword(password)) {
+          setSnackbarOpen(true)
+          setValidationMsg('A password must have at least 5 characters, including special character, upper and lower case letter, and number');
+        }
       } else if (password != confirmPassword) {
         setSnackbarOpen(true)
         setValidationMsg('Password and Confirm Password should be same');
@@ -121,7 +151,9 @@ export default function SignupForm(props: any) {
                 </Step>
               ))}
             </Stepper>
-            {getStepContent(activeStep)}
+            <div style={{ margin: '0px 15px' }}>
+              {getStepContent(activeStep)}
+            </div>
             <Box style={{ textAlign: 'center', margin: '30px 0' }}>
               {activeStep !== 0 && (
                 <Button onClick={handleBack} >
