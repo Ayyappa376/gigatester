@@ -9,55 +9,66 @@ export default function BasicDetailsForm(props: any) {
         <Grid item xs={12} sm={5}>
           <TextField
             required
-            id="standard-basic"
+            id="firstName"
+            name="firstName"
             label="First name"
+            value={props.userParamState.firstName}
             fullWidth
-            {...props.bindFirstName}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12} sm={2} />
         <Grid item xs={12} sm={5}>
           <TextField
             id="lastName"
+            name="lastName"
             label="Last name"
+            value={props.userParamState.lastName}
             fullWidth
-            {...props.bindLastName}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             required
             id="address1"
+            name="address1"
             label="Address line 1"
+            value={props.userParamState.address1}
             fullWidth
-            {...props.bindAddress1}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12}>
           <TextField
             id="address2"
+            name="address2"
             label="Address line 2"
+            value={props.userParamState.address2}
             fullWidth
-            {...props.bindAddress2}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12} sm={5}>
           <TextField
             required
             id="city"
+            name="city"
             label="City"
+            value={props.userParamState.city}
             fullWidth
-            {...props.bindCity}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12} sm={2} />
         <Grid item xs={12} sm={5}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">State</InputLabel>
+            <InputLabel id="state">State</InputLabel>
             <Select
-              labelId="demo-simple-select-required-label"
-              id="demo-simple-select-required"
-              {...props.bindState}
+              id="state"
+              name="state"
+              value={props.userParamState.state || ''}
+              onChange={props.handleChangeValue}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -71,20 +82,23 @@ export default function BasicDetailsForm(props: any) {
         <Grid item xs={12} sm={5}>
           <TextField
             required
-            id="zip"
+            id="zipCode"
+            name="zipCode"
             label="Zip / Postal Code"
+            value={props.userParamState.zip}
             fullWidth
-            {...props.bindZip}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12} sm={2} />
         <Grid item xs={12} sm={5}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">Country</InputLabel>
+            <InputLabel id="country">Country</InputLabel>
             <Select
-              labelId="demo-simple-select-required-label"
-              id="demo-simple-select-required"
-              {...props.bindCountry}
+              id="country"
+              name="country"
+              value={props.userParamState.country || ''}
+              onChange={props.handleChangeValue}
             >
               <MenuItem value="">
                 <em>None</em>
@@ -98,31 +112,36 @@ export default function BasicDetailsForm(props: any) {
         <Grid item xs={12} sm={5}>
           <TextField
             required
-            id="email"
-            type="email"
-            label="Email"
+            id="emailId"
+            name="emailId"
+            label="Email Id"
+            value={props.userParamState.emailId}
             fullWidth
-            {...props.bindEmail}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12} sm={2} />
         <Grid item xs={12} sm={5}>
           <TextField
             id="phone"
+            name="phone"
             label="Phone Number"
             type="tele"
+            value={props.userParamState.phone}
             fullWidth
-            {...props.bindPhone}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12} sm={5}>
           <TextField
             required
             id="password"
+            name="password"
             type="password"
             label="Password"
+            value={props.userParamState.password}
             fullWidth
-            {...props.bindPassword}
+            onChange={props.handleChangeValue}
           />
         </Grid>
         <Grid item xs={12} sm={2} />
@@ -130,10 +149,12 @@ export default function BasicDetailsForm(props: any) {
           <TextField
             required
             id="confirmPassword"
+            name="confirmPassword"
             type="password"
             label="Confirm Password"
+            value={props.userParamState.confirmPassword}
             fullWidth
-            {...props.bindConfirmPassword}
+            onChange={props.handleChangeValue}
           />
         </Grid>
       </Grid>

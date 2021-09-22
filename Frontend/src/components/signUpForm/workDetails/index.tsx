@@ -2,16 +2,9 @@ import * as React from 'react';
 import { FormControl, Grid, Input, InputLabel, MenuItem, Select } from '@material-ui/core';
 import { useTheme } from '@material-ui/core/styles';
 
-const teams = [
-  'Abc',
-  'Alpha',
-  'Others',
-];
+const teams = [{ id: 'Abc', name: 'Abc' }, { id: 'Alpha', name: 'Alpha' }, { id: 'Others', name: 'Others' }];
 
-const devices = [
-  'DVR',
-  'Receiver',
-];
+const devices = [{ id: 'dvr', name: 'DVR' }, { id: 'receiver', name: 'Receiver' }];
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -36,9 +29,6 @@ export default function WorkDetailsForm(props: any) {
   const theme = useTheme();
   const [personName, setPersonName] = React.useState([]);
 
-  const handleChange = (e: any) => {
-    setPersonName(e.target.value);
-  };
 
   return (
     <React.Fragment>
@@ -47,15 +37,18 @@ export default function WorkDetailsForm(props: any) {
           <FormControl required style={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-required-label">Team</InputLabel>
             <Select
-              labelId="demo-mutiple-name-label"
-              id="demo-mutiple-name"
+              id="teams"
+              name="teams"
               multiple
-              {...props.bindTeams}
+              value={props.userParamState.teams || []}
+              onChange={props.handleChangeMultiValue}
+              input={<Input />}
+              renderValue={(selected) => (selected as string[]).join(', ')}
               MenuProps={MenuProps}
             >
-              {teams.map((name) => (
-                <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
-                  {name}
+              {teams.map((opt: any, i: number) => (
+                <MenuItem key={i} value={opt.id} >
+                  {opt.name}
                 </MenuItem>
               ))}
             </Select>
@@ -63,16 +56,20 @@ export default function WorkDetailsForm(props: any) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">Device Details</InputLabel>
+            <InputLabel id="demo-simple-select-required-label">Device</InputLabel>
             <Select
-              labelId="demo-mutiple-name-label"
-              id="demo-mutiple-name"
+              id="devices"
+              name="devices"
               multiple
-              {...props.bindDevices}
+              value={props.userParamState.devices || []}
+              input={<Input />}
+              renderValue={(selected) => (selected as string[]).join(', ')}
+              onChange={props.handleChangeMultiValue}
+              MenuProps={MenuProps}
             >
-              {devices.map((name) => (
-                <MenuItem key={name} value={name} style={getStyles(name, personName, theme)}>
-                  {name}
+              {devices.map((opt: any, i: number) => (
+                <MenuItem key={i} value={opt.id} >
+                  {opt.name}
                 </MenuItem>
               ))}
             </Select>
@@ -80,18 +77,19 @@ export default function WorkDetailsForm(props: any) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">Testing Experience</InputLabel>
+            <InputLabel id="demo-simple-select-required-label">Testing Experience (Years)</InputLabel>
             <Select
-              labelId="demo-simple-select-required-label"
-              id="demo-simple-select-required"
-              {...props.bindTestingExperience}
+              id="testingExperience"
+              name="testingExperience"
+              value={props.userParamState.testingExperience || ''}
+              onChange={props.handleChangeValue}
             >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={30}>30</MenuItem>
             </Select>
           </FormControl>
         </Grid>
@@ -99,16 +97,17 @@ export default function WorkDetailsForm(props: any) {
           <FormControl required style={{ width: '100%' }}>
             <InputLabel id="demo-simple-select-required-label">Product Testing Experience</InputLabel>
             <Select
-              labelId="demo-simple-select-required-label"
-              id="demo-simple-select-required"
-              {...props.bindProdTestExperience}
+              id="productTestingExperience"
+              name="productTestingExperience"
+              value={props.userParamState.productTestingExperience || ''}
+              onChange={props.handleChangeValue}
             >
               <MenuItem value="">
                 <em>None</em>
               </MenuItem>
-              <MenuItem value={10}>Ten</MenuItem>
-              <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem>
+              <MenuItem value={10}>10</MenuItem>
+              <MenuItem value={20}>20</MenuItem>
+              <MenuItem value={30}>30</MenuItem>
             </Select>
           </FormControl>
         </Grid>
