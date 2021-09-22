@@ -128,10 +128,10 @@ export default function SignupForm(props: any) {
             // setNewUserPosted(true);
           })
           .catch((error) => {
-            setErrorMessage('Error in storing user data');
-            setSnackbarOpen(true);
-            const perror = JSON.stringify(error);
-            const object = JSON.parse(perror);
+            // setErrorMessage('Error in storing user data');
+            // setSnackbarOpen(true);
+            // const perror = JSON.stringify(error);
+            // const object = JSON.parse(perror);
             // if (object.code === 400) {
             // setFailureMessage(object.apiError.msg);
             // setFailure(true);

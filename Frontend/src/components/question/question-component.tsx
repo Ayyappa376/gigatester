@@ -226,8 +226,8 @@ function QuestionComponent(props: IQuestionProps) {
         <Typography className={classes.instruction} component='div'>
           {numberOfAnswers > 1
             ? 'Select ' +
-              numberOfAnswers +
-              ' appropriate options that suits your team'
+            numberOfAnswers +
+            ' appropriate options that suits your team'
             : 'Select an appropriate option that suits your team'}
         </Typography>
         <List>
@@ -304,7 +304,7 @@ function QuestionComponent(props: IQuestionProps) {
               }}
               button
               onClick={
-                checked.includes('@N/A') ? () => {} : () => handleToggle('@N/A')
+                checked.includes('@N/A') ? () => { } : () => handleToggle('@N/A')
               }
             >
               <div className={classes.up} onClick={handleToggle('@N/A')}>
@@ -351,6 +351,9 @@ function QuestionComponent(props: IQuestionProps) {
             name='reason'
             variant='outlined'
             label='Reason'
+            inputProps={{
+              maxLength: 200
+            }}
             className={classes.textField}
             value={inputValue ? inputValue : ''}
             onChange={handleTextInput}

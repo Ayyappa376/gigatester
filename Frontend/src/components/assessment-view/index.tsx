@@ -298,6 +298,7 @@ function AssessmentView(props: IAssessmentViewProps) {
   };
   const [action, setAction] = useState<IActionCreate[]>([emptyAction]);
   const structuredQuestionsArray = structureQuestionArray(props.assessmentData);
+
   const renderOption = (
     option: IOptionItem,
     numberOfAnswers: number,

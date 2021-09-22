@@ -170,9 +170,8 @@ const getTimerValues = (
   if (timeLeftTotalSeconds <= 0) {
     return `Time Left: 00:00`;
   }
-  return `Time Left: ${
-    timeLeftMinutes < 10 ? `0${timeLeftMinutes}` : timeLeftMinutes
-  }:${timeLeftSeconds < 10 ? `0${timeLeftSeconds}` : timeLeftSeconds}`;
+  return `Time Left: ${timeLeftMinutes < 10 ? `0${timeLeftMinutes}` : timeLeftMinutes
+    }:${timeLeftSeconds < 10 ? `0${timeLeftSeconds}` : timeLeftSeconds}`;
 };
 
 const getTimerWarningInfo = (
@@ -197,9 +196,8 @@ const getTimerWarningInfo = (
     warningTimeMinutes = Math.floor(warningTimeMinutes);
     if (warningTimeMinutes !== 0 && timeLeft < warningTimeMinutes * 60 * 1000) {
       return {
-        message: `Less than ${warningTimeMinutes} ${
-          warningTimeMinutes === 1 ? 'minute is' : 'minutes are'
-        } left.`,
+        message: `Less than ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute is' : 'minutes are'
+          } left.`,
         showWarning: true,
       };
     }
@@ -269,10 +267,10 @@ function QuestionRender(props: IQuestionProps) {
     Math.floor(parseInt(index, 10) / 5)
   );
   const [completedStep, setCompletedStep] = useState(-1);
-  const assesMentQuestion = useSelector(
+  const assessmentQuestion = useSelector(
     (state: IRootState) => state.assesment.assesmentQuestion
   );
-  const assesMentResult = useSelector(
+  const assessmentResult = useSelector(
     (state: IRootState) => state.assesment.result
   );
   const maxAssesmentQuestions = useSelector(
@@ -353,7 +351,7 @@ function QuestionRender(props: IQuestionProps) {
   }
 
   useEffect(() => {
-    if (assesMentQuestion.status === 'success') {
+    if (assessmentQuestion.status === 'success') {
       if (
         Object.keys(previousMarkedAnswers).length > 0 &&
         !continueAssessmentModalNotified
@@ -363,7 +361,7 @@ function QuestionRender(props: IQuestionProps) {
         setContinueAssessmentModalDisplayed();
       }
     }
-  }, [previousMarkedAnswers, assesMentQuestion.status]);
+  }, [previousMarkedAnswers, assessmentQuestion.status]);
 
   const handleContinueModalYesClicked = () => {
     setOpenContinueModal(false);
@@ -472,7 +470,7 @@ function QuestionRender(props: IQuestionProps) {
   }, [lastAnswerSubmitStatus]);
 
   const processSubmit = (event?: any) => {
-    const questionData = assesMentQuestion.data;
+    const questionData = assessmentQuestion.data;
     const { id } = questionData!;
     const defaultSelectedOption:
       | ISelectedOption
@@ -539,11 +537,11 @@ function QuestionRender(props: IQuestionProps) {
     }
     let numberOfAnswers = 0;
     if (
-      assesMentQuestion &&
-      assesMentQuestion.data &&
-      assesMentQuestion.data.numberOfAnswers
+      assessmentQuestion &&
+      assessmentQuestion.data &&
+      assessmentQuestion.data.numberOfAnswers
     ) {
-      numberOfAnswers = assesMentQuestion!.data!.numberOfAnswers;
+      numberOfAnswers = assessmentQuestion!.data!.numberOfAnswers;
     }
     if (answers!.length !== numberOfAnswers) {
       setErrorMessage({
@@ -561,14 +559,27 @@ function QuestionRender(props: IQuestionProps) {
     }
 
     if (
-      assesMentQuestion &&
-      assesMentQuestion.data &&
-      assesMentQuestion.data.reason &&
+      assessmentQuestion &&
+      assessmentQuestion.data &&
+      assessmentQuestion.data.reason &&
       !comment
     ) {
       setErrorMessage({
         error: true,
         message: 'Please enter valid reason for selecting this answer',
+      });
+      return false;
+    }
+
+    if (
+      assessmentQuestion &&
+      assessmentQuestion.data &&
+      assessmentQuestion.data.reason &&
+      comment && (comment.length < 20 || comment.length > 200)
+    ) {
+      setErrorMessage({
+        error: true,
+        message: 'The length of the reason should minimum 20 and maximum 200 characters.',
       });
       return false;
     }
@@ -759,7 +770,7 @@ function QuestionRender(props: IQuestionProps) {
 
   useEffect(() => {
     if (timerExpiry) {
-      // const questionData = assesMentQuestion.data;
+      // const questionData = assessmentQuestion.data;
       // const { id } = questionData!;
       // const defaultSelectedOption:
       //   | ISelectedOption
@@ -778,7 +789,7 @@ function QuestionRender(props: IQuestionProps) {
   }, [timerExpiry]);
 
   const renderQuestionComponent = () => {
-    const questionData = assesMentQuestion.data;
+    const questionData = assessmentQuestion.data;
     const { id } = questionData!;
     const defaultSelectedOption:
       | ISelectedOption
@@ -826,7 +837,7 @@ function QuestionRender(props: IQuestionProps) {
                 <Typography>{questionData.hint} </Typography>
                 <br />
                 {questionData.hintURL &&
-                questionData.hintURL.includes('youtube') ? (
+                  questionData.hintURL.includes('youtube') ? (
                   <ReactPlayer
                     url={questionData.hintURL}
                     height='100%'
@@ -938,10 +949,10 @@ function QuestionRender(props: IQuestionProps) {
   }, [index]);
 
   useEffect(() => {
-    if (assesMentQuestion.status === 'success') {
+    if (assessmentQuestion.status === 'success') {
       setStepperParameters();
     }
-  }, [assesMentQuestion.data]);
+  }, [assessmentQuestion.data]);
 
   useEffect(() => {
     if (timeOut) {
@@ -974,7 +985,7 @@ function QuestionRender(props: IQuestionProps) {
   };
 
   const redirectToLogin = () => {
-    const error = JSON.stringify(assesMentQuestion!.error);
+    const error = JSON.stringify(assessmentQuestion!.error);
     const object = JSON.parse(error);
     if (object.code) {
       if (object.code === 401) {
@@ -987,10 +998,10 @@ function QuestionRender(props: IQuestionProps) {
     }
   };
 
-  const isQuestionFetchSuccess = assesMentQuestion.status === 'success';
-  const isQuestionFetchFailed = assesMentQuestion.status === 'fail';
+  const isQuestionFetchSuccess = assessmentQuestion.status === 'success';
+  const isQuestionFetchFailed = assessmentQuestion.status === 'fail';
 
-  if (assesMentResult.status === 'success' && assesMentResult.data !== null) {
+  if (assessmentResult.status === 'success' && assessmentResult.data !== null) {
     props.history.push('/');
   }
 
@@ -1057,11 +1068,11 @@ function QuestionRender(props: IQuestionProps) {
       {isQuestionFetchFailed
         ? redirectToLogin()
         : isQuestionFetchSuccess
-        ? renderQuestionComponent()
-        : renderLoadingIcon()}
+          ? renderQuestionComponent()
+          : renderLoadingIcon()}
       <Popper open={openToast} anchorEl={anchorEl} placement='top' transition>
         {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={350}>
+          <Fade {...TransitionProps} timeout={1000}>
             <Paper>
               <Typography>{errorMessage.message}</Typography>
             </Paper>
