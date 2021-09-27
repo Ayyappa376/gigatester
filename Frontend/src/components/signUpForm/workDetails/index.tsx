@@ -14,15 +14,6 @@ const MenuProps = {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
     },
   },
-};
-
-function getStyles(name: any, personName: any, theme: any) {
-  return {
-    fontWeight:
-      personName.indexOf(name) === -1
-        ? theme.typography.fontWeightRegular
-        : theme.typography.fontWeightMedium,
-  };
 }
 
 export default function WorkDetailsForm(props: any) {
@@ -35,7 +26,7 @@ export default function WorkDetailsForm(props: any) {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">Team</InputLabel>
+            <InputLabel id="teams">Team</InputLabel>
             <Select
               id="teams"
               name="teams"

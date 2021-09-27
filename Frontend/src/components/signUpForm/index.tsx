@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Button, Container, Paper, Snackbar, Stepper, Step, StepLabel, Typography } from '@material-ui/core';
 import { Auth } from "aws-amplify";
+import jwtDecode from 'jwt-decode';
 import { Http } from '../../utils';
 import MuiAlert from '@material-ui/lab/Alert';
 import { useSelector } from 'react-redux';
@@ -24,8 +25,12 @@ export default function SignupForm(props: any) {
   const [activeStep, setActiveStep] = useState(0);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState(false);
+  // const saveUserData = useActions(saveUserDetails);
   const [errorMessage, setErrorMessage] = useState('');
-  const [validationMsg, setValidationMsg] = useState('Please fill out email and password fields to sign up')
+  const [validationMsg, setValidationMsg] = useState('Please fill out email field to sign up')
+  const serviceUserEmail = 'darshan.hn@pinimbus.com';
+  const serviceUserPassword = 'Change@sep21';
+  const signUpStateVariable = stateVariable;
 
   const validateEmail = (email: string) => {
     const re = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -36,6 +41,42 @@ export default function SignupForm(props: any) {
     const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/;
     return re.test(password);
   }
+
+  useEffect(() => {
+    const getServiceUserToken = async () => {
+      try {
+        const user = await Auth.signIn(
+          serviceUserEmail, serviceUserPassword
+        );
+        if (
+          user &&
+          user.signInUserSession.idToken &&
+          user.signInUserSession.accessToken
+        ) {
+          const tokenInfo: any = jwtDecode(
+            user.signInUserSession.idToken.jwtToken
+          );
+          signUpStateVariable['user'] =
+          {
+            idToken: user.signInUserSession.idToken.jwtToken,
+            accessToken: user.signInUserSession.accessToken,
+            userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+            team:
+              tokenInfo['custom:teamName'] &&
+                tokenInfo['custom:teamName'] !== ''
+                ? tokenInfo['custom:teamName']
+                : 'Others',
+            teams: [],
+            roles: ['ServiceUser'],
+          };
+        }
+      } catch (error) {
+        console.log(error)
+      }
+    }
+
+    getServiceUserToken();
+  }, [])
 
   const handleChangeValue = (event: any) => {
     if (userParamState) {
@@ -82,54 +123,35 @@ export default function SignupForm(props: any) {
   }
 
   const handleNext = async (action: string) => {
-    const { emailId, password, confirmPassword } = userParamState;
+    const { emailId } = userParamState;
     if (action === 'Next') {
-      if ((emailId && password) &&
-        (password === confirmPassword)) {
-        if (validateEmail(emailId) && validatePassword(password)) {
+      if (emailId) {
+        if (validateEmail(emailId)) {
           setActiveStep(activeStep + 1);
-        } else if (!validateEmail(emailId)) {
+        } else {
           setSnackbarOpen(true)
           setValidationMsg('Please enter a valid email');
-        } else if (!validatePassword(password)) {
-          setSnackbarOpen(true)
-          setValidationMsg('A password must have at least 5 characters, including special character, upper and lower case letter, and number');
         }
-      } else if (password !== confirmPassword) {
-        setSnackbarOpen(true)
-        setValidationMsg('Password and Confirm Password should be same');
-      } else {
-        setSnackbarOpen(true)
       }
     }
     if (action === 'signUp') {
-      delete userParamState['password'];
-      delete userParamState['confirmPassword']
       const postData = userParamState;
-      postData['status'] = 'registered';
-      postData['roles'] = ['Member'];
-      postData['orgId'] = "dev";
 
       try {
-        await Auth.signUp({
-          username: emailId,
-          password: confirmPassword,
-        });
-        setVerifyEmail(true);
         Http.post({
           url: `/api/v2/admin/users`,
           body: {
             ...postData,
           },
-          state: stateVariable,
+          state: signUpStateVariable,
         })
           .then((response: any) => {
-            // console.log(response);
+            setVerifyEmail(true);
             // setNewUserPosted(true);
           })
           .catch((error) => {
-            // setErrorMessage('Error in storing user data');
-            // setSnackbarOpen(true);
+            setErrorMessage('Error in sign up');
+            setSnackbarOpen(true);
             // const perror = JSON.stringify(error);
             // const object = JSON.parse(perror);
             // if (object.code === 400) {
@@ -167,13 +189,13 @@ export default function SignupForm(props: any) {
       <Paper variant="outlined" >
         {verifyEmail ? (
           <React.Fragment>
-            <Typography variant="h5" gutterBottom>
+            <Typography variant="h6" gutterBottom>
               Thank you for the Signup.
             </Typography>
             <Typography variant="subtitle1">
-              We have sent an verification link to email address given in the form. <br />
-              Please check your email, follow the instructions to verify given email address. <br />
-              and then click the button below to continue Signin.
+              We have sent a temporary password to email address given in the form. <br />
+              Please check your email, get the temporary password for setting up new password <br />
+              and then click the button below to continue set up new password and Signin.
             </Typography>
             <Box style={{ textAlign: 'center', margin: '30px 0' }}>
               <Button variant="contained" onClick={getSignInPage}>

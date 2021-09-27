@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import {
   Box,
   Button,
@@ -26,6 +26,7 @@ import { useHistory } from "react-router-dom";
 import { Text } from '../../common/Language';
 import { useInput } from "../../utils/form";
 import SignupForm from '../signUpForm';
+import SetNewPassword from './setNewPassword';
 
 function Alert(props: any) {
   return <MuiAlert elevation={6} variant="filled" {...props} />;
@@ -38,10 +39,13 @@ export default function SignInForm(props: any) {
   const [errorMessage, setErrorMessage] = useState('')
   const saveUserData = useActions(saveUserDetails);
   const [dialogPage, setDialogPage] = useState('signIn');
+  const [newPasswordState, setNewPasswordState] = useState(false);
   const history = useHistory();
 
   const { value: email, bind: bindEmail } = useInput("");
   const { value: password, bind: bindPassword } = useInput("");
+  const { value: newPassword, bind: bindNewPassword } = useInput("");
+  const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
 
   const handleSubmit = async (event: React.SyntheticEvent<Element, Event>) => {
     event.preventDefault();
@@ -50,7 +54,52 @@ export default function SignInForm(props: any) {
       const user = await Auth.signIn(
         email, password
       );
-      if (
+      if (user.challengeName === 'NEW_PASSWORD_REQUIRED') {
+        setLoading(false);
+        setNewPasswordState(true)
+        if (newPassword !== confirmNewpassword) {
+          setSnackbarOpen(true);
+          setErrorMessage('Password and Confirm Password should be same');
+          return;
+        }
+        if (confirmNewpassword && newPassword === confirmNewpassword) {
+          Auth.completeNewPassword(
+            user,               // the Cognito User Object
+            confirmNewpassword,       // the new password
+            {
+              email: email,
+            }
+          ).then(user => {
+            if (
+              user &&
+              user.signInUserSession.idToken &&
+              user.signInUserSession.accessToken
+            ) {
+              const tokenInfo: any = jwtDecode(
+                user.signInUserSession.idToken.jwtToken
+              );
+              saveUserData({
+                idToken: user.signInUserSession.idToken.jwtToken,
+                accessToken: user.signInUserSession.accessToken,
+                userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+                team:
+                  tokenInfo['custom:teamName'] &&
+                    tokenInfo['custom:teamName'] !== ''
+                    ? tokenInfo['custom:teamName']
+                    : 'Others',
+                roles: tokenInfo['cognito:groups'],
+              });
+              history.push("/assessmentselect");
+              setDialogOpen(false);
+              setLoading(true);
+            }
+          }).catch(e => {
+            setErrorMessage('Something Went Wrong. Please try again');
+            setLoading(false);
+            setSnackbarOpen(true);
+          });
+        }
+      } else if (
         user &&
         user.signInUserSession.idToken &&
         user.signInUserSession.accessToken
@@ -71,7 +120,6 @@ export default function SignInForm(props: any) {
         });
         history.push("/assessmentselect");
         setDialogOpen(false);
-        setLoading(true);
       }
     } catch (error) {
       let errResponse: any = error;
@@ -107,26 +155,32 @@ export default function SignInForm(props: any) {
             <CssBaseline />
             <Box>
               <Box component="form" onSubmit={handleSubmit} >
-                <TextField
-                  required
-                  margin="dense"
-                  fullWidth
-                  id="email"
-                  label="Email"
-                  type="email"
-                  {...bindEmail}
-                  autoFocus
-                />
-                <TextField
-                  required
-                  margin="dense"
-                  fullWidth
-                  label="Password"
-                  type="password"
-                  id="password"
-                  {...bindPassword}
-                />
-                <FormControlLabel
+                {!newPasswordState ? (
+                  <Fragment>
+                    <TextField
+                      required
+                      margin="dense"
+                      fullWidth
+                      id="email"
+                      label="Email"
+                      type="email"
+                      {...bindEmail}
+                      autoFocus
+                    />
+                    <TextField
+                      required
+                      margin="dense"
+                      fullWidth
+                      label="Password"
+                      type="password"
+                      id="password"
+                      {...bindPassword}
+                    />
+                  </Fragment>
+                ) : (
+                  <SetNewPassword bindNewPassword={bindNewPassword} bindConfirmNewPassword={bindConfirmNewPassword} />
+                )}
+                < FormControlLabel
                   control={<Checkbox value="remember" color="primary" />}
                   label="Remember me"
                 />
@@ -141,7 +195,7 @@ export default function SignInForm(props: any) {
                   style={{ textAlign: "center" }}
                 >
                   {loading && <CircularProgress size={20} style={{ marginRight: 20 }} />}
-                  Login
+                  {!newPasswordState ? 'Login' : 'Send'}
                 </Button>
                 <br />
                 <br />
