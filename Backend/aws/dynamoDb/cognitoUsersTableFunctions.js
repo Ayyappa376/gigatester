@@ -2,7 +2,7 @@ const fs = require('fs');
 
 //const mainTableName = 'CognitoUsers';
 const COGNITO_USERS_TABLE_NAME = 'CognitoUsers';
-const userpoolIdValue = 'us-west-2_TIkBZQsxv';
+const userpoolIdValue = 'us-east-1_2CjQz7NaP';
 
 exports.getCognitoUsersTableNameFor = (tablePrefix) => {
 //	return tablePrefix + '_' + mainTableName;
