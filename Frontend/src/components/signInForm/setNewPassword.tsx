@@ -1,9 +1,16 @@
 import * as React from 'react';
-import { TextField } from '@material-ui/core';
+import { TextField, Typography } from '@material-ui/core';
 
 export default function SetNewPassword(props: any) {
   return (
     <React.Fragment>
+      <Typography variant="h6" gutterBottom>
+        Change Password
+      </Typography>
+      <Typography variant="subtitle1">
+        Please enter your new password below
+      </Typography>
+      <br />
       <TextField
         required
         margin="dense"

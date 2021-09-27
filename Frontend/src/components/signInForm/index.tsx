@@ -199,22 +199,26 @@ export default function SignInForm(props: any) {
                 </Button>
                 <br />
                 <br />
-                <Grid container>
-                  <Grid item xs>
-                    <Link href="#" variant="body2">
-                      Forgot password?
-                    </Link>
-                  </Grid>
-                  <Grid item>
-                    <Link
-                      component="button"
-                      variant="body2"
-                      onClick={onSignUp}>
-                      {"Don't have an account? Sign Up"}
-                    </Link>
-                  </Grid>
-                </Grid>
-                <br />
+                {!newPasswordState &&
+                  <Fragment>
+                    <Grid container>
+                      <Grid item xs>
+                        <Link href="#" variant="body2">
+                          Forgot password?
+                        </Link>
+                      </Grid>
+                      <Grid item>
+                        <Link
+                          component="button"
+                          variant="body2"
+                          onClick={onSignUp}>
+                          {"Don't have an account? Sign Up"}
+                        </Link>
+                      </Grid>
+                    </Grid>
+                    <br />
+                  </Fragment>
+                }
               </Box>
             </Box>
             <Snackbar open={snackbarOpen} anchorOrigin={{ vertical: 'top', horizontal: 'center' }} onClose={closeAlert} >
