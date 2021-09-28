@@ -346,7 +346,7 @@ function QuestionComponent(props: IQuestionProps) {
           <TextField
             required
             multiline
-            placeholder='Please enter the reason for your selection'
+            placeholder='Please enter the reason for your selection. The length will be between 20 and 200 characters.'
             id='reason'
             name='reason'
             variant='outlined'

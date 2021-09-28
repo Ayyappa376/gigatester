@@ -75,7 +75,7 @@ export default function WorkDetailsForm(props: any) {
               value={props.userParamState.testingExperience || ''}
               onChange={props.handleChangeValue}
             >
-              <MenuItem value="">
+              <MenuItem value={""}>
                 <em>None</em>
               </MenuItem>
               <MenuItem value={10}>10</MenuItem>

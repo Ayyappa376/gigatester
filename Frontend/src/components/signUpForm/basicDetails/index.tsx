@@ -70,9 +70,6 @@ export default function BasicDetailsForm(props: any) {
               value={props.userParamState.state || ''}
               onChange={props.handleChangeValue}
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
               <MenuItem value={'alabama'}>Alabama</MenuItem>
               <MenuItem value={'alaska'}>Alaska</MenuItem>
               <MenuItem value={'arizona'}>Arizona</MenuItem>
@@ -100,12 +97,7 @@ export default function BasicDetailsForm(props: any) {
               value={props.userParamState.country || ''}
               onChange={props.handleChangeValue}
             >
-              <MenuItem value="">
-                <em>None</em>
-              </MenuItem>
               <MenuItem value={'unitedStates'}>United States</MenuItem>
-              {/* <MenuItem value={20}>Twenty</MenuItem>
-              <MenuItem value={30}>Thirty</MenuItem> */}
             </Select>
           </FormControl>
         </Grid>
