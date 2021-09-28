@@ -29,7 +29,7 @@ export default function SignupForm(props: any) {
   const [errorMessage, setErrorMessage] = useState('');
   const [validationMsg, setValidationMsg] = useState('Please fill out email field to sign up')
   const serviceUserEmail = 'darshan.hn@pinimbus.com';
-  const serviceUserPassword = 'Change@sep21';
+  const serviceUserPassword = 'Giga@2021';
   const signUpStateVariable = stateVariable;
 
   const validateEmail = (email: string) => {
@@ -37,10 +37,10 @@ export default function SignupForm(props: any) {
     return re.test(String(email).toLowerCase());
   }
 
-  const validatePassword = (password: string) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/;
-    return re.test(password);
-  }
+  // const validatePassword = (password: string) => {
+  //   const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/;
+  //   return re.test(password);
+  // }
 
   useEffect(() => {
     const getServiceUserToken = async () => {

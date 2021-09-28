@@ -18,7 +18,7 @@ const MenuProps = {
 
 export default function WorkDetailsForm(props: any) {
   const theme = useTheme();
-  const [personName, setPersonName] = React.useState([]);
+  // const [personName, setPersonName] = React.useState([]);
 
 
   return (
@@ -47,7 +47,7 @@ export default function WorkDetailsForm(props: any) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">Device</InputLabel>
+            <InputLabel id="device">Devices</InputLabel>
             <Select
               id="devices"
               name="devices"
@@ -68,7 +68,7 @@ export default function WorkDetailsForm(props: any) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">Testing Experience (Years)</InputLabel>
+            <InputLabel id="testing-experience">Testing Experience (Years)</InputLabel>
             <Select
               id="testingExperience"
               name="testingExperience"
@@ -86,7 +86,7 @@ export default function WorkDetailsForm(props: any) {
         </Grid>
         <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="demo-simple-select-required-label">Product Testing Experience</InputLabel>
+            <InputLabel id="product-testing-experience">Product Testing Experience</InputLabel>
             <Select
               id="productTestingExperience"
               name="productTestingExperience"
