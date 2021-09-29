@@ -400,8 +400,8 @@ function QuestionChartEvent(props: IProps) {
                     {row.data.dateSubmit
                       ? getDateTime(row.data.dateSubmit)
                       : row.data.date
-                      ? getDateTime(row.data.date)
-                      : '-'}
+                        ? getDateTime(row.data.date)
+                        : '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>

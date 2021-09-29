@@ -117,9 +117,9 @@ function PieChartEvent(props: any) {
               //                            assessment.result.percentage <= props.responseData.userLevels[sortedUserLevels[props.levelIndex]].upperLimit) {
               if (
                 assessment.result.percentage >=
-                  sortedUserLevels[props.levelIndex].lowerLimit &&
+                sortedUserLevels[props.levelIndex].lowerLimit &&
                 assessment.result.percentage <=
-                  sortedUserLevels[props.levelIndex].upperLimit
+                sortedUserLevels[props.levelIndex].upperLimit
               ) {
                 let item: IAssessmentArrayItem = {
                   data: assessment,
@@ -388,8 +388,8 @@ function PieChartEvent(props: any) {
                     {row.data.dateSubmit
                       ? getDateTime(row.data.dateSubmit)
                       : row.data.date
-                      ? getDateTime(row.data.date)
-                      : '-'}
+                        ? getDateTime(row.data.date)
+                        : '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>
