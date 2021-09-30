@@ -46,10 +46,32 @@ export default function SignInForm(props: any) {
   const { value: newPassword, bind: bindNewPassword } = useInput("");
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
 
+  const validatePassword = (password: string) => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/;
+    return re.test(password);
+  }
+
   const handleSubmit = async (event: React.SyntheticEvent<Element, Event>) => {
     event.preventDefault();
     setLoading(true);
     if (verificationCode) {
+      if (newPassword !== confirmNewpassword) {
+        setNotify({
+          isOpen: true,
+          message: 'Password and Confirmation Password should be the same',
+          type: 'error',
+        });
+        setLoading(false);
+        return;
+      } else if (!validatePassword(confirmNewpassword)) {
+        setNotify({
+          isOpen: true,
+          message: 'A password must contain at least 8 characters including a lower and an upper-case letter, special character, number.',
+          type: 'error',
+        });
+        setLoading(false);
+        return;
+      }
       Auth.forgotPasswordSubmit(
         email, verificationCode, confirmNewpassword
       ).then(response => {

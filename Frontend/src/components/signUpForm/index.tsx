@@ -37,11 +37,6 @@ export default function SignupForm(props: any) {
     return re.test(String(email).toLowerCase());
   }
 
-  // const validatePassword = (password: string) => {
-  //   const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/;
-  //   return re.test(password);
-  // }
-
   useEffect(() => {
     const getServiceUserToken = async () => {
       try {
