@@ -549,7 +549,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           <Grid container spacing={2}>
             <Grid item sm={12} md={12}>
               <Typography variant='h6' gutterBottom className={classes.title}>
-                <Text tid='mapQuestions' /> - {props.questionnaire}
+                <Text tid='mapTestSuits' /> - {props.questionnaire}
               </Typography>
             </Grid>
           </Grid>
@@ -575,7 +575,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
                   multiline={false}
                   value={searchString}
                   onChange={handleSearchChange}
-                  placeholder='Search Question'
+                  placeholder='Search Test Case'
                   onKeyDown={keyPressSearchBar}
                 />
                 {searchString !== '' ? (

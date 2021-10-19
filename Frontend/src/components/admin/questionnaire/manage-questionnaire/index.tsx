@@ -196,7 +196,7 @@ const ManageQuestionnaires = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='questionnaires' />
+                      <Text tid='testSuits' />
                     </Typography>
                   </TableCell>
                   <TableCell className='tableHeadCell' align='center'>
@@ -266,7 +266,7 @@ const ManageQuestionnaires = (props: any) => {
                           }}
                         >
                           <Typography>
-                            <Text tid='map-Questions' />
+                            <Text tid='map-TestCases' />
                           </Typography>
                         </MaterialLink>
                         {!row.active ? (
@@ -311,8 +311,8 @@ const ManageQuestionnaires = (props: any) => {
                           ? row.publishedOn
                             ? getDate(row.publishedOn)
                             : row.modifiedOn
-                            ? getDate(row.modifiedOn)
-                            : getDate(row.createdOn)
+                              ? getDate(row.modifiedOn)
+                              : getDate(row.createdOn)
                           : 'NA'}
                       </Typography>
                     </TableCell>

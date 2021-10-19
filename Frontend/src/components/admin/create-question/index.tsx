@@ -413,7 +413,7 @@ const CreateQuestion = (props: any) => {
               id='QuestionName'
               name='QuestionName'
               variant='outlined'
-              label='Question'
+              label='Test Case'
               fullWidth
               onChange={updateQuestionName}
             />

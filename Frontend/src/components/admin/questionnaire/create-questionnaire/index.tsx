@@ -549,9 +549,8 @@ const CreateQuestionnaire = (props: any) => {
           multiline
           disabled
           fullWidth
-          value={`Warning Time : ${warningTimeMinutes} ${
-            warningTimeMinutes === 1 ? 'minute' : 'minutes'
-          }`}
+          value={`Warning Time : ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute' : 'minutes'
+            }`}
           variant='outlined'
         />
       </div>
@@ -695,7 +694,7 @@ const CreateQuestionnaire = (props: any) => {
               type='string'
               id='QuestionnaireName'
               name='QuestionnaireName'
-              label='Questionnaire name'
+              label='Test Suit name'
               variant='outlined'
               value={postData.name}
               onChange={handleNameChange}
@@ -723,7 +722,7 @@ const CreateQuestionnaire = (props: any) => {
               id='description'
               name='description'
               variant='outlined'
-              label='Questionnaire description'
+              label='Test Suit description'
               value={postData.description}
               onChange={handleDescriptionChange}
               fullWidth

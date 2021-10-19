@@ -459,7 +459,7 @@ const ManageUsers = (props: any) => {
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='user' />
+                        <Text tid='tester' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>

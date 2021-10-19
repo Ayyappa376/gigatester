@@ -111,7 +111,7 @@ const AdminFeedback = (props: any) => {
               <TableRow>
                 <TableCell className='tableHeadCell'>
                   <Typography className='tableHeadText'>
-                    <Text tid='user' />
+                    <Text tid='tester' />
                   </Typography>
                 </TableCell>
                 <TableCell align='center' className='tableHeadCell'>

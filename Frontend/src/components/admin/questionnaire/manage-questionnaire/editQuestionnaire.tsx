@@ -559,9 +559,8 @@ const EditQuestionnaire = (props: any) => {
         multiline
         disabled
         fullWidth
-        value={`Warning Time : ${warningTimeMinutes} ${
-          warningTimeMinutes === 1 ? 'minute' : 'minutes'
-        }`}
+        value={`Warning Time : ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute' : 'minutes'
+          }`}
         variant='outlined'
       />
     );
@@ -696,7 +695,7 @@ const EditQuestionnaire = (props: any) => {
               type='string'
               id='QuestionnaireName'
               name='QuestionnaireName'
-              label='Questionnaire name'
+              label='Test Suit name'
               variant='outlined'
               value={postData.name}
               onChange={handleNameChange}
@@ -711,7 +710,7 @@ const EditQuestionnaire = (props: any) => {
               multiline
               id='description'
               name='description'
-              label='Questionnaire description'
+              label='Test Suit description'
               value={postData.description}
               onChange={handleDescriptionChange}
               variant='outlined'
@@ -830,7 +829,7 @@ const EditQuestionnaire = (props: any) => {
             onClick={handleMapQuestionsButton}
             variant='outlined'
           >
-            <Text tid='mapQuestions' />
+            <Text tid='mapTestSuits' />
           </Button>
         </div>
         <ModalComponent

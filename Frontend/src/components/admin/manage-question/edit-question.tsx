@@ -394,7 +394,7 @@ const EditQuestion = (props: any) => {
               variant='outlined'
               id='QuestionName'
               name='QuestionName'
-              label='Question'
+              label='Test Case'
               fullWidth
               onChange={updateQuestionName}
               value={postData.question}

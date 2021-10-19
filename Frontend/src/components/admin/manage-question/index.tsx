@@ -242,7 +242,7 @@ const ManageQuestion = (props: any) => {
             <Grid item sm={5}>
               <FormControl className={classes.formControl}>
                 <InputLabel id='filter-control'>
-                  <Text tid='chooseQuestionnaire' />
+                  <Text tid='chooseTestSuit' />
                 </InputLabel>
                 <Select
                   name={'selectQuestionnaire'}
@@ -291,7 +291,7 @@ const ManageQuestion = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='question' />
+                      <Text tid='testCase' />
                     </Typography>
                   </TableCell>
                   <TableCell
