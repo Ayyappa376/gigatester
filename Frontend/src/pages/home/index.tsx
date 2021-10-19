@@ -3,7 +3,7 @@ import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
 import { Http } from '../../utils';
 import { Grid, Container } from '@material-ui/core';
 import { BottomPane } from '../../components/home/bottom-pane';
-import backgroundNew from './backgrnd.jpg';
+import GigatesterBg from './gigatester_bg.jpg';
 import { makeStyles } from '@material-ui/styles';
 import LeftPane from '../../components/home/leftPane';
 import { useSelector } from 'react-redux';
@@ -121,7 +121,7 @@ const Home = (props: any) => {
           <Container component='div' className={classes.paper}>
             <img
               className={classes.img}
-              src={backgroundNew}
+              src={GigatesterBg}
               alt='Are you doing it right?'
             />
           </Container>
