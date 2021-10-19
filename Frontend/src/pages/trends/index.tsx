@@ -329,13 +329,13 @@ const Trends = (props: any) => {
           container
           spacing={3}
           className='topScrollContainerAsssessment'
-          id='assessmentWise'
+          id='testWise'
         >
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Title>
-                  <Text tid='assessmentWiseReport' />
+                  <Text tid='testWiseReport' />
                 </Title>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -406,13 +406,13 @@ const Trends = (props: any) => {
           container
           spacing={3}
           className='topScrollContainerAsssessment'
-          id='teamWise'
+          id='platformWise'
         >
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Title>
-                  <Text tid='teamWiseReport' />
+                  <Text tid='platformWiseReport' />
                 </Title>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>

@@ -125,8 +125,8 @@ const dashboardMenu = [
 ];
 
 const trendsMenu = [
-  { link: 'assessmentWise', name: 'assessmentWise' },
-  { link: 'teamWise', name: 'teamWise' },
+  { link: 'testWise', name: 'testWise' },
+  { link: 'platformWise', name: 'platformWise' },
 ];
 
 const PageHeader = (props: any) => {
@@ -711,7 +711,7 @@ const PageHeader = (props: any) => {
               className={classes.menuitem}
               onClick={handleTeamAssessments}
             >
-              <Text tid='teamTests' />
+              <Text tid='platformTests' />
             </MenuItem>
             <MenuItem
               className={classes.menuitem}

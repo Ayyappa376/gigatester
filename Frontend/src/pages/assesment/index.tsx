@@ -305,7 +305,7 @@ function Assesment(props: IAssesmentProps) {
               className={classes.bottomButton}
             >
               {Object.keys(assesmentMarkedAnswers).length === 0 ? (
-                <Text tid='startAssessment' />
+                <Text tid='startTest' />
               ) : (
                 <Text tid='continueTesting' />
               )}
@@ -334,7 +334,7 @@ function Assesment(props: IAssesmentProps) {
       <Fragment>
         <CircularProgress className={classes.progress} />
         <Typography>
-          <Text tid='loadingAssessment' />
+          <Text tid='loadingTest' />
         </Typography>
       </Fragment>
     );

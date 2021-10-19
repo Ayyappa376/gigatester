@@ -603,7 +603,7 @@ function ViewTeams(props: any) {
         <Grid container spacing={3} className={classes.title}>
           <Grid item xs={4} sm={3} md={3} lg={3}>
             <Title>
-              <Text tid='teamTests' />:
+              <Text tid='platformTests' />:
             </Title>
           </Grid>
           <Grid item xs={4} sm={3} md={3} lg={3}>

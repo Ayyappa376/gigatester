@@ -438,7 +438,7 @@ const MetricDetails = (props: any) => {
               </Select>
               {teamsFailureMsg && (
                 <span style={{ color: '#f44336' }}>
-                  <Text tid='errorInLoadingTeamList' />
+                  <Text tid='errorInLoadingPlatformList' />
                 </span>
               )}
             </InputLabel>
