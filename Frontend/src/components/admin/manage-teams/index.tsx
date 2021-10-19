@@ -357,7 +357,7 @@ const ManageTeams = (props: any) => {
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='team' />
+                        <Text tid='platform' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
@@ -428,9 +428,9 @@ const ManageTeams = (props: any) => {
                                   props.mapMetricsClicked(row.teamId);
                                 }}
                               > */}
-                                <Typography>
-                                  <Text tid='editMetrics' />
-                                </Typography>
+                              <Typography>
+                                <Text tid='editMetrics' />
+                              </Typography>
                               {/* </MaterialLink> */}
                               <Typography>&nbsp;|&nbsp;</Typography>
                               <MaterialLink

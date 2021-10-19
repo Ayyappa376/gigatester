@@ -32,7 +32,7 @@ import { setAssessmentStartTime } from '../../actions/assesment/assessment-time'
 import * as constantValues from '../../common/constantValues';
 import { Text } from '../../common/Language';
 
-interface IAssesmentProps extends RouteComponentProps {}
+interface IAssesmentProps extends RouteComponentProps { }
 
 const defaultAssesmentId: string | null = null;
 
@@ -141,7 +141,7 @@ function Assesment(props: IAssesmentProps) {
       assessmentTypeData.data.questionnaires.forEach((el: any) => {
         if (el.questionnaireId === selectedAssessmentType.questionnaireId) {
           setLeftDisplayText(el.displayName);
-          setCenterDisplayText(`Team: ${userTeam}`);
+          setCenterDisplayText(`Platform: ${userTeam}`);
         }
       });
     }
@@ -307,7 +307,7 @@ function Assesment(props: IAssesmentProps) {
               {Object.keys(assesmentMarkedAnswers).length === 0 ? (
                 <Text tid='startAssessment' />
               ) : (
-                <Text tid='continueAssessment' />
+                <Text tid='continueTesting' />
               )}
             </Button>
           </Paper>

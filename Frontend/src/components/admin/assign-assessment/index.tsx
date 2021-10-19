@@ -174,7 +174,7 @@ const AssignAssessment = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='assessments' />
+                      <Text tid='testResults' />
                     </Typography>
                   </TableCell>
                   <TableCell className='tableHeadCell'>

@@ -62,9 +62,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string }
+  ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -92,7 +92,7 @@ const headCells: HeadCell[] = [
     id: 'teamId',
     numeric: false,
     disablePadding: false,
-    label: 'team',
+    label: 'platform',
   },
   {
     id: 'projectName',
@@ -420,7 +420,7 @@ export default function QualityTable(props: any) {
             className={classes.table}
             aria-labelledby='tableTitle'
             size='small'
-            // aria-label="enhanced table"
+          // aria-label="enhanced table"
           >
             <EnhancedTableHead
               classes={classes}

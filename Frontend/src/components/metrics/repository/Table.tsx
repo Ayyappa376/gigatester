@@ -60,9 +60,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string }
+  ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -92,7 +92,7 @@ const headCells: HeadCell[] = [
     disablePadding: true,
     label: 'project',
   },
-  { id: 'teamId', numeric: false, disablePadding: true, label: 'team' },
+  { id: 'teamId', numeric: false, disablePadding: true, label: 'platform' },
   {
     id: 'committerName',
     numeric: false,
@@ -356,7 +356,7 @@ export default function RepositoryTable(props: any) {
       url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
       joiner = '&';
     }
-    
+
     Http.get({
       url,
       state: stateVariable,

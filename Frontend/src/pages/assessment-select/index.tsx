@@ -169,12 +169,12 @@ const AssessmentSelect = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='assessments' />
+                      <Text tid='test' />
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='linkToAssessments' />
+                      <Text tid='linkToTest' />
                     </Typography>
                   </TableCell>
                 </TableRow>

@@ -321,7 +321,7 @@ function QuestionRender(props: IQuestionProps) {
     return () => {
       if (timeLeftTimer) {
         clearInterval(timeLeftTimer);
-        setCenterDisplayText(`Team: ${userTeam}`);
+        setCenterDisplayText(`Platform: ${userTeam}`);
       }
     };
   }, []);
@@ -460,7 +460,7 @@ function QuestionRender(props: IQuestionProps) {
 
   useEffect(() => {
     if (lastAnswerSubmitStatus === 'success') {
-      setCenterDisplayText(`Team: ${userTeam}`);
+      setCenterDisplayText(`Platform: ${userTeam}`);
       clearInterval(timeLeftTimer);
       props.history.push({
         pathname: nextUrl,

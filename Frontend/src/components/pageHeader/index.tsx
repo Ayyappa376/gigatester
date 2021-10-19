@@ -109,19 +109,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const metricsMenu = [
-  { link: 'doraMetrics', name: 'doraMetrics' },
-  { link: 'build', name: 'buildCICD' },
-  { link: 'repository', name: 'gitRepository' },
-  { link: 'requirements', name: 'requirements' },
-  { link: 'quality', name: 'quality' },
-];
+// const metricsMenu = [
+//   { link: 'doraMetrics', name: 'doraMetrics' },
+//   { link: 'build', name: 'buildCICD' },
+//   { link: 'repository', name: 'gitRepository' },
+//   { link: 'requirements', name: 'requirements' },
+//   { link: 'quality', name: 'quality' },
+// ];
 
 const dashboardMenu = [
-  { link: 'overallMaturity', name: 'overallMaturity' },
-  { link: 'categorywiseMaturity', name: 'categoryWiseMaturity' },
+  { link: 'testRatings', name: 'testRatings' },
+  { link: 'screenWiseScore', name: 'screenWiseScore' },
   { link: 'performanceMetrics', name: 'performanceMetrics' },
-  { link: 'questionwiseMetrics', name: 'questionWiseMetrics' },
+  { link: 'testCaseWiseMetrics', name: 'testCaseWiseMetrics' },
 ];
 
 const trendsMenu = [
@@ -315,7 +315,7 @@ const PageHeader = (props: any) => {
             }
           >
             <Typography className={classes.headerItemDisabled}>
-              <Text tid='assessments' />
+              <Text tid='testResults' />
             </Typography>
           </Tooltip>
         </div>
@@ -325,7 +325,7 @@ const PageHeader = (props: any) => {
     return (
       <div className='header-item'>
         <Typography className={classes.headerItem} onClick={handleAssessment}>
-          <Text tid='assessments' />
+          <Text tid='testResults' />
         </Typography>
       </div>
     );
@@ -335,62 +335,62 @@ const PageHeader = (props: any) => {
     props.history.push('/trial/close');
   };
 
-  const renderViewMetrics = () => {
-    if (!userStatus.idToken) {
-      return <div />;
-    }
-    return (
-      <div className='header-item'>
-        <Typography
-          className={classes.headerItem}
-        // onClick={handleMetricsMenuClick}
-        >
-          <Text tid='metrics' />
-        </Typography>
-      </div>
-    );
-  };
+  // const renderViewMetrics = () => {
+  //   if (!userStatus.idToken) {
+  //     return <div />;
+  //   }
+  //   return (
+  //     <div className='header-item'>
+  //       <Typography
+  //         className={classes.headerItem}
+  //       // onClick={handleMetricsMenuClick}
+  //       >
+  //         <Text tid='metrics' />
+  //       </Typography>
+  //     </div>
+  //   );
+  // };
 
-  const renderMetricsMenuItems = () => {
-    if (!userStatus.roles) {
-      return;
-    }
-    if (
-      userStatus.roles!.indexOf('Admin') !== -1 ||
-      userStatus.roles!.indexOf('Manager') !== -1
-    ) {
-      return (
-        <Menu
-          id='menu-list-grow'
-          anchorEl={anchorMetricsEl}
-          keepMounted
-          open={Boolean(anchorMetricsEl)}
-          onClose={handleMetricsMenuClose}
-          MenuListProps={{
-            onMouseLeave: leaveMetricMenu,
-          }}
-          className={classes.menu}
-        >
-          {metricsMenu.map((menuList: any, index: number) => {
-            return (
-              <MenuItem className={classes.menuitem} key={index}>
-                <Link
-                  activeClass='active'
-                  to={menuList.link}
-                  spy={true}
-                  smooth={true}
-                  onClick={() => handleMetricsMenuOptionClick(menuList.link)}
-                >
-                  <Text tid={menuList.name} />
-                </Link>
-              </MenuItem>
-            );
-          })}
-        </Menu>
-      );
-    }
-    return;
-  };
+  // const renderMetricsMenuItems = () => {
+  //   if (!userStatus.roles) {
+  //     return;
+  //   }
+  //   if (
+  //     userStatus.roles!.indexOf('Admin') !== -1 ||
+  //     userStatus.roles!.indexOf('Manager') !== -1
+  //   ) {
+  //     return (
+  //       <Menu
+  //         id='menu-list-grow'
+  //         anchorEl={anchorMetricsEl}
+  //         keepMounted
+  //         open={Boolean(anchorMetricsEl)}
+  //         onClose={handleMetricsMenuClose}
+  //         MenuListProps={{
+  //           onMouseLeave: leaveMetricMenu,
+  //         }}
+  //         className={classes.menu}
+  //       >
+  //         {metricsMenu.map((menuList: any, index: number) => {
+  //           return (
+  //             <MenuItem className={classes.menuitem} key={index}>
+  //               <Link
+  //                 activeClass='active'
+  //                 to={menuList.link}
+  //                 spy={true}
+  //                 smooth={true}
+  //                 onClick={() => handleMetricsMenuOptionClick(menuList.link)}
+  //               >
+  //                 <Text tid={menuList.name} />
+  //               </Link>
+  //             </MenuItem>
+  //           );
+  //         })}
+  //       </Menu>
+  //     );
+  //   }
+  //   return;
+  // };
 
   const renderAdminPage = () => {
     if (!userStatus.roles) {
@@ -705,19 +705,19 @@ const PageHeader = (props: any) => {
               className={classes.menuitem}
               onClick={handleMyAssessments}
             >
-              <Text tid='myAssessments' />
+              <Text tid='myTests' />
             </MenuItem>
             <MenuItem
               className={classes.menuitem}
               onClick={handleTeamAssessments}
             >
-              <Text tid='teamAssessments' />
+              <Text tid='teamTests' />
             </MenuItem>
             <MenuItem
               className={classes.menuitem}
               onClick={handleTakeAssesment}
             >
-              <Text tid='takeAssessment' />
+              <Text tid='doTesting' />
             </MenuItem>
           </Menu>
         );
@@ -733,10 +733,10 @@ const PageHeader = (props: any) => {
         className={classes.menu}
       >
         <MenuItem onClick={handleMyAssessments}>
-          <Text tid='myAssessments' />
+          <Text tid='myTests' />
         </MenuItem>
         <MenuItem className={classes.menuitem} onClick={handleTakeAssesment}>
-          <Text tid='takeAssessment' />
+          <Text tid='doTesting' />
         </MenuItem>
       </Menu>
     );
@@ -859,8 +859,8 @@ const PageHeader = (props: any) => {
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
               {renderAdminPage()}
-              {renderViewMetrics()}
-              {renderMetricsMenuItems()}
+              {/* {renderViewMetrics()} */}
+              {/* {renderMetricsMenuItems()} */}
               {renderDashboardPage()}
               {renderDashboardMenuItems()}
               {renderTrendsPage()}

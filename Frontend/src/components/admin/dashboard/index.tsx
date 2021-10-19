@@ -469,13 +469,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='overallMaturity'
+        id='testRatings'
       >
         <Grid item xs={12} sm={8} md={8} lg={9}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='overallMaturity' />
+                <Text tid='testRatings' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -511,7 +511,7 @@ const Dashboard = (props: any) => {
                 : 'NA'}
             </Typography>
             <Title>
-              <Text tid='totalAssessment' />
+              <Text tid='totalTests' />
             </Title>
             <Typography component='p' variant='h4'>
               {averageScore
@@ -562,7 +562,7 @@ const Dashboard = (props: any) => {
                 style={{ cursor: 'pointer' }}
                 onClick={viewTeamAssessmentClicked}
               >
-                <Text tid='viewTeamAssessment' />
+                <Text tid='viewTestReport' />
               </Link>
             </div>
           </Paper>
@@ -577,13 +577,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='categorywiseMaturity'
+        id='screenWiseScore'
       >
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='categoryWiseMaturity' />
+                <Text tid='screenWiseScore' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -740,13 +740,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='questionwiseMetrics'
+        id='testCaseWiseMetrics'
       >
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='questionWiseMetrics' />
+                <Text tid='testCaseWiseMetrics' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -982,7 +982,7 @@ const Dashboard = (props: any) => {
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseAssessment' />
+                <Text tid='chooseProduct' />
               </InputLabel>
               <Select
                 value={
@@ -1013,7 +1013,7 @@ const Dashboard = (props: any) => {
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseTeam' />
+                <Text tid='choosePlatform' />
               </InputLabel>
               <Select
                 value={focusTeam !== '' ? focusTeam : ''}

@@ -468,7 +468,7 @@ const EditQuestion = (props: any) => {
           <Grid item xs={12} sm={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label' required={true}>
-                <Text tid='level' />
+                <Text tid='productRating' />
               </InputLabel>
               <Select
                 name={'level'}

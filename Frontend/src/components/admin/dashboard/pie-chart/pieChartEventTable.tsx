@@ -325,7 +325,7 @@ function PieChartEvent(props: any) {
                   }}
                 >
                   <Typography className='tableHeadText'>
-                    <Text tid='team' />
+                    <Text tid='platform' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
@@ -344,7 +344,7 @@ function PieChartEvent(props: any) {
               </TableCell>
               <TableCell align='center' className='tableHeadCell'>
                 <Typography className='tableHeadText'>
-                  <Text tid='level' />
+                  <Text tid='productRating' />
                 </Typography>
               </TableCell>
               <TableCell align='center' className='tableHeadCell'>
@@ -412,7 +412,7 @@ function PieChartEvent(props: any) {
                       handleViewAssessment(row.data.assessmentId);
                     }}
                   >
-                    <Text tid='viewAssessment' />
+                    <Text tid='viewTestReport' />
                   </MaterialLink>
                 </TableCell>
               </TableRow>
@@ -437,7 +437,7 @@ function PieChartEvent(props: any) {
                 <CloseIcon />
               </IconButton>
               <Typography variant='h6' className={classes.title}>
-                <Text tid='assessment' />
+                <Text tid='test' />
               </Typography>
             </Toolbar>
           </AppBar>

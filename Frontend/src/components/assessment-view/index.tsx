@@ -644,7 +644,7 @@ function AssessmentView(props: IAssessmentViewProps) {
     //      pdf.addImage(imgData, 'JPEG', 0, 0, 200, 150);
     let pos: number = 30;
     //write assessment name, user and team
-    pdf.text(`Assessment: ${displayDetails.topBarTextLeft}`, 20, pos);
+    pdf.text(`Test: ${displayDetails.topBarTextLeft}`, 20, pos);
     pos += 10;
     pdf.text(`${displayDetails.topBarTextCenter}`, 20, pos);
     pos += 10;
@@ -652,13 +652,13 @@ function AssessmentView(props: IAssessmentViewProps) {
     pdf.text(`Score: ${result.percentage}%`, 20, pos);
     pos += 10;
     pdf.text(
-      `Level: ${calculateLevel(result.percentage, props.userLevels)}`,
+      `Product Rating: ${calculateLevel(result.percentage, props.userLevels)}`,
       20,
       pos
     );
     pos += 10;
     //write category wise scores
-    pdf.text(`Category wise results:`, 20, pos);
+    pdf.text(`Screen wise Score/Rating:`, 20, pos);
     pos += 10;
     let res = Object.keys(result.categoryWiseResults);
     res = res.sort((a, b) => {
@@ -671,7 +671,7 @@ function AssessmentView(props: IAssessmentViewProps) {
     //write question details
     pdf.addPage();
     pos = 30;
-    pdf.text(`Assessment Details:`, 20, pos);
+    pdf.text(`Test Details:`, 20, pos);
     pos += 10;
     let qNum = 0;
     Object.keys(structuredQuestionsArray).forEach((el: string, i: number) => {
@@ -817,9 +817,9 @@ function AssessmentView(props: IAssessmentViewProps) {
             className={classes.showAssessmentButton}
           >
             {showAssessment ? (
-              <Text tid='hideAssessment' />
+              <Text tid='hideTest' />
             ) : (
-              <Text tid='showCompleteAssessment' />
+              <Text tid='showCompleteTest' />
             )}
           </Button>
 
@@ -959,9 +959,9 @@ function AssessmentView(props: IAssessmentViewProps) {
                 className={classes.showAssessmentButton}
               >
                 {showAssessment ? (
-                  <Text tid='hideAssessment' />
+                  <Text tid='hideTest' />
                 ) : (
-                  <Text tid='showCompleteAssessment' />
+                  <Text tid='showCompleteTest' />
                 )}
               </Button>
               <Button

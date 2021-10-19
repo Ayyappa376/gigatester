@@ -288,7 +288,7 @@ function ViewAssessment(props: any) {
         href='#'
         onClick={() => {
           setDisplayTextLeft(row.assessmentName);
-          setDisplayTextCenter(`Team: ${row.team}`);
+          setDisplayTextCenter(`Platform: ${row.team}`);
           setUserTeam(row.team);
           props.history.push({
             pathname: `/assessment/detail/${row.assessmentId}`,
@@ -297,7 +297,7 @@ function ViewAssessment(props: any) {
         }}
       >
         <Typography>
-          <Text tid='viewAssessment' />
+          <Text tid='viewTestResults' />
         </Typography>
       </MaterialLink>
     ) : (
@@ -305,13 +305,13 @@ function ViewAssessment(props: any) {
         href='#'
         onClick={() => {
           setDisplayTextLeft(row.assessmentName);
-          setDisplayTextCenter(`Team: ${row.team}`);
+          setDisplayTextCenter(`Platform: ${row.team}`);
           setUserTeam(row.team);
           redirectToContinueAssessment(row.type, row.questionnaireVersion);
         }}
       >
         <Typography>
-          <Text tid='continueAssessment' />
+          <Text tid='continueTesting' />
         </Typography>
       </MaterialLink>
     );
@@ -367,7 +367,7 @@ function ViewAssessment(props: any) {
       >
         <div className={classes.title}>
           <Title>
-            <Text tid='myAssessments' />:
+            <Text tid='myTestResults' />:
           </Title>
         </div>
         <Paper className={classes.root}>
@@ -383,7 +383,7 @@ function ViewAssessment(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='team' />
+                      <Text tid='Platform' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
@@ -396,7 +396,7 @@ function ViewAssessment(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='assessment' />
+                      <Text tid='test' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
@@ -428,13 +428,13 @@ function ViewAssessment(props: any) {
                 </TableCell>
                 <TableCell align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
-                    <Text tid='level' />
+                    <Text tid='productRating' />
                   </Typography>
                   {/* </TableSortLabel> */}
                 </TableCell>
                 <TableCell align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
-                    <Text tid='linkToAssessment' />
+                    <Text tid='testResults' />
                   </Typography>
                 </TableCell>
               </TableRow>

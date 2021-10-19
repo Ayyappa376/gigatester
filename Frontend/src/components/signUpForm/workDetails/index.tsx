@@ -26,7 +26,7 @@ export default function WorkDetailsForm(props: any) {
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
           <FormControl required style={{ width: '100%' }}>
-            <InputLabel id="teams">Team</InputLabel>
+            <InputLabel id="teams">Platform</InputLabel>
             <Select
               id="teams"
               name="teams"
