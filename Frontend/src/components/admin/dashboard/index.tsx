@@ -763,7 +763,7 @@ const Dashboard = (props: any) => {
             </div>
             <FormControl className={classes.questionFormControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseQuestion' />
+                <Text tid='chooseTestCase' />
               </InputLabel>
               <Select value={focusQuestion.id} onChange={changeQuestion}>
                 {Object.keys(questionList).map((opt: any) => {
@@ -803,7 +803,7 @@ const Dashboard = (props: any) => {
       return (
         <div className={classes.messagePage}>
           <Typography variant='h5'>
-            <Text tid='noAssessmentDataForQuestionnaire' />
+            <Text tid='noAssessmentDataForTestSuit' />
           </Typography>
         </div>
       );
@@ -813,7 +813,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noAssessmentDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -825,7 +825,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noAssessmentDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -835,7 +835,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noAssessmentDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -844,7 +844,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noAssessmentDataForTestSuit' />
             </Typography>
           </div>
         );

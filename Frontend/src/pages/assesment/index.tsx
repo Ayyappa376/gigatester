@@ -246,7 +246,7 @@ function Assesment(props: IAssesmentProps) {
                   );
                 })}
                 <Typography className={classes.info3} variant='body1'>
-                  <Text tid='numberOfQuestions' />
+                  <Text tid='numberOfTestCases' />
                   {assesmentSummary!.data!.numberOfQuestions}
                 </Typography>
                 {assesmentSummary!.data!.timeOut && (
@@ -267,7 +267,7 @@ function Assesment(props: IAssesmentProps) {
                 </Typography>
                 <br />
                 <Typography className={classes.info3} variant='body1'>
-                  <Text tid='numberOfQuestions' />
+                  <Text tid='numberOfTestCases' />
                   {assesmentSummary!.data!.numberOfQuestions}
                 </Typography>
                 {assesmentSummary!.data!.timeOut && (

@@ -690,7 +690,7 @@ function QuestionRender(props: IQuestionProps) {
       <Fragment>
         <CircularProgress className={classes.progress} />
         <Typography variant='h5'>
-          <Text tid='loadingQuestion' />
+          <Text tid='loadingTestCase' />
         </Typography>
       </Fragment>
     );
@@ -1086,7 +1086,7 @@ function QuestionRender(props: IQuestionProps) {
         handleModalNoClicked={handleModalNoClicked}
       />
       <ModalComponent
-        message={'wantToContinueFromTheLastAttemptedQuestion'}
+        message={'wantToContinueFromTheLastAttemptedTestCase'}
         openModal={openContinueModal}
         handleModalYesClicked={handleContinueModalYesClicked}
         handleModalNoClicked={handleContinueModalNoClicked}

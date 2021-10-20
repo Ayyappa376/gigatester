@@ -250,7 +250,7 @@ const ManageQuestion = (props: any) => {
                   onChange={handleChangeQuestionnaire}
                 >
                   <MenuItem key={'allQuestions'} value={'0'}>
-                    <Text tid='allQuestions' />
+                    <Text tid='allTestCases' />
                   </MenuItem>
                   {questionnaires && questionnaires.length !== 0 ? (
                     questionnaires.map((el: any) => (
@@ -265,7 +265,7 @@ const ManageQuestion = (props: any) => {
                     <div />
                   )}
                   <MenuItem key={'ummappedQuestions'} value={'0000'}>
-                    <Text tid='unmappedQuestions' />
+                    <Text tid='unmappedTestCases' />
                   </MenuItem>
                 </Select>
               </FormControl>

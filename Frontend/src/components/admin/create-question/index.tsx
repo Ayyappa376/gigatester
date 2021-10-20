@@ -119,7 +119,7 @@ const CreateQuestion = (props: any) => {
     return state;
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionIsCreated' />;
+  let msgSuccess = <Text tid='testCaseIsCreated' />;
 
   const handleAnswerChangeValue = (event: any, i: number) => {
     const answerCopy = [...answerVariable];
@@ -178,7 +178,7 @@ const CreateQuestion = (props: any) => {
   const validatePostData = () => {
     if (postData.question === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionCannotBeEmpty' />);
+      setFailureMessage(<Text tid='testCaseCannotBeEmpty' />);
       return {};
     }
     if (answerVariable.length < 2) {

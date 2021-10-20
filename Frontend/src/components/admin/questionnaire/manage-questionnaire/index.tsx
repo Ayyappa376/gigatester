@@ -345,7 +345,7 @@ const ManageQuestionnaires = (props: any) => {
           />
         </Snackbar>
         <ModalComponent
-          message={'publishTheQuestionnaire'}
+          message={'publishTheTestSuit'}
           openModal={openModal}
           handleModalNoClicked={handleModalNo}
           handleModalYesClicked={handleModalYes}

@@ -95,7 +95,7 @@ const EditQuestion = (props: any) => {
     return state;
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionIsUpdated' />;
+  let msgSuccess = <Text tid='testCaseIsUpdated' />;
 
   useEffect(() => {
     const tempAnswerArray: IAnswer[] = [];
@@ -123,7 +123,7 @@ const EditQuestion = (props: any) => {
   const validatePostData = () => {
     if (postData.question === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionCannotBeEmpty' />);
+      setFailureMessage(<Text tid='testCaseCannotBeEmpty' />);
       return {};
     }
     if (answerVariable.length < 2) {

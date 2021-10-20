@@ -311,7 +311,7 @@ export default function Admin() {
     setButtonValue(EDIT_QUESTIONNAIRE);
     setFocusQuestionnaire(questionnaire);
     setMapQuestionStandalone(false);
-    setTitle('editQuestionnaire');
+    setTitle('editTestSuit');
   };
 
   const switchToMapQuestionsStandalone = (questionnaire: any) => {
@@ -334,7 +334,7 @@ export default function Admin() {
   const editQuestionClickHandler = (questionData: IQuestionDetails) => {
     setButtonValue(EDIT_QUESTION);
     setFocusQuestionData(questionData);
-    setTitle('editQuestions');
+    setTitle('editTestCases');
   };
 
   const handleFeedbackClick = () => {
