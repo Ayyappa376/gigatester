@@ -1092,7 +1092,7 @@ function QuestionRender(props: IQuestionProps) {
         handleModalNoClicked={handleContinueModalNoClicked}
       />
       <ModalComponent
-        message={'notBeAbleToMakeAnyChangesAfterSubmittingTheAssessment'}
+        message={'notBeAbleToMakeAnyChangesAfterSubmittingTheTest'}
         openModal={submitNotifyModal}
         handleModalYesClicked={handleSubmitNotifyModalYesClicked}
         handleModalNoClicked={handleSubmitNotifyModalNoClicked}

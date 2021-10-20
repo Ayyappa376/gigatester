@@ -79,7 +79,7 @@ const Feedback = () => {
       aria-labelledby='form-dialog-title'
     >
       <DialogTitle id='form-dialog-title'>
-        <Text tid='rateYourExperienceWithYourAssessment' />
+        <Text tid='rateYourExperienceWithYourTest' />
       </DialogTitle>
       <DialogContent>
         <StyledRating

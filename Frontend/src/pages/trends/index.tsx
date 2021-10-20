@@ -377,7 +377,7 @@ const Trends = (props: any) => {
                   !assessmentTeamsName.length ? (
                     <Card className={classes.cardRoot}>
                       <Typography gutterBottom variant='h6' component='h2'>
-                        <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                        <Text tid='noOneInThePlatformHasTakenTheTest' />
                         <AnnouncementIcon />
                       </Typography>
                     </Card>
@@ -478,7 +478,7 @@ const Trends = (props: any) => {
                   !teamAssessmentState ? (
                     <Card className={classes.cardRoot}>
                       <Typography gutterBottom variant='h6' component='h2'>
-                        <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                        <Text tid='noOneInThePlatformHasTakenTheTest' />
                         <AnnouncementIcon />
                       </Typography>
                     </Card>

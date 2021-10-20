@@ -573,7 +573,7 @@ function ViewTeams(props: any) {
             }}
           >
             <Typography component='h3'>
-              <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+              <Text tid='noOneInThePlatformHasTakenTheTest' />
             </Typography>
           </Container>
         );
@@ -587,7 +587,7 @@ function ViewTeams(props: any) {
           }}
         >
           <Typography component='h3'>
-            <Text tid='currentlyNotMappedToTeamAsLead' />
+            <Text tid='currentlyNotMappedToPlatformAsLead' />
           </Typography>
         </Container>
       );
@@ -830,7 +830,7 @@ function ViewTeams(props: any) {
                 <TableRow>
                   <TableCell align='center' colSpan={6}>
                     <Typography className='tableBodyText'>
-                      <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                      <Text tid='noOneInThePlatformHasTakenTheTest' />
                     </Typography>
                   </TableCell>
                 </TableRow>

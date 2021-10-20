@@ -310,7 +310,7 @@ const PageHeader = (props: any) => {
           <Tooltip
             title={
               <Typography>
-                <Text tid='notAvailableDuringThisAssessment' />
+                <Text tid='notAvailableDuringThisTest' />
               </Typography>
             }
           >
@@ -406,7 +406,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >
@@ -435,7 +435,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >
@@ -474,7 +474,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >
@@ -554,7 +554,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >

@@ -803,7 +803,7 @@ const Dashboard = (props: any) => {
       return (
         <div className={classes.messagePage}>
           <Typography variant='h5'>
-            <Text tid='noAssessmentDataForTestSuit' />
+            <Text tid='noTestDataForTestSuit' />
           </Typography>
         </div>
       );
@@ -813,7 +813,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForTestSuit' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -825,7 +825,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForTestSuit' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -835,7 +835,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForTestSuit' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -844,7 +844,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForTestSuit' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -859,7 +859,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForTeam' />
+              <Text tid='noTestDataForPlatform' />
             </Typography>
           </div>
         );
@@ -968,7 +968,7 @@ const Dashboard = (props: any) => {
       <Container maxWidth='md' component='div'>
         <div style={{ display: 'flex' }}>
           <Typography variant='h6'>
-            <Text tid='teamIsCurrentlyNotMappedAssessment' />
+            <Text tid='platformIsCurrentlyNotMappedTest' />
           </Typography>
         </div>
       </Container>

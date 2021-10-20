@@ -351,7 +351,7 @@ function ViewAssessment(props: any) {
           }}
         >
           <Typography component='h3'>
-            <Text tid='notGivenAssessmentYet' />
+            <Text tid='notGivenTestYet' />
           </Typography>
         </Container>
       );

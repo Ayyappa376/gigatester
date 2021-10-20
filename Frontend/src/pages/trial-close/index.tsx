@@ -48,7 +48,7 @@ const TrialClose = (props: any) => {
         {
           <Paper className={classes.paper}>
             <Typography variant='h6' gutterBottom>
-              <Text tid='thankYouForTakingTheTrialAssessment' />
+              <Text tid='thankYouForTakingTheTrialTest' />
             </Typography>
           </Paper>
         }

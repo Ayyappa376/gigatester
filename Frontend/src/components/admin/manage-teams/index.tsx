@@ -315,7 +315,7 @@ const ManageTeams = (props: any) => {
   const renderEmptyTeamMessage = () => {
     return (
       <Typography variant='h5'>
-        <Text tid='notManagingAnyTeam' />
+        <Text tid='notManagingAnyPlatform' />
       </Typography>
     );
   };
@@ -510,7 +510,7 @@ const ManageTeams = (props: any) => {
             </Button>
           </div>
           <ModalComponent
-            message={'disableTheTeamAndTheRelatedAssessmentData'}
+            message={'disableThePlatformAndTheRelatedTestData'}
             openModal={openModal}
             handleModalYesClicked={modalYesClicked}
             handleModalNoClicked={modalNoClicked}

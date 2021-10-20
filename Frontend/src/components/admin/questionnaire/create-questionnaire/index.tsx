@@ -578,7 +578,7 @@ const CreateQuestionnaire = (props: any) => {
           <Tooltip
             title={
               <Typography className='tooltipTitleStyle'>
-                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheAssessment' />
+                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheTest' />
               </Typography>
             }
           >
@@ -611,7 +611,7 @@ const CreateQuestionnaire = (props: any) => {
           <Tooltip
             title={
               <Typography className='tooltipTitleStyle'>
-                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheAssessment' />
+                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheTest' />
                 <br />
                 <strong>
                   <Text tid='note' /> &nbsp;
@@ -768,7 +768,7 @@ const CreateQuestionnaire = (props: any) => {
                 <Tooltip
                   title={
                     <Typography className='tooltipTitleStyle'>
-                      <Text tid='assessmentWillBeTimed' />
+                      <Text tid='testWillBeTimed' />
 
                       <br />
                       <strong>
