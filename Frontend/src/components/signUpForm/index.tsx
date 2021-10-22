@@ -150,17 +150,6 @@ export default function SignupForm(props: any) {
               // console.log(error)
               setErrorMessage('An account with the given email already exists.');
               setSnackbarOpen(true);
-              // const perror = JSON.stringify(error);
-              // const object = JSON.parse(perror);
-              // if (object.code === 400) {
-              // setFailureMessage(object.apiError.msg);
-              // setFailure(true);
-              // } else if (object.code === 401) {
-              //   props.history.push('/relogin');
-              // } else {
-              // setFailureMessage(<Text tid='somethingWentWrong' />);
-              // setFailure(true);
-              // }
             });
         } catch (error) {
           let errResponse: any = error;

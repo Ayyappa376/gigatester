@@ -185,17 +185,35 @@ export const updateCognitoUserToLowerCase = async (
   });
 
 export const resetUserPassword = async (
-  cognitoUser: string,
+  email: string,
+  teamName?: any[]
 ): Promise<any> =>
     new Promise<any>((resolve, reject) => {
       const params = {
-        UserPoolId: config.cognito.userPoolId,
-        Username: cognitoUser,
+        DesiredDeliveryMediums: ['EMAIL'],
+        TemporaryPassword: generatePassword(),
+        MessageAction: "RESEND",
+        UserAttributes: [
+          {
+            Name: 'email',
+            Value: email,
+          },
+          {
+            Name: 'email_verified',
+            Value: 'true',
+          },
+          {
+            Name: 'custom:teamName',
+            Value: teamName ? teamName[0] : 'default',
+          },
+        ],
+        UserPoolId: config.cognito.userPoolId /* required */,
+        Username: email /* required */,
       };
-      appLogger.debug({ adminResetUserPassword: params });
-      cognitoidentityserviceprovider.adminResetUserPassword(
+      appLogger.debug({ adminCreateUser_params: params });
+      cognitoidentityserviceprovider.adminCreateUser(
         params,
-        (err: any, data: any) => {          
+        (err: any, data: any) => {
           if (err) {
             reject(err);
           }

@@ -266,7 +266,7 @@ export default function Admin() {
   const editUserClickHandler = (userName: string) => {
     setButtonValue(EDIT_USER);
     setFocusUserName(userName);
-    setTitle('editUser');
+    setTitle('editTester');
   };
 
   const handleCreateTeam = () => {

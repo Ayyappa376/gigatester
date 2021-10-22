@@ -186,7 +186,7 @@ const ManageUsers = (props: any) => {
           .then((response: any) => {
             setNotify({
               isOpen: true,
-              message: 'Reset Password has been successful. A verification code is sent to the user.',
+              message: 'Reset Password has been successful. A temporary password is sent to the user email address.',
               type: 'success',
             });
           })
