@@ -134,7 +134,6 @@ export default function SignupForm(props: any) {
         const postData = userParamState;
         postData['roles'] = ['Member'];
         postData['orgId'] = "dev";
-        console.log(postData);
         try {
           Http.post({
             url: `/api/v2/admin/users`,

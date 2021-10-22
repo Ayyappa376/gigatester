@@ -34,6 +34,7 @@ import RenderPagination from '../../common/pagination';
 import { default as MaterialLink } from '@material-ui/core/Link';
 import { getDate } from '../../../utils/data';
 import { Text } from '../../../common/Language';
+import Notification from '../../../common/notification';
 import '../../../css/assessments/style.css';
 
 const useStyles = makeStyles((theme) => ({
@@ -175,7 +176,6 @@ const ManageUsers = (props: any) => {
       .then((response: any) => {
         let postData = response.values;
         postData['resetPassword'] = true;
-        console.log(postData)
         Http.put({
           url: `/api/v2/admin/users`,
           body: {
@@ -184,37 +184,46 @@ const ManageUsers = (props: any) => {
           state: stateVariable,
         })
           .then((response: any) => {
-            console.log(response)
-            // setUserPosted(true);
-            // setSuccessMessage(<Text tid='userProfileUpdatedSuccessfully' />);
+            setNotify({
+              isOpen: true,
+              message: 'Reset Password has been successful. A verification code is sent to the user.',
+              type: 'success',
+            });
           })
           .catch((error) => {
-            // const perror = JSON.stringify(error);
-            // const object = JSON.parse(perror);
-            // if (object.code === 400) {
-            //   setFailureMessage(object.apiError.msg);
-            //   setFailure(true);
-            // } else if (object.code === 401) {
-            //   props.history.push('/relogin');
-            // } else {
-            //   setFailureMessage(<Text tid='somethingWentWrong' />);
-            //   setFailure(true);
-            // }
+            const perror = JSON.stringify(error);
+            const object = JSON.parse(perror);
+            if (object.code === 400) {
+              setNotify({
+                isOpen: true,
+                message: object.apiError.msg,
+                type: 'error',
+              });
+            } else if (object.code === 401) {
+              props.history.push('/relogin');
+            } else {
+              setNotify({
+                isOpen: true,
+                message: "Something went wrong",
+                type: 'error',
+              });
+            }
           });
       })
       .catch((error) => {
-        // const perror = JSON.stringify(error);
-        // const object = JSON.parse(perror);
-        // if (object.code === 400) {
-        //   setFailureMessage(object.apiError.msg);
-        //   setFailure(true);
-        // } else if (object.code === 401) {
-        //   props.history.push('/relogin');
-        // } else {
-        //   props.history.push('/error');
-        // }
-
-
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 400) {
+          setNotify({
+            isOpen: true,
+            message: object.apiError.msg,
+            type: 'error',
+          });
+        } else if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          props.history.push('/error');
+        }
       });
   }
 
@@ -679,6 +688,7 @@ const ManageUsers = (props: any) => {
             </Button>
           </div>
         </Container>
+        <Notification notify={notify} setNotify={setNotify} />
       </Fragment>
     );
   };
