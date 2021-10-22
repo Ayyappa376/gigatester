@@ -395,5 +395,6 @@
   "CollectorConfig.UpdatedSuccessfully": "Collector Setting Updated Successfully",
   "noToolsAreMapped": "No Tools are Mapped",
   "signIn": "Sign In",
-  "signUp": "Sign Up"
+  "signUp": "Sign Up",
+  "resetPassword": "Reset Password"
 }

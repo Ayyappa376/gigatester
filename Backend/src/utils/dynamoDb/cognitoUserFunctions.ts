@@ -184,6 +184,26 @@ export const updateCognitoUserToLowerCase = async (
     );
   });
 
+export const resetUserPassword = async (
+  cognitoUser: string,
+): Promise<any> =>
+    new Promise<any>((resolve, reject) => {
+      const params = {
+        UserPoolId: config.cognito.userPoolId,
+        Username: cognitoUser,
+      };
+      appLogger.debug({ adminResetUserPassword: params });
+      cognitoidentityserviceprovider.adminResetUserPassword(
+        params,
+        (err: any, data: any) => {          
+          if (err) {
+            reject(err);
+          }
+          resolve(data);
+        }
+      );
+    });
+
 function generatePassword() {
   const length = 8;
   const charset =

@@ -31,8 +31,8 @@ import SearchControl from '../../common/searchControl';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
+import { default as MaterialLink } from '@material-ui/core/Link';
 import { getDate } from '../../../utils/data';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 
@@ -73,6 +73,11 @@ const useStyles = makeStyles((theme) => ({
   buttons: {
     ...buttonStyle,
   },
+  actionsBlock: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginLeft: '20%',
+  },
 }));
 
 const ManageUsers = (props: any) => {
@@ -94,6 +99,11 @@ const ManageUsers = (props: any) => {
   const [itemLimit, setItemLimit] = useState({
     lowerLimit: 0,
     upperLimit: 9,
+  });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
   });
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
@@ -156,6 +166,57 @@ const ManageUsers = (props: any) => {
         setBackdropOpen(false);
       });
   };
+
+  const onResetPassword = (emailId: any) => {
+    Http.get({
+      url: `/api/v2/admin/users/getusers?email=${emailId}`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        let postData = response.values;
+        postData['resetPassword'] = true;
+        console.log(postData)
+        Http.put({
+          url: `/api/v2/admin/users`,
+          body: {
+            ...postData,
+          },
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            console.log(response)
+            // setUserPosted(true);
+            // setSuccessMessage(<Text tid='userProfileUpdatedSuccessfully' />);
+          })
+          .catch((error) => {
+            // const perror = JSON.stringify(error);
+            // const object = JSON.parse(perror);
+            // if (object.code === 400) {
+            //   setFailureMessage(object.apiError.msg);
+            //   setFailure(true);
+            // } else if (object.code === 401) {
+            //   props.history.push('/relogin');
+            // } else {
+            //   setFailureMessage(<Text tid='somethingWentWrong' />);
+            //   setFailure(true);
+            // }
+          });
+      })
+      .catch((error) => {
+        // const perror = JSON.stringify(error);
+        // const object = JSON.parse(perror);
+        // if (object.code === 400) {
+        //   setFailureMessage(object.apiError.msg);
+        //   setFailure(true);
+        // } else if (object.code === 401) {
+        //   props.history.push('/relogin');
+        // } else {
+        //   props.history.push('/error');
+        // }
+
+
+      });
+  }
 
   useEffect(() => {
     fetchTeamList();
@@ -502,7 +563,7 @@ const ManageUsers = (props: any) => {
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
+                  <TableCell align='center' className='tableHeadCell' >
                     <Typography className='tableHeadText'>
                       <Text tid='actions' />
                     </Typography>
@@ -568,16 +629,29 @@ const ManageUsers = (props: any) => {
                           </Typography>
                         </TableCell>
                         <TableCell align='center'>
-                          <Button
-                            variant='outlined'
-                            className={classes.buttons}
-                            onClick={() => {
-                              props.editUserClicked(row.emailId);
-                            }}
-                          >
-                            <Text tid='edit' />
-                            <ArrowForwardIcon />
-                          </Button>
+                          <div className={classes.actionsBlock}>
+                            <MaterialLink
+                              href='#'
+                              onClick={() => {
+                                onResetPassword(row.emailId);
+                              }}
+                            >
+                              <Typography>
+                                <Text tid='resetPassword' />
+                              </Typography>
+                            </MaterialLink>
+                            <Typography>&nbsp;&nbsp;|&nbsp;&nbsp;</Typography>
+                            <MaterialLink
+                              href='#'
+                              onClick={() => {
+                                props.editUserClicked(row.emailId);
+                              }}
+                            >
+                              <Typography>
+                                <Text tid='editProfile' />
+                              </Typography>
+                            </MaterialLink>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
