@@ -110,7 +110,7 @@ async function handler(
     const err = new Error('Invalid Request');
     appLogger.error(err);
     return responseBuilder.badRequest(err, response);
-  } catch (err: any) {
+  } catch (err) {
     appLogger.info(err);
     return responseBuilder.internalServerError(err, response);
   }

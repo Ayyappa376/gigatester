@@ -11,34 +11,35 @@ const host = `p-jira.imovetv.com`;
 const email = 'slingdevopscoe@dish.com'; //'service-cmw@sling.com';
 const token = 'DevopsCOE'; //'fL9kXGVPXBovJ6Yb7faXDpLsqWYDTibwffW8cbxpX2gtMH3xE7Ue2AWzAOqR9yk';
 const auth = `${email}:${token}`; //email@example.com:<api_token>
-const project = 'IN'; //'Web%20Tools', 'iOS'
+const project = 'CECORE'; //'Web%20Tools', 'iOS'
 const baseURL = `https://${host}/rest/api/latest/`; //https://<site-url>/rest/api/3/<resource-name>
 const header = 'Accept: application/json';
-const issue = '252072';
-const issueKey = 'CMW-3257';
-const toDate = '2021-6-16%207:34';
-const fromDate = '2021-6-18%203:45';
+const issue = 'CECORE-1720';
+//const issueKey = 'CECORE-1720';
+const toDate = '2021-10-06%207:34';
+const fromDate = '2020-10-06%203:45';
 const fieldId = 'customfield_12903'
 
 var getAllProjects = 'project';
 var getAllIssuesOfProject = `search?jql=project%3D%27${project}%27`;
-var getAllIssuesOfProjectMaxResults = `search?jql=project%3D%27${project}%27&startAt=0&maxResults=0`;
-var getAllIssuesOfProjectCreatedAfterAndBefore = `search?jql=project%3D%27${project}%27%20AND%20created%3E%3D%27${fromDate}%27%20AND%20created%3C%3D%27${toDate}%27&startAt=0&maxResults=1`;
-var getAllIssuesOfProjectUpdatedAfterAndBefore = `search?jql=project%3D%27${project}%27%20AND%20updated%3E%3D%27${fromDate}%27%20AND%20updated%3C%3D%27${toDate}%27&startAt=0&maxResults=0`;
+var getAllIssuesOfProjectMaxResults = `search?jql=project%3D%27${project}%27&startAt=0&maxResults=0&expand=changelog`;
+var getAllIssuesOfProjectCreatedAfterAndBefore = `search?expand=changelog&jql=project%3D%27${project}%27%20AND%20created%3E%3D%27${fromDate}%27%20AND%20created%3C%3D%27${toDate}%27&startAt=0&maxResults=10`;
+var getAllIssuesOfProjectUpdatedAfterAndBefore = `search?expand=changelog&jql=project%3D%27${project}%27%20AND%20updated%3E%3D%27${fromDate}%27%20AND%20updated%3C%3D%27${toDate}%27&startAt=0&maxResults=1`;
 var getAllIssueTypes = 'issuetype';
 var getAllPriorities = 'priority';
 var getAllStatuses = 'status';
 var getAllResolutions = 'resolution';
 var getDetailsOfAnIssue = `issue/${issue}`; //issue/{issueIdOrKey}
 var getAllWorklogsForAnIssue = `issue/${issue}/worklog`; //issue/{issueIdOrKey}/worklog
-var getAllChangelogForAnIssue = `issue/${issue}?expand=changelog`; //issue/{issueIdOrKey}/worklog
+var getAllChangelogForAnIssue = `issue/${issue}?expand=changelog`; //issue/{issueIdOrKey}/changelog
+var getAllTransitionsForAnIssue = `issue/${issue}/transitions?expand=transitions`;
 var getAllIssueFields = `field`;
 var getFieldOptions = `field/${fieldId}/option`;
 
 // https://pinimbus.atlassian.net/rest/api/3/search/?jql=project%20%3D%20%27DoItRight%27%20AND%20created%3E%3D%272021-01-14%2018:00%27%20AND%20created%3C%3D%272021-01-31%27
 // https://pinimbus.atlassian.net/rest/api/3/search/?jql=updatedDate%3E%3D%272021-01-14%2018:30%27%20AND%20updatedDate%3C%3D%272021-01-31%27
 
-httpRequest.httpRequest('GET', baseURL + getIssuesOfProjectWithCustomField, undefined, auth, { Accept: 'application/json' })
+httpRequest.httpRequest('GET', baseURL + getAllIssuesOfProjectMaxResults, undefined, auth, { Accept: 'application/json' })
 .then((data) => console.log(prettyPrint(data.body)))
 .catch((err) => console.log(err));
 

@@ -59,7 +59,7 @@ const ManageTeams = (props: any) => {
   const [allTeams, setAllTeams] = React.useState<Object[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [deleteTeamName, setDeleteTeamName] = useState('');
+  const [deleteTeamId, setDeleteTeamId] = useState('');
   const [searchString, setSearchString] = useState('');
   const [teams, setTeams] = useState<Object[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
@@ -81,43 +81,31 @@ const ManageTeams = (props: any) => {
       url: `/api/v2/teamlist`,
       state: stateVariable,
     })
-      .then((response: any) => {
-        response.sort((a: any, b: any) => {
-          if (a.active === 'true' && b.active === 'true') {
-            return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
-              ? -1
-              : 1;
-          }
-          if (a.active === 'false' && b.active === 'false') {
-            return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
-              ? -1
-              : 1;
-          }
-          return a.active === 'true' ? -1 : 1;
-        });
-        setFetchTeams(true);
-        setAllTeams(response);
-        setTeams(response);
-        setBackdropOpen(false);
-      })
-      .catch((error: any) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          props.history.push('/error');
+    .then((response: any) => {
+      response.sort((a: any, b: any) => {
+        if (a.active === b.active) {
+          return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
+            ? -1
+            : 1;
         }
-      })
-      .catch((error: any) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          props.history.push('/error');
-        }
+        return a.active === 'true' ? -1 : 1;
       });
+      setFetchTeams(true);
+      setAllTeams(response);
+      setTeams(response);
+      setBackdropOpen(false);
+    })
+    .catch((error: any) => {
+      setFetchTeams(true);
+      setBackdropOpen(false);
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+    })
   };
 
   useEffect(() => {
@@ -249,8 +237,8 @@ const ManageTeams = (props: any) => {
     setCurrentPage(event);
   };
 
-  const disableClicked = (teamName: string) => {
-    setDeleteTeamName(teamName);
+  const disableClicked = (teamId: string) => {
+    setDeleteTeamId(teamId);
     setOpenModal(true);
   };
 
@@ -259,21 +247,21 @@ const ManageTeams = (props: any) => {
   };
 
   const modalYesClicked = () => {
-    if (deleteTeamName !== '') {
-      disableTeam(deleteTeamName);
+    if (deleteTeamId !== '') {
+      disableTeam(deleteTeamId);
       setOpenModal(false);
     }
   };
 
-  const disableTeam = (teamName: string) => {
+  const disableTeam = (teamId: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/admin/createteam/${teamName}`,
+      url: `/api/v2/admin/createteam/${teamId}`,
       state: stateVariable,
     })
       .then((response: any) => {
         setBackdropOpen(false);
-        setDeleteTeamName('');
+        setDeleteTeamId('');
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
@@ -422,16 +410,16 @@ const ManageTeams = (props: any) => {
                                 </Typography>
                               </MaterialLink>
                               <Typography>&nbsp;|&nbsp;</Typography>
-                              {/* <MaterialLink
+                              <MaterialLink
                                 href='#'
                                 onClick={() => {
                                   props.mapMetricsClicked(row.teamId);
                                 }}
-                              > */}
+                              >
                                 <Typography>
                                   <Text tid='editMetrics' />
                                 </Typography>
-                              {/* </MaterialLink> */}
+                              </MaterialLink>
                               <Typography>&nbsp;|&nbsp;</Typography>
                               <MaterialLink
                                 href='#'

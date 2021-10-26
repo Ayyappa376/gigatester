@@ -167,6 +167,7 @@ function storeInDB(jobDetails: IJenkinsJobInfo, jobName: string, buildInfo: any)
 		teamId: jobDetails.teamId,
 		servicePath: jobDetails.servicePath,
 		projectName: jobName,
+		failureWindow: jobDetails.failureWindow.value,
 		buildNum: parseInt(buildInfo.id, 10),
 		status: STATUS_SCHEDULED,
 		startTimestamp: 0,

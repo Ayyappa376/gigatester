@@ -209,7 +209,7 @@ export default function Admin() {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [buttonValue, setButtonValue] = useState('');
-  const [focusTeamName, setFocusTeamName] = useState('');
+  const [focusTeamId, setFocusTeamId] = useState('');
   const [
     focusQuestionData,
     setFocusQuestionData,
@@ -279,21 +279,21 @@ export default function Admin() {
     setTitle('manageTeams');
   };
 
-  const editTeamClickHandler = (teamName: string) => {
+  const editTeamClickHandler = (teamId: string) => {
     setButtonValue(EDIT_TEAM);
-    setFocusTeamName(teamName);
+    setFocusTeamId(teamId);
     setTitle('editTeams');
   };
 
-  const handleAssignClicked = (teamName: string) => {
+  const handleAssignClicked = (teamId: string) => {
     setButtonValue(ASSIGN_ASSESSMENT);
-    setFocusTeamName(teamName);
+    setFocusTeamId(teamId);
     setTitle('assignAssessment');
   };
 
-  const handleMapMetricsClicked = (teamName: string) => {
+  const handleMapMetricsClicked = (teamId: string) => {
     setButtonValue(MAP_METRICS_TOOLS);
-    setFocusTeamName(teamName);
+    setFocusTeamId(teamId);
     setTitle('mapMetricsTools');
   };
 
@@ -436,7 +436,7 @@ export default function Admin() {
       case MANAGE_USERS:
         return (
           <ManageUsers
-            team={focusTeamName}
+            team={focusTeamId}
             editUserClicked={editUserClickHandler}
             goBack={switchToAdminHome}
           />
@@ -455,11 +455,11 @@ export default function Admin() {
           />
         );
       case EDIT_TEAM:
-        return <EditTeam teamName={focusTeamName} goBack={switchPage} mapMetricsClicked={handleMapMetricsClicked} />;
+        return <EditTeam teamId={focusTeamId} goBack={switchPage} mapMetricsClicked={handleMapMetricsClicked} />;
       case ASSIGN_ASSESSMENT:
-        return <AssignAssessment teamId={focusTeamName} goBack={switchPage} />;
+        return <AssignAssessment teamId={focusTeamId} goBack={switchPage} />;
       case MAP_METRICS_TOOLS:
-        return <MapMetricsTools teamId={focusTeamName} goBack={switchPage} />;
+        return <MapMetricsTools teamId={focusTeamId} goBack={switchPage} />;
       case CREATE_QUESTIONNAIRE:
         return <CreateQuestionnaire goBack={switchToAdminHome} />;
       case MANAGE_QUESTIONNAIRES:

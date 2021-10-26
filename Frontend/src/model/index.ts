@@ -1,5 +1,5 @@
 export * from './common';
-export * from './assesment';
+export * from './assessment';
 export * from './initialState';
 export * from './user';
 export * from './result';

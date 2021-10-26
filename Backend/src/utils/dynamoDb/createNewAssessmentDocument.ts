@@ -48,7 +48,7 @@ export interface AssessmentDocument {
   questionnaireDetails?: QuestionnaireDetails;
   questionnaireVersion?: string;
   result?: Result;
-  team?: string;
+  team: string;
   type: string; // This is the questionnaireId
   userId: string;
 }
@@ -57,7 +57,7 @@ export interface AssessmentDocument {
 export const createNewAssessmentDocument = async (
   userId: string,
   assessmentId: string,
-  team?: string,
+  team: string,
   assessmentType?: string,
   version?: string
 ) => {

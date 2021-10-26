@@ -34,8 +34,8 @@ import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 
-const MAX_SERVICE_HIERARCHY_LEVEL = 2;
-const OTHER_STRING = 'Other';
+export const MAX_SERVICE_HIERARCHY_LEVEL = 2;
+export const OTHER_STRING = 'Other';
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -406,8 +406,6 @@ const CreateTeam = (props: any) => {
 
   const renderElements = (key: string, config: ITeamConfig, values: any, indexPath: number[]) => {
     const element: IFieldConfigAttributes = config[key];
-    console.log(key);
-    console.log(element)
 //    const values = teamParamState ? teamParamState : null;
     switch (element.type) {
       case 'string':
@@ -506,26 +504,21 @@ const CreateTeam = (props: any) => {
               id={`text_${key}_${indexPath.join('_')}`}
               name={`text_${key}_${indexPath.join('_')}`}
               disabled={
-                !(
-                  values &&
-                  values[key] &&
-                  element.options &&
-                  ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
-                  (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
-                )
+                !values || !values[key] ||
+                (element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) ||
+                (element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
               }
               label={`(specify, if ${OTHER_STRING})`}
               value={
-                  values &&
-                  values[key] &&
-                  element.options &&
-                  ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
-                  (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
-                  ? values[key] === OTHER_STRING
-                    ? ''
-                    : values[key]
-                  : ''
-                }
+                values &&
+                values[key] &&
+                !(element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) &&
+                !(element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                ? values[key] === OTHER_STRING
+                  ? ''
+                  : values[key]
+                : ''
+              }
               onChange={(event) => handleChangeOtherValueList(event, key, indexPath)}
               autoComplete='off'
               className='textFieldStyle'
@@ -684,22 +677,13 @@ const CreateTeam = (props: any) => {
             <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography
-                    style={{
-                      fontSize: '12px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    Delete Component
+                  <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                    <Text tid='delete' />
                   </Typography>
                 }
               >
                 <Typography>
-                  <ClearIcon
-                    onClick={() => {
-                      deleteService(indexPath);
-                    }}
-                  />
+                  <ClearIcon onClick={() => { deleteService(indexPath); }}/>
                 </Typography>
               </Tooltip>
             </MuiThemeProvider>          
@@ -709,7 +693,7 @@ const CreateTeam = (props: any) => {
           (
             <Grid container spacing={3} className={classes.grid}>
               <Typography color='textSecondary' style={{paddingLeft: '25px'}}>
-                Service Sub-Components
+                <Text tid='serviceSubComponents' />
               </Typography>
               {service.services && service.services.map((subService: IServiceInfo, index: number) => {
                 if(subService.active === 'true') {
@@ -725,13 +709,8 @@ const CreateTeam = (props: any) => {
                   <MuiThemeProvider theme={tooltipTheme}>
                     <Tooltip
                       title={
-                        <Typography
-                          style={{
-                            fontSize: '12px',
-                            textAlign: 'center',
-                          }}
-                        >
-                          Add Service Sub-Component
+                        <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                          <Text tid='addServiceSubComponents' />
                         </Typography>
                       }
                     >
@@ -786,7 +765,7 @@ const CreateTeam = (props: any) => {
           })}
           <Grid container spacing={3} className={classes.grid}>
             <Typography  color='textSecondary' style={{paddingLeft: '25px'}}>
-              Service Components
+              <Text tid='serviceComponents' />
             </Typography>
             {teamState!.values!.services && teamState!.values!.services.map((service: IServiceInfo, index: number) => {
               if(service.active === 'true') {
@@ -802,13 +781,8 @@ const CreateTeam = (props: any) => {
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
-                      <Typography
-                        style={{
-                          fontSize: '12px',
-                          textAlign: 'center',
-                        }}
-                      >
-                        Add Service Component
+                      <Typography style={{fontSize: '12px', textAlign: 'center' }}>
+                        <Text tid='addServiceComponents' />
                       </Typography>
                     }
                   >

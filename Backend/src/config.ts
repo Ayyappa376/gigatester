@@ -55,7 +55,7 @@ export const config: Config = {
     subDomain: {
       development: 'dev',
       local: 'dev',
-      production: 'dish', //change to 'beta' for beta-deploy, 'dish' for dish-deploy, change based on where to deploy
+      production: 'm1', //change to 'beta' for beta-deploy, 'dish' for dish-deploy, change based on where to deploy
       qa: 'qa',
     },
     teamName: 'Others',
@@ -64,7 +64,8 @@ export const config: Config = {
     password: 'pinimbus', //change based on where to deploy
 //    url: 'http://10.155.223.144:9200', //dish env //change based on where to deploy
     url: 'http://34.234.42.134:9200', //pinimbus env //change based on where to deploy
-    username: 'gigatester-user', //change based on where to deploy
+//    url: 'http://18.206.35.232:9200', //nomiso - m1 env //change based on where to deploy
+    username: 'doitright-user', //change based on where to deploy
   },
   metricsTables: {
     buildTable: 'build-data',

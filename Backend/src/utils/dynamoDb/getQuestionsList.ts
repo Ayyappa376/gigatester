@@ -15,10 +15,8 @@ interface QuestionsList {
 export const getQuestionsList = async ({
   quesType,
   version,
-  teamName,
 }: {
   quesType: string;
-  teamName?: string;
   version?: string;
 }): Promise<any> => {
   if (!quesType) {
@@ -45,10 +43,8 @@ export const getQuestionsList = async ({
 export const getCategoriesMap = async ({
   quesType,
   version,
-  teamName,
 }: {
   quesType: string;
-  teamName?: string;
   version?: string;
 }): Promise<any> => {
   if (!quesType) {
@@ -75,10 +71,8 @@ export const getCategoriesMap = async ({
 export const getQuestionsListSorted = async ({
   quesType,
   version,
-  teamName,
 }: {
   quesType: string;
-  teamName?: string;
   version?: string;
 }): Promise<any> => {
   if (!quesType) {
@@ -98,7 +92,6 @@ export const getQuestions = async (questionnaireId: string): Promise<any> => {
   const quesDetails = {};
   const res = await getQuestionsList({
     quesType: questionnaireId,
-    teamName: '',
   });
   appLogger.info({ getQuestionsList: res });
   for (const val of res) {

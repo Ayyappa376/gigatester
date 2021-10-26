@@ -86,6 +86,7 @@ async function putData(team, service, proj, name, pullId, status, acceptState, c
 		    teamId: team, //string [keyword]
 			servicePath: service, //string [keyword]
 		    projectName: proj, //string [keyword]
+			repoName: proj, //string [keyword]
 		    raisedBy: name, //string [keyword]
 		    pullId: pullId, //number, [integer/keyword]
 		    status: status, //string (OPEN/CLOSED) [keyword]

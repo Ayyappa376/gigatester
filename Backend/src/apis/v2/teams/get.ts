@@ -3,7 +3,7 @@ import { API, Handler } from '@apis/index';
 import {
   appLogger,
   getTeams2,
-  getUserDocument,
+//  getUserDocument,
   responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
@@ -37,7 +37,9 @@ async function handler(request: GetTeamsRequest, response: Response) {
     return responseBuilder.unauthorized(err, response);
   }
   if (selectTeam && selectTeam === 'myteams') {
-    teams = await getTeams2('admin');
+    teams = await getTeams2(user.email);
+    return responseBuilder.ok(teams, response);
+/*    teams = await getTeams2('admin');
     const userDocument = await getUserDocument({
       cognitoUserId: user['cognito:username'],
     });
@@ -46,6 +48,7 @@ async function handler(request: GetTeamsRequest, response: Response) {
       userTeams.includes(team.teamId)
     );
     return responseBuilder.ok(filterTeams, response);
+  */
   }
   if (selectTeam && selectTeam === 'selectTeam') {
     teams = await getTeams2('admin');

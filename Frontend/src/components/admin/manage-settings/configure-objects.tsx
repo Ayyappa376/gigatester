@@ -315,7 +315,7 @@ const EditSettingsObjectConfig = (props: any) => {
     const attrMap: IObjectConfigDetails = { ...attributesMap };
     if (tags.length > 0) {
       attrMap[key].options.custom = attrMap[key].options.custom.concat(
-        ',',
+        (attrMap[key].options.custom === '') ? '' : ',',
         tags.join(',')
       );
       setAttributesMap(attrMap);
@@ -379,7 +379,7 @@ const EditSettingsObjectConfig = (props: any) => {
     if (value && tags) {
       if (isDuplicate(value, attributesMap[key].options.custom)) {
         setFailureMessage(
-          <Text tid='cannot.add.option.equivalent.to.already.exists' />
+          <Text tid='similar.option.error' />
         );
       } else {
         setFailureMessage(<Text tid='somethingWentWrong' />);
@@ -567,7 +567,7 @@ const EditSettingsObjectConfig = (props: any) => {
           {attr.type === 'list' ||
           attr.type === 'multi-list' ||
           attr.type === 'list-no-others' ? (
-            attr.custom || (attr.options && attr.options.custom) ? (
+            attr.custom || (attr.options && attr.options.custom !== undefined) ? (
               <Fragment>
                 <IconButton
                   className={classes.iconButton}

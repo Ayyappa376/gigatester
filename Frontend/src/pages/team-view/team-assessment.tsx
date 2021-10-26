@@ -31,13 +31,13 @@ import { getDateTime } from '../../utils/data';
 import { Text } from '../../common/Language';
 import '../../css/metrics/style.css';
 
-interface ITeamAssesmentRouteParams {
-  teamName: string;
+interface ITeamAssessmentRouteParams {
+  teamId: string;
   assessmentName: string;
   version: string;
 }
 
-type TeamAssessmentsProps = RouteComponentProps<ITeamAssesmentRouteParams>;
+type TeamAssessmentsProps = RouteComponentProps<ITeamAssessmentRouteParams>;
 
 const useStyles = makeStyles((theme) => ({
   containerRoot: {
@@ -64,14 +64,13 @@ const useStyles = makeStyles((theme) => ({
 function TeamAssessments(props: TeamAssessmentsProps) {
   const classes = useStyles();
   const teamAssessments = useSelector(
-    (state: IRootState) => state.assesment.teamAssessments
+    (state: IRootState) => state.assessment.teamAssessments
   );
   const setDisplayLeftText = useActions(setAppBarLeftText);
   const setDisplayCenterText = useActions(setAppBarCenterText);
-  const teamName = props.match.params.teamName;
+  const teamId = props.match.params.teamId;
   const assessmentName = props.match.params.assessmentName;
   const version = props.match.params.version;
-  setDisplayCenterText(`Team: ${teamName}`);
   /* Order related changes */
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('date');
@@ -80,10 +79,12 @@ function TeamAssessments(props: TeamAssessmentsProps) {
     teamAssessments &&
     teamAssessments.data!.teams.filter(
       (team) =>
-        team.teamName === teamName &&
+        team.teamId === teamId &&
         team.assessmentName === assessmentName &&
         team.questionnaireVersion === version
     );
+
+  setDisplayCenterText(`Team: ${team[0].assessments[0].teamName}`);
 
   const [assessments, setAssessments] = useState<IAssessmentListItem[]>(
     team[0].assessments
@@ -358,7 +359,7 @@ function TeamAssessments(props: TeamAssessmentsProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {assessments.map((row, index) => (
+            {assessments.map((row: IAssessmentListItem, index) => (
               <TableRow
                 key={row.assessmentId}
                 style={

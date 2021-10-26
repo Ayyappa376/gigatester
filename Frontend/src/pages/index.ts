@@ -1,4 +1,4 @@
-import Assesment from './assesment';
+import Assessment from './assessment';
 import Home from './home';
 import Auth from './auth';
 import About from './about';
@@ -21,7 +21,7 @@ import MetricSelect from './metrics/metric-select';
 export {
   About,
   Admin,
-  Assesment,
+  Assessment,
   AssessmentDetail,
   AssessmentSelect,
   Auth,

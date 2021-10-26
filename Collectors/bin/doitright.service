@@ -15,8 +15,8 @@ After=network.target
 [Service]
 Type=simple
 RuntimeDirectory=Collectors
-Environment=NODE_ENV=dishint
-ExecStart=/home/ec2-user/.nvm/versions/node/v15.11.0/bin/node build/scheduler.js
+Environment=NODE_ENV=production
+ExecStart=/home/ec2-user/.nvm/versions/node/v15.5.1/bin/node build/scheduler.js
 Restart=always
 User=ec2-user
 Group=ec2-user

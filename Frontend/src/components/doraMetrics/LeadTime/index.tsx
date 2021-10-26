@@ -102,7 +102,10 @@ export default function LeadTime(props: any) {
     });
 
     trendData.map((data: ITrendDataItem) => {
-      trends.push([data.timestamp, data.value]);
+      trends.push([
+        data.timestamp,
+        Math.round(data.value / 60) //converting to hours
+      ]);
     });
 
     const dataSet = {
@@ -129,7 +132,7 @@ export default function LeadTime(props: any) {
             show: false,
           },
         },
-        colors: ['#FFC300', '#edb500'],
+        colors: ['#FFC300', '#7000b5'],
         dataLabels: {
           enabled: false,
         },

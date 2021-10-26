@@ -75,7 +75,8 @@
 			"custom": false,
 			"displayName": "Service mapping field value",
 			"mandatory": true,
-			"type": "string",
+			"type": "list",
+			"options": { "custom": "" },
 			"defaultValue": "",
 			"position": 8,
 			"helpText": "This should be the value of the Service mapping field that correspond to this microservice."

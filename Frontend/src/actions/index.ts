@@ -16,7 +16,7 @@ export function useActions(actions: any, deps?: any): any {
 	);
 }
 
-export * from './assesment';
+export * from './assessment';
 export * from './user';
 export * from './result';
 export * from './feedback';

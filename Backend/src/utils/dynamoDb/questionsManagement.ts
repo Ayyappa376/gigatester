@@ -200,7 +200,6 @@ export const getQuestions = async (questionnaireId: string): Promise<any> => {
   const quesDetails = [];
   const res = await getQuestionsList({
     quesType: questionnaireId,
-    //    teamName: 'xyu',
   });
   for (const val of res) {
     const ques = await getQuestionDetails(val);

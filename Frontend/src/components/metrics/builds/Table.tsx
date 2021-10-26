@@ -33,7 +33,7 @@ import { IRootState } from '../../../reducers';
 import {
   IBuildsListDataItem,
   STATUS_FAILED,
-//  STATUS_OTHER,
+  //  STATUS_OTHER,
   STATUS_SUCCESS,
   STATUS_INPROGRESS,
 } from '../../../model/metrics/buildsData';
@@ -58,9 +58,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string }
+  ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -89,8 +89,8 @@ const headCells: HeadCell[] = [
   { id: 'service', numeric: false, disablePadding: false, label: 'service' },
   { id: 'projectName', numeric: true, disablePadding: false, label: 'project' },
   { id: 'status', numeric: true, disablePadding: false, label: 'status' },
-  { id: 'startTimestamp', numeric: true, disablePadding: false, label: 'startTimestamp' },
-  { id: 'endTimestamp', numeric: true, disablePadding: false, label: 'endTimestamp' },
+  { id: 'startTimestamp', numeric: true, disablePadding: false, label: 'Start Date' },
+  { id: 'endTimestamp', numeric: true, disablePadding: false, label: 'End Date' },
   { id: 'duration', numeric: true, disablePadding: false, label: 'duration' },
 ];
 
@@ -289,9 +289,9 @@ const BuildTable = (props: any) => {
     if ((buildStatus.status & 4) === 4) {
       setRollbackBuild(!rollbackBuild);
     }
-//    if ((props.buildStatus.status & 8) === 8) {
-//      setOtherBuild(!otherBuild);
-//    }
+    //    if ((props.buildStatus.status & 8) === 8) {
+    //      setOtherBuild(!otherBuild);
+    //    }
   }, [props.buildStatus]);
 
   useEffect(() => {
@@ -300,7 +300,7 @@ const BuildTable = (props: any) => {
       if ((passedBuild && data.status === STATUS_SUCCESS)
         || (failedBuild && data.status === STATUS_FAILED)
         || (rollbackBuild && data.status === STATUS_INPROGRESS)
-//        || (otherBuild && data.status === STATUS_OTHER)
+        //        || (otherBuild && data.status === STATUS_OTHER)
       ) {
         temp.push(data);
       }
@@ -357,7 +357,7 @@ const BuildTable = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          history.push('/relogin')       
+          history.push('/relogin')
         } else {
           history.push('/error')
         }

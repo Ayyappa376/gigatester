@@ -12,4 +12,5 @@ export interface IGitLabCICDJobInfo {
 	startStage: {value: string};
 	endStage: {value: string};
 	rollbackStage: {value: string};
+	failureWindow: {value: number};
 }

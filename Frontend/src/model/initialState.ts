@@ -10,16 +10,16 @@ export const initialState: IRootState = {
         roles: null,
         teams: [],
     },
-    assesment: {
-        assesmentSummary: {
+    assessment: {
+        assessmentSummary: {
             status: 'initial',
             data: null
         },
-        assesmentQuestion: {
+        assessmentQuestion: {
             status: 'initial',
             data: null
         },
-        assesmentAnswers: {
+        assessmentAnswers: {
             status: 'initial',
             data: null
         },

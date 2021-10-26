@@ -29,6 +29,7 @@ export const getUserDocument = async ({
   appLogger.info({ getUserDocument_get_params: params });
   return get<UserDocument>(params);
 };
+
 //Get User orgId
 export const getUserOrgId = async (userId: string): Promise<string> => {
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
@@ -42,6 +43,7 @@ export const getUserOrgId = async (userId: string): Promise<string> => {
     res.orgId ? res.orgId : config.defaults.orgId
   );
 };
+
 //Add a user to CognitoUser table
 export const addDynamoUser = async (
   id: string,
@@ -55,10 +57,10 @@ export const addDynamoUser = async (
   }
   const myTeams = (teams: string[]) => {
     const arr: AllotedTeam[] = new Array();
-    userDetails.teams.forEach((teamName: string) => {
+    userDetails.teams.forEach((teamId: string) => {
       const teamStruct: AllotedTeam = {
         isLead: false,
-        name: teamName,
+        name: teamId,
       };
       arr.push(teamStruct);
     });
@@ -143,10 +145,10 @@ export const updateDynamoUser = async (
 
   const myTeams = (teams: string[]) => {
     const arr: AllotedTeam[] = new Array();
-    userDetails.teams.forEach((teamName: string) => {
+    userDetails.teams.forEach((teamId: string) => {
       const teamStruct: AllotedTeam = {
         isLead: false,
-        name: teamName,
+        name: teamId,
       };
       arr.push(teamStruct);
     });
@@ -288,7 +290,7 @@ export const getCreateUserConfig = async (
   const teamList: any = await getTeams2(order).then((teams: any) =>
     teams
       .filter((filteredTeams: any) => filteredTeams.active === 'true')
-      .map((teamName: any) => teamName.teamId)
+      .map((team: any) => team.teamId)
   );
   appLogger.info({ getTeams2: teamList });
   createUserConfig.config.teams.options = teamList;

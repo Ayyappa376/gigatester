@@ -57,7 +57,7 @@ const Trends = (props: any) => {
   const classes = useStyles();
   const requestTeamAssessments = useActions(fetchTeamAssessments);
   const teamAssessments = useSelector(
-    (state: IRootState) => state.assesment.teamAssessments
+    (state: IRootState) => state.assessment.teamAssessments
   );
   const [allTeamAssessments, setAllTeamAssessments] = useState<
     ITeamAssessment[]
@@ -90,6 +90,7 @@ const Trends = (props: any) => {
     getQuestionnaires();
     getTeams();
     requestTeamAssessments();
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -118,9 +119,9 @@ const Trends = (props: any) => {
         if (
           assessmentTypeAndVersion !== ''
             ? assessmentType === assessment.type &&
-              assessmentVersion === assessment.questionnaireVersion
+            assessmentVersion === assessment.questionnaireVersion
             : questionnaires[0].questionnaireId === assessment.type &&
-              questionnaires[0].version === assessment.questionnaireVersion
+            questionnaires[0].version === assessment.questionnaireVersion
         ) {
           userLevels.forEach((level: any) => {
             if (
@@ -165,10 +166,10 @@ const Trends = (props: any) => {
           selectedAssessment !== ''
             ? selectedAssessment === assessment.type &&
               (focusTeam ? focusTeam : teamList[0].teamId) ===
-                assessment.teamName
+                assessment.teamId
             : teamQuestonnaires[0].id === assessment.type &&
               (focusTeam ? focusTeam : teamList[0].teamId) ===
-                assessment.teamName
+                assessment.teamId
         ) {
           userLevels.forEach((level: any) => {
             if (
@@ -351,10 +352,10 @@ const Trends = (props: any) => {
                       assessmentTypeAndVersion !== ''
                         ? assessmentTypeAndVersion
                         : questionnaires
-                        ? questionnaires.length > 0
-                          ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
+                          ? questionnaires.length > 0
+                            ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
+                            : ''
                           : ''
-                        : ''
                     }
                     onChange={handleChangeQuestonnaireValue}
                   >
@@ -450,10 +451,10 @@ const Trends = (props: any) => {
                       focusTeam !== ''
                         ? focusTeam
                         : teamList
-                        ? teamList.length > 0
-                          ? teamList[0].teamId
+                          ? teamList.length > 0
+                            ? teamList[0].teamId
+                            : ''
                           : ''
-                        : ''
                     }
                     style={{ marginLeft: '25%' }}
                     onChange={handleChangeFocusTeamValue}

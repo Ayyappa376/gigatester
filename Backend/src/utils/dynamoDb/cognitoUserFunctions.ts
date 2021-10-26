@@ -64,7 +64,7 @@ export const removeUserFromCognitoGroup = async (
 
 export const addCognitoUser = async (
   email: string,
-  teamName?: any[]
+  team?: any[]
 ): Promise<any> =>
   new Promise<any>((resolve, reject) => {
     const params = {
@@ -81,7 +81,7 @@ export const addCognitoUser = async (
         },
         {
           Name: 'custom:teamName',
-          Value: teamName ? teamName[0] : 'default',
+          Value: team ? team[0] : 'default',
         },
       ],
       UserPoolId: config.cognito.userPoolId /* required */,

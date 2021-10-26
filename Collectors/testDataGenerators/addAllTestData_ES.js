@@ -4,6 +4,8 @@ const {addCICDTestDataFor} = require('./addCICDTestData_ES');
 const {addQualityTestDataFor} = require('./addQualityTestData_ES');
 const {addRepoTestDataFor} = require('./addRepoTestData_ES');
 const {addReqTestDataFor} = require('./addReqTestData_ES');
+const {addIncidentTestDataFor} = require('./addIncidentTestData_ES');
+const {addGitlabCommitTestDataFor} = require('./addGitlabCommitTestData_ES');
 
 addtestData().catch(console.error);
 
@@ -25,8 +27,10 @@ async function addtestData(){
 }
 
 async function addDataForTeamForPeriod(team, services, projs, startDateStr, endDateStr) {
-    await addCICDTestDataFor(team, services, projs, startDateStr, endDateStr);
-    await addRepoTestDataFor(team, services, projs, startDateStr, endDateStr);
-    await addReqTestDataFor(team, services, projs, startDateStr, endDateStr);
-    await addQualityTestDataFor(team, services, projs, startDateStr, endDateStr);
+//    await addCICDTestDataFor(team, services, projs, startDateStr, endDateStr);
+//    await addRepoTestDataFor(team, services, projs, startDateStr, endDateStr);
+//    await addReqTestDataFor(team, services, projs, startDateStr, endDateStr);
+//    await addQualityTestDataFor(team, services, projs, startDateStr, endDateStr);
+//    await addIncidentTestDataFor(team, services, projs, startDateStr, endDateStr);
+//    await addGitlabCommitTestDataFor(team, services, projs, startDateStr, endDateStr);
 }

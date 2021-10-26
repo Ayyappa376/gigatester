@@ -67,7 +67,7 @@ export const getUserAssessmentFromIndex = async ({
 }): Promise<AssessmentDocument> => {
   const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
     ExpressionAttributeValues: { ':assessmentId': assessmentId },
-    IndexName: 'assessmentId-index-dev',
+    IndexName: 'assessmentId-index',
     // tslint:disable-next-line: object-literal-sort-keys
     KeyConditionExpression: 'assessmentId = :assessmentId',
     TableName: TableNames.getAssessmentsTableName(),

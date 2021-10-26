@@ -8,11 +8,11 @@ import Container from '@material-ui/core/Container';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { useActions, setAppBarCenterText, setCurrentPage } from '../../actions';
 import {
-  fetchAssesMentQuestion,
+  fetchAssessmentQuestion,
   postSelectedOption as postSelectedOptionAction,
   fetchAssessmentQuestionInitialize,
   setContinueAssessmentNotificationShown,
-} from '../../actions/assesment';
+} from '../../actions/assessment';
 import QuestionComponent from './question-component';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
@@ -28,10 +28,10 @@ import ArrowBackIcon from '@material-ui/icons/ArrowBack';
 import { buttonStyle } from '../../common/common';
 import { ModalComponent } from '../modal';
 import {
-  IAssesmentPostResponse,
+  IAssessmentPostResponse,
   IAnswerPayload,
   ISelectedOption,
-  IAssesmentAnswersMap,
+  IAssessmentAnswersMap,
 } from '../../model';
 import { Http } from '../../utils';
 import { default as MaterialLink } from '@material-ui/core/Link';
@@ -46,7 +46,7 @@ import { Text } from '../../common/Language';
 let timeLeftTimer: NodeJS.Timeout;
 
 interface IQuestionRouteParams {
-  assesmentId: string;
+  assessmentId: string;
   index: string;
 }
 
@@ -135,7 +135,7 @@ const useStyles = makeStyles((theme) => ({
 
 const checkIfMappedQuestionExistForTheIndex = (
   index: string,
-  mappedQuestions: IAssesmentAnswersMap
+  mappedQuestions: IAssessmentAnswersMap
 ) => {
   let mappedQuestionId = '';
   Object.keys(mappedQuestions).forEach((key: string) => {
@@ -225,28 +225,28 @@ const getTimerWarningInfo = (
 
 function QuestionRender(props: IQuestionProps) {
   const classes = useStyles();
-  const fetchAssesmentQuestion = useActions(fetchAssesMentQuestion);
+  const getAssessmentQuestion = useActions(fetchAssessmentQuestion);
   const resetAssessmentQuestion = useActions(fetchAssessmentQuestionInitialize);
   const setCurrentPageValue = useActions(setCurrentPage);
   const postSelectedOption = useActions(postSelectedOptionAction);
-  const { assesmentId, index } = props.match!.params;
+  const { assessmentId, index } = props.match!.params;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const previousMarkedAnswers = useSelector(
-    (state: IRootState) => state.assesment.markedAnswers
+    (state: IRootState) => state.assessment.markedAnswers
   );
   const [saveAndCloseState, setSaveAndCloseState] = useState<any>({});
   const numberOfQuestions = useSelector(
     (state: IRootState) =>
-      state.assesment.assesmentSummary.data!.numberOfQuestions
+      state.assessment.assessmentSummary.data!.numberOfQuestions
   );
   const categories = useSelector(
-    (state: IRootState) => state.assesment.assesmentSummary.data!.categoryList
+    (state: IRootState) => state.assessment.assessmentSummary.data!.categoryList
   );
   const assessmentType = useSelector(
-    (state: IRootState) => state.assesment.assesmentSummary.data!.type
+    (state: IRootState) => state.assessment.assessmentSummary.data!.type
   );
   const questionnaireVersion = useSelector(
-    (state: IRootState) => state.assesment.assesmentSummary.data!.version
+    (state: IRootState) => state.assessment.assessmentSummary.data!.version
   );
   const stateVariable = useSelector((state: IRootState) => state);
   const team = useSelector((state: IRootState) => state.user.team);
@@ -269,37 +269,37 @@ function QuestionRender(props: IQuestionProps) {
     Math.floor(parseInt(index, 10) / 5)
   );
   const [completedStep, setCompletedStep] = useState(-1);
-  const assesMentQuestion = useSelector(
-    (state: IRootState) => state.assesment.assesmentQuestion
+  const assessmentQuestion = useSelector(
+    (state: IRootState) => state.assessment.assessmentQuestion
   );
-  const assesMentResult = useSelector(
-    (state: IRootState) => state.assesment.result
+  const assessmentResult = useSelector(
+    (state: IRootState) => state.assessment.result
   );
-  const maxAssesmentQuestions = useSelector(
+  const maxAssessmentQuestions = useSelector(
     (state: IRootState) =>
-      state.assesment.assesmentSummary.data!.numberOfQuestions
+      state.assessment.assessmentSummary.data!.numberOfQuestions
   );
   // Continue Assessment Modal changes start here
   const continueAssessmentModalNotified = useSelector(
     (state: IRootState) =>
-      state.assesment.misc.continueAssessmentNotificationShown
+      state.assessment.misc.continueAssessmentNotificationShown
   );
   const setContinueAssessmentModalDisplayed = useActions(
     setContinueAssessmentNotificationShown
   );
   // Assessment time related changes
   const timeOut = useSelector(
-    (state: IRootState) => state.assesment.assesmentSummary.data!.timeOut
+    (state: IRootState) => state.assessment.assessmentSummary.data!.timeOut
   );
   const timeOutTime = useSelector(
-    (state: IRootState) => state.assesment.assesmentSummary.data!.timeOutTime
+    (state: IRootState) => state.assessment.assessmentSummary.data!.timeOutTime
   );
   const warningTimePercentage = useSelector(
     (state: IRootState) =>
-      state.assesment.assesmentSummary.data!.warningTimePercentage
+      state.assessment.assessmentSummary.data!.warningTimePercentage
   );
   const startTime = useSelector(
-    (state: IRootState) => state.assesment.assessmentTime.startTime
+    (state: IRootState) => state.assessment.assessmentTime.startTime
   );
   const setCenterDisplayText = useActions(setAppBarCenterText);
   const [timerExpiry, setTimerExpiry] = useState(false);
@@ -353,7 +353,7 @@ function QuestionRender(props: IQuestionProps) {
   }
 
   useEffect(() => {
-    if (assesMentQuestion.status === 'success') {
+    if (assessmentQuestion.status === 'success') {
       if (
         Object.keys(previousMarkedAnswers).length > 0 &&
         !continueAssessmentModalNotified
@@ -363,17 +363,17 @@ function QuestionRender(props: IQuestionProps) {
         setContinueAssessmentModalDisplayed();
       }
     }
-  }, [previousMarkedAnswers, assesMentQuestion.status]);
+  }, [previousMarkedAnswers, assessmentQuestion.status]);
 
   const handleContinueModalYesClicked = () => {
     setOpenContinueModal(false);
     setContinueAssessmentModalDisplayed();
     let continueQuestionIndex = Object.keys(previousMarkedAnswers).length;
     let url = '';
-    if (continueQuestionIndex + 1 <= maxAssesmentQuestions) {
+    if (continueQuestionIndex + 1 <= maxAssessmentQuestions) {
       continueQuestionIndex = continueQuestionIndex + 1;
     }
-    url = `/assessment/${assesmentId}/question/${continueQuestionIndex}`;
+    url = `/assessment/${assessmentId}/question/${continueQuestionIndex}`;
     resetAssessmentQuestion();
     setCurrentNavigationItem(continueQuestionIndex.toString());
     props.history.push(url);
@@ -394,15 +394,15 @@ function QuestionRender(props: IQuestionProps) {
     setSubmitNotifyModal(false);
   };
 
-  const generateNextUrl = (assesmentId: string, currentIndex: number) => {
-    return currentIndex + 1 <= maxAssesmentQuestions
-      ? `/assessment/${assesmentId}/question/${currentIndex + 1}`
-      : `/result/${assesmentId}`;
+  const generateNextUrl = (assessmentId: string, currentIndex: number) => {
+    return currentIndex + 1 <= maxAssessmentQuestions
+      ? `/assessment/${assessmentId}/question/${currentIndex + 1}`
+      : `/result/${assessmentId}`;
   };
 
-  const generatePrevUrl = (assesmentId: string, currentIndex: number) => {
+  const generatePrevUrl = (assessmentId: string, currentIndex: number) => {
     return currentIndex - 1 >= 1
-      ? `/assessment/${assesmentId}/question/${currentIndex - 1}`
+      ? `/assessment/${assessmentId}/question/${currentIndex - 1}`
       : `/assessment`;
   };
 
@@ -419,7 +419,7 @@ function QuestionRender(props: IQuestionProps) {
           action: 'Answer submitted',
           label: selectedOption.answers.join(';'),
         });
-        postSelectedOption(assesmentId, selectedOption);
+        postSelectedOption(assessmentId, selectedOption);
       }
       if (url === '') {
         resetAssessmentQuestion();
@@ -442,17 +442,17 @@ function QuestionRender(props: IQuestionProps) {
   };
 
   function postLastSelectedOption(
-    assesmentId: string,
+    assessmentId: string,
     payload: IAnswerPayload
   ) {
-    Http.post<IAssesmentPostResponse, IAnswerPayload>({
-      url: `/api/v2/assessment/${assesmentId}/answer`,
+    Http.post<IAssessmentPostResponse, IAnswerPayload>({
+      url: `/api/v2/assessment/${assessmentId}/answer`,
       body: {
         ...payload,
       },
       state: stateVariable,
     })
-      .then((response: IAssesmentPostResponse) => {
+      .then((response: IAssessmentPostResponse) => {
         setLastAnswerSubmitStatus('success');
       })
       .catch((error) => {
@@ -472,7 +472,7 @@ function QuestionRender(props: IQuestionProps) {
   }, [lastAnswerSubmitStatus]);
 
   const processSubmit = (event?: any) => {
-    const questionData = assesMentQuestion.data;
+    const questionData = assessmentQuestion.data;
     const { id } = questionData!;
     const defaultSelectedOption:
       | ISelectedOption
@@ -484,7 +484,7 @@ function QuestionRender(props: IQuestionProps) {
         action: 'Answer submitted',
         label: selectedOption.answers.join(';'),
       });
-      postLastSelectedOption(assesmentId, selectedOption);
+      postLastSelectedOption(assessmentId, selectedOption);
     } else {
       setLastAnswerSubmitStatus('success');
     }
@@ -539,11 +539,11 @@ function QuestionRender(props: IQuestionProps) {
     }
     let numberOfAnswers = 0;
     if (
-      assesMentQuestion &&
-      assesMentQuestion.data &&
-      assesMentQuestion.data.numberOfAnswers
+      assessmentQuestion &&
+      assessmentQuestion.data &&
+      assessmentQuestion.data.numberOfAnswers
     ) {
-      numberOfAnswers = assesMentQuestion!.data!.numberOfAnswers;
+      numberOfAnswers = assessmentQuestion!.data!.numberOfAnswers;
     }
     if (answers!.length !== numberOfAnswers) {
       setErrorMessage({
@@ -561,9 +561,9 @@ function QuestionRender(props: IQuestionProps) {
     }
 
     if (
-      assesMentQuestion &&
-      assesMentQuestion.data &&
-      assesMentQuestion.data.reason &&
+      assessmentQuestion &&
+      assessmentQuestion.data &&
+      assessmentQuestion.data.reason &&
       !comment
     ) {
       setErrorMessage({
@@ -599,7 +599,7 @@ function QuestionRender(props: IQuestionProps) {
 
   const renderActionButton = (hasSelectionChanged: boolean) => {
     const actionButtonText =
-      parseInt(index, 10) + 1 <= maxAssesmentQuestions ? 'Next' : 'Submit';
+      parseInt(index, 10) + 1 <= maxAssessmentQuestions ? 'Next' : 'Submit';
     if (actionButtonText === 'Next') {
       return (
         <Box ml={2} component='div'>
@@ -694,7 +694,7 @@ function QuestionRender(props: IQuestionProps) {
           action: 'Answer submitted',
           label: selectedOption.answers.join(';'),
         });
-        postSelectedOption(assesmentId, selectedOption);
+        postSelectedOption(assessmentId, selectedOption);
       }
     }
     resetAssessmentQuestion();
@@ -759,13 +759,13 @@ function QuestionRender(props: IQuestionProps) {
 
   useEffect(() => {
     if (timerExpiry) {
-      // const questionData = assesMentQuestion.data;
+      // const questionData = assessmentQuestion.data;
       // const { id } = questionData!;
       // const defaultSelectedOption:
       //   | ISelectedOption
       //   | undefined = getDefaultSelectedOption(id);
       // const hasSelectionChanged = getHasSelectionChanged(defaultSelectedOption);
-      const resultUrl = `/result/${assesmentId}`;
+      const resultUrl = `/result/${assessmentId}`;
       setNextUrl(resultUrl);
       const submitSuccess = handleSubmit();
       if (!submitSuccess) {
@@ -778,7 +778,7 @@ function QuestionRender(props: IQuestionProps) {
   }, [timerExpiry]);
 
   const renderQuestionComponent = () => {
-    const questionData = assesMentQuestion.data;
+    const questionData = assessmentQuestion.data;
     const { id } = questionData!;
     const defaultSelectedOption:
       | ISelectedOption
@@ -858,7 +858,7 @@ function QuestionRender(props: IQuestionProps) {
     if (event) {
       setCurrentNavigationItem(event.toString());
       props.history.push(
-        `/assessment/${assesmentId}/question/${event.toString()}`
+        `/assessment/${assessmentId}/question/${event.toString()}`
       );
     }
   };
@@ -876,7 +876,7 @@ function QuestionRender(props: IQuestionProps) {
           pageRangeDisplayed={10}
           activePage={parseInt(currentNavigationItem, 10)}
           itemsCountPerPage={1}
-          totalItemsCount={maxAssesmentQuestions}
+          totalItemsCount={maxAssessmentQuestions}
           onChange={handleNavBarClick}
           activeClass='active-li-item'
           activeLinkClass='active-link'
@@ -914,8 +914,8 @@ function QuestionRender(props: IQuestionProps) {
       previousMarkedAnswers
     );
     if (mappedQuestionId !== '') {
-      fetchAssesmentQuestion(
-        assesmentId,
+      getAssessmentQuestion(
+        assessmentId,
         index,
         assessmentType,
         questionnaireVersion,
@@ -923,25 +923,25 @@ function QuestionRender(props: IQuestionProps) {
         mappedQuestionId
       );
     } else {
-      fetchAssesmentQuestion(
-        assesmentId,
+      getAssessmentQuestion(
+        assessmentId,
         index,
         assessmentType,
         questionnaireVersion,
         team
       );
     }
-    setNextUrl(generateNextUrl(assesmentId, parseInt(index, 10)));
-    setPrevUrl(generatePrevUrl(assesmentId, parseInt(index, 10)));
+    setNextUrl(generateNextUrl(assessmentId, parseInt(index, 10)));
+    setPrevUrl(generatePrevUrl(assessmentId, parseInt(index, 10)));
     setPrevQuesIndex(parseInt(index, 10) - 1);
     setNextQuesIndex(parseInt(index, 10) + 1);
   }, [index]);
 
   useEffect(() => {
-    if (assesMentQuestion.status === 'success') {
+    if (assessmentQuestion.status === 'success') {
       setStepperParameters();
     }
-  }, [assesMentQuestion.data]);
+  }, [assessmentQuestion.data]);
 
   useEffect(() => {
     if (timeOut) {
@@ -974,7 +974,7 @@ function QuestionRender(props: IQuestionProps) {
   };
 
   const redirectToLogin = () => {
-    const error = JSON.stringify(assesMentQuestion!.error);
+    const error = JSON.stringify(assessmentQuestion!.error);
     const object = JSON.parse(error);
     if (object.code) {
       if (object.code === 401) {
@@ -987,10 +987,10 @@ function QuestionRender(props: IQuestionProps) {
     }
   };
 
-  const isQuestionFetchSuccess = assesMentQuestion.status === 'success';
-  const isQuestionFetchFailed = assesMentQuestion.status === 'fail';
+  const isQuestionFetchSuccess = assessmentQuestion.status === 'success';
+  const isQuestionFetchFailed = assessmentQuestion.status === 'fail';
 
-  if (assesMentResult.status === 'success' && assesMentResult.data !== null) {
+  if (assessmentResult.status === 'success' && assessmentResult.data !== null) {
     props.history.push('/');
   }
 
@@ -1051,7 +1051,7 @@ function QuestionRender(props: IQuestionProps) {
           </Grid>
         </Grid>
       </Paper>
-      {Object.keys(previousMarkedAnswers).length >= maxAssesmentQuestions - 1
+      {Object.keys(previousMarkedAnswers).length >= maxAssessmentQuestions - 1
         ? renderNavButtons()
         : ''}
       {isQuestionFetchFailed

@@ -46,6 +46,7 @@ function getCICDIndexProperties() {
 		teamId: { type: 'keyword' },
 		servicePath: { type: 'keyword' },
 		projectName: { type: 'keyword' },
+		failureWindow: { type: 'integer' },
 		buildNum: { type: 'integer' },
 		stages: {
 			type: 'nested',
