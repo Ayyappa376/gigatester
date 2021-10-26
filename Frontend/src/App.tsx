@@ -1,44 +1,25 @@
 import React, { useEffect, useState } from 'react';
-import { Route, Router } from 'react-router-dom';
+import { Route, Router, Switch } from 'react-router-dom';
 import { history } from './configureStore';
-import {
-  About,
-  Admin,
-  Assesment,
-  AssessmentDetail,
-  AssessmentSelect,
-  Auth,
-  ErrorPage,
-  Home,
-  Logout,
-  MetricSelect,
-  Relogin,
-  Result,
-  TeamAssessments,
-  TeamSelect,
-  TrialClose,
-  TrialHome,
-  Trends,
-  ViewAssessment,
-  ViewTeams,
-} from './pages';
-import { QuestionRenderer, PageHeader } from './components';
+import { Home } from './pages';
+import { PageHeader } from './components';
 import { useSelector } from 'react-redux';
 import { useActions, removeUserDetails } from './actions';
 import { IRootState } from './reducers';
 import ReactGA from 'react-ga';
 import Dashboard from './components/admin/dashboard';
 import { LanguageProvider } from './common/Language';
+import Layout from './Layout';
 
-interface IDoitrightProps {}
+interface IDoitrightProps { }
 
 const GA_id_prod = 'UA-154108167-2';
 const GA_id_dev = 'UA-154108167-1';
 const GA_id_beta = 'UA-154108167-3';
 
-const GigaTester = (props: IDoitrightProps) => {
+const DoItRight = (props: IDoitrightProps) => {
   const userData = useSelector((state: IRootState) => state.user.userDetails);
-  const removeUserData = useActions(removeUserDetails);  
+  const removeUserData = useActions(removeUserDetails);
   const [metricType, setMetricType] = useState('doraMetrics');
   const [metricSelection, setMetricSelection] = useState(true);
   const env = process.env.REACT_APP_STAGE;
@@ -76,46 +57,13 @@ const GigaTester = (props: IDoitrightProps) => {
     <LanguageProvider>
       <Router history={history}>
         <PageHeader getMetricsType={(type: any) => getMetricsType(type)} />
-        <Route exact path='/' component={Home} />
-        <Route exact path='/assessment' component={Assesment} />
-        <Route exact path='/assessmentselect' component={AssessmentSelect} />
-        <Route exact path='/auth' component={Auth} />
-        <Route exact path='/about' component={About} />
-        <Route exact path='/logout' component={Logout} />
-        <Route exact path='/relogin' component={Relogin} />
-        <Route exact path='/assessment/history' component={ViewAssessment} />
-        <Route
-          exact
-          path={`/assessment/:assesmentId/question/:index`}
-          component={QuestionRenderer}
-        />
-        <Route exact path='/result/:assesmentId' component={Result} />
-        <Route
-          exact
-          path='/assessment/detail/:assessmentId'
-          component={AssessmentDetail}
-        />
-        <Route exact path='/assessment/teams' component={ViewTeams} />
-        <Route
-          exact
-          path='/assessment/teams/:teamName/:assessmentName/:version'
-          component={TeamAssessments}
-        />
-        <Route exact path='/teamselect' component={TeamSelect} />
-        <Route exact path='/error' component={ErrorPage} />
-        <Route exact path='/admin' component={Admin} />
-        <Route exact path='/admin/dashboard' component={Dashboard} />
-        <Route exact path='/trends' component={Trends} />
-        <Route exact path='/trial' component={TrialHome} />
-        <Route exact path='/trial/close' component={TrialClose} />
-        <Route
-          exact
-          path='/metricSelect'
-          render={() => <MetricSelect metricType={metricType} metricSelection={metricSelection}/>}
-        />
+        <Switch>
+          <Route exact path='/' component={Home} />
+          <Route render={(props) => <Layout {...props} metricType={metricType} metricSelection={metricSelection} />} />
+        </Switch>
       </Router>
-    </LanguageProvider>
+    </LanguageProvider >
   );
 };
 
-export default GigaTester;
+export default DoItRight;

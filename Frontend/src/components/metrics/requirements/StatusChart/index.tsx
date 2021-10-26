@@ -16,8 +16,6 @@ export default function ReqStatusChart(props: any) {
     IReqStatusDataItem[]
   >([]);
   const [failureMsg, setFailureMsg] = useState(false);
-  // const [fromDate, setFromDate] = useState(0);
-  // const [toDate, setToDate] = useState(0);
   const [loader, setLoader] = useState(true);
   const [userMsg, setUserMsg] = useState('Loading...');
   const history = useHistory();
@@ -42,12 +40,9 @@ export default function ReqStatusChart(props: any) {
 
   useEffect(() => {
     updateData(props.timeline);
-    fetchData();    
   }, [props.customDate, props.timeline]);
-  
+
   useEffect(() => {
-    // setFromDate(props.selectedDateRange.fromDate);
-    // setToDate(props.selectedDateRange.toDate);
     setRequirementStatusData([]);
     setUserMsg('Loading...');
     fetchData();
@@ -55,70 +50,68 @@ export default function ReqStatusChart(props: any) {
 
   const fetchData = () => {
     let { timeline, focusTeam, focusService, focusSubService, focusServiceType, joinServiceAndSubService, itemType, itemPriority, selectedDateRange } = props;
+    let url: string = '/api/metrics/reqs/status';
+    let joiner = '?';
+    if (focusTeam[0] !== ALL) {
+      url = `${url}${joiner}teamId=${focusTeam.toString()}`;
+      joiner = '&';
+    }
+    if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${joinServiceAndSubService()}`;
+      joiner = '&';
+    } else if (focusService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusService.join()}`;
+      joiner = '&';
+    } else if (focusSubService[0] !== ALL) {
+      url = `${url}${joiner}service=${focusSubService.join()}`;
+      joiner = '&';
+    }
+    if (focusServiceType[0] !== ALL) {
+      url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
+      joiner = '&';
+    }
+    if (itemType[0] !== ALL) {
+      url = `${url}${joiner}type=${itemType.toString()}`;
+      joiner = '&';
+    }
+    if (itemPriority[0] !== ALL) {
+      url = `${url}${joiner}priority=${itemPriority.toString()}`;
+      joiner = '&';
+    }
+    if (timeline !== 'one_day') {
+      url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
+      joiner = '&';
+    }
 
-      let url: string = '/api/metrics/reqs/status';
-      let joiner = '?';
-      if (focusTeam[0] !== ALL) {
-        url = `${url}${joiner}teamId=${focusTeam.toString()}`;
-        joiner = '&';
-      }
-      if (focusService[0] !== ALL && focusSubService[0] !== ALL) {
-        url = `${url}${joiner}service=${joinServiceAndSubService()}`;
-        joiner = '&';
-      } else if (focusService[0] !== ALL) {
-        url = `${url}${joiner}service=${focusService.join()}`;
-        joiner = '&';
-      } else if (focusSubService[0] !== ALL) {
-        url = `${url}${joiner}service=${focusSubService.join()}`;
-        joiner = '&';
-      }
-      if (focusServiceType[0] !== ALL) {
-        url = `${url}${joiner}serviceType=${focusServiceType.join()}`;
-        joiner = '&';
-      }
-      if (itemType[0] !== ALL) {
-        url = `${url}${joiner}type=${itemType.toString()}`;
-        joiner = '&';
-      }
-      if (itemPriority[0] !== ALL) {
-        url = `${url}${joiner}priority=${itemPriority.toString()}`;
-        joiner = '&';
-      }
-      if (timeline !== 'one_day') {
-        url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
-        joiner = '&';
-      }
-
-      Http.get({
-        url,
-        state: stateVariable,
-      })
-        .then((response: any) => {
-          if (response) {
-            setTimeout(() => {
-              setUserMsg('');
-            }, 10000);
-            setRequirementStatusData(
-              response.sort((a: any, b: any) => {
-                return a.timestamp - b.timestamp;
-              })
-            );
-            setLoader(false);
-          } else {
-            setLoader(false);
-            setFailureMsg(true);
-          }
-        })
-        .catch((error) => {
+    Http.get({
+      url,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        if (response) {
+          setTimeout(() => {
+            setUserMsg('');
+          }, 10000);
+          setRequirementStatusData(
+            response.sort((a: any, b: any) => {
+              return a.timestamp - b.timestamp;
+            })
+          );
+          setLoader(false);
+        } else {
           setLoader(false);
           setFailureMsg(true);
-          const perror = JSON.stringify(error);
-          const object = JSON.parse(perror);
-          if (object.code === 401) {
-            history.push('/relogin')
-          }
+        }
+      })
+      .catch((error) => {
+        setLoader(false);
+        setFailureMsg(true);
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          history.push('/relogin')
+        }
       });
-    // }
   };
 
   const getDateRange = (dateRange: any) => {

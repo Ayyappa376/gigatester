@@ -3,7 +3,7 @@ import { API, Handler } from '@apis/index';
 import { Question } from '@models/index';
 import { createQuestion, appLogger, responseBuilder } from '@utils/index';
 import { Response } from 'express';
-import uuidv1 from 'uuid/v1';
+//import uuidv1 from 'uuid/v1';
 
 interface CreateQuestion {
   body: Question;
@@ -30,10 +30,10 @@ async function handler(request: CreateQuestion, response: Response) {
   }
 
   const createData: Question = <Question>body;
-  createData.id = `ques_${uuidv1()}`;
+  // createData.id = `ques_${uuidv1()}`;
   // createData.questionnaireAttached = '0000';
 
-  appLogger.info({ QuestionsId: createData.id });
+  // appLogger.info({ QuestionsId: createData.id });
   const ok: any = await createQuestion(createData, headers.user.email).catch(
     (e) => {
       appLogger.error({ err: e }, 'addQuestion');

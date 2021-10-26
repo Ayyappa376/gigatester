@@ -35,6 +35,7 @@ import { getDate } from '../../../utils/data';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
+import { ITeamInfo } from '../../../model';
 
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -89,8 +90,8 @@ const ManageUsers = (props: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [numberOfUsers, setNumberOfUsers] = useState(0);
-  const [teams, setTeams] = useState<any>(null);
-  const [focusTeamName, setFocusTeamName] = useState('0');
+  const [teams, setTeams] = useState<ITeamInfo[]>([]);
+  const [focusTeamId, setFocusTeamId] = useState('0');
   const [itemLimit, setItemLimit] = useState({
     lowerLimit: 0,
     upperLimit: 9,
@@ -128,8 +129,8 @@ const ManageUsers = (props: any) => {
 
   const fetchUserList = () => {
     setBackdropOpen(true);
-    let url: string = `/api/v2/admin/users/${focusTeamName}`;
-    if (focusTeamName === '0') {
+    let url: string = `/api/v2/admin/users/${focusTeamId}`;
+    if (focusTeamId === '0') {
       url = '/api/v2/admin/users/allUsers';
     }
     Http.get({
@@ -168,7 +169,7 @@ const ManageUsers = (props: any) => {
     fetchUserList();
     setSearchString('');
     setCurrentPage(1);
-  }, [focusTeamName]);
+  }, [focusTeamId]);
 
   useEffect(() => {
     setNumberOfUsers(users.length);
@@ -267,8 +268,18 @@ const ManageUsers = (props: any) => {
   }
 
   function compareTeam(a: any, b: any) {
-    const teamsA = commaSeparators(a.teams);
-    const teamsB = commaSeparators(b.teams);
+//    const teamsA = commaSeparators(a.teams);
+//    const teamsB = commaSeparators(b.teams);
+    const teamsA = a.teams.map((teamId: string) => {
+      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+      return team ? team.teamName : teamId;
+    }).join(', ');
+
+    const teamsB = b.teams.map((teamId: string) => {
+      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+      return team ? team.teamName : teamId;
+    }).join(', ');
+
     if (teamsA.toLowerCase() < teamsB.toLowerCase()) {
       return -1;
     }
@@ -279,8 +290,11 @@ const ManageUsers = (props: any) => {
   }
 
   function compareRoles(a: any, b: any) {
-    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
-    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
+//    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
+//    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
+    const rolesA = a.roles ? a.roles.join(', ') : 'Member';
+    const rolesB = b.roles ? b.roles.join(', ') : 'Member';
+    
     if (rolesA.toLowerCase() < rolesB.toLowerCase()) {
       return -1;
     }
@@ -323,8 +337,18 @@ const ManageUsers = (props: any) => {
   }
 
   function compareTeamD(a: any, b: any) {
-    const teamsA = commaSeparators(a.teams);
-    const teamsB = commaSeparators(b.teams);
+//    const teamsA = commaSeparators(a.teams);
+//    const teamsB = commaSeparators(b.teams);
+    const teamsA = a.teams.map((teamId: string) => {
+      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+      return team ? team.teamName : teamId;
+    }).join(', ');
+
+    const teamsB = b.teams.map((teamId: string) => {
+      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+      return team ? team.teamName : teamId;
+    }).join(', ');
+
     if (teamsA.toLowerCase() < teamsB.toLowerCase()) {
       return 1;
     }
@@ -335,8 +359,10 @@ const ManageUsers = (props: any) => {
   }
 
   function compareRolesD(a: any, b: any) {
-    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
-    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
+//    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
+//    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
+    const rolesA = a.roles ? a.roles.join(', ') : 'Member';
+    const rolesB = b.roles ? b.roles.join(', ') : 'Member';
 
     if (rolesA.toLowerCase() < rolesB.toLowerCase()) {
       return 1;
@@ -379,9 +405,10 @@ const ManageUsers = (props: any) => {
   };
 
   const handleChangeTeam = (event: any) => {
-    setFocusTeamName(event.target.value);
+    setFocusTeamId(event.target.value);
   };
 
+/*
   const commaSeparators = (strArray: string[]) => {
     let rolesStr = '';
     if (Array.isArray(strArray)) {
@@ -397,6 +424,7 @@ const ManageUsers = (props: any) => {
     }
     return rolesStr;
   };
+*/
 
   const renderUsersTable = () => {
     return (
@@ -414,7 +442,7 @@ const ManageUsers = (props: any) => {
                   </InputLabel>
                   <Select
                     name={'selectTeam'}
-                    value={focusTeamName}
+                    value={focusTeamId}
                     onChange={handleChangeTeam}
                   >
                     <MenuItem key={'allUsers'} value={'0'}>
@@ -422,7 +450,7 @@ const ManageUsers = (props: any) => {
                     </MenuItem>
                     {teams && teams.length !== 0 ? (
                       teams.map((el: any) => (
-                        <MenuItem key={el.teamId} value={el.teamName}>
+                        <MenuItem key={el.teamId} value={el.teamId}>
                           {el.teamName}
                         </MenuItem>
                       ))
@@ -554,7 +582,7 @@ const ManageUsers = (props: any) => {
                           className={classes.rolesColumn}
                         >
                           <Typography className='tableBodyText'>
-                            {row.roles ? commaSeparators(row.roles) : 'Member'}
+                            {row.roles ? row.roles.join(', ')/*commaSeparators(row.roles)*/ : 'Member'}
                           </Typography>
                         </TableCell>
                         <TableCell
@@ -564,7 +592,12 @@ const ManageUsers = (props: any) => {
                           className={classes.teamsColumn}
                         >
                           <Typography className='tableBodyText'>
-                            {commaSeparators(row.teams)}
+                            {/*commaSeparators(row.teams)*/
+                              row.teams.map((teamId: string) => {
+                                const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+                                return team ? team.teamName : teamId;
+                              }).join(', ')
+                            }
                           </Typography>
                         </TableCell>
                         <TableCell align='center'>

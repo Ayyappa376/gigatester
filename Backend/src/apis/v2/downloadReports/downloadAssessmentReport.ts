@@ -212,9 +212,9 @@ export const downloadAssessmentReports = async (
     assessmentType
   );
   let teamMembers: string[] = [];
-  for (const teamName of teamsManagedByUser) {
-    if (teamsAssignedWithTheQuestionnaire.includes(teamName)) {
-      const teamMembersForTeam: string[] = await getTeamMembers(teamName);
+  for (const teamId of teamsManagedByUser) {
+    if (teamsAssignedWithTheQuestionnaire.includes(teamId)) {
+      const teamMembersForTeam: string[] = await getTeamMembers(teamId);
       teamMembers = teamMembers.concat(teamMembersForTeam);
     }
   }
@@ -236,7 +236,6 @@ export const downloadAssessmentReports = async (
       });
   for (const val of assessmentHistory) {
     if (val.assessmentDetails) {
-      //            const resultItem = await prepareData(val, questionNAnswers);
       const resultItem = await prepareData(val);
       myResult = myResult.concat(resultItem);
     }

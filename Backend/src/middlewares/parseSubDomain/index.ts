@@ -14,11 +14,11 @@ export function parseSubDomain(
   appLogger.info({ originalURL }, 'In parseSubDomain');
 
   let subdomain = originalURL ? getSubDomainOfURL(originalURL) : '';
-  //if there is no subdomain before gigatester, or if the site is being accessed using localhost or IP address,
+  //if there is no subdomain before doitright, or if the site is being accessed using localhost or IP address,
   // then use the default subdomain of that stage
   if (
     subdomain === '' ||
-    subdomain === 'gigatester' ||
+    subdomain === 'doitright' ||
     /^[0-9]+$/.test(subdomain)
   ) {
     //set subdomain to default_subdomain
@@ -32,7 +32,7 @@ export function parseSubDomain(
 
 function getSubDomainOfURL(origURL: string): string {
   //cut out the substring after 'https://' or 'http://' and the first occurance of the character .
-  const index = origURL.indexOf('.');
+  const index = origURL.indexOf('.doitright.io');
   if (origURL.startsWith('http://') && index > 7) {
     return origURL.substring(7, index);
   }

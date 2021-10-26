@@ -391,7 +391,7 @@ export const getChangeFailureRateGraphData = async ({
 
       if(build._source.endTimestamp) {
         //calculate the incident window based on the next successfull deployment time and configured incident window size, whichever is lower.
-        let windowEnd: number = build._source.endTimestamp + getConfiguredIncidentWindow(build._source.teamId, build._source.servicePath) * 3600; //converting windowPeriod from hours to seconds
+        let windowEnd: number = build._source.endTimestamp + (build._source.failureWindow * 3600); //converting windowPeriod from hours to seconds
         if((sortedResult.length > 0) && (sortedResult[0]._source.startTimestamp < windowEnd)) {
           windowEnd = sortedResult[0]._source.startTimestamp;
         }
@@ -487,7 +487,3 @@ export const getChangeFailureRateGraphData = async ({
   return finalResult;
   */
 };
-
-function getConfiguredIncidentWindow(teamId: string, servicePath: string): number {
-  return 48; //TODO: implement properly. To be read from dynamoDB team table
-}

@@ -65,7 +65,7 @@ var getAllDescendantGroupsOfGroup = `descendant_groups`;
 
 var getAllPipelinesOfProject = `projects/${projectId}/pipelines`;
 var getAllPipelinesOfProjectByPage = `projects/${projectId}/pipelines?page=1&per_page=${pageLimit}`;
-var getAllPipelinesOfProjectCreatedBeforeAfter = `projects/${projectId}/pipelines?created_after=${fromDate}&created_before=${toDate}`;
+var getAllPipelinesOfProjectCreatedBeforeAfter = `projects/${projectId}/pipelines?created_after=${fromDate}&created_before=${toDate}`; //created_after created_before are not there
 var getAllPipelinesOfProjectUpdatedBeforeAfter = `projects/${projectId}/pipelines?updated_after=${fromDate}&updated_before=${toDate}`;
 var getPipelineDetailsOfProject = `projects/${projectId}/pipelines/${pipelineId}`;
 var getPipelineJobsOfProject = `projects/${projectId}/pipelines/${pipelineId}/jobs?per_page=100`;

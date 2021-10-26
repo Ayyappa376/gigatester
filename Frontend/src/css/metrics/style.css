@@ -176,11 +176,6 @@ button:active {
   font-family: Helvetica, Arial, sans-serif !important;
 }
 
-.topScrollContainerMetrics {
-  padding-top: 105px !important;
-  margin-top: -85px !important;
-}
-
 .apexcharts-legend-marker {
   top: 1px !important;
 }

@@ -33,6 +33,7 @@ export interface BuildDatabaseDataItem {
     servicePath: string;
     buildNum: number;
     projectName: string;
+    failureWindow: number;
     stages: BuildDatabaseStageDataItem[];
     status: string;
     startTimestamp: number; // or date

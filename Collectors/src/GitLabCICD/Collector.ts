@@ -41,9 +41,11 @@ async function getDataFromGitLabCICDForProj(jobDetails: IGitLabCICDJobInfo, proj
 
 	const baseURL = `${jobDetails.url.value}/api/v4/projects/${projId}/pipelines`;
 	const now: Date = new Date(Date.now());
+//	const now: Date = new Date(2021, 3, 1);
 	const toDateStr = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}T${now.getHours()}:${now.getMinutes()}:00Z`;
 
 	//get all issues in system
+	// TODO: created_before and created_after are not available. use something alternate
 	let createdURL = `${baseURL}?created_before=${toDateStr}`;
 	let updatedURL = `${baseURL}?updated_before=${toDateStr}`;
 
@@ -149,6 +151,7 @@ function storeInDB(jobDetails: IGitLabCICDJobInfo, projName: string, pipelineDat
 		teamId: jobDetails.teamId,
 		servicePath: jobDetails.servicePath,
 		projectName: projName,
+		failureWindow: jobDetails.failureWindow.value,
 		buildNum: pipelineData[0].pipeline.id,
 		status: STATUS_SCHEDULED,
 		startTimestamp: 0,

@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 //const mainTableName = 'Questionnaires';
 const QUESTIONNAIRES_TABLE_NAME = 'Questionnaires';
 

@@ -1,3 +1,4 @@
+const fs = require('fs');
 const cognitoUsersTableFunctions = require('./cognitoUsersTableFunctions');
 
 //const mainTableName = 'Team';
@@ -133,15 +134,16 @@ exports.importTableDataFromJSONFile = (ddbdc, tablePrefix, importDir) => {
 				if(err) {
 					console.log("User " + teamDetail.manager + " is not found in " + userTableName, err);
 				} else {
+					console.log(data);
 					//store the team details
-					teamDetail.managerId = data[0].id;
-					const params = {
+					teamDetail.managerId = data.Items[0].id;
+					const params1 = {
 						Item: teamDetail,
 						TableName: tableName,
 					}
 
-					ddbdc.put(params, function(err, data) {
-						if (err) {
+					ddbdc.put(params1, function(err1, data1) {
+						if (err1) {
 							console.error("Error adding team " + teamDetail.teamName + " to table " + tableName, err);
 						} else {
 							console.log("Added team " + teamDetail.teamName + " to table " + tableName);

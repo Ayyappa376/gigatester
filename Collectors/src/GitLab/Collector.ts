@@ -45,6 +45,7 @@ async function getDataFromGitLabForProj(jobDetails: IGitLabJobInfo, projId: stri
 	const toDateStr = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}T${now.getHours()}:${now.getMinutes()}:00Z`;
 
 	//get all issues in system
+	// TODO: created_before and created_after are not available. use something alternate
 	let createdURL = `${baseURL}&created_before=${toDateStr}`;
 	let updatedURL = `${baseURL}&updated_before=${toDateStr}`;
 

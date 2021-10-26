@@ -143,7 +143,7 @@ async function getTeamTypeParamsWithQuestionnaireId(
   };
 }
 
-async function getTeamNameTypeParamsWithQuestionnaireId(
+async function getTeamIdTypeParamsWithQuestionnaireId(
   team: string | undefined,
   questionnaireId: string | undefined,
   questionnaireVersion: string | undefined
@@ -302,7 +302,7 @@ async function getTeamTypeParams(teamMembers: string[] | undefined): Promise<Dyn
   };
 }
 
-async function getTeamNameTypeParams(team: string | undefined): Promise<DynamoDB.ScanInput> {
+async function getTeamIdTypeParams(team: string | undefined): Promise<DynamoDB.ScanInput> {
   const archiveTime: number = await getArchiveTime();
   if(archiveTime > 0) {
     return <DynamoDB.ScanInput>{
@@ -406,22 +406,27 @@ export const getAssessmentHistory = async ({
   let params: DynamoDB.ScanInput;
   switch (type) {
     case 'user':
+      //get all assessments taken by a user
       params = await getUserTypeParams(userId);
       break;
     case 'manager':
-      // params = await getManagerTypeParams();
+      // get all assessments taken by all the users in teamMembers
+      // used to get all the assessments taken by all users belonging to all the teams managed by a manager
       params = await getTeamTypeParams(teamMembers);
       break;
     case 'team':
-      // Here we require team members
+      // get all assessments taken by all the users in teamMembers
+      // used to get all assessments taken by all users of a team
       params = await getTeamTypeParams(teamMembers);
       break;
     case 'team_name':
-      // Here we require team name
-      params = await getTeamNameTypeParams(team);
+      // get all assessments taken for a team
+      // Here we require team id
+      params = await getTeamIdTypeParams(team);
       break;
     case 'qid':
-      //get all assessment for a questionnaireId used in dashboard
+      // get all assessments for a questionnaireId and version and taken by all users in teamMembers
+      // used in dashboard
       params = await getTeamTypeParamsWithQuestionnaireId(
         teamMembers,
         questionnaireId,
@@ -429,15 +434,17 @@ export const getAssessmentHistory = async ({
       );
       break;
     case 'qid_team':
-      //get all assessment for a questionnaireId and a team used in dashboard
-      params = await getTeamNameTypeParamsWithQuestionnaireId(
+      // get all assessments for a questionnaireId and version and a team
+      // used in dashboard
+      params = await getTeamIdTypeParamsWithQuestionnaireId(
         team,
         questionnaireId,
         questionnaireVersion
       );
       break;
     case 'qid_teams':
-      //get all assessment for a questionnaireId and a team used in dashboard
+      // get all assessments for a questionnaireId and version and a team
+      // used in dashboard
       params = getAssessmentResultByQuestionnaire(
         team,
         questionnaireId,
@@ -445,14 +452,15 @@ export const getAssessmentHistory = async ({
       );
       break;
     case 'all_teams':
-      //get all assessment for a questionnaireId for all the teams used in dashboard
+      // get all assessment for a questionnaireId and version for all the teams
+      // used in dashboard
       params = await getTypeParamsWithQuestionnaireId(
         questionnaireId,
         questionnaireVersion
       );
       break;
     case 'feedback':
-      //get all assessment containing feedback
+      //get all assessments containing feedback
       params = getTypeParamsForFeedback();
       break;
     default:

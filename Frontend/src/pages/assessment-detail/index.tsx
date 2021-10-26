@@ -27,7 +27,7 @@ function AssessmentDetails(props: any) {
   const [fetchStatus, setFetchStatus] = useState(false);
   const fetchUserAssessmentDetail = useActions(fetchAssessmentDetail);
   const assessmentDetail = useSelector(
-    (state: IRootState) => state.assesment.assessmentDetail
+    (state: IRootState) => state.assessment.assessmentDetail
   );
   const assessmentId = props.match
     ? props.match.params.assessmentId

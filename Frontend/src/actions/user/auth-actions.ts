@@ -19,11 +19,11 @@ export function saveUserDetails(data: IAuthDetails): UserActions<IAuthDetails> {
     }
 }
 
-export function saveUserTeam(teamName: string): UserActions<object> {
+export function saveUserTeam(teamId: string): UserActions<object> {
     return {
         type: 'SAVE_USER_TEAM',
         payload: {
-            team: teamName
+            team: teamId
         }
     }
 }

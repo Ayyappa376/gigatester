@@ -1,21 +1,22 @@
+//TODO: This API is not being used any more. Can be deleted.
 import { API, Handler } from '@apis/index';
-import { Questionnaire, UserDocument } from '@models/index';
+//import { Questionnaire, UserDocument } from '@models/index';
 import {
   appLogger,
-  AssessmentDocument,
-  getAssessmentHistory,
-  getLatestAssessment,
-  getQuestionCategoryFromQuestionnaire,
-  getQuestionDetails,
-  getQuestionnaireId,
-  getResultLevels,
-  getTeamIds,
-  getUserAllAssessment,
-  getUserDocument,
-  responseBuilder,
+//  AssessmentDocument,
+//  getAssessmentHistory,
+//  getLatestAssessment,
+//  getQuestionCategoryFromQuestionnaire,
+//  getQuestionDetails,
+//  getQuestionnaireId,
+//  getResultLevels,
+//  getTeamIds,
+//  getUserAllAssessment,
+//  getUserDocument,
+//  responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
-import { getResponseBody, HistoryAcknowledgement } from './getResponseBody';
+//import { getResponseBody, HistoryAcknowledgement } from './getResponseBody';
 interface HistoryRequest {
   headers: {
     user: {
@@ -39,7 +40,7 @@ async function handler(
   response: Response
 ): Promise<any> {
   appLogger.info({ HistoryRequest: request }, 'Inside Handler');
-
+/*
   const { headers, query } = request;
   if (!headers.user) {
     const err = new Error('InvalidUser');
@@ -92,7 +93,7 @@ async function handler(
         const latestAssessments = await getLatestAssessment(totalAssessment);
         appLogger.info({ getLatestAssessment: latestAssessments });
         assessmentHistoryAllTeams[teamManagedByUser] = getResponseBody(
-          latestAssessments
+          latestAssessments, []
         );
       }
       if (questionnaireId) {
@@ -152,7 +153,7 @@ async function handler(
       );
       appLogger.info({ getAssessmentHistory: manageeAssessmentHistory });
       return responseBuilder.ok(
-        getResponseBody(manageeAssessmentHistory),
+        getResponseBody(manageeAssessmentHistory, []),
         response
       );
     }
@@ -162,7 +163,7 @@ async function handler(
     });
     appLogger.info({ getUserAllAssessment: assessmentHistory });
     const acknowledgement: HistoryAcknowledgement = getResponseBody(
-      assessmentHistory
+      assessmentHistory, []
     );
     appLogger.info({ getResponseBody: acknowledgement });
     return responseBuilder.ok(acknowledgement, response);
@@ -170,6 +171,7 @@ async function handler(
     const noTeamsManaged: HistoryAcknowledgement = <HistoryAcknowledgement>{};
     return responseBuilder.ok(noTeamsManaged, response);
   }
+  */
 }
 
 export const api: API = {

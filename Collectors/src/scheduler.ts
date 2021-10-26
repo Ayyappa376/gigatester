@@ -95,7 +95,7 @@ async function runCollectors(scheduledCollectors: string[]) {
 
 		if(/*!fetchedForService && */team.metrics && (team.metrics.length > 0)) {
 			team.metrics.forEach((metricTool: IMetricsTool) => {
-				fetchMetricsFor(scheduledCollectors, team.teamId, '', team.metrics);
+				fetchMetricsFor(scheduledCollectors, team.teamId, '', metricTool);
 			});
 		}
 
@@ -159,7 +159,7 @@ async function fetchMetricsFor(scheduledCollectors: string[], teamId: string, se
 		const service = workerFarm(require.resolve(collectorFile));
 		service(collectorData, workerEnded);
 	} else {
-		appLogger.info("Not starting collector");
+		appLogger.info({tool: metricTool.toolName, enabled: metricTool.enabled, scheduled: scheduledCollectors.includes(metricTool.toolName)}, "Not starting collector");
 	}
 }
 

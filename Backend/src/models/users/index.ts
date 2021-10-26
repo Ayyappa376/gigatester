@@ -12,9 +12,6 @@ export interface UserDocument {
     id: string;
     modifiedBy?: string;
     modifiedOn?: number;
-    //manager?: string;
-    //manages?: string[];
-    //order: string[];
     orgId?: string;
     roles?: string[];
     teams: AllotedTeam[];

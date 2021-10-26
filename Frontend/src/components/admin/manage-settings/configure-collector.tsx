@@ -19,8 +19,21 @@ import {
   Checkbox,
   FormControlLabel,
   Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+  IconButton,
+  FormControl,
+  Select,
+  MenuItem,
+  Popover,
+  Tooltip,
 } from '@material-ui/core';
 import { IRootState } from '../../../reducers';
+import ClearIcon from '@material-ui/icons/Clear';
+import AddIcon from '@material-ui/icons/Add';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
@@ -28,10 +41,11 @@ import { MANAGE_SETTINGS } from '../../../pages/admin';
 import Success from '../../success-page';
 import { buttonStyle } from '../../../common/common';
 import {
-  // IFieldConfigAttributes,
+  IFieldConfigAttributes,
   ICollectorConfigDetails,
   ICollectorConfig,
 } from '../../../model/system';
+import { LightTooltip } from '../../common/tooltip';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import './style.css';
@@ -79,6 +93,39 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
   },
   helpText: { fontSize: '12px', color: '#808080' },
+  formContainer: {
+    display: 'flex',
+    flexWrap: 'wrap',
+  },
+  iconButton: {
+    margin: theme.spacing(1),
+    ...buttonStyle,
+  },
+  formControl: {
+    minWidth: '100%',
+  },
+  typography: {
+    padding: theme.spacing(2),
+    width: '320px',
+  },
+  customTooltip: {
+    maxWidth: 150,
+    fontSize: '12px',
+    backgroundColor: '#4c4c4c',
+  },
+  addButton: {
+    marginTop: '20px',
+    marginLeft: '40px',
+    minWidth: '30%',
+    ...buttonStyle,
+  },
+  cancelButton: {
+    marginTop: '20px',
+    float: 'right',
+    marginRight: '40px',
+    minWidth: '30%',
+    ...buttonStyle,
+  },
 }));
 
 const EditSettingsCollectorConfig = (props: any) => {
@@ -89,6 +136,12 @@ const EditSettingsCollectorConfig = (props: any) => {
     {}
   );
   const [collectorsPosted, setCollectorsPosted] = useState(false);
+
+  const [openPopover, setOpenPopover] = useState(false);
+  const [optionsKey, setOptionsKey] = useState({colKey: '', colIndex: -1, attrKey: ''});
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [tags, setTags] = useState<string[]>([]);
+
   const [backdropOpen, setBackdropOpen] = useState(false);
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
@@ -184,15 +237,8 @@ const EditSettingsCollectorConfig = (props: any) => {
           ) {
             setFailure(true);
             setFailureMessage(
-              <Text tid='collector.schedule.should.be.between.1.and.24' />
+              <Text tid='collector.schedule.range.check' />
             );
-            /*
-            setFailureMessage(
-              `${(
-                <Text tid='collectorScheduleBeyondLimit' />
-              )}`
-            );
-*/
             validState = false;
           }
         }
@@ -238,44 +284,360 @@ const EditSettingsCollectorConfig = (props: any) => {
     setImmediateRun(tempRunList);
   };
 
-  const handleChangeValue = (
-    event: any,
-    colKey: string,
-    colIndex: number,
-    attrKey: string
-  ) => {
+  const handleChangeDefaultValue = (event: any, colKey: string, colIndex: number, attrKey: string) => {
     let temp: ICollectorConfigDetails = { ...collectors };
     temp[colKey][colIndex].attributes[attrKey].defaultValue = event.target.value;
     setCollectors(temp);
   };
 
-  const renderAttribute = (collector: ICollectorConfig, colKey: string, colIndex: number, attrKey: string) => {
-    const collectorAttr: any = collector.attributes[attrKey];
+  const handleAttrDisplayNameChange = (event: any, colKey: string, colIndex: number, attrKey: string) => {
+    let temp: ICollectorConfigDetails = { ...collectors };
+    temp[colKey][colIndex].attributes[attrKey].displayName = event.target.value;
+    setCollectors(temp);
+  };
+
+  const handleAttrTypeChange = (event: any, colKey: string, colIndex: number, attrKey: string) => {
+    let temp: ICollectorConfigDetails = { ...collectors };
+    switch (event.target.value) {
+      case 'list':
+      case 'multi-list':
+      case 'list-no-others': {
+        if (
+          temp[colKey][colIndex].attributes[attrKey].type !== 'list' &&
+          temp[colKey][colIndex].attributes[attrKey].type !== 'multi-list' &&
+          temp[colKey][colIndex].attributes[attrKey].type !== 'list-no-others'
+        ) {
+          temp[colKey][colIndex].attributes[attrKey].options = {};
+          temp[colKey][colIndex].attributes[attrKey].options.custom = '';
+        }
+        break;
+      }
+      case 'string':
+      case 'number':
+      case 'password':
+          default: {
+        delete temp[colKey][colIndex].attributes[attrKey].options;
+        break;
+      }
+    }
+    temp[colKey][colIndex].attributes[attrKey].type = event.target.value;
+    setCollectors(temp);
+  };
+
+  const handleAttrOptionsChange = (event: any, colKey: string, colIndex: number, attrKey: string) => {
+    let temp: ICollectorConfigDetails = { ...collectors };
+    if (tags.length > 0) {
+      temp[colKey][colIndex].attributes[attrKey].options.custom = temp[colKey][colIndex].attributes[attrKey].options.custom.concat(
+        (temp[colKey][colIndex].attributes[attrKey].options.custom === '') ? '' : ',',
+        tags.join(',')
+      );
+      setCollectors(temp);
+    }
+    handleClosePopover();
+  };
+
+  const handleAttrMandatoryChange = (event: any, colKey: string, colIndex: number, attrKey: string) => {
+    let temp: ICollectorConfigDetails = { ...collectors };
+    temp[colKey][colIndex].attributes[attrKey].mandatory = !temp[colKey][colIndex].attributes[attrKey].mandatory;
+    setCollectors(temp);
+  };
+
+  const handleOpenPopover = (event: any, colKey: string, colIndex: number, attrKey: string) => {
+    setOptionsKey({colKey: colKey, colIndex: colIndex, attrKey: attrKey});
+    setAnchorEl(event.currentTarget);
+    setOpenPopover(true);
+  };
+
+  const handleClosePopover = () => {
+    setOpenPopover(false);
+    setAnchorEl(null);
+    setTags([]);
+    setFailureMessage(<Text tid='somethingWentWrong' />); //need to check statement
+  };
+
+  const isDuplicate = (newValue: string, originalValuesSring: string): boolean => {
+    const newValueModified = newValue.replace(/[. -]/g, '').toLowerCase();
+    const origValList = originalValuesSring.split(',');
+    for (var i = 0; i < origValList.length; i++) {
+      const valModified = origValList[i].replace(/[. -]/g, '').toLowerCase();
+      if (valModified === newValueModified) {
+        return true;
+      }
+    }
+    for (var j = 0; j < tags.length; j++) {
+      const valModified = tags[j].replace(/[. -]/g, '').toLowerCase();
+      if (valModified === newValueModified) {
+        return true;
+      }
+    }
+    return false;
+  };
+
+  const removeTags = (indexToRemove: any) => {
+    setTags([...tags.filter((_, index) => index !== indexToRemove)]);
+  };
+
+  const addTags = (event: any, colKey: string, colIndex: number, attrKey: string) => {
+    const value = event.target.value.trim();
+    if (value && tags) {
+      if (isDuplicate(value, collectors[colKey][colIndex].attributes[attrKey].options.custom)) {
+        setFailureMessage(
+          <Text tid='similar.option.error' />
+        );
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setTags([...tags, value]);
+        event.target.value = '';
+      }
+    }
+  };
+
+  const renderPopover = (colKey: string, colIndex: number, attrKey: string) => {
+    let temp: ICollectorConfigDetails = { ...collectors };
     return (
-      <div className={classes.rootp}>
-        <TextField
-          required={collectorAttr.mandatory}
-          type='string'
-          id={`field_${colKey}_${colIndex}_${attrKey}`}
-          name={`field_${colKey}_${colIndex}_${attrKey}`}
-          value={collectorAttr.defaultValue}
-          label={collectorAttr.displayName}
-          onChange={(event: any) =>
-            handleChangeValue(event, colKey, colIndex, attrKey)
-          }
-          fullWidth
-          autoComplete='off'
-          className='textFieldStyle'
-        />
-        <Typography
-          key={`help_${colKey}_${colIndex}_${attrKey}`}
-          className={classes.helpText}
+      <Popover
+        id={`${colKey}_${colIndex}_${attrKey}_popover`}
+        open={openPopover}
+        anchorEl={anchorEl}
+        onClose={handleClosePopover}
+        anchorOrigin={{
+          vertical: 'bottom',
+          horizontal: 'center',
+        }}
+        transformOrigin={{
+          vertical: 'top',
+          horizontal: 'center',
+        }}
+      >
+        <div className={classes.typography}>
+          <Typography>
+            <Text tid='addOptions' />
+          </Typography>
+          <Typography style={{ fontWeight: 'lighter', margin: '10px 0px' }}>
+            {temp[colKey][colIndex].attributes[attrKey].options ? temp[colKey][colIndex].attributes[attrKey].options.custom : ''}
+          </Typography>
+          <div className='tags-input'>
+            <ul id='tags'>
+              {tags.map((tag, index) => (
+                <li key={index} className='tag'>
+                  <span className='tag-title'>{tag}</span>
+                  <span
+                    className='tag-close-icon'
+                    onClick={() => removeTags(index)}
+                  >
+                    x
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <input
+              type='text'
+              onKeyUp={(event) =>
+                event.key === 'Enter' ? addTags(event, colKey, colIndex, attrKey) : null
+              }
+              placeholder='Press Enter key to input typed option'
+            />
+          </div>
+
+          {/* {failureMessage.includes("Can't add.") && (
+            <p className='errorMessage'>{failureMessage}</p>
+          )} */}
+
+          <Button
+            onClick={(event: any) => {
+              handleAttrOptionsChange(event, colKey, colIndex, attrKey);
+            }}
+            className={classes.addButton}
+            variant='outlined'
+            color='primary'
+            size='small'
+            disabled={false /*uniqueOption*/}
+          >
+            <Text tid='add' />
+          </Button>
+          <Button
+            onClick={handleClosePopover}
+            className={classes.cancelButton}
+            variant='outlined'
+            color='primary'
+            size='small'
+          >
+            <Text tid='cancel' />
+          </Button>
+        </div>
+      </Popover>
+    );
+  };
+
+  const renderAttribute = (collector: ICollectorConfig, colKey: string, colIndex: number, attrKey: string) => {
+    const collectorAttr: IFieldConfigAttributes = collector.attributes[attrKey];
+    if(collector.name === 'JIRAIncidents') {
+      console.log({collectorAttr: collectorAttr});
+    }
+    return (
+      <TableRow key={`${colKey}_${colIndex}_${attrKey}`}>
+        <TableCell
+          component='th'
+          scope='row'
+          align='center'
+          className='tableCell'
         >
-          {collectorAttr.helpText
-            ? collectorAttr.helpText
-            : ''}
-        </Typography>
-      </div>
+          <TextField
+            type='string'
+            id={`${colKey}_${colIndex}_${attrKey}_name`}
+            name={`${colKey}_${colIndex}_${attrKey}_name`}
+            value={collectorAttr.displayName}
+            onChange={(event: any) => {
+              handleAttrDisplayNameChange(event, colKey, colIndex, attrKey);
+            }}
+            fullWidth
+          />
+        </TableCell>
+        <TableCell
+          component='th'
+          scope='row'
+          align='center'
+          className='tableCell'
+        >
+          <FormControl className={classes.formControl}>
+            <Select
+              id={`${colKey}_${colIndex}_${attrKey}_type`}
+              name={`${colKey}_${colIndex}_${attrKey}_type`}
+              value={collectorAttr.type}
+              onChange={(event: any) => {
+                handleAttrTypeChange(event, colKey, colIndex, attrKey);
+              }}
+              disabled={true}
+            >
+              <MenuItem key={'string'} value={'string'}>
+                <Text tid='stringInput' />
+              </MenuItem>
+              <MenuItem key={'number'} value={'number'}>
+                <Text tid='numberInput' />
+              </MenuItem>
+              <MenuItem key={'password'} value={'password'}>
+                <Text tid='passwordInput' />
+              </MenuItem>
+              <MenuItem key={'list'} value={'list'}>
+                <Text tid='singleSelect' />
+              </MenuItem>
+              <MenuItem key={'list-no-others'} value={'list-no-others'}>
+                <Text tid='listNoOtherOptions' />
+              </MenuItem>
+              <MenuItem key={'multi-list'} value={'multi-list'}>
+                <Text tid='multiSelect' />
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </TableCell>
+        <TableCell
+          component='th'
+          scope='row'
+          align='center'
+          className='tableCell'
+          style={{ paddingRight: 0 }}
+        >
+          {collectorAttr.type === 'list' ||
+          collectorAttr.type === 'multi-list' ||
+          collectorAttr.type === 'list-no-others' ? (
+            collectorAttr.custom || (collectorAttr.options && collectorAttr.options.custom) ? (
+              <Tooltip
+                title={`${collectorAttr.options.custom}`}
+                classes={{ tooltip: classes.customTooltip }}
+                arrow
+                disableHoverListener={collectorAttr.options.custom.length < 15}
+              >
+                <Typography
+                  color='textSecondary'
+                  style={{ marginTop: '18px' }}
+                  className='option-data'
+                >
+                  {collectorAttr.options ? collectorAttr.options.custom : ''}
+                </Typography>
+              </Tooltip>
+            ) : (
+              <Typography color='textSecondary' style={{ marginTop: '18px' }}>
+                --
+              </Typography>
+            )
+          ) : (
+            <Typography color='textSecondary' style={{ marginTop: '18px' }}>
+              -NA-
+            </Typography>
+          )}
+        </TableCell>
+        <TableCell
+          component='th'
+          scope='row'
+          align='left'
+          className='tableCell'
+          style={{ paddingLeft: 0 }}
+        >
+          {collectorAttr.type === 'list' ||
+          collectorAttr.type === 'multi-list' ||
+          collectorAttr.type === 'list-no-others' ? (
+            collectorAttr.custom || (collectorAttr.options && collectorAttr.options.custom !== undefined) ? (
+              <Fragment>
+                <IconButton
+                  className={classes.iconButton}
+                  size='small'
+                  onClick={(event: any) => handleOpenPopover(event, colKey, colIndex, attrKey)}
+                >
+                  <AddIcon />
+                </IconButton>
+                {optionsKey.colKey === colKey && optionsKey.colIndex === colIndex && optionsKey.attrKey === attrKey && renderPopover(colKey, colIndex, attrKey)}
+              </Fragment>
+            ) : (
+              <Typography />
+            )
+          ) : (
+            <Typography />
+          )}
+        </TableCell>
+        <TableCell
+          component='th'
+          scope='row'
+          align='center'
+          className='tableCell'
+        >
+          <div>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  checked={collectorAttr.mandatory}
+                  onChange={(event: any) => {
+                    handleAttrMandatoryChange(event, colKey, colIndex, attrKey);
+                  }}
+                  value='true'
+                  disabled={!collectorAttr.custom}
+                />
+              }
+              label={''}
+            />
+          </div>
+        </TableCell>
+        <TableCell
+          component='th'
+          scope='row'
+          align='center'
+          className='tableCell'
+        >
+          <TextField
+            required={collectorAttr.mandatory}
+            type='string'
+            id={`${colKey}_${colIndex}_${attrKey}_val`}
+            name={`${colKey}_${colIndex}_${attrKey}_val`}
+            value={collectorAttr.defaultValue}
+            label={collectorAttr.displayName}
+            onChange={(event: any) =>
+              handleChangeDefaultValue(event, colKey, colIndex, attrKey)
+            }
+            fullWidth
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+        </TableCell>
+      </TableRow>
     );
   };
 
@@ -293,67 +655,112 @@ const EditSettingsCollectorConfig = (props: any) => {
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails className={classes.detailsNonHighlighted}>
-        <div style={{ display: 'block', width: '100%' }}>
-          <Grid container alignItems='center'>
-            <Grid item sm={1}>
-              <InputLabel>
-                Run every {/*<Text tid='runEvery' />*/}
-              </InputLabel>
-            </Grid>
-            <Grid item sm={1}>
-              <TextField
-                required={true}
-                type='number'
-                id={`schedule_${collector.name}`}
-                name={`schedule_${collector.name}`}
-                value={collector.collectorSchedule}
-                label={''}
-                onChange={(event: any) =>
-                  handleCollectorScheduleChange(event, colKey, colIndex)
-                }
-                autoComplete='off'
-                InputProps={{
-                  inputProps: { min: 1, max: 24 },
-                  disableUnderline: true,
-                }}
-                className='textFieldStyle'
-                style={{
-                  paddingLeft: '8px',
-                  paddingRight: '8px',
-                }}
-              />
-            </Grid>
-            <Grid item sm={2}>
-              <InputLabel>
-                hours {/*<Text tid='hours' />*/}
-              </InputLabel>
-            </Grid>
-            <Grid item sm={3} />
-            <Grid item sm={5}>
-              <FormControlLabel
-                style={{ paddingLeft: '36px' }}
-                control={
-                  <Checkbox
-                    checked={
-                      immediateRun[collectors[colKey][colIndex].name]
-                    }
-                    onChange={(event: any) => {
-                      handleToggleImmediateRun(event, colKey, colIndex);
-                    }}
-                    value='true'
-                  />
-                }
-                label={'Schedule for Immediate Run'}
-              />
-            </Grid>
-          </Grid>
-          {Object.keys(collector.attributes).map((attrKey: string, i: number) =>
-            (
-              <Grid item sm={12} key={i}>
-                {renderAttribute(collector, colKey, colIndex, attrKey)}
+          <div style={{ display: 'block', width: '100%' }}>
+            <Grid container alignItems='center'>
+              <Grid item sm={1}>
+                <InputLabel>
+                  Run every {/*<Text tid='runEvery' />*/}
+                </InputLabel>
               </Grid>
-            )
-          )}
+              <Grid item sm={1}>
+                <TextField
+                  required={true}
+                  type='number'
+                  id={`schedule_${collector.name}`}
+                  name={`schedule_${collector.name}`}
+                  value={collector.collectorSchedule}
+                  label={''}
+                  onChange={(event: any) =>
+                    handleCollectorScheduleChange(event, colKey, colIndex)
+                  }
+                  autoComplete='off'
+                  InputProps={{
+                    inputProps: { min: 1, max: 24 },
+                    disableUnderline: true,
+                  }}
+                  className='textFieldStyle'
+                  style={{
+                    paddingLeft: '8px',
+                    paddingRight: '8px',
+                  }}
+                />
+              </Grid>
+              <Grid item sm={2}>
+                <InputLabel>
+                  hours {/*<Text tid='hours' />*/}
+                </InputLabel>
+              </Grid>
+              <Grid item sm={3} />
+              <Grid item sm={5}>
+                <FormControlLabel
+                  style={{ paddingLeft: '36px' }}
+                  control={
+                    <Checkbox
+                      checked={
+                        immediateRun[collectors[colKey][colIndex].name]
+                      }
+                      onChange={(event: any) => {
+                        handleToggleImmediateRun(event, colKey, colIndex);
+                      }}
+                      value='true'
+                    />
+                  }
+                  label={'Schedule for Immediate Run'}
+                />
+              </Grid>
+            </Grid>
+            <Paper className='tableArea'>
+              <form
+                className={classes.formContainer}
+                noValidate
+                autoComplete='off'
+              >
+                <Table className='table'>
+                  <TableHead className='tableHead'>
+                    <TableRow>
+                      <TableCell className='tableHeadCell'>
+                        <Typography className='tableHeadText'>
+                          <Text tid='displayedLabel' />
+                        </Typography>
+                      </TableCell>
+                      <TableCell align='center' className='tableHeadCell'>
+                        <Typography className='tableHeadText'>
+                          <Text tid='type' />
+                        </Typography>
+                      </TableCell>
+                      <TableCell align='center' className='tableHeadCell'>
+                        <Typography className='tableHeadText'>
+                          <Text tid='options' />
+                        </Typography>
+                      </TableCell>
+                      <TableCell align='left' className='tableHeadCell' />
+                      <TableCell align='center' className='tableHeadCell'>
+                        <Typography className='tableHeadText'>
+                          <Text tid='mandatory?' />
+                        </Typography>
+                      </TableCell>
+                      <TableCell align='center' className='tableHeadCell'>
+                        <Typography className='tableHeadText'>
+                          <Text tid='defaultValue' />
+                        </Typography>
+                      </TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {Object.keys(collector.attributes).map((attrKey: string, i: number) =>
+                      renderAttribute(collector, colKey, colIndex, attrKey)
+                    )}
+                    {/*Object.keys(collector.attributes).map((attrKey: string, i: number) =>
+                      (
+                        <Grid item sm={12} key={i}>
+                          {renderAttribute(collector, colKey, colIndex, attrKey)}
+                        </Grid>
+                      )
+                      )*/}
+                  </TableBody>
+                </Table>
+              </form>
+            </Paper>
           </div>
         </ExpansionPanelDetails>
       </ExpansionPanel>
@@ -389,9 +796,6 @@ const EditSettingsCollectorConfig = (props: any) => {
             <Grid item sm={12}>
               <Typography variant='h6' gutterBottom className={classes.title}>
                 <Text tid={`admin.settings.${props.objType}.name`} />
-              </Typography>
-              <Typography color='textSecondary'>
-                (Note: give a number between 1 and 24)
               </Typography>
             </Grid>
             <Grid item sm={12}>

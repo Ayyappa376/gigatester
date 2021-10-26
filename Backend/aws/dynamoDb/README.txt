@@ -1,5 +1,5 @@
 =========================================================================
-THIS DIRECTORY HAS SCRIPTS TO MANIPULATE DYNAMODB TABLES OF GIGATESTER.
+THIS DIRECTORY HAS SCRIPTS TO MANIPULATE DYNAMODB TABLES OF DOITRIGHT.
 THE SCRIPTS
  - CREATES NEW TABLES
  - INSERTS DEFAULT DATA INTO THE TABLE
@@ -24,6 +24,6 @@ Steps to create a new set of database tables for a new stage or subdomain
   3.2 Change to this directory
   3.3 Type 
           node createTables.js <subdomain_prefix>
-      where <subdomain_prefix> is the subdomain of gigatester for which you
+      where <subdomain_prefix> is the subdomain of doitright for which you
       creating the tables. e.g. If you are creating the table for the 
-      subdomain xyz.gigatester.io, then <subdomain_prefix> will be xyz.
+      subdomain xyz.doitright.io, then <subdomain_prefix> will be xyz.

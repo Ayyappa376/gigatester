@@ -1,5 +1,5 @@
-{
-  "admin": "Administratorin",
+{ 
+  "admin": "Administratorin",  
   "manage": "Verwalten",
   "metrics": "Metriken",
   "assessment": "Bewertung",
@@ -8,13 +8,13 @@
   "chooseLanguage": "Sprache wählen",
   "login": "Anmeldung",
   "journey": "Reise",
-  "areYouDoingItRight": "Machst du es richtig?",
+  "areYouDoingItRight":"Machst du es richtig?",
   "measureYourself": "Messen Sie sich",
-  "devopsDef1": "DevOps ... das Schlagwort ist eine Reise. Jeder will DevOps machen, jeder behauptet, dass er es macht, ABER ... nicht viele machen es richtig, was zu ...",
+  "devopsDef1" : "DevOps ... das Schlagwort ist eine Reise. Jeder will DevOps machen, jeder behauptet, dass er es macht, ABER ... nicht viele machen es richtig, was zu ...",
   "devopsDef2": "Wir sind hier, um Ihre DevSecOps-Reise reibungslos, schnell und effektiv zu gestalten!",
   "devopsDef3": "Teams, die DevOps üben, übertreffen andere Teams. Es gibt verschiedene Modelle, mit denen Unternehmen zu einer effektiven DevOps-Implementierung geführt werden können. Trotz all dieser Ressourcen haben viele Unternehmen Schwierigkeiten, Fortschritte bei ihrer Einführung von DevOps zu erzielen.",
   "devopsDef4": "Die Teams müssen ihren aktuellen Reifegrad festlegen, um die Lücken zu verstehen, bevor sie sich auf den Weg zur Verbesserung machen.",
-  "devopsDef5": "CALMS (Culture, Automation, Lean, Measurement, Sharing) ist das am häufigsten verwendete Framework, um die Reife von DevOps zu bewerten und Bereiche zu verstehen, die auf ihrer Transformationsreise einen Schwerpunkt benötigen. GigaTester nutzt das CALMS-Framework und Branchen-Benchmarks sowie organisationsspezifische Anpassungen, um einen strukturierten Ansatz zu entwickeln, der die Akzeptanz von DevOps in der Organisation vorantreibt",
+  "devopsDef5": "CALMS (Culture, Automation, Lean, Measurement, Sharing) ist das am häufigsten verwendete Framework, um die Reife von DevOps zu bewerten und Bereiche zu verstehen, die auf ihrer Transformationsreise einen Schwerpunkt benötigen. DoItRight nutzt das CALMS-Framework und Branchen-Benchmarks sowie organisationsspezifische Anpassungen, um einen strukturierten Ansatz zu entwickeln, der die Akzeptanz von DevOps in der Organisation vorantreibt",
   "whyDevOpsDifficult": "Warum DevOps schwierig ist?",
   "answerOneForDevOpsDifficult": "Derzeit ist keine wissenschaftliche Definition für DevOps verfügbar. Organisationen und sogar Teams innerhalb derselben Organisation haben ihre eigene Definition von DevOps. Deshalb gibt es keine Standardmethode zum Messen.",
   "answerTwoForDevOpsDifficult": "Die Organisationen müssen die Kultur, Denkweise und aktuellen Praktiken ändern, um im DevOps-Modell erfolgreich zu sein. Die Qualifizierung bestehender Teams und die Suche nach den richtigen Talenten ist kostspielig und eine Herausforderung.",
@@ -23,7 +23,7 @@
   "review": "Rezension",
   "analyse": "Analysieren",
   "action": "Aktion",
-  "answerOneForOurAssessmentWorks": "GigaTester erledigt dies mit einem einfachen zyklischen Prozess in vier Schritten",
+  "answerOneForOurAssessmentWorks": "DoItRight erledigt dies mit einem einfachen zyklischen Prozess in vier Schritten",
   "answerTwoForOurAssessmentWorks": "Führen Sie eine Bewertung durch, um die verschiedenen Dimensionen zu verstehen, auf die Sie sich konzentrieren müssen, und um einen Überblick über den aktuellen Reifegrad zu erhalten.",
   "answerThreeForOurAssessmentWorks": "Überprüfen Sie nach Abschluss der Bewertung die Gesamtpunktzahl und die Reife in verschiedenen Dimensionen.",
   "answerFourForOurAssessmentWorks": "Analysieren Sie die benutzerdefinierten Empfehlungen basierend auf der Punktzahl und erstellen Sie einen Ausführungsplan.",
@@ -35,13 +35,13 @@
   "submit": "Einreichen",
   "reason": "Grund",
   "other": "Andere",
-  "selectTheWeightageFactor": "Bitte wählen Sie den Gewichtungsfaktor entsprechend der Laufzeit der Option. Je höher der Gewichtungsfaktor, desto höher ist die Laufzeit. 1 ist die am wenigsten ausgereifte option.",
+  "selectTheWeightageFactor":"Bitte wählen Sie den Gewichtungsfaktor entsprechend der Laufzeit der Option. Je höher der Gewichtungsfaktor, desto höher ist die Laufzeit. 1 ist die am wenigsten ausgereifte option.",
   "level": "Niveau",
   "high": "Hoch",
   "medium": "Mittel",
   "low": "Niedrig",
   "multiSelect": "Mehrfachauswahl",
-  "addNotApplicableOption": "Nicht zutreffende Option hinzufügen",
+  "addNotApplicableOption":"Nicht zutreffende Option hinzufügen",
   "reasonForThisSelection": "Wenn diese Frage beantwortet ist, wird der Benutzer nach dem Grund für seine Auswahl gefragt.",
   "takenBy": "Genommen von",
   "dateSubmitted": "Datum der Übermittlung",
@@ -51,10 +51,10 @@
   "overallMaturity": "Gesamtreife",
   "interactWithChart": "Interagiere mit Diagrammen, um Details zu sehen.",
   "averageScore": "Durchschnittliche Punktzahl",
-  "totalAssessment": "Gesamtbewertung",
-  "downloadReport": "Bericht herunterladen",
-  "viewTeamAssessment": "Teambewertungen anzeigen",
-  "categoryWiseMaturity": "Kategorie-weise Reife",
+  "totalAssessment":"Gesamtbewertung",
+  "downloadReport":"Bericht herunterladen",
+  "viewTeamAssessment":"Teambewertungen anzeigen",
+  "categoryWiseMaturity":"Kategorie-weise Reife",
   "performanceMetrics": "Leistungsmetriken",
   "bestPerformingAreas": "Bereiche mit der besten Leistung:",
   "areasForImprovement": "Verbesserungswürdige Bereiche",
@@ -101,7 +101,8 @@
   "otherSettings": "Andere Einstellungen",
   "highlightInPerformanceMetrics": "Anzahl der Bereiche, die in Leistungsmetriken hervorgehoben werden sollen",
   "archiveBeforeDays": "Number of days data to keep before archiving. (Set value as 0 to disable archiving)",
-  "systemAttributesCannotBeDeletedOrChanged": "Systemattribute können nur mit ihrer Anzeigebezeichnung gelöscht oder geändert werden. Der Typ des benutzerdefinierten Attributs kann nach dem Senden nicht mehr geändert werden.",
+  "systemAttributesCannotBeDeletedOrChanged": 
+      "Systemattribute können nur mit ihrer Anzeigebezeichnung gelöscht oder geändert werden. Der Typ des benutzerdefinierten Attributs kann nach dem Senden nicht mehr geändert werden.",
   "settingType": "Einstellungstyp",
   "configure": "Konfigurieren",
   "status": "Status",
@@ -127,13 +128,16 @@
   "searchResults:": "Such Ergebnisse:",
   "mapQuestions": "Karten Fragen",
   "randomize": "Randomisieren",
-  "theAnswersWillBeRandomizedWhenUserTakesTheAssessment": "Wenn diese Option ausgewählt ist, werden die Antworten zufällig ausgewählt, wenn ein Benutzer die Bewertung vornimmt.",
+  "theAnswersWillBeRandomizedWhenUserTakesTheAssessment": 
+      "Wenn diese Option ausgewählt ist, werden die Antworten zufällig ausgewählt, wenn ein Benutzer die Bewertung vornimmt.",
   "hideResult": "Ergebnis Ausblenden",
-  "resultWillNotBeDisplayedAtTheEndOfTheAssessment": "Wenn diese Option ausgewählt ist, wird das Ergebnis am Ende der Bewertung nicht angezeigt.",
+  "resultWillNotBeDisplayedAtTheEndOfTheAssessment": 
+      "Wenn diese Option ausgewählt ist, wird das Ergebnis am Ende der Bewertung nicht angezeigt.",
   "note": "Hinweis:",
   "optionDisabledWhenShowRecommendationsSelected": "Diese Option ist deaktiviert, wenn Empfehlungen anzeigen ausgewählt ist.",
   "showRecommendations": "Empfehlungen Anzeigen",
-  "recommendationsWillBeDisplayed": "Wenn diese Option ausgewählt ist, werden die Empfehlungen auf den Ergebnissen sowie auf der Seite mit den Bewertungsdetails angezeigt.",
+  "recommendationsWillBeDisplayed": 
+      "Wenn diese Option ausgewählt ist, werden die Empfehlungen auf den Ergebnissen sowie auf der Seite mit den Bewertungsdetails angezeigt.",
   "hideResultSelected": "Diese Option ist deaktiviert, wenn Zeitgesteuert oder Ergebnis ausblenden ausgewählt ist.",
   "questionnaireNameCannotBeChanged": "(Hinweis: Nach der Erstellung kann der Name des Fragebogens nicht mehr geändert werden)",
   "timed": "Zeitlich festgelegt",
@@ -150,7 +154,8 @@
   "showCompleteAssessment": "Vollständige Bewertung Anzeigen",
   "add": "Hinzufügen",
   "assignActions:": "Aktionen Zuweisen:",
-  "benchmarkScoreLineIndicatesTheBenchmarkScore": "Die Benchmark-Score-Linie gibt den Benchmark-Score an. Wenn Ihre Punktzahl unter der Benchmark-Score-Linie liegt, sollten Sie versuchen, die Benchmark-Punktzahl in Ihrer nächsten Bewertung zu erreichen.",
+  "benchmarkScoreLineIndicatesTheBenchmarkScore": 
+      "Die Benchmark-Score-Linie gibt den Benchmark-Score an. Wenn Ihre Punktzahl unter der Benchmark-Score-Linie liegt, sollten Sie versuchen, die Benchmark-Punktzahl in Ihrer nächsten Bewertung zu erreichen.",
   "categoryWiseScore": "Kategorie Wise Score",
   "youAreGoodInThisCategory": "Sie sind gut in dieser Kategorie",
   "recommendations": "Empfehlungen:",
@@ -160,7 +165,7 @@
   "changeFailureRate": "Fehlerrate ändern",
   "totalCount": "Komplette Anzahl:",
   "deploymentFrequency": "Bereitstellungshäufigkeit",
-  "averageTime": "Durchschnittliche Zeit:",
+  "averageTime":"Durchschnittliche Zeit:",
   "leadTimeForChanges": "Vorlaufzeit für Änderungen",
   "meanTimeToRestore": "Mittlere Zeit zum Wiederherstellen",
   "assessmentDate": "Prüfungsdatum",
@@ -194,7 +199,8 @@
   "loadingAssessment": "Ladebewertung...",
   "linkToAssessments": "Link zu Bewertungen",
   "start": "Start",
-  "contactSystemAdminToProvideYouAccess": "Sie sind derzeit keiner Bewertung zugeordnet. Bitte wenden Sie sich an den Systemadministrator, um Zugriff auf relevante Bewertungen zu erhalten.",
+  "contactSystemAdminToProvideYouAccess": 
+      "Sie sind derzeit keiner Bewertung zugeordnet. Bitte wenden Sie sich an den Systemadministrator, um Zugriff auf relevante Bewertungen zu erhalten.",
   "authenticating": "Authentifizierung...",
   "loggedOut": "Sie wurden ausgeloggt.",
   "buildCICD": "Erstellt - CICD",
@@ -211,7 +217,7 @@
   "continue": "Fortsetzen",
   "selectYourTeam": "Bitte wählen Sie Ihr Team aus:",
   "selectYourDepartment": "Bitte wählen Sie Ihre Abteilung:",
-  "gigaTester.io": "GigaTester.io",
+  "doItRight.io": "DoItRight.io",
   "welcomeTo": "Willkommen zu",
   "viewAssessments": "Bewertungen anzeigen",
   "noOneInTheTeamHasTakenTheAssessment": "Niemand im Team hat die Bewertung vorgenommen.",
@@ -222,7 +228,8 @@
   "averagePercent": "Durchschnittlicher Prozentsatz",
   "averageLevel": "Durchschnittsniveau",
   "assessmentType": "Bewertungstyp",
-  "thankYouForTakingTheTrialAssessment": "Vielen Dank, dass Sie die Testbewertung vorgenommen haben. GigaTester kann noch viel mehr. Kontaktieren Sie uns, um die gesamte Plattform zu bewerten, indem Sie auf die Schaltfläche über diesem App-Bereich klicken.",
+  "thankYouForTakingTheTrialAssessment": 
+      "Vielen Dank, dass Sie die Testbewertung vorgenommen haben. DoItRight kann noch viel mehr. Kontaktieren Sie uns, um die gesamte Plattform zu bewerten, indem Sie auf die Schaltfläche über diesem App-Bereich klicken.",
   "errorConnectingWithServer": "Fehler beim Verbinden mit dem Server.",
   "notGivenAssessmentYet": "Sie haben noch keine Bewertung abgegeben.",
   "myAssessments": "Meine Einschätzungen",
@@ -293,6 +300,7 @@
   "itemPriority": "Artikelpriorität",
   "startedOn": "Begann am",
   "closedOn": "Geschlossen",
+
   "generalSettingsUpdatedSuccessfully": "Konfiguration der allgemeinen Einstellungen erfolgreich aktualisiert",
   "questionnairesAssigned": "Zugewiesene Fragebögen",
   "questionnaireIsCreated": "Fragebogen wird erstellt",
@@ -309,54 +317,81 @@
   "userProfileDeletedSuccessfully": "Benutzerprofil erfolgreich gelöscht",
   "thanksForGivingThisAssessment": "Vielen Dank für diese Bewertung!",
   "collectorsUpdatedSuccessfully": "Sammler erfolgreich aktualisiert",
-  "deleteTheExtraNumberOfOptionsFromTheEnd": "Dadurch wird die zusätzliche Anzahl von Optionen am Ende gelöscht. Wollen Sie fortfahren?",
-  "disableTheTeamAndTheRelatedAssessmentData": "Dadurch werden das Team und die zugehörigen Bewertungsdaten deaktiviert. Wollen Sie fortfahren?",
+
+  "deleteTheExtraNumberOfOptionsFromTheEnd":
+    "Dadurch wird die zusätzliche Anzahl von Optionen am Ende gelöscht. Wollen Sie fortfahren?",
+  "disableTheTeamAndTheRelatedAssessmentData":
+    "Dadurch werden das Team und die zugehörigen Bewertungsdaten deaktiviert. Wollen Sie fortfahren?",
   "deleteTheUser": "Dadurch wird der Benutzer gelöscht. Wollen Sie fortfahren?",
-  "changeTheUserToAnAdmin": "Dadurch wird der Benutzer zu einem Administrator. Wollen Sie fortfahren?",
-  "notSubmittedTheQuestionnaireYet": "Sie haben den Fragebogen noch nicht eingereicht. Bist du sicher, dass du zurück willst??",
-  "mapQuestionsToTheSavedQuestionnaire": "Fragebogen erfolgreich gespeichert. Möchten Sie diesem Fragebogen Fragen zuordnen?",
-  "editTheQuestionsMappingOfUpdatedQuestionnaire": "Fragebogen erfolgreich bearbeitet. Möchten Sie die Fragenzuordnung dieses Fragebogens bearbeiten?",
-  "publishTheQuestionnaire": "Dadurch wird der Fragebogen veröffentlicht. Wollen Sie fortfahren?",
+  "changeTheUserToAnAdmin":
+    "Dadurch wird der Benutzer zu einem Administrator. Wollen Sie fortfahren?",
+  "notSubmittedTheQuestionnaireYet":
+    "Sie haben den Fragebogen noch nicht eingereicht. Bist du sicher, dass du zurück willst??",
+  "mapQuestionsToTheSavedQuestionnaire":
+    "Fragebogen erfolgreich gespeichert. Möchten Sie diesem Fragebogen Fragen zuordnen?",
+  "editTheQuestionsMappingOfUpdatedQuestionnaire":
+    "Fragebogen erfolgreich bearbeitet. Möchten Sie die Fragenzuordnung dieses Fragebogens bearbeiten?",
+  "publishTheQuestionnaire":
+    "Dadurch wird der Fragebogen veröffentlicht. Wollen Sie fortfahren?",
   "wantToLogout": "Sind Sie sicher, dass Sie sich abmelden möchten?",
   "wantToLeaveThisPage": "Sind Sie sicher, dass Sie diese Seite verlassen möchten?",
   "unsavedChangesWillBeLost": "Alle nicht gespeicherten Änderungen gehen verloren",
   "wantToClose": "Sind Sie sicher, dass Sie schließen möchten?",
-  "wantToContinueFromTheLastAttemptedQuestion": "Möchten Sie mit der letzten versuchten Frage fortfahren?",
-  "notBeAbleToMakeAnyChangesAfterSubmittingTheAssessment": "Nach dem Absenden der Bewertung können Sie keine Änderungen mehr vornehmen. Wollen Sie fortfahren?",
+  "wantToContinueFromTheLastAttemptedQuestion":
+    "Möchten Sie mit der letzten versuchten Frage fortfahren?",
+  "notBeAbleToMakeAnyChangesAfterSubmittingTheAssessment":
+    "Nach dem Absenden der Bewertung können Sie keine Änderungen mehr vornehmen. Wollen Sie fortfahren?",
   "addMetricTools": "Möchten Sie Metric Tools hinzufügen?",
-  "objectAttributePermanentDeletionWarning": "Dieses Attribut wird dauerhaft von überall im System gelöscht. Möchten Sie es wirklich löschen?",
-  "metricsToolPermanentDeletionWarning": "Fahren Sie mit dem Löschen fort?",
+  "objectAttributePermanentDeletionWarning":
+    "Dieses Attribut wird dauerhaft von überall im System gelöscht. Möchten Sie es wirklich löschen?",
+  "metricsToolPermanentDeletionWarning": 
+    "Fahren Sie mit dem Löschen fort?",
+
   "error": "Error",
   "somethingWentWrong": "Etwas ist schief gelaufen. Bitte versuche es erneut",
   "setAtleastThreeLevels": "Sie müssen mindestens 3 Ebenen einstellen",
   "haveUniqueName": "Jede Ebene sollte einen eindeutigen Namen haben",
-  "haveValuesBetweenZeroToHundred": "Die Grenzwerte sollten Werte zwischen 0 und 100 haben",
-  "lowerLimitOfaLevelShouldBeLessThanItsUpperLimit": "Die Untergrenze eines Levels sollte unter seiner Obergrenze liegen",
-  "limitsOfEachLevelValues": "Bitte überprüfen Sie die Grenzen der einzelnen Ebenen. Es sollte keine Lücke oder Überlappung zwischen einer Ebene und ihrer nächsthöheren Ebene geben",
+  "haveValuesBetweenZeroToHundred":
+    "Die Grenzwerte sollten Werte zwischen 0 und 100 haben",
+  "lowerLimitOfaLevelShouldBeLessThanItsUpperLimit":
+    "Die Untergrenze eines Levels sollte unter seiner Obergrenze liegen",
+  "limitsOfEachLevelValues":
+    "Bitte überprüfen Sie die Grenzen der einzelnen Ebenen. Es sollte keine Lücke oder Überlappung zwischen einer Ebene und ihrer nächsthöheren Ebene geben",
   "lowerLimitValue": "Die Untergrenze der untersten Ebene sollte 0 sein",
   "upperLimitValue": "Die Obergrenze der höchsten Stufe sollte 100 sein",
-  "performanceMetricsConstantValue": "Geben Sie einen konstanten Wert für Leistungsmetriken im Bereich von 1 bis 10 an",
+  "performanceMetricsConstantValue":
+    "Geben Sie einen konstanten Wert für Leistungsmetriken im Bereich von 1 bis 10 an",
   "answerCannotBeBlank": "Die Antwort darf nicht leer sein",
   "weightageFactorCannotBeBlank": "Der Gewichtsfaktor darf nicht leer sein",
-  "answerMustBeUnique": "Bitte geben Sie unterschiedliche Antworten ein. Jede Antwort muss eindeutig sein",
-  "useDistinctWeightages": "Verwenden Sie eine eindeutige Gewichtung oder ändern Sie den Fragentyp in Mehrfachauswahl, um eine gemeinsame Gewichtung unter den Optionen zu verwenden",
+  "answerMustBeUnique":
+    "Bitte geben Sie unterschiedliche Antworten ein. Jede Antwort muss eindeutig sein",
+  "useDistinctWeightages":
+    "Verwenden Sie eine eindeutige Gewichtung oder ändern Sie den Fragentyp in Mehrfachauswahl, um eine gemeinsame Gewichtung unter den Optionen zu verwenden",
   "questionCannotBeEmpty": "Frage kann nicht leer sein. Bitte geben Sie einen Text ein",
   "atleastTwoAnswerOptions": "Sie sollten mindestens 2 Antwortoptionen haben",
-  "recommendationsCannotBeEmpty": "Empfehlungen dürfen nicht leer sein. Bitte geben Sie einen Text ein",
+  "recommendationsCannotBeEmpty":
+    "Empfehlungen dürfen nicht leer sein. Bitte geben Sie einen Text ein",
   "fieldLabelCannotBeEmpty": "Feldbezeichnung darf nicht leer sein",
-  "optionsMustBeProvidedForAttributeTypeListOrMultiList": "Für die Attributtypliste oder die Mehrfachliste müssen Optionen bereitgestellt werden",
-  "optionsMustBeProvidedForAttributeTypeListOrListNoOthersOrMultiList": "Es müssen Optionen für Attributtypliste, Liste ohne andere oder Mehrfachliste bereitgestellt werden",
+  "optionsMustBeProvidedForAttributeTypeListOrMultiList":
+    "Für die Attributtypliste oder die Mehrfachliste müssen Optionen bereitgestellt werden",
+  "optionsMustBeProvidedForAttributeTypeListOrListNoOthersOrMultiList":
+    "Es müssen Optionen für Attributtypliste, Liste ohne andere oder Mehrfachliste bereitgestellt werden",
   "mapCategoriesToAllTheQuestions": "Bitte ordnen Sie allen Fragen Kategorien zu",
   "questionnaireNameCannotBeBlank": "Der Name des Fragebogens darf nicht leer sein",
-  "questionnaireDescriptionCannotBeBlank": "Die Beschreibung des Fragebogens darf nicht leer sein",
+  "questionnaireDescriptionCannotBeBlank":
+    "Die Beschreibung des Fragebogens darf nicht leer sein",
   "addCategoriesToTheQuestionnaire": "Fügen Sie dem Fragebogen Kategorien hinzu",
   "atleastTwoCategoriesShouldBeThere": "Mindestens 2 Kategorien sollten vorhanden sein",
   "categoryAlreadyExists": "Kategorie existiert bereits",
   "enterValidCategory": "Geben Sie eine gültige Kategorie ein",
   "invalidTimeOutTime": "Ungültige Auszeit",
-  "timeOutTimeCannotBeLesserThanFiveMinutes": "Die Auszeit kann nicht weniger als 5 Minuten betragen",
-  "benchmarkScoreShouldHaveValueBetweenFiftyAndHundred": "Der Benchmark-Score sollte einen Wert zwischen 50 und 100 haben",
+  "timeOutTimeCannotBeLesserThanFiveMinutes":
+    "Die Auszeit kann nicht weniger als 5 Minuten betragen",
+  "benchmarkScoreShouldHaveValueBetweenFiftyAndHundred":
+    "Der Benchmark-Score sollte einen Wert zwischen 50 und 100 haben",
   "mapQuestionsBeforeProceeding": "Bitte ordnen Sie Fragen zu, bevor Sie fortfahren",
-  "cannotDeleteCategoryMappedToQuestion": "Sie können eine einer Frage zugeordnete Kategorie nicht löschen",
-  "enterValidEmailToStartTrial": "Bitte geben Sie eine gültige E-Mail-Adresse ein, um Ihre Testbewertung zu starten"
+  "cannotDeleteCategoryMappedToQuestion":
+    "Sie können eine einer Frage zugeordnete Kategorie nicht löschen",
+  "enterValidEmailToStartTrial":
+    "Bitte geben Sie eine gültige E-Mail-Adresse ein, um Ihre Testbewertung zu starten"
 }

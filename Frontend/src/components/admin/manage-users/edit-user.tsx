@@ -17,7 +17,7 @@ import {
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IUserAttributes, IUserParams } from '../../../model';
+import { ITeamInfo, IUserAttributes, IUserParams } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
@@ -84,6 +84,7 @@ const EditUser = (props: any) => {
   const [userDeleted, setUserDeleted] = useState(false);
   const [failure, setFailure] = useState(false);
   const [userDataFetched, setUserDataFetched] = useState(false);
+  const [teamDataFetched, setTeamDataFetched] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
@@ -93,6 +94,7 @@ const EditUser = (props: any) => {
   const userRoles = useSelector((state: IRootState) => {
     return state.user.roles;
   });
+  const [teams, setTeams] = React.useState<ITeamInfo[]>([]);
   const [userState, setUserState] = React.useState<IUserParams | undefined>();
   const [openModal, setOpenModal] = useState(false);
   const [openMakeAdminModal, setOpenMakeAdminModal] = useState(false);
@@ -103,6 +105,42 @@ const EditUser = (props: any) => {
   let msgSuccess = successMessage;
 
   useEffect(() => {
+    fetchTeamList();
+    fetchUserDetails();
+  }, []);
+
+  const fetchTeamList = () => {
+    Http.get({
+      url: `/api/v2/teamlist`,
+      state: stateVariable,
+    })
+    .then((response: any) => {
+      response.sort((a: any, b: any) => {
+        if (a.active === b.active) {
+          return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
+            ? -1
+            : 1;
+        }
+        return a.active === 'true' ? -1 : 1;
+      });
+      setTeams(response);
+      setTeamDataFetched(true);
+    })
+    .catch((error: any) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+        setFailure(true);
+      } else if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+    })
+  };
+
+  const fetchUserDetails = () => {
     Http.get({
       url: `/api/v2/admin/users/getusers?email=${props.user}`,
       state: stateVariable,
@@ -123,7 +161,7 @@ const EditUser = (props: any) => {
           props.history.push('/error');
         }
       });
-  }, []);
+  };
 
   const handleDelete = () => {
     const userId = userState!.values.id;
@@ -260,11 +298,15 @@ const EditUser = (props: any) => {
     }
   };
 
-  const renderChips = (selected: any) => {
+  const renderChips = (selected: any, el: string) => {
     return (
       <div className={classes.chips}>
         {(selected as string[]).map((value) => (
-          <Chip key={value} label={value} className={classes.chip} />
+          <Chip
+            key={value}
+            label={el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName : value}
+            className={classes.chip}
+          />
         ))}
       </div>
     );
@@ -326,7 +368,11 @@ const EditUser = (props: any) => {
               {element.options.map((opt: string) => {
                 return (
                   <MenuItem key={opt} value={opt}>
-                    {opt}
+                  {
+                    el === 'teams'
+                    ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
+                    : opt
+                  }
                   </MenuItem>
                 );
               })}
@@ -357,12 +403,16 @@ const EditUser = (props: any) => {
               }
               onChange={handleChangeMultiValue}
               input={<Input id='select-multiple-chip' />}
-              renderValue={renderChips}
+              renderValue={(value: any) => renderChips(value, el)}
               MenuProps={MenuProps}
             >
               {element.options.map((opt: any) => (
                 <MenuItem key={opt} value={opt}>
-                  {opt}
+                  {
+                    el === 'teams'
+                    ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
+                    : opt
+                  }
                 </MenuItem>
               ))}
             </Select>
@@ -510,7 +560,7 @@ const EditUser = (props: any) => {
 
   return (
     <Fragment>
-      {userDataFetched ? (
+      {userDataFetched && teamDataFetched ? (
         renderForm()
       ) : (
         <Container className='loaderStyle'>

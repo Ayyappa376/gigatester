@@ -37,7 +37,7 @@ async function handler(request: AssessmentQuestionRequest, response: Response) {
 
   const index = Number(request.params.index) - 1;
   let quesType: string;
-  const teamName = request.params.team;
+  const teamId = request.params.team;
   const {
     questionId: queryQuestionId,
     questionVersion: queryQuestionVersion,
@@ -53,7 +53,7 @@ async function handler(request: AssessmentQuestionRequest, response: Response) {
     const x = await createNewAssessmentDocument(
       request.headers.user.email,
       request.params.assessmentId,
-      teamName,
+      teamId,
       request.params.type,
       request.params.questionnaireVersion
     );

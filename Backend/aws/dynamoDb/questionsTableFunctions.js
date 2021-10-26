@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 //const mainTableName = 'Questions';
 const QUESTIONS_TABLE_NAME = 'Questions';
 

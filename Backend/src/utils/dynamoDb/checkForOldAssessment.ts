@@ -121,9 +121,9 @@ export const checkForOldAssessment = async ({
     appLogger.error(err);
     throw err;
   }
-  const check = await getAssessmentHistory({ userId, type });
-  appLogger.info({ getAssessmentHistory: check });
-  for (const a of check) {
+  const assessments = await getAssessmentHistory({ userId, type });
+  appLogger.info({ getAssessmentHistory: assessments });
+  for (const a of assessments) {
     //tslint:disable-next-line:strict-comparisons
     if (
       !a.result &&

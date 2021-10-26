@@ -217,6 +217,7 @@ export const getQuestionnaireSelected = async (
   return scan<any>(params);
 };
 
+/*
 export const getTeamsMappedToQuestionnaire = async (
   questionnaireId: string
 ): Promise<any> => {
@@ -233,3 +234,4 @@ export const getTeamsMappedToQuestionnaire = async (
     res.map((team: any) => team.teamId)
   );
 };
+*/

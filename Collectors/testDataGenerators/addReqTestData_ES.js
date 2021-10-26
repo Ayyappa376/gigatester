@@ -35,7 +35,7 @@ async function addtestData(){
 */
 
 exports.addReqTestDataFor = async function (team, services, projs, startDateStr, endDateStr) {
-    generateDataForTeam(team, services, projs, startDateStr, endDateStr, ['Story', 'Feature', 'Bug', 'Task', 'Issue', ], 5, Math.floor(Math.random() * 3) + 3);
+    generateDataForTeam(team, services, projs, startDateStr, endDateStr, ['Story', 'Feature', 'Bug', 'Task', 'Issue'], 5, Math.floor(Math.random() * 3) + 3);
 
 	//We need to force an index refresh at this point, otherwise we will not get any result in the consequent search
 	await esClient.indices.refresh({ index: `${config.env}_${config.reqIndex}`});
@@ -94,8 +94,6 @@ async function putData(team, service, proj, itemId, priority, type, createDate, 
 		    createdOn: Math.floor(createDate.getTime() / 1000), //date(converted to seconds from epoch) [date, format: epoch_second]
 		    startedOn: startDate ? Math.floor(startDate.getTime() / 1000) : null, //date(converted to seconds from epoch) [date, format: epoch_second]
 		    url: `https://jira.atlassian.com/${proj}/${itemId}`, //[text]
-//                cycleTime: //timestampClosedOn - timestampStartedOn
-//                leadTime: timestampClosedOn - timestampCreatedOn
 		}
 	});
 }
