@@ -32,7 +32,7 @@ import { setAssessmentStartTime } from '../../actions/assesment/assessment-time'
 import * as constantValues from '../../common/constantValues';
 import { Text } from '../../common/Language';
 
-interface IAssesmentProps extends RouteComponentProps {}
+interface IAssesmentProps extends RouteComponentProps { }
 
 const defaultAssesmentId: string | null = null;
 
@@ -141,7 +141,7 @@ function Assesment(props: IAssesmentProps) {
       assessmentTypeData.data.questionnaires.forEach((el: any) => {
         if (el.questionnaireId === selectedAssessmentType.questionnaireId) {
           setLeftDisplayText(el.displayName);
-          setCenterDisplayText(`Team: ${userTeam}`);
+          setCenterDisplayText(`Platform: ${userTeam}`);
         }
       });
     }
@@ -246,7 +246,7 @@ function Assesment(props: IAssesmentProps) {
                   );
                 })}
                 <Typography className={classes.info3} variant='body1'>
-                  <Text tid='numberOfQuestions' />
+                  <Text tid='numberOfTestCases' />
                   {assesmentSummary!.data!.numberOfQuestions}
                 </Typography>
                 {assesmentSummary!.data!.timeOut && (
@@ -267,7 +267,7 @@ function Assesment(props: IAssesmentProps) {
                 </Typography>
                 <br />
                 <Typography className={classes.info3} variant='body1'>
-                  <Text tid='numberOfQuestions' />
+                  <Text tid='numberOfTestCases' />
                   {assesmentSummary!.data!.numberOfQuestions}
                 </Typography>
                 {assesmentSummary!.data!.timeOut && (
@@ -305,9 +305,9 @@ function Assesment(props: IAssesmentProps) {
               className={classes.bottomButton}
             >
               {Object.keys(assesmentMarkedAnswers).length === 0 ? (
-                <Text tid='startAssessment' />
+                <Text tid='startTest' />
               ) : (
-                <Text tid='continueAssessment' />
+                <Text tid='continueTesting' />
               )}
             </Button>
           </Paper>
@@ -334,7 +334,7 @@ function Assesment(props: IAssesmentProps) {
       <Fragment>
         <CircularProgress className={classes.progress} />
         <Typography>
-          <Text tid='loadingAssessment' />
+          <Text tid='loadingTest' />
         </Typography>
       </Fragment>
     );

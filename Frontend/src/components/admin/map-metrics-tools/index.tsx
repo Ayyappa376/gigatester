@@ -111,14 +111,14 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: '10px'
     },
     extraBigColumn: {
-//      flexBasis: '87.5%',
+      //      flexBasis: '87.5%',
       flexBasis: '70%',
     },
     mediumColumn: {
       flexBasis: '20%',
     },
     smallColumn: {
-//      flexBasis: '12.5%',
+      //      flexBasis: '12.5%',
       flexBasis: '10%',
     },
     heading: {
@@ -199,7 +199,7 @@ const MapMetricsTools = (props: any) => {
   const [selectedMapItemId, setSelectedMapItemId] = useState(teamMetricsTools.teamId);
   const [userNote, setUserNote] = useState('');
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='teamDetailsUpdatedSuccessfully' />;
+  let msgSuccess = <Text tid='platformDetailsUpdatedSuccessfully' />;
 
   useEffect(() => {
     fetchTeamMetricsDetails();
@@ -208,17 +208,17 @@ const MapMetricsTools = (props: any) => {
   useEffect(() => {
     let services: any[] = [];
     let subServices: any[] = [];
-    teamMetricsTools.services && 
-    teamMetricsTools.services.forEach((service) => {
-      if (service.active === 'true') {
-        services.push(service);
-      }
-      service.services && service.services.forEach((subService) => {
-        if (subService.active === 'true') {
-          subServices.push(subService);
+    teamMetricsTools.services &&
+      teamMetricsTools.services.forEach((service) => {
+        if (service.active === 'true') {
+          services.push(service);
         }
+        service.services && service.services.forEach((subService) => {
+          if (subService.active === 'true') {
+            subServices.push(subService);
+          }
+        })
       })
-    })
     setServiceList(services);
     setSubServiceList(subServices);
   }, [teamMetricsTools]);
@@ -277,14 +277,14 @@ const MapMetricsTools = (props: any) => {
               toolConfig.attributes[a].position &&
               toolConfig.attributes[b].position &&
               toolConfig.attributes[a].position! >
-                toolConfig.attributes[b].position!
+              toolConfig.attributes[b].position!
             ) {
               return 1;
             } else if (
               toolConfig.attributes[a].position &&
               toolConfig.attributes[b].position &&
               toolConfig.attributes[a].position! <
-                toolConfig.attributes[b].position!
+              toolConfig.attributes[b].position!
             ) {
               return -1;
             } else {
@@ -321,7 +321,7 @@ const MapMetricsTools = (props: any) => {
     };
     Object.keys(collector.attributes).forEach((key: string) => {
       toolAttrSorted[key] = tool[key] || {};
-      if((!tool[key] || !tool[key].value) && collector.attributes[key].mandatory) {
+      if ((!tool[key] || !tool[key].value) && collector.attributes[key].mandatory) {
         if (
           collector.attributes[key].type === 'list' ||
           collector.attributes[key].type === 'list-no-others' ||
@@ -395,10 +395,10 @@ const MapMetricsTools = (props: any) => {
       }
       Object.keys(tool).forEach((key: string) => {
         if (key !== 'toolName' && key !== 'toolType' && key !== 'enabled') {
-          if (collector.attributes[key].mandatory && 
-              (!tool[key] || !tool[key].value || 
-                (collector.attributes[key].type === 'multi-list' && tool[key].value.length === 0) ||
-                (collector.attributes[key].type !== 'multi-list' && tool[key].value === ''))) {
+          if (collector.attributes[key].mandatory &&
+            (!tool[key] || !tool[key].value ||
+              (collector.attributes[key].type === 'multi-list' && tool[key].value.length === 0) ||
+              (collector.attributes[key].type !== 'multi-list' && tool[key].value === ''))) {
             setFailureMessage(
               <Text tid='mandatory.field.of.some.collector.tool.added.do.not.have.value.ensure.that.all.mandatory.fields.are.filled' />
             );
@@ -428,7 +428,7 @@ const MapMetricsTools = (props: any) => {
     Object.keys(tool).forEach((key: string) => {
       if (key !== 'toolName' && key !== 'toolType' && key !== 'enabled') {
         if ((collector.attributes[key].type === 'string' || collector.attributes[key].type === 'password') &&
-            (!tool[key] || !tool[key].value || tool[key].value === '')) {
+          (!tool[key] || !tool[key].value || tool[key].value === '')) {
           setFailureMessage(
             <Text tid='fill.the.server.project.url.and.authentication.details.before.connecting' />
           );
@@ -458,15 +458,15 @@ const MapMetricsTools = (props: any) => {
         state: stateVariable,
       })
         .then((response: any) => {
-//          setIsConnecting(false);
+          //          setIsConnecting(false);
           if (response.connect) {
-//            setValidConnection('success');
-              const tempState: string[] = [...connectionState];
-              tempState[toolIndex] = 'success';
-              setConnectionState(tempState);
+            //            setValidConnection('success');
+            const tempState: string[] = [...connectionState];
+            tempState[toolIndex] = 'success';
+            setConnectionState(tempState);
 
             let temp: ITeamMetricsDetails = { ...teamMetricsTools };
-//            temp.metrics[toolIndex] = response.tool;
+            //            temp.metrics[toolIndex] = response.tool;
             if (selectedMapItem === 'team') {
               temp.metrics[toolIndex] = sortToolsAttributes(
                 response.tool,
@@ -492,10 +492,10 @@ const MapMetricsTools = (props: any) => {
                   }
                 })
               })
-            }            
+            }
             setTeamMetricsTools(temp);
           } else {
-//            setValidConnection('failed');
+            //            setValidConnection('failed');
             const tempState: string[] = [...connectionState];
             tempState[toolIndex] = 'failed';
             setConnectionState(tempState);
@@ -506,8 +506,8 @@ const MapMetricsTools = (props: any) => {
           }
         })
         .catch((error) => {
-//          setIsConnecting(false);
-//          setValidConnection('failed');
+          //          setIsConnecting(false);
+          //          setValidConnection('failed');
           const tempState: string[] = [...connectionState];
           tempState[toolIndex] = 'failed';
           setConnectionState(tempState);
@@ -527,14 +527,14 @@ const MapMetricsTools = (props: any) => {
     }
   };
 
-  const handleOpenDialog = () => {    
+  const handleOpenDialog = () => {
     fetch('/userNote.txt')
-    .then((note) => 
-      note.text())
-    .then(text  => {
-      setUserNote(text);
-      setOpenDialog(true);
-    })  
+      .then((note) =>
+        note.text())
+      .then(text => {
+        setUserNote(text);
+        setOpenDialog(true);
+      })
   };
 
   const handleCloseDialog = () => {
@@ -593,14 +593,14 @@ const MapMetricsTools = (props: any) => {
       temp.services.forEach((service) => {
         if (selectedMapItemId === service.id) {
           service.metrics[toolIndex][attrKey].value = event.target.value;
-        } 
+        }
       })
     } else {
       temp.services.forEach((service) => {
         service.hasOwnProperty('services') && service.services.forEach((subService) => {
           if (selectedMapItemId === subService.id) {
             subService.metrics[toolIndex][attrKey].value = event.target.value;
-          } 
+          }
         })
       })
     }
@@ -625,7 +625,7 @@ const MapMetricsTools = (props: any) => {
           valueArray = service.metrics[toolIndex][attrKey].value || [];
           valueArray = [...event.target.value];
           service.metrics[toolIndex][attrKey].value = valueArray;
-        } 
+        }
       })
     } else {
       temp.services.forEach((service) => {
@@ -634,11 +634,11 @@ const MapMetricsTools = (props: any) => {
             valueArray = subService.metrics[toolIndex][attrKey].value || [];
             valueArray = [...event.target.value];
             subService.metrics[toolIndex][attrKey].value = valueArray;
-          } 
+          }
         })
       })
-    }   
-    
+    }
+
     setTeamMetricsTools(temp);
   };
 
@@ -656,7 +656,7 @@ const MapMetricsTools = (props: any) => {
   const handleEnabledChange = (event: any, toolIndex: number) => {
     event.stopPropagation();
     let temp: ITeamMetricsDetails = { ...teamMetricsTools };
-//    temp.metrics[toolIndex].enabled = event.target.checked;
+    //    temp.metrics[toolIndex].enabled = event.target.checked;
     if (selectedMapItem === 'team') {
       temp.metrics[toolIndex].enabled = !temp.metrics[toolIndex].enabled;
     } else if (selectedMapItem === 'service') {
@@ -674,9 +674,9 @@ const MapMetricsTools = (props: any) => {
         })
       })
     }
-    
+
     setTeamMetricsTools(temp);
-}
+  }
 
   const confirmAndDeleteTool = (event: any, toolIndex: number) => {
     event.stopPropagation();
@@ -704,13 +704,13 @@ const MapMetricsTools = (props: any) => {
           })
         })
       }
-      
+
       setTeamMetricsTools(temp);
 
       const tempState: string[] = [...connectionState];
       tempState.splice(deleteToolIndex, 1);
       setConnectionState(tempState);
-      }
+    }
   };
 
   const changeListSettings = (id: string) => {
@@ -752,14 +752,14 @@ const MapMetricsTools = (props: any) => {
         selectedMapItemId === service.id && service.metrics.push(newTool);
       })
     } else {
-        temp.services.forEach((service) => {
-          service.hasOwnProperty('services') && service.services.forEach((subService) => {
+      temp.services.forEach((service) => {
+        service.hasOwnProperty('services') && service.services.forEach((subService) => {
           subService.metrics = subService.hasOwnProperty('metrics') ? subService.metrics : [];
           selectedMapItemId === subService.id && subService.metrics.push(newTool);
         })
       })
     }
-    
+
     setTeamMetricsTools(temp);
 
     const tempState: string[] = [...connectionState];
@@ -1093,9 +1093,9 @@ const MapMetricsTools = (props: any) => {
               >
                 Team
               </Typography>
-                <ListItem button selected={selectedMapItemId === teamMetricsTools.teamId || selectedMapItem === 'team'} onClick={() => handleListItemClick('team', teamMetricsTools.teamId)}>
-                  <ListItemText primary={teamMetricsTools.teamName} />
-                </ListItem>
+              <ListItem button selected={selectedMapItemId === teamMetricsTools.teamId || selectedMapItem === 'team'} onClick={() => handleListItemClick('team', teamMetricsTools.teamId)}>
+                <ListItemText primary={teamMetricsTools.teamName} />
+              </ListItem>
               {serviceList.length ?
                 <Fragment>
                   <Divider component="li" variant="middle" />
@@ -1112,205 +1112,207 @@ const MapMetricsTools = (props: any) => {
                   {serviceList.map((service, index) => {
                     return (
                       <ListItem key={index} button selected={selectedMapItemId === service.id} onClick={() => handleListItemClick('service', service.id)}>
-                        <ListItemText className={classes.dividerService} primary={service.name}/>
-                      </ListItem>                                 
+                        <ListItemText className={classes.dividerService} primary={service.name} />
+                      </ListItem>
                     )
                   })}
-                    {subServiceList.length &&
-                      <Fragment>
-                        <Divider component="li" variant="middle" />
-                        <li>
-                          <Typography
-                            className={classes.dividerSubService}
-                            color="textSecondary"
-                            display="block"
-                            variant="caption"
-                          >
-                            Service Sub-Component
-                          </Typography>
-                        </li>
-                        {subServiceList.map((subService, index) => {
-                          return (
-                            <ListItem key={index} button selected={selectedMapItemId === subService.id} onClick={() => handleListItemClick('subService', subService.id)}>                            
-                              <ListItemText className={classes.dividerSubService} primary={subService.name}/>
-                            </ListItem>
-                          )
-                        })}
-                      </Fragment>
-                    }
-                  </Fragment> : ''
-                }
+                  {subServiceList.length &&
+                    <Fragment>
+                      <Divider component="li" variant="middle" />
+                      <li>
+                        <Typography
+                          className={classes.dividerSubService}
+                          color="textSecondary"
+                          display="block"
+                          variant="caption"
+                        >
+                          Service Sub-Component
+                        </Typography>
+                      </li>
+                      {subServiceList.map((subService, index) => {
+                        return (
+                          <ListItem key={index} button selected={selectedMapItemId === subService.id} onClick={() => handleListItemClick('subService', subService.id)}>
+                            <ListItemText className={classes.dividerSubService} primary={subService.name} />
+                          </ListItem>
+                        )
+                      })}
+                    </Fragment>
+                  }
+                </Fragment> : ''
+              }
             </List>
           </Paper>
-        <div className='bottomButtonsContainer'>
-          <Button
-            className={classes.backButton}
-            variant='outlined'
-            onClick={handleBackButton}
-          >
-            <Text tid='goBack' />
-          </Button>
-          <Button
-            className={classes.saveButton}
-            onClick={handleSave}
-            variant='outlined'
-          >
-            <Text tid='save' />
-          </Button>
-        </div>
-      </Grid>
-      <Grid item xs={8}>
-        <Paper>
-          <div style={{ width: '100%' }}  className={classes.root}>
-            <ButtonGroup
-              variant='contained'
-              color='primary'
-              ref={anchorRef}
-              aria-label='split button'
-              className={classes.title}
+          <div className='bottomButtonsContainer'>
+            <Button
+              className={classes.backButton}
+              variant='outlined'
+              onClick={handleBackButton}
             >
-              <Button
+              <Text tid='goBack' />
+            </Button>
+            <Button
+              className={classes.saveButton}
+              onClick={handleSave}
+              variant='outlined'
+            >
+              <Text tid='save' />
+            </Button>
+          </div>
+        </Grid>
+        <Grid item xs={8}>
+          <Paper>
+            <div style={{ width: '100%' }} className={classes.root}>
+              <ButtonGroup
+                variant='contained'
                 color='primary'
-                aria-controls={openToggle ? 'split-button-menu' : undefined}
-                aria-expanded={openToggle ? 'true' : undefined}
-                aria-label='select merge strategy'
-                aria-haspopup='menu'
-                onClick={handleAddButtonClick}
-                endIcon={
-                  openToggle ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
-                }
+                ref={anchorRef}
+                aria-label='split button'
+                className={classes.title}
               >
-                <Text tid='attachCollectors' />
-              </Button>
-            </ButtonGroup>
-            <MaterialLink              
-              href='#'
-              onClick={handleOpenDialog}
-            >
-              <Typography style={{ display: 'inline', float: 'right', padding: '25px' }}>
-                <Text tid='viewDetails' />
-              </Typography>
-            </MaterialLink>
-            {/* <HelpIcon fontSize='large' onClick={handleOpenDialog}/> */}
-            {/* Information */}
-            <Popper
-              open={openToggle}
-              anchorEl={anchorRef.current}
-              role={undefined}
-              placement={'bottom-start'}
-              transition
-            >
-              {({ TransitionProps }) => (
-                <Grow {...TransitionProps}>
-                  <Paper style={{ width: '133%' }}>
-                    <List style={{ color: '#000' }}>
-                      {Object.keys(teamMetricsTools.config).map(
-                        (colKey: string) => (
-                          <Fragment key={colKey}>
-                            <ListItem
-                              button
-                              onClick={() => changeListSettings(colKey)}
-                              style={{ textAlign: 'left' }}
-                            >
-                              <ListItemText inset primary={colKey} />
-                              {listSettings[colKey] ? (
-                                <ArrowDropUpIcon />
-                              ) : (
-                                <ArrowDropDownIcon />
-                              )}
-                            </ListItem>
-                            <Collapse
-                              in={listSettings[colKey]}
-                              timeout='auto'
-                              unmountOnExit
-                            >
-                              <List
-                                disablePadding
-                                style={{ fontSize: '8px' }}
+                <Button
+                  color='primary'
+                  aria-controls={openToggle ? 'split-button-menu' : undefined}
+                  aria-expanded={openToggle ? 'true' : undefined}
+                  aria-label='select merge strategy'
+                  aria-haspopup='menu'
+                  onClick={handleAddButtonClick}
+                  endIcon={
+                    openToggle ? <ArrowDropUpIcon /> : <ArrowDropDownIcon />
+                  }
+                >
+                  <Text tid='attachCollectors' />
+                </Button>
+              </ButtonGroup>
+              <MaterialLink
+                href='#'
+                onClick={handleOpenDialog}
+              >
+                <Typography style={{ display: 'inline', float: 'right', padding: '25px' }}>
+                  <Text tid='viewDetails' />
+                </Typography>
+              </MaterialLink>
+              {/* <HelpIcon fontSize='large' onClick={handleOpenDialog}/> */}
+              {/* Information */}
+              <Popper
+                open={openToggle}
+                anchorEl={anchorRef.current}
+                role={undefined}
+                placement={'bottom-start'}
+                transition
+              >
+                {({ TransitionProps }) => (
+                  <Grow {...TransitionProps}>
+                    <Paper style={{ width: '133%' }}>
+                      <List style={{ color: '#000' }}>
+                        {Object.keys(teamMetricsTools.config).map(
+                          (colKey: string) => (
+                            <Fragment key={colKey}>
+                              <ListItem
+                                button
+                                onClick={() => changeListSettings(colKey)}
+                                style={{ textAlign: 'left' }}
                               >
-                                {teamMetricsTools.config[colKey].map(
-                                  (
-                                    collector: ICollectorConfig,
-                                    colIndex: number
-                                  ) => (
-                                    <ListItem
-                                      key={colIndex}
-                                      button
-                                      onClick={() =>
-                                        handleAddMetricsSelect(
-                                          colKey,
-                                          collector.name
-                                        )
-                                      }
-                                      style={{ fontSize: '8px' }}
-                                    >
-                                      <ListItemText
-                                        inset
-                                        primary={collector.name}
-                                        style={{
-                                          fontSize: '8px',
-                                          marginLeft: '8px',
-                                        }}
-                                      />
-                                    </ListItem>
-                                  )
+                                <ListItemText inset primary={colKey} />
+                                {listSettings[colKey] ? (
+                                  <ArrowDropUpIcon />
+                                ) : (
+                                  <ArrowDropDownIcon />
                                 )}
-                              </List>
-                            </Collapse>
-                            <Divider />
-                          </Fragment>
-                        )
-                      )}
-                    </List>
-                  </Paper>
-                </Grow>
-              )}
-            </Popper>
-            {selectedMapItem === 'team' ? !teamMetricsTools.hasOwnProperty('metrics') ||
-              teamMetricsTools.hasOwnProperty('metrics') && teamMetricsTools.metrics.length === 0 ?
+                              </ListItem>
+                              <Collapse
+                                in={listSettings[colKey]}
+                                timeout='auto'
+                                unmountOnExit
+                              >
+                                <List
+                                  disablePadding
+                                  style={{ fontSize: '8px' }}
+                                >
+                                  {teamMetricsTools.config[colKey].map(
+                                    (
+                                      collector: ICollectorConfig,
+                                      colIndex: number
+                                    ) => (
+                                      <ListItem
+                                        key={colIndex}
+                                        button
+                                        onClick={() =>
+                                          handleAddMetricsSelect(
+                                            colKey,
+                                            collector.name
+                                          )
+                                        }
+                                        style={{ fontSize: '8px' }}
+                                      >
+                                        <ListItemText
+                                          inset
+                                          primary={collector.name}
+                                          style={{
+                                            fontSize: '8px',
+                                            marginLeft: '8px',
+                                          }}
+                                        />
+                                      </ListItem>
+                                    )
+                                  )}
+                                </List>
+                              </Collapse>
+                              <Divider />
+                            </Fragment>
+                          )
+                        )}
+                      </List>
+                    </Paper>
+                  </Grow>
+                )}
+              </Popper>
+              {selectedMapItem === 'team' ? !teamMetricsTools.hasOwnProperty('metrics') ||
+                teamMetricsTools.hasOwnProperty('metrics') && teamMetricsTools.metrics.length === 0 ?
                 renderNoResultsFound() :
-                    teamMetricsTools.metrics.map((tool: IMetricsTool, i: number) => {
+                teamMetricsTools.metrics.map((tool: IMetricsTool, i: number) => {
+                  return (
+                    <div key={i} className={classes.rootp}>
+                      {renderMetricsToolDetails(tool, i)}
+                    </div>
+                  );
+                })
+                : selectedMapItem === 'service' ?
+                  teamMetricsTools.services.map((service) => {
+                    if (selectedMapItemId === service.id) {
                       return (
-                        <div key={i} className={classes.rootp}>
-                          {renderMetricsToolDetails(tool, i)}
-                        </div>
-                      );
-                    })
-                : selectedMapItem === 'service' ?           
-                    teamMetricsTools.services.map((service) => {
-                      if (selectedMapItemId === service.id) {
-                        return (
-                        !service.hasOwnProperty('metrics') || (service.hasOwnProperty('metrics') && service.metrics.length === 0) ? 
-                          renderNoResultsFound() : 
-                            service.metrics.map((tool: IMetricsTool, i: number) => {
-                              return (
-                                <div key={i} className={classes.rootp}>
-                                  {renderMetricsToolDetails(tool, i)}
-                                </div>
-                              );
-                        })
-                      )}
-                    })
-                : teamMetricsTools.services.map((service) => {
+                        !service.hasOwnProperty('metrics') || (service.hasOwnProperty('metrics') && service.metrics.length === 0) ?
+                          renderNoResultsFound() :
+                          service.metrics.map((tool: IMetricsTool, i: number) => {
+                            return (
+                              <div key={i} className={classes.rootp}>
+                                {renderMetricsToolDetails(tool, i)}
+                              </div>
+                            );
+                          })
+                      )
+                    }
+                  })
+                  : teamMetricsTools.services.map((service) => {
                     return (
                       service.hasOwnProperty('services') && service.services.map((subService) => {
                         if (selectedMapItemId === subService.id) {
                           return (
-                          !subService.hasOwnProperty('metrics') || (subService.hasOwnProperty('metrics') && subService.metrics.length === 0) ? 
-                            renderNoResultsFound() : 
+                            !subService.hasOwnProperty('metrics') || (subService.hasOwnProperty('metrics') && subService.metrics.length === 0) ?
+                              renderNoResultsFound() :
                               subService.metrics.map((tool: IMetricsTool, i: number) => {
                                 return (
                                   <div key={i} className={classes.rootp}>
                                     {renderMetricsToolDetails(tool, i)}
                                   </div>
                                 );
-                          })
-                        )}
+                              })
+                          )
+                        }
                       })
                     )
                   })
-                }
-              </div>
+              }
+            </div>
             <Snackbar
               anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
               open={failure}
@@ -1329,7 +1331,7 @@ const MapMetricsTools = (props: any) => {
               handleModalNoClicked={modalNoClicked}
             />
           </Paper>
-          <Dialog 
+          <Dialog
             onClose={handleCloseDialog} aria-labelledby="simple-dialog-title" open={openDialog}>
             <DialogTitle id="simple-dialog-title">Collector Config Details
               <IconButton aria-label="close" className={classes.closeButton} onClick={handleCloseDialog}>
@@ -1338,7 +1340,7 @@ const MapMetricsTools = (props: any) => {
             </DialogTitle>
             <DialogContent>
               {userNote}
-            </DialogContent>     
+            </DialogContent>
           </Dialog>
         </Grid>
       </Grid>
@@ -1349,12 +1351,12 @@ const MapMetricsTools = (props: any) => {
     <Fragment>
       {
         fetchedData ? (
-        renderMetricsTools()
-      ) : (
-        <Container style={{ textAlign: 'center' }}>
-          <Loader />
-        </Container>
-      )}
+          renderMetricsTools()
+        ) : (
+          <Container style={{ textAlign: 'center' }}>
+            <Loader />
+          </Container>
+        )}
     </Fragment>
   );
 };

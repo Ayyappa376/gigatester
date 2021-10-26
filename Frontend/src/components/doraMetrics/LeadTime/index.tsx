@@ -125,7 +125,7 @@ export default function LeadTime(props: any) {
           stacked: false,
           height: 230,
           toolbar: {
-//            autoSelected: 'pan',
+            //            autoSelected: 'pan',
             show: false,
           },
         },
@@ -164,7 +164,7 @@ export default function LeadTime(props: any) {
           },
         },
         tooltip: {
-          enabledOnSeries:[0],
+          enabledOnSeries: [0],
           x: {
             format: 'dd MMM yyyy',
           },
@@ -212,19 +212,19 @@ export default function LeadTime(props: any) {
                 </Grid>
                 <Grid item xs={3}>
                   <span className='doraSubTitles'>
-                    <Text tid='level' />:
+                    <Text tid='productRating' />:
                   </span>{' '}
                   <span
                     className={
                       level === 'Elite'
                         ? 'levelEliteColor'
                         : level === 'High'
-                        ? 'levelHighColor'
-                        : level === 'Medium'
-                        ? 'levelMediumColor'
-                        : level === 'low'
-                        ? 'levelLowColor'
-                        : 'levelNAColor'
+                          ? 'levelHighColor'
+                          : level === 'Medium'
+                            ? 'levelMediumColor'
+                            : level === 'low'
+                              ? 'levelLowColor'
+                              : 'levelNAColor'
                     }
                   >
                     {level}

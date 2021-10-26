@@ -9,7 +9,7 @@ function Alert(props: any) {
 
 const useStyles = makeStyles(theme => ({
     root: {
-        top: theme.spacing(9)
+        top: theme.spacing(2)
     }
 }))
 
@@ -32,14 +32,14 @@ export default function Notification(props: any) {
         <Snackbar
             className={classes.root}
             open={notify.isOpen}
-            autoHideDuration={3000}
+            autoHideDuration={2000}
             anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             onClose={handleClose}>
             <Alert
                 severity={notify.type}
             >
                 {
-                 <Text tid={notify.message} />
+                    <Text tid={notify.message} />
                 }
             </Alert>
         </Snackbar>

@@ -82,15 +82,15 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
-//  smallGrid: {
-//    marginTop: '12px',
-//  },
+  //  smallGrid: {
+  //    marginTop: '12px',
+  //  },
 }));
 
 const CreateTeam = (props: any) => {
   const classes = useStyles();
   const [teamPosted, setTeamPosted] = useState(false);
-//  const getTeamParams = useActions(fetchTeamParameters);
+  //  const getTeamParams = useActions(fetchTeamParameters);
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
@@ -100,15 +100,15 @@ const CreateTeam = (props: any) => {
     return state;
   });
   const [teamState, setTeamState] = React.useState<ITeamParams | undefined>();
-//  const [createTeamParams, setCreateTeamParams] =
-    React.useState<ITeamParams | null>(null);
-//  const [teamParamState, setTeamParamState] = React.useState<any>({});
+  //  const [createTeamParams, setCreateTeamParams] =
+  React.useState<ITeamParams | null>(null);
+  //  const [teamParamState, setTeamParamState] = React.useState<any>({});
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='teamIsCreated' />;
+  let msgSuccess = <Text tid='platformIsCreated' />;
 
-//  useEffect(() => {
-//    getTeamParams();
-//  }, []);
+  //  useEffect(() => {
+  //    getTeamParams();
+  //  }, []);
 
   useEffect(() => {
     Http.get({
@@ -119,7 +119,7 @@ const CreateTeam = (props: any) => {
         response.values = {};
         setTeamState(response);
         setTeamDataFetched(true);
-//        setCreateTeamParams(response);
+        //        setCreateTeamParams(response);
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
@@ -134,11 +134,11 @@ const CreateTeam = (props: any) => {
   }, []);
 
   const handleSubmit = () => {
-//    const postData = createTeamParams;
-//    if (postData) {
-//      postData['values'] = teamParamState;
-//      postData['orgId'] = createTeamParams ? createTeamParams['orgId'] : '';
-//    }
+    //    const postData = createTeamParams;
+    //    if (postData) {
+    //      postData['values'] = teamParamState;
+    //      postData['orgId'] = createTeamParams ? createTeamParams['orgId'] : '';
+    //    }
     const postData = teamState;
     Http.post({
       url: `/api/v2/admin/createteam`,
@@ -147,22 +147,22 @@ const CreateTeam = (props: any) => {
       },
       state: stateVariable,
     })
-    .then((response: any) => {
-      setTeamPosted(true);
-    })
-    .catch((error) => {
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 400) {
-        setFailureMessage(object.apiError.msg);
-        setFailure(true);
-      } else if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        setFailureMessage(<Text tid='somethingWentWrong' />);
-        setFailure(true);
-      }
-    });
+      .then((response: any) => {
+        setTeamPosted(true);
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 400) {
+          setFailureMessage(object.apiError.msg);
+          setFailure(true);
+        } else if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          setFailureMessage(<Text tid='somethingWentWrong' />);
+          setFailure(true);
+        }
+      });
   };
 
   const resetTeamState = () => {
@@ -197,12 +197,12 @@ const CreateTeam = (props: any) => {
           check = false;
         } else if ((teamState.teamConfig[el].type === 'multi-list') &&
           (teamState.values[el].length === 0)) {
-            check = false;
+          check = false;
         }
       }
     });
 
-    if(teamState.values && teamState.values.services && ! mandatoryServicesFieldsCheck(teamState.values.services)) {
+    if (teamState.values && teamState.values.services && !mandatoryServicesFieldsCheck(teamState.values.services)) {
       check = false;
     }
     return check;
@@ -221,12 +221,12 @@ const CreateTeam = (props: any) => {
           if (!service[el]) {
             check = false;
           } else if ((service[el].type === 'multi-list') && (service[el].length === 0)) {
-              check = false;
+            check = false;
           }
         }
       });
-  
-      if(service.services && ! mandatoryServicesFieldsCheck(service.services)) {
+
+      if (service.services && !mandatoryServicesFieldsCheck(service.services)) {
         check = false;
       }
     });
@@ -237,15 +237,15 @@ const CreateTeam = (props: any) => {
     if (teamState) {
       const temp: ITeamParams | null | undefined = { ...teamState };
       let values: any = temp.values;
-      for(let i: number = 0; i < indexPath.length; i++) {
-        if(values && values.services) {
+      for (let i: number = 0; i < indexPath.length; i++) {
+        if (values && values.services) {
           values = values.services[indexPath[i]];
         } else {
           values = null;
         }
       }
 
-      if(values) {
+      if (values) {
         values[key] = event.target.value;
         setTeamState(temp);
       }
@@ -256,15 +256,15 @@ const CreateTeam = (props: any) => {
     if (teamState) {
       const temp: ITeamParams | null | undefined = { ...teamState };
       let values: any = temp.values;
-      for(let i: number = 0; i < indexPath.length; i++) {
-        if(values && values.services) {
+      for (let i: number = 0; i < indexPath.length; i++) {
+        if (values && values.services) {
           values = values.services[indexPath[i]];
         } else {
           values = null;
         }
       }
 
-      if(values) {
+      if (values) {
         if (event.target.value === '') {
           values[key] = OTHER_STRING;
         } else {
@@ -289,15 +289,15 @@ const CreateTeam = (props: any) => {
     if (teamState) {
       const temp: ITeamParams | null | undefined = { ...teamState };
       let values: any = temp.values;
-      for(let i: number = 0; i < indexPath.length; i++) {
-        if(values && values.services) {
+      for (let i: number = 0; i < indexPath.length; i++) {
+        if (values && values.services) {
           values = values.services[indexPath[i]];
         } else {
           values = null;
         }
       }
 
-      if(values) {
+      if (values) {
         const updatedString = `${OTHER_STRING}: ${event.target.value}`;
         const valueArray = values[key] || [];
         const indexOfOther = returnIndexOfOther(valueArray);
@@ -312,20 +312,20 @@ const CreateTeam = (props: any) => {
     if (teamState) {
       const temp: ITeamParams | null | undefined = { ...teamState };
       let values: any = temp.values;
-      for(let i: number = 0; i < indexPath.length; i++) {
-        if(values && values.services) {
+      for (let i: number = 0; i < indexPath.length; i++) {
+        if (values && values.services) {
           values = values.services[indexPath[i]];
         } else {
           values = null;
         }
       }
 
-      if(values) {
+      if (values) {
         let valueArray = values[key] || [];
         valueArray = [...event.target.value];
         values[key] = valueArray;
         setTeamState(temp);
-       }
+      }
     }
   };
 
@@ -364,19 +364,19 @@ const CreateTeam = (props: any) => {
     if (teamState) {
       const temp: ITeamParams | null | undefined = { ...teamState };
       let values: any = temp.values;
-      for(let i: number = 0; i < indexPath.length; i++) {
-        if(values && values.services) {
+      for (let i: number = 0; i < indexPath.length; i++) {
+        if (values && values.services) {
           values = values.services[indexPath[i]];
         } else {
           values = null;
         }
       }
 
-      if(values) {
-        if(!values.services) {
+      if (values) {
+        if (!values.services) {
           values.services = [];
         }
-        values.services.push({name: '', active: 'true'});
+        values.services.push({ name: '', active: 'true' });
         setTeamState(temp);
       }
     }
@@ -386,15 +386,15 @@ const CreateTeam = (props: any) => {
     if (teamState) {
       const temp: ITeamParams | null | undefined = { ...teamState };
       let values: any = temp.values;
-      for(let i: number = 0; i < indexPath.length; i++) {
-        if(values && values.services) {
+      for (let i: number = 0; i < indexPath.length; i++) {
+        if (values && values.services) {
           values = values.services[indexPath[i]];
         } else {
           values = null;
         }
       }
 
-      if(values) {
+      if (values) {
         values.active = 'false';
         setTeamState(temp);
       }
@@ -408,7 +408,7 @@ const CreateTeam = (props: any) => {
     const element: IFieldConfigAttributes = config[key];
     console.log(key);
     console.log(element)
-//    const values = teamParamState ? teamParamState : null;
+    //    const values = teamParamState ? teamParamState : null;
     switch (element.type) {
       case 'string':
         return (
@@ -511,21 +511,21 @@ const CreateTeam = (props: any) => {
                   values[key] &&
                   element.options &&
                   ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
-                  (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
+                    (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
                 )
               }
               label={`(specify, if ${OTHER_STRING})`}
               value={
-                  values &&
+                values &&
                   values[key] &&
                   element.options &&
                   ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
-                  (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
+                    (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
                   ? values[key] === OTHER_STRING
                     ? ''
                     : values[key]
                   : ''
-                }
+              }
               onChange={(event) => handleChangeOtherValueList(event, key, indexPath)}
               autoComplete='off'
               className='textFieldStyle'
@@ -702,17 +702,17 @@ const CreateTeam = (props: any) => {
                   />
                 </Typography>
               </Tooltip>
-            </MuiThemeProvider>          
+            </MuiThemeProvider>
           </div>
         </Grid>
         {(indexPath.length < MAX_SERVICE_HIERARCHY_LEVEL) ?
           (
             <Grid container spacing={3} className={classes.grid}>
-              <Typography color='textSecondary' style={{paddingLeft: '25px'}}>
+              <Typography color='textSecondary' style={{ paddingLeft: '25px' }}>
                 Service Sub-Components
               </Typography>
               {service.services && service.services.map((subService: IServiceInfo, index: number) => {
-                if(subService.active === 'true') {
+                if (subService.active === 'true') {
                   return (
                     <Grid container spacing={3} className={classes.grid2}>
                       {renderService(subService, [...indexPath, index])}
@@ -748,7 +748,7 @@ const CreateTeam = (props: any) => {
                 </div>
               </Grid>
             </Grid>
-          ) : (<div/>)
+          ) : (<div />)
         }
       </Fragment>
     );
@@ -785,11 +785,11 @@ const CreateTeam = (props: any) => {
             );
           })}
           <Grid container spacing={3} className={classes.grid}>
-            <Typography  color='textSecondary' style={{paddingLeft: '25px'}}>
+            <Typography color='textSecondary' style={{ paddingLeft: '25px' }}>
               Service Components
             </Typography>
             {teamState!.values!.services && teamState!.values!.services.map((service: IServiceInfo, index: number) => {
-              if(service.active === 'true') {
+              if (service.active === 'true') {
                 return (
                   <Grid container spacing={3} className={classes.grid2}>
                     {renderService(service, [index])}
@@ -812,12 +812,12 @@ const CreateTeam = (props: any) => {
                       </Typography>
                     }
                   >
-                  <Typography>
-                    <AddIcon
-                      fontSize='large'
-                      onClick={() => {
-                        addService([]);
-                      }}
+                    <Typography>
+                      <AddIcon
+                        fontSize='large'
+                        onClick={() => {
+                          addService([]);
+                        }}
                       />{' '}
                     </Typography>
                   </Tooltip>

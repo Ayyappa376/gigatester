@@ -177,7 +177,7 @@ export default function AreaChart(props) {
                 </Grid>
                 <Grid item xs={3}>
                   <span className='doraSubTitles'>
-                    <Text tid='level' />:
+                    <Text tid='productRating' />:
                   </span>{' '}
                   <span
                     className={

@@ -88,7 +88,7 @@ let todayEnd = new Date(
 const MetricDetails = (props: any) => {
 
   const classes = useStyles();
-  const [dateRange, setDateRange] = useState({fromDate:'', toDate:''});
+  const [dateRange, setDateRange] = useState({ fromDate: '', toDate: '' });
   const [focusTeam, setFocusTeam] = useState<string[]>([ALL]);
   const [focusService, setFocusService] = useState<string[]>([ALL]);
   const [focusSubService, setFocusSubService] = useState<string[]>([ALL]);
@@ -194,7 +194,7 @@ const MetricDetails = (props: any) => {
       let service: any = serviceList.find((elem: any) => elem.id === serviceId);
       if ((service !== undefined) && service.services) {
         service.services.forEach((subService: any) => {
-          if(focusSubService.indexOf(subService.id) > -1) {
+          if (focusSubService.indexOf(subService.id) > -1) {
             dataList.push(`${serviceId}/${subService.id}`);
           }
         });
@@ -208,7 +208,7 @@ const MetricDetails = (props: any) => {
   const updateServiceList = (tempTeamList: any[]): any[] => {
     let tempServiceList: any[] = [];
     tempTeamList.forEach((team: any) => {
-      if((team.services) && ((focusTeam[0] === ALL) || (focusTeam.indexOf(team.teamId) > -1))) {
+      if ((team.services) && ((focusTeam[0] === ALL) || (focusTeam.indexOf(team.teamId) > -1))) {
         tempServiceList = tempServiceList.concat(team.services);
       }
     });
@@ -220,7 +220,7 @@ const MetricDetails = (props: any) => {
   const updateSubServiceList = (tempServiceList: any[]): any[] => {
     let tempSubServiceList: any[] = [];
     tempServiceList.forEach((service: any) => {
-      if((service.services) && ((focusService[0] === ALL) || (focusService.indexOf(service.id) > -1))) {
+      if ((service.services) && ((focusService[0] === ALL) || (focusService.indexOf(service.id) > -1))) {
         tempSubServiceList = tempSubServiceList.concat(service.services);
       }
     });
@@ -235,34 +235,34 @@ const MetricDetails = (props: any) => {
     if (selectedTeams.length === 0) {
       selectedTeams.push(ALL);
     } else if (selectedTeams[0] === ALL && selectedTeams.length > 1) {
-        selectedTeams.shift();
+      selectedTeams.shift();
     }
     setFocusTeam(selectedTeams);
   };
 
   const updateFocusService = (event: any) => {
-  let selectedServices: string[] = event.target.value;
+    let selectedServices: string[] = event.target.value;
 
-  if (selectedServices.length === 0) {
-    selectedServices.push(ALL);
-  } else if (selectedServices[0] === ALL && selectedServices.length > 1) {
-    selectedServices.shift();
-  }
-  setFocusService(selectedServices);
-};
+    if (selectedServices.length === 0) {
+      selectedServices.push(ALL);
+    } else if (selectedServices[0] === ALL && selectedServices.length > 1) {
+      selectedServices.shift();
+    }
+    setFocusService(selectedServices);
+  };
 
-const updateFocusSubService = (event: any) => {
-  let selectedSubServices: string[] = event.target.value;
+  const updateFocusSubService = (event: any) => {
+    let selectedSubServices: string[] = event.target.value;
 
-  if (selectedSubServices.length === 0) {
-    selectedSubServices.push(ALL);
-  } else if (selectedSubServices[0] === ALL && selectedSubServices.length > 1) {
-    selectedSubServices.shift();
-  }
-  setFocusSubService(selectedSubServices);
-};
+    if (selectedSubServices.length === 0) {
+      selectedSubServices.push(ALL);
+    } else if (selectedSubServices[0] === ALL && selectedSubServices.length > 1) {
+      selectedSubServices.shift();
+    }
+    setFocusSubService(selectedSubServices);
+  };
 
-const updateFocusServiceType = (event: any) => {
+  const updateFocusServiceType = (event: any) => {
     let selectedServiceType: string[] = event.target.value;
     if (selectedServiceType.length === 0) {
       selectedServiceType.push(ALL);
@@ -332,7 +332,7 @@ const updateFocusServiceType = (event: any) => {
                 <Text tid='viewMore' />
               </InputLabel>
             </Paper>
-          </Grid>           
+          </Grid>
           <Grid item xs={12} md={6} lg={6}>
             <Paper className={fixedHeightPaper}>
               <LeadTime queryParams={queryParams} />
@@ -349,7 +349,7 @@ const updateFocusServiceType = (event: any) => {
           </Grid>
           <Grid item xs={12} md={6} lg={6}>
             <Paper className={fixedHeightPaper}>
-              <MTTR queryParams={queryParams}/>
+              <MTTR queryParams={queryParams} />
               <InputLabel
                 onClick={() => {
                   setMetricType('quality');
@@ -394,7 +394,7 @@ const updateFocusServiceType = (event: any) => {
     },
   };
 
-  return (    
+  return (
     <Fragment>
       <Container maxWidth='lg' className={classes.container}>
         <Grid container spacing={2} style={{ paddingTop: '5px' }}>
@@ -403,7 +403,7 @@ const updateFocusServiceType = (event: any) => {
               id='team-select-label'
               style={{ color: '#525252', fontSize: '14px' }}
             >
-              <Text tid='team' />: &nbsp;
+              <Text tid='platform' />: &nbsp;
               <Select
                 labelId='team-multi-checkbox-label'
                 id='team-multi-checkbox'
@@ -438,7 +438,7 @@ const updateFocusServiceType = (event: any) => {
               </Select>
               {teamsFailureMsg && (
                 <span style={{ color: '#f44336' }}>
-                  <Text tid='errorInLoadingTeamList' />
+                  <Text tid='errorInLoadingPlatformList' />
                 </span>
               )}
             </InputLabel>
@@ -470,7 +470,7 @@ const updateFocusServiceType = (event: any) => {
                     </MenuItem>
                   );
                 })}
-              </Select>            
+              </Select>
             </InputLabel>
           </Grid>
           <Grid item xs={12} md={4} lg={4}>
@@ -500,7 +500,7 @@ const updateFocusServiceType = (event: any) => {
                     </MenuItem>
                   );
                 })}
-              </Select>              
+              </Select>
             </InputLabel>
           </Grid>
           <Grid item xs={12} md={2} lg={2}>

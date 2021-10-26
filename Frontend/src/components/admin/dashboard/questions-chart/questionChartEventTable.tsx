@@ -337,7 +337,7 @@ function QuestionChartEvent(props: IProps) {
                   }}
                 >
                   <Typography className='tableHeadText'>
-                    <Text tid='team' />
+                    <Text tid='platform' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
@@ -356,7 +356,7 @@ function QuestionChartEvent(props: IProps) {
               </TableCell>
               <TableCell align='center' className='tableHeadCell'>
                 <Typography className='tableHeadText'>
-                  <Text tid='level' />
+                  <Text tid='productRating' />
                 </Typography>
               </TableCell>
               <TableCell align='center' className='tableHeadCell'>
@@ -400,8 +400,8 @@ function QuestionChartEvent(props: IProps) {
                     {row.data.dateSubmit
                       ? getDateTime(row.data.dateSubmit)
                       : row.data.date
-                      ? getDateTime(row.data.date)
-                      : '-'}
+                        ? getDateTime(row.data.date)
+                        : '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>
@@ -424,7 +424,7 @@ function QuestionChartEvent(props: IProps) {
                       handleViewAssessment(row.data.assessmentId);
                     }}
                   >
-                    <Text tid='viewAssessment' />
+                    <Text tid='viewTestReport' />
                   </MaterialLink>
                 </TableCell>
               </TableRow>
@@ -449,7 +449,7 @@ function QuestionChartEvent(props: IProps) {
                 <CloseIcon />
               </IconButton>
               <Typography variant='h6' className={classes.title}>
-                <Text tid='assessment' />
+                <Text tid='test' />
               </Typography>
             </Toolbar>
           </AppBar>

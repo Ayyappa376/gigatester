@@ -54,6 +54,10 @@ const useStyles = makeStyles((theme) => ({
   label: {
     margin: theme.spacing(15),
   },
+  tableHeadCellMedium: {
+    borderRadius: '0px',
+    width: '15%',
+  },
   tableHeadCellShort: {
     borderRadius: '0px',
     width: '10%',
@@ -519,7 +523,7 @@ function ViewTeams(props: any) {
         }}
       >
         <Typography>
-          <Text tid='viewAssessments' />
+          <Text tid='viewTestReports' />
         </Typography>
       </Link>
     );
@@ -569,7 +573,7 @@ function ViewTeams(props: any) {
             }}
           >
             <Typography component='h3'>
-              <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+              <Text tid='noOneInThePlatformHasTakenTheTest' />
             </Typography>
           </Container>
         );
@@ -583,7 +587,7 @@ function ViewTeams(props: any) {
           }}
         >
           <Typography component='h3'>
-            <Text tid='currentlyNotMappedToTeamAsLead' />
+            <Text tid='currentlyNotMappedToPlatformAsLead' />
           </Typography>
         </Container>
       );
@@ -599,13 +603,13 @@ function ViewTeams(props: any) {
         <Grid container spacing={3} className={classes.title}>
           <Grid item xs={4} sm={3} md={3} lg={3}>
             <Title>
-              <Text tid='teamAssessments' />:
+              <Text tid='platformTests' />:
             </Title>
           </Grid>
           <Grid item xs={4} sm={3} md={3} lg={3}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseAssessment' />
+                <Text tid='chooseProduct' />
               </InputLabel>
               <Select
                 value={questionnaireId}
@@ -638,7 +642,7 @@ function ViewTeams(props: any) {
             >
               <InputLabel id='demo-simple-select-label'>
                 {versionList.length <= 1 ||
-                questionnaireId === ALL_ASSESSMENTS ? (
+                  questionnaireId === ALL_ASSESSMENTS ? (
                   <Text tid='version' />
                 ) : (
                   <Text tid='chooseVersion' />
@@ -672,9 +676,9 @@ function ViewTeams(props: any) {
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
                 {teamList.length === 1 ? (
-                  <Text tid='team' />
+                  <Text tid='platform' />
                 ) : (
-                  <Text tid='chooseTeam' />
+                  <Text tid='choosePlatform' />
                 )}
               </InputLabel>
               <Select
@@ -709,7 +713,7 @@ function ViewTeams(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='teams' />
+                      <Text tid='platform' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
@@ -722,13 +726,13 @@ function ViewTeams(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='assessment' />
+                      <Text tid='test' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
                 <TableCell
                   align='center'
-                  className={classes.tableHeadCellShort}
+                  className={classes.tableHeadCellMedium}
                 >
                   <TableSortLabel
                     active={orderBy === 'numberOfAssessments'}
@@ -740,7 +744,7 @@ function ViewTeams(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='numberOfAssessments' />
+                      <Text tid='numberOfTests' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
@@ -756,21 +760,21 @@ function ViewTeams(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='averagePercent' />
+                      <Text tid='averageScore' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
                 <TableCell
                   align='center'
-                  className={classes.tableHeadCellShort}
+                  className={classes.tableHeadCellMedium}
                 >
                   <Typography className='tableHeadText'>
-                    <Text tid='averageLevel' />
+                    <Text tid='averageProductRating' />
                   </Typography>
                 </TableCell>
                 <TableCell align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
-                    <Text tid='linkToAssessments' />
+                    <Text tid='linkToTestReport' />
                   </Typography>
                 </TableCell>
               </TableRow>
@@ -826,7 +830,7 @@ function ViewTeams(props: any) {
                 <TableRow>
                   <TableCell align='center' colSpan={6}>
                     <Typography className='tableBodyText'>
-                      <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                      <Text tid='noOneInThePlatformHasTakenTheTest' />
                     </Typography>
                   </TableCell>
                 </TableRow>

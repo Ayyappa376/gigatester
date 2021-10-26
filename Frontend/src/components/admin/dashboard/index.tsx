@@ -180,6 +180,7 @@ const Dashboard = (props: any) => {
       ? props.location.state.type
       : ''
     : '';
+
   const bestPerformingTooltipText =
     'These are the questions where the teams have performed well. The goal should be to continue to excel in these areas.';
   const areasNeedingFocusTooltipText =
@@ -192,7 +193,7 @@ const Dashboard = (props: any) => {
     setDisplayTextLeft('');
   }, []);
 
-  useEffect(() => {}, [dashboardTypeFromProps]);
+  useEffect(() => { }, [dashboardTypeFromProps]);
 
   const getTeams = () => {
     Http.get({
@@ -322,10 +323,10 @@ const Dashboard = (props: any) => {
       assessmentTypeAndVersion !== ''
         ? assessmentTypeAndVersion
         : questionnaires
-        ? questionnaires.length > 0
-          ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
-          : ''
-        : '';
+          ? questionnaires.length > 0
+            ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
+            : ''
+          : '';
     if (typeAndVersion !== '') {
       const typeAndVersionSplit = typeAndVersion.split('+');
       const type = typeAndVersionSplit[0];
@@ -468,13 +469,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='overallMaturity'
+        id='testRatings'
       >
         <Grid item xs={12} sm={8} md={8} lg={9}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='overallMaturity' />
+                <Text tid='testRatings' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -510,7 +511,7 @@ const Dashboard = (props: any) => {
                 : 'NA'}
             </Typography>
             <Title>
-              <Text tid='totalAssessment' />
+              <Text tid='totalTests' />
             </Title>
             <Typography component='p' variant='h4'>
               {averageScore
@@ -524,9 +525,8 @@ const Dashboard = (props: any) => {
               className={classes.depositContext}
             >
               as on{' '}
-              {`${date.getDate()} ${
-                months[date.getMonth()]
-              }, ${date.getFullYear()}`}
+              {`${date.getDate()} ${months[date.getMonth()]
+                }, ${date.getFullYear()}`}
             </Typography>
             <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
@@ -562,7 +562,7 @@ const Dashboard = (props: any) => {
                 style={{ cursor: 'pointer' }}
                 onClick={viewTeamAssessmentClicked}
               >
-                <Text tid='viewTeamAssessment' />
+                <Text tid='viewTestReport' />
               </Link>
             </div>
           </Paper>
@@ -577,13 +577,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='categorywiseMaturity'
+        id='screenWiseScore'
       >
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='categoryWiseMaturity' />
+                <Text tid='screenWiseScore' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -623,31 +623,63 @@ const Dashboard = (props: any) => {
       });
     }
     return (
-      <Grid container spacing={3}>
-        <Grid item xs={12}>
-          <Paper variant='outlined' square style={{ maxWidth: '50%' }}>
-            {answerArray.map((el: string, i: number) => {
-              return (
-                <Fragment key={i}>
-                  <div style={{ display: 'flex' }}>
-                    <Paper
-                      variant='outlined'
-                      square
-                      className={classes.colorReviewBox}
-                      style={{ backgroundColor: hexColors[i] }}
-                    />
-                    <Typography style={{ fontSize: '16px' }}>
-                      <strong>{`Answer ${i + 1}`}</strong>
-                      {` - ${
-                        questionList[focusQuestion.id].answers[el].answer
+      <Grid item xs={6}>
+        <Paper variant='outlined' square style={{ width: '100%' }}>
+          {answerArray.map((el: string, i: number) => {
+            return (
+              <Fragment key={i}>
+                <div style={{ display: 'flex' }}>
+                  <Paper
+                    variant='outlined'
+                    square
+                    className={classes.colorReviewBox}
+                    style={{ backgroundColor: hexColors[i] }}
+                  />
+                  <Typography style={{ fontSize: '16px' }}>
+                    <strong>{`Answer ${i + 1}`}</strong>
+                    {` - ${questionList[focusQuestion.id].answers[el].answer
                       }`}
-                    </Typography>
-                  </div>
-                </Fragment>
-              );
-            })}
-          </Paper>
-        </Grid>
+                  </Typography>
+                </div>
+              </Fragment>
+            );
+          })}
+        </Paper>
+      </Grid>
+    );
+  };
+
+  const renderAssessmentComments = () => {
+    let comments: string[] = [];
+    assessmentReports &&
+      Object.keys(assessmentReports.teams).forEach((team: string) => {
+        if (focusTeam === 'all' || focusTeam === team) {
+          assessmentReports.teams[team].assessments.forEach((assessment: any) => {
+            if (assessment && assessment.assessmentDetails) {
+              // In assessmentDetails structure, questionIds are questionId and version concatenated ex: ques8010001_1
+              const ques: string | undefined = Object.keys(assessment.assessmentDetails).find((q, i) => q.startsWith(focusQuestion.id));
+              if (ques) {
+                comments.push(assessment.assessmentDetails[ques].comment);
+              }
+            }
+          })
+        }
+      })
+
+    return (
+      <Grid item xs={6}>
+        <Paper variant='outlined' square style={{ width: '100%', fontSize: '16px', height: '150px', overflowY: 'auto' }}>
+          <strong style={{ marginLeft: '5px' }}>Comments:</strong>
+          {comments.length && comments.map((el: string, i: number) => {
+            return (
+              <Fragment key={i}>
+                <Typography style={{ margin: '5px' }}>
+                  {`${i + 1} - ${el}`}
+                </Typography>
+              </Fragment>
+            );
+          })}
+        </Paper>
       </Grid>
     );
   };
@@ -708,13 +740,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='questionwiseMetrics'
+        id='testCaseWiseMetrics'
       >
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='questionWiseMetrics' />
+                <Text tid='testCaseWiseMetrics' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -731,7 +763,7 @@ const Dashboard = (props: any) => {
             </div>
             <FormControl className={classes.questionFormControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseQuestion' />
+                <Text tid='chooseTestCase' />
               </InputLabel>
               <Select value={focusQuestion.id} onChange={changeQuestion}>
                 {Object.keys(questionList).map((opt: any) => {
@@ -752,7 +784,10 @@ const Dashboard = (props: any) => {
                   clickHandler={questionChartClickHandler}
                 />
                 <br />
-                {renderAnswersLegend()}
+                <Grid container spacing={3}>
+                  {renderAnswersLegend()}
+                  {renderAssessmentComments()}
+                </Grid>
               </Fragment>
             ) : (
               <div />
@@ -768,7 +803,7 @@ const Dashboard = (props: any) => {
       return (
         <div className={classes.messagePage}>
           <Typography variant='h5'>
-            <Text tid='noAssessmentDataForQuestionnaire' />
+            <Text tid='noTestDataForTestSuit' />
           </Typography>
         </div>
       );
@@ -778,7 +813,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -790,7 +825,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -800,7 +835,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -809,7 +844,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -824,7 +859,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForTeam' />
+              <Text tid='noTestDataForPlatform' />
             </Typography>
           </div>
         );
@@ -933,7 +968,7 @@ const Dashboard = (props: any) => {
       <Container maxWidth='md' component='div'>
         <div style={{ display: 'flex' }}>
           <Typography variant='h6'>
-            <Text tid='teamIsCurrentlyNotMappedAssessment' />
+            <Text tid='platformIsCurrentlyNotMappedTest' />
           </Typography>
         </div>
       </Container>
@@ -947,17 +982,17 @@ const Dashboard = (props: any) => {
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseAssessment' />
+                <Text tid='chooseProduct' />
               </InputLabel>
               <Select
                 value={
                   assessmentTypeAndVersion !== ''
                     ? assessmentTypeAndVersion
                     : questionnaires
-                    ? questionnaires.length > 0
-                      ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
+                      ? questionnaires.length > 0
+                        ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
+                        : ''
                       : ''
-                    : ''
                 }
                 onChange={handleChangeQuestonnaireValue}
               >
@@ -978,7 +1013,7 @@ const Dashboard = (props: any) => {
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseTeam' />
+                <Text tid='choosePlatform' />
               </InputLabel>
               <Select
                 value={focusTeam !== '' ? focusTeam : ''}
@@ -1015,14 +1050,14 @@ const Dashboard = (props: any) => {
         {questionnairesFetch && questionnaires && questionnaires.length <= 0
           ? renderUnmappedAssessmentDashboard()
           : assessmentReportsFetched && assessmentReports
-          ? pieChartEventClicked
-            ? renderPieChartTable()
-            : categoryBarChartEventClicked
-            ? renderCategoryBarChartTable()
-            : questionChartEventClicked
-            ? renderQuestionBarChartTable()
-            : renderMainDashboard()
-          : renderLoader()}
+            ? pieChartEventClicked
+              ? renderPieChartTable()
+              : categoryBarChartEventClicked
+                ? renderCategoryBarChartTable()
+                : questionChartEventClicked
+                  ? renderQuestionBarChartTable()
+                  : renderMainDashboard()
+            : renderLoader()}
       </Container>
     </Fragment>
   );

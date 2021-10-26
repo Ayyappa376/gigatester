@@ -315,7 +315,7 @@ const ManageTeams = (props: any) => {
   const renderEmptyTeamMessage = () => {
     return (
       <Typography variant='h5'>
-        <Text tid='notManagingAnyTeam' />
+        <Text tid='notManagingAnyPlatform' />
       </Typography>
     );
   };
@@ -357,7 +357,7 @@ const ManageTeams = (props: any) => {
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='team' />
+                        <Text tid='platform' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
@@ -427,12 +427,12 @@ const ManageTeams = (props: any) => {
                                 onClick={() => {
                                   props.mapMetricsClicked(row.teamId);
                                 }}
-                              > */}
-                                <Typography>
-                                  <Text tid='editMetrics' />
-                                </Typography>
-                              {/* </MaterialLink> */}
-                              <Typography>&nbsp;|&nbsp;</Typography>
+                              >
+                              <Typography>
+                                <Text tid='editMetrics' />
+                              </Typography>
+                              </MaterialLink>
+                              <Typography>&nbsp;|&nbsp;</Typography> */}
                               <MaterialLink
                                 href='#'
                                 onClick={() => {
@@ -510,7 +510,7 @@ const ManageTeams = (props: any) => {
             </Button>
           </div>
           <ModalComponent
-            message={'disableTheTeamAndTheRelatedAssessmentData'}
+            message={'disableThePlatformAndTheRelatedTestData'}
             openModal={openModal}
             handleModalYesClicked={modalYesClicked}
             handleModalNoClicked={modalNoClicked}

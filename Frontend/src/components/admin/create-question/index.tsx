@@ -119,7 +119,7 @@ const CreateQuestion = (props: any) => {
     return state;
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionIsCreated' />;
+  let msgSuccess = <Text tid='testCaseIsCreated' />;
 
   const handleAnswerChangeValue = (event: any, i: number) => {
     const answerCopy = [...answerVariable];
@@ -178,7 +178,7 @@ const CreateQuestion = (props: any) => {
   const validatePostData = () => {
     if (postData.question === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionCannotBeEmpty' />);
+      setFailureMessage(<Text tid='testCaseCannotBeEmpty' />);
       return {};
     }
     if (answerVariable.length < 2) {
@@ -413,7 +413,7 @@ const CreateQuestion = (props: any) => {
               id='QuestionName'
               name='QuestionName'
               variant='outlined'
-              label='Question'
+              label='Test Case'
               fullWidth
               onChange={updateQuestionName}
             />
@@ -483,7 +483,7 @@ const CreateQuestion = (props: any) => {
           <Grid item xs={12} sm={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label' required={true}>
-                <Text tid='level' />
+                <Text tid='productRating' />
               </InputLabel>
               <Select
                 name={'level'}

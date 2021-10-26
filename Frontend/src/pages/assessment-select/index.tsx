@@ -70,9 +70,9 @@ const AssessmentSelect = (props: any) => {
   const setAssessmentDataStart = useActions(setSelectAssessmentDataStart);
   const setDisplayLeftText = useActions(setAppBarLeftText);
 
-  let signUpUrl: string;
+  // let signUpUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
-  signUpUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
+  // signUpUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
 
   useEffect(() => {
     setDisplayLeftText('');
@@ -111,14 +111,15 @@ const AssessmentSelect = (props: any) => {
     } else {
       if (systemDetails.mode === constantValues.TRIAL_MODE) {
         props.history.push('/error');
-      } else {
-        window.open(
-          signUpUrl,
-          '_self',
-          `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no,
-                    resizable=no, copyhistory=no, width=${500}, height=${5000}, top=${300}, left=${300}`
-        );
       }
+      //  else {
+      //   window.open(
+      //     signUpUrl,
+      //     '_self',
+      //     `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no,
+      //               resizable=no, copyhistory=no, width=${500}, height=${5000}, top=${300}, left=${300}`
+      //   );
+      // }
     }
   }, [teamName]);
 
@@ -168,18 +169,19 @@ const AssessmentSelect = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='assessments' />
+                      <Text tid='test' />
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='linkToAssessments' />
+                      <Text tid='linkToTest' />
                     </Typography>
                   </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
                 {questionnaire.questionnaires.map((row: any, index: number) => (
+                  questionnaire.questionnaireSelected.includes(row.questionnaireId) &&
                   <TableRow key={index}>
                     <TableCell component='th' scope='row' className='tableCell'>
                       <Typography className='tableBodyText'>
@@ -190,11 +192,6 @@ const AssessmentSelect = (props: any) => {
                       <Button
                         variant='outlined'
                         className={classes.buttons}
-                        disabled={
-                          !questionnaire.questionnaireSelected.includes(
-                            row.questionnaireId
-                          )
-                        }
                         onClick={() => {
                           linkClicked(row.questionnaireId, row.version);
                         }}

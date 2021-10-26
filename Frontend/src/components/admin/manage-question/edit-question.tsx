@@ -95,7 +95,7 @@ const EditQuestion = (props: any) => {
     return state;
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionIsUpdated' />;
+  let msgSuccess = <Text tid='testCaseIsUpdated' />;
 
   useEffect(() => {
     const tempAnswerArray: IAnswer[] = [];
@@ -123,7 +123,7 @@ const EditQuestion = (props: any) => {
   const validatePostData = () => {
     if (postData.question === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionCannotBeEmpty' />);
+      setFailureMessage(<Text tid='testCaseCannotBeEmpty' />);
       return {};
     }
     if (answerVariable.length < 2) {
@@ -394,7 +394,7 @@ const EditQuestion = (props: any) => {
               variant='outlined'
               id='QuestionName'
               name='QuestionName'
-              label='Question'
+              label='Test Case'
               fullWidth
               onChange={updateQuestionName}
               value={postData.question}
@@ -468,7 +468,7 @@ const EditQuestion = (props: any) => {
           <Grid item xs={12} sm={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label' required={true}>
-                <Text tid='level' />
+                <Text tid='productRating' />
               </InputLabel>
               <Select
                 name={'level'}

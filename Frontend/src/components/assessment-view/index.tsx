@@ -25,6 +25,9 @@ import {
   ListItemIcon,
   ListItemText,
   Checkbox,
+  Dialog,
+  DialogContent,
+  DialogTitle,
   Button,
   Grid,
   Paper,
@@ -34,6 +37,7 @@ import {
   Tooltip,
 } from '@material-ui/core';
 import EventIcon from '@material-ui/icons/Event';
+import { default as MaterialLink } from '@material-ui/core/Link';
 import { buttonStyle, tooltipTheme } from '../../common/common';
 import { Text } from '../../common/Language';
 // import html2canvas from 'html2canvas';
@@ -298,6 +302,8 @@ function AssessmentView(props: IAssessmentViewProps) {
   };
   const [action, setAction] = useState<IActionCreate[]>([emptyAction]);
   const structuredQuestionsArray = structureQuestionArray(props.assessmentData);
+  const [viewLogs, setViewLogs] = useState(false);
+
   const renderOption = (
     option: IOptionItem,
     numberOfAnswers: number,
@@ -439,6 +445,14 @@ function AssessmentView(props: IAssessmentViewProps) {
             variant='outlined'
           />
         )}
+        <MaterialLink
+          href='#'
+          onClick={() => {
+            setViewLogs(true);
+          }}
+        >
+          View Logs
+        </MaterialLink>
       </Container>
     );
   };
@@ -534,6 +548,10 @@ function AssessmentView(props: IAssessmentViewProps) {
     setAction([...action, emptyAction]);
   };
 
+  const closeViewLogs = () => {
+    setViewLogs(false);
+  }
+
   const renderActions = (el: IActionCreate, i: number) => {
     return (
       <Fragment key={i}>
@@ -626,7 +644,7 @@ function AssessmentView(props: IAssessmentViewProps) {
     //      pdf.addImage(imgData, 'JPEG', 0, 0, 200, 150);
     let pos: number = 30;
     //write assessment name, user and team
-    pdf.text(`Assessment: ${displayDetails.topBarTextLeft}`, 20, pos);
+    pdf.text(`Test: ${displayDetails.topBarTextLeft}`, 20, pos);
     pos += 10;
     pdf.text(`${displayDetails.topBarTextCenter}`, 20, pos);
     pos += 10;
@@ -634,13 +652,13 @@ function AssessmentView(props: IAssessmentViewProps) {
     pdf.text(`Score: ${result.percentage}%`, 20, pos);
     pos += 10;
     pdf.text(
-      `Level: ${calculateLevel(result.percentage, props.userLevels)}`,
+      `Product Rating: ${calculateLevel(result.percentage, props.userLevels)}`,
       20,
       pos
     );
     pos += 10;
     //write category wise scores
-    pdf.text(`Category wise results:`, 20, pos);
+    pdf.text(`Screen wise Score/Rating:`, 20, pos);
     pos += 10;
     let res = Object.keys(result.categoryWiseResults);
     res = res.sort((a, b) => {
@@ -653,7 +671,7 @@ function AssessmentView(props: IAssessmentViewProps) {
     //write question details
     pdf.addPage();
     pos = 30;
-    pdf.text(`Assessment Details:`, 20, pos);
+    pdf.text(`Test Details:`, 20, pos);
     pos += 10;
     let qNum = 0;
     Object.keys(structuredQuestionsArray).forEach((el: string, i: number) => {
@@ -799,9 +817,9 @@ function AssessmentView(props: IAssessmentViewProps) {
             className={classes.showAssessmentButton}
           >
             {showAssessment ? (
-              <Text tid='hideAssessment' />
+              <Text tid='hideTest' />
             ) : (
-              <Text tid='showCompleteAssessment' />
+              <Text tid='showCompleteTest' />
             )}
           </Button>
 
@@ -941,9 +959,9 @@ function AssessmentView(props: IAssessmentViewProps) {
                 className={classes.showAssessmentButton}
               >
                 {showAssessment ? (
-                  <Text tid='hideAssessment' />
+                  <Text tid='hideTest' />
                 ) : (
-                  <Text tid='showCompleteAssessment' />
+                  <Text tid='showCompleteTest' />
                 )}
               </Button>
               <Button
@@ -967,6 +985,32 @@ function AssessmentView(props: IAssessmentViewProps) {
             </div>
           </Fragment>
         ) : null}
+
+        <Dialog open={viewLogs} aria-labelledby="form-dialog-title" onClose={closeViewLogs} fullWidth >
+          <DialogTitle id="form-dialog-title" style={{ textAlign: "center" }}>User Logs</DialogTitle>
+          <DialogContent>
+            <ul>
+              <li>03/21 08:51:01 INFO   :.main: *************** RSVP Agent started ***************</li>
+              <li>03/21 08:51:01 INFO   :...locate_configFile: Specified configuration file: /u/user10/rsvpd1.conf</li>
+              <li>03/21 08:51:01 INFO   :.main: Using log level 511</li>
+              <li>03/21 08:51:01 INFO   :..settcpimage: Get TCP images rc - EDC8112I Operation not supported on socket.</li>
+              <li>03/21 08:51:01 INFO   :..settcpimage: Associate with TCP/IP image name = TCPCS</li>
+              <li>03/21 08:51:02 INFO   :..reg_process: registering process with the system</li>
+
+              <li>03/21 08:51:01 INFO   :...locate_configFile: Specified configuration file: /u/user10/rsvpd1.conf</li>
+              <li>03/21 08:51:01 INFO   :.main: Using log level 511</li>
+              <li>03/21 08:51:01 INFO   :..settcpimage: Get TCP images rc - EDC8112I Operation not supported on socket.</li>
+              <li>03/21 08:51:01 INFO   :..settcpimage: Associate with TCP/IP image name = TCPCS</li>
+              <li>03/21 08:51:02 INFO   :..reg_process: registering process with the system</li>
+
+              <li>03/21 08:51:01 INFO   :...locate_configFile: Specified configuration file: /u/user10/rsvpd1.conf</li>
+              <li>03/21 08:51:01 INFO   :.main: Using log level 511</li>
+              <li>03/21 08:51:01 INFO   :..settcpimage: Get TCP images rc - EDC8112I Operation not supported on socket.</li>
+              <li>03/21 08:51:01 INFO   :..settcpimage: Associate with TCP/IP image name = TCPCS</li>
+              <li>03/21 08:51:02 INFO   :..reg_process: registering process with the system</li>
+            </ul>
+          </DialogContent>
+        </Dialog>
       </Fragment>
     </MuiThemeProvider>
   );

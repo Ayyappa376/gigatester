@@ -71,7 +71,7 @@ function TeamAssessments(props: TeamAssessmentsProps) {
   const teamName = props.match.params.teamName;
   const assessmentName = props.match.params.assessmentName;
   const version = props.match.params.version;
-  setDisplayCenterText(`Team: ${teamName}`);
+  setDisplayCenterText(`Platform: ${teamName}`);
   /* Order related changes */
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('date');
@@ -250,7 +250,7 @@ function TeamAssessments(props: TeamAssessmentsProps) {
         }}
       >
         <Typography>
-          <Text tid='viewAssessment' />
+          <Text tid='viewTestResults' />
         </Typography>
       </MaterialLink>
     );
@@ -315,7 +315,7 @@ function TeamAssessments(props: TeamAssessmentsProps) {
                   }}
                 >
                   <Typography className='tableHeadText'>
-                    <Text tid='assessment' />
+                    <Text tid='test' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
@@ -347,12 +347,12 @@ function TeamAssessments(props: TeamAssessmentsProps) {
               </TableCell>
               <TableCell align='center' className='tableHeadCell'>
                 <Typography className='tableHeadText'>
-                  <Text tid='level' />
+                  <Text tid='productRating' />
                 </Typography>
               </TableCell>
               <TableCell align='center' className='tableHeadCell'>
                 <Typography className='tableHeadText'>
-                  <Text tid='linkToAssessments' />
+                  <Text tid='testResults' />
                 </Typography>
               </TableCell>
             </TableRow>
@@ -401,8 +401,8 @@ function TeamAssessments(props: TeamAssessmentsProps) {
                     {row.dateSubmit
                       ? getDateTime(row.dateSubmit)
                       : row.date
-                      ? getDateTime(row.date)
-                      : '-'}
+                        ? getDateTime(row.date)
+                        : '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>

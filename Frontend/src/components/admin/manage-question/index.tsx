@@ -242,7 +242,7 @@ const ManageQuestion = (props: any) => {
             <Grid item sm={5}>
               <FormControl className={classes.formControl}>
                 <InputLabel id='filter-control'>
-                  <Text tid='chooseQuestionnaire' />
+                  <Text tid='chooseTestSuit' />
                 </InputLabel>
                 <Select
                   name={'selectQuestionnaire'}
@@ -250,7 +250,7 @@ const ManageQuestion = (props: any) => {
                   onChange={handleChangeQuestionnaire}
                 >
                   <MenuItem key={'allQuestions'} value={'0'}>
-                    <Text tid='allQuestions' />
+                    <Text tid='allTestCases' />
                   </MenuItem>
                   {questionnaires && questionnaires.length !== 0 ? (
                     questionnaires.map((el: any) => (
@@ -265,7 +265,7 @@ const ManageQuestion = (props: any) => {
                     <div />
                   )}
                   <MenuItem key={'ummappedQuestions'} value={'0000'}>
-                    <Text tid='unmappedQuestions' />
+                    <Text tid='unmappedTestCases' />
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -291,7 +291,7 @@ const ManageQuestion = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='question' />
+                      <Text tid='testCase' />
                     </Typography>
                   </TableCell>
                   <TableCell

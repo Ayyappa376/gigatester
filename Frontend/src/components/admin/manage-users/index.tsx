@@ -410,7 +410,7 @@ const ManageUsers = (props: any) => {
               <Grid item sm={5}>
                 <FormControl className={classes.formControl}>
                   <InputLabel id='demo-simple-select-label'>
-                    <Text tid='chooseTeam' />
+                    <Text tid='choosePlatform' />
                   </InputLabel>
                   <Select
                     name={'selectTeam'}
@@ -459,7 +459,7 @@ const ManageUsers = (props: any) => {
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='user' />
+                        <Text tid='tester' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
@@ -498,7 +498,7 @@ const ManageUsers = (props: any) => {
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='team' />
+                        <Text tid='platform' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
@@ -521,7 +521,7 @@ const ManageUsers = (props: any) => {
                     return (
                       <TableRow
                         key={row.emailId}
-                        /*style={index % 2 ? { background : '#EFEFEF' } : { background : 'white' }} */
+                      /*style={index % 2 ? { background : '#EFEFEF' } : { background : 'white' }} */
                       >
                         <TableCell
                           component='th'

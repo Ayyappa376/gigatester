@@ -288,7 +288,7 @@ function CategoryBarChartEvent(props: any) {
                   }}
                 >
                   <Typography className='tableHeadText'>
-                    <Text tid='team' />
+                    <Text tid='platform' />
                   </Typography>
                 </TableSortLabel>
               </TableCell>
@@ -344,8 +344,8 @@ function CategoryBarChartEvent(props: any) {
                     {row.data.dateSubmit
                       ? getDateTime(row.data.dateSubmit)
                       : row.data.date
-                      ? getDateTime(row.data.date)
-                      : '-'}
+                        ? getDateTime(row.data.date)
+                        : '-'}
                   </Typography>
                 </TableCell>
                 <TableCell align='center'>
