@@ -170,9 +170,8 @@ const getTimerValues = (
   if (timeLeftTotalSeconds <= 0) {
     return `Time Left: 00:00`;
   }
-  return `Time Left: ${
-    timeLeftMinutes < 10 ? `0${timeLeftMinutes}` : timeLeftMinutes
-  }:${timeLeftSeconds < 10 ? `0${timeLeftSeconds}` : timeLeftSeconds}`;
+  return `Time Left: ${timeLeftMinutes < 10 ? `0${timeLeftMinutes}` : timeLeftMinutes
+    }:${timeLeftSeconds < 10 ? `0${timeLeftSeconds}` : timeLeftSeconds}`;
 };
 
 const getTimerWarningInfo = (
@@ -197,9 +196,8 @@ const getTimerWarningInfo = (
     warningTimeMinutes = Math.floor(warningTimeMinutes);
     if (warningTimeMinutes !== 0 && timeLeft < warningTimeMinutes * 60 * 1000) {
       return {
-        message: `Less than ${warningTimeMinutes} ${
-          warningTimeMinutes === 1 ? 'minute is' : 'minutes are'
-        } left.`,
+        message: `Less than ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute is' : 'minutes are'
+          } left.`,
         showWarning: true,
       };
     }
@@ -323,7 +321,7 @@ function QuestionRender(props: IQuestionProps) {
     return () => {
       if (timeLeftTimer) {
         clearInterval(timeLeftTimer);
-        setCenterDisplayText(`Team: ${userTeam}`);
+        setCenterDisplayText(`Platform: ${userTeam}`);
       }
     };
   }, []);
@@ -462,7 +460,7 @@ function QuestionRender(props: IQuestionProps) {
 
   useEffect(() => {
     if (lastAnswerSubmitStatus === 'success') {
-      setCenterDisplayText(`Team: ${userTeam}`);
+      setCenterDisplayText(`Platform: ${userTeam}`);
       clearInterval(timeLeftTimer);
       props.history.push({
         pathname: nextUrl,
@@ -573,6 +571,19 @@ function QuestionRender(props: IQuestionProps) {
       return false;
     }
 
+    if (
+      assessmentQuestion &&
+      assessmentQuestion.data &&
+      assessmentQuestion.data.reason &&
+      comment && (comment.length < 20 || comment.length > 200)
+    ) {
+      setErrorMessage({
+        error: true,
+        message: 'The length of the reason should minimum 20 and maximum 200 characters.',
+      });
+      return false;
+    }
+
     setErrorMessage({
       error: false,
       message: '',
@@ -679,7 +690,7 @@ function QuestionRender(props: IQuestionProps) {
       <Fragment>
         <CircularProgress className={classes.progress} />
         <Typography variant='h5'>
-          <Text tid='loadingQuestion' />
+          <Text tid='loadingTestCase' />
         </Typography>
       </Fragment>
     );
@@ -826,7 +837,7 @@ function QuestionRender(props: IQuestionProps) {
                 <Typography>{questionData.hint} </Typography>
                 <br />
                 {questionData.hintURL &&
-                questionData.hintURL.includes('youtube') ? (
+                  questionData.hintURL.includes('youtube') ? (
                   <ReactPlayer
                     url={questionData.hintURL}
                     height='100%'
@@ -1057,11 +1068,11 @@ function QuestionRender(props: IQuestionProps) {
       {isQuestionFetchFailed
         ? redirectToLogin()
         : isQuestionFetchSuccess
-        ? renderQuestionComponent()
-        : renderLoadingIcon()}
+          ? renderQuestionComponent()
+          : renderLoadingIcon()}
       <Popper open={openToast} anchorEl={anchorEl} placement='top' transition>
         {({ TransitionProps }) => (
-          <Fade {...TransitionProps} timeout={350}>
+          <Fade {...TransitionProps} timeout={1000}>
             <Paper>
               <Typography>{errorMessage.message}</Typography>
             </Paper>
@@ -1075,13 +1086,13 @@ function QuestionRender(props: IQuestionProps) {
         handleModalNoClicked={handleModalNoClicked}
       />
       <ModalComponent
-        message={'wantToContinueFromTheLastAttemptedQuestion'}
+        message={'wantToContinueFromTheLastAttemptedTestCase'}
         openModal={openContinueModal}
         handleModalYesClicked={handleContinueModalYesClicked}
         handleModalNoClicked={handleContinueModalNoClicked}
       />
       <ModalComponent
-        message={'notBeAbleToMakeAnyChangesAfterSubmittingTheAssessment'}
+        message={'notBeAbleToMakeAnyChangesAfterSubmittingTheTest'}
         openModal={submitNotifyModal}
         handleModalYesClicked={handleSubmitNotifyModalYesClicked}
         handleModalNoClicked={handleSubmitNotifyModalNoClicked}

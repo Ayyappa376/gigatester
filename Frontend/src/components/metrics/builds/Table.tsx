@@ -85,7 +85,7 @@ interface HeadCell {
 
 const headCells: HeadCell[] = [
   { id: 'buildNum', numeric: false, disablePadding: true, label: 'buildId' },
-  { id: 'teamId', numeric: true, disablePadding: false, label: 'team' },
+  { id: 'teamId', numeric: true, disablePadding: false, label: 'platform' },
   { id: 'service', numeric: false, disablePadding: false, label: 'service' },
   { id: 'projectName', numeric: true, disablePadding: false, label: 'project' },
   { id: 'status', numeric: true, disablePadding: false, label: 'status' },

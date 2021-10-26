@@ -168,7 +168,7 @@ export default function MTTR(props: any) {
           },
         },
         tooltip: {
-          enabledOnSeries:[0],
+          enabledOnSeries: [0],
           x: {
             format: 'dd MMM yyyy',
           },
@@ -216,19 +216,19 @@ export default function MTTR(props: any) {
                 </Grid>
                 <Grid item xs={3}>
                   <span className='doraSubTitles'>
-                    <Text tid='level' />:
+                    <Text tid='productRating' />:
                   </span>{' '}
                   <span
                     className={
                       level === 'Elite'
                         ? 'levelEliteColor'
                         : level === 'High'
-                        ? 'levelHighColor'
-                        : level === 'Medium'
-                        ? 'levelMediumColor'
-                        : level === 'low'
-                        ? 'levelLowColor'
-                        : 'levelNAColor'
+                          ? 'levelHighColor'
+                          : level === 'Medium'
+                            ? 'levelMediumColor'
+                            : level === 'low'
+                              ? 'levelLowColor'
+                              : 'levelNAColor'
                     }
                   >
                     {level}

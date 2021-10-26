@@ -37,7 +37,7 @@ const Dropdown = (props: IDropdownList) => {
     <form className={classes.root} autoComplete='off'>
       <FormControl className={classes.formControl}>
         <InputLabel htmlFor='age-auto-width'>
-          <Text tid='assessmentDate' />
+          <Text tid='testDate' />
         </InputLabel>
         <Select
           value={selectedAssessment}

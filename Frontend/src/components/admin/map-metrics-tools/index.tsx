@@ -210,7 +210,7 @@ const MapMetricsTools = (props: any) => {
   const [userNote, setUserNote] = useState('');
   const [selecedToolIndex, setSelectedToolIndex] = useState(-1);
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='teamDetailsUpdatedSuccessfully' />;
+  let msgSuccess = <Text tid='platformDetailsUpdatedSuccessfully' />;
 
   useEffect(() => {
     fetchTeamMetricsDetails();
@@ -322,7 +322,6 @@ const MapMetricsTools = (props: any) => {
         toolAttrSorted[key].value = collector.attributes[key].defaultValue ?
           collector.attributes[key].defaultValue :
           collector.attributes[key].type === 'multi-list' ? [] : '';
-
         if (
           collector.attributes[key].type === 'list' ||
           collector.attributes[key].type === 'list-no-others' ||
@@ -503,9 +502,6 @@ const MapMetricsTools = (props: any) => {
       }
     }
     Object.keys(tool).forEach((key: string) => {
-      //      if (key !== 'toolName' && key !== 'toolType' && key !== 'enabled') {
-      //        if ((collector.attributes[key].type === 'string' || collector.attributes[key].type === 'password') &&
-      //            (!tool[key] || !tool[key].value || tool[key].value === '')) {
       if (key === 'url' || key === 'userName' || key === 'password' || key === 'email' || key === 'appToken') {
         if ((!tool[key] || !tool[key].value || tool[key].value === '')) {
           setFailureMessage(

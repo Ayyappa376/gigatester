@@ -330,13 +330,13 @@ const Trends = (props: any) => {
           container
           spacing={3}
           className='topScrollContainerAsssessment'
-          id='assessmentWise'
+          id='testWise'
         >
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Title>
-                  <Text tid='assessmentWiseReport' />
+                  <Text tid='testWiseReport' />
                 </Title>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -345,7 +345,7 @@ const Trends = (props: any) => {
                   style={{ marginRight: '20%' }}
                 >
                   <InputLabel id='demo-simple-select-label'>
-                    <Text tid='chooseAssessment' />
+                    <Text tid='chooseProduct' />
                   </InputLabel>
                   <Select
                     value={
@@ -378,7 +378,7 @@ const Trends = (props: any) => {
                   !assessmentTeamsName.length ? (
                     <Card className={classes.cardRoot}>
                       <Typography gutterBottom variant='h6' component='h2'>
-                        <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                        <Text tid='noOneInThePlatformHasTakenTheTest' />
                         <AnnouncementIcon />
                       </Typography>
                     </Card>
@@ -407,19 +407,19 @@ const Trends = (props: any) => {
           container
           spacing={3}
           className='topScrollContainerAsssessment'
-          id='teamWise'
+          id='platformWise'
         >
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Title>
-                  <Text tid='teamWiseReport' />
+                  <Text tid='platformWiseReport' />
                 </Title>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <FormControl className={classes.assessmentSelect}>
                   <InputLabel id='demo-simple-select-label'>
-                    <Text tid='chooseAssessment' />
+                    <Text tid='chooseProduct' />
                   </InputLabel>
                   <Select
                     value={
@@ -444,7 +444,7 @@ const Trends = (props: any) => {
                     id='demo-simple-select-label'
                     style={{ marginLeft: '25%' }}
                   >
-                    <Text tid='chooseTeam' />
+                    <Text tid='choosePlatform' />
                   </InputLabel>
                   <Select
                     value={
@@ -479,7 +479,7 @@ const Trends = (props: any) => {
                   !teamAssessmentState ? (
                     <Card className={classes.cardRoot}>
                       <Typography gutterBottom variant='h6' component='h2'>
-                        <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                        <Text tid='noOneInThePlatformHasTakenTheTest' />
                         <AnnouncementIcon />
                       </Typography>
                     </Card>

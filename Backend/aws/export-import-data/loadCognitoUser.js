@@ -3,8 +3,8 @@ const jsonData = require('./dev_CognitoUsers.json');
 
 AWS.config.update({
   region: 'us-east-1',
-  accessKeyId: 'AKIAQ2S4FEWFXAZI3S5U',
-  secretAccessKey: '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',
+  accessKeyId: 'AKIARM6CF5OGVV24FR42',
+  secretAccessKey: '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',
 });
 
 var docClient = new AWS.DynamoDB.DocumentClient();
@@ -27,7 +27,7 @@ function generatePassword() {
 if (jsonData) {
   jsonData.forEach(function (user) {
     const params = {
-      UserPoolId: 'us-east-1_OGtCgSmi6' /* required */,
+      UserPoolId: 'us-east-1_2CjQz7NaP' /* required */,
       Username: user.emailId /* required */,
       TemporaryPassword: generatePassword(),
       UserAttributes: [
@@ -47,7 +47,7 @@ if (jsonData) {
       }
       if (data) {
         const params = {
-          TableName: 'qa_CognitoUsers',
+          TableName: 'dev_CognitoUsers',
           Item: {
             emailVerified: user.emailVerified,
             roles: user.roles,

@@ -28,6 +28,7 @@ import { buttonStyle } from '../../common/common';
 import { Link } from 'react-scroll';
 // import LanguageSelector from '../language-selection-dropdown/index';
 import { Text } from '../../common/Language';
+import SignInForm from '../signInForm';
 
 const timeoutLength = 50;
 
@@ -108,24 +109,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const metricsMenu = [
-  { link: 'doraMetrics', name: 'doraMetrics' },
-  { link: 'build', name: 'buildCICD' },
-  { link: 'repository', name: 'gitRepository' },
-  { link: 'requirements', name: 'requirements' },
-  { link: 'quality', name: 'quality' },
-];
+// const metricsMenu = [
+//   { link: 'doraMetrics', name: 'doraMetrics' },
+//   { link: 'build', name: 'buildCICD' },
+//   { link: 'repository', name: 'gitRepository' },
+//   { link: 'requirements', name: 'requirements' },
+//   { link: 'quality', name: 'quality' },
+// ];
 
 const dashboardMenu = [
-  { link: 'overallMaturity', name: 'overallMaturity' },
-  { link: 'categorywiseMaturity', name: 'categoryWiseMaturity' },
+  { link: 'testRatings', name: 'testRatings' },
+  { link: 'screenWiseScore', name: 'screenWiseScore' },
   { link: 'performanceMetrics', name: 'performanceMetrics' },
-  { link: 'questionwiseMetrics', name: 'questionWiseMetrics' },
+  { link: 'testCaseWiseMetrics', name: 'testCaseWiseMetrics' },
 ];
 
 const trendsMenu = [
-  { link: 'assessmentWise', name: 'assessmentWise' },
-  { link: 'teamWise', name: 'teamWise' },
+  { link: 'testWise', name: 'testWise' },
+  { link: 'platformWise', name: 'platformWise' },
 ];
 
 const PageHeader = (props: any) => {
@@ -162,10 +163,10 @@ const PageHeader = (props: any) => {
   const [pageRedirectState, setPageRedirectState] = useState<PageRedirectState>(
     { type: '' }
   );
-
-  let redirectUrl: string;
+  const [openSignin, setOpenSignin] = useState(false);
+  // let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
-  redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
+  // redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
 
   if (
     props.location.pathname === '/' ||
@@ -180,14 +181,8 @@ const PageHeader = (props: any) => {
     );
   }
 
-  const onClick = () => {
-    window.open(
-      redirectUrl,
-      '_self',
-      `toolbar=no, location=no, directories=no, status=no, menubar=no,
-            scrollbars=no, resizable=no, copyhistory=no, width=${500},
-            height=${5000}, top=${300}, left=${300}`
-    );
+  const onLogin = () => {
+    setOpenSignin(true)
   };
 
   const logoutModalActivate = () => {
@@ -216,7 +211,7 @@ const PageHeader = (props: any) => {
             </Typography>
           </Tooltip>
         ) : (
-          <Typography onClick={onClick} className={classes.headerItem}>
+          <Typography onClick={onLogin} className={classes.headerItem}>
             <Text tid='login' />
           </Typography>
         )}
@@ -235,11 +230,11 @@ const PageHeader = (props: any) => {
     setAnchorEl(null);
   };
 
-  const handleMetricsMenuClick = (event: any) => {
-    setAnchorMetricsEl(event.currentTarget);
-    setAdminPageState(false);
-    props.history.push('/metricSelect');
-  };
+  // const handleMetricsMenuClick = (event: any) => {
+  //   setAnchorMetricsEl(event.currentTarget);
+  //   setAdminPageState(false);
+  //   props.history.push('/metricSelect');
+  // };
 
   const handleMetricsMenuClose = () => {
     setAnchorMetricsEl(null);
@@ -322,12 +317,12 @@ const PageHeader = (props: any) => {
           <Tooltip
             title={
               <Typography>
-                <Text tid='notAvailableDuringThisAssessment' />
+                <Text tid='notAvailableDuringThisTest' />
               </Typography>
             }
           >
             <Typography className={classes.headerItemDisabled}>
-              <Text tid='assessments' />
+              <Text tid='testResults' />
             </Typography>
           </Tooltip>
         </div>
@@ -337,7 +332,7 @@ const PageHeader = (props: any) => {
     return (
       <div className='header-item'>
         <Typography className={classes.headerItem} onClick={handleAssessment}>
-          <Text tid='assessments' />
+          <Text tid='testResults' />
         </Typography>
       </div>
     );
@@ -347,6 +342,7 @@ const PageHeader = (props: any) => {
     props.history.push('/trial/close');
   };
 
+/*
   const renderViewMetrics = () => {
     if (!userStatus.idToken) {
       return <div />;
@@ -395,6 +391,7 @@ const PageHeader = (props: any) => {
     }
     return;
   };
+*/
 
   const renderAdminPage = () => {
     if (!userStatus.roles) {
@@ -410,7 +407,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >
@@ -439,7 +436,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >
@@ -478,7 +475,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >
@@ -558,7 +555,7 @@ const PageHeader = (props: any) => {
             <Tooltip
               title={
                 <Typography>
-                  <Text tid='notAvailableDuringThisAssessment' />
+                  <Text tid='notAvailableDuringThisTest' />
                 </Typography>
               }
             >
@@ -709,19 +706,19 @@ const PageHeader = (props: any) => {
               className={classes.menuitem}
               onClick={handleMyAssessments}
             >
-              <Text tid='myAssessments' />
+              <Text tid='myTests' />
             </MenuItem>
             <MenuItem
               className={classes.menuitem}
               onClick={handleTeamAssessments}
             >
-              <Text tid='teamAssessments' />
+              <Text tid='platformTests' />
             </MenuItem>
             <MenuItem
               className={classes.menuitem}
               onClick={handleTakeAssessment}
             >
-              <Text tid='takeAssessment' />
+              <Text tid='doTesting' />
             </MenuItem>
           </Menu>
         );
@@ -737,10 +734,10 @@ const PageHeader = (props: any) => {
         className={classes.menu}
       >
         <MenuItem onClick={handleMyAssessments}>
-          <Text tid='myAssessments' />
+          <Text tid='myTests' />
         </MenuItem>
         <MenuItem className={classes.menuitem} onClick={handleTakeAssessment}>
-          <Text tid='takeAssessment' />
+          <Text tid='doTesting' />
         </MenuItem>
       </Menu>
     );
@@ -769,6 +766,10 @@ const PageHeader = (props: any) => {
     setFocusURL('');
     setOpenModalLeavePage(false);
   };
+
+  const getSignInState = (state: boolean) => {
+    setOpenSignin(state);
+  }
 
   const renderHomeButton = () => {
     if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
@@ -859,8 +860,8 @@ const PageHeader = (props: any) => {
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
               {renderAdminPage()}
-              {renderViewMetrics()}
-              {renderMetricsMenuItems()}
+              {/* {renderViewMetrics()} */}
+              {/* {renderMetricsMenuItems()} */}
               {renderDashboardPage()}
               {renderDashboardMenuItems()}
               {renderTrendsPage()}
@@ -896,6 +897,9 @@ const PageHeader = (props: any) => {
         handleModalYesClicked={modalYesClickedLeavePage}
         handleModalNoClicked={modalNoClickedLeavePage}
       />
+      {openSignin &&
+        <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
+      }
     </Fragment>
   );
 };

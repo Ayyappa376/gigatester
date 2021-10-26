@@ -248,7 +248,7 @@ function Assessment(props: IAssessmentProps) {
                   );
                 })}
                 <Typography className={classes.info3} variant='body1'>
-                  <Text tid='numberOfQuestions' />
+                  <Text tid='numberOfTestCases' />
                   {assessmentSummary!.data!.numberOfQuestions}
                 </Typography>
                 {assessmentSummary!.data!.timeOut && (
@@ -269,7 +269,7 @@ function Assessment(props: IAssessmentProps) {
                 </Typography>
                 <br />
                 <Typography className={classes.info3} variant='body1'>
-                  <Text tid='numberOfQuestions' />
+                  <Text tid='numberOfTestCases' />
                   {assessmentSummary!.data!.numberOfQuestions}
                 </Typography>
                 {assessmentSummary!.data!.timeOut && (
@@ -307,9 +307,9 @@ function Assessment(props: IAssessmentProps) {
               className={classes.bottomButton}
             >
               {Object.keys(assessmentMarkedAnswers).length === 0 ? (
-                <Text tid='startAssessment' />
+                <Text tid='startTest' />
               ) : (
-                <Text tid='continueAssessment' />
+                <Text tid='continueTesting' />
               )}
             </Button>
           </Paper>
@@ -336,7 +336,7 @@ function Assessment(props: IAssessmentProps) {
       <Fragment>
         <CircularProgress className={classes.progress} />
         <Typography>
-          <Text tid='loadingAssessment' />
+          <Text tid='loadingTest' />
         </Typography>
       </Fragment>
     );

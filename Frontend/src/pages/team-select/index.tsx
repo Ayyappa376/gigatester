@@ -85,7 +85,7 @@ const TeamSelect = (props: any) => {
   const [departments, setDepartments] = useState<string[]>([]);
   const [focusDepartment, setFocusDepartment] = useState<string>('');
 
-  const failureMessage = <Text tid='invalidTeamName' />;
+  const failureMessage = <Text tid='invalidPlatformName' />;
 
   const getTeamId = () => {
     let teamId = '';
@@ -160,7 +160,7 @@ const TeamSelect = (props: any) => {
         setFocusDepartment(departmentsList[0]);
         setTeamsFetched(true);
       })
-      .catch((error: any) => {});
+      .catch((error: any) => { });
   };
 
   useEffect(() => {
@@ -212,7 +212,7 @@ const TeamSelect = (props: any) => {
             onChange={handleChangeDepartment}
           />
           <Typography className={classes.text}>
-            <Text tid='selectYourTeam' />
+            <Text tid='selectYourPlatform' />
           </Typography>
           <AutoCompleteComponent
             className={classes.select}

@@ -48,13 +48,13 @@ const LeftPane = (props: ILeftPane) => {
   const classes = useStyles();
 
   const onClick = () => {
-    window.open(
-      props.redirectUrl,
-      '_self',
-      `toolbar=no, location=no, directories=no, status=no, menubar=no,
-            scrollbars=no, resizable=no, copyhistory=no, width=${500},
-            height=${5000}, top=${300}, left=${300}`
-    );
+    // window.open(
+    //   props.redirectUrl,
+    //   '_self',
+    //   `toolbar=no, location=no, directories=no, status=no, menubar=no,
+    //         scrollbars=no, resizable=no, copyhistory=no, width=${500},
+    //         height=${5000}, top=${300}, left=${300}`
+    // );
   };
   return (
     <Container className={classes.root}>

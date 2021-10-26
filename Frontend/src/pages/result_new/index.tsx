@@ -66,7 +66,7 @@ function Result(props: any) {
         : false
       : false
   );
-  let msgSuccess = <Text tid='thanksForGivingThisAssessment' />;
+  let msgSuccess = <Text tid='thanksForTakingThisTest' />;
 
   const renderLoadingIcon = () => {
     return (

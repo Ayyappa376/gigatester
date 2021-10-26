@@ -7,6 +7,7 @@ import { useSelector } from 'react-redux';
 import { useActions, removeUserDetails } from './actions';
 import { IRootState } from './reducers';
 import ReactGA from 'react-ga';
+import Amplify from "aws-amplify";
 import Dashboard from './components/admin/dashboard';
 import { LanguageProvider } from './common/Language';
 import Layout from './Layout';
@@ -19,10 +20,17 @@ const GA_id_beta = 'UA-154108167-3';
 
 const DoItRight = (props: IDoitrightProps) => {
   const userData = useSelector((state: IRootState) => state.user.userDetails);
+  const systemDetails = useSelector((state: IRootState) => state.systemDetails);
   const removeUserData = useActions(removeUserDetails);
   const [metricType, setMetricType] = useState('doraMetrics');
   const [metricSelection, setMetricSelection] = useState(true);
   const env = process.env.REACT_APP_STAGE;
+
+  Amplify.configure({
+    aws_cognito_region: 'us-east-1',
+    aws_user_pools_id: systemDetails.userpoolId,
+    aws_user_pools_web_client_id: systemDetails.appClientId,
+  });
 
   useEffect(() => {
     if (userData) {

@@ -226,8 +226,8 @@ function QuestionComponent(props: IQuestionProps) {
         <Typography className={classes.instruction} component='div'>
           {numberOfAnswers > 1
             ? 'Select ' +
-              numberOfAnswers +
-              ' appropriate options that suits your team'
+            numberOfAnswers +
+            ' appropriate options that suits your team'
             : 'Select an appropriate option that suits your team'}
         </Typography>
         <List>
@@ -304,7 +304,7 @@ function QuestionComponent(props: IQuestionProps) {
               }}
               button
               onClick={
-                checked.includes('@N/A') ? () => {} : () => handleToggle('@N/A')
+                checked.includes('@N/A') ? () => { } : () => handleToggle('@N/A')
               }
             >
               <div className={classes.up} onClick={handleToggle('@N/A')}>
@@ -346,11 +346,14 @@ function QuestionComponent(props: IQuestionProps) {
           <TextField
             required
             multiline
-            placeholder='Please enter the reason for your selection'
+            placeholder='Please enter the reason for your selection. The length will be between 20 and 200 characters.'
             id='reason'
             name='reason'
             variant='outlined'
             label='Reason'
+            inputProps={{
+              maxLength: 200
+            }}
             className={classes.textField}
             value={inputValue ? inputValue : ''}
             onChange={handleTextInput}

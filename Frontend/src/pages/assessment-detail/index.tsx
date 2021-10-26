@@ -24,7 +24,6 @@ const useStyles = makeStyles((theme) => ({
 
 function AssessmentDetails(props: any) {
   const classes = useStyles();
-  const [fetchStatus, setFetchStatus] = useState(false);
   const fetchUserAssessmentDetail = useActions(fetchAssessmentDetail);
   const assessmentDetail = useSelector(
     (state: IRootState) => state.assessment.assessmentDetail
@@ -57,14 +56,6 @@ function AssessmentDetails(props: any) {
     }
   }, []);
 
-  useEffect(() => {
-    if (
-      assessmentDetail.status === 'success' ||
-      assessmentDetail.status === 'fail'
-    ) {
-      setFetchStatus(true);
-    }
-  }, [assessmentDetail.status]);
 
   const handleBackButtonClick = () => {
     props.history.push(prevPath);
@@ -77,8 +68,7 @@ function AssessmentDetails(props: any) {
 
   if (
     assessmentDetail.status === 'success' &&
-    assessmentDetail.data !== null &&
-    fetchStatus
+    assessmentDetail.data !== null
   ) {
     return (
       <Container
@@ -107,7 +97,7 @@ function AssessmentDetails(props: any) {
     );
   }
 
-  if (assessmentDetail.status === 'fail' && fetchStatus) {
+  if (assessmentDetail.status === 'fail') {
     const error = JSON.stringify(assessmentDetail!.error);
     const object = JSON.parse(error);
     if (object.code) {

@@ -66,7 +66,7 @@ const AssignAssessment = (props: any) => {
     setSelectedQuestionnairePosted,
   ] = useState(false);
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionnairesAssigned' />;
+  let msgSuccess = <Text tid='testSuitAssigned' />;
 
   useEffect(() => {
     if (assessments && assessments.questionnaireSelected) {
@@ -174,7 +174,7 @@ const AssignAssessment = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='assessments' />
+                      <Text tid='testResults' />
                     </Typography>
                   </TableCell>
                   <TableCell className='tableHeadCell'>
