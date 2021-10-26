@@ -46,7 +46,7 @@
 # ---------------- End of dish env -----------------------
 
 # ---------------- Start of pinimbus env -----------------
-service: doitright-backend
+service: gigatester-backend
 
 provider:
   name: aws
