@@ -1,5 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Typography,
   Grid,
   makeStyles,
@@ -29,11 +34,13 @@ import { Http } from '../../../utils';
 import { withRouter } from 'react-router-dom';
 import SearchControl from '../../common/searchControl';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
+import { IUserParams } from '../../../model';
 import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
+import { default as MaterialLink } from '@material-ui/core/Link';
 import { getDate } from '../../../utils/data';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { Text } from '../../../common/Language';
+import Notification from '../../../common/notification';
 import '../../../css/assessments/style.css';
 import { ITeamInfo } from '../../../model';
 
@@ -74,6 +81,11 @@ const useStyles = makeStyles((theme) => ({
   buttons: {
     ...buttonStyle,
   },
+  actionsBlock: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginLeft: '20%',
+  },
 }));
 
 const ManageUsers = (props: any) => {
@@ -96,6 +108,13 @@ const ManageUsers = (props: any) => {
     lowerLimit: 0,
     upperLimit: 9,
   });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [userData, setUserData] = React.useState<IUserParams | undefined>();
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
 
@@ -157,6 +176,83 @@ const ManageUsers = (props: any) => {
         setBackdropOpen(false);
       });
   };
+
+  const onConfirmResetPassword = (emailId: any) => {
+    setNotify({
+      isOpen: true,
+      message: "Loading...",
+      type: 'info',
+    });
+    Http.get({
+      url: `/api/v2/admin/users/getusers?email=${emailId}`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        let selectedUserData = response.values;
+        selectedUserData['resetPassword'] = true;
+        setUserData(selectedUserData)
+        setDialogOpen(true)
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 400) {
+          setNotify({
+            isOpen: true,
+            message: object.apiError.msg,
+            type: 'error',
+          });
+        } else if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          props.history.push('/error');
+        }
+      });
+  }
+
+  const handleResetPassword = () => {
+    handleDialogClose();
+    setNotify({
+      isOpen: true,
+      message: "Loading...",
+      type: 'info',
+    });
+    let postData = userData;
+    postData &&
+      Http.put({
+        url: `/api/v2/admin/users`,
+        body: {
+          ...postData,
+        },
+        state: stateVariable,
+      })
+        .then((response: any) => {
+          setNotify({
+            isOpen: true,
+            message: 'Reset Password has been successful. A temporary password is sent to the user email address.',
+            type: 'success',
+          });
+        })
+        .catch((error) => {
+          const perror = JSON.stringify(error);
+          const object = JSON.parse(perror);
+          if (object.code === 400) {
+            setNotify({
+              isOpen: true,
+              message: object.apiError.msg,
+              type: 'error',
+            });
+          } else if (object.code === 401) {
+            props.history.push('/relogin');
+          } else {
+            setNotify({
+              isOpen: true,
+              message: "Something went wrong",
+              type: 'error',
+            });
+          }
+        });
+  }
 
   useEffect(() => {
     fetchTeamList();
@@ -426,6 +522,10 @@ const ManageUsers = (props: any) => {
   };
 */
 
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   const renderUsersTable = () => {
     return (
       <Fragment>
@@ -530,7 +630,7 @@ const ManageUsers = (props: any) => {
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
+                  <TableCell align='center' className='tableHeadCell' >
                     <Typography className='tableHeadText'>
                       <Text tid='actions' />
                     </Typography>
@@ -601,16 +701,29 @@ const ManageUsers = (props: any) => {
                           </Typography>
                         </TableCell>
                         <TableCell align='center'>
-                          <Button
-                            variant='outlined'
-                            className={classes.buttons}
-                            onClick={() => {
-                              props.editUserClicked(row.emailId);
-                            }}
-                          >
-                            <Text tid='edit' />
-                            <ArrowForwardIcon />
-                          </Button>
+                          <div className={classes.actionsBlock}>
+                            <MaterialLink
+                              href='#'
+                              onClick={() => {
+                                onConfirmResetPassword(row.emailId);
+                              }}
+                            >
+                              <Typography>
+                                <Text tid='resetPassword' />
+                              </Typography>
+                            </MaterialLink>
+                            <Typography>&nbsp;&nbsp;|&nbsp;&nbsp;</Typography>
+                            <MaterialLink
+                              href='#'
+                              onClick={() => {
+                                props.editUserClicked(row.emailId);
+                              }}
+                            >
+                              <Typography>
+                                <Text tid='editProfile' />
+                              </Typography>
+                            </MaterialLink>
+                          </div>
                         </TableCell>
                       </TableRow>
                     );
@@ -638,6 +751,28 @@ const ManageUsers = (props: any) => {
             </Button>
           </div>
         </Container>
+        <Dialog
+          open={dialogOpen}
+          onClose={handleDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title"><Text tid='resetConfirmation' /></DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              <Text tid='areYouSureYouWantToResetTheUserPassword' />
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleDialogClose} color="primary">
+              <Text tid='cancel' />
+            </Button>
+            <Button onClick={handleResetPassword} color="primary">
+              <Text tid='reset' />
+            </Button>
+          </DialogActions>
+        </Dialog>
+        <Notification notify={notify} setNotify={setNotify} />
       </Fragment>
     );
   };

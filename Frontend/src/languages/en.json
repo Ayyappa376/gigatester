@@ -266,7 +266,7 @@
   "addTester2": "Add Tester",
   "manageTesters": "MANAGE TESTERS",
   "manageTesters2": "Manage Testers",
-  "editUser": "EDIT USER",
+  "editTester": "EDIT TESTER",
   "createPlatform": "CREATE PLATFORM",
   "createPlatform2": "Create Platform",
   "managePlatforms": "MANAGE PLATFORMS",
@@ -405,5 +405,9 @@
   "logout": "Logout",
   "stay": "Stay",
   "signIn": "Sign In",
-  "signUp": "Sign Up"
+  "signUp": "Sign Up",
+  "reset": "Reset",
+  "resetPassword": "Reset Password",
+  "resetConfirmation": "Reset Confirmation",
+  "areYouSureYouWantToResetTheUserPassword": "Are you sure you want to reset the user's password?"
 }

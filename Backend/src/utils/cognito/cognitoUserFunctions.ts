@@ -1,7 +1,8 @@
 import { config } from '@root/config';
 import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
-
+import { sendResetPasswordMessage } from './sendEmail';
+// var ses = new aws.SES({ region: "us-east-1" });
 aws.config.update({ region: config.region });
 const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
 
@@ -182,6 +183,25 @@ export const updateCognitoUserToLowerCase = async (
         resolve(data);
       }
     );
+  });
+
+export const resetUserPassword = async (
+  cognitoUser: string,
+  email: string
+): Promise<any> =>
+  new Promise<any>((resolve, reject) => {
+    var params = {
+      Password: generatePassword(), /* required */
+      UserPoolId: config.cognito.userPoolId, /* required */
+      Username: cognitoUser, /* required */
+      Permanent: false
+    };
+    cognitoidentityserviceprovider.adminSetUserPassword(params, function (err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else
+        sendResetPasswordMessage(email, params.Password)
+      // console.log(data);           // successful response
+    });
   });
 
 function generatePassword() {

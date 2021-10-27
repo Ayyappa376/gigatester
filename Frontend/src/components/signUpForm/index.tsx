@@ -130,44 +130,37 @@ export default function SignupForm(props: any) {
       }
     }
     if (action === 'signUp') {
-      const postData = userParamState;
-      postData['status'] = 'registered';
-      postData['roles'] = ['Member'];
-      postData['orgId'] = "dev";
-
-      try {
-        Http.post({
-          url: `/api/v2/admin/users`,
-          body: {
-            ...postData,
-          },
-          state: signUpStateVariable,
-        })
-          .then((response: any) => {
-            setVerifyEmail(true);
-            // setNewUserPosted(true);
+      if (selectedTeams.length) {
+        const postData = userParamState;
+        postData['roles'] = ['Member'];
+        postData['orgId'] = "dev";
+        try {
+          Http.post({
+            url: `/api/v2/admin/users`,
+            body: {
+              ...postData,
+            },
+            state: signUpStateVariable,
           })
-          .catch((error) => {
-            // console.log(error)
-            setErrorMessage('An account with the given email already exists.');
-            setSnackbarOpen(true);
-            // const perror = JSON.stringify(error);
-            // const object = JSON.parse(perror);
-            // if (object.code === 400) {
-            // setFailureMessage(object.apiError.msg);
-            // setFailure(true);
-            // } else if (object.code === 401) {
-            //   props.history.push('/relogin');
-            // } else {
-            // setFailureMessage(<Text tid='somethingWentWrong' />);
-            // setFailure(true);
-            // }
-          });
-      } catch (error) {
-        let errResponse: any = error;
-        setErrorMessage(errResponse.message);
+            .then((response: any) => {
+              setVerifyEmail(true);
+              // setNewUserPosted(true);
+            })
+            .catch((error) => {
+              // console.log(error)
+              setErrorMessage('An account with the given email already exists.');
+              setSnackbarOpen(true);
+            });
+        } catch (error) {
+          let errResponse: any = error;
+          setErrorMessage(errResponse.message);
+          setSnackbarOpen(true);
+        }
+      } else {
+        setErrorMessage('Please choose platform');
         setSnackbarOpen(true);
       }
+
     };
   };
 

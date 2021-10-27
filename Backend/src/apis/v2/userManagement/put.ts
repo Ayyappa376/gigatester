@@ -9,6 +9,8 @@ import {
   removeUserFromCognitoGroup,
   responseBuilder,
   updateDynamoUser,
+  resetUserPassword,
+  // updateCognitoUserToLowerCase
 } from '@utils/index';
 import { Response } from 'express';
 
@@ -20,6 +22,7 @@ interface UpdateUser {
     //        supervisor?: string;
     teams?: any[];
     temporaryPassword?: string;
+    resetPassword?: boolean;
   };
   headers: {
     user: {
@@ -94,8 +97,8 @@ async function handler(request: UpdateUser, response: Response) {
       .catch((e) => {
         appLogger.error({ err: e }, 'Error while adding  user to group');
       });
-  }
-  await updateDynamoUser(userDetails.id, managerDetails, body);
+  }  
+  await body.resetPassword ? resetUserPassword(userDetails.id, userDetails.emailId) : updateDynamoUser(userDetails.id, managerDetails, body);
   return responseBuilder.ok({ message: 'ok' }, response);
 }
 

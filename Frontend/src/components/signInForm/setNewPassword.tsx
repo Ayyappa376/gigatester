@@ -11,15 +11,17 @@ export default function SetNewPassword(props: any) {
         {props.forgotPassword ? 'We have sent a password reset code by email. Enter it below to reset your password' : 'Please enter your new password below'}
       </Typography>
       <br />
-      <TextField
-        required
-        margin="dense"
-        fullWidth
-        label="Verification Code"
-        type="string"
-        id="verificationCode"
-        {...props.bindVerificationCode}
-      />
+      {props.forgotPassword &&
+        <TextField
+          required
+          margin="dense"
+          fullWidth
+          label="Verification Code"
+          type="string"
+          id="verificationCode"
+          {...props.bindVerificationCode}
+        />
+      }
       <TextField
         required
         margin="dense"
