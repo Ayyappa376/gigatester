@@ -1,12 +1,12 @@
 import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
-var ses = new aws.SES({ region: "us-east-1" });
+const ses = new aws.SES({ region: 'us-east-1' });
 
 export const sendResetPasswordMessage = (
     email: string,
     password: string
 ): any => {
-    var mail_params = {
+    const mailParams = {
         Destination: {
             ToAddresses: [email],
         },
@@ -15,13 +15,13 @@ export const sendResetPasswordMessage = (
                 Text: { Data: `To change your password, go to dev.gigatester.io and select login, then enter your email address and a temporary password: ${password}` },
             },
 
-            Subject: { Data: "Reset Password" },
+            Subject: { Data: 'Reset Password' },
         },
-        Source: "no-reply@dev.gigatester.io",
+        Source: 'no-reply@dev.gigatester.io',
     };
-    appLogger.debug({ adminResetPasswordMailParams: mail_params });
+    appLogger.debug({ adminResetPasswordMailParams: mailParams });
     // console.log("Sending mail");
-    ses.sendEmail(mail_params).promise().catch((err,) => {
+    ses.sendEmail(mailParams).promise().catch((err,) => {
         console.log(err);
     });
-}
+};

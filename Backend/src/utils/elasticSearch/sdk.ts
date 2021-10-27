@@ -17,16 +17,16 @@ const esClient = new Client({
 export function search<T>(
   indexName: string,
   filters: any,
-  notFilters: any,
+  notFilters: any[],
   resultsCount: number,
   fromCount: number
 ): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
       const query =
-        !notFilters || notFilters === []
-          ? { bool: { filter: filters } }
-          : { bool: { filter: filters, must_not: notFilters } };
+        notFilters && notFilters.length
+          ? { bool: { filter: filters, must_not: notFilters } }
+          : { bool: { filter: filters } };
 
       esClient.search(
         {
@@ -52,15 +52,15 @@ export function search<T>(
 
 export function searchAll<T>(
   indexName: string,
-  filters: any,
+  filters: any[],
   notFilters: any
 ): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
       const query =
-        !notFilters || notFilters === []
-          ? { bool: { filter: filters } }
-          : { bool: { filter: filters, must_not: notFilters } };
+        notFilters && notFilters.length
+          ? { bool: { filter: filters, must_not: notFilters } }
+          : { bool: { filter: filters } };
 
       // first we do a dummy search to find the data size TODO: try using count method
       esClient.search(
@@ -111,14 +111,14 @@ export function searchAll<T>(
 export function searchAllCount(
   indexName: string,
   filters: any,
-  notFilters: any
+  notFilters: any[]
 ): Promise<number> {
   return new Promise(
     (resolve: (item: number) => void, reject: (err: any) => any): any => {
       const query =
-        !notFilters || notFilters === []
-          ? { bool: { filter: filters } }
-          : { bool: { filter: filters, must_not: notFilters } };
+        notFilters && notFilters.length
+          ? { bool: { filter: filters, must_not: notFilters } }
+          : { bool: { filter: filters } };
 
       // first we do a dummy search to find the data size
       esClient.search(// TODO: try using count method instead of search
@@ -272,15 +272,15 @@ export function fetchFields<T>(indexName: string, fields: any[]): Promise<T> {
 export function searchSorted<T>(
   indexName: string,
   filters: any,
-  notFilters: any,
+  notFilters: any[],
   sort: string[]
 ): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: any) => any): any => {
       const query =
-        !notFilters || notFilters === []
-          ? { bool: { filter: filters } }
-          : { bool: { filter: filters, must_not: notFilters } };
+        notFilters && notFilters.length
+          ? { bool: { filter: filters, must_not: notFilters } }
+          : { bool: { filter: filters } };
 
       // first we do a dummy search to find the data size TODO: try using count method
       esClient.search(

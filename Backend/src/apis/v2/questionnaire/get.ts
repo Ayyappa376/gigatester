@@ -84,7 +84,7 @@ async function handler(request: GetQuestionnaire, response: Response) {
     getQuestionnaireList.sort((a: Questionnaire, b: Questionnaire) => {
       const aStr = a.name.toLowerCase();
       const bStr = b.name.toLowerCase();
-      return aStr < bStr ? -1 : aStr > bStr ? 1 : 0;
+      return aStr.localeCompare(bStr);
     });
 
     if (user['cognito:groups'][0] === 'Admin') {

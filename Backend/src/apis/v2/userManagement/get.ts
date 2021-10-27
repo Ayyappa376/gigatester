@@ -73,13 +73,11 @@ async function handler(request: GetUsers, response: Response) {
       response
     );
   }
-  
   if (params.type === 'getUserStatus' && query.email) {
     const userStatus: any = await getCognitoUser(query.email);
     appLogger.info({ getUserStatus: userStatus });
     return responseBuilder.ok(userStatus, response);
   }
-  
   if (params.type === 'allUsers') {
     const teamList: string[] = (
       await getTeams2(

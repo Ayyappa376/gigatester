@@ -364,8 +364,8 @@ const ManageUsers = (props: any) => {
   }
 
   function compareTeam(a: any, b: any) {
-//    const teamsA = commaSeparators(a.teams);
-//    const teamsB = commaSeparators(b.teams);
+    //    const teamsA = commaSeparators(a.teams);
+    //    const teamsB = commaSeparators(b.teams);
     const teamsA = a.teams.map((teamId: string) => {
       const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
       return team ? team.teamName : teamId;
@@ -386,11 +386,11 @@ const ManageUsers = (props: any) => {
   }
 
   function compareRoles(a: any, b: any) {
-//    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
-//    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
+    //    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
+    //    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
     const rolesA = a.roles ? a.roles.join(', ') : 'Member';
     const rolesB = b.roles ? b.roles.join(', ') : 'Member';
-    
+
     if (rolesA.toLowerCase() < rolesB.toLowerCase()) {
       return -1;
     }
@@ -433,8 +433,8 @@ const ManageUsers = (props: any) => {
   }
 
   function compareTeamD(a: any, b: any) {
-//    const teamsA = commaSeparators(a.teams);
-//    const teamsB = commaSeparators(b.teams);
+    //    const teamsA = commaSeparators(a.teams);
+    //    const teamsB = commaSeparators(b.teams);
     const teamsA = a.teams.map((teamId: string) => {
       const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
       return team ? team.teamName : teamId;
@@ -455,8 +455,8 @@ const ManageUsers = (props: any) => {
   }
 
   function compareRolesD(a: any, b: any) {
-//    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
-//    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
+    //    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
+    //    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
     const rolesA = a.roles ? a.roles.join(', ') : 'Member';
     const rolesB = b.roles ? b.roles.join(', ') : 'Member';
 
@@ -504,23 +504,23 @@ const ManageUsers = (props: any) => {
     setFocusTeamId(event.target.value);
   };
 
-/*
-  const commaSeparators = (strArray: string[]) => {
-    let rolesStr = '';
-    if (Array.isArray(strArray)) {
-      strArray.map((el: string, index: number) => {
-        if (index === 0) {
-          rolesStr = el;
-        } else {
-          rolesStr = `${rolesStr}, ${el}`;
-        }
-      });
-    } else {
-      return strArray;
-    }
-    return rolesStr;
-  };
-*/
+  /*
+    const commaSeparators = (strArray: string[]) => {
+      let rolesStr = '';
+      if (Array.isArray(strArray)) {
+        strArray.map((el: string, index: number) => {
+          if (index === 0) {
+            rolesStr = el;
+          } else {
+            rolesStr = `${rolesStr}, ${el}`;
+          }
+        });
+      } else {
+        return strArray;
+      }
+      return rolesStr;
+    };
+  */
 
   const handleDialogClose = () => {
     setDialogOpen(false);

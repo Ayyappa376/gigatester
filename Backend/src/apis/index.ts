@@ -14,7 +14,6 @@ import { api as dowloadReportsV2 } from './v2/downloadReports/get';
 import { api as getFeedbackV2 } from './v2/feedback/get';
 import { api as postFeedbackV2 } from './v2/feedback/post';
 import { api as getAssessmentHistoryV2 } from './v2/history/get';
-import { api as postAssessmentHistoryV2 } from './v2/history/post';
 import { api as getAssessmentQuestionV2 } from './v2/question/get';
 import { api as getQuestionnaireV2 } from './v2/questionnaire/get';
 import { api as postQuestionnaireV2 } from './v2/questionnaire/post';
@@ -75,7 +74,6 @@ const apis: API[] = [
   deleteUsersV2,
   reportsV2,
   createQuestionV2,
-  postAssessmentHistoryV2,
   getQuestionV2,
   putQuestionnaireV2,
   postQuestionnaireV2,

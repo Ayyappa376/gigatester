@@ -185,24 +185,25 @@ export const updateCognitoUserToLowerCase = async (
     );
   });
 
-export const resetUserPassword = async (
+export const resetUserPassword = (
   cognitoUser: string,
   email: string
-): Promise<any> =>
-  new Promise<any>((resolve, reject) => {
-    var params = {
-      Password: generatePassword(), /* required */
-      UserPoolId: config.cognito.userPoolId, /* required */
-      Username: cognitoUser, /* required */
-      Permanent: false
-    };
-    cognitoidentityserviceprovider.adminSetUserPassword(params, function (err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else
-        sendResetPasswordMessage(email, params.Password)
-      // console.log(data);           // successful response
-    });
+): any => {
+  const params = {
+    Password: generatePassword(), /* required */
+    Permanent: false,
+    UserPoolId: config.cognito.userPoolId, /* required */
+    Username: cognitoUser, /* required */
+  };
+  cognitoidentityserviceprovider.adminSetUserPassword(params, function (err, data) {
+    if (err) {
+      console.log(err, err.stack); // an error occurred
+    } else {
+      sendResetPasswordMessage(email, params.Password);
+    }
+    // console.log(data);           // successful response
   });
+};
 
 function generatePassword() {
   const length = 8;

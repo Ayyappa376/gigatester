@@ -19,7 +19,6 @@ export * from './getTeams';
 export * from './getQuestionnaire';
 export * from './assessmentAssignment';
 export * from './createTeams';
-// export * from '../cognito/cognitoUserFunctions';
 export * from './addUserToTeam';
 export * from './configTableFunctions';
 export * from './getTableNames';

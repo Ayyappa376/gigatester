@@ -32,7 +32,7 @@ async function getTeamTypeParams(teamMembers: string[] | undefined): Promise<Dyn
   }
 
   const archiveTime: number = await getArchiveTime();
-  if(archiveTime > 0) {
+  if (archiveTime > 0) {
     return <DynamoDB.ScanInput>{
       Limit: Number.MAX_SAFE_INTEGER,
       ScanFilter: {
@@ -125,12 +125,7 @@ export const checkForOldAssessment = async ({
   appLogger.info({ getAssessmentHistory: assessments });
   for (const a of assessments) {
     //tslint:disable-next-line:strict-comparisons
-    if (
-      !a.result &&
-      Object.keys(a.assessmentDetails).length >= 0 &&
-      a.type === quesType &&
-      team === a.team
-    ) {
+    if (a.result && Object.keys(a.assessmentDetails).length >= 0 && a.type === quesType && team === a.team) {
       return a;
     }
   }

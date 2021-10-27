@@ -69,10 +69,7 @@ export const getNewQuestionnaireId = async (data: QuestionnaireCreate) => {
     if (element.name === data.name) {
       const date = Date.now();
       //tslint:disable-next-line:strict-comparisons
-      if (
-        date - element.createdOn < 5000 &&
-        element.createdBy === data.createdBy
-      ) {
+      if (date - element.createdOn < 5000 && element.createdBy === data.createdBy) {
         questionnaireId = element.questionnaireId;
       }
     }
