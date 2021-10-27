@@ -2,27 +2,26 @@ import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
 var ses = new aws.SES({ region: "us-east-1" });
 
-export const sendResetPasswordMessage = async (
+export const sendResetPasswordMessage = (
     email: string,
     password: string
-): Promise<any> =>
-    new Promise<any>((resolve, reject) => {
-        var mail_params = {
-            Destination: {
-                ToAddresses: [email],
+): any => {
+    var mail_params = {
+        Destination: {
+            ToAddresses: [email],
+        },
+        Message: {
+            Body: {
+                Text: { Data: `To change your password, go to dev.gigatester.io and select login, then enter your email address and a temporary password: ${password}` },
             },
-            Message: {
-                Body: {
-                    Text: { Data: `Click on dev.gigatester.io to select login and enter email and temporary password ${password} in the login form to change your password.` },
-                },
 
-                Subject: { Data: "Reset Password" },
-            },
-            Source: "darshan.hn@pinimbus.com",
-        };
-        appLogger.debug({ adminResetPasswordMailParams: mail_params });
-        console.log("Sending mail");
-        ses.sendEmail(mail_params).promise().catch((err,) => {
-            console.log(err);
-        });
+            Subject: { Data: "Reset Password" },
+        },
+        Source: "no-reply@dev.gigatester.io",
+    };
+    appLogger.debug({ adminResetPasswordMailParams: mail_params });
+    // console.log("Sending mail");
+    ses.sendEmail(mail_params).promise().catch((err,) => {
+        console.log(err);
     });
+}

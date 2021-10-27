@@ -396,5 +396,8 @@
   "noToolsAreMapped": "No Tools are Mapped",
   "signIn": "Sign In",
   "signUp": "Sign Up",
-  "resetPassword": "Reset Password"
+  "reset": "Reset",
+  "resetPassword": "Reset Password",
+  "resetConfirmation": "Reset Confirmation",
+  "areYouSureYouWantToResetTheUserPassword": "Are you sure you want to reset the user's password?"
 }

@@ -113,7 +113,6 @@ const ManageUsers = (props: any) => {
     type: '',
   });
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [resetPasswordStatus, setResetPasswordStatus] = useState(false);
   const [userData, setUserData] = React.useState<IUserParams | undefined>();
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
@@ -177,7 +176,12 @@ const ManageUsers = (props: any) => {
       });
   };
 
-  const getUserData = (emailId: any) => {
+  const onConfirmResetPassword = (emailId: any) => {
+    setNotify({
+      isOpen: true,
+      message: "Loading...",
+      type: 'info',
+    });
     Http.get({
       url: `/api/v2/admin/users/getusers?email=${emailId}`,
       state: stateVariable,
@@ -186,6 +190,7 @@ const ManageUsers = (props: any) => {
         let selectedUserData = response.values;
         selectedUserData['resetPassword'] = true;
         setUserData(selectedUserData)
+        setDialogOpen(true)
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
@@ -204,25 +209,6 @@ const ManageUsers = (props: any) => {
       });
   }
 
-  const onConfirmResetPassword = (emailId: any) => {
-    setNotify({
-      isOpen: true,
-      message: "Loading...",
-      type: 'info',
-    });
-    Http.get({
-      url: `/api/v2/admin/users/getUserStatus?email=${emailId}`,
-      state: stateVariable,
-    }).then((response: any) => {
-      setResetPasswordStatus(true)
-      // response.UserStatus === 'FORCE_CHANGE_PASSWORD' ? setResetPasswordStatus(true) : setResetPasswordStatus(false)
-      getUserData(emailId);
-      setDialogOpen(true)
-    }).catch((error: any) => {
-      console.log(error);
-    })
-  }
-
   const handleResetPassword = () => {
     handleDialogClose();
     setNotify({
@@ -231,7 +217,6 @@ const ManageUsers = (props: any) => {
       type: 'info',
     });
     let postData = userData;
-    console.log(postData);
     postData &&
       Http.put({
         url: `/api/v2/admin/users`,
@@ -739,27 +724,19 @@ const ManageUsers = (props: any) => {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{resetPasswordStatus ? 'Reset Confirmation' : 'Reset Disabled'}</DialogTitle>
+          <DialogTitle id="alert-dialog-title"><Text tid='resetConfirmation' /></DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {resetPasswordStatus ? "Are you sure you want to reset the user's password?" : "As this user has already been confirmed, it is not possible to reset their password."}
+              <Text tid='areYouSureYouWantToResetTheUserPassword' />
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            {resetPasswordStatus ?
-              <Fragment>
-                <Button onClick={handleDialogClose} color="primary">
-                  Cancel
-                </Button>
-                <Button onClick={handleResetPassword} color="primary">
-                  Reset
-                </Button>
-              </Fragment>
-              :
-              <Button onClick={handleDialogClose} color="primary">
-                Cancel
-              </Button>
-            }
+            <Button onClick={handleDialogClose} color="primary">
+              <Text tid='cancel' />
+            </Button>
+            <Button onClick={handleResetPassword} color="primary">
+              <Text tid='reset' />
+            </Button>
           </DialogActions>
         </Dialog>
         <Notification notify={notify} setNotify={setNotify} />

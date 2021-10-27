@@ -1,6 +1,7 @@
 import { config } from '@root/config';
 import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
+import { sendResetPasswordMessage } from './sendEmail';
 // var ses = new aws.SES({ region: "us-east-1" });
 aws.config.update({ region: config.region });
 const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
@@ -198,7 +199,8 @@ export const resetUserPassword = async (
     cognitoidentityserviceprovider.adminSetUserPassword(params, function (err, data) {
       if (err) console.log(err, err.stack); // an error occurred
       else
-        console.log(data);           // successful response
+        sendResetPasswordMessage(email, params.Password)
+      // console.log(data);           // successful response
     });
   });
 
