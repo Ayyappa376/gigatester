@@ -11,6 +11,7 @@ import { generate } from '@utils/common';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, fetchManagers, getServiceConfig, getTeamConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
+import uuidv1 from 'uuid/v1';
 import { addUserToTeam } from './addUserToTeam';
 import { getUserDocumentFromEmail } from './getUserDocument';
 import { get, put, update } from './sdk';
@@ -72,14 +73,14 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
     managerId: managerId[0].id,
     order: ['admin', teamData.manager],
     orgId: teamData.orgId,
-    teamId: teamData.teamName,
+    teamId: `team_${uuidv1()}`,
+//    teamId: teamData.teamName,
     teamName: teamData.teamName,
   };
 
   //remove inactive services and add id, createdBy and createdOn info and add the services field
   if(teamData.services) {
     item.services = processServices(teamData.services, userId);
-//    addIdToServices(teamData.services);
   }
 
   Object.keys(teamData).forEach((val, i) => {
@@ -102,7 +103,6 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
         teamData[val].forEach((ele: any, j: number) => {
           if ((typeof(ele) === 'string') && (ele.match(regex))) {
               item[val].push(ele.split('Other:')[1]);
-            // updateTeamConfig(teamData.orgId, item[val][j]);
           } else {
             item[val].push(ele);
           }
@@ -283,7 +283,6 @@ export const updateTeam = async (updateInfo: TeamInfo, userId: string) => {
   //remove inactive services and add id, createdBy and createdOn info and add the services field
   if(updateInfo.services) {
     updateInfo.services = processServices(updateInfo.services, userId);
-//    addIdToServices(updateInfo.services);
   }
 
   EAN['#order'] = 'order';
@@ -297,8 +296,8 @@ export const updateTeam = async (updateInfo: TeamInfo, userId: string) => {
         val === 'createdBy' ||
         val === 'createdOn' ||
         val === 'order' ||
-        val === 'orgId' ||
-        val === 'teamName'
+        val === 'orgId' //||
+//        val === 'teamName'
       )
     ) {
       if (val === 'manager') {
@@ -363,6 +362,31 @@ export const updateTeamMetrics = async (
   metricsTools: MetricsTool[],
   services: ServiceInfo[]
 ) => {
+  const teamDetails: TeamInfo = await getTeamDetails(teamId);
+  teamDetails.metrics = metricsTools;
+
+  if(services && teamDetails.services) {
+    services.forEach((newService: ServiceInfo) => {
+      // tslint:disable-next-line: no-non-null-assertion
+      const oldService: ServiceInfo | undefined = teamDetails.services!.find((val: ServiceInfo, index: number) => val.id === newService.id);
+      if(oldService) {
+        oldService.metrics = newService.metrics;
+        updateServicesMetrics(newService, oldService);
+      }
+    });
+  }
+
+  const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
+    Item: teamDetails,
+    TableName: TableNames.getTeamTableName(),
+  });
+
+  appLogger.info({ updateTeamMetrics_put_params: params });
+  return put<DynamoDB.PutItemInput>(params).catch((e: any) => {
+    appLogger.error({ updateTeamMetrics_put_error: e });
+  });
+
+/*
   const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
     ExpressionAttributeNames: { '#metrics': 'metrics', '#services': 'services' },
     ExpressionAttributeValues: { ':metrics': metricsTools, ':services': services },
@@ -373,6 +397,20 @@ export const updateTeamMetrics = async (
     UpdateExpression: 'SET #metrics = :metrics, #services = :services',
   });
 
-  appLogger.info({ updateTeam_update_params: params });
+  appLogger.info({ updateTeamMetrics_update_params: params });
   return update<DynamoDB.UpdateItemInput>(params);
+*/
+};
+
+export const updateServicesMetrics = (newServiceInfo: ServiceInfo, oldServiceInfo: ServiceInfo) => {
+  if(newServiceInfo.services && oldServiceInfo.services) {
+    newServiceInfo.services.forEach((newService: ServiceInfo) => {
+      // tslint:disable-next-line: no-non-null-assertion
+      const oldService: ServiceInfo | undefined = oldServiceInfo.services!.find((val: ServiceInfo, index: number) => val.id === newService.id);
+      if(oldService) {
+        oldService.metrics = newService.metrics;
+        updateServicesMetrics(newService, oldService);
+      }
+    });
+  }
 };

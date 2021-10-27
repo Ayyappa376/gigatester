@@ -7,7 +7,7 @@ const questionsTableFunctions  = require('./questionsTableFunctions');
 const teamTableFunctions  = require('./teamTableFunctions');
 const userAssessmentsTableFunctions  = require('./userAssessmentsTableFunctions');
 
-let subdomainPrefix = "dev";
+let subdomainPrefix = "dish";
 let myArgs = process.argv.slice(2);
 if(myArgs.length > 0) {
 	subdomainPrefix = myArgs[0];
@@ -47,8 +47,8 @@ importTableDataFromJSONFile();
 function importTableDataFromJSONFile() {
 //  commonTableFunctions.importTableDataFromJSONFile(ddbdc, configsTableFunctions.getConfigsTableNameFor(subdomainPrefix), importDir);
 	cognitoUsersTableFunctions.importTableDataFromJSONFile(ddbdc, cisp, subdomainPrefix, importDir);
-	teamTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
-	questionsTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
-	questionnairesTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
-	userAssessmentsTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
+//	teamTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
+//	questionsTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
+//	questionnairesTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
+//	userAssessmentsTableFunctions.importTableDataFromJSONFile(ddbdc, subdomainPrefix, importDir);
 }

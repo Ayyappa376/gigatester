@@ -153,13 +153,13 @@ const BottomPane = (props: ILeftPane) => {
             <img
               className={classes.icon}
               src={DoItRightCycle}
-              alt='GigaTester Cycle'
+              alt='DoItRight Cycle'
             />
           </div>
         </Grid>
         <Grid item xs>
           <Typography className={classes.headingInfo}>
-            <Text tid='howOurAssessmentWorks' />
+            <Text tid='howOurTestWorks' />
           </Typography>
           <br />
           <Typography className={classes.info}>
@@ -172,28 +172,28 @@ const BottomPane = (props: ILeftPane) => {
             <strong>
               <Text tid='assess' /> -
             </strong>
-            <Text tid='answerTwoForOurAssessmentWorks' />
+            <Text tid='answerTwoForOurTestWorks' />
           </Typography>
           <br />
           <Typography className={classes.info}>
             <strong>
               <Text tid='review' /> -
             </strong>
-            <Text tid='answerThreeForOurAssessmentWorks' />
+            <Text tid='answerThreeForOurTestWorks' />
           </Typography>
           <br />
           <Typography className={classes.info}>
             <strong>
               <Text tid='analyse' /> -
             </strong>
-            <Text tid='answerFourForOurAssessmentWorks' />
+            <Text tid='answerFourForOurTestWorks' />
           </Typography>
           <br />
           <Typography className={classes.info}>
             <strong>
               <Text tid='action' /> -
             </strong>{' '}
-            <Text tid='answerFiveForOurAssessmentWorks' />
+            <Text tid='answerFiveForOurTestWorks' />
           </Typography>
           <br />
           <Button

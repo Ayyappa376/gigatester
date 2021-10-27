@@ -13,5 +13,7 @@ exports.config = {
 	buildIndex: 'build-data',
 	qualityIndex: 'quality-data',
 	repoIndex: 'repo-data',
-	reqIndex: 'req-data'
+	reqIndex: 'req-data',
+	incidentIndex: 'incident-data',
+	gitlabCommitIndex: 'gitlab-commit-data'
 };

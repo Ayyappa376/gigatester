@@ -12,8 +12,8 @@ export interface TeamMembers {
   teams: any;
 }
 
-export const getTeamMembers = (teamName: string): Promise<string[]> => {
-  if (!teamName) {
+export const getTeamMembers = (teamId: string): Promise<string[]> => {
+  if (!teamId) {
     const err = new Error('Invalid user or User does not belong to a team');
     appLogger.error(err);
     throw err;
@@ -24,12 +24,12 @@ export const getTeamMembers = (teamName: string): Promise<string[]> => {
       '#teams': 'teams',
     },
     ExpressionAttributeValues: {
-      ':teamName': {
+      ':team': {
         isLead: false,
-        name: teamName,
+        name: teamId,
       },
     },
-    FilterExpression: 'contains (#teams, :teamName)',
+    FilterExpression: 'contains (#teams, :team)',
     TableName: TableNames.getCognitoUsersTableName(),
   };
 
@@ -43,9 +43,9 @@ export const getTeamMembers = (teamName: string): Promise<string[]> => {
 };
 
 export const getTeamMembersDetails2 = (
-  teamName: string
+  teamId: string
 ): Promise<UserDocument[]> => {
-  if (!teamName) {
+  if (!teamId) {
     const err = new Error('Invalid user or User does not belong to a team');
     appLogger.error(err);
     throw err;
@@ -56,12 +56,12 @@ export const getTeamMembersDetails2 = (
       '#teams': 'teams',
     },
     ExpressionAttributeValues: {
-      ':teamName': {
+      ':team': {
         isLead: false,
-        name: teamName,
+        name: teamId,
       },
     },
-    FilterExpression: 'contains (#teams, :teamName)',
+    FilterExpression: 'contains (#teams, :team)',
     TableName: TableNames.getCognitoUsersTableName(),
   };
 
@@ -71,9 +71,9 @@ export const getTeamMembersDetails2 = (
 
 //Get NON Manager Team Members ONLY NOT TO BE USED
 export const getTeamMembersDetails = (
-  teamName: string
+  teamId: string
 ): Promise<TeamMembers[]> => {
-  if (!teamName) {
+  if (!teamId) {
     const err = new Error('Invalid user or User does not belong to a team');
     appLogger.error(err);
     throw err;
@@ -86,12 +86,12 @@ export const getTeamMembersDetails = (
     },
     ExpressionAttributeValues: {
       ':active': false,
-      ':teamName': {
+      ':team': {
         isLead: false,
-        name: teamName,
+        name: teamId,
       },
     },
-    FilterExpression: 'contains (#teams, :teamName) AND #active <> :active',
+    FilterExpression: 'contains (#teams, :team) AND #active <> :active',
     TableName: TableNames.getCognitoUsersTableName(),
   };
 
@@ -101,35 +101,11 @@ export const getTeamMembersDetails = (
       const teamMembers: TeamMembers = {
         createdOn: userDocument.createdOn,
         emailId: userDocument.emailId,
-        //manager: userDocument.manager,
         orgId: userDocument.orgId,
         roles: userDocument.roles,
-        teams: userDocument.teams.map((teamNames: any) => teamNames.name),
+        teams: userDocument.teams.map((team: any) => team.name),
       };
       return teamMembers;
     })
   );
-};
-
-//NOT IN USE
-export const getTeamHier = (teamName: string): Promise<any> => {
-  if (!teamName) {
-    const err = new Error('Invalid user or User does not belong to a team');
-    appLogger.error(err);
-    throw err;
-  }
-
-  const params = <DynamoDB.ScanInput>{
-    ExpressionAttributeNames: {
-      '#teams': 'hierarchy',
-    },
-    ExpressionAttributeValues: {
-      ':teamName': teamName,
-    },
-    FilterExpression: 'contains (#teams, :teamName)',
-    TableName: TableNames.getCognitoUsersTableName(),
-  };
-
-  appLogger.info({ getTeamHier_scan_params: params });
-  return scan<any>(params);
 };

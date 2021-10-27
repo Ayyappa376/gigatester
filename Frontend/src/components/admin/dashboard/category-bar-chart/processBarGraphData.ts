@@ -3,7 +3,7 @@ import { IBarDisplayData } from './bar';
 
 export const processBarGraphData = (
   responseData: IResponseData,
-  teamName: string
+  teamId: string
 ) => {
   /** Creating a new bar chart data variable,
    * this type of structure is needed by the bar chart
@@ -104,7 +104,7 @@ export const processBarGraphData = (
     /** Traversing the assessments and calculating the graph data */
     categoryList.forEach((el: string, index: number) => {
       Object.keys(responseData.teams).forEach((team: string) => {
-        if (teamName === 'all' || teamName === team) {
+        if (teamId === 'all' || teamId === team) {
           responseData.teams[team].assessments.forEach((assessment: any) => {
             if (
               assessment &&

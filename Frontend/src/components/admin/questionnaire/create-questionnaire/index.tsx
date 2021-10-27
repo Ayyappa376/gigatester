@@ -116,18 +116,18 @@ const CreateQuestionnaire = (props: any) => {
   };
   const [postData, setPostData] = useState<IQuestionnaireData>(emptyPostData);
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionnaireIsCreated' />;
+  let msgSuccess = <Text tid='testSuitIsCreated' />;
 
   const handleSave = () => {
     if (postData.name === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireNameCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
     } else if (postData.description === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireDescriptionCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
     } else if (categoryArray.length === 1 && categoryArray[0] === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='addCategoriesToTheQuestionnaire' />);
+      setFailureMessage(<Text tid='addCategoriesToTheTestSuit' />);
     } else if (categoryArray.length < 2) {
       setFailure(true);
       setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
@@ -246,12 +246,12 @@ const CreateQuestionnaire = (props: any) => {
   const validatePostData = (categoriesMapped: ICategoriesMap) => {
     if (postData.name === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireNameCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
       return {};
     }
     if (postData.description === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireDescriptionCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
       return {};
     }
     if (categoryArray.length < 2) {
@@ -285,7 +285,7 @@ const CreateQuestionnaire = (props: any) => {
     }
     if (Object.keys(categoriesMapped).length === 0) {
       setFailure(true);
-      setFailureMessage(<Text tid='mapQuestionsBeforeProceeding' />);
+      setFailureMessage(<Text tid='mapTestCasesBeforeProceeding' />);
       return {};
     }
     const questionArray: string[] = [];
@@ -549,9 +549,8 @@ const CreateQuestionnaire = (props: any) => {
           multiline
           disabled
           fullWidth
-          value={`Warning Time : ${warningTimeMinutes} ${
-            warningTimeMinutes === 1 ? 'minute' : 'minutes'
-          }`}
+          value={`Warning Time : ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute' : 'minutes'
+            }`}
           variant='outlined'
         />
       </div>
@@ -579,7 +578,7 @@ const CreateQuestionnaire = (props: any) => {
           <Tooltip
             title={
               <Typography className='tooltipTitleStyle'>
-                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheAssessment' />
+                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheTest' />
               </Typography>
             }
           >
@@ -612,7 +611,7 @@ const CreateQuestionnaire = (props: any) => {
           <Tooltip
             title={
               <Typography className='tooltipTitleStyle'>
-                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheAssessment' />
+                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheTest' />
                 <br />
                 <strong>
                   <Text tid='note' /> &nbsp;
@@ -695,7 +694,7 @@ const CreateQuestionnaire = (props: any) => {
               type='string'
               id='QuestionnaireName'
               name='QuestionnaireName'
-              label='Questionnaire name'
+              label='Test Suit name'
               variant='outlined'
               value={postData.name}
               onChange={handleNameChange}
@@ -710,7 +709,7 @@ const CreateQuestionnaire = (props: any) => {
                 className={classes.message}
                 color='textSecondary'
               >
-                <Text tid='questionnaireNameCannotBeChanged' />
+                <Text tid='testSuitNameCannotBeChanged' />
               </Typography>
             </div>
           </Grid>
@@ -723,7 +722,7 @@ const CreateQuestionnaire = (props: any) => {
               id='description'
               name='description'
               variant='outlined'
-              label='Questionnaire description'
+              label='Test Suit description'
               value={postData.description}
               onChange={handleDescriptionChange}
               fullWidth
@@ -769,7 +768,7 @@ const CreateQuestionnaire = (props: any) => {
                 <Tooltip
                   title={
                     <Typography className='tooltipTitleStyle'>
-                      <Text tid='assessmentWillBeTimed' />
+                      <Text tid='testWillBeTimed' />
 
                       <br />
                       <strong>
@@ -840,7 +839,7 @@ const CreateQuestionnaire = (props: any) => {
           </Button>
         </div>
         <ModalComponent
-          message={'mapQuestionsToTheSavedQuestionnaire'}
+          message={'mapTestCasesToTheSavedTestSuit'}
           openModal={showModal}
           handleModalNoClicked={handleModalNo}
           handleModalYesClicked={handleModalYes}

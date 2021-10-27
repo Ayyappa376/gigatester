@@ -1,3 +1,5 @@
+const fs = require('fs');
+
 //const mainTableName = 'UserAssessments';
 const USER_ASSESSMENT_TABLE_NAME = 'UserAssessments';
 
@@ -38,7 +40,7 @@ exports.createUserAssessmentsTable = (ddb, tablePrefix) => {
 		TableName: tableName,
 		GlobalSecondaryIndexes: [
 			{
-				IndexName: "assessmentId-index-dev",
+				IndexName: "assessmentId-index",
 				KeySchema: [
 					{
 						AttributeName: "assessmentId",

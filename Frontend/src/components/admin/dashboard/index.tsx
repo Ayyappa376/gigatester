@@ -469,13 +469,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='overallMaturity'
+        id='testRatings'
       >
         <Grid item xs={12} sm={8} md={8} lg={9}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='overallMaturity' />
+                <Text tid='testRatings' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -511,7 +511,7 @@ const Dashboard = (props: any) => {
                 : 'NA'}
             </Typography>
             <Title>
-              <Text tid='totalAssessment' />
+              <Text tid='totalTests' />
             </Title>
             <Typography component='p' variant='h4'>
               {averageScore
@@ -562,7 +562,7 @@ const Dashboard = (props: any) => {
                 style={{ cursor: 'pointer' }}
                 onClick={viewTeamAssessmentClicked}
               >
-                <Text tid='viewTeamAssessment' />
+                <Text tid='viewTestReport' />
               </Link>
             </div>
           </Paper>
@@ -577,13 +577,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='categorywiseMaturity'
+        id='screenWiseScore'
       >
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='categoryWiseMaturity' />
+                <Text tid='screenWiseScore' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -740,13 +740,13 @@ const Dashboard = (props: any) => {
         container
         spacing={3}
         className='topScrollContainerAsssessment'
-        id='questionwiseMetrics'
+        id='testCaseWiseMetrics'
       >
         <Grid item xs={12}>
           <Paper className={classes.paper}>
             <div className={classes.title}>
               <Title>
-                <Text tid='questionWiseMetrics' />
+                <Text tid='testCaseWiseMetrics' />
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
@@ -763,7 +763,7 @@ const Dashboard = (props: any) => {
             </div>
             <FormControl className={classes.questionFormControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseQuestion' />
+                <Text tid='chooseTestCase' />
               </InputLabel>
               <Select value={focusQuestion.id} onChange={changeQuestion}>
                 {Object.keys(questionList).map((opt: any) => {
@@ -803,7 +803,7 @@ const Dashboard = (props: any) => {
       return (
         <div className={classes.messagePage}>
           <Typography variant='h5'>
-            <Text tid='noAssessmentDataForQuestionnaire' />
+            <Text tid='noTestDataForTestSuit' />
           </Typography>
         </div>
       );
@@ -813,7 +813,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -825,7 +825,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -835,7 +835,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -844,7 +844,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForQuestionnaire' />
+              <Text tid='noTestDataForTestSuit' />
             </Typography>
           </div>
         );
@@ -859,7 +859,7 @@ const Dashboard = (props: any) => {
         return (
           <div className={classes.messagePage}>
             <Typography variant='h5'>
-              <Text tid='noAssessmentDataForTeam' />
+              <Text tid='noTestDataForPlatform' />
             </Typography>
           </div>
         );
@@ -968,7 +968,7 @@ const Dashboard = (props: any) => {
       <Container maxWidth='md' component='div'>
         <div style={{ display: 'flex' }}>
           <Typography variant='h6'>
-            <Text tid='teamIsCurrentlyNotMappedAssessment' />
+            <Text tid='platformIsCurrentlyNotMappedTest' />
           </Typography>
         </div>
       </Container>
@@ -982,7 +982,7 @@ const Dashboard = (props: any) => {
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseAssessment' />
+                <Text tid='chooseProduct' />
               </InputLabel>
               <Select
                 value={
@@ -1013,7 +1013,7 @@ const Dashboard = (props: any) => {
           <Grid item xs={12} sm={6} md={6} lg={6}>
             <FormControl className={classes.formControl}>
               <InputLabel id='demo-simple-select-label'>
-                <Text tid='chooseTeam' />
+                <Text tid='choosePlatform' />
               </InputLabel>
               <Select
                 value={focusTeam !== '' ? focusTeam : ''}

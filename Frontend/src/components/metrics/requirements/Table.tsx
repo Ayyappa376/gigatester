@@ -51,9 +51,9 @@ function getComparator<Key extends keyof any>(
   order: Order,
   orderBy: Key
 ): (
-  a: { [key in Key]: number | string },
-  b: { [key in Key]: number | string }
-) => number {
+    a: { [key in Key]: number | string },
+    b: { [key in Key]: number | string }
+  ) => number {
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
@@ -80,7 +80,7 @@ const headCells: HeadCell[] = [
   { id: 'itemId', numeric: false, disablePadding: true, label: 'itemId' },
   { id: 'itemType', numeric: false, disablePadding: true, label: 'itemType' },
   { id: 'itemPriority', numeric: false, disablePadding: true, label: 'itemPriority' },
-  { id: 'teamId', numeric: false, disablePadding: false, label: 'team' },
+  { id: 'teamId', numeric: false, disablePadding: false, label: 'platform' },
   { id: 'service', numeric: false, disablePadding: false, label: 'service' },
   { id: 'projectName', numeric: false, disablePadding: false, label: 'project' },
   { id: 'createdOn', numeric: true, disablePadding: false, label: 'createdOn' },
@@ -331,7 +331,7 @@ export default function RequirementsTable(props: any) {
       url = `${url}${joiner}fromDate=${selectedDateRange.fromDate}&toDate=${selectedDateRange.toDate}`;
       joiner = '&';
     }
-  
+
     Http.get({
       url,
       state: stateVariable,
@@ -393,7 +393,7 @@ export default function RequirementsTable(props: any) {
             className={classes.table}
             aria-labelledby='tableTitle'
             size='small'
-            // aria-label="enhanced table"
+          // aria-label="enhanced table"
           >
             <EnhancedTableHead
               classes={classes}

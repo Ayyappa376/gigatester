@@ -3,30 +3,30 @@ import { ILoadAssessmentFinalResultRequest } from '../../model';
 import { IAssessmentFinalResultResponse } from '../../model/result';
 import { AssessmentResultActions } from './';
 
-type FETCH_ASSESMENT_RESULT_START = 'FETCH_ASSESMENT_RESULT_START';
-export const FETCH_ASSESMENT_RESULT_START: FETCH_ASSESMENT_RESULT_START =
-    'FETCH_ASSESMENT_RESULT_START';
+type FETCH_ASSESSMENT_RESULT_START = 'FETCH_ASSESSMENT_RESULT_START';
+export const FETCH_ASSESSMENT_RESULT_START: FETCH_ASSESSMENT_RESULT_START =
+    'FETCH_ASSESSMENT_RESULT_START';
 
-type FETCH_ASSESMENT_RESULT_SUCCESS = 'FETCH_ASSESMENT_RESULT_SUCCESS';
-export const FETCH_ASSESMENT_RESULT_SUCCESS: FETCH_ASSESMENT_RESULT_SUCCESS =
-    'FETCH_ASSESMENT_RESULT_SUCCESS';
+type FETCH_ASSESSMENT_RESULT_SUCCESS = 'FETCH_ASSESSMENT_RESULT_SUCCESS';
+export const FETCH_ASSESSMENT_RESULT_SUCCESS: FETCH_ASSESSMENT_RESULT_SUCCESS =
+    'FETCH_ASSESSMENT_RESULT_SUCCESS';
 
-type FETCH_ASSESMENT_RESULT_FAIL = 'FETCH_ASSESMENT_RESULT_FAIL';
-export const FETCH_ASSESMENT_RESULT_FAIL: FETCH_ASSESMENT_RESULT_FAIL =
-    'FETCH_ASSESMENT_RESULT_FAIL';
+type FETCH_ASSESSMENT_RESULT_FAIL = 'FETCH_ASSESSMENT_RESULT_FAIL';
+export const FETCH_ASSESSMENT_RESULT_FAIL: FETCH_ASSESSMENT_RESULT_FAIL =
+    'FETCH_ASSESSMENT_RESULT_FAIL';
 
-type RESET_ASSESMENT_RESULT = 'RESET_ASSESMENT_RESULT';
-export const RESET_ASSESMENT_RESULT: RESET_ASSESMENT_RESULT =
-    'RESET_ASSESMENT_RESULT';
+type RESET_ASSESSMENT_RESULT = 'RESET_ASSESSMENT_RESULT';
+export const RESET_ASSESSMENT_RESULT: RESET_ASSESSMENT_RESULT =
+    'RESET_ASSESSMENT_RESULT';
 
-export type ASSESMENT_RESULT_ACTIONS = FETCH_ASSESMENT_RESULT_FAIL
-    | FETCH_ASSESMENT_RESULT_SUCCESS
-    | FETCH_ASSESMENT_RESULT_START
-    | RESET_ASSESMENT_RESULT
+export type ASSESSMENT_RESULT_ACTIONS = FETCH_ASSESSMENT_RESULT_FAIL
+    | FETCH_ASSESSMENT_RESULT_SUCCESS
+    | FETCH_ASSESSMENT_RESULT_START
+    | RESET_ASSESSMENT_RESULT
 // hardcoded assessmentId here
 // const apiPath = '/api/v1/assessment/1kaj1231jqp80rfv/result';
 
-export function fetchAssesmentResultData(assessmentId: string) {
+export function fetchAssessmentResultData(assessmentId: string) {
     return (dispatch: Function, getState: Function) => {
 
         dispatch(fetchDataStart());
@@ -43,7 +43,7 @@ export function fetchAssesmentResultData(assessmentId: string) {
 
 function fetchDataStart(): AssessmentResultActions<ILoadAssessmentFinalResultRequest> {
     return {
-        type: FETCH_ASSESMENT_RESULT_START,
+        type: FETCH_ASSESSMENT_RESULT_START,
         payload: {
             status: 'start',
             data: null
@@ -54,7 +54,7 @@ function fetchDataStart(): AssessmentResultActions<ILoadAssessmentFinalResultReq
 function fetchDataSuccess(data: IAssessmentFinalResultResponse):
     AssessmentResultActions<ILoadAssessmentFinalResultRequest> {
     return {
-        type: FETCH_ASSESMENT_RESULT_SUCCESS,
+        type: FETCH_ASSESSMENT_RESULT_SUCCESS,
         payload: {
             data,
             status: 'success',
@@ -71,7 +71,7 @@ export function resetResultState(){
 function resetResult():
     AssessmentResultActions<ILoadAssessmentFinalResultRequest> {
     return {
-        type: RESET_ASSESMENT_RESULT,
+        type: RESET_ASSESSMENT_RESULT,
         payload: {
             data: null,
             status: 'initial',
@@ -82,7 +82,7 @@ function resetResult():
 function fetchDataFail(message: object):
     AssessmentResultActions<ILoadAssessmentFinalResultRequest> {
     return {
-        type: FETCH_ASSESMENT_RESULT_FAIL,
+        type: FETCH_ASSESSMENT_RESULT_FAIL,
         payload: {
             error: message,
             data: null,

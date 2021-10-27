@@ -85,7 +85,7 @@ const TeamSelect = (props: any) => {
   const [departments, setDepartments] = useState<string[]>([]);
   const [focusDepartment, setFocusDepartment] = useState<string>('');
 
-  const failureMessage = <Text tid='invalidTeamName' />;
+  const failureMessage = <Text tid='invalidPlatformName' />;
 
   const getTeamId = () => {
     let teamId = '';
@@ -115,13 +115,13 @@ const TeamSelect = (props: any) => {
         },
         state: stateVariable,
       })
-        .then((response: any) => {
-          updateTeam(teamName);
-          props.history.push('/assessmentselect');
-        })
-        .catch((error: any) => {
-          props.history.push('/assessmentselect');
-        });
+      .then((response: any) => {
+        updateTeam(teamId);
+        props.history.push('/assessmentselect');
+      })
+      .catch((error: any) => {
+        props.history.push('/assessmentselect');
+      });
     }
   };
 
@@ -134,7 +134,8 @@ const TeamSelect = (props: any) => {
         }
       }
     }
-    if (!(departments.includes('Others') || departments.includes('others'))) {
+    if (!(departments.includes('Others') || departments.includes('others') ||
+          departments.includes('Other') || departments.includes('other'))) {
       departmentList.push('Others');
     }
     return departmentList;
@@ -159,7 +160,7 @@ const TeamSelect = (props: any) => {
         setFocusDepartment(departmentsList[0]);
         setTeamsFetched(true);
       })
-      .catch((error: any) => {});
+      .catch((error: any) => { });
   };
 
   useEffect(() => {
@@ -174,7 +175,7 @@ const TeamSelect = (props: any) => {
           tempTeams.push(team);
         }
       } else {
-        if (focusDepartment.toLowerCase() === 'others') {
+        if ((focusDepartment.toLowerCase() === 'others') || (focusDepartment.toLowerCase() === 'other')) {
           tempTeams.push(team);
         }
       }
@@ -194,12 +195,12 @@ const TeamSelect = (props: any) => {
     return (
       <Container className={classes.containerRoot}>
         <Card className={classes.container}>
-          <img className={classes.image} src={biglogo} alt='GigaTester logo' />
+          <img className={classes.image} src={biglogo} alt='DoItRight logo' />
           <Typography className={classes.heading} variant='h2'>
             <Text tid='welcomeTo' />
           </Typography>
           <Typography className={classes.heading2} variant='h3'>
-            <Text tid='gigaTester.io' />
+            <Text tid='doItRight.io' />
           </Typography>
           <Typography className={classes.text}>
             <Text tid='selectYourDepartment' />
@@ -211,7 +212,7 @@ const TeamSelect = (props: any) => {
             onChange={handleChangeDepartment}
           />
           <Typography className={classes.text}>
-            <Text tid='selectYourTeam' />
+            <Text tid='selectYourPlatform' />
           </Typography>
           <AutoCompleteComponent
             className={classes.select}

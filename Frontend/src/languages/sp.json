@@ -1,4 +1,4 @@
-{
+{ 
   "admin": "Administrador",
   "manage": "Gestionar",
   "metrics": "Métrica",
@@ -10,11 +10,11 @@
   "journey": "Viaje",
   "areYouDoingItRight": "Lo estás haciendo bien?",
   "measureYourself": "Mídete a ti mismo",
-  "devopsDef1": "DevOps ... la palabra de moda, es un viaje. Todos quieren hacer DevOps, todos afirman que lo están haciendo, PERO ... no muchos lo están haciendo de la manera correcta, lo que resulta en ...",
+  "devopsDef1" : "DevOps ... la palabra de moda, es un viaje. Todos quieren hacer DevOps, todos afirman que lo están haciendo, PERO ... no muchos lo están haciendo de la manera correcta, lo que resulta en ...",
   "devopsDef2": "¡Estamos aquí para que su viaje DevSecOps sea fluido, rápido y eficaz!",
   "devopsDef3": "Los equipos que practican DevOps superan a otros equipos. Existen varios modelos que pueden ayudar a guiar a las empresas hacia una implementación de DevOps efectiva. A pesar de todos estos recursos, muchas empresas luchan por avanzar en su proceso de adopción de DevOps.",
   "devopsDef4": "Los equipos deben basar su nivel de madurez actual para comprender las brechas antes de comenzar un viaje para mejorar.",
-  "devopsDef5": "CALMS (Cultura, Automatización, Lean, Medición, Compartir) es el marco más adoptado para evaluar la madurez de DevOps y comprender las áreas que necesitan enfocarse en su viaje de transformación. GigaTester aprovecha el marco CALMS y los puntos de referencia de la industria, junto con las personalizaciones específicas de la organización para brindar un enfoque estructurado para impulsar la adopción de DevOps en la organización.",
+  "devopsDef5": "CALMS (Cultura, Automatización, Lean, Medición, Compartir) es el marco más adoptado para evaluar la madurez de DevOps y comprender las áreas que necesitan enfocarse en su viaje de transformación. DoItRight aprovecha el marco CALMS y los puntos de referencia de la industria, junto con las personalizaciones específicas de la organización para brindar un enfoque estructurado para impulsar la adopción de DevOps en la organización.",
   "whyDevOpsDifficult": "¿Por qué DevOps es difícil?",
   "answerOneForDevOpsDifficult": "Actualmente, no hay una definición científica disponible para DevOps. Las organizaciones e incluso los equipos dentro de la misma organización tienen su propia definición de DevOps, por eso no existe una forma estándar de medir.",
   "answerTwoForDevOpsDifficult": "Las organizaciones tienen que cambiar la cultura, la mentalidad y las prácticas actuales para tener éxito en el modelo DevOps. Mejorar las habilidades de los equipos existentes y encontrar el talento adecuado es costoso y un desafío.",
@@ -23,11 +23,13 @@
   "review": "Revisión",
   "analyse": "Analizar",
   "action": "Acción",
-  "answerOneForOurAssessmentWorks": "GigaTester lo maneja con un simple proceso cíclico de cuatro pasos",
-  "answerTwoForOurAssessmentWorks": "Realice una evaluación para comprender las diversas dimensiones en las que debe centrarse y también para obtener una visión del nivel actual de madurez.",
+  "answerOneForOurAssessmentWorks": "DoItRight lo maneja con un simple proceso cíclico de cuatro pasos",
+  "answerTwoForOurAssessmentWorks": 
+      "Realice una evaluación para comprender las diversas dimensiones en las que debe centrarse y también para obtener una visión del nivel actual de madurez.",
   "answerThreeForOurAssessmentWorks": "Una vez completada la evaluación, revise la puntuación general y la madurez en varias dimensiones.",
   "answerFourForOurAssessmentWorks": "Analice las recomendaciones personalizadas según la puntuación y cree un plan de ejecución.",
-  "answerFiveForOurAssessmentWorks": "Colabore con los propietarios del producto y otras partes interesadas para garantizar que el plan de acción tenga prioridad en la acumulación para permitir un progreso constante.",
+  "answerFiveForOurAssessmentWorks": 
+      "Colabore con los propietarios del producto y otras partes interesadas para garantizar que el plan de acción tenga prioridad en la acumulación para permitir un progreso constante.",
   "contactUs": "Contrate nuestros servicios profesionales para que este viaje sea placentero para usted. Contactanos en:",
   "notAvailableDuringThisAssessment": "Esta opción no está disponible durante esta evaluación, primero complete la evaluación.",
   "goBack": "Regresa",
@@ -35,7 +37,8 @@
   "submit": "Enviar",
   "reason": "Razón",
   "other": "Otro",
-  "selectTheWeightageFactor": "Seleccione el factor de ponderación de acuerdo con el vencimiento de la opción. Cuanto mayor sea el factor de ponderación, mayor será la madurez. 1 es la opción menos madura.",
+  "selectTheWeightageFactor": 
+      "Seleccione el factor de ponderación de acuerdo con el vencimiento de la opción. Cuanto mayor sea el factor de ponderación, mayor será la madurez. 1 es la opción menos madura.",
   "level": "Nivel",
   "high": "Alto",
   "medium": "Medio",
@@ -50,10 +53,10 @@
   "overallMaturity": "Madurez general",
   "interactWithChart": "Interactúe con gráficos para ver detalles.",
   "averageScore": "Puntuación media",
-  "totalAssessment": "Evaluación total",
-  "downloadReport": "Descargar informe",
-  "viewTeamAssessment": "Ver evaluación del equipo",
-  "categoryWiseMaturity": "Madurez según categoría",
+  "totalAssessment":"Evaluación total",
+  "downloadReport":"Descargar informe",
+  "viewTeamAssessment":"Ver evaluación del equipo",
+  "categoryWiseMaturity":"Madurez según categoría",
   "performanceMetrics": "Métricas de rendimiento",
   "bestPerformingAreas": "Áreas de mejor desempeño:",
   "areasForImprovement": "Áreas para mejorar:",
@@ -100,7 +103,8 @@
   "otherSettings": "Otros ajustes",
   "highlightInPerformanceMetrics": "Número de áreas para destacar en las métricas de desempeño",
   "archiveBeforeDays": "Number of days data to keep before archiving. (Set value as 0 to disable archiving)",
-  "systemAttributesCannotBeDeletedOrChanged": "Los atributos del sistema no se pueden eliminar ni cambiar, excepto su etiqueta de visualización. El tipo de atributo personalizado no se puede cambiar una vez que se ha enviado.",
+  "systemAttributesCannotBeDeletedOrChanged": 
+      "Los atributos del sistema no se pueden eliminar ni cambiar, excepto su etiqueta de visualización. El tipo de atributo personalizado no se puede cambiar una vez que se ha enviado.",
   "settingType": "Tipo de ajuste",
   "configure": "Configurar",
   "status": "Estado",
@@ -126,13 +130,16 @@
   "searchResults:": "Resultados de la búsqueda:",
   "mapQuestions": "Preguntas sobre mapas",
   "randomize": "Aleatorizar",
-  "theAnswersWillBeRandomizedWhenUserTakesTheAssessment": "Si se selecciona esta opción, las respuestas serán aleatorias cuando un usuario realice la evaluación.",
+  "theAnswersWillBeRandomizedWhenUserTakesTheAssessment": 
+      "Si se selecciona esta opción, las respuestas serán aleatorias cuando un usuario realice la evaluación.",
   "hideResult": "Ocultar Resultado",
-  "resultWillNotBeDisplayedAtTheEndOfTheAssessment": "Si se selecciona esta opción, el resultado no se mostrará al final de la evaluación.",
+  "resultWillNotBeDisplayedAtTheEndOfTheAssessment": 
+      "Si se selecciona esta opción, el resultado no se mostrará al final de la evaluación.",
   "note": "Nota:",
   "optionDisabledWhenShowRecommendationsSelected": "Esta opción está deshabilitada cuando se selecciona Mostrar recomendaciones.",
   "showRecommendations": "Mostrar recomendaciones",
-  "recommendationsWillBeDisplayed": "Si se selecciona esta opción, las recomendaciones se mostrarán en los resultados, así como en la página de detalles de la evaluación.",
+  "recommendationsWillBeDisplayed": 
+      "Si se selecciona esta opción, las recomendaciones se mostrarán en los resultados, así como en la página de detalles de la evaluación.",
   "hideResultSelected": "Esta opción está deshabilitada cuando se selecciona Programado u Ocultar resultado.",
   "questionnaireNameCannotBeChanged": "(Nota: una vez creado, el nombre del cuestionario no se puede cambiar)",
   "timed": "Cronometrado",
@@ -149,7 +156,8 @@
   "showCompleteAssessment": "Mostrar evaluación completa",
   "add": "Añadir",
   "assignActions:": "Asignar Acciones:",
-  "benchmarkScoreLineIndicatesTheBenchmarkScore": "La línea de puntuación de referencia indica la puntuación de referencia. Si su puntaje se encuentra por debajo de la línea de puntaje de referencia, debe intentar alcanzar el puntaje de referencia en su próxima evaluación.",
+  "benchmarkScoreLineIndicatesTheBenchmarkScore": 
+      "La línea de puntuación de referencia indica la puntuación de referencia. Si su puntaje se encuentra por debajo de la línea de puntaje de referencia, debe intentar alcanzar el puntaje de referencia en su próxima evaluación.",
   "categoryWiseScore": "Categoría Wise Score",
   "youAreGoodInThisCategory": "Eres bueno en esta categoria",
   "recommendations": "Recomendaciones:",
@@ -193,7 +201,8 @@
   "loadingAssessment": "Evaluación de carga...",
   "linkToAssessments": "Enlace a evaluaciones",
   "start": "Comienzo",
-  "contactSystemAdminToProvideYouAccess": "Actualmente no está asignado a ninguna evaluación. Comuníquese con el administrador del sistema para brindarle acceso a evaluaciones relevantes.",
+  "contactSystemAdminToProvideYouAccess": 
+      "Actualmente no está asignado a ninguna evaluación. Comuníquese con el administrador del sistema para brindarle acceso a evaluaciones relevantes.",
   "authenticating": "Autenticando...",
   "loggedOut": "usted ha sido desconectado.",
   "buildCICD": "Construir - CICD",
@@ -210,7 +219,7 @@
   "continue": "Seguir",
   "selectYourTeam": "Por favor seleccione su equipo:",
   "selectYourDepartment": "Seleccione su Departamento:",
-  "gigaTester.io": "GigaTester.io",
+  "doItRight.io": "DoItRight.io",
   "welcomeTo": "Bienvenido a",
   "viewAssessments": "Ver evaluaciones",
   "viewAssessment": "Ver evaluación",
@@ -222,7 +231,8 @@
   "averagePercent": "Porcentaje medio",
   "averageLevel": "Nivel promedio",
   "assessmentType": "Tipo de evaluación",
-  "thankYouForTakingTheTrialAssessment": "Gracias por realizar la evaluación de prueba. GigaTester es capaz de mucho más. Contáctenos para evaluar la plataforma completa haciendo clic en el botón sobre el área de esta aplicación.",
+  "thankYouForTakingTheTrialAssessment": 
+      "Gracias por realizar la evaluación de prueba. DoItRight es capaz de mucho más. Contáctenos para evaluar la plataforma completa haciendo clic en el botón sobre el área de esta aplicación.",
   "errorConnectingWithServer": "Error al conectar con el servidor.",
   "notGivenAssessmentYet": "Aún no ha realizado ninguna evaluación.",
   "myAssessments": "Mis Evaluaciones",
@@ -293,6 +303,7 @@
   "itemPriority": "Prioridad de artículo",
   "startedOn": "Comenzó en",
   "closedOn": "Cerrado el",
+
   "generalSettingsUpdatedSuccessfully": "La configuración de la configuración general se actualizó correctamente",
   "questionnairesAssigned": "Cuestionarios asignados",
   "questionnaireIsCreated": "Se crea el cuestionario",
@@ -309,54 +320,82 @@
   "userProfileDeletedSuccessfully": "Perfil de usuario eliminado correctamente",
   "thanksForGivingThisAssessment": "Gracias por dar esta evaluación!",
   "collectorsUpdatedSuccessfully": "Recopiladores actualizados con éxito",
-  "deleteTheExtraNumberOfOptionsFromTheEnd": "Esto eliminará el número adicional de opciones del final. Quieres continuar?",
-  "disableTheTeamAndTheRelatedAssessmentData": "Esto deshabilitará el equipo y los datos de evaluación relacionados. Quieres continuar?",
+
+  "deleteTheExtraNumberOfOptionsFromTheEnd":
+      "Esto eliminará el número adicional de opciones del final. Quieres continuar?",
+  "disableTheTeamAndTheRelatedAssessmentData":
+    "Esto deshabilitará el equipo y los datos de evaluación relacionados. Quieres continuar?",
   "deleteTheUser": "Esto eliminará al usuario. Quieres continuar?",
-  "changeTheUserToAnAdmin": "Esto cambia el usuario a administrador. Quieres continuar?",
-  "notSubmittedTheQuestionnaireYet": "Aún no ha enviado el cuestionario. ¿Estás seguro de que quieres volver?",
-  "mapQuestionsToTheSavedQuestionnaire": "Cuestionario guardado correctamente. ¿Quiere mapear preguntas a este cuestionario?",
-  "editTheQuestionsMappingOfUpdatedQuestionnaire": "Cuestionario editado con éxito. ¿Quieres editar el mapeo de preguntas de este cuestionario?",
-  "publishTheQuestionnaire": "Esto publicará el cuestionario. ¿Quieres continuar?",
+  "changeTheUserToAnAdmin":
+    "Esto cambia el usuario a administrador. Quieres continuar?",
+  "notSubmittedTheQuestionnaireYet":
+    "Aún no ha enviado el cuestionario. ¿Estás seguro de que quieres volver?",
+  "mapQuestionsToTheSavedQuestionnaire":
+    "Cuestionario guardado correctamente. ¿Quiere mapear preguntas a este cuestionario?",
+  "editTheQuestionsMappingOfUpdatedQuestionnaire":
+    "Cuestionario editado con éxito. ¿Quieres editar el mapeo de preguntas de este cuestionario?",
+  "publishTheQuestionnaire":
+    "Esto publicará el cuestionario. ¿Quieres continuar?",
   "wantToLogout": "¿Estás seguro de que quieres cerrar sesión?",
   "wantToLeaveThisPage": "¿Estás seguro de que quieres salir de esta página?",
   "unsavedChangesWillBeLost": "Todos los cambios no guardados se perderán",
   "wantToClose": "¿Estás seguro de que quieres cerrar?",
-  "wantToContinueFromTheLastAttemptedQuestion": "¿Quiere continuar desde la última pregunta que intentó?",
-  "notBeAbleToMakeAnyChangesAfterSubmittingTheAssessment": "No podrá realizar ningún cambio después de enviar la evaluación. ¿Quieres continuar?",
+  "wantToContinueFromTheLastAttemptedQuestion":
+    "¿Quiere continuar desde la última pregunta que intentó?",
+  "notBeAbleToMakeAnyChangesAfterSubmittingTheAssessment":
+    "No podrá realizar ningún cambio después de enviar la evaluación. ¿Quieres continuar?",
   "addMetricTools": "¿Quieres agregar herramientas métricas?",
-  "objectAttributePermanentDeletionWarning": "Este atributo se eliminará permanentemente de todas partes del sistema. ¿De verdad quieres eliminarlo?",
-  "metricsToolPermanentDeletionWarning": "¿Continúas con la eliminación?",
+  "objectAttributePermanentDeletionWarning":
+    "Este atributo se eliminará permanentemente de todas partes del sistema. ¿De verdad quieres eliminarlo?",
+  "metricsToolPermanentDeletionWarning": 
+    "¿Continúas con la eliminación?",
+
   "error": "Error",
   "somethingWentWrong": "Algo salió mal. Inténtalo de nuevo",
   "setAtleastThreeLevels": "Debes establecer al menos 3 niveles",
   "haveUniqueName": "Cada nivel debe tener un nombre único",
-  "haveValuesBetweenZeroToHundred": "Los límites deben tener valores entre 0 y 100",
-  "lowerLimitOfaLevelShouldBeLessThanItsUpperLimit": "El límite inferior de un nivel debe ser menor que su límite superior",
-  "limitsOfEachLevelValues": "Consulte los límites de cada uno de los niveles. No debe haber ningún espacio o superposición entre un nivel y su siguiente nivel superior",
+  "haveValuesBetweenZeroToHundred":
+    "Los límites deben tener valores entre 0 y 100",
+  "lowerLimitOfaLevelShouldBeLessThanItsUpperLimit":
+    "El límite inferior de un nivel debe ser menor que su límite superior",
+  "limitsOfEachLevelValues":
+    "Consulte los límites de cada uno de los niveles. No debe haber ningún espacio o superposición entre un nivel y su siguiente nivel superior",
   "lowerLimitValue": "El límite inferior del nivel más bajo debe ser 0",
   "upperLimitValue": "El límite superior del nivel más alto debe ser 100",
-  "performanceMetricsConstantValue": "Proporcione un valor constante de métricas de rendimiento dentro del rango de 1 a 10",
+  "performanceMetricsConstantValue":
+    "Proporcione un valor constante de métricas de rendimiento dentro del rango de 1 a 10",
   "answerCannotBeBlank": "La respuesta no puede estar en blanco",
   "weightageFactorCannotBeBlank": "El factor de peso no puede estar en blanco",
-  "answerMustBeUnique": "Ingrese diferentes respuestas. Cada respuesta debe ser única",
-  "useDistinctWeightages": "Use un peso distinto o cambie el tipo de pregunta a selección múltiple para usar un peso común entre las opciones",
+  "answerMustBeUnique":
+    "Ingrese diferentes respuestas. Cada respuesta debe ser única",
+  "useDistinctWeightages":
+    "Use un peso distinto o cambie el tipo de pregunta a selección múltiple para usar un peso común entre las opciones",
   "questionCannotBeEmpty": "La pregunta no puede estar vacía. Por favor ingrese un texto",
   "atleastTwoAnswerOptions": "Debes tener al menos 2 opciones de respuesta",
-  "recommendationsCannotBeEmpty": "Las recomendaciones no pueden estar vacías. Por favor ingrese un texto",
+  "recommendationsCannotBeEmpty":
+    "Las recomendaciones no pueden estar vacías. Por favor ingrese un texto",
   "fieldLabelCannotBeEmpty": "La etiqueta del campo no puede estar vacía",
-  "optionsMustBeProvidedForAttributeTypeListOrMultiList": "Se deben proporcionar opciones para la lista de tipos de atributos o listas múltiples",
-  "optionsMustBeProvidedForAttributeTypeListOrListNoOthersOrMultiList": "Se deben proporcionar opciones para lista de tipo de atributo, lista sin otros o lista múltiple",
+  "optionsMustBeProvidedForAttributeTypeListOrMultiList":
+    "Se deben proporcionar opciones para la lista de tipos de atributos o listas múltiples",
+  "optionsMustBeProvidedForAttributeTypeListOrListNoOthersOrMultiList":
+    "Se deben proporcionar opciones para lista de tipo de atributo, lista sin otros o lista múltiple",
   "mapCategoriesToAllTheQuestions": "Asigne categorías a todas las preguntas",
   "questionnaireNameCannotBeBlank": "El nombre del cuestionario no puede estar en blanco",
-  "questionnaireDescriptionCannotBeBlank": "La descripción del cuestionario no puede estar en blanco",
+  "questionnaireDescriptionCannotBeBlank":
+    "La descripción del cuestionario no puede estar en blanco",
   "addCategoriesToTheQuestionnaire": "Agregar categorías al cuestionario",
   "atleastTwoCategoriesShouldBeThere": "Al menos 2 categorías deberían estar allí",
   "categoryAlreadyExists": "La categoría ya existe",
   "enterValidCategory": "Ingrese una categoría válida",
   "invalidTimeOutTime": "Tiempo de espera no válido",
-  "timeOutTimeCannotBeLesserThanFiveMinutes": "El tiempo de espera no puede ser inferior a 5 minutos.",
-  "benchmarkScoreShouldHaveValueBetweenFiftyAndHundred": "La puntuación de referencia debe tener un valor entre 50 y 100",
+  "timeOutTimeCannotBeLesserThanFiveMinutes":
+    "El tiempo de espera no puede ser inferior a 5 minutos.",
+  "benchmarkScoreShouldHaveValueBetweenFiftyAndHundred":
+    "La puntuación de referencia debe tener un valor entre 50 y 100",
   "mapQuestionsBeforeProceeding": "Por favor mapee las preguntas antes de continuar",
-  "cannotDeleteCategoryMappedToQuestion": "No puede eliminar una categoría asignada a una pregunta",
-  "enterValidEmailToStartTrial": "Ingrese un correo electrónico válido para comenzar su evaluación de prueba"
+  "cannotDeleteCategoryMappedToQuestion":
+    "No puede eliminar una categoría asignada a una pregunta",
+  "enterValidEmailToStartTrial":
+    "Ingrese un correo electrónico válido para comenzar su evaluación de prueba"
 }
+    

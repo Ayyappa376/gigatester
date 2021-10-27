@@ -58,7 +58,7 @@ async function handler(request: GetUsers, response: Response) {
     const getUserDetails: any = await getUserDocumentFromEmail(query.email);
     appLogger.info({ getUserDocumentFromEmail: getUserDetails });
     getUserDetails[0].teams = getUserDetails[0].teams.map(
-      (teamName: any) => teamName.name
+      (team: any) => team.name
     );
     const createUser: any = await getCreateUserConfig(
       headers.user.orgId ? headers.user.orgId : config.defaults.orgId,

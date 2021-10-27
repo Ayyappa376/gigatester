@@ -53,7 +53,7 @@ exports.importTableDataFromJSONFile = (ddbdc, cisp, tablePrefix, importDir) => {
 		usersDetails.forEach((userDetail, index) => {
 			console.log("User " + index + ": ", userDetail);
 			if(userDetail.emailVerified === 'true') {
-				addUserToCognitoUserPool(ddbdc, cisp, userDetail, tableName);
+				addUserToCognitoUserPoolAndTable(ddbdc, cisp, userDetail, tableName);
 			}
 		});
 	  } catch (err) {
@@ -64,7 +64,7 @@ exports.importTableDataFromJSONFile = (ddbdc, cisp, tablePrefix, importDir) => {
 function addUserToCognitoUserPoolAndTable(ddbdc, cisp, userDetail, tableName) {
     const params = {
 		DesiredDeliveryMediums: ['EMAIL'],
-		TemporaryPassword: 'Chang3Me',
+		TemporaryPassword: 'Chang3Me!',
 		UserAttributes: [
 		  {
 			Name: 'email',
@@ -116,7 +116,7 @@ function addUserToCognitoGroup(cisp, userDetail) {
 	});
 }
 
-function addUserToCognitoGroup(ddbdc, userDetail, tableName) {
+function addUserToDatabase(ddbdc, userDetail, tableName) {
 	const params = {
 		ConditionExpression:
 		  'attribute_not_exists(emailId) AND #emailId <> :emailId',

@@ -44,10 +44,10 @@ async function handler(request: AssesssmentSummaryRequest, response: Response) {
   let quesType: string = request.params.type;
   let version = request.query.version;
   appLogger.info({ quesType });
-  const teamName: string = request.params.team;
+  const teamId: string = request.params.team;
   const check = await checkForOldAssessment({
     quesType,
-    team: teamName,
+    team: teamId,
     type: 'user',
     userId: user.email,
   });
@@ -77,7 +77,6 @@ async function handler(request: AssesssmentSummaryRequest, response: Response) {
       appLogger.info({ getCategoryListFromQuestionnaire: categoryList });
       const questions: string[] = await getQuestionsListSorted({
         quesType,
-        teamName,
         version,
       });
       appLogger.info({ getQuestionsListSorted: questions });
@@ -141,7 +140,6 @@ async function handler(request: AssesssmentSummaryRequest, response: Response) {
       appLogger.info({ getCategoryListFromQuestionnaire: categoryList });
       const questions: string[] = await getQuestionsListSorted({
         quesType,
-        teamName,
         version,
       });
       appLogger.info({ getQuestionsListSorted: questions });

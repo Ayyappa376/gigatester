@@ -6,7 +6,7 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Rating from '@material-ui/lab/Rating';
-import StarIcon from '@material-ui/icons/Star';
+import FavoriteIcon from '@material-ui/icons/Favorite';
 import { useActions } from '../../actions';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
@@ -29,9 +29,9 @@ const Feedback = () => {
   const [rating, setRating] = React.useState<number | null>(0);
   const [comment, setComment] = React.useState('');
   const postAssessmentFeedback = useActions(postFeedback);
-  const feedback = useSelector((state: IRootState) => state.assesment.feedback);
+  const feedback = useSelector((state: IRootState) => state.assessment.feedback);
   const assessmentData = useSelector(
-    (state: IRootState) => state.assesment.assesmentSummary
+    (state: IRootState) => state.assessment.assessmentSummary
   );
   function handleClose() {
     setOpen(false);
@@ -79,7 +79,7 @@ const Feedback = () => {
       aria-labelledby='form-dialog-title'
     >
       <DialogTitle id='form-dialog-title'>
-        <Text tid='rateYourExperienceWithYourAssessment' />
+        <Text tid='rateYourExperienceWithYourTest' />
       </DialogTitle>
       <DialogContent>
         <StyledRating
@@ -88,7 +88,7 @@ const Feedback = () => {
           value={rating}
           precision={1}
           onChange={handleRatingClick}
-          icon={<StarIcon fontSize='large' />}
+          icon={<FavoriteIcon fontSize='large' />}
         />
         <TextField
           id='standard-textarea'

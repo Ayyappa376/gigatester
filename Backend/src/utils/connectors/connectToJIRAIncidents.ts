@@ -29,17 +29,13 @@ export async function connectAndFetchFromJIRAIncidents(
         appLogger.info('before setting service mapping key');
 
         tool.serviceMappingKey.options = options;
-        appLogger.info('after setting service mapping key');
         if(toolConfig.attributes.serviceMappingKey.defaultValue) {
-          appLogger.info('before setting default value of service mapping key');
           if((toolConfig.attributes.serviceMappingKey.defaultValue !== '') &&
             (! Object.keys(tool.serviceMappingKey.options).includes(toolConfig.attributes.serviceMappingKey.defaultValue))) {
             tool.serviceMappingKey.options[toolConfig.attributes.serviceMappingKey.defaultValue] = toolConfig.attributes.serviceMappingKey.defaultValue;
           }
           tool.serviceMappingKey.value = toolConfig.attributes.serviceMappingKey.defaultValue;
         }
-        appLogger.info('after setting default value of service mapping key');
-        appLogger.info({serviceMappingKey: tool.serviceMappingKey});
 
         tool.incidentStartKey.options = options;
         if(toolConfig.attributes.incidentStartKey.defaultValue) {

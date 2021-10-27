@@ -58,7 +58,7 @@ const AssessmentSelect = (props: any) => {
   const classes = useStyles();
   const [questionnaire, setQuestionnaire] = React.useState<any>({});
   const [questionnaireFetched, setQuestionnaireFetched] = React.useState(false);
-  const teamName = useSelector((state: IRootState) => {
+  const teamId = useSelector((state: IRootState) => {
     return state.user.team;
   });
   const stateVariable = useSelector((state: IRootState) => {
@@ -76,12 +76,12 @@ const AssessmentSelect = (props: any) => {
 
   useEffect(() => {
     setDisplayLeftText('');
-    if (teamName) {
+    if (teamId) {
       setAssessmentDataStart();
       setQuestionnaire({});
       setQuestionnaireFetched(false);
       Http.get({
-        url: `/api/v2/assignment?teamId=${teamName}`,
+        url: `/api/v2/assignment?teamId=${teamId}`,
         state: stateVariable,
       })
         .then((response: any) => {
@@ -121,7 +121,7 @@ const AssessmentSelect = (props: any) => {
       //   );
       // }
     }
-  }, [teamName]);
+  }, [teamId]);
 
   useEffect(() => {
     if (questionnaire.status === 'fail') {
@@ -169,12 +169,12 @@ const AssessmentSelect = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='assessments' />
+                      <Text tid='test' />
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='linkToAssessments' />
+                      <Text tid='linkToTest' />
                     </Typography>
                   </TableCell>
                 </TableRow>

@@ -1,5 +1,5 @@
 # --------- Start of dish env --------------
-# service: gigatester-backend
+# service: doitright-backend
 
 # provider:
 #   name: aws
@@ -59,12 +59,12 @@ provider:
   environment:
     DB_ENV: ${env:NODE_ENV, self:provider.stage}
     logLevel: ${self:custom.loglevel.${self:provider.stage}}
-iamRoleStatements:
-   - Effect: 'Allow'
-     Action:
-       - 'apigateway:*'
-     Resource:
-       - 'arn:aws:apigateway:${self:provider.region}::/restapis*'
+  iamRoleStatements:
+    - Effect: 'Allow' 
+      Action:
+        - 'apigateway:*'
+      Resource:
+        - 'arn:aws:apigateway:${self:provider.region}::/restapis*'
 
 plugins:
   - serverless-plugin-typescript

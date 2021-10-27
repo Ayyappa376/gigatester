@@ -67,10 +67,10 @@ function ViewAssessment(props: any) {
   const classes = useStyles();
   const fetchUserAssessmentHistory = useActions(fetchAssessmentHistory);
   const assessmentHistory = useSelector(
-    (state: IRootState) => state.assesment.assessmentHistory
+    (state: IRootState) => state.assessment.assessmentHistory
   );
   // const assessmentTypes = useSelector(
-  //   (state: IRootState) => state.assesment.assessmentType
+  //   (state: IRootState) => state.assessment.assessmentType
   // );
   const setAssessmentType = useActions(setSelectedAssessmentType);
   const setDisplayTextLeft = useActions(setAppBarLeftText);
@@ -282,14 +282,14 @@ function ViewAssessment(props: any) {
     props.history.push(`/assessment`);
   };
 
-  const getLink = (row: any) => {
+  const getLink = (row: IAssessmentListItem) => {
     return row.result ? (
       <MaterialLink
         href='#'
         onClick={() => {
           setDisplayTextLeft(row.assessmentName);
-          setDisplayTextCenter(`Team: ${row.team}`);
-          setUserTeam(row.team);
+          setDisplayTextCenter(`Platform: ${row.teamName}`);
+          setUserTeam(row.teamId);
           props.history.push({
             pathname: `/assessment/detail/${row.assessmentId}`,
             state: { prevPath: props.location.pathname },
@@ -297,7 +297,7 @@ function ViewAssessment(props: any) {
         }}
       >
         <Typography>
-          <Text tid='viewAssessment' />
+          <Text tid='viewTestResults' />
         </Typography>
       </MaterialLink>
     ) : (
@@ -305,13 +305,13 @@ function ViewAssessment(props: any) {
         href='#'
         onClick={() => {
           setDisplayTextLeft(row.assessmentName);
-          setDisplayTextCenter(`Team: ${row.team}`);
-          setUserTeam(row.team);
+          setDisplayTextCenter(`Platform: ${row.teamName}`);
+          setUserTeam(row.teamId);
           redirectToContinueAssessment(row.type, row.questionnaireVersion);
         }}
       >
         <Typography>
-          <Text tid='continueAssessment' />
+          <Text tid='continueTesting' />
         </Typography>
       </MaterialLink>
     );
@@ -351,7 +351,7 @@ function ViewAssessment(props: any) {
           }}
         >
           <Typography component='h3'>
-            <Text tid='notGivenAssessmentYet' />
+            <Text tid='notGivenTestYet' />
           </Typography>
         </Container>
       );
@@ -367,7 +367,7 @@ function ViewAssessment(props: any) {
       >
         <div className={classes.title}>
           <Title>
-            <Text tid='myAssessments' />:
+            <Text tid='myTestResults' />:
           </Title>
         </div>
         <Paper className={classes.root}>
@@ -383,7 +383,7 @@ function ViewAssessment(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='team' />
+                      <Text tid='Platform' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
@@ -396,7 +396,7 @@ function ViewAssessment(props: any) {
                     }}
                   >
                     <Typography className='tableHeadText'>
-                      <Text tid='assessment' />
+                      <Text tid='test' />
                     </Typography>
                   </TableSortLabel>
                 </TableCell>
@@ -428,19 +428,19 @@ function ViewAssessment(props: any) {
                 </TableCell>
                 <TableCell align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
-                    <Text tid='level' />
+                    <Text tid='productRating' />
                   </Typography>
                   {/* </TableSortLabel> */}
                 </TableCell>
                 <TableCell align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
-                    <Text tid='linkToAssessment' />
+                    <Text tid='testResults' />
                   </Typography>
                 </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {assessmentArray.map((row: any, index: number) => {
+              {assessmentArray.map((row: IAssessmentListItem, index: number) => {
                 if (!row.hideResult) {
                   return (
                     <TableRow
@@ -457,7 +457,7 @@ function ViewAssessment(props: any) {
                         className={classes.firstColumn}
                       >
                         <Typography className='tableBodyText'>
-                          {row.team ? row.team : 'NA'}
+                          {row.teamName ? row.teamName : 'NA'}
                         </Typography>
                       </TableCell>
                       <TableCell align='center'>

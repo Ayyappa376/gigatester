@@ -57,7 +57,7 @@ const Trends = (props: any) => {
   const classes = useStyles();
   const requestTeamAssessments = useActions(fetchTeamAssessments);
   const teamAssessments = useSelector(
-    (state: IRootState) => state.assesment.teamAssessments
+    (state: IRootState) => state.assessment.teamAssessments
   );
   const [allTeamAssessments, setAllTeamAssessments] = useState<
     ITeamAssessment[]
@@ -90,6 +90,7 @@ const Trends = (props: any) => {
     getQuestionnaires();
     getTeams();
     requestTeamAssessments();
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -118,9 +119,9 @@ const Trends = (props: any) => {
         if (
           assessmentTypeAndVersion !== ''
             ? assessmentType === assessment.type &&
-              assessmentVersion === assessment.questionnaireVersion
+            assessmentVersion === assessment.questionnaireVersion
             : questionnaires[0].questionnaireId === assessment.type &&
-              questionnaires[0].version === assessment.questionnaireVersion
+            questionnaires[0].version === assessment.questionnaireVersion
         ) {
           userLevels.forEach((level: any) => {
             if (
@@ -165,10 +166,10 @@ const Trends = (props: any) => {
           selectedAssessment !== ''
             ? selectedAssessment === assessment.type &&
               (focusTeam ? focusTeam : teamList[0].teamId) ===
-                assessment.teamName
+                assessment.teamId
             : teamQuestonnaires[0].id === assessment.type &&
               (focusTeam ? focusTeam : teamList[0].teamId) ===
-                assessment.teamName
+                assessment.teamId
         ) {
           userLevels.forEach((level: any) => {
             if (
@@ -329,13 +330,13 @@ const Trends = (props: any) => {
           container
           spacing={3}
           className='topScrollContainerAsssessment'
-          id='assessmentWise'
+          id='testWise'
         >
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Title>
-                  <Text tid='assessmentWiseReport' />
+                  <Text tid='testWiseReport' />
                 </Title>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
@@ -344,17 +345,17 @@ const Trends = (props: any) => {
                   style={{ marginRight: '20%' }}
                 >
                   <InputLabel id='demo-simple-select-label'>
-                    <Text tid='chooseAssessment' />
+                    <Text tid='chooseProduct' />
                   </InputLabel>
                   <Select
                     value={
                       assessmentTypeAndVersion !== ''
                         ? assessmentTypeAndVersion
                         : questionnaires
-                        ? questionnaires.length > 0
-                          ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
+                          ? questionnaires.length > 0
+                            ? `${questionnaires[0].questionnaireId}+${questionnaires[0].version}`
+                            : ''
                           : ''
-                        : ''
                     }
                     onChange={handleChangeQuestonnaireValue}
                   >
@@ -377,7 +378,7 @@ const Trends = (props: any) => {
                   !assessmentTeamsName.length ? (
                     <Card className={classes.cardRoot}>
                       <Typography gutterBottom variant='h6' component='h2'>
-                        <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                        <Text tid='noOneInThePlatformHasTakenTheTest' />
                         <AnnouncementIcon />
                       </Typography>
                     </Card>
@@ -406,19 +407,19 @@ const Trends = (props: any) => {
           container
           spacing={3}
           className='topScrollContainerAsssessment'
-          id='teamWise'
+          id='platformWise'
         >
           <Grid item xs={12}>
             <Paper className={classes.paper}>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <Title>
-                  <Text tid='teamWiseReport' />
+                  <Text tid='platformWiseReport' />
                 </Title>
               </Grid>
               <Grid item xs={12} sm={12} md={12} lg={12}>
                 <FormControl className={classes.assessmentSelect}>
                   <InputLabel id='demo-simple-select-label'>
-                    <Text tid='chooseAssessment' />
+                    <Text tid='chooseProduct' />
                   </InputLabel>
                   <Select
                     value={
@@ -443,17 +444,17 @@ const Trends = (props: any) => {
                     id='demo-simple-select-label'
                     style={{ marginLeft: '25%' }}
                   >
-                    <Text tid='chooseTeam' />
+                    <Text tid='choosePlatform' />
                   </InputLabel>
                   <Select
                     value={
                       focusTeam !== ''
                         ? focusTeam
                         : teamList
-                        ? teamList.length > 0
-                          ? teamList[0].teamId
+                          ? teamList.length > 0
+                            ? teamList[0].teamId
+                            : ''
                           : ''
-                        : ''
                     }
                     style={{ marginLeft: '25%' }}
                     onChange={handleChangeFocusTeamValue}
@@ -478,7 +479,7 @@ const Trends = (props: any) => {
                   !teamAssessmentState ? (
                     <Card className={classes.cardRoot}>
                       <Typography gutterBottom variant='h6' component='h2'>
-                        <Text tid='noOneInTheTeamHasTakenTheAssessment' />
+                        <Text tid='noOneInThePlatformHasTakenTheTest' />
                         <AnnouncementIcon />
                       </Typography>
                     </Card>

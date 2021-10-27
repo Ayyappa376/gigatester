@@ -11,6 +11,7 @@ import {
   makeStyles,
 } from '@material-ui/core';
 import { useActions, saveUserTeams, saveUserTeam } from '../../actions';
+import { Text } from '../../common/Language';
 
 const useStyles = makeStyles((theme) => ({
   container: {
@@ -65,7 +66,7 @@ const TeamSelectionDropDown = (props: any) => {
     <Fragment>
       <div className={classes.container}>
         <FormControl className={classes.formControl}>
-          <InputLabel id='demo-simple-select-label'>Choose Team</InputLabel>
+          <InputLabel id='demo-simple-select-label'><Text tid='choosePlatform' /></InputLabel>
           <Select
             value={focusTeam !== '' ? focusTeam : ''}
             onChange={handleChangeFocusTeamValue}

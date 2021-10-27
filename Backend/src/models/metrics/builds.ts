@@ -22,6 +22,7 @@ export interface BuildDatabaseDataItem {
   buildNum: number;
   duration: number;
   endTimestamp?: number; // or date
+  failureWindow: number;
   pauseDuration?: number;
   projectName: string;
   servicePath: string;

@@ -102,7 +102,10 @@ export default function LeadTime(props: any) {
     });
 
     trendData.map((data: ITrendDataItem) => {
-      trends.push([data.timestamp, data.value]);
+      trends.push([
+        data.timestamp,
+        Math.round(data.value / 60) //converting to hours
+      ]);
     });
 
     const dataSet = {
@@ -125,11 +128,11 @@ export default function LeadTime(props: any) {
           stacked: false,
           height: 230,
           toolbar: {
-//            autoSelected: 'pan',
+            //            autoSelected: 'pan',
             show: false,
           },
         },
-        colors: ['#FFC300', '#edb500'],
+        colors: ['#FFC300', '#7000b5'],
         dataLabels: {
           enabled: false,
         },
@@ -164,7 +167,7 @@ export default function LeadTime(props: any) {
           },
         },
         tooltip: {
-          enabledOnSeries:[0],
+          enabledOnSeries: [0],
           x: {
             format: 'dd MMM yyyy',
           },
@@ -212,19 +215,19 @@ export default function LeadTime(props: any) {
                 </Grid>
                 <Grid item xs={3}>
                   <span className='doraSubTitles'>
-                    <Text tid='level' />:
+                    <Text tid='productRating' />:
                   </span>{' '}
                   <span
                     className={
                       level === 'Elite'
                         ? 'levelEliteColor'
                         : level === 'High'
-                        ? 'levelHighColor'
-                        : level === 'Medium'
-                        ? 'levelMediumColor'
-                        : level === 'low'
-                        ? 'levelLowColor'
-                        : 'levelNAColor'
+                          ? 'levelHighColor'
+                          : level === 'Medium'
+                            ? 'levelMediumColor'
+                            : level === 'low'
+                              ? 'levelLowColor'
+                              : 'levelNAColor'
                     }
                   >
                     {level}

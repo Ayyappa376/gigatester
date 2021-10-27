@@ -1,7 +1,7 @@
 import { History } from 'history';
 import { combineReducers } from 'redux';
-import { IAssesment, IAuthDetails, IAdmin } from '../model';
-import * as assesmentReducer from './assesment';
+import { IAssessment, IAuthDetails, IAdmin } from '../model';
+import * as assessmentReducer from './assessment';
 import * as userReducer from './user';
 import * as adminReducer from './admin';
 import * as displayStateReducer from './display';
@@ -10,7 +10,7 @@ import { IDisplayState } from '../model/display';
 import { ISystemDetails } from '../model/system';
 
 export interface IRootState {
-	assesment: IAssesment;
+	assessment: IAssessment;
 	user: IAuthDetails;
 	admin: IAdmin;
 	display: IDisplayState;
@@ -19,7 +19,7 @@ export interface IRootState {
 
 export default (history: History) =>
 	combineReducers({
-		...assesmentReducer,
+		...assessmentReducer,
 		...userReducer,
 		...adminReducer,
 		...displayStateReducer,

@@ -86,7 +86,7 @@ const EditQuestionnaire = (props: any) => {
   const [postData, setPostData] = useState<IQuestionnaireData>(emptyPostData);
   const setCenterDisplayText = useActions(setAppBarCenterText);
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='questionnaireIsUpdated' />;
+  let msgSuccess = <Text tid='testSuitIsUpdated' />;
 
   useEffect(() => {
     setMapQuestions(props.isMapQuestions);
@@ -122,13 +122,13 @@ const EditQuestionnaire = (props: any) => {
   const handleSave = (isMapQuestion?: boolean) => {
     if (postData.name === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireNameCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
     } else if (postData.description === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireDescriptionCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
     } else if (categoryArray.length === 1 && categoryArray[0] === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='addCategoriesToTheQuestionnaire' />);
+      setFailureMessage(<Text tid='addCategoriesToTheTestSuit' />);
     } else if (
       categoryArray.length === 2 &&
       categoryArray[categoryArray.length - 1] === ''
@@ -239,12 +239,12 @@ const EditQuestionnaire = (props: any) => {
   const validatePostData = (categoriesMapped: ICategoriesMap) => {
     if (postData.name === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireNameCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
       return {};
     }
     if (postData.description === '') {
       setFailure(true);
-      setFailureMessage(<Text tid='questionnaireDescriptionCannotBeBlank' />);
+      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
       return {};
     }
     if (categoryArray.length < 2) {
@@ -273,7 +273,7 @@ const EditQuestionnaire = (props: any) => {
     const postDataCopy = { ...postData };
     if (Object.keys(categoriesMapped).length === 0) {
       setFailure(true);
-      setFailureMessage(<Text tid='mapQuestionsBeforeProceeding' />);
+      setFailureMessage(<Text tid='mapTestCasesBeforeProceeding' />);
       return {};
     }
     const questionArray: string[] = [];
@@ -363,7 +363,7 @@ const EditQuestionnaire = (props: any) => {
     });
     if (isMapped) {
       setFailure(true);
-      setFailureMessage(<Text tid='cannotDeleteCategoryMappedToQuestion' />);
+      setFailureMessage(<Text tid='cannotDeleteCategoryMappedToTestCase' />);
     } else {
       const categoryArrayCopy = [...categoryArray];
       categoryArrayCopy.splice(i, 1);
@@ -559,9 +559,8 @@ const EditQuestionnaire = (props: any) => {
         multiline
         disabled
         fullWidth
-        value={`Warning Time : ${warningTimeMinutes} ${
-          warningTimeMinutes === 1 ? 'minute' : 'minutes'
-        }`}
+        value={`Warning Time : ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute' : 'minutes'
+          }`}
         variant='outlined'
       />
     );
@@ -584,7 +583,7 @@ const EditQuestionnaire = (props: any) => {
           <Tooltip
             title={
               <Typography className='tooltipTitleStyle'>
-                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheAssessment' />
+                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheTest' />
               </Typography>
             }
           >
@@ -613,7 +612,7 @@ const EditQuestionnaire = (props: any) => {
           <Tooltip
             title={
               <Typography className='tooltipTitleStyle'>
-                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheAssessment' />
+                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheTest' />
                 <br />
                 <strong>
                   <Text tid='note' /> &nbsp;
@@ -696,7 +695,7 @@ const EditQuestionnaire = (props: any) => {
               type='string'
               id='QuestionnaireName'
               name='QuestionnaireName'
-              label='Questionnaire name'
+              label='Test Suit name'
               variant='outlined'
               value={postData.name}
               onChange={handleNameChange}
@@ -711,7 +710,7 @@ const EditQuestionnaire = (props: any) => {
               multiline
               id='description'
               name='description'
-              label='Questionnaire description'
+              label='Test Suit description'
               value={postData.description}
               onChange={handleDescriptionChange}
               variant='outlined'
@@ -754,7 +753,7 @@ const EditQuestionnaire = (props: any) => {
                 <Tooltip
                   title={
                     <Typography className='tooltipTitleStyle'>
-                      <Text tid='assessmentWillBeTimed' />
+                      <Text tid='testWillBeTimed' />
 
                       <br />
                       <strong>
@@ -830,11 +829,11 @@ const EditQuestionnaire = (props: any) => {
             onClick={handleMapQuestionsButton}
             variant='outlined'
           >
-            <Text tid='mapQuestions' />
+            <Text tid='mapTestSuits' />
           </Button>
         </div>
         <ModalComponent
-          message={'editTheQuestionsMappingOfUpdatedQuestionnaire'}
+          message={'editTheTestCasesMappingOfUpdatedTestSuit'}
           openModal={showModal}
           handleModalNoClicked={handleModalNo}
           handleModalYesClicked={handleModalYes}

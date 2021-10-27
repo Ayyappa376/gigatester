@@ -32,7 +32,7 @@ export function parseSubDomain(
 
 function getSubDomainOfURL(origURL: string): string {
   //cut out the substring after 'https://' or 'http://' and the first occurance of the character .
-  const index = origURL.indexOf('.');
+  const index = origURL.indexOf('.gigatester.io');
   if (origURL.startsWith('http://') && index > 7) {
     return origURL.substring(7, index);
   }

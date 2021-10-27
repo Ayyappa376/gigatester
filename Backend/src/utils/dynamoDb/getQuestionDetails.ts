@@ -7,6 +7,7 @@ import {
   getQuestionsList,
 } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
+import uuidv1 from 'uuid/v1';
 import { get, putMulti, scan, update } from './sdk';
 
 export const getQuestionDetails = async (
@@ -83,7 +84,6 @@ export const getQuestionsForQuestionnaire = async (
   const questions: Question[] = [];
   const res = await getQuestionsList({
     quesType: questionnaireId,
-    teamName: '',
   });
   appLogger.info({ getQuestionsList: res });
   for (const val of res) {
@@ -156,6 +156,7 @@ export const createQuestion = async (
     throw err;
   }
 
+  questionData.id = `ques_${uuidv1()}`;
   questionData.active = false;
   questionData.createdByUser = createdBy;
   questionData.createdOn = new Date().getTime();

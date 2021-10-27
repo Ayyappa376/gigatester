@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Provider } from 'react-redux';
-import GigaTester from './App';
+import DoitRight from './App';
 import configureStore from './configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
 import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
@@ -20,7 +20,7 @@ function ReduxRoot() {
     <PersistGate persistor={persistor}>
       <Provider store={store}>
         <MuiThemeProvider theme={theme}>
-          <GigaTester />
+          <DoitRight />
         </MuiThemeProvider>
       </Provider>
     </PersistGate>

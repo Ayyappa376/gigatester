@@ -66,7 +66,7 @@ import './style.css';
 export const ADMIN_HOME = 'admin-home';
 export const DASHBOARD = 'dashboard';
 export const CREATE_USER = 'create-user';
-export const MANAGE_USERS = 'manageUsers';
+export const MANAGE_USERS = 'manageTesters';
 export const EDIT_USER = 'edit-user';
 export const CREATE_TEAM = 'create-team';
 export const MANAGE_TEAMS = 'manageTeams';
@@ -74,7 +74,7 @@ export const EDIT_TEAM = 'edit-team';
 export const ASSIGN_ASSESSMENT = 'assign-assessment';
 export const MAP_METRICS_TOOLS = 'map-metrics-tools';
 export const CREATE_QUESTIONNAIRE = 'create-questionnaire';
-export const MANAGE_QUESTIONNAIRES = 'manageQuestionnaire';
+export const MANAGE_QUESTIONNAIRES = 'manageTestSuits';
 export const EDIT_QUESTIONNAIRE = 'edit-assessment';
 export const CREATE_QUESTION = 'create-question';
 export const MANAGE_QUESTION = 'manageQuestions';
@@ -209,7 +209,7 @@ export default function Admin() {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [buttonValue, setButtonValue] = useState('');
-  const [focusTeamName, setFocusTeamName] = useState('');
+  const [focusTeamId, setFocusTeamId] = useState('');
   const [
     focusQuestionData,
     setFocusQuestionData,
@@ -255,12 +255,12 @@ export default function Admin() {
 
   const handleCreateUser = () => {
     setButtonValue(CREATE_USER);
-    setTitle('createUser');
+    setTitle('addTester');
   };
 
   const handleManageUsers = () => {
     setButtonValue(MANAGE_USERS);
-    setTitle('manageUsers');
+    setTitle('manageTesters');
   };
 
   const editUserClickHandler = (userName: string) => {
@@ -271,70 +271,70 @@ export default function Admin() {
 
   const handleCreateTeam = () => {
     setButtonValue(CREATE_TEAM);
-    setTitle('createTeam');
+    setTitle('createPlatform');
   };
 
   const handleManageTeams = () => {
     setButtonValue(MANAGE_TEAMS);
-    setTitle('manageTeams');
+    setTitle('managePlatforms');
   };
 
-  const editTeamClickHandler = (teamName: string) => {
+  const editTeamClickHandler = (teamId: string) => {
     setButtonValue(EDIT_TEAM);
-    setFocusTeamName(teamName);
-    setTitle('editTeams');
+    setFocusTeamId(teamId);
+    setTitle('editPlatform');
   };
 
-  const handleAssignClicked = (teamName: string) => {
+  const handleAssignClicked = (teamId: string) => {
     setButtonValue(ASSIGN_ASSESSMENT);
-    setFocusTeamName(teamName);
-    setTitle('assignAssessment');
+    setFocusTeamId(teamId);
+    setTitle('assignTest');
   };
 
-  const handleMapMetricsClicked = (teamName: string) => {
+  const handleMapMetricsClicked = (teamId: string) => {
     setButtonValue(MAP_METRICS_TOOLS);
-    setFocusTeamName(teamName);
+    setFocusTeamId(teamId);
     setTitle('mapMetricsTools');
   };
 
   const handleCreateQuestionnaire = () => {
     setButtonValue(CREATE_QUESTIONNAIRE);
-    setTitle('createQuestionnaire');
+    setTitle('addTestSuit');
   };
 
   const handleManageQuestionnaires = () => {
     setButtonValue(MANAGE_QUESTIONNAIRES);
-    setTitle('manageQuestionnaire');
+    setTitle('manageTestSuits');
   };
 
   const switchToEditQuestionnaire = (questionnaire: any) => {
     setButtonValue(EDIT_QUESTIONNAIRE);
     setFocusQuestionnaire(questionnaire);
     setMapQuestionStandalone(false);
-    setTitle('editQuestionnaire');
+    setTitle('editTestSuit');
   };
 
   const switchToMapQuestionsStandalone = (questionnaire: any) => {
     setButtonValue(EDIT_QUESTIONNAIRE);
     setFocusQuestionnaire(questionnaire);
     setMapQuestionStandalone(true);
-    setTitle('manageQuestionnaire');
+    setTitle('manageTestSuits');
   };
 
   const handleCreateQuestion = () => {
     setButtonValue(CREATE_QUESTION);
-    setTitle('createQuestion');
+    setTitle('addTestCase');
   };
 
   const handleManageQuestion = () => {
     setButtonValue(MANAGE_QUESTION);
-    setTitle('manageQuestions');
+    setTitle('manageTestCases');
   };
 
   const editQuestionClickHandler = (questionData: IQuestionDetails) => {
     setButtonValue(EDIT_QUESTION);
     setFocusQuestionData(questionData);
-    setTitle('editQuestions');
+    setTitle('editTestCases');
   };
 
   const handleFeedbackClick = () => {
@@ -436,7 +436,7 @@ export default function Admin() {
       case MANAGE_USERS:
         return (
           <ManageUsers
-            team={focusTeamName}
+            team={focusTeamId}
             editUserClicked={editUserClickHandler}
             goBack={switchToAdminHome}
           />
@@ -455,11 +455,11 @@ export default function Admin() {
           />
         );
       case EDIT_TEAM:
-        return <EditTeam teamName={focusTeamName} goBack={switchPage} mapMetricsClicked={handleMapMetricsClicked} />;
+        return <EditTeam teamId={focusTeamId} goBack={switchPage} mapMetricsClicked={handleMapMetricsClicked} />;
       case ASSIGN_ASSESSMENT:
-        return <AssignAssessment teamId={focusTeamName} goBack={switchPage} />;
+        return <AssignAssessment teamId={focusTeamId} goBack={switchPage} />;
       case MAP_METRICS_TOOLS:
-        return <MapMetricsTools teamId={focusTeamName} goBack={switchPage} />;
+        return <MapMetricsTools teamId={focusTeamId} goBack={switchPage} />;
       case CREATE_QUESTIONNAIRE:
         return <CreateQuestionnaire goBack={switchToAdminHome} />;
       case MANAGE_QUESTIONNAIRES:
@@ -503,7 +503,7 @@ export default function Admin() {
         );
       case EDIT_SETTINGS_USER_CONFIG:
       case EDIT_SETTINGS_TEAM_CONFIG:
-      case EDIT_SETTINGS_SERVICE_CONFIG:  
+      case EDIT_SETTINGS_SERVICE_CONFIG:
         return (
           <EditSettingsObjectConfig objType={buttonValue} goBack={switchPage} />
         );
@@ -588,7 +588,7 @@ export default function Admin() {
         <List disablePadding={true}>
           <ListItem button onClick={handleCreateUser}>
             <Tooltip
-              title={<Typography>{<Text tid='createUser2' />}</Typography>}
+              title={<Typography>{<Text tid='addTester2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -597,7 +597,7 @@ export default function Admin() {
                 <PersonAddIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='createUser2' />} />
+            <ListItemText primary={<Text tid='addTester2' />} />
           </ListItem>
         </List>
         <List disablePadding={true}>
@@ -607,7 +607,7 @@ export default function Admin() {
             style={{ paddingTop: '0px' }}
           >
             <Tooltip
-              title={<Typography>{<Text tid='manageUsers2' />}</Typography>}
+              title={<Typography>{<Text tid='manageTesters2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -616,14 +616,14 @@ export default function Admin() {
                 <PeopleOutlineIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='manageUsers2' />} />
+            <ListItemText primary={<Text tid='manageTesters2' />} />
           </ListItem>
         </List>
         <Divider />
         <List disablePadding={true}>
           <ListItem button onClick={handleCreateTeam}>
             <Tooltip
-              title={<Typography>{<Text tid='createTeam2' />}</Typography>}
+              title={<Typography>{<Text tid='createPlatform2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -632,13 +632,13 @@ export default function Admin() {
                 <GroupAddIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='createTeam2' />} />
+            <ListItemText primary={<Text tid='createPlatform2' />} />
           </ListItem>
         </List>
         <List disablePadding={true}>
           <ListItem button onClick={handleManageTeams}>
             <Tooltip
-              title={<Typography>{<Text tid='manageTeams2' />}</Typography>}
+              title={<Typography>{<Text tid='managePlatforms2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -647,7 +647,7 @@ export default function Admin() {
                 <GroupIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='manageTeams2' />} />
+            <ListItemText primary={<Text tid='managePlatforms2' />} />
           </ListItem>
         </List>
         <Divider />
@@ -659,7 +659,7 @@ export default function Admin() {
           >
             <Tooltip
               title={
-                <Typography>{<Text tid='createQuestionnaire2' />}</Typography>
+                <Typography>{<Text tid='addTestSuit2' />}</Typography>
               }
               disableHoverListener={open ? true : false}
               placement='right'
@@ -669,7 +669,7 @@ export default function Admin() {
                 <AssignmentIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='createQuestionnaire2' />} />
+            <ListItemText primary={<Text tid='addTestSuit2' />} />
           </ListItem>
         </List>
         <List disablePadding={true}>
@@ -680,7 +680,7 @@ export default function Admin() {
           >
             <Tooltip
               title={
-                <Typography>{<Text tid='manageQuestionnaire2' />}</Typography>
+                <Typography>{<Text tid='manageTestSuits2' />}</Typography>
               }
               disableHoverListener={open ? true : false}
               placement='right'
@@ -690,7 +690,7 @@ export default function Admin() {
                 <BallotIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='manageQuestionnaire2' />} />
+            <ListItemText primary={<Text tid='manageTestSuits2' />} />
           </ListItem>
         </List>
         <Divider />
@@ -701,7 +701,7 @@ export default function Admin() {
             disabled={!(user && user.roles && user.roles.includes('Admin'))}
           >
             <Tooltip
-              title={<Typography>{<Text tid='createQuestion2' />}</Typography>}
+              title={<Typography>{<Text tid='caddTestCase2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -710,7 +710,7 @@ export default function Admin() {
                 <AssignmentOutlinedIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='createQuestion2' />} />
+            <ListItemText primary={<Text tid='addTestCase2' />} />
           </ListItem>
         </List>
         <List disablePadding={true}>
@@ -720,7 +720,7 @@ export default function Admin() {
             disabled={!(user && user.roles && user.roles.includes('Admin'))}
           >
             <Tooltip
-              title={<Typography>{<Text tid='manageQuestions2' />}</Typography>}
+              title={<Typography>{<Text tid='manageTestCases2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -729,7 +729,7 @@ export default function Admin() {
                 <BallotOutlinedIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='manageQuestions2' />} />
+            <ListItemText primary={<Text tid='manageTestCases2' />} />
           </ListItem>
         </List>
         <Divider />

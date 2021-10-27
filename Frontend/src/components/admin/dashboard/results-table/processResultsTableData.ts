@@ -7,7 +7,7 @@ import {
 
 export const processResultsTableData = (
   responseData: IResponseData,
-  teamName: string
+  teamId: string
 ) => {
   const questionsDetails = responseData.questionsDetails;
   const questionIds = Object.keys(questionsDetails);
@@ -36,7 +36,7 @@ export const processResultsTableData = (
     });
     //calculate number of responses/answers under each weightage of each question
     Object.keys(responseData.teams).forEach((team: string) => {
-      if (teamName === 'all' || teamName === team) {
+      if (teamId === 'all' || teamId === team) {
         responseData.teams[team].assessments.forEach((assessment: any) => {
           if (assessment && assessment.assessmentDetails) {
             Object.keys(assessment.assessmentDetails).forEach(

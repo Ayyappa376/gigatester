@@ -6,7 +6,7 @@ const {config} = require('./config');
 const STATUS_SUCCESS = 'SUCCESS';
 const STATUS_FAILED = 'FAILED';
 const STATUS_INPROGRESS = 'IN_PROGRESS';
-const STATUS_ROLLBACK = 'ROLLBACK';
+//const STATUS_ROLLBACK = 'ROLLBACK';
 const STATUS_SCHEDULED = 'SCHEDULED';
 const STATUS_OTHER = 'OTHER'; //Like Aborted, Error etc.
 
@@ -74,15 +74,15 @@ async function generateData(team, service, proj, date, buildsCount, startBuildNu
 		if(toss < 0.2) {
 			var duration = Math.floor(Math.random() * 120) + 1;
 			await putData(team, service, proj, startBuildNum + i, dateTime, duration, STATUS_FAILED);
-		} else if((toss >= 0.2) && (toss < 0.7)) {
+		} else if(toss < 0.8) {
 			var duration = Math.floor(Math.random() * 180) + 1;
 			await putData(team, service, proj, startBuildNum + i, dateTime, duration, STATUS_SUCCESS);
-		} else if((toss >= 0.7) && (toss < 0.95)) {
-			var duration = Math.floor(Math.random() * 300) + 1;
-			await putData(team, service, proj, startBuildNum + i, dateTime, duration, STATUS_ROLLBACK);
-		} else {
+		} else if(toss < 0.9) {
 			var duration = Math.floor(Math.random() * 30) + 1;
 			await putData(team, service, proj, startBuildNum + i, dateTime, duration, STATUS_INPROGRESS);
+		} else {
+			var duration = Math.floor(Math.random() * 300) + 1;
+			await putData(team, service, proj, startBuildNum + i, dateTime, duration, STATUS_OTHER);
 		}
 	}
 }
@@ -94,6 +94,7 @@ async function putData(team, service, proj, buildNum, startDate, duration, statu
 		    teamId: team, //string [keyword]
 			servicePath: service, //string [keyword]
 		    projectName: proj, //string [keyword]
+			failureWindow: 48, //number [integer]
 		    buildNum: buildNum, //number [integer]
 		    startTimestamp: Math.round(startDate.getTime() / 1000), //date(converted to seconds from epoch) [date, format: epoch_second]
 		    endTimestamp: Math.round((startDate.getTime() + duration) / 1000), //date(converted to seconds from epoch) [date, format: epoch_second]

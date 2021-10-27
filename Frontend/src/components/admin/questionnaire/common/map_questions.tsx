@@ -268,7 +268,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
     if (mappedQuestions.length === Object.keys(categoriesMap).length) {
       props.onSubmit(categoriesMap);
     } else {
-      props.setErrorMessage(<Text tid='mapCategoriesToAllTheQuestions' />);
+      props.setErrorMessage(<Text tid='mapCategoriesToAllTheTestCases' />);
     }
   };
 
@@ -482,7 +482,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
             {mappedQuestions.includes(el) ? (
               <Fragment>
                 <Typography variant='caption'>
-                  <Text tid='selectTheCategoryForThisQuestion' />
+                  <Text tid='selectTheCategoryForThisTestCase' />
                 </Typography>
               </Fragment>
             ) : (
@@ -491,12 +491,12 @@ const MapQuestionsToQuestionnaires = (props: any) => {
                   <Tooltip
                     title={
                       <Typography className='tooltipTitleStyle'>
-                        <Text tid='mapTheQuestion' />
+                        <Text tid='mapTheTestCase' />
                       </Typography>
                     }
                   >
                     <Typography variant='caption'>
-                      <Text tid='selectTheCategoryForThisQuestion' />
+                      <Text tid='selectTheCategoryForThisTestCase' />
                     </Typography>
                   </Tooltip>
                 </MuiThemeProvider>
@@ -549,7 +549,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           <Grid container spacing={2}>
             <Grid item sm={12} md={12}>
               <Typography variant='h6' gutterBottom className={classes.title}>
-                <Text tid='mapQuestions' /> - {props.questionnaire}
+                <Text tid='mapTestSuits' /> - {props.questionnaire}
               </Typography>
             </Grid>
           </Grid>
@@ -575,7 +575,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
                   multiline={false}
                   value={searchString}
                   onChange={handleSearchChange}
-                  placeholder='Search Question'
+                  placeholder='Search Test Case'
                   onKeyDown={keyPressSearchBar}
                 />
                 {searchString !== '' ? (
@@ -664,7 +664,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           </Button>
         </div>
         <ModalComponent
-          message={'notSubmittedTheQuestionnaireYet'}
+          message={'notSubmittedTheTestSuitYet'}
           handleModalYesClicked={handleGoBackYesClicked}
           handleModalNoClicked={handleGoBackNoClicked}
           openModal={showModal}

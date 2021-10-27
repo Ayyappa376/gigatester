@@ -8,7 +8,7 @@ import { useActions } from '../../actions';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
 import { Typography } from '@material-ui/core';
-import { fetchAssesmentResultData } from '../../actions/result';
+import { fetchAssessmentResultData } from '../../actions/result';
 import Success from '../../components/success-page';
 // import { IAssessmentFinalResult } from '../../model';
 import 'react-circular-progressbar/dist/styles.css';
@@ -18,7 +18,7 @@ import { ModalComponentInfo } from '../../components/modal-info';
 import { Text } from '../../common/Language';
 
 // interface IResultRouteParams {
-//   assesmentId: string;
+//   assessmentId: string;
 // }
 
 // type IResultProps = RouteComponentProps<IResultRouteParams>;
@@ -46,17 +46,17 @@ const useStyles = makeStyles((theme) => ({
 
 function Result(props: any) {
   const classes = useStyles();
-  const fetchAssessmentResult = useActions(fetchAssesmentResultData);
+  const fetchAssessmentResult = useActions(fetchAssessmentResultData);
   const [fetchStatus, setFetchStatus] = useState(false);
-  const assesmentResult = useSelector(
-    (state: IRootState) => state.assesment.result
+  const assessmentResult = useSelector(
+    (state: IRootState) => state.assessment.result
   );
   const hideResult = useSelector((state: IRootState) =>
-    state.assesment.assesmentSummary.data
-      ? state.assesment.assesmentSummary.data.hideResult
+    state.assessment.assessmentSummary.data
+      ? state.assessment.assessmentSummary.data.hideResult
       : false
   );
-  const assesmentId = props.match.params.assesmentId;
+  const assessmentId = props.match.params.assessmentId;
   const [openModal, setOpenModal] = useState(
     props.location
       ? props.location.state
@@ -66,7 +66,7 @@ function Result(props: any) {
         : false
       : false
   );
-  let msgSuccess = <Text tid='thanksForGivingThisAssessment' />;
+  let msgSuccess = <Text tid='thanksForTakingThisTest' />;
 
   const renderLoadingIcon = () => {
     return (
@@ -84,17 +84,17 @@ function Result(props: any) {
       category: 'Assessment',
       action: 'Fetching results',
     });
-    fetchAssessmentResult(assesmentId);
+    fetchAssessmentResult(assessmentId);
   }, []);
 
   useEffect(() => {
     if (
-      assesmentResult.status === 'success' ||
-      assesmentResult.status === 'fail'
+      assessmentResult.status === 'success' ||
+      assessmentResult.status === 'fail'
     ) {
       setFetchStatus(true);
     }
-  }, [assesmentResult.status]);
+  }, [assessmentResult.status]);
 
   const modalButtonClicked = () => {
     setOpenModal(false);
@@ -115,8 +115,8 @@ function Result(props: any) {
   }
 
   if (
-    assesmentResult.status === 'success' &&
-    assesmentResult.data !== null &&
+    assessmentResult.status === 'success' &&
+    assessmentResult.data !== null &&
     fetchStatus
   ) {
     return (
@@ -128,19 +128,19 @@ function Result(props: any) {
         }}
       >
         <AssessmentView
-          result={assesmentResult.data!.result}
-          assessmentData={assesmentResult.data.assessmentSummary}
-          recommendations={assesmentResult.data.result.recommendations}
+          result={assessmentResult.data!.result}
+          assessmentData={assessmentResult.data.assessmentSummary}
+          recommendations={assessmentResult.data.result.recommendations}
           showRecommendations={
-            assesmentResult.data.showRecommendations
-              ? assesmentResult.data.showRecommendations
+            assessmentResult.data.showRecommendations
+              ? assessmentResult.data.showRecommendations
               : false
           }
           backButtonAction={null}
           boolRenderBackButton={false}
-          userLevels={assesmentResult.data.userLevels}
-          bestScoringAssessment={assesmentResult.data.bestScoringAssessment}
-          benchmarkScore={assesmentResult.data.benchmarkScore}
+          userLevels={assessmentResult.data.userLevels}
+          bestScoringAssessment={assessmentResult.data.bestScoringAssessment}
+          benchmarkScore={assessmentResult.data.benchmarkScore}
         />
         {!openModal && <Feedback />}
         <ModalComponentInfo
@@ -152,8 +152,8 @@ function Result(props: any) {
     );
   }
 
-  if (assesmentResult.status === 'fail' && fetchStatus) {
-    const error = JSON.stringify(assesmentResult!.error);
+  if (assessmentResult.status === 'fail' && fetchStatus) {
+    const error = JSON.stringify(assessmentResult!.error);
     const object = JSON.parse(error);
     if (object.code) {
       if (object.code === 401) {

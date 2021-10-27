@@ -32,18 +32,22 @@ export default function PieChart(props) {
             <Text tid='somethingWentWrong' />
           </Alert>
         ) : (
-          <div
-            style={{
-              marginLeft: props.loader || props.failureMsg ? '' : '-40px',
-              paddingRight: props.loader || props.failureMsg ? '' : '-40px',
-            }}
-          >
-            <ReactApexChart
-              options={props.repositoryData.options}
-              series={props.repositoryData.series}
-              type='pie'
-              width={350}
-            />
+           props.repositoryData.series.every(item => item === 0) ? 
+            <Container className='loaderStyle'>
+              No Records Found
+              </Container> :
+                <div
+                  style={{
+                    marginLeft: props.loader || props.failureMsg ? '' : '-40px',
+                    paddingRight: props.loader || props.failureMsg ? '' : '-40px',
+                  }}
+                >
+                <ReactApexChart
+                  options={props.repositoryData.options}
+                  series={props.repositoryData.series}
+                  type='pie'
+                  width={350}
+                />
           </div>
         )}
       </div>
