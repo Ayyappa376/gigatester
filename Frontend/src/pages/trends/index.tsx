@@ -57,7 +57,7 @@ const Trends = (props: any) => {
   const classes = useStyles();
   const requestTeamAssessments = useActions(fetchTeamAssessments);
   const teamAssessments = useSelector(
-    (state: IRootState) => state.assesment.teamAssessments
+    (state: IRootState) => state.assessment.teamAssessments
   );
   const [allTeamAssessments, setAllTeamAssessments] = useState<
     ITeamAssessment[]
@@ -90,6 +90,7 @@ const Trends = (props: any) => {
     getQuestionnaires();
     getTeams();
     requestTeamAssessments();
+    window.scrollTo(0, 0);
   }, []);
 
   useEffect(() => {
@@ -164,11 +165,11 @@ const Trends = (props: any) => {
         if (
           selectedAssessment !== ''
             ? selectedAssessment === assessment.type &&
-            (focusTeam ? focusTeam : teamList[0].teamId) ===
-            assessment.teamName
+              (focusTeam ? focusTeam : teamList[0].teamId) ===
+                assessment.teamId
             : teamQuestonnaires[0].id === assessment.type &&
-            (focusTeam ? focusTeam : teamList[0].teamId) ===
-            assessment.teamName
+              (focusTeam ? focusTeam : teamList[0].teamId) ===
+                assessment.teamId
         ) {
           userLevels.forEach((level: any) => {
             if (

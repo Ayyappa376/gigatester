@@ -3,7 +3,7 @@ import { generate } from '@utils/common';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import uuid from 'uuid';
+import uuidv1 from 'uuid/v1';
 import { put, update } from './sdk';
 
 export interface QuestionnaireCreate {
@@ -119,17 +119,16 @@ export const updateQuestionnaire = async (
 };
 
 export const archiveQuestionnaire = async (data: any): Promise<any> => {
-  const archiveId: string = uuid();
   const item: any = data;
   item.archiveQuestionnaireId = item.questionnaireId;
-  item.questionnaireId = archiveId;
+  item.questionnaireId = `arch_${uuidv1()}`;
   item.archiveCreatedOn = Date.now();
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
     Item: item,
     TableName: TableNames.getQuestionnairesTableName(),
   });
 
-  appLogger.info({ createNewAssessmentDocument_put_params: params });
+  appLogger.info({ archiveQuestionnaire_put_params: params });
   await put<DynamoDB.PutItemOutput>(params);
-  return archiveId;
+  return item.questionnaireId;
 };

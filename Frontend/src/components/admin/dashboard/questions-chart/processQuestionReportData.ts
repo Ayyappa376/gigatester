@@ -3,7 +3,7 @@ import { IQuestionIdentifier } from '..';
 import { IBarDisplayData } from '../category-bar-chart/bar';
 
 export const processQuestionReportData =
-  (responseData: IResponseData, teamName: string, question: IQuestionIdentifier, questionList: any) => {
+  (responseData: IResponseData, teamId: string, question: IQuestionIdentifier, questionList: any) => {
     const numberOfAnswers = Object.keys(questionList[question.id].answers).length;
     const label: string[] = [];
     const graphData: IBarDisplayData = {
@@ -46,7 +46,7 @@ export const processQuestionReportData =
       graphData.datasets.push(createDataSet())
 
       Object.keys(responseData.teams).forEach((team: string) => {
-        if (teamName === 'all' || teamName === team) {
+        if (teamId === 'all' || teamId === team) {
           responseData.teams[team].assessments.forEach((assessment: any) => {
             if (assessment && assessment.assessmentDetails) {
               // In assessmentDetails structure, questionIds are questionId and version concatenated ex: ques8010001_1

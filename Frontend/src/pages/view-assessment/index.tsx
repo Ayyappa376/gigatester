@@ -67,10 +67,10 @@ function ViewAssessment(props: any) {
   const classes = useStyles();
   const fetchUserAssessmentHistory = useActions(fetchAssessmentHistory);
   const assessmentHistory = useSelector(
-    (state: IRootState) => state.assesment.assessmentHistory
+    (state: IRootState) => state.assessment.assessmentHistory
   );
   // const assessmentTypes = useSelector(
-  //   (state: IRootState) => state.assesment.assessmentType
+  //   (state: IRootState) => state.assessment.assessmentType
   // );
   const setAssessmentType = useActions(setSelectedAssessmentType);
   const setDisplayTextLeft = useActions(setAppBarLeftText);
@@ -282,14 +282,14 @@ function ViewAssessment(props: any) {
     props.history.push(`/assessment`);
   };
 
-  const getLink = (row: any) => {
+  const getLink = (row: IAssessmentListItem) => {
     return row.result ? (
       <MaterialLink
         href='#'
         onClick={() => {
           setDisplayTextLeft(row.assessmentName);
-          setDisplayTextCenter(`Platform: ${row.team}`);
-          setUserTeam(row.team);
+          setDisplayTextCenter(`Platform: ${row.teamName}`);
+          setUserTeam(row.teamId);
           props.history.push({
             pathname: `/assessment/detail/${row.assessmentId}`,
             state: { prevPath: props.location.pathname },
@@ -305,8 +305,8 @@ function ViewAssessment(props: any) {
         href='#'
         onClick={() => {
           setDisplayTextLeft(row.assessmentName);
-          setDisplayTextCenter(`Platform: ${row.team}`);
-          setUserTeam(row.team);
+          setDisplayTextCenter(`Platform: ${row.teamName}`);
+          setUserTeam(row.teamId);
           redirectToContinueAssessment(row.type, row.questionnaireVersion);
         }}
       >
@@ -440,7 +440,7 @@ function ViewAssessment(props: any) {
               </TableRow>
             </TableHead>
             <TableBody>
-              {assessmentArray.map((row: any, index: number) => {
+              {assessmentArray.map((row: IAssessmentListItem, index: number) => {
                 if (!row.hideResult) {
                   return (
                     <TableRow
@@ -457,7 +457,7 @@ function ViewAssessment(props: any) {
                         className={classes.firstColumn}
                       >
                         <Typography className='tableBodyText'>
-                          {row.team ? row.team : 'NA'}
+                          {row.teamName ? row.teamName : 'NA'}
                         </Typography>
                       </TableCell>
                       <TableCell align='center'>

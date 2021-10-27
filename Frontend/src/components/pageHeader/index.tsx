@@ -221,7 +221,9 @@ const PageHeader = (props: any) => {
 
   const handleAssessment = (event: any) => {
     // setAdminPageState(false);
+    const { getMetricsType } = props;
     setAnchorEl(event.currentTarget);
+    getMetricsType('doraMetrics');
   };
 
   const handleClose = () => {
@@ -245,12 +247,15 @@ const PageHeader = (props: any) => {
   };
 
   function handleDashboardMenuClick(event: any) {
+    const { getMetricsType } = props;
     setAnchorDashboardEl(event.currentTarget);
     setAdminPageState(false);
     props.history.push('/admin/dashboard');
+    getMetricsType('doraMetrics');
   }
 
   function handleTrendsMenuClick(event: any) {
+    const { getMetricsType } = props;
     setAnchorTrendsEl(event.currentTarget);
     setAdminPageState(false);
     props.history.push('/trends');
@@ -273,6 +278,8 @@ const PageHeader = (props: any) => {
   };
 
   const handleAdminButtonClick = () => {
+    const { getMetricsType } = props;
+    getMetricsType('doraMetrics');
     setAdminPageState(true);
     if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
       setOpenModalLeavePage(true);
@@ -335,62 +342,56 @@ const PageHeader = (props: any) => {
     props.history.push('/trial/close');
   };
 
-  // const renderViewMetrics = () => {
-  //   if (!userStatus.idToken) {
-  //     return <div />;
-  //   }
-  //   return (
-  //     <div className='header-item'>
-  //       <Typography
-  //         className={classes.headerItem}
-  //       // onClick={handleMetricsMenuClick}
-  //       >
-  //         <Text tid='metrics' />
-  //       </Typography>
-  //     </div>
-  //   );
-  // };
+/*
+  const renderViewMetrics = () => {
+    if (!userStatus.idToken) {
+      return <div />;
+    }
+    return (
+      <div className='header-item'>
+        <Typography
+          className={classes.headerItem}
+          onClick={handleMetricsMenuClick}
+        >
+          <Text tid='metrics' />
+        </Typography>
+      </div>
+    );
+  };
 
-  // const renderMetricsMenuItems = () => {
-  //   if (!userStatus.roles) {
-  //     return;
-  //   }
-  //   if (
-  //     userStatus.roles!.indexOf('Admin') !== -1 ||
-  //     userStatus.roles!.indexOf('Manager') !== -1
-  //   ) {
-  //     return (
-  //       <Menu
-  //         id='menu-list-grow'
-  //         anchorEl={anchorMetricsEl}
-  //         keepMounted
-  //         open={Boolean(anchorMetricsEl)}
-  //         onClose={handleMetricsMenuClose}
-  //         MenuListProps={{
-  //           onMouseLeave: leaveMetricMenu,
-  //         }}
-  //         className={classes.menu}
-  //       >
-  //         {metricsMenu.map((menuList: any, index: number) => {
-  //           return (
-  //             <MenuItem className={classes.menuitem} key={index}>
-  //               <Link
-  //                 activeClass='active'
-  //                 to={menuList.link}
-  //                 spy={true}
-  //                 smooth={true}
-  //                 onClick={() => handleMetricsMenuOptionClick(menuList.link)}
-  //               >
-  //                 <Text tid={menuList.name} />
-  //               </Link>
-  //             </MenuItem>
-  //           );
-  //         })}
-  //       </Menu>
-  //     );
-  //   }
-  //   return;
-  // };
+  const renderMetricsMenuItems = () => {
+    if (!userStatus.roles) {
+      return;
+    }
+    if (
+      userStatus.roles!.indexOf('Admin') !== -1 ||
+      userStatus.roles!.indexOf('Manager') !== -1
+    ) {
+      return (
+        <Menu
+          id='menu-list-grow'
+          anchorEl={anchorMetricsEl}
+          keepMounted
+          open={Boolean(anchorMetricsEl)}
+          onClose={handleMetricsMenuClose}
+          MenuListProps={{
+            onMouseLeave: leaveMetricMenu,
+          }}
+          className={classes.menu}
+        >
+          {metricsMenu.map((menuList: any, index: number) => {
+            return (
+              <MenuItem className={classes.menuitem} key={index} onClick={() => handleMetricsMenuOptionClick(menuList.link)}>
+                <Text tid={menuList.name} />
+              </MenuItem>
+            );
+          })}
+        </Menu>
+      );
+    }
+    return;
+  };
+*/
 
   const renderAdminPage = () => {
     if (!userStatus.roles) {
@@ -674,7 +675,7 @@ const PageHeader = (props: any) => {
     }
   };
 
-  const handleTakeAssesment = () => {
+  const handleTakeAssessment = () => {
     setAdminPageState(false);
     if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
       handleClose();
@@ -715,7 +716,7 @@ const PageHeader = (props: any) => {
             </MenuItem>
             <MenuItem
               className={classes.menuitem}
-              onClick={handleTakeAssesment}
+              onClick={handleTakeAssessment}
             >
               <Text tid='doTesting' />
             </MenuItem>
@@ -735,7 +736,7 @@ const PageHeader = (props: any) => {
         <MenuItem onClick={handleMyAssessments}>
           <Text tid='myTests' />
         </MenuItem>
-        <MenuItem className={classes.menuitem} onClick={handleTakeAssesment}>
+        <MenuItem className={classes.menuitem} onClick={handleTakeAssessment}>
           <Text tid='doTesting' />
         </MenuItem>
       </Menu>

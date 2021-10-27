@@ -26,6 +26,7 @@ interface HistoryRequest {
   };
 }
 
+//TODO: This API is currently not used anywhere
 async function handler(
   request: HistoryRequest,
   response: Response

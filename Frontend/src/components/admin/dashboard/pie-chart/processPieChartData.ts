@@ -3,7 +3,7 @@ import { IPieDisplayData } from './pie';
 
 export const processPieChartData = (
   responseData: IResponseData,
-  teamName: string
+  teamId: string
 ) => {
   /** Creating a new pie chart data variable,
    * this type of structure is needed by the pie chart
@@ -84,7 +84,7 @@ export const processPieChartData = (
 
     /** Traversing the assessments and calculating the pie chart data */
     Object.keys(responseData.teams).forEach((team: string) => {
-      if (teamName === 'all' || teamName === team) {
+      if (teamId === 'all' || teamId === team) {
         responseData.teams[team].assessments.forEach((assessment: any) => {
           if (assessment && assessment.result && assessment.result.percentage) {
             markLevel(assessment.result.percentage);

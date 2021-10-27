@@ -464,7 +464,7 @@ function AssessmentView(props: IAssessmentViewProps) {
       offset: -100, // Scrolls to element + 50 pixels down the page
     });
   };
-  const handleShowAssesmentClick = (event: any) => {
+  const handleShowAssessmentClick = (event: any) => {
     setShowAssessment(!showAssessment);
     scroller.scrollTo('myScrollToElement', {
       duration: 500,
@@ -813,7 +813,7 @@ function AssessmentView(props: IAssessmentViewProps) {
         <div className='row'>
           <Button
             variant='outlined'
-            onClick={handleShowAssesmentClick}
+            onClick={handleShowAssessmentClick}
             className={classes.showAssessmentButton}
           >
             {showAssessment ? (
@@ -905,7 +905,7 @@ function AssessmentView(props: IAssessmentViewProps) {
                 }
                 <div className="row">
                     <Button variant="outlined"
-                        onClick={handleShowAssesmentClick}
+                        onClick={handleShowAssessmentClick}
                         className={classes.showAssessmentButton}>
                         {showAssessment ? 'Hide Assessment' : 'Show Complete Assessment'}
                     </Button>
@@ -955,7 +955,7 @@ function AssessmentView(props: IAssessmentViewProps) {
             <div className='row'>
               <Button
                 variant='outlined'
-                onClick={handleShowAssesmentClick}
+                onClick={handleShowAssessmentClick}
                 className={classes.showAssessmentButton}
               >
                 {showAssessment ? (

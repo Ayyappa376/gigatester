@@ -1,5 +1,5 @@
 import { API, Handler } from '@apis/index';
-import { AssessmentQuestion, Questionnaire, UserDocument } from '@models/index';
+import { AssessmentQuestion, Questionnaire, TeamInfo/*, UserDocument*/ } from '@models/index';
 import { config } from '@root/config';
 import {
   appLogger,
@@ -11,12 +11,12 @@ import {
   getQuestionDetails,
   getQuestionnaireId,
   getResultLevels,
-  getTeamIds,
+//  getTeamIds,
   getTeamIdsByQuestionnaire,
   getTeamMembers,
-  //  getTeamsMappedToQuestionnaire,
+  getTeams2,
   getUserAllAssessment,
-  getUserDocument,
+//  getUserDocument,
   responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
@@ -54,7 +54,7 @@ async function handler(
     return responseBuilder.unauthorized(err, response);
   }
   const {
-    user: { email: userId, 'cognito:username': cognitoUserId },
+    user: { email: userId/*, 'cognito:username': cognitoUserId*/ },
   } = headers;
   const { type, questionnaireId, questionnaireVersion } = query;
   const weightageCoefficient = config.defaults.scoreCoeff;
@@ -62,12 +62,12 @@ async function handler(
 
   try {
     if (type === 'team') {
-      const teamsManagedByUser: string[] = await getTeamIds(
+      const teamsManagedByUser: TeamInfo[] = await getTeams2(
         headers.user['cognito:groups'][0] === 'Admin'
           ? 'admin'
           : headers.user.email
       );
-      appLogger.info({ getTeamIds: teamsManagedByUser });
+      appLogger.info({ getTeams2: teamsManagedByUser });
       if (teamsManagedByUser.length === 0) {
         const noTeamsManaged: HistoryAcknowledgement = <
           HistoryAcknowledgement
@@ -85,12 +85,12 @@ async function handler(
             ? await getAssessmentHistory({
                 questionnaireId,
                 questionnaireVersion,
-                team: teamManagedByUser,
+                team: teamManagedByUser.teamId,
                 type: 'qid_team',
                 userId,
               })
             : await getAssessmentHistory({
-                team: teamManagedByUser,
+                team: teamManagedByUser.teamId,
                 type: 'team_name',
                 userId,
               });
@@ -99,11 +99,9 @@ async function handler(
         if (totalAssessment.length === 0) {
           continue;
         }
-        //        const latestAssessments = await getLatestAssessment(totalAssessment);
-        //        appLogger.info({ getLatestAssessment: latestAssessments });
-        assessmentHistoryAllTeams[teamManagedByUser] = getResponseBody(
-          //          latestAssessments
-          totalAssessment
+        assessmentHistoryAllTeams[teamManagedByUser.teamId] = getResponseBody(
+          totalAssessment,
+          teamsManagedByUser
         );
       }
 
@@ -116,10 +114,7 @@ async function handler(
           questionnaireVersion
         );
         appLogger.info({ getQuestionnaireId: questionnaireDetails });
-        //TODO: list of teams are not proper, use the teams managed by the logged in user.
-        //        const teamsMappedToQuestionnaire = await getTeamsMappedToQuestionnaire(
-        //          questionnaireId
-        //        );
+
         const questions: string[] = questionnaireDetails.questions;
         const categoryQues = {};
         const questionsDetails = {};
@@ -150,8 +145,7 @@ async function handler(
         return responseBuilder.ok(
           {
             categoryList: categoryQues,
-            //            mappedTeams: teamsMappedToQuestionnaire,
-            mappedTeams: teamsManagedByUser,
+            mappedTeams: teamsManagedByUser.map((team: TeamInfo) => team.teamId),
             performanceMetricsConstant,
             questionsDetails,
             teams: assessmentHistoryAllTeams,
@@ -170,7 +164,7 @@ async function handler(
         response
       );
     }
-
+/*
     if (type === 'manager') {
       const userDocument: UserDocument = await getUserDocument({
         cognitoUserId,
@@ -187,15 +181,16 @@ async function handler(
         response
       );
     }
-
-    const assessmentHistory: AssessmentDocument[] = await getUserAllAssessment({
-      userId,
-    });
+*/
+    const assessmentHistory: AssessmentDocument[] = await getUserAllAssessment({ userId });
     appLogger.info({ getUserAllAssessment: assessmentHistory });
-    const acknowledgement: HistoryAcknowledgement = getResponseBody(
-      assessmentHistory
-    );
+
+    const allTeams: TeamInfo[] = await getTeams2('admin');
+    appLogger.info({ getTeams2: allTeams });
+
+    const acknowledgement: HistoryAcknowledgement = getResponseBody(assessmentHistory, allTeams);
     return responseBuilder.ok(acknowledgement, response);
+
   } catch (err) {
     const noTeamsManaged: HistoryAcknowledgement = <HistoryAcknowledgement>{};
     return responseBuilder.ok(noTeamsManaged, response);
@@ -209,8 +204,8 @@ export const api: API = {
 };
 
 /* tslint:disable */
-export const dataDump = async (x: any, y: any) => {
-  const questionnaireDetails: Questionnaire = await getQuestionnaireId(y);
+export const dataDump = async (uId: any, qId: any) => {
+  const questionnaireDetails: Questionnaire = await getQuestionnaireId(qId);
   const myResult: any[] = new Array();
   const questionNAnswers: any = {};
   const userList: any = {};
@@ -219,21 +214,21 @@ export const dataDump = async (x: any, y: any) => {
     const quesDetails = await getQuestionDetails(questionId);
     questionNAnswers[questionId] = quesDetails;
   }
-  const teamlist: string[] = await getTeamIdsByQuestionnaire(y);
+  const teamlist: string[] = await getTeamIdsByQuestionnaire(qId);
 
-  for (const teamName of teamlist) {
-    const teamMembersForTeam: string[] = await getTeamMembers(teamName);
+  for (const teamId of teamlist) {
+    const teamMembersForTeam: string[] = await getTeamMembers(teamId);
     teamMembersForTeam.forEach((v: any) => {
-      userList[v] = teamName;
+      userList[v] = teamId;
     });
   }
 
-  const teamMembersForATeam: string[] = await getTeamMembers('Other');
+  const teamMembersForATeam: string[] = await getTeamMembers('Others');
   const assessmentHistory: AssessmentDocument[] = await getAssessmentHistory({
-    userId: x,
+    userId: uId,
     type: 'all_teams',
     teamMembers: teamMembersForATeam,
-    questionnaireId: y,
+    questionnaireId: qId,
   });
   for (const val of assessmentHistory) {
     if (val.assessmentDetails) {
@@ -321,5 +316,5 @@ export const dataDump = async (x: any, y: any) => {
   }
   const json2xls = require('json2xls');
   const xls = json2xls(myResult);
-  writeFileSync(`${y}-result.xlsx`, xls, 'binary');
+  writeFileSync(`${qId}-result.xlsx`, xls, 'binary');
 };

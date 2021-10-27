@@ -29,9 +29,9 @@ const Feedback = () => {
   const [rating, setRating] = React.useState<number | null>(0);
   const [comment, setComment] = React.useState('');
   const postAssessmentFeedback = useActions(postFeedback);
-  const feedback = useSelector((state: IRootState) => state.assesment.feedback);
+  const feedback = useSelector((state: IRootState) => state.assessment.feedback);
   const assessmentData = useSelector(
-    (state: IRootState) => state.assesment.assesmentSummary
+    (state: IRootState) => state.assessment.assessmentSummary
   );
   function handleClose() {
     setOpen(false);

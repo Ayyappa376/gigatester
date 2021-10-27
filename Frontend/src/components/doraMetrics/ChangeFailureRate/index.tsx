@@ -110,7 +110,7 @@ export default function ChangeFailureRate(props: any) {
             show: false,
           },
         },
-        colors: ['#017a78', '#edb500'],
+        colors: ['#017a78', '#7000b5'],
         dataLabels: {
           enabled: false,
         },

@@ -11,7 +11,7 @@ import Checkbox from '@material-ui/core/Checkbox';
 import ListItemText from '@material-ui/core/ListItemText';
 import Box from '@material-ui/core/Box';
 import { Typography, Radio, TextField } from '@material-ui/core';
-import { IAssesmentQuestionData, ISelectedOption } from '../../model/assesment';
+import { IAssessmentQuestionData, ISelectedOption } from '../../model/assessment';
 import Container from '@material-ui/core/Container';
 import _ from 'lodash';
 import ReactGA from 'react-ga';
@@ -101,7 +101,7 @@ const useStyles = makeStyles((theme) => ({
 // }))(Tooltip);
 
 interface IQuestionProps {
-  data: IAssesmentQuestionData | null;
+  data: IAssessmentQuestionData | null;
   setMarkedAnswer: (
     questionId: string,
     version: number,

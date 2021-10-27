@@ -144,7 +144,7 @@ export default function DelayChart(props: any) {
       yaxis: {
         labels: {
           formatter: (value: number) => {
-            return value.toFixed();
+            return (value / 60).toFixed();
           },
         },
         title: {

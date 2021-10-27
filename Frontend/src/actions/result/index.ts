@@ -1,9 +1,9 @@
 import {
-    ASSESMENT_RESULT_ACTIONS
+    ASSESSMENT_RESULT_ACTIONS
 } from './result-actions';
 
 export interface AssessmentResultActions<T> {
-    type: ASSESMENT_RESULT_ACTIONS;
+    type: ASSESSMENT_RESULT_ACTIONS;
     payload: T;
 }
 

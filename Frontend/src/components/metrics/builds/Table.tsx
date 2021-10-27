@@ -89,8 +89,8 @@ const headCells: HeadCell[] = [
   { id: 'service', numeric: false, disablePadding: false, label: 'service' },
   { id: 'projectName', numeric: true, disablePadding: false, label: 'project' },
   { id: 'status', numeric: true, disablePadding: false, label: 'status' },
-  { id: 'startTimestamp', numeric: true, disablePadding: false, label: 'startTimestamp' },
-  { id: 'endTimestamp', numeric: true, disablePadding: false, label: 'endTimestamp' },
+  { id: 'startTimestamp', numeric: true, disablePadding: false, label: 'Start Date' },
+  { id: 'endTimestamp', numeric: true, disablePadding: false, label: 'End Date' },
   { id: 'duration', numeric: true, disablePadding: false, label: 'duration' },
 ];
 

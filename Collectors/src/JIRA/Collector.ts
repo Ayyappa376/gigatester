@@ -2,10 +2,10 @@
 import * as HttpRequest from '../utils/httpRequest';
 import { getLogger, config, getTableNameForOrg } from '../utils';
 import * as esDBFuncs from '../elasticsearch/esFuncs';
-import { getLastState, setLastState } from '../elasticsearch';
+//import { getLastState, setLastState } from '../elasticsearch';
 import { Jconfig, IJIRAJobInfo } from './Jconfig';
 import { ReqDatabaseDataItem } from '../models';
-
+/*
 interface ESReqDatabaseDataItem {
   _id: string;
   _index: string;
@@ -13,7 +13,7 @@ interface ESReqDatabaseDataItem {
   _source: ReqDatabaseDataItem;
   _type: string;
 }
-
+*/
 const getReqMethod = 'GET';
 const colLogger = getLogger(Jconfig.name);
 
@@ -41,15 +41,15 @@ async function getDataFromJIRA(jobDetails: IJIRAJobInfo) {
 
 async function getDataFromJIRAForProject(jobDetails: IJIRAJobInfo, projectName: string) {
 	//get last fetched time from sate
-	const lastState = await getLastState({
+/*	const lastState = await getLastState({
 		toolName: Jconfig.name,
 		teamId: jobDetails.teamId,
 		project: projectName
 	});
 //	colLogger.info({lastState: lastState});
-
+*/
 	const proj = encodeURI(projectName);
-    const baseURL = `${jobDetails.url.value}/rest/api/latest/search?jql=project%3D%27${proj}%27`;
+    const baseURL = `${jobDetails.url.value}/rest/api/latest/search?expand=changelog&jql=project%3D%27${proj}%27`;
 	const now: Date = new Date(Date.now());
 	const toDateStr = `${now.getFullYear()}-${now.getMonth() + 1}-${now.getDate()}%20${now.getHours()}:${now.getMinutes()}`;
 	
@@ -57,19 +57,19 @@ async function getDataFromJIRAForProject(jobDetails: IJIRAJobInfo, projectName: 
 	let createdURL = `${baseURL}%20AND%20created%3C%3D%27${toDateStr}%27`;
 	let updatedURL = `${baseURL}%20AND%20updated%3C%3D%27${toDateStr}%27`;
 	
-	if(lastState) {
+/*	if(lastState) {
 		//get all issues that were updated after last accessed
 		const from: Date = new Date(lastState.lastAccessed);
 		const fromDateStr = `${from.getFullYear()}-${from.getMonth() + 1}-${from.getDate()}%20${from.getHours()}:${from.getMinutes()}`;
 		createdURL = `${baseURL}%20AND%20created%3E%3D%27${fromDateStr}%27%20AND%20created%3C%3D%27${toDateStr}%27`;
 		updatedURL = `${baseURL}%20AND%20updated%3E%3D%27${fromDateStr}%27%20AND%20updated%3C%3D%27${toDateStr}%27`;
 	}
+*/
 	getDataFromJIRAWithURL(jobDetails, projectName, createdURL);
-
 	getDataFromJIRAWithURL(jobDetails, projectName, updatedURL);
 	
 	//store last fetched time in state
-	const newLastState = {
+/*	const newLastState = {
 		toolName: Jconfig.name, 
 		teamId: jobDetails.teamId,
 		project: projectName,
@@ -77,6 +77,7 @@ async function getDataFromJIRAForProject(jobDetails: IJIRAJobInfo, projectName: 
 	};
     colLogger.info({newLastState: newLastState});
 	setLastState(newLastState);
+*/
 }
 
 async function getDataFromJIRAWithURL(jobDetails: IJIRAJobInfo, projectName: string, url: string) {
@@ -132,6 +133,7 @@ async function getDataFromJIRAWithURL(jobDetails: IJIRAJobInfo, projectName: str
 
 }
 
+/*
 function storeInDB(jobDetails: IJIRAJobInfo, projectName: string, issueData: any) {
 	const filters: any[] = [
 		{ term: { teamId: jobDetails.teamId } },
@@ -156,18 +158,34 @@ function storeInDB(jobDetails: IJIRAJobInfo, projectName: string, issueData: any
                 url: `${jobDetails.url.value}/browse/${issueData.key}`
 			};
 			
-			if((issueData.fields.status.name === jobDetails.startState.value)
-			  || (issueData.fields.status.statusCategory.name === jobDetails.startState.value)) {
-				item.startedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
+			issueData.changelog.histories.forEach((changeEntry: any) => {
+				changeEntry.items.forEach((changeItem: any) => {
+					if((! item.startedOn) && (changeItem.field === 'status') && (changeItem.toString === jobDetails.startState.value)) {
+						item.startedOn = Math.round(new Date(changeEntry.created).getTime() / 1000);
+					}
+
+					if((changeItem.field === 'status') && (changeItem.toString === jobDetails.closeState.value)) {
+						item.closedOn = Math.round(new Date(changeEntry.created).getTime() / 1000);
+					}
+				});
+			});
+
+			if(item.closedOn && !item.startedOn) {
+				item.startedOn = item.createdOn;
 			}
+
+//			if((issueData.fields.status.name === jobDetails.startState.value)
+//			  || (issueData.fields.status.statusCategory.name === jobDetails.startState.value)) {
+//				item.startedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
+//			}
 		
-			if((issueData.fields.status.name === jobDetails.closeState.value)
-			  || (issueData.fields.status.statusCategory.name === jobDetails.closeState.value)) {
-				item.closedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
-				if(! item.startedOn) {
-					item.startedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
-				}
-			}
+//			if((issueData.fields.status.name === jobDetails.closeState.value)
+//			  || (issueData.fields.status.statusCategory.name === jobDetails.closeState.value)) {
+//				item.closedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
+//				if(! item.startedOn) {
+//					item.startedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
+//				}
+//			}
 
 			colLogger.info({item, filters}, `Inserting item in ${indexName}`);
 			esDBFuncs.insert(indexName, item);
@@ -177,7 +195,6 @@ function storeInDB(jobDetails: IJIRAJobInfo, projectName: string, issueData: any
 			item.itemPriority = issueData.fields.priority.name;
 			item.itemType = issueData.fields.issuetype.name;
 			item.status = issueData.fields.status.statusCategory.name;
-//			item.createdOn = Math.round(new Date(issueData.fields.created).getTime() / 1000);
 			
 			if(! item.startedOn) {
 			    if((issueData.fields.status.name === jobDetails.startState.value)
@@ -201,4 +218,60 @@ function storeInDB(jobDetails: IJIRAJobInfo, projectName: string, issueData: any
 	.catch((err: any) => {
         colLogger.info({err, filters}, `Searching in ${indexName}`);
 	})
+}
+*/
+
+function storeInDB(jobDetails: IJIRAJobInfo, projectName: string, issueData: any) {
+	const filters: any[] = [
+		{ term: { teamId: jobDetails.teamId } },
+		{ term: { servicePath: jobDetails.servicePath } },
+		{ term: { projectName: projectName } },
+		{ term: { itemId: issueData.id } }
+	];
+
+	const item: ReqDatabaseDataItem = {
+		teamId: jobDetails.teamId,
+		servicePath: jobDetails.servicePath,
+		projectName: projectName,
+		itemId: issueData.id,
+		itemPriority: issueData.fields.priority.name,
+		itemType: issueData.fields.issuetype.name,
+		status: issueData.fields.status.statusCategory.name,
+		createdOn: Math.round(new Date(issueData.fields.created).getTime() / 1000),
+		url: `${jobDetails.url.value}/browse/${issueData.key}`
+	};
+	
+	issueData.changelog.histories.forEach((changeEntry: any) => {
+		changeEntry.items.forEach((changeItem: any) => {
+			//TODO: try to match the statusCategory of the status string in 'changeItem.toString' to the configured state value
+			if((! item.startedOn) && (changeItem.field === 'status') && (changeItem.toString === jobDetails.startState.value)) {
+				item.startedOn = Math.round(new Date(changeEntry.created).getTime() / 1000);
+			}
+
+			if((changeItem.field === 'status') && (changeItem.toString === jobDetails.closeState.value)) {
+				item.closedOn = Math.round(new Date(changeEntry.created).getTime() / 1000);
+			}
+		});
+	});
+
+	if(item.closedOn && !item.startedOn) {
+		item.startedOn = item.createdOn;
+	}
+
+//			if((issueData.fields.status.name === jobDetails.startState.value)
+//			  || (issueData.fields.status.statusCategory.name === jobDetails.startState.value)) {
+//				item.startedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
+//			}
+		
+//			if((issueData.fields.status.name === jobDetails.closeState.value)
+//			  || (issueData.fields.status.statusCategory.name === jobDetails.closeState.value)) {
+//				item.closedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
+//				if(! item.startedOn) {
+//					item.startedOn = Math.round(new Date(issueData.fields.updated).getTime() / 1000);
+//				}
+//			}
+
+	const indexName = getTableNameForOrg(config.reqIndex);
+	colLogger.info({item, filters}, `Storing item in ${indexName}`);
+	esDBFuncs.updateOrInsert(indexName, filters, [], item);
 }

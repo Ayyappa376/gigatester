@@ -153,7 +153,7 @@ const BottomPane = (props: ILeftPane) => {
             <img
               className={classes.icon}
               src={DoItRightCycle}
-              alt='GigaTester Cycle'
+              alt='DoItRight Cycle'
             />
           </div>
         </Grid>

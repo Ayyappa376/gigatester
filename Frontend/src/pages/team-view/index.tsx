@@ -72,7 +72,7 @@ function ViewTeams(props: any) {
   const classes = useStyles();
   const requestTeamAssessments = useActions(fetchTeamAssessments);
   const teamAssessments = useSelector(
-    (state: IRootState) => state.assesment.teamAssessments
+    (state: IRootState) => state.assessment.teamAssessments
   );
   const userRoles = useSelector((state: IRootState) => state.user.roles);
   const setDisplayLeftText = useActions(setAppBarLeftText);
@@ -228,7 +228,6 @@ function ViewTeams(props: any) {
 
   useEffect(() => {
     const versions: any[] = [];
-    // let selectedTeamAssessment: ITeamAssessment[] = [];
 
     if (questionnaireId) {
       questionnaires.map((item: any) => {
@@ -331,7 +330,7 @@ function ViewTeams(props: any) {
       let selectedTeam = event.target.value;
       setFocusTeam(selectedTeam);
       allTeamAssessments.map((item: any) => {
-        if (item.teamName === selectedTeam) {
+        if (item.teamId === selectedTeam) {
           selectedTeamAssessment.push(item);
         }
       });
@@ -511,14 +510,14 @@ function ViewTeams(props: any) {
   }
 
   const getLink = (
-    teamName: string,
+    teamId: string,
     nameAssessment: string,
     version: string
   ) => {
     return (
       <Link
         to={{
-          pathname: `/assessment/teams/${teamName}/${nameAssessment}/${version}`,
+          pathname: `/assessment/teams/${teamId}/${nameAssessment}/${version}`,
           state: { prevPath: props.location.pathname },
         }}
       >
@@ -818,7 +817,7 @@ function ViewTeams(props: any) {
                       </TableCell>
                       <TableCell align='center'>
                         {getLink(
-                          row.teamName,
+                          row.teamId,
                           row.assessmentName,
                           row.questionnaireVersion
                         )}

@@ -54,7 +54,6 @@ export default function PullRequestChart(props: any) {
   let ytd = `01 Jan ${date.getFullYear()}`;
   let custom_from_date = getFullDate(props.customDate[0]);
   let custom_to_date = getFullDate(props.customDate[1]);
-  
 
   useEffect(() => {
     updateData(props.timeline);
@@ -67,7 +66,7 @@ export default function PullRequestChart(props: any) {
     fetchData();
     setDisplayData(initialPullRequestData);
   }, [props.focusTeam, props.focusService, props.focusSubService, props.focusServiceType]);
-  
+
   useEffect(() => {
     let acceptedCount = displayData
       .map((a: any) => a.commitsAccepted)
@@ -87,6 +86,7 @@ export default function PullRequestChart(props: any) {
     setAcceptedCount(acceptedCount);
     setRejectedCount(rejectedCount);
     setPendingCount(pendingCount);
+    setLoader(true);
   }, [displayData]);
 
   const getDateRange = (dateRange: any) => {

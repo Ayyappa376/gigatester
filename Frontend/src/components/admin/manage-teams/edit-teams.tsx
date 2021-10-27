@@ -26,15 +26,15 @@ import Loader from '../../loader';
 import { IServiceInfo, /*ITeamAttributes*/IFieldConfigAttributes, ITeamParams, ITeamConfig } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
-import MapMetricsTools from '../map-metrics-tools';
+//import MapMetricsTools from '../map-metrics-tools';
 import { withRouter } from 'react-router-dom';
 import { MANAGE_TEAMS } from '../../../pages/admin';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 
-const MAX_SERVICE_HIERARCHY_LEVEL = 2;
-const OTHER_STRING = 'Other';
+import  {MAX_SERVICE_HIERARCHY_LEVEL, OTHER_STRING } from '../create-team';
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -94,7 +94,7 @@ const EditTeam = (props: any) => {
 
   useEffect(() => {
     Http.get({
-      url: `/api/v2/admin/createteam/${props.teamName} `,
+      url: `/api/v2/admin/createteam/${props.teamId} `,
       state: stateVariable,
     })
       .then((response: any) => {
@@ -437,9 +437,9 @@ const EditTeam = (props: any) => {
   // };
 
   // const renderMapCollectors = () => {
-  //   props.mapMetricsClicked(props.teamName);
+  //   props.mapMetricsClicked(props.teamId);
   //   return (
-  //     <MapMetricsTools teamId={props.teamName} />
+  //     <MapMetricsTools teamId={props.teamId} />
   //   )
   // }
 
@@ -460,7 +460,7 @@ const EditTeam = (props: any) => {
             name={`${key}_${indexPath.join('_')}`}
             value={values ? (values[key] ? values[key] : '') : ''}
             label={element.displayName}
-            disabled={key === 'teamName'}
+//            disabled={key === 'teamName'}
             onChange={(event) => handleChangeValue(event, key, indexPath)}
             fullWidth
             autoComplete='off'
@@ -548,25 +548,20 @@ const EditTeam = (props: any) => {
               id={`text_${key}_${indexPath.join('_')}`}
               name={`text_${key}_${indexPath.join('_')}`}
               disabled={
-                !(
-                  values &&
-                  values[key] &&
-                  element.options &&
-                  ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
-                    (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
-                )
+                !values || !values[key] ||
+                (element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) ||
+                (element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
               }
               label={`(specify, if ${OTHER_STRING})`}
               value={
                 values &&
-                  values[key] &&
-                  element.options &&
-                  ((element.options.custom && !element.options.custom.split(',').includes(values[key])) ||
-                    (element.options.customFixed && !element.options.customFixed.split(',').includes(values[key])))
-                  ? values[key] === OTHER_STRING
-                    ? ''
-                    : values[key]
-                  : ''
+                values[key] &&
+                !(element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) &&
+                !(element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                ? values[key] === OTHER_STRING
+                  ? ''
+                  : values[key]
+                : ''
               }
               onChange={(event) => handleChangeOtherValueList(event, key, indexPath)}
               autoComplete='off'
@@ -726,22 +721,13 @@ const EditTeam = (props: any) => {
             <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography
-                    style={{
-                      fontSize: '12px',
-                      textAlign: 'center',
-                    }}
-                  >
-                    Delete Component
+                  <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                    <Text tid='delete' />
                   </Typography>
                 }
               >
                 <Typography>
-                  <ClearIcon
-                    onClick={() => {
-                      deleteService(indexPath);
-                    }}
-                  />
+                  <ClearIcon onClick={() => { deleteService(indexPath); }} />
                 </Typography>
               </Tooltip>
             </MuiThemeProvider>
@@ -750,8 +736,8 @@ const EditTeam = (props: any) => {
         {(indexPath.length < MAX_SERVICE_HIERARCHY_LEVEL) ?
           (
             <Grid container spacing={3} className={classes.grid}>
-              <Typography color='textSecondary' style={{ paddingLeft: '25px' }}>
-                Service Sub-Components
+              <Typography color='textSecondary' style={{paddingLeft: '25px'}}>
+                <Text tid='serviceSubComponents' />
               </Typography>
               {service.services && service.services.map((subService: IServiceInfo, index: number) => {
                 if (subService.active === 'true') {
@@ -767,13 +753,8 @@ const EditTeam = (props: any) => {
                   <MuiThemeProvider theme={tooltipTheme}>
                     <Tooltip
                       title={
-                        <Typography
-                          style={{
-                            fontSize: '12px',
-                            textAlign: 'center',
-                          }}
-                        >
-                          Add Service Sub-Component
+                        <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                          <Text tid='addServiceSubComponents' />
                         </Typography>
                       }
                     >
@@ -827,8 +808,8 @@ const EditTeam = (props: any) => {
             );
           })}
           <Grid container spacing={3} className={classes.grid}>
-            <Typography color='textSecondary' style={{ paddingLeft: '25px' }}>
-              Service Components
+            <Typography  color='textSecondary' style={{paddingLeft: '25px'}}>
+              <Text tid='serviceComponents' />
             </Typography>
             {teamState!.values!.services && teamState!.values!.services.map((service: IServiceInfo, index: number) => {
               if (service.active === 'true') {
@@ -844,13 +825,8 @@ const EditTeam = (props: any) => {
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
-                      <Typography
-                        style={{
-                          fontSize: '12px',
-                          textAlign: 'center',
-                        }}
-                      >
-                        Add Service Component
+                      <Typography style={{fontSize: '12px', textAlign: 'center' }}>
+                        <Text tid='addServiceComponents' />
                       </Typography>
                     }
                   >
@@ -926,7 +902,7 @@ const EditTeam = (props: any) => {
     <Fragment>
       {teamDataFetched ? (
         mapCollectors ? (
-          props.mapMetricsClicked(props.teamName)
+          props.mapMetricsClicked(props.teamId)
         ) : (
           renderFormData()
         )

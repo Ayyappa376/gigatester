@@ -2,6 +2,7 @@ import { betaConfig } from './betaConfig';
 import { devConfig } from './devConfig';
 import { dishintConfig } from './dishintConfig';
 import { localConfig } from './localConfig';
+import { m1Config } from './m1Config';
 import { prodConfig } from './prodConfig';
 import { qaConfig } from './qaConfig';
 
@@ -17,6 +18,8 @@ if (env === 'Dev') {
     apiHostUrl = prodConfig.apiHostUrl;
 } else if (env === 'Dishint') {
     apiHostUrl = dishintConfig.apiHostUrl;
+} else if (env === 'm1') {
+    apiHostUrl = m1Config.apiHostUrl;
 } else {
     apiHostUrl = localConfig.apiHostUrl;
 }

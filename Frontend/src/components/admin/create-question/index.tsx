@@ -214,6 +214,7 @@ const CreateQuestion = (props: any) => {
       })
         .then((response: any) => {
           setQuestionPosted(true);
+          setNumberOfOptions(1);
         })
         .catch((error) => {
           const perror = JSON.stringify(error);
@@ -381,7 +382,7 @@ const CreateQuestion = (props: any) => {
   const resetState = () => {
     setQuestionPosted(false);
     setPostData(defaultPostData);
-    setAnswerVariable([emptyAnswer, emptyAnswer]);
+    setAnswerVariable([emptyAnswer]);
     setNumberOfOptions(2);
     setWeightFactorArray([1, 2]);
   };

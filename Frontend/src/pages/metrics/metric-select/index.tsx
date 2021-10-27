@@ -27,15 +27,25 @@ import { Http } from '../../../utils';
 import { IRootState } from '../../../reducers';
 import { Text } from '../../../common/Language';
 import '../../../css/metrics/style.css';
+import { IServiceInfo, ITeamInfo } from '../../../model';
 
 export const ALL = 'All';
 
 const useStyles = makeStyles((theme) => ({
+  containerTop: {
+    paddingTop: theme.spacing(1),
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2),
+    position: 'fixed',
+    top: '100px',
+    zIndex: 100,
+    backgroundColor: '#ffffff'
+  },
   container: {
     paddingTop: theme.spacing(2),
     paddingBottom: theme.spacing(3),
     position: 'relative',
-    top: '100px',
+    top: '120px',
   },
   paper: {
     padding: theme.spacing(2),
@@ -48,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
   doraMetricsContainer: {
     border: '1px solid #b1b1b1',
     marginTop: '20px',
+    paddingTop: '10px',
     paddingBottom: '10px',
     borderRadius: '5px',
     boxShadow: '0px 0px 2px #a2a2a2',
@@ -93,9 +104,9 @@ const MetricDetails = (props: any) => {
   const [focusService, setFocusService] = useState<string[]>([ALL]);
   const [focusSubService, setFocusSubService] = useState<string[]>([ALL]);
   const [focusServiceType, setFocusServiceType] = useState<string[]>([ALL]);
-  const [teamList, setTeamList] = useState<Object[]>([]);
-  const [serviceList, setServiceList] = useState<Object[]>([]);
-  const [subServiceList, setSubServiceList] = useState<Object[]>([]);
+  const [teamList, setTeamList] = useState<ITeamInfo[]>([]);
+  const [serviceList, setServiceList] = useState<IServiceInfo[]>([]);
+  const [subServiceList, setSubServiceList] = useState<IServiceInfo[]>([]);
   const [serviceTypeList, setServiceTypeList] = useState<Object[]>([]);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
@@ -148,16 +159,35 @@ const MetricDetails = (props: any) => {
 
   useEffect(() => {
     updateSubServiceList(serviceList);
+    setFocusSubService([ALL]);
   }, [focusService]);
 
   useEffect(() => {
     let tempServiceList = updateServiceList(teamList);
     updateSubServiceList(tempServiceList);
+    setFocusService([ALL]);
+    setFocusSubService([ALL]);
   }, [focusTeam]);
 
   useEffect(() => {
     setMetricType(props.metricType);
     window.scrollTo(0, 0);
+    switch (props.metricType) {
+      case 'build':
+        setVerticalScroll(0);
+        break;
+      case 'requirements':
+        setVerticalScroll(870);
+        break;
+      case 'quality':
+        setVerticalScroll(1650);
+        break;
+      case 'repository':
+        setVerticalScroll(436);
+        break;
+      default:
+      // code block
+    }
   }, [props.metricType, props.metricSelection]);
 
   const getTeams = () => {
@@ -282,6 +312,152 @@ const MetricDetails = (props: any) => {
     setCustomDate([todayBegin, todayEnd]);
   };
 
+  const renderSelectedTeams = (selected: any, objList: ITeamInfo[]) => {
+    return (selected as string[]).map((val: string) => {
+      const selObj: ITeamInfo | undefined = objList.find((t: ITeamInfo) => t.teamId === val);
+      return selObj ? selObj.teamName : val;
+    }).join(', ');
+  }
+
+  const renderSelectedServices = (selected: any, objList: IServiceInfo[]) => {
+    return (selected as string[]).map((val: string) => {
+      const selObj: IServiceInfo | undefined = objList.find((t: IServiceInfo) => t.id === val);
+      return selObj ? selObj.name : val;
+    }).join(', ');
+  }
+
+  const teamServiceSelection = () => {
+    return (
+      <Grid container spacing={2} className={classes.containerTop}>
+        <Grid item xs={12} md={2} lg={2}>
+          <InputLabel
+            id='team-select-label'
+            style={{ color: '#525252', fontSize: '14px' }}
+          >
+            <Text tid='team' />: &nbsp;
+            <Select
+              labelId='team-multi-checkbox-label'
+              id='team-multi-checkbox'
+              multiple
+              value={focusTeam}
+              onChange={updateFocusTeam}
+              input={<Input />}
+              renderValue={(selected) => renderSelectedTeams(selected, teamList)}
+              MenuProps={MenuProps}
+              style={{ width: '70%' }}
+            >
+              {teamList.map((opt: any, i: number) => {
+                return (
+                  <MenuItem key={i} value={opt.teamId}>
+                    <Checkbox
+                      checked={focusTeam.indexOf(opt.teamId) > -1}
+                    />
+                    <ListItemText primary={opt.teamName} />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+            {teamsFailureMsg && (
+              <span style={{ color: '#f44336' }}>
+                <Text tid='errorInLoadingTeamList' />
+              </span>
+            )}
+          </InputLabel>
+        </Grid>
+        <Grid item xs={12} md={4} lg={4}>
+          <InputLabel
+            id='service-select-label'
+            style={{ color: '#525252', fontSize: '14px' }}
+          >
+            <Text tid='serviceComponents' />: &nbsp;
+            <Select
+              labelId='service-multi-checkbox-label'
+              id='service-multi-checkbox'
+              multiple
+              value={focusService}
+              onChange={updateFocusService}
+              input={<Input />}
+              renderValue={(selected) => renderSelectedServices(selected, serviceList)}
+              MenuProps={MenuProps}
+              style={{ width: '60%' }}
+            >
+              {serviceList.map((opt: any, i: number) => {
+                return (
+                  <MenuItem key={i} value={opt.id}>
+                    <Checkbox
+                      checked={focusService.indexOf(opt.id) > -1}
+                    />
+                    <ListItemText primary={opt.name} />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </InputLabel>
+        </Grid>
+        <Grid item xs={12} md={4} lg={4}>
+          <InputLabel
+            id='subservice-select-label'
+            style={{ color: '#525252', fontSize: '14px' }}
+          >
+            <Text tid='serviceSubComponents' />: &nbsp;
+            <Select
+              labelId='subservice-multi-checkbox-label'
+              id='subservice-multi-checkbox'
+              multiple
+              value={focusSubService}
+              onChange={updateFocusSubService}
+              input={<Input />}
+              renderValue={(selected) => renderSelectedServices(selected, subServiceList)}
+              MenuProps={MenuProps}
+              style={{ width: '55%' }}
+            >
+              {subServiceList.map((opt: any, i: number) => {
+                return (
+                  <MenuItem key={i} value={opt.id}>
+                    <Checkbox
+                      checked={focusSubService.indexOf(opt.id) > -1}
+                    />
+                    <ListItemText primary={opt.name} />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </InputLabel>
+        </Grid>
+        <Grid item xs={12} md={2} lg={2}>
+          <InputLabel
+            id='servicetype-select-label'
+            style={{ color: '#525252', fontSize: '14px' }}
+          >
+            Service Type: &nbsp;
+            <Select
+              labelId='servicetype-multi-checkbox-label'
+              id='servicetype-multi-checkbox'
+              multiple
+              value={focusServiceType}
+              onChange={updateFocusServiceType}
+              input={<Input />}
+              renderValue={(selected) => (selected as string[]).join(', ')}
+              MenuProps={MenuProps}
+              style={{ width: '50%' }}
+            >
+              {serviceTypeList.map((opt: any, i: number) => {
+                return (
+                  <MenuItem key={i} value={opt.id}>
+                    <Checkbox
+                      checked={focusServiceType.indexOf(opt.id) > -1}
+                    />
+                    <ListItemText primary={opt.name} />
+                  </MenuItem>
+                );
+              })}
+            </Select>
+          </InputLabel>
+        </Grid>
+      </Grid>
+    )
+  }
+
   const doraMetricsPage = () => {
     return (
       <Grid container>
@@ -291,8 +467,6 @@ const MetricDetails = (props: any) => {
             xs={12}
             md={6}
             lg={6}
-            className='topScrollContainerMetrics'
-            id='doraMetrics'
           >
             <Typography variant='h6'>
               <Text tid='doraMetrics' />:
@@ -339,7 +513,7 @@ const MetricDetails = (props: any) => {
               <InputLabel
                 onClick={() => {
                   setMetricType('requirements');
-                  setVerticalScroll(950);
+                  setVerticalScroll(870);
                 }}
                 className={classes.viewMoreText}
               >
@@ -353,7 +527,7 @@ const MetricDetails = (props: any) => {
               <InputLabel
                 onClick={() => {
                   setMetricType('quality');
-                  setVerticalScroll(1800);
+                  setVerticalScroll(1650);
                 }}
                 className={classes.viewMoreText}
               >
@@ -370,7 +544,7 @@ const MetricDetails = (props: any) => {
               <InputLabel
                 onClick={() => {
                   setMetricType('gitRepository');
-                  setVerticalScroll(500);
+                  setVerticalScroll(436);
                 }}
                 className={classes.viewMoreText}
               >
@@ -396,145 +570,8 @@ const MetricDetails = (props: any) => {
 
   return (
     <Fragment>
+      {teamServiceSelection()}
       <Container maxWidth='lg' className={classes.container}>
-        <Grid container spacing={2} style={{ paddingTop: '5px' }}>
-          <Grid item xs={12} md={2} lg={2}>
-            <InputLabel
-              id='team-select-label'
-              style={{ color: '#525252', fontSize: '14px' }}
-            >
-              <Text tid='platform' />: &nbsp;
-              <Select
-                labelId='team-multi-checkbox-label'
-                id='team-multi-checkbox'
-                multiple
-                value={focusTeam}
-                onChange={updateFocusTeam/*getFocusTeam*/}
-                input={<Input />}
-                renderValue={(selected) => (selected as string[]).join(', ')}
-                MenuProps={MenuProps}
-                style={{ width: '70%' }}
-              >
-                {/*teamList.map((opt: any, i: number) => {
-                  return (
-                    <MenuItem key={i} value={opt.teamName}>
-                      <Checkbox
-                        checked={focusTeam.indexOf(opt.teamName) > -1}
-                      />
-                      <ListItemText primary={opt.teamName} />
-                    </MenuItem>
-                  );
-                })*/}
-                {teamList.map((opt: any, i: number) => {
-                  return (
-                    <MenuItem key={i} value={opt.teamId}>
-                      <Checkbox
-                        checked={focusTeam.indexOf(opt.teamId) > -1}
-                      />
-                      <ListItemText primary={opt.teamName} />
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-              {teamsFailureMsg && (
-                <span style={{ color: '#f44336' }}>
-                  <Text tid='errorInLoadingPlatformList' />
-                </span>
-              )}
-            </InputLabel>
-          </Grid>
-          <Grid item xs={12} md={4} lg={4}>
-            <InputLabel
-              id='service-select-label'
-              style={{ color: '#525252', fontSize: '14px' }}
-            >
-              Service Component: &nbsp;
-              <Select
-                labelId='service-multi-checkbox-label'
-                id='service-multi-checkbox'
-                multiple
-                value={focusService}
-                onChange={updateFocusService}
-                input={<Input />}
-                renderValue={(selected) => (selected as string[]).join(', ')}
-                MenuProps={MenuProps}
-                style={{ width: '60%' }}
-              >
-                {serviceList.map((opt: any, i: number) => {
-                  return (
-                    <MenuItem key={i} value={opt.id}>
-                      <Checkbox
-                        checked={focusService.indexOf(opt.id) > -1}
-                      />
-                      <ListItemText primary={opt.name} />
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </InputLabel>
-          </Grid>
-          <Grid item xs={12} md={4} lg={4}>
-            <InputLabel
-              id='subservice-select-label'
-              style={{ color: '#525252', fontSize: '14px' }}
-            >
-              Service Sub Component: &nbsp;
-              <Select
-                labelId='subservice-multi-checkbox-label'
-                id='subservice-multi-checkbox'
-                multiple
-                value={focusSubService}
-                onChange={updateFocusSubService}
-                input={<Input />}
-                renderValue={(selected) => (selected as string[]).join(', ')}
-                MenuProps={MenuProps}
-                style={{ width: '55%' }}
-              >
-                {subServiceList.map((opt: any, i: number) => {
-                  return (
-                    <MenuItem key={i} value={opt.id}>
-                      <Checkbox
-                        checked={focusSubService.indexOf(opt.id) > -1}
-                      />
-                      <ListItemText primary={opt.name} />
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </InputLabel>
-          </Grid>
-          <Grid item xs={12} md={2} lg={2}>
-            <InputLabel
-              id='servicetype-select-label'
-              style={{ color: '#525252', fontSize: '14px' }}
-            >
-              Service Type: &nbsp;
-              <Select
-                labelId='servicetype-multi-checkbox-label'
-                id='servicetype-multi-checkbox'
-                multiple
-                value={focusServiceType}
-                onChange={updateFocusServiceType}
-                input={<Input />}
-                renderValue={(selected) => (selected as string[]).join(', ')}
-                MenuProps={MenuProps}
-                style={{ width: '50%' }}
-              >
-                {serviceTypeList.map((opt: any, i: number) => {
-                  return (
-                    <MenuItem key={i} value={opt.id}>
-                      <Checkbox
-                        checked={focusServiceType.indexOf(opt.id) > -1}
-                      />
-                      <ListItemText primary={opt.name} />
-                    </MenuItem>
-                  );
-                })}
-              </Select>
-            </InputLabel>
-          </Grid>
-        </Grid>
-
         {metricType === 'doraMetrics' && props.metricType === 'doraMetrics' ? (
           doraMetricsPage()
         ) : (

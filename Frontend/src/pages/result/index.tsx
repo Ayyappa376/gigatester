@@ -3,32 +3,32 @@ import { ResultParent, Feedback } from '../../components';
 import { useActions } from '../../actions';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
-import { fetchAssesmentResultData } from '../../actions/result';
+import { fetchAssessmentResultData } from '../../actions/result';
 import { Text } from '../../common/Language';
 import { RouteComponentProps } from 'react-router-dom';
 interface IResultRouteParams {
-  assesmentId: string;
+  assessmentId: string;
 }
 type IResultProps = RouteComponentProps<IResultRouteParams>;
 const Result = (props: IResultProps) => {
-  const fetchAssessmentResult = useActions(fetchAssesmentResultData);
-  const assesmentResult = useSelector(
-    (state: IRootState) => state.assesment.result
+  const fetchAssessmentResult = useActions(fetchAssessmentResultData);
+  const assessmentResult = useSelector(
+    (state: IRootState) => state.assessment.result
   );
   // const assessmentId = props.match!.params;
   // console.log('assessment id---------------------------', assessmentId)
   const id = window.location.pathname;
   const assessmentId = id.substring(id.lastIndexOf('/') + 1, id.length);
   useEffect(() => {
-    if (assesmentResult.status !== 'success') {
+    if (assessmentResult.status !== 'success') {
       // hardcoding the assessment id for now
       fetchAssessmentResult(assessmentId);
     }
   }, []);
-  if (assesmentResult.status === 'success' && assesmentResult.data !== null) {
+  if (assessmentResult.status === 'success' && assessmentResult.data !== null) {
     return (
       <Fragment>
-        <ResultParent data={assesmentResult.data} />
+        <ResultParent data={assessmentResult.data} />
         <Feedback />
       </Fragment>
     );

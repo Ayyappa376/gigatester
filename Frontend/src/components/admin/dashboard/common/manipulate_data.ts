@@ -6,13 +6,13 @@ import { IResponseData } from './common';
 
 export const processAverageScore = (
   responseData: IResponseData,
-  teamName: string
+  teamId: string
 ) => {
   let sum = 0;
   let total = 0;
   try {
     Object.keys(responseData.teams).forEach((team: string) => {
-      if (teamName === 'all' || teamName === team) {
+      if (teamId === 'all' || teamId === team) {
         responseData.teams[team].assessments.forEach((assessment: any) => {
           if (assessment && assessment.result && assessment.result.percentage) {
             sum = sum + assessment.result.percentage;

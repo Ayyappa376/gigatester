@@ -48,15 +48,16 @@ const icon = <CheckBoxOutlineBlankIcon fontSize='small' />;
 const checkedIcon = <CheckBoxIcon fontSize='small' />;
 
 const useStyles = makeStyles((theme) => ({
-  container: {
-    paddingTop: theme.spacing(2),
-    paddingBottom: theme.spacing(2),
-    position: 'relative',
-    top: '70px',
-  },
+  // container: {
+  //   paddingTop: theme.spacing(2),
+  //   paddingBottom: theme.spacing(2),
+  //   position: 'relative',
+  //   top: '70px',
+  // },
   container_1_Style: {
     border: '1px solid #c1c1c1',
     marginTop: '40px',
+    paddingTop: '10px',
     paddingBottom: '10px',
     borderRadius: '5px',
     boxShadow: '0px 0px 2px #a2a2a2',
@@ -65,6 +66,7 @@ const useStyles = makeStyles((theme) => ({
   container_2_Style: {
     border: '1px solid #c1c1c1',
     marginTop: '40px',
+    paddingTop: '10px',
     paddingBottom: '10px',
     borderRadius: '5px',
     boxShadow: '0px 0px 2px #a2a2a2',
@@ -73,6 +75,7 @@ const useStyles = makeStyles((theme) => ({
   container_3_Style: {
     border: '1px solid #c1c1c1',
     marginTop: '20px',
+    paddingTop: '10px',
     paddingBottom: '10px',
     borderRadius: '5px',
     boxShadow: '0px 0px 2px #a2a2a2',
@@ -101,11 +104,8 @@ const useStyles = makeStyles((theme) => ({
     color: '#f44336',
     paddingTop: '5px',
   },
-  margin_top_25: {
-    marginTop: '25px',
-  },
-  margin_top_15: {
-    marginTop: '15px',
+  margin_top_10: {
+    marginTop: '10px',
   },
 }));
 
@@ -173,10 +173,12 @@ const MetricsList = (props: any) => {
   // }, [props.focusTeam, itemType, itemPriority, requirementsDateRange]);
 
   useEffect(() => {
+    window.scrollTo(0, props.verticalScroll);
+  }, [props.verticalScroll]);
+
+  useEffect(() => {
     getCommittersList();
     getRequirementItemTypePriority();
-    window.scrollTo(0, props.verticalScroll);
-    //    window.scrollTo(0, 0);
   }, []);
 
   /*  useEffect(() => {
@@ -414,8 +416,6 @@ const MetricsList = (props: any) => {
           xs={12}
           md={6}
           lg={6}
-          className='topScrollContainerMetrics'
-          id='build'
         >
           <Typography variant='h6'>
             <Text tid='buildCICD' />:
@@ -439,7 +439,7 @@ const MetricsList = (props: any) => {
             <BuildChart
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -460,7 +460,7 @@ const MetricsList = (props: any) => {
             <BuildTable
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -478,8 +478,6 @@ const MetricsList = (props: any) => {
           xs={12}
           md={6}
           lg={6}
-          className='topScrollContainerMetrics'
-          id='repository'
         >
           <Typography variant='h6'>
             <Text tid='gitRepository' />:
@@ -497,12 +495,12 @@ const MetricsList = (props: any) => {
             </div>
           </Typography>
         </Grid>
-        <Grid item xs={12} md={2} lg={2} className={classes.margin_top_25}>
+        <Grid item xs={12} md={2} lg={2} className={classes.margin_top_10}>
           <InputLabel className={classes.selectNameBox}>
             <Text tid='filterByCommitter' />
           </InputLabel>
         </Grid>
-        <Grid item xs={12} md={3} lg={3} className={classes.margin_top_15}>
+        <Grid item xs={12} md={3} lg={3}>
           <Autocomplete
             multiple
             id='checkboxes-filterByCommitter'
@@ -542,7 +540,7 @@ const MetricsList = (props: any) => {
             <PullRequestChart
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -560,7 +558,7 @@ const MetricsList = (props: any) => {
             <DelayChart
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -575,7 +573,7 @@ const MetricsList = (props: any) => {
             <RepositoryTable
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -593,8 +591,6 @@ const MetricsList = (props: any) => {
           xs={12}
           md={6}
           lg={6}
-          className='topScrollContainerMetrics'
-          id='requirements'
         >
           <Typography variant='h6'>
             <Text tid='requirements' />:
@@ -612,12 +608,12 @@ const MetricsList = (props: any) => {
             </div>
           </Typography>
         </Grid>
-        <Grid item xs={6} md={1} lg={1} className={classes.margin_top_25}>
+        <Grid item xs={6} md={1} lg={1} className={classes.margin_top_10}>
           <InputLabel className={classes.selectNameBox}>
             <Text tid='itemType' />:
           </InputLabel>
         </Grid>
-        <Grid item xs={6} md={2} lg={2} className={classes.margin_top_15}>
+        <Grid item xs={6} md={2} lg={2}>
           <Autocomplete
             multiple
             id='checkboxes-itemType'
@@ -651,12 +647,12 @@ const MetricsList = (props: any) => {
             </InputLabel>
           )}
         </Grid>
-        <Grid item xs={6} md={1} lg={1} className={classes.margin_top_25}>
+        <Grid item xs={6} md={1} lg={1} className={classes.margin_top_10}>
           <InputLabel className={classes.selectNameBox}>
             <Text tid='itemPriority' />:
           </InputLabel>
         </Grid>
-        <Grid item xs={6} md={2} lg={2} className={classes.margin_top_15}>
+        <Grid item xs={6} md={2} lg={2}>
           <Autocomplete
             multiple
             id='checkboxes-itemPriority'
@@ -691,7 +687,7 @@ const MetricsList = (props: any) => {
             <ReqStatusChart
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -711,7 +707,7 @@ const MetricsList = (props: any) => {
             <LeadAndCycleTimeChart
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -727,7 +723,7 @@ const MetricsList = (props: any) => {
             <RequirementsTable
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -746,8 +742,6 @@ const MetricsList = (props: any) => {
           xs={12}
           md={6}
           lg={6}
-          className='topScrollContainerMetrics'
-          id='quality'
         >
           <Typography variant='h6'>
             <Text tid='quality' />:
@@ -772,7 +766,7 @@ const MetricsList = (props: any) => {
             <QualityReport
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}
@@ -790,7 +784,7 @@ const MetricsList = (props: any) => {
             <QualityTable
               focusTeam={props.focusTeam}
               focusService={props.focusService}
-//              serviceAndSubService={props.serviceAndSubService}
+              //              serviceAndSubService={props.serviceAndSubService}
               focusSubService={props.focusSubService}
               focusServiceType={props.focusServiceType}
               joinServiceAndSubService={props.joinServiceAndSubService}

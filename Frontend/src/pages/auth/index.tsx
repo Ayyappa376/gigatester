@@ -46,33 +46,31 @@ const Auth = (props: any) => {
     if (!userStatus.idToken) {
       const tokens = extractTokens(window.location.hash);
       const tokenInfo: any = jwtDecode(tokens!.idToken);
-      let teamName = null;
+      let teamId = null;
       const env = process.env.REACT_APP_STAGE;
-      if (env === 'Prod') {
+      if ((env === 'Dev') || (env === 'Beta')) {
         if (tokenInfo['custom:teamName']) {
-          teamName =
-            tokenInfo['custom:teamName'] !== ''
-              ? tokenInfo['custom:teamName']
-              : null;
-        }
-      } else {
-        if (tokenInfo['custom:teamName']) {
-          teamName =
+          teamId =
             tokenInfo['custom:teamName'] !== ''
               ? tokenInfo['custom:teamName']
               : 'Others';
         } else {
-          teamName = 'Others';
+          teamId = 'Others';
+        }
+      } else {
+        if (tokenInfo['custom:teamName']) {
+          teamId =
+            tokenInfo['custom:teamName'] !== ''
+              ? tokenInfo['custom:teamName']
+              : null;
         }
       }
       if (tokens && tokens.idToken && tokens.accessToken) {
-        //                sessionStorage.setItem('idToken', tokens.idToken);
-        //                sessionStorage.setItem('accessToken', tokens.accessToken);
         saveUserData({
           idToken: tokens.idToken,
           accessToken: tokens.accessToken,
           userDetails: jwtDecode(tokens.idToken),
-          team: teamName,
+          team: teamId,
           roles: tokenInfo['cognito:groups'],
         });
       } else {

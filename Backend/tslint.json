@@ -66,13 +66,6 @@
       true,
       "check-format",
       "allow-leading-underscore"
-    ],
-    "strict-comparisons": [
-      true,
-      {
-        "allow-string-order-comparison": true,
-        "allow-object-equal-comparison": true
-      }
     ]
   },
   "linterOptions": {
