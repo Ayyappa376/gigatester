@@ -110,7 +110,7 @@ async function handler(
     const err = new Error('Invalid Request');
     appLogger.error(err);
     return responseBuilder.badRequest(err, response);
-  } catch (err: any) {
+  } catch (err) {
     appLogger.info(err);
     return responseBuilder.internalServerError(err, response);
   }
@@ -127,7 +127,7 @@ function getDORADeploymentResp(data: DeploymentDataItem[], fromDate: Date, toDat
     aggregateValue: 0,
     graphData: data,
     level: DORA_LEVEL_LOW,
-//    trendData: calculateDeploymentTrend(data)
+    //    trendData: calculateDeploymentTrend(data)
     trendData: calculateTrend(data, (elm) => elm.timestamp, (elm) => elm.countBuilds)
   };
   let totalDeployments = 0;
@@ -168,7 +168,7 @@ function getDORALeadTimeResp(data: LeadTimeDataItem[]): DORADataItem {
     trendData: calculateTrend(
       data,
       (elm) => elm.timestamp,
-      (elm) => (elm.issueCount > 0) ? Math.round(elm.totalLeadTime/elm.issueCount) : 0
+      (elm) => (elm.issueCount > 0) ? Math.round(elm.totalLeadTime / elm.issueCount) : 0
     )
   };
   let totalLeadTime = 0;
@@ -211,7 +211,7 @@ function getDORAMeanTimeToRestoreResp(
     trendData: calculateTrend(
       data,
       (elm) => elm.timestamp,
-      (elm) => (elm.issueCount > 0) ? Math.round(elm.totalRestoreTime/elm.issueCount) : 0
+      (elm) => (elm.issueCount > 0) ? Math.round(elm.totalRestoreTime / elm.issueCount) : 0
     )
   };
   let totalRestoreTime = 0;
@@ -254,7 +254,7 @@ function getDORAChangeFailureRateResp(
     trendData: calculateTrend(
       data,
       (elm) => elm.timestamp,
-      (elm) => (elm.totalBuilds > 0) ? Math.round((elm.countFailBuilds/elm.totalBuilds) * 100) : 0
+      (elm) => (elm.totalBuilds > 0) ? Math.round((elm.countFailBuilds / elm.totalBuilds) * 100) : 0
     )
   };
   let totalFailBuilds = 0;

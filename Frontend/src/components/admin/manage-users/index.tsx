@@ -1,5 +1,10 @@
 import React, { useState, useEffect, Fragment } from 'react';
 import {
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   Typography,
   Grid,
   makeStyles,
@@ -29,6 +34,7 @@ import { Http } from '../../../utils';
 import { withRouter } from 'react-router-dom';
 import SearchControl from '../../common/searchControl';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
+import { IUserParams } from '../../../model';
 import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { default as MaterialLink } from '@material-ui/core/Link';
@@ -106,6 +112,9 @@ const ManageUsers = (props: any) => {
     message: '',
     type: '',
   });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [resetPasswordStatus, setResetPasswordStatus] = useState(false);
+  const [userData, setUserData] = React.useState<IUserParams | undefined>();
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
 
@@ -168,47 +177,15 @@ const ManageUsers = (props: any) => {
       });
   };
 
-  const onResetPassword = (emailId: any) => {
+  const getUserData = (emailId: any) => {
     Http.get({
       url: `/api/v2/admin/users/getusers?email=${emailId}`,
       state: stateVariable,
     })
       .then((response: any) => {
-        let postData = response.values;
-        postData['resetPassword'] = true;
-        Http.put({
-          url: `/api/v2/admin/users`,
-          body: {
-            ...postData,
-          },
-          state: stateVariable,
-        })
-          .then((response: any) => {
-            setNotify({
-              isOpen: true,
-              message: 'Reset Password has been successful. A temporary password is sent to the user email address.',
-              type: 'success',
-            });
-          })
-          .catch((error) => {
-            const perror = JSON.stringify(error);
-            const object = JSON.parse(perror);
-            if (object.code === 400) {
-              setNotify({
-                isOpen: true,
-                message: object.apiError.msg,
-                type: 'error',
-              });
-            } else if (object.code === 401) {
-              props.history.push('/relogin');
-            } else {
-              setNotify({
-                isOpen: true,
-                message: "Something went wrong",
-                type: 'error',
-              });
-            }
-          });
+        let selectedUserData = response.values;
+        selectedUserData['resetPassword'] = true;
+        setUserData(selectedUserData)
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
@@ -225,6 +202,70 @@ const ManageUsers = (props: any) => {
           props.history.push('/error');
         }
       });
+  }
+
+  const onConfirmResetPassword = (emailId: any) => {
+    setNotify({
+      isOpen: true,
+      message: "Loading...",
+      type: 'info',
+    });
+    Http.get({
+      url: `/api/v2/admin/users/getUserStatus?email=${emailId}`,
+      state: stateVariable,
+    }).then((response: any) => {
+      setResetPasswordStatus(true)
+      // response.UserStatus === 'FORCE_CHANGE_PASSWORD' ? setResetPasswordStatus(true) : setResetPasswordStatus(false)
+      getUserData(emailId);
+      setDialogOpen(true)
+    }).catch((error: any) => {
+      console.log(error);
+    })
+  }
+
+  const handleResetPassword = () => {
+    handleDialogClose();
+    setNotify({
+      isOpen: true,
+      message: "Loading...",
+      type: 'info',
+    });
+    let postData = userData;
+    console.log(postData);
+    postData &&
+      Http.put({
+        url: `/api/v2/admin/users`,
+        body: {
+          ...postData,
+        },
+        state: stateVariable,
+      })
+        .then((response: any) => {
+          setNotify({
+            isOpen: true,
+            message: 'Reset Password has been successful. A temporary password is sent to the user email address.',
+            type: 'success',
+          });
+        })
+        .catch((error) => {
+          const perror = JSON.stringify(error);
+          const object = JSON.parse(perror);
+          if (object.code === 400) {
+            setNotify({
+              isOpen: true,
+              message: object.apiError.msg,
+              type: 'error',
+            });
+          } else if (object.code === 401) {
+            props.history.push('/relogin');
+          } else {
+            setNotify({
+              isOpen: true,
+              message: "Something went wrong",
+              type: 'error',
+            });
+          }
+        });
   }
 
   useEffect(() => {
@@ -468,6 +509,10 @@ const ManageUsers = (props: any) => {
     return rolesStr;
   };
 
+  const handleDialogClose = () => {
+    setDialogOpen(false);
+  };
+
   const renderUsersTable = () => {
     return (
       <Fragment>
@@ -642,7 +687,7 @@ const ManageUsers = (props: any) => {
                             <MaterialLink
                               href='#'
                               onClick={() => {
-                                onResetPassword(row.emailId);
+                                onConfirmResetPassword(row.emailId);
                               }}
                             >
                               <Typography>
@@ -688,6 +733,35 @@ const ManageUsers = (props: any) => {
             </Button>
           </div>
         </Container>
+        <Dialog
+          open={dialogOpen}
+          onClose={handleDialogClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{resetPasswordStatus ? 'Reset Confirmation' : 'Reset Disabled'}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {resetPasswordStatus ? "Are you sure you want to reset the user's password?" : "As this user has already been confirmed, it is not possible to reset their password."}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            {resetPasswordStatus ?
+              <Fragment>
+                <Button onClick={handleDialogClose} color="primary">
+                  Cancel
+                </Button>
+                <Button onClick={handleResetPassword} color="primary">
+                  Reset
+                </Button>
+              </Fragment>
+              :
+              <Button onClick={handleDialogClose} color="primary">
+                Cancel
+              </Button>
+            }
+          </DialogActions>
+        </Dialog>
         <Notification notify={notify} setNotify={setNotify} />
       </Fragment>
     );

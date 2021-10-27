@@ -1,7 +1,7 @@
 import { config } from '@root/config';
 import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
-
+// var ses = new aws.SES({ region: "us-east-1" });
 aws.config.update({ region: config.region });
 const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
 
@@ -185,42 +185,22 @@ export const updateCognitoUserToLowerCase = async (
   });
 
 export const resetUserPassword = async (
-  email: string,
-  teamName?: any[]
+  cognitoUser: string,
+  email: string
 ): Promise<any> =>
-    new Promise<any>((resolve, reject) => {
-      const params = {
-        DesiredDeliveryMediums: ['EMAIL'],
-        TemporaryPassword: generatePassword(),
-        MessageAction: "RESEND",
-        UserAttributes: [
-          {
-            Name: 'email',
-            Value: email,
-          },
-          {
-            Name: 'email_verified',
-            Value: 'true',
-          },
-          {
-            Name: 'custom:teamName',
-            Value: teamName ? teamName[0] : 'default',
-          },
-        ],
-        UserPoolId: config.cognito.userPoolId /* required */,
-        Username: email /* required */,
-      };
-      appLogger.debug({ adminCreateUser_params: params });
-      cognitoidentityserviceprovider.adminCreateUser(
-        params,
-        (err: any, data: any) => {
-          if (err) {
-            reject(err);
-          }
-          resolve(data);
-        }
-      );
+  new Promise<any>((resolve, reject) => {
+    var params = {
+      Password: generatePassword(), /* required */
+      UserPoolId: config.cognito.userPoolId, /* required */
+      Username: cognitoUser, /* required */
+      Permanent: false
+    };
+    cognitoidentityserviceprovider.adminSetUserPassword(params, function (err, data) {
+      if (err) console.log(err, err.stack); // an error occurred
+      else
+        console.log(data);           // successful response
     });
+  });
 
 function generatePassword() {
   const length = 8;

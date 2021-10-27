@@ -9,7 +9,8 @@ import {
   removeUserFromCognitoGroup,
   responseBuilder,
   updateDynamoUser,
-  resetUserPassword
+  resetUserPassword,
+  // updateCognitoUserToLowerCase
 } from '@utils/index';
 import { Response } from 'express';
 
@@ -97,7 +98,7 @@ async function handler(request: UpdateUser, response: Response) {
         appLogger.error({ err: e }, 'Error while adding  user to group');
       });
   }  
-  await body.resetPassword ? resetUserPassword(userDetails.emailId, body.teams) : updateDynamoUser(userDetails.id, managerDetails, body);
+  await body.resetPassword ? resetUserPassword(userDetails.id, userDetails.emailId) : updateDynamoUser(userDetails.id, managerDetails, body);
   return responseBuilder.ok({ message: 'ok' }, response);
 }
 

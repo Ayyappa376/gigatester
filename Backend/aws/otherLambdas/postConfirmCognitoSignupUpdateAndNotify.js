@@ -11,29 +11,29 @@ exports.handler = (event, context, callback) => {
     id: event.request.userAttributes.sub,
     emailId: event.request.userAttributes.email,
     emailVerified: event.request.userAttributes.email_verified,
-//    roles: event.request.groupConfiguration.groupsToOverride ? event.request.groupConfiguration.groupsToOverride : ['Member'],
+    //    roles: event.request.groupConfiguration.groupsToOverride ? event.request.groupConfiguration.groupsToOverride : ['Member'],
     teams: [{
-      "name" : 'Others',
+      "name": 'Others',
       "isLead": false,
     }],
-    manages:[],
+    manages: [],
     order: ['admin'],
     roles: ['Member']
   }
-  
+
   const params = {
-    TableName : "dev_CognitoUsers",
-    Item : item
+    TableName: "dev_CognitoUsers",
+    Item: item
   }
 
-  documentClient.put(params, function(err, data) {
+  documentClient.put(params, function (err, data) {
     if (err) console.log(err);
   });
 
-//notify admin
-var mail_params = {
+  //notify admin
+  var mail_params = {
     Destination: {
-      ToAddresses: ['gargibasak@gmail.com'],
+      ToAddresses: ['darshanhn1991@gmail.com'],
     },
     Message: {
       Body: {
@@ -49,7 +49,7 @@ var mail_params = {
   ses.sendEmail(mail_params).promise().catch((err) => {
     console.log(err);
   });
-  
-  callback(null,event);
+
+  callback(null, event);
 };
 
