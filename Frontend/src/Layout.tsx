@@ -25,8 +25,8 @@ import Dashboard from './components/admin/dashboard';
 
 const Layout = (props: any) => {
   const [openDialog, setOpenDialog] = useState(false);
-  const idleTimeout = 1000 * 60 * 60; // In milliseconds - 1000 (1 second) * 60 * 60 = 1 Hour
-  const idleWarningTimeout = 1000 * 60 * 2; // In milliseconds - 1000 (1 second) * 60 * 2 = 2 minutes
+  const idleTimeout = 1000 * 60 * 60; // In milliseconds - 1000 (1 second) * 60 (1 minute) * 60 (60 minutes) = 1 Hour
+  const idleWarningTimeout = 1000 * 60 * 2; // In milliseconds - 1000 (1 second) * 60 (1 minute) * 2 (2 minutes) = 2 minutes
   let idleTimerRef: any = useRef(null)
   let sessionTimeoutRef: any = useRef(null);
 

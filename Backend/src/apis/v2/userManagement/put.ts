@@ -97,6 +97,7 @@ async function handler(request: UpdateUser, response: Response) {
         appLogger.error({ err: e }, 'Error while adding  user to group');
       });
   }
+  appLogger.info({ resetPasswordStatus: body.resetPassword });
   body.resetPassword ? await resetUserPassword(userDetails.id, userDetails.emailId) : await updateDynamoUser(userDetails.id, managerDetails, body);
   return responseBuilder.ok({ message: 'ok' }, response);
 }
