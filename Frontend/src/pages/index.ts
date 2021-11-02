@@ -3,6 +3,7 @@ import Home from './home';
 import Auth from './auth';
 import About from './about';
 import ViewTeams from './team-view';
+import ManageSoftwareFiles from './software-files';
 import TeamAssessments from './team-view/team-assessment';
 import Logout from './logout';
 import Result from './result_new';
@@ -28,6 +29,7 @@ export {
   ErrorPage,
   Home,
   Logout,
+  ManageSoftwareFiles,
   MetricSelect,
   Relogin,
   Result,

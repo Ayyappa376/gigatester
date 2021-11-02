@@ -11,6 +11,7 @@ import {
   Auth,
   ErrorPage,
   Logout,
+  ManageSoftwareFiles,
   MetricSelect,
   Relogin,
   Result,
@@ -110,6 +111,8 @@ const Layout = (props: any) => {
         />
         <Route exact path='/teamselect'
           render={() => <TeamSelect {...props} />} />
+        <Route exact path='/manageSoftwareFiles'
+          render={() => <ManageSoftwareFiles {...props} />} />
         <Route exact path='/error' render={() => <ErrorPage {...props} />} />
         <Route exact path='/admin/dashboard' render={() => <Dashboard {...props} />} />
         <Route exact path='/trends' render={() => <Trends {...props} />} />

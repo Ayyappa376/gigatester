@@ -409,5 +409,6 @@
   "reset": "Reset",
   "resetPassword": "Reset Password",
   "resetConfirmation": "Reset Confirmation",
-  "areYouSureYouWantToResetTheUserPassword": "Are you sure you want to reset the user's password?"
+  "areYouSureYouWantToResetTheUserPassword": "Are you sure you want to reset the user's password?",
+  "software": "Software"
 }
