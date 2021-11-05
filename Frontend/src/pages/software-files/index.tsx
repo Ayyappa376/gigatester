@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useState } from 'react';
 import { Http } from '../../utils';
 import {
+    Button,
     Typography,
     makeStyles,
     Container,
@@ -10,23 +11,30 @@ import {
     TableRow,
     TableCell,
     TableBody,
-    Button,
-    CircularProgress,
-    Backdrop,
-    Grid,
-    TableSortLabel,
 } from '@material-ui/core';
+import { Loader } from '../../components';
+import Notification from '../../common/notification';
+import { buttonStyle } from '../../common/common';
 import { default as MaterialLink } from '@material-ui/core/Link';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
 import '../../css/assessments/style.css';
 
-const useStyles = makeStyles({
+const useStyles = makeStyles((theme) => ({
     root: {
         width: '100%',
         height: '100%',
         paddingTop: '10%',
         padding: 0,
+    },
+    containerRoot: {
+        display: 'flex',
+        position: 'relative',
+        flexDirection: 'column',
+        alignItems: 'center',
+        width: '100%',
+        top: '120px',
+        paddingBottom: theme.spacing(4),
     },
     img: {
         width: '100%',
@@ -41,27 +49,47 @@ const useStyles = makeStyles({
         fontSize: '18px'
         // transform: 'translate(-50%, -100%)'
     },
-});
+    button: {
+        ...buttonStyle,
+    },
+}));
 
 const ManageSoftwareFiles = (props: any) => {
     const classes = useStyles();
     const stateVariable = useSelector((state: IRootState) => {
         return state;
     });
+    const userStatus = useSelector((state: IRootState) => {
+        return state.user;
+    });
+    const [notify, setNotify] = useState({
+        isOpen: false,
+        message: '',
+        type: '',
+    });
     const [softwareList, setSoftwareList] = useState([]);
     const [downloadedSoftware, setDownloadedSoftware] = useState('')
 
-    useEffect(() => {
+    const getUploadedSoftwares = () => {
         Http.get({
             url: `/api/v2/software`,
             state: stateVariable,
         })
             .then((response: any) => {
                 setSoftwareList(response.Contents)
+                setNotify({
+                    isOpen: true,
+                    message: "The file has been uploaded successfully.",
+                    type: 'info',
+                });
             })
             .catch((error: any) => {
                 console.log(error);
             });
+    }
+
+    useEffect(() => {
+        getUploadedSoftwares()
     }, [])
 
     const uploadSoftware = (event: any) => {
@@ -75,7 +103,12 @@ const ManageSoftwareFiles = (props: any) => {
                 state: stateVariable,
             })
                 .then((response: any) => {
-                    console.log(response)
+                    getUploadedSoftwares();
+                    setNotify({
+                        isOpen: true,
+                        message: "Uploading...",
+                        type: 'info',
+                    });
                 })
                 .catch((error) => {
                     console.log(error)
@@ -94,6 +127,11 @@ const ManageSoftwareFiles = (props: any) => {
 
     const downloadSoftware = (software: string) => {
         setDownloadedSoftware(software)
+        setNotify({
+            isOpen: true,
+            message: "Downloading...",
+            type: 'info',
+        });
         Http.get({
             url: `/api/v2/software/${software}`,
             state: stateVariable,
@@ -106,71 +144,105 @@ const ManageSoftwareFiles = (props: any) => {
             });
     }
 
-    return (
-        <Container
-            maxWidth='md'
-            component='div'
-            classes={{
-                root: classes.root,
-            }}
-        >
-            <input type="file" onChange={uploadSoftware} />
-            <Paper className='tableArea'>
-                <Table className='table'>
-                    <TableHead className='tableHead'>
-                        <TableRow>
-                            <TableCell align='center' className='tableHeadCell'>
-                                <Typography className='tableHeadText'>
-                                    Software
-                                </Typography>
-                            </TableCell>
-                            <TableCell align='center' className='tableHeadCell'>
-                                <Typography className='tableHeadText'>
-                                    Action
-                                </Typography>
-                            </TableCell>
-                        </TableRow>
-                    </TableHead>
-                    <TableBody>
-                        {softwareList.map((row: any, index: number) => {
-                            return (
-                                <TableRow
-                                    key={index}
-                                    style={
-                                        index % 2
-                                            ? { background: '#EFEFEF' }
-                                            : { background: 'white' }
-                                    }
-                                >
-                                    <TableCell
-                                        component='th'
-                                        scope='row'
-                                        className='tableCell'
+    if (softwareList.length) {
+        return (
+            <Container
+                maxWidth='md'
+                component='div'
+                classes={{
+                    root: classes.root,
+                }}
+            >
+                {
+                    (userStatus &&
+                        userStatus.roles &&
+                        (userStatus.roles.includes('Manager') ||
+                            userStatus.roles.includes('Admin'))) &&
+                    <Fragment>
+                        <input
+                            style={{ display: 'none' }}
+                            id="contained-button-file"
+                            multiple
+                            type="file"
+                            onChange={(e) => uploadSoftware(e)}
+                        />
+                        <label htmlFor="contained-button-file">
+                            <Button component="span" variant="outlined" className={classes.button}>
+                                Upload Software
+                            </Button>
+                        </label>
+                    </Fragment>
+                }
+                <Paper className='tableArea'>
+                    <Table className='table'>
+                        <TableHead className='tableHead'>
+                            <TableRow>
+                                <TableCell align='center' className='tableHeadCell'>
+                                    <Typography className='tableHeadText'>
+                                        Software
+                                    </Typography>
+                                </TableCell>
+                                <TableCell align='center' className='tableHeadCell'>
+                                    <Typography className='tableHeadText'>
+                                        Action
+                                    </Typography>
+                                </TableCell>
+                            </TableRow>
+                        </TableHead>
+                        <TableBody>
+                            {softwareList.map((row: any, index: number) => {
+                                return (
+                                    <TableRow
+                                        key={index}
+                                        style={
+                                            index % 2
+                                                ? { background: '#EFEFEF' }
+                                                : { background: 'white' }
+                                        }
                                     >
-                                        <Typography className='tableBodyText'>
-                                            {row.Key}
-                                        </Typography>
-                                    </TableCell>
-                                    <TableCell align='center' className='tableCell'>
-                                        <MaterialLink
-                                            href='#'
-                                            onClick={() => {
-                                                downloadSoftware(row.Key);
-                                            }}
+                                        <TableCell
+                                            component='th'
+                                            scope='row'
+                                            className='tableCell'
                                         >
-                                            <Typography>
-                                                Download
+                                            <Typography className='tableBodyText'>
+                                                {row.Key}
                                             </Typography>
-                                        </MaterialLink>
-                                    </TableCell>
-                                </TableRow>
-                            )
-                        })}
-                    </TableBody>
-                </Table>
-            </Paper>
-        </Container>
-    );
-};
+                                        </TableCell>
+                                        <TableCell align='center' className='tableCell'>
+                                            <MaterialLink
+                                                href='#'
+                                                onClick={() => {
+                                                    downloadSoftware(row.Key);
+                                                }}
+                                            >
+                                                <Typography>
+                                                    Download
+                                                </Typography>
+                                            </MaterialLink>
+                                        </TableCell>
+                                    </TableRow>
+                                )
+                            })}
+                        </TableBody>
+                    </Table>
+                </Paper>
+                <Notification notify={notify} setNotify={setNotify} />
+            </Container >
+        )
+    } else {
+        return (
+            <Container
+                maxWidth='md'
+                component='div'
+                classes={{
+                    root: classes.containerRoot,
+                }}
+            >
+                <Loader />
+            </Container>
+        );
+    };
+}
 
 export default ManageSoftwareFiles;
