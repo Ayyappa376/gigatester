@@ -8,7 +8,8 @@ import { Response } from 'express';
 const AWS = require('aws-sdk')
 const fs = require('fs');
 const path = require('path');
-
+// const multer = require('multer')
+// const upload = multer({ dest: 'uploads/' })
 // const multer = require('multer')
 
 interface UploadSoftware {
@@ -25,6 +26,9 @@ interface UploadSoftware {
 async function handler(request: UploadSoftware, response: Response) {
     appLogger.info({ UploadSoftware: request }, 'Inside Handler');
     const { headers, body } = request;
+    const accessKeyId = 'AKIARM6CF5OGVV24FR42';
+    const secretAccessKey = '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';
+    const BUCKET_NAME = 'dev-gigatester-manage-software';
     // const { assignee, type } = body;
     if (
         headers.user['cognito:groups'][0] !== 'Manager' &&
@@ -38,15 +42,14 @@ async function handler(request: UploadSoftware, response: Response) {
     var fileStream = fs.createReadStream(body.file);
 
     try {
-        console.log(body.file, 'ttttttttttttttttttttttttttttttttttttttttttttttttt', body.file.name)
 
         const s3 = new AWS.S3({
-            accessKeyId: 'AKIARM6CF5OGVV24FR42',
-            secretAccessKey: '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'
+            accessKeyId: accessKeyId,
+            secretAccessKey: secretAccessKey
         })
 
         const params = {
-            Bucket: 'dev-gigatester-manage-software',
+            Bucket: BUCKET_NAME,
             Key: path.basename(body.file),
             Body: fileStream
         }

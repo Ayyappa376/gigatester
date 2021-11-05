@@ -1,0 +1,75 @@
+import { API, Handler } from '@apis/index';
+import { appLogger, responseBuilder } from '@utils/index';
+import { Response } from 'express';
+const AWS = require('aws-sdk');
+
+interface GetTeam {
+    headers: {
+        user: {
+            'cognito:groups': string[];
+            'cognito:username': string;
+            email: string;
+        };
+    };
+    params: {
+        fileKey: string;
+    };
+}
+
+async function handler(request: GetTeam, response: Response) {
+    appLogger.info({ GetTeamConfig: request }, 'Inside Handler');
+    const { headers } = request;
+    const { params } = request;
+
+    const BUCKET_NAME = 'dev-gigatester-manage-software';
+
+
+    const cognitoUserId = headers.user['cognito:username'];
+
+    if (!cognitoUserId) {
+        const err = new Error('InvalidUser');
+        appLogger.error(err, 'Unauthorized');
+        return responseBuilder.unauthorized(err, response);
+    }
+    //returns the teams details, config details of a team and the organization id if the team id is sent - edit team
+    //returns the config details of a team and the organization id if the team id is not sent - create team
+    var bucketParams = {
+        Bucket: BUCKET_NAME,
+    };
+
+    const s3 = new AWS.S3();
+
+    if (params.fileKey) {
+        try {
+            const url = await s3.getSignedUrlPromise('getObject', {
+                Bucket: BUCKET_NAME,
+                Key: params.fileKey,
+                Expires: 60
+            })
+            appLogger.info({ downloadUrl: url });
+            return responseBuilder.ok({ filePath: url }, response);
+        } catch (err) {
+            appLogger.error({ downloadFileError: err });
+            console.log(err)
+        }
+    } else {
+        // Call S3 to obtain a list of the objects in the bucket
+        s3.listObjects(bucketParams, function (err: any, data: any) {
+            if (err) {
+                appLogger.error({ fileListError: err });
+                console.log("Error", err);
+            } else {
+                // console.log("Success", data);
+                appLogger.info({ fileList: data });
+                return responseBuilder.ok(data, response);
+            }
+        });
+    }
+}
+
+
+export const api: API = {
+    handler: <Handler>(<unknown>handler),
+    method: 'get',
+    route: '/api/v2/software/:fileKey?',
+};
