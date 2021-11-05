@@ -77,11 +77,6 @@ const ManageSoftwareFiles = (props: any) => {
         })
             .then((response: any) => {
                 setSoftwareList(response.Contents)
-                setNotify({
-                    isOpen: true,
-                    message: "The file has been uploaded successfully.",
-                    type: 'info',
-                });
             })
             .catch((error: any) => {
                 console.log(error);
@@ -94,6 +89,11 @@ const ManageSoftwareFiles = (props: any) => {
 
     const uploadSoftware = (event: any) => {
         let uploadedFile = event.target.files[0];
+        setNotify({
+            isOpen: true,
+            message: "Uploading...",
+            type: 'info',
+        });
         uploadedFile &&
             Http.post({
                 url: `/api/v2/software`,
@@ -106,7 +106,7 @@ const ManageSoftwareFiles = (props: any) => {
                     getUploadedSoftwares();
                     setNotify({
                         isOpen: true,
-                        message: "Uploading...",
+                        message: `The ${uploadedFile.name} file has been uploaded successfully.`,
                         type: 'info',
                     });
                 })
