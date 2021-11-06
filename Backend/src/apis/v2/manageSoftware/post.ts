@@ -1,16 +1,12 @@
 import { API, Handler } from '@apis/index';
 import {
     appLogger,
-    // uploadSoftwareFile,
     responseBuilder
 } from '@utils/index';
 import { Response } from 'express';
 const AWS = require('aws-sdk')
 const fs = require('fs');
 const path = require('path');
-// const multer = require('multer')
-// const upload = multer({ dest: 'uploads/' })
-// const multer = require('multer')
 
 interface UploadSoftware {
     body: {
@@ -29,7 +25,7 @@ async function handler(request: UploadSoftware, response: Response) {
     const accessKeyId = 'AKIARM6CF5OGVV24FR42';
     const secretAccessKey = '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';
     const BUCKET_NAME = 'dev-gigatester-manage-software';
-    // const { assignee, type } = body;
+    // const filePath = `C:\\Softwares\\${body.file}`
     if (
         headers.user['cognito:groups'][0] !== 'Manager' &&
         headers.user['cognito:groups'][0] !== 'Admin'
@@ -42,7 +38,6 @@ async function handler(request: UploadSoftware, response: Response) {
     var fileStream = fs.createReadStream(body.file);
 
     try {
-
         const s3 = new AWS.S3({
             accessKeyId: accessKeyId,
             secretAccessKey: secretAccessKey
@@ -55,24 +50,16 @@ async function handler(request: UploadSoftware, response: Response) {
         }
 
         appLogger.info({ uploadSoftwareFile_params: params });
-        console.log(params, 'pppppppppppppppppppppppppppppppppppppppppppppppppppppp');
 
         s3.upload(params, (error: Error, data: any) => {
             if (error) {
-                appLogger.info({ s3UploadError: error });
-                console.log(error, 'eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee')
+                appLogger.error(error, 's3UploadError');
             }
             appLogger.info({ s3UploadData: data });
-            console.log(data, 'dddddddddddddddddddddddddddddddddddddddddddddd')
             return responseBuilder.ok({ message: 'Uploaded' }, response);
-
         })
-        // const upload = multer({ storage }).single('image')
-        // await uploadSoftwareFile(body.file);
-
     } catch (err) {
         appLogger.error(err, 'Internal Server Error');
-        // responseBuilder.internalServerError(err, response);
     }
 }
 

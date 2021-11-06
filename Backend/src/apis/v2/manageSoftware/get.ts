@@ -23,7 +23,6 @@ async function handler(request: GetTeam, response: Response) {
 
     const BUCKET_NAME = 'dev-gigatester-manage-software';
 
-
     const cognitoUserId = headers.user['cognito:username'];
 
     if (!cognitoUserId) {
@@ -49,24 +48,20 @@ async function handler(request: GetTeam, response: Response) {
             appLogger.info({ downloadUrl: url });
             return responseBuilder.ok({ filePath: url }, response);
         } catch (err) {
-            appLogger.error({ downloadFileError: err });
-            console.log(err)
+            appLogger.error(err, 'downloadFileError');
         }
     } else {
         // Call S3 to obtain a list of the objects in the bucket
         s3.listObjects(bucketParams, function (err: any, data: any) {
             if (err) {
-                appLogger.error({ fileListError: err });
-                console.log("Error", err);
+                appLogger.error(err, 'fileListError');
             } else {
-                // console.log("Success", data);
                 appLogger.info({ fileList: data });
                 return responseBuilder.ok(data, response);
             }
         });
     }
 }
-
 
 export const api: API = {
     handler: <Handler>(<unknown>handler),

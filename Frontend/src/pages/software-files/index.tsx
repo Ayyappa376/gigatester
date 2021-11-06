@@ -98,7 +98,7 @@ const ManageSoftwareFiles = (props: any) => {
             Http.post({
                 url: `/api/v2/software`,
                 body: {
-                    file: uploadedFile.name,
+                    file: `C:\\Softwares\\${uploadedFile.name}`,
                 },
                 state: stateVariable,
             })
@@ -161,12 +161,12 @@ const ManageSoftwareFiles = (props: any) => {
                     <Fragment>
                         <input
                             style={{ display: 'none' }}
-                            id="contained-button-file"
+                            id="upload-software-file"
                             multiple
                             type="file"
                             onChange={(e) => uploadSoftware(e)}
                         />
-                        <label htmlFor="contained-button-file">
+                        <label htmlFor="upload-software-file">
                             <Button component="span" variant="outlined" className={classes.button}>
                                 Upload Software
                             </Button>
