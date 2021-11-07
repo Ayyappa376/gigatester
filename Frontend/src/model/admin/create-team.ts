@@ -19,7 +19,6 @@ export interface ITeamInfo {
     services?: IServiceInfo[];
     teamId: string;
     teamName: string;
-    technology?: string;
     [keyName: string]: any;
   }
   

@@ -5,10 +5,11 @@ import {
   CollectorConfigDetails,
   FieldConfigAttributes,
   GeneralConfigDetails,
-  ServiceConfigDetails,
+  ObjectConfigDetails,
+//  ServiceConfigDetails,
   SystemConfigDetails,
-  TeamConfigDetails,
-  UserConfigDetails,
+//  TeamConfigDetails,
+//  UserConfigDetails,
 } from '@models/index';
 import { config } from '@root/config';
 import { generate } from '@utils/common';
@@ -26,13 +27,7 @@ import { Response } from 'express';
 const NEW_ATTR_KEY_PREFIX = 'newAttr';
 
 interface PostSettings {
-  body:
-    | SystemConfigDetails
-    | UserConfigDetails
-    | TeamConfigDetails
-    | ServiceConfigDetails
-    | GeneralConfigDetails
-    | CollectorConfigDetails;
+  body: SystemConfigDetails | ObjectConfigDetails /*UserConfigDetails | TeamConfigDetails | ServiceConfigDetails*/ | GeneralConfigDetails | CollectorConfigDetails;
   headers: {
     user: {
       'cognito:groups': string[];
@@ -57,7 +52,7 @@ async function handler(request: PostSettings, response: Response) {
 
   switch (params.type) {
     case 'UserConfig': {
-      const configDetails: UserConfigDetails = convertNewKeys(body);
+      const configDetails: ObjectConfigDetails /*UserConfigDetails*/ = convertNewKeys(body);
       await setUserConfig(
         headers.user.orgId ? headers.user.orgId : config.defaults.orgId,
         configDetails
@@ -65,7 +60,7 @@ async function handler(request: PostSettings, response: Response) {
       break;
     }
     case 'TeamConfig': {
-      const configDetails: TeamConfigDetails = convertNewKeys(body);
+      const configDetails: ObjectConfigDetails /*TeamConfigDetails*/ = convertNewKeys(body);
       await setTeamConfig(
         headers.user.orgId ? headers.user.orgId : config.defaults.orgId,
         configDetails
@@ -73,7 +68,7 @@ async function handler(request: PostSettings, response: Response) {
       break;
     }
     case 'ServiceConfig': {
-      const configDetails: ServiceConfigDetails = convertNewKeys(body);
+      const configDetails: ObjectConfigDetails /*ServiceConfigDetails*/ = convertNewKeys(body);
       await setServiceConfig(
         headers.user.orgId ? headers.user.orgId : config.defaults.orgId,
         configDetails
@@ -116,11 +111,7 @@ async function handler(request: PostSettings, response: Response) {
 //creates a key for the custom attributes added.
 //The pattern for the created key is <first 4 letters of the field name after removing all white spaces>_<generated unique id>
 function convertNewKeys(fieldMap: any) {
-  const configDetails:
-    | UserConfigDetails
-    | TeamConfigDetails
-    | ServiceConfigDetails
-    | CollectorAttributesDetails = {};
+  const configDetails: /*UserConfigDetails | TeamConfigDetails | ServiceConfigDetails*/ ObjectConfigDetails | CollectorAttributesDetails = {};
   Object.keys(fieldMap).forEach((key: string) => {
     const attr: FieldConfigAttributes = fieldMap[key];
     let newKey = key;

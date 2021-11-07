@@ -92,6 +92,7 @@ export const config: Config = {
   },
   tables: {
     assessments: 'UserAssessments',
+    campaign: 'Campaigns',
     cognitoUsers: 'CognitoUsers',
     configs: 'Configs',
     questionnaires: 'Questionnaires',
