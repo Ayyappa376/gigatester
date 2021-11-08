@@ -4,4 +4,3 @@ export * from './dynamoDb';
 export * from './logger';
 export * from './elasticSearch';
 export * from './response-builder';
-export * from './S3';

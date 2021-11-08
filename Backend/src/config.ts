@@ -32,6 +32,9 @@ export interface Config {
   statusCodes: {
     [key: string]: number;
   };
+  s3: {
+    [key: string]: string;
+  };
   tables: {
     [key: string]: string;
   };
@@ -48,7 +51,7 @@ export const config: Config = {
   },
   defaults: {
     groups: ['Member'],
-//    orgId: 'dish', // default should be 'dish' //dish env
+    //    orgId: 'dish', // default should be 'dish' //dish env
     orgId: 'www', // default should be 'www' //pinimbus env
     quesType: '1234',
     scoreCoeff: 10,
@@ -62,9 +65,9 @@ export const config: Config = {
   },
   elasticsearch: {
     password: 'pinimbus', //change based on where to deploy
-//    url: 'http://10.155.223.144:9200', //dish env //change based on where to deploy
+    //    url: 'http://10.155.223.144:9200', //dish env //change based on where to deploy
     url: 'http://34.234.42.134:9200', //pinimbus env //change based on where to deploy
-//    url: 'http://18.206.35.232:9200', //nomiso - m1 env //change based on where to deploy
+    //    url: 'http://18.206.35.232:9200', //nomiso - m1 env //change based on where to deploy
     username: 'doitright-user', //change based on where to deploy
   },
   metricsTables: {
@@ -80,7 +83,7 @@ export const config: Config = {
     Manager: 2,
     Member: 3,
   },
-//  region: 'us-west-2', //dish env //change based on where to deploy
+  //  region: 'us-west-2', //dish env //change based on where to deploy
   region: 'us-east-1', //pinimbus env //change based on where to deploy
   statusCodes: {
     badRequest: 400,
@@ -89,6 +92,9 @@ export const config: Config = {
     notFound: 404,
     ok: 200,
     unauthorized: 401,
+  },
+  s3: {
+    gigaTesterSoftwareBucket: 'gigatester-manage-software'
   },
   tables: {
     assessments: 'UserAssessments',

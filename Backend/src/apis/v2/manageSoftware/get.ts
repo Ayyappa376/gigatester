@@ -1,4 +1,5 @@
 import { API, Handler } from '@apis/index';
+import { config } from '@root/config';
 import { appLogger, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 const AWS = require('aws-sdk');
@@ -21,7 +22,7 @@ async function handler(request: GetTeam, response: Response) {
     const { headers } = request;
     const { params } = request;
 
-    const BUCKET_NAME = 'dev-gigatester-manage-software';
+    const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
 
     const cognitoUserId = headers.user['cognito:username'];
 

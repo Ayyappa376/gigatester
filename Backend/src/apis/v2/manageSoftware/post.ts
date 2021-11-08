@@ -1,4 +1,5 @@
 import { API, Handler } from '@apis/index';
+import { config } from '@root/config';
 import {
     appLogger,
     responseBuilder
@@ -24,8 +25,8 @@ async function handler(request: UploadSoftware, response: Response) {
     const { headers, body } = request;
     const accessKeyId = 'AKIARM6CF5OGVV24FR42';
     const secretAccessKey = '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';
-    const BUCKET_NAME = 'dev-gigatester-manage-software';
-    // const filePath = `C:\\Softwares\\${body.file}`
+    const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
+
     if (
         headers.user['cognito:groups'][0] !== 'Manager' &&
         headers.user['cognito:groups'][0] !== 'Admin'
@@ -35,7 +36,7 @@ async function handler(request: UploadSoftware, response: Response) {
         return responseBuilder.forbidden(err, response);
     }
 
-    var fileStream = fs.createReadStream(body.file);
+    const fileStream = fs.createReadStream(body.file);
 
     try {
         const s3 = new AWS.S3({
