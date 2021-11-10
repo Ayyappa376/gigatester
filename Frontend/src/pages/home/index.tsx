@@ -7,6 +7,8 @@ import { IRootState } from '../../reducers';
 import { Http } from '../../utils';
 import { PlatformsView, RocordsCount, TestersView, UsersFeedback } from '../../components/home/leftPane'
 import TopPane from '../../components/home/topPane'
+import { LatestNews } from '../../components/home/rightPane';
+import PageFooter from '../../components/pageFooter';
 
 const useStyles = makeStyles({
   root: {
@@ -98,7 +100,11 @@ const Home = (props: any) => {
         </Grid>
         <Grid item xs={12} sm={4}>
           <Typography style={{ fontWeight: 'bold', fontStyle: 'italic' }}>Latest News</Typography>
+          <LatestNews />
+          <LatestNews />
+          <LatestNews />
         </Grid>
+        <PageFooter />
       </Grid>
     </Container >
   );
