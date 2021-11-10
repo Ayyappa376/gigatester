@@ -1,6 +1,7 @@
-import React from 'react';
-import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Grid, InputLabel, Paper, Typography } from '@material-ui/core';
+import React, { Fragment } from 'react';
+import { makeStyles } from '@material-ui/core/styles';
+import { Button, Grid, InputLabel, Paper, Typography } from '@material-ui/core';
+import '../style.css';
 
 const platformList = [
     {
@@ -30,44 +31,59 @@ const platformList = [
     },
 ];
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        height: '100%'
-    },
+const useStyles = makeStyles(() => ({
     img: {
         height: 40,
         width: 40,
         borderRadius: '20%',
-        // margin: '10px 20px'
     },
+    block: {
+        padding: '10px 20px',
+        borderLeft: '2px solid #000000'
+    },
+    subTitle: {
+        fontSize: '12px',
+        paddingTop: '2px',
+    }
 }));
 
 function PlatformsView() {
     const classes = useStyles();
-    const theme = useTheme();
+
     return (
-        <Paper style={{ background: '#F0F0F0', borderTop: '2px solid #000000', padding: '20px' }}>
-            <Grid container spacing={3} >
-                {platformList.map((item, index) => {
-                    return (
-                        <Grid item xs={12} sm={6} key={index} >
-                            <Paper style={{ padding: '10px 20px', borderLeft: '2px solid #000000' }}>
-                                <Grid container spacing={4} >
-                                    <Grid item xs={3} sm={3} md={3} >
-                                        <img className={classes.img} src={item.imgPath} alt={item.label} />
-                                    </Grid>
-                                    <Grid item xs={9} sm={9} md={9}>
-                                        <Typography>{item.label}</Typography>
-                                        <InputLabel style={{ fontSize: '12px' }}>{item.label}</InputLabel>
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
-                    )
-                })}
+        <Fragment>
+            <Grid container spacing={1} >
+                <Grid item xs={12} sm={6}>
+                    <Typography className='headerText'>Platforms</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Button variant="outlined" color="primary" size='small' className='button buttonMarginLeftPane'>
+                        View All
+                    </Button>
+                </Grid>
             </Grid>
-        </Paper >
+            <Paper className="platformViewSection sectionBackground sectionBorder" >
+                <Grid container spacing={3} >
+                    {platformList.map((item, index) => {
+                        return (
+                            <Grid item xs={12} sm={6} key={index} >
+                                <Paper className={classes.block} >
+                                    <Grid container spacing={4} >
+                                        <Grid item xs={3} sm={3} md={3} >
+                                            <img className={classes.img} src={item.imgPath} alt={item.label} />
+                                        </Grid>
+                                        <Grid item xs={9} sm={9} md={9}>
+                                            <Typography>{item.label}</Typography>
+                                            <InputLabel className={classes.subTitle}>{item.label}</InputLabel>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+            </Paper >
+        </Fragment>
     );
 };
 

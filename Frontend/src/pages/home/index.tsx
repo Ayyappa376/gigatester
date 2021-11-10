@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Button, Container, Grid, Typography } from '@material-ui/core';
+import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { useSelector } from 'react-redux';
 import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
@@ -12,17 +12,16 @@ import PageFooter from '../../components/pageFooter';
 
 const useStyles = makeStyles({
   root: {
-    width: '100%',
-    height: '100%',
     paddingTop: '4%',
     padding: 0,
+    overflow: 'hidden',
   },
-  button: {
-    borderRadius: "5em",
-    marginBottom: '5px',
-    float: 'right',
-    lineHeight: 1.2
+  marginTopTen: {
+    marginTop: '10px'
   },
+  marginTopTwenty: {
+    marginTop: '20px'
+  }
 });
 
 const Home = (props: any) => {
@@ -60,48 +59,24 @@ const Home = (props: any) => {
         root: classes.root,
       }}
     >
-      <Grid container spacing={1} >
+      <Grid container spacing={2} >
         <TopPane />
         <Grid item xs={12} sm={1} />
-        <Grid item xs={12} sm={6}>
-          <Grid item xs={12} sm={12} style={{ marginTop: '10px' }}>
+        <Grid item xs={12} sm={7}>
+          <Grid item xs={12} sm={12} className={classes.marginTopTen}>
             <RocordsCount />
           </Grid>
-          <Grid item xs={12} sm={12} style={{ marginTop: '20px' }}>
-            <Typography style={{ fontWeight: 'bold', fontStyle: 'italic' }}>BUZZ</Typography>
+          <Grid item xs={12} sm={12} className={classes.marginTopTwenty}>
             <UsersFeedback />
           </Grid>
-          <Grid item xs={12} sm={12} style={{ marginTop: '20px' }}>
-            <Grid container spacing={1} >
-              <Grid item xs={12} sm={6}>
-                <Typography style={{ fontWeight: 'bold', fontStyle: 'italic' }}>Testers</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Button variant="outlined" color="primary" size='small' className={classes.button}>
-                  View All
-                </Button>
-              </Grid>
-            </Grid>
+          <Grid item xs={12} sm={12} className={classes.marginTopTwenty}>
             <TestersView />
           </Grid>
-          <Grid item xs={12} sm={12} style={{ marginTop: '20px' }}>
-            <Grid container spacing={1} >
-              <Grid item xs={12} sm={6}>
-                <Typography style={{ fontWeight: 'bold', fontStyle: 'italic' }}>Platforms</Typography>
-              </Grid>
-              <Grid item xs={12} sm={6}>
-                <Button variant="outlined" color="primary" size='small' className={classes.button}>
-                  View All
-                </Button>
-              </Grid>
-            </Grid>
+          <Grid item xs={12} sm={12} className={classes.marginTopTwenty}>
             <PlatformsView />
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={4}>
-          <Typography style={{ fontWeight: 'bold', fontStyle: 'italic' }}>Latest News</Typography>
-          <LatestNews />
-          <LatestNews />
+        <Grid item xs={12} sm={3} className={classes.marginTopTen}>
           <LatestNews />
         </Grid>
         <PageFooter />

@@ -1,6 +1,7 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Grid, InputLabel, Paper, Typography } from '@material-ui/core';
+import '../style.css';
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,18 +17,6 @@ const useStyles = makeStyles((theme) => ({
         fontSize: '14px',
         lineHeight: '20px'
     },
-    header: {
-        display: 'flex',
-        alignItems: 'center',
-        height: 50,
-        paddingLeft: theme.spacing(4),
-        backgroundColor: theme.palette.background.default,
-    },
-    button: {
-        margin: '20px 0px',
-        borderRadius: "5em",
-        lineHeight: 1.4
-    },
 }));
 
 function TopPane() {
@@ -40,7 +29,7 @@ function TopPane() {
                 <Grid item xs={12} sm={4} style={{ textAlign: 'right' }}>
                     <Typography className={classes.title} >Become a Tester?</Typography>
                     <InputLabel className={classes.subTitle}>Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry standard dummy text</InputLabel>
-                    <Button variant="outlined" color="primary" size='small' className={classes.button}>
+                    <Button variant="outlined" color="primary" size='small' className='button buttonMarginTopPane'>
                         Click Here
                     </Button>
                 </Grid>
@@ -48,7 +37,7 @@ function TopPane() {
                 <Grid item xs={12} sm={4} style={{ textAlign: 'left' }}>
                     <Typography className={classes.title}>Test my Product?</Typography>
                     <InputLabel className={classes.subTitle}>Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry standard dummy text</InputLabel>
-                    <Button variant="outlined" color="primary" size='small' className={classes.button}>
+                    <Button variant="outlined" color="primary" size='small' className='button buttonMarginTopPane'>
                         Click Here
                     </Button>
                 </Grid>

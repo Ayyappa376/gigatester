@@ -1,6 +1,7 @@
 import React, { Fragment } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Paper } from '@material-ui/core';
+import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import '../style.css';
 
 const testersList = [
     {
@@ -30,11 +31,7 @@ const testersList = [
     },
 ];
 
-const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        height: '100%'
-    },
+const useStyles = makeStyles(() => ({
     img: {
         height: 60,
         width: 60,
@@ -45,16 +42,28 @@ const useStyles = makeStyles((theme) => ({
 
 function TestersView() {
     const classes = useStyles();
-    const theme = useTheme();
+
     return (
-        <Paper style={{ background: '#F0F0F0', borderTop: '2px solid #000000' }}>
-            {testersList.map((item, index) => {
-                return (
-                    <img className={classes.img} src={item.imgPath} alt={item.label} key={index} />
-                )
-            })
-            }
-        </Paper >
+        <Fragment>
+            <Grid container spacing={1} >
+                <Grid item xs={12} sm={6}>
+                    <Typography className='headerText'>Testers</Typography>
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                    <Button variant="outlined" color="primary" size='small' className='button buttonMarginLeftPane'>
+                        View All
+                    </Button>
+                </Grid>
+            </Grid>
+            <Paper className="sectionBackground sectionBorder" >
+                {testersList.map((item, index) => {
+                    return (
+                        <img className={classes.img} src={item.imgPath} alt={item.label} key={index} />
+                    )
+                })
+                }
+            </Paper >
+        </Fragment>
     );
 };
 
