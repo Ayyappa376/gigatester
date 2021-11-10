@@ -1,11 +1,8 @@
 import React, { useState, Fragment } from 'react';
 import bigLogo from '../../logo/big-logo.jpg';
 import {
-  AppBar,
-  Toolbar,
   Typography,
   makeStyles,
-  Grid,
   Tooltip,
   Button,
   Menu,
@@ -16,7 +13,6 @@ import { NavLink, withRouter } from 'react-router-dom';
 import { IRootState } from '../../reducers';
 import { ModalComponent } from '../modal';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import HomeIcon from '@material-ui/icons/Home';
 import {
   resetBothDisplayText,
   useActions,
@@ -38,10 +34,10 @@ interface PageRedirectState {
 
 const useStyles = makeStyles((theme) => ({
   headerItem: {
-    color: 'black',
+    color: '#666666',
     padding: theme.spacing(1),
     cursor: 'pointer',
-    fontSize: '16px',
+    fontSize: '14px',
   },
   headerItemDisabled: {
     color: '#9E9E9E',
@@ -64,8 +60,8 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '48px',
   },
   bigLogo: {
-    height: '45px',
-    backgroundColor: '#F7F7F7',
+    height: '40px',
+    padding: theme.spacing(1),
   },
   appBar: {
     minWidth: '100%',
@@ -86,10 +82,11 @@ const useStyles = makeStyles((theme) => ({
   topBar: {
     width: '100%',
     height: '50px',
-    backgroundColor: '#F7F7F7',
     position: 'fixed',
     zIndex: 100,
     top: 0,
+    borderBottom: '2px solid #000000',
+    background: '#ffffff'
   },
   appBarTextRight: {
     // width: "100%",
@@ -134,15 +131,15 @@ const PageHeader = (props: any) => {
   const userStatus = useSelector((state: IRootState) => {
     return state.user;
   });
-  const displayTextLeft = useSelector((state: IRootState) => {
-    return state.display.topBarTextLeft;
-  });
-  const displayTextCenter = useSelector((state: IRootState) => {
-    return state.display.topBarTextCenter;
-  });
-  const displayTextRight = useSelector((state: IRootState) => {
-    return state.display.topBarTextRight;
-  });
+  // const displayTextLeft = useSelector((state: IRootState) => {
+  //   return state.display.topBarTextLeft;
+  // });
+  // const displayTextCenter = useSelector((state: IRootState) => {
+  //   return state.display.topBarTextCenter;
+  // });
+  // const displayTextRight = useSelector((state: IRootState) => {
+  //   return state.display.topBarTextRight;
+  // });
   const currentPage = useSelector((state: IRootState) => {
     return state.display.currentPage;
   });
@@ -151,7 +148,7 @@ const PageHeader = (props: any) => {
   const resetBothTexts = useActions(resetBothDisplayText);
   const setDisplayTextRight = useActions(setAppBarRightText);
   const [anchorEl, setAnchorEl] = useState(null);
-  const [anchorMetricsEl, setAnchorMetricsEl] = useState(null);
+  // const [anchorMetricsEl, setAnchorMetricsEl] = useState(null);
   const [anchorDashboardEl, setAnchorDashboardEl] = useState(null);
   const [anchorTrendsEl, setAnchorTrendsEl] = useState(null);
   const [openModalLogout, setOpenModalLogout] = useState(false);
@@ -181,6 +178,8 @@ const PageHeader = (props: any) => {
     );
   }
 
+  console.log(userStatus)
+
   const onLogin = () => {
     setOpenSignin(true)
   };
@@ -200,9 +199,9 @@ const PageHeader = (props: any) => {
 
   const renderUserStatus = () => {
     return (
-      <div className='header-item last-item'>
+      <div className='header-item'>
         {userStatus.idToken ? (
-          <Tooltip title={<Typography>Logout</Typography>}>
+          <Tooltip title={<Typography>User Name</Typography>}>
             <Typography
               onClick={logoutModalActivate}
               className={classes.headerItem}
@@ -220,7 +219,7 @@ const PageHeader = (props: any) => {
   };
 
   const handleAssessment = (event: any) => {
-    // setAdminPageState(false);
+    setAdminPageState(false);
     const { getMetricsType } = props;
     setAnchorEl(event.currentTarget);
     getMetricsType('doraMetrics');
@@ -241,15 +240,15 @@ const PageHeader = (props: any) => {
   //   props.history.push('/metricSelect');
   // };
 
-  const handleMetricsMenuClose = () => {
-    setAnchorMetricsEl(null);
-  };
+  // const handleMetricsMenuClose = () => {
+  //   setAnchorMetricsEl(null);
+  // };
 
-  const handleMetricsMenuOptionClick = (metricType: any) => {
-    const { getMetricsType } = props;
-    handleMetricsMenuClose();
-    getMetricsType(metricType);
-  };
+  // const handleMetricsMenuOptionClick = (metricType: any) => {
+  //   const { getMetricsType } = props;
+  //   handleMetricsMenuClose();
+  //   getMetricsType(metricType);
+  // };
 
   function handleDashboardMenuClick(event: any) {
     const { getMetricsType } = props;
@@ -294,11 +293,11 @@ const PageHeader = (props: any) => {
     }
   };
 
-  const leaveMetricMenu = () => {
-    setTimeout(() => {
-      setAnchorMetricsEl(null);
-    }, timeoutLength);
-  };
+  // const leaveMetricMenu = () => {
+  //   setTimeout(() => {
+  //     setAnchorMetricsEl(null);
+  //   }, timeoutLength);
+  // };
 
   const leaveDashboardMenu = () => {
     setTimeout(() => {
@@ -642,36 +641,6 @@ const PageHeader = (props: any) => {
     return;
   };
 
-  const renderSecondTopBar = () => {
-    if (systemDetails.mode === constantValues.TRIAL_MODE) {
-      return (
-        <AppBar
-          position='static'
-          color='primary'
-          className={classes.appBarMini}
-        ></AppBar>
-      );
-    } else {
-      return (
-        <AppBar position='static' color='primary' className={classes.appBar}>
-          <Toolbar>
-            <Grid container>
-              <Grid item sm={4} className={classes.appBarTextLeft}>
-                {displayTextLeft}
-              </Grid>
-              <Grid item sm={4} className={classes.appBarTextCenter}>
-                {displayTextCenter}
-              </Grid>
-              <Grid item sm={4} className={classes.appBarTextRight}>
-                {displayTextRight}
-              </Grid>
-            </Grid>
-          </Toolbar>
-        </AppBar>
-      );
-    }
-  };
-
   const handleMyAssessments = () => {
     setAdminPageState(false);
     if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
@@ -764,11 +733,11 @@ const PageHeader = (props: any) => {
     );
   };
 
-  const handleHomeIconClick = () => {
-    setFocusURL('/');
-    setPageRedirectState({ type: '' });
-    setOpenModalLeavePage(true);
-  };
+  // const handleHomeIconClick = () => {
+  //   setFocusURL('/');
+  //   setPageRedirectState({ type: '' });
+  //   setOpenModalLeavePage(true);
+  // };
 
   const modalYesClickedLeavePage = () => {
     setOpenModalLeavePage(false);
@@ -793,75 +762,66 @@ const PageHeader = (props: any) => {
   }
 
   const renderHomeButton = () => {
-    if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
-      return (
-        <div className='header-item'>
-          <Tooltip
-            title={
-              <Typography>
-                <Text tid='homepageIsForbidden' />
-              </Typography>
-            }
-          >
-            <Typography className={classes.headerItemDisabled}>
-              <HomeIcon />
-            </Typography>
-          </Tooltip>
-        </div>
-      );
-    }
-    if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
-      return (
-        <div className='header-item'>
-          <Typography className={classes.headerItem}>
-            <HomeIcon />
-          </Typography>
-        </div>
-      );
-    }
     return (
       <div className='header-item'>
         <NavLink to='/'>
           <Typography className={classes.headerItem}>
-            <HomeIcon />
+            <Text tid='home' />
           </Typography>
         </NavLink>
       </div>
     );
   };
 
+  const renderAboutUsButton = () => {
+    if (userStatus.idToken) {
+      return;
+    } else {
+      return (
+        <div className='header-item'>
+          <NavLink to='/about'>
+            <Typography className={classes.headerItem}>
+              <Text tid='aboutUs' />
+            </Typography>
+          </NavLink>
+        </div>
+      );
+    }
+  };
+
+  const renderVisionButton = () => {
+    if (userStatus.idToken) {
+      return;
+    } else {
+      return (
+        <div className='header-item'>
+          <NavLink to='/'>
+            <Typography className={classes.headerItem}>
+              <Text tid='vision' />
+            </Typography>
+          </NavLink>
+        </div>
+      );
+    }
+  };
+
+  const renderContactUsButton = () => {
+    if (userStatus.idToken) {
+      return;
+    } else {
+      return (
+        <div className='header-item'>
+          <NavLink to='/'>
+            <Typography className={classes.headerItem}>
+              <Text tid='contactUs' />
+            </Typography>
+          </NavLink>
+        </div>
+      );
+    }
+  };
+
   const renderLogo = () => {
-    if (systemDetails.mode === constantValues.TRIAL_MODE) {
-      return (
-        <div className='topbar-header-logo'>
-          <img className={classes.bigLogo} src={bigLogo} alt='logo' />
-        </div>
-      );
-    }
-    if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
-      return (
-        <div className='topbar-header-logo'>
-          <Tooltip
-            title={
-              <Typography>
-                <Text tid='homepageIsForbidden' />
-              </Typography>
-            }
-          >
-            <img className={classes.bigLogo} src={bigLogo} alt='logo' />
-          </Tooltip>
-        </div>
-      );
-    }
-    if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
-      return (
-        <div className='topbar-header-logo'>
-          <div onClick={handleHomeIconClick}>
-            <img className={classes.bigLogo} src={bigLogo} alt='logo' />
-          </div>
-        </div>
-      );
-    }
     return (
       <div className='topbar-header-logo'>
         <NavLink to='/'>
@@ -880,6 +840,9 @@ const PageHeader = (props: any) => {
             <div className='header-container'>
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
+              {renderAboutUsButton()}
+              {renderVisionButton()}
+              {renderContactUsButton()}
               {renderAdminPage()}
               {renderManageSoftwareFiles()}
               {/* {renderViewMetrics()} */}
@@ -890,7 +853,7 @@ const PageHeader = (props: any) => {
               {renderTrendsMenuItems()}
               {renderViewAssessment()}
               {renderMenuItems()}
-              <div className='header-item last-item'>{renderUserStatus()}</div>
+              <div className='header-item'>{renderUserStatus()}</div>
             </div>
           ) : (
             <div className='header-item'>
@@ -904,7 +867,6 @@ const PageHeader = (props: any) => {
             </div>
           )}
         </div>
-        {!adminPageState && renderSecondTopBar()}
       </div>
       <ModalComponent
         message={'wantToLogout'}
