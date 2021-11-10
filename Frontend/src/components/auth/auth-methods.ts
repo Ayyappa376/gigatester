@@ -23,7 +23,6 @@ export class AuthMethods {
             return response;
         }
         return response;
-
     }
     private clearLocalStorage = () => {
         return localStorage.clear();

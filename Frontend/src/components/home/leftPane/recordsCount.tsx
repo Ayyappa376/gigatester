@@ -11,8 +11,8 @@ function RecordsCount() {
         <Grid container spacing={2}  >
             {records.map((item, index) => {
                 return (
-                    <Grid item xs={4} sm={4} md={4} >
-                        <Paper key={index} style={{ background: '#F0F0F0', padding: '10px 20px' }}>
+                    <Grid item xs={4} sm={4} md={4} key={index}>
+                        <Paper style={{ background: '#F0F0F0', padding: '10px 20px' }}>
                             <Typography> {item.name} </Typography>
                             <Typography variant="h5" style={{ color: '#F9F9F9', textShadow: '1px 1px 1px #808080' }}> {item.value}</Typography>
                         </Paper>

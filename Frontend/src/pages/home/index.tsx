@@ -1,6 +1,10 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Button, Container, Grid, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { useSelector } from 'react-redux';
+import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
+import { IRootState } from '../../reducers';
+import { Http } from '../../utils';
 import { PlatformsView, RocordsCount, TestersView, UsersFeedback } from '../../components/home/leftPane'
 import TopPane from '../../components/home/topPane'
 
@@ -19,8 +23,33 @@ const useStyles = makeStyles({
   },
 });
 
-const Home = () => {
+const Home = (props: any) => {
   const classes = useStyles();
+  const setSysDetails = useActions(setSystemDetails);
+  const systemDetails = useSelector((state: IRootState) => state.systemDetails);
+  const stateVariable = useSelector((state: IRootState) => state);
+  const setCurrentPageValue = useActions(setCurrentPage);
+
+  useEffect(() => {
+    setCurrentPageValue('');
+    if (
+      !systemDetails ||
+      systemDetails.appClientId === '' ||
+      systemDetails.appClientURL === ''
+    ) {
+      Http.get({
+        url: '/api/v2/settings/cognito',
+        state: { stateVariable },
+        customHeaders: { noauthvalidate: 'true' },
+      })
+        .then((response: any) => {
+          setSysDetails(response);
+        })
+        .catch((error: any) => {
+          props.history.push('/error');
+        });
+    }
+  }, []);
 
   return (
     <Container

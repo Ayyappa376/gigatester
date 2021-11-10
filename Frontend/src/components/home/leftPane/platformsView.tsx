@@ -51,8 +51,8 @@ function PlatformsView() {
             <Grid container spacing={3} >
                 {platformList.map((item, index) => {
                     return (
-                        <Grid item xs={12} sm={6} >
-                            <Paper key={index} style={{ padding: '10px 20px', borderLeft: '2px solid #000000' }}>
+                        <Grid item xs={12} sm={6} key={index} >
+                            <Paper style={{ padding: '10px 20px', borderLeft: '2px solid #000000' }}>
                                 <Grid container spacing={4} >
                                     <Grid item xs={3} sm={3} md={3} >
                                         <img className={classes.img} src={item.imgPath} alt={item.label} />

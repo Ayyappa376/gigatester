@@ -178,8 +178,6 @@ const PageHeader = (props: any) => {
     );
   }
 
-  console.log(userStatus)
-
   const onLogin = () => {
     setOpenSignin(true)
   };
