@@ -12,7 +12,6 @@ import {
   MenuItem,
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
-import './style.css';
 import { NavLink, withRouter } from 'react-router-dom';
 import { IRootState } from '../../reducers';
 import { ModalComponent } from '../modal';
@@ -29,6 +28,7 @@ import { Link } from 'react-scroll';
 // import LanguageSelector from '../language-selection-dropdown/index';
 import { Text } from '../../common/Language';
 import SignInForm from '../signInForm';
+import './style.css';
 
 const timeoutLength = 50;
 
@@ -230,6 +230,11 @@ const PageHeader = (props: any) => {
     setAnchorEl(null);
   };
 
+  const handleSoftwareMenuClick = (event: any) => {
+    setAdminPageState(false);
+    props.history.push('/manageSoftwareFiles');
+  };
+
   // const handleMetricsMenuClick = (event: any) => {
   //   setAnchorMetricsEl(event.currentTarget);
   //   setAdminPageState(false);
@@ -342,8 +347,7 @@ const PageHeader = (props: any) => {
     props.history.push('/trial/close');
   };
 
-/*
-  const renderViewMetrics = () => {
+  const renderManageSoftwareFiles = () => {
     if (!userStatus.idToken) {
       return <div />;
     }
@@ -351,47 +355,64 @@ const PageHeader = (props: any) => {
       <div className='header-item'>
         <Typography
           className={classes.headerItem}
-          onClick={handleMetricsMenuClick}
+          onClick={handleSoftwareMenuClick}
         >
-          <Text tid='metrics' />
+          <Text tid='software' />
         </Typography>
       </div>
     );
   };
 
-  const renderMetricsMenuItems = () => {
-    if (!userStatus.roles) {
-      return;
-    }
-    if (
-      userStatus.roles!.indexOf('Admin') !== -1 ||
-      userStatus.roles!.indexOf('Manager') !== -1
-    ) {
+  /*
+    const renderViewMetrics = () => {
+      if (!userStatus.idToken) {
+        return <div />;
+      }
       return (
-        <Menu
-          id='menu-list-grow'
-          anchorEl={anchorMetricsEl}
-          keepMounted
-          open={Boolean(anchorMetricsEl)}
-          onClose={handleMetricsMenuClose}
-          MenuListProps={{
-            onMouseLeave: leaveMetricMenu,
-          }}
-          className={classes.menu}
-        >
-          {metricsMenu.map((menuList: any, index: number) => {
-            return (
-              <MenuItem className={classes.menuitem} key={index} onClick={() => handleMetricsMenuOptionClick(menuList.link)}>
-                <Text tid={menuList.name} />
-              </MenuItem>
-            );
-          })}
-        </Menu>
+        <div className='header-item'>
+          <Typography
+            className={classes.headerItem}
+            onClick={handleMetricsMenuClick}
+          >
+            <Text tid='metrics' />
+          </Typography>
+        </div>
       );
-    }
-    return;
-  };
-*/
+    };
+  
+    const renderMetricsMenuItems = () => {
+      if (!userStatus.roles) {
+        return;
+      }
+      if (
+        userStatus.roles!.indexOf('Admin') !== -1 ||
+        userStatus.roles!.indexOf('Manager') !== -1
+      ) {
+        return (
+          <Menu
+            id='menu-list-grow'
+            anchorEl={anchorMetricsEl}
+            keepMounted
+            open={Boolean(anchorMetricsEl)}
+            onClose={handleMetricsMenuClose}
+            MenuListProps={{
+              onMouseLeave: leaveMetricMenu,
+            }}
+            className={classes.menu}
+          >
+            {metricsMenu.map((menuList: any, index: number) => {
+              return (
+                <MenuItem className={classes.menuitem} key={index} onClick={() => handleMetricsMenuOptionClick(menuList.link)}>
+                  <Text tid={menuList.name} />
+                </MenuItem>
+              );
+            })}
+          </Menu>
+        );
+      }
+      return;
+    };
+  */
 
   const renderAdminPage = () => {
     if (!userStatus.roles) {
@@ -860,6 +881,7 @@ const PageHeader = (props: any) => {
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
               {renderAdminPage()}
+              {renderManageSoftwareFiles()}
               {/* {renderViewMetrics()} */}
               {/* {renderMetricsMenuItems()} */}
               {renderDashboardPage()}

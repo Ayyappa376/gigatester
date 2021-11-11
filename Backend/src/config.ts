@@ -32,6 +32,9 @@ export interface Config {
   statusCodes: {
     [key: string]: number;
   };
+  s3: {
+    [key: string]: string;
+  };
   tables: {
     [key: string]: string;
   };
@@ -84,6 +87,9 @@ export const config: Config = {
     notFound: 404,
     ok: 200,
     unauthorized: 401,
+  },
+  s3: {
+    gigaTesterSoftwareBucket: 'gigatester-manage-software'
   },
   tables: {
     assessments: 'GT_UserAssessments',
