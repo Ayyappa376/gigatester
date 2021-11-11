@@ -29,11 +29,11 @@ export interface Config {
     [key: string]: number;
   };
   region: string;
-  statusCodes: {
-    [key: string]: number;
-  };
   s3: {
     [key: string]: string;
+  };
+  statusCodes: {
+    [key: string]: number;
   };
   tables: {
     [key: string]: string;
@@ -80,6 +80,9 @@ export const config: Config = {
     Member: 3,
   },
   region: 'us-east-1', //nomiso - dev env //change based on where to deploy
+  s3: {
+    gigaTesterSoftwareBucket: 'gigatester-manage-software'
+  },
   statusCodes: {
     badRequest: 400,
     forbidden: 403,
@@ -87,9 +90,6 @@ export const config: Config = {
     notFound: 404,
     ok: 200,
     unauthorized: 401,
-  },
-  s3: {
-    gigaTesterSoftwareBucket: 'gigatester-manage-software'
   },
   tables: {
     assessments: 'GT_UserAssessments',

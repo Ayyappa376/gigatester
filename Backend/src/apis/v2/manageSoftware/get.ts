@@ -33,7 +33,7 @@ async function handler(request: GetTeam, response: Response) {
     }
     //returns the teams details, config details of a team and the organization id if the team id is sent - edit team
     //returns the config details of a team and the organization id if the team id is not sent - create team
-    var bucketParams = {
+    const bucketParams = {
         Bucket: BUCKET_NAME,
     };
 
@@ -43,9 +43,9 @@ async function handler(request: GetTeam, response: Response) {
         try {
             const url = await s3.getSignedUrlPromise('getObject', {
                 Bucket: BUCKET_NAME,
+                Expires: 60,
                 Key: params.fileKey,
-                Expires: 60
-            })
+            });
             appLogger.info({ downloadUrl: url });
             return responseBuilder.ok({ filePath: url }, response);
         } catch (err) {

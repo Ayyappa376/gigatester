@@ -3,7 +3,7 @@ service: gigatester-backend
 
 provider:
   name: aws
-  runtime: nodejs12.x
+  runtime: nodejs14.x
   stage: ${opt:stage, 'development'}
   region: us-east-1  #change based on where to deploy
   memorySize: 2048 # In MB, Max is 10240 MB.
