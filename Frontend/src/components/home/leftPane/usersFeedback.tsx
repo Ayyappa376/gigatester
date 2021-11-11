@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Button, Grid, MobileStepper, Paper, Typography } from '@material-ui/core';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
@@ -8,34 +8,6 @@ import { autoPlay } from 'react-swipeable-views-utils';
 import '../style.css';
 
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
-
-const tutorialSteps = [
-    {
-        label: 'San Francisco – Oakland Bay Bridge, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bird',
-        imgPath:
-            'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Bali, Indonesia',
-        imgPath:
-            'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
-    },
-    {
-        label: 'NeONBRAND Digital Marketing, Las Vegas, United States',
-        imgPath:
-            'https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-    {
-        label: 'Goč, Serbia',
-        imgPath:
-            'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',
-    },
-];
 
 const useStyles = makeStyles((theme) => ({
     img: {
@@ -49,11 +21,11 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-function UsersFeedback() {
+const UsersFeedback = (props: any) => {
     const classes = useStyles();
     const theme = useTheme();
     const [activeStep, setActiveStep] = React.useState(0);
-    const maxSteps = tutorialSteps.length;
+    const maxSteps = props.usersFeedback && props.usersFeedback.length;
 
     const handleNext = () => {
         setActiveStep((prevActiveStep) => prevActiveStep + 1);
@@ -68,8 +40,8 @@ function UsersFeedback() {
     };
 
     return (
-        <Fragment>
-            <Typography className='headerText'>BUZZ</Typography>
+        <div data-testid="userFeedback">
+            <Typography className='headerText' data-testid="header">BUZZ</Typography>
             <Paper>
                 <AutoPlaySwipeableViews
                     axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
@@ -78,16 +50,16 @@ function UsersFeedback() {
                     enableMouseEvents
                     className="sliderBackground sliderBorder"
                 >
-                    {tutorialSteps.map((step, index) => (
-                        <div key={step.label} className={classes.sliderView} >
+                    {props.usersFeedback && props.usersFeedback.map((item: any, index: number) => (
+                        <div key={item.label} className={classes.sliderView} >
                             {Math.abs(activeStep - index) <= 2 ? (
-                                <div >
+                                <div data-testid="feedbackMessage">
                                     <Grid container spacing={1} >
                                         <Grid item xs={12} sm={2} >
-                                            <img className={classes.img} src={step.imgPath} alt={step.label} />
+                                            <img className={classes.img} src={item.imgPath} alt={item.label} />
                                         </Grid>
                                         <Grid item xs={12} sm={10} >
-                                            Lorem Ipsum is simply dummy text of the printing and typesetting industry.Lorem Ipsum has been the industry standard dummy text
+                                            {item.label}
                                         </Grid>
                                     </Grid>
                                 </div>
@@ -114,7 +86,7 @@ function UsersFeedback() {
                 >
                 </MobileStepper>
             </Paper >
-        </Fragment>
+        </div>
     );
 }
 

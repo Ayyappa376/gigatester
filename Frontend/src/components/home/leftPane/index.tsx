@@ -1,11 +1,11 @@
 import PlatformsView from './platformsView';
-import RocordsCount from './recordsCount';
+import RecordsCount from './recordsCount';
 import TestersView from './testersView';
 import UsersFeedback from './usersFeedback';
 
 export {
   PlatformsView,
-  RocordsCount,
+  RecordsCount,
   TestersView,
   UsersFeedback,
 };

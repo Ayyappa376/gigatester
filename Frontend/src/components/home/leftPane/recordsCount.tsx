@@ -3,10 +3,6 @@ import { Grid, Paper, Typography } from '@material-ui/core';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import '../style.css';
 
-const records = [
-    { name: 'Testers', value: '220' }, { name: 'Products', value: '20' }, { name: 'Ongoing Testing', value: '35' }
-]
-
 const useStyles = makeStyles((theme) => ({
     recordValue: {
         color: '#F9F9F9',
@@ -14,17 +10,17 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-function RecordsCount() {
+const RecordsCount = (props: any) => {
     const classes = useStyles();
 
     return (
         <Grid container spacing={2}  >
-            {records.map((item, index) => {
+            {props.records && props.records.map((item: any, index: number) => {
                 return (
                     <Grid item xs={4} sm={4} md={4} key={index}>
-                        <Paper className="recordsCountSection sectionBackground">
-                            <Typography> {item.name} </Typography>
-                            <Typography variant="h5" className={classes.recordValue} >{item.value}</Typography>
+                        <Paper className="recordsCountSection sectionBackground" data-testid={`recordCount-${item.name}`}>
+                            <Typography data-testid='recordName'> {item.name} </Typography>
+                            <Typography variant="h5" className={classes.recordValue} data-testid='recordCount'>{item.value}</Typography>
                         </Paper>
                     </Grid>
                 )

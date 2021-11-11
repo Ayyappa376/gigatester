@@ -1,7 +1,6 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
   Typography,
-  createMuiTheme,
   makeStyles,
   CardActionArea,
   CardContent,
@@ -9,24 +8,6 @@ import {
   CardMedia,
 } from '@material-ui/core';
 import '../style.css';
-
-const latestNews = [
-  {
-    label: 'Latest News : Live Blog about Testing',
-    imgPath:
-      'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1112&q=80',
-  },
-  {
-    label: 'Latest News : Live Blog about Testing',
-    imgPath:
-      'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1112&q=80',
-  },
-  {
-    label: 'Latest News : Live Blog about Testing',
-    imgPath:
-      'https://images.unsplash.com/photo-1505373877841-8d25f7d46678?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=1112&q=80',
-  }
-]
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,13 +32,13 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const LatestNews = () => {
+const LatestNews = (props: any) => {
   const classes = useStyles();
 
   return (
-    <Fragment>
-      <Typography className='headerText'>LATEST NEWS</Typography>
-      {latestNews.map((item, index) => {
+    <div data-testid="latestNews">
+      <Typography className='headerText' data-testid="header">LATEST NEWS</Typography>
+      {props.latestNews && props.latestNews.map((item: any, index: number) => {
         return (
           <Card className={classes.root} key={index}>
             <CardActionArea >
@@ -66,7 +47,7 @@ const LatestNews = () => {
                 image={item.imgPath}
                 title="Tech News"
               />
-              <CardContent className={classes.glass}>
+              <CardContent className={classes.glass} data-testid="newsTitle">
                 <Typography component="h2">
                   {item.label}
                 </Typography>
@@ -75,7 +56,7 @@ const LatestNews = () => {
           </Card>
         )
       })}
-    </Fragment>
+    </div>
   );
 };
 
