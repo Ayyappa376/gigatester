@@ -1,43 +1,35 @@
-import React, { useEffect, useState } from 'react';
-import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
-import { Http } from '../../utils';
-import { Container } from '@material-ui/core';
-import GigatesterBg from './gigatester_bg.jpeg';
+import React, { useEffect } from 'react';
+import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import { useSelector } from 'react-redux';
+import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
 import { IRootState } from '../../reducers';
+import { Http } from '../../utils';
+import { PlatformsView, RocordsCount, TestersView, UsersFeedback } from '../../components/home/leftPane'
+import TopPane from '../../components/home/topPane'
+import { LatestNews } from '../../components/home/rightPane';
+import PageFooter from '../../components/pageFooter';
 
 const useStyles = makeStyles({
   root: {
-    width: '100%',
-    height: '100%',
-    paddingTop: '7%',
+    paddingTop: '4%',
     padding: 0,
+    overflow: 'hidden',
   },
-  img: {
-    width: '100%',
-    // objectFit: 'contain',
-    height: '84vh',
+  marginTopTen: {
+    marginTop: '10px'
   },
-  textAlign: {
-    position: 'absolute',
-    top: '30%',
-    left: '5%',
-    color: '#042E5B',
-    fontSize: '18px'
-    // transform: 'translate(-50%, -100%)'
+  marginTopTwenty: {
+    marginTop: '20px'
   }
 });
 
 const Home = (props: any) => {
   const classes = useStyles();
   const setSysDetails = useActions(setSystemDetails);
-  const userStatus = useSelector((state: IRootState) => state.user.idToken);
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
   const stateVariable = useSelector((state: IRootState) => state);
   const setCurrentPageValue = useActions(setCurrentPage);
-
-  // console.log(userStatus);
 
   useEffect(() => {
     setCurrentPageValue('');
@@ -60,28 +52,36 @@ const Home = (props: any) => {
     }
   }, []);
 
-  let redirectUrl: string;
-  if (userStatus) {
-    redirectUrl = '/auth';
-  } else {
-    redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
-  }
-
   return (
-    // tslint:disable-next-line: jsx-wrap-multiline
     <Container
       maxWidth='xl'
       classes={{
         root: classes.root,
       }}
     >
-      <img
-        className={classes.img}
-        src={GigatesterBg}
-        alt='Are you doing it right?'
-      />
-      <div className={classes.textAlign}>GigaTester is a product to test applications by <br /> <span style={{ paddingLeft: '80px' }}> External/Freelance testers </span> </div>
-    </Container>
+      <Grid container spacing={2} >
+        <TopPane />
+        <Grid item xs={12} sm={1} />
+        <Grid item xs={12} sm={7}>
+          <Grid item xs={12} sm={12} className={classes.marginTopTen}>
+            <RocordsCount />
+          </Grid>
+          <Grid item xs={12} sm={12} className={classes.marginTopTwenty}>
+            <UsersFeedback />
+          </Grid>
+          <Grid item xs={12} sm={12} className={classes.marginTopTwenty}>
+            <TestersView />
+          </Grid>
+          <Grid item xs={12} sm={12} className={classes.marginTopTwenty}>
+            <PlatformsView />
+          </Grid>
+        </Grid>
+        <Grid item xs={12} sm={3} className={classes.marginTopTen}>
+          <LatestNews />
+        </Grid>
+        <PageFooter />
+      </Grid>
+    </Container >
   );
 };
 

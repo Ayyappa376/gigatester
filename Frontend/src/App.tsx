@@ -8,7 +8,6 @@ import { useActions, removeUserDetails } from './actions';
 import { IRootState } from './reducers';
 import ReactGA from 'react-ga';
 import Amplify from "aws-amplify";
-import Dashboard from './components/admin/dashboard';
 import { LanguageProvider } from './common/Language';
 import Layout from './Layout';
 

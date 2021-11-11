@@ -23,6 +23,7 @@ import {
 } from './pages';
 import { QuestionRenderer } from './components';
 import Dashboard from './components/admin/dashboard';
+import LatestNews from './pages/latest-news';
 
 const Layout = (props: any) => {
   const [openDialog, setOpenDialog] = useState(false);
@@ -116,6 +117,9 @@ const Layout = (props: any) => {
         <Route exact path='/error' render={() => <ErrorPage {...props} />} />
         <Route exact path='/admin/dashboard' render={() => <Dashboard {...props} />} />
         <Route exact path='/trends' render={() => <Trends {...props} />} />
+        <Route
+          exact path='/latestNews'
+          render={() => <LatestNews />} />
       </Switch>
 
       <IdleTimeOutModal
