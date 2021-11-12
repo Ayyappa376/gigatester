@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
 import { Button, Grid, MobileStepper, Paper, Typography } from '@material-ui/core';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
@@ -24,7 +24,7 @@ const useStyles = makeStyles((theme) => ({
 const UsersFeedback = (props: any) => {
     const classes = useStyles();
     const theme = useTheme();
-    const [activeStep, setActiveStep] = React.useState(0);
+    const [activeStep, setActiveStep] = useState(0);
     const maxSteps = props.usersFeedback && props.usersFeedback.length;
 
     const handleNext = () => {
