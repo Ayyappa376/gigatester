@@ -3,7 +3,7 @@
 }
 
 export interface ConfigItem {
-    config: SystemConfigDetails | UserConfigDetails | TeamConfigDetails | ServiceConfigDetails | GeneralConfigDetails | CollectorConfigDetails;
+    config: SystemConfigDetails |/* UserConfigDetails | TeamConfigDetails | ServiceConfigDetails |*/ ObjectConfigDetails | GeneralConfigDetails | CollectorConfigDetails;
     orgId: string;
     type: string;
 }
@@ -15,6 +15,7 @@ export interface SystemConfigDetails {
     userpoolId: string;
 }
 
+/*
 export interface UserConfigDetails {
     [key: string]: FieldConfigAttributes;
 }
@@ -24,6 +25,11 @@ export interface TeamConfigDetails {
 }
 
 export interface ServiceConfigDetails {
+    [key: string]: FieldConfigAttributes;
+}
+*/
+
+export interface ObjectConfigDetails {
     [key: string]: FieldConfigAttributes;
 }
 

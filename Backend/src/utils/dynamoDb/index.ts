@@ -22,3 +22,4 @@ export * from './createTeams';
 export * from './addUserToTeam';
 export * from './configTableFunctions';
 export * from './getTableNames';
+export * from './campaignsManagement';

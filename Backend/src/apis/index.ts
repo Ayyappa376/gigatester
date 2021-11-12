@@ -14,6 +14,8 @@ import { api as dowloadReportsV2 } from './v2/downloadReports/get';
 import { api as getFeedbackV2 } from './v2/feedback/get';
 import { api as postFeedbackV2 } from './v2/feedback/post';
 import { api as getAssessmentHistoryV2 } from './v2/history/get';
+import { api as getUploadSoftwareV2 } from './v2/manageSoftware/get';
+import { api as postUploadSoftwareV2 } from './v2/manageSoftware/post';
 import { api as getAssessmentQuestionV2 } from './v2/question/get';
 import { api as getQuestionnaireV2 } from './v2/questionnaire/get';
 import { api as postQuestionnaireV2 } from './v2/questionnaire/post';
@@ -30,8 +32,6 @@ import { api as deleteUsersV2 } from './v2/userManagement/delete';
 import { api as getUserstV2 } from './v2/userManagement/get';
 import { api as createUsersV2 } from './v2/userManagement/post';
 import { api as updateUsersV2 } from './v2/userManagement/put';
-import { api as getUploadSoftwareV2 } from './v2/manageSoftware/get';
-import { api as postUploadSoftwareV2 } from './v2/manageSoftware/post';
 
 import { api as buildMetrics } from './metrics/builds/get';
 import { api as doraMetrics } from './metrics/dora/get';

@@ -42,11 +42,14 @@ import Dashboard from '../../components/admin/dashboard';
 import CreateUser from '../../components/admin/create-user';
 import ManageUsers from '../../components/admin/manage-users';
 import EditUser from '../../components/admin/manage-users/edit-user';
-import { CreateTeam /*, Feedback*/ } from '../../components';
+import CreateTeam from '../../components/admin/create-team';
 import ManageTeams from '../../components/admin/manage-teams';
 import EditTeam from '../../components/admin/manage-teams/edit-teams';
 import AssignAssessment from '../../components/admin/assign-assessment';
 import MapMetricsTools from '../../components/admin/map-metrics-tools';
+import CreateCampaign from '../../components/admin/campaigns/create';
+import ManageCampaigns from '../../components/admin/campaigns/manage';
+import EditCampaign from '../../components/admin/campaigns/edit';
 import CreateQuestionnaire from '../../components/admin/questionnaire/create-questionnaire';
 import ManageAssessments from '../../components/admin/questionnaire/manage-questionnaire';
 import EditAssessment from '../../components/admin/questionnaire/manage-questionnaire/editQuestionnaire';
@@ -73,6 +76,9 @@ export const MANAGE_TEAMS = 'manageTeams';
 export const EDIT_TEAM = 'edit-team';
 export const ASSIGN_ASSESSMENT = 'assign-assessment';
 export const MAP_METRICS_TOOLS = 'map-metrics-tools';
+export const CREATE_CAMPAIGN = 'create-campaign';
+export const MANAGE_CAMPAIGNS = 'manageCampaigns';
+export const EDIT_CAMPAIGN = 'edit-campaign';
 export const CREATE_QUESTIONNAIRE = 'create-questionnaire';
 export const MANAGE_QUESTIONNAIRES = 'manageTestSuits';
 export const EDIT_QUESTIONNAIRE = 'edit-assessment';
@@ -210,10 +216,8 @@ export default function Admin() {
   const [open, setOpen] = useState(true);
   const [buttonValue, setButtonValue] = useState('');
   const [focusTeamId, setFocusTeamId] = useState('');
-  const [
-    focusQuestionData,
-    setFocusQuestionData,
-  ] = useState<IQuestionDetails>();
+  const [focusCampaignId, setFocusCampaignId] = useState('');
+  const [focusQuestionData, setFocusQuestionData] = useState<IQuestionDetails>();
   const [focusUserName, setFocusUserName] = useState('');
   const [focusQuestionnaire, setFocusQuestionnaire] = useState<any>();
   const [mapQuestionStandalone, setMapQuestionStandalone] = useState(false);
@@ -295,6 +299,22 @@ export default function Admin() {
     setButtonValue(MAP_METRICS_TOOLS);
     setFocusTeamId(teamId);
     setTitle('mapMetricsTools');
+  };
+
+  const handleCreateCampaign = () => {
+    setButtonValue(CREATE_CAMPAIGN);
+    setTitle('createCampaign');
+  };
+
+  const handleManageCampaigns = () => {
+    setButtonValue(MANAGE_CAMPAIGNS);
+    setTitle('manageCampaigns');
+  };
+
+  const editCampaignClickHandler = (campaignId: string) => {
+    setButtonValue(EDIT_CAMPAIGN);
+    setFocusCampaignId(campaignId);
+    setTitle('editCampaign');
   };
 
   const handleCreateQuestionnaire = () => {
@@ -460,6 +480,17 @@ export default function Admin() {
         return <AssignAssessment teamId={focusTeamId} goBack={switchPage} />;
       case MAP_METRICS_TOOLS:
         return <MapMetricsTools teamId={focusTeamId} goBack={switchPage} />;
+      case CREATE_CAMPAIGN:
+        return <CreateCampaign goBack={switchToAdminHome} />;
+      case MANAGE_CAMPAIGNS:
+        return (
+          <ManageCampaigns
+            editClicked={editCampaignClickHandler}
+            goBack={switchToAdminHome}
+          />
+        );
+      case EDIT_CAMPAIGN:
+        return <EditCampaign campaignId={focusCampaignId} goBack={switchPage} />;
       case CREATE_QUESTIONNAIRE:
         return <CreateQuestionnaire goBack={switchToAdminHome} />;
       case MANAGE_QUESTIONNAIRES:
@@ -648,6 +679,37 @@ export default function Admin() {
               </ListItemIcon>
             </Tooltip>
             <ListItemText primary={<Text tid='managePlatforms2' />} />
+          </ListItem>
+        </List>
+        <Divider />
+        <List disablePadding={true}>
+          <ListItem button onClick={handleCreateCampaign}>
+            <Tooltip
+              title={<Typography>{<Text tid='createCampaign2' />}</Typography>}
+              disableHoverListener={open ? true : false}
+              placement='right'
+              arrow={true}
+            >
+              <ListItemIcon className={classes.iconWidth}>
+                <GroupAddIcon />
+              </ListItemIcon>
+            </Tooltip>
+            <ListItemText primary={<Text tid='createCampaign2' />} />
+          </ListItem>
+        </List>
+        <List disablePadding={true}>
+          <ListItem button onClick={handleManageCampaigns}>
+            <Tooltip
+              title={<Typography>{<Text tid='manageCampaigns2' />}</Typography>}
+              disableHoverListener={open ? true : false}
+              placement='right'
+              arrow={true}
+            >
+              <ListItemIcon className={classes.iconWidth}>
+                <GroupIcon />
+              </ListItemIcon>
+            </Tooltip>
+            <ListItemText primary={<Text tid='manageCampaigns2' />} />
           </ListItem>
         </List>
         <Divider />

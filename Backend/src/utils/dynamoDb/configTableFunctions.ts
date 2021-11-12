@@ -2,9 +2,10 @@ import {
   CollectorConfigDetails,
   ConfigItem,
   GeneralConfigDetails,
-  ServiceConfigDetails,
-  TeamConfigDetails,
-  UserConfigDetails,
+  ObjectConfigDetails,
+//  ServiceConfigDetails,
+//  TeamConfigDetails,
+//  UserConfigDetails,
 } from '@models/index';
 import { config } from '@root/config';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
@@ -15,6 +16,7 @@ import { get, scan, update } from './sdk';
 const SYSTEM_CONFIG = 'SystemConfig';
 const USER_CONFIG = 'UserConfig';
 const TEAM_CONFIG = 'TeamConfig';
+const CAMPAIGN_CONFIG = 'CampaignConfig';
 const SERVICE_CONFIG = 'ServiceConfig';
 const GENERAL_CONFIG = 'GeneralConfig';
 const COLLECTOR_CONFIG = 'CollectorConfig';
@@ -63,6 +65,9 @@ export const getUserConfig = async (orgId: string): Promise<ConfigItem> =>
 export const getTeamConfig = async (orgId: string): Promise<ConfigItem> =>
   getConfig(orgId, TEAM_CONFIG);
 
+export const getCampaignConfig = async (orgId: string): Promise<ConfigItem> =>
+getConfig(orgId, CAMPAIGN_CONFIG);
+
 export const getServiceConfig = async (orgId: string): Promise<ConfigItem> =>
   getConfig(orgId, SERVICE_CONFIG);
 
@@ -76,9 +81,10 @@ const setConfig = async (
   orgId: string,
   type: string,
   configDetails:
-    | UserConfigDetails
-    | TeamConfigDetails
-    | ServiceConfigDetails
+  ObjectConfigDetails
+//    | UserConfigDetails
+//    | TeamConfigDetails
+//    | ServiceConfigDetails
     | GeneralConfigDetails
     | CollectorConfigDetails
 ): Promise<ConfigItem> => {
@@ -99,17 +105,22 @@ const setConfig = async (
 
 export const setUserConfig = async (
   orgId: string,
-  configDetails: UserConfigDetails
+  configDetails: ObjectConfigDetails //UserConfigDetails
 ): Promise<ConfigItem> => setConfig(orgId, USER_CONFIG, configDetails);
 
 export const setTeamConfig = async (
   orgId: string,
-  configDetails: TeamConfigDetails
+  configDetails: ObjectConfigDetails //TeamConfigDetails
 ): Promise<ConfigItem> => setConfig(orgId, TEAM_CONFIG, configDetails);
+
+export const setCampaignConfig = async (
+  orgId: string,
+  configDetails: ObjectConfigDetails
+): Promise<ConfigItem> => setConfig(orgId, CAMPAIGN_CONFIG, configDetails);
 
 export const setServiceConfig = async (
   orgId: string,
-  configDetails: ServiceConfigDetails
+  configDetails: ObjectConfigDetails //ServiceConfigDetails
 ): Promise<ConfigItem> => setConfig(orgId, SERVICE_CONFIG, configDetails);
 
 export const setGeneralConfig = async (
