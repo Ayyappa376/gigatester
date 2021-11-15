@@ -190,6 +190,11 @@ const PageHeader = (props: any) => {
     setOpenSignin(true)
   };
 
+  const handleProfileSetting = () => {
+    setOpenUserMenu(false)
+    props.history.push('/profile');
+  }
+
   const logoutModalActivate = () => {
     setOpenModalLogout(true);
     setOpenUserMenu(false)
@@ -938,7 +943,7 @@ const PageHeader = (props: any) => {
             <Paper>
               <ClickAwayListener onClickAway={handleCloseUserMenu}>
                 <MenuList autoFocusItem={openUserMenu} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                  <MenuItem onClick={handleCloseUserMenu}>Profile Settings</MenuItem>
+                  <MenuItem onClick={handleProfileSetting}>Profile Settings</MenuItem>
                   <MenuItem onClick={handleCloseUserMenu}>Change Password</MenuItem>
                   <MenuItem onClick={logoutModalActivate}>Logout</MenuItem>
                 </MenuList>
@@ -947,6 +952,7 @@ const PageHeader = (props: any) => {
           </Grow>
         )}
       </Popper>
+
     </Fragment>
   );
 };
