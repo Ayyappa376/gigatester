@@ -1,12 +1,17 @@
 import React, { useState, Fragment } from 'react';
 import bigLogo from '../../logo/big-logo.jpg';
 import {
+  ClickAwayListener,
+  Paper,
+  Grow,
+  Popper,
   Typography,
   makeStyles,
   Tooltip,
   Button,
   Menu,
   MenuItem,
+  MenuList
 } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
@@ -161,9 +166,12 @@ const PageHeader = (props: any) => {
     { type: '' }
   );
   const [openSignin, setOpenSignin] = useState(false);
+  const [openUserMenu, setOpenUserMenu] = React.useState(false);
+  const anchorRef: any = React.useRef(null);
   // let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
   // redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
+
 
   if (
     props.location.pathname === '/' ||
@@ -184,6 +192,7 @@ const PageHeader = (props: any) => {
 
   const logoutModalActivate = () => {
     setOpenModalLogout(true);
+    setOpenUserMenu(false)
   };
 
   const modalNoClickedLogout = () => {
@@ -199,14 +208,22 @@ const PageHeader = (props: any) => {
     return (
       <div className='header-item'>
         {userStatus.idToken ? (
-          <Tooltip title={<Typography>User Name</Typography>}>
-            <Typography
-              onClick={logoutModalActivate}
-              className={classes.headerItem}
-            >
-              <ExitToAppIcon />
-            </Typography>
-          </Tooltip>
+          <Button
+            ref={anchorRef}
+            aria-controls={openUserMenu ? 'menu-list-grow' : undefined}
+            aria-haspopup="true"
+            onClick={handleToggle}
+          >
+            {userStatus.userDetails.email}
+          </Button>
+          // <Tooltip title={<Typography>User Name</Typography>}>
+          //   <Typography
+          //     onClick={logoutModalActivate}
+          //     className={classes.headerItem}
+          //   >
+          //     <ExitToAppIcon />
+          //   </Typography>
+          // </Tooltip>
         ) : (
           <Typography onClick={onLogin} className={classes.headerItem}>
             <Text tid='login' />
@@ -308,6 +325,36 @@ const PageHeader = (props: any) => {
       setAnchorTrendsEl(null);
     }, timeoutLength);
   };
+
+  const handleToggle = () => {
+    setOpenUserMenu((prevOpen) => !prevOpen);
+  };
+
+  const handleCloseUserMenu = (event: any) => {
+    if (anchorRef.current && anchorRef.current.contains(event.target)) {
+      return;
+    }
+
+    setOpenUserMenu(false);
+  };
+
+  function handleListKeyDown(event: any) {
+    if (event.key === 'Tab') {
+      event.preventDefault();
+      setOpenUserMenu(false);
+    }
+  }
+
+  // return focus to the button when we transitioned from !openUserMenu -> openUserMenu
+  const prevOpen = React.useRef(openUserMenu);
+  React.useEffect(() => {
+    if (prevOpen.current === true && openUserMenu === false) {
+      anchorRef.current.focus();
+    }
+
+    prevOpen.current = openUserMenu;
+  }, [openUserMenu]);
+
 
   const renderViewAssessment = () => {
     if (!userStatus.idToken) {
@@ -882,7 +929,26 @@ const PageHeader = (props: any) => {
       {openSignin &&
         <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
       }
+      <Popper open={openUserMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+        {({ TransitionProps, placement }) => (
+          <Grow
+            {...TransitionProps}
+            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+          >
+            <Paper>
+              <ClickAwayListener onClickAway={handleCloseUserMenu}>
+                <MenuList autoFocusItem={openUserMenu} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                  <MenuItem onClick={handleCloseUserMenu}>Profile Settings</MenuItem>
+                  <MenuItem onClick={handleCloseUserMenu}>Change Password</MenuItem>
+                  <MenuItem onClick={logoutModalActivate}>Logout</MenuItem>
+                </MenuList>
+              </ClickAwayListener>
+            </Paper>
+          </Grow>
+        )}
+      </Popper>
     </Fragment>
   );
 };
+
 export default withRouter(PageHeader);
