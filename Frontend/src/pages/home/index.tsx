@@ -12,9 +12,10 @@ import PageFooter from '../../components/pageFooter';
 
 const useStyles = makeStyles({
   root: {
-    paddingTop: '4%',
-    padding: 0,
-    overflow: 'hidden',
+    marginTop: '4em',
+    width: '100%'
+    // padding: 0,
+    // overflow: 'hidden',
   },
   marginTopTen: {
     marginTop: '10px'

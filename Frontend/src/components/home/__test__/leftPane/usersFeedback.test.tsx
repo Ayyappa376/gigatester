@@ -34,4 +34,20 @@ describe("platform view", () => {
         expect(userPic).toHaveAttribute('src', usersFeedback[0].imgPath);
         expect(userPic).toHaveAttribute('alt', usersFeedback[0].label);
     })
+    it("button", () => {
+        const { getByTestId, getAllByTestId } = render(<UsersFeedback usersFeedback={usersFeedback} />);
+        const button = getByTestId('nextButton')
+        const buttonLength = getAllByTestId('nextButton')
+        expect(button).toBeTruthy();
+        expect(buttonLength).toHaveLength(1);
+        
+    })
+    it("button", () => {
+        const { getByTestId, getAllByTestId } = render(<UsersFeedback usersFeedback={usersFeedback} />);
+        const button = getByTestId('backButton')
+        const buttonLength = getAllByTestId('backButton')
+        expect(button).toBeTruthy();
+        expect(buttonLength).toHaveLength(1);
+        
+    })
 })

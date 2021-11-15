@@ -6,8 +6,9 @@ import '../style.css';
 const useStyles = makeStyles((theme) => ({
     root: {
         background: '#F0F0F0',
-        padding: '10px',
-        fontFamily: 'Montserrat'
+        // padding: '10px',
+        fontFamily: 'Montserrat',
+        width: '100%'
     },
     title: {
         padding: '10px 0px',
