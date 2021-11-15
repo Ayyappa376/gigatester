@@ -93,9 +93,10 @@ export const config: Config = {
   },
   tables: {
     assessments: 'GT_UserAssessments',
-    campaign: 'GT_Campaigns',
+    campaigns: 'GT_Campaigns',
     cognitoUsers: 'GT_CognitoUsers',
     configs: 'GT_Configs',
+    platforms: 'GT_Platforms',
     questionnaires: 'GT_Questionnaires',
     questions: 'GT_Questions',
     team: 'GT_Team',

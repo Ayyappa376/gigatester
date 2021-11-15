@@ -5,5 +5,6 @@ export interface IAdmin {
 }
 
 export * from './create-campaign';
+export * from './create-platform';
 export * from './create-team';
 export * from './create-user';

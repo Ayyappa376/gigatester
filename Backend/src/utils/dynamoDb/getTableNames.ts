@@ -12,6 +12,10 @@ export function getCognitoUsersTableName(): string {
   return `${config.defaults.orgId}_${config.tables.cognitoUsers}`;
 }
 
+export function getPlatformsTableName(): string {
+  return `${config.defaults.orgId}_${config.tables.platforms}`;
+}
+
 export function getQuestionnairesTableName(): string {
   return `${config.defaults.orgId}_${config.tables.questionnaires}`;
 }

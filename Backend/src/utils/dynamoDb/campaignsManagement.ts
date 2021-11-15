@@ -52,6 +52,7 @@ export const createCampaign = async (campaignData: CampaignInfo, userId: string)
     manager: campaignData.manager,
     managerId: managerId[0].id,
     name: campaignData.name,
+    products: []
   };
 
   Object.keys(campaignData).forEach((val, i) => {

@@ -2,6 +2,10 @@ import { Application, Request, Response } from 'express';
 import { api as postAssessmentAnswerV2 } from './v2/answer/post';
 import { api as getAssignmentV2 } from './v2/assignments/get';
 import { api as postAssignmentV2 } from './v2/assignments/post';
+import { api as deleteCampaignsV2 } from './v2/campaign/delete';
+import { api as getCampaignsV2 } from './v2/campaign/get';
+import { api as postCampaignsV2 } from './v2/campaign/post';
+import { api as putCampaignsV2 } from './v2/campaign/put';
 import { api as getQuestionV2 } from './v2/createQuestion/get';
 import { api as createQuestionV2 } from './v2/createQuestion/post';
 import { api as updateQuestionV2 } from './v2/createQuestion/put';
@@ -16,6 +20,10 @@ import { api as postFeedbackV2 } from './v2/feedback/post';
 import { api as getAssessmentHistoryV2 } from './v2/history/get';
 import { api as getUploadSoftwareV2 } from './v2/manageSoftware/get';
 import { api as postUploadSoftwareV2 } from './v2/manageSoftware/post';
+import { api as deletePlatformsV2 } from './v2/platform/delete';
+import { api as getPlatformsV2 } from './v2/platform/get';
+import { api as postPlatformsV2 } from './v2/platform/post';
+import { api as putPlatformsV2 } from './v2/platform/put';
 import { api as getAssessmentQuestionV2 } from './v2/question/get';
 import { api as getQuestionnaireV2 } from './v2/questionnaire/get';
 import { api as postQuestionnaireV2 } from './v2/questionnaire/post';
@@ -57,6 +65,14 @@ const apis: API[] = [
   getAssessmentQuestionV2,
   postAssessmentAnswerV2,
   getAssementResultV2,
+  deleteCampaignsV2,
+  getCampaignsV2,
+  postCampaignsV2,
+  putCampaignsV2,
+  deletePlatformsV2,
+  getPlatformsV2,
+  postPlatformsV2,
+  putPlatformsV2,
   postFeedbackV2,
   getFeedbackV2,
   getAssessmentAndTeamDetailsV2,
