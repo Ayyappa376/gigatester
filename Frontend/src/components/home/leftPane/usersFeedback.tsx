@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { makeStyles, useTheme } from '@material-ui/core/styles';
-import { Button, Grid, MobileStepper, Paper, Typography } from '@material-ui/core';
+import { Avatar, Button, Grid, MobileStepper, Paper, Typography } from '@material-ui/core';
 import KeyboardArrowLeft from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import SwipeableViews from 'react-swipeable-views';
@@ -10,10 +10,9 @@ import '../style.css';
 const AutoPlaySwipeableViews = autoPlay(SwipeableViews);
 
 const useStyles = makeStyles((theme) => ({
-    img: {
-        height: 50,
-        width: 50,
-        borderRadius: '50%'
+    large: {
+        width: theme.spacing(6),
+        height: theme.spacing(6),
     },
     sliderView: {
         margin: '10px 30px',
@@ -55,7 +54,7 @@ const UsersFeedback = (props: any) => {
                                 <div data-testid="feedbackMessage">
                                     <Grid container spacing={1} >
                                         <Grid item xs={12} sm={2} >
-                                            <img className={classes.img} src={item.imgPath} alt={item.label} />
+                                            <Avatar alt={item.label} src={item.imgPath} key={index} className={classes.large} />
                                         </Grid>
                                         <Grid item xs={12} sm={10} >
                                             {item.label}
