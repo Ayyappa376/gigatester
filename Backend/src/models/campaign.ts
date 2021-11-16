@@ -1,12 +1,11 @@
-import { PlatformInfo, Questionnaire } from '.';
+import { DeviceInfo, PlatformInfo, Questionnaire } from '.';
 
 export interface CampaignInfo {
     active: string;
     createdBy: string;
     createdOn: number;
     id: string;
-    manager?: string;
-    managerId?: string;
+    managers?: string[];
     modifiedBy?: string;
     modifiedOn?: number;
     name: string;
@@ -16,6 +15,7 @@ export interface CampaignInfo {
 }
 
 export interface ProductInfo {
+    devices: DeviceInfo[];
     id: string;
     instructions?: string;
     name: string;

@@ -5,7 +5,7 @@ import { Response } from 'express';
 
 interface PutCampaigns {
   body: {
-    values: CampaignInfo;
+    campaigns: CampaignInfo[];
   };
   headers: {
     user: {
@@ -17,18 +17,25 @@ interface PutCampaigns {
 }
 
 async function handler(request: PutCampaigns, response: Response) {
-  appLogger.info({ AddCampaigns: request }, 'Inside Handler');
+  appLogger.info({ PutCampaigns: request }, 'Inside Handler');
 
   const { headers, body } = request;
   if (
     headers.user['cognito:groups'][0] !== 'Manager' &&
     headers.user['cognito:groups'][0] !== 'Admin'
   ) {
-    const err = new Error('Forbidden Access, Unauthorized user');
-    appLogger.error(err, 'Forbidden');
+    const err = new Error('Forbidden Access: Unauthorized user');
+    appLogger.error(err, 'Only Admins and Managers can update campaigns');
     return responseBuilder.forbidden(err, response);
   }
-  const updateData: CampaignInfo = body.values;
+
+  if (body.campaigns.length < 1) {
+    const err = new Error('BadRequest: Missing values');
+    appLogger.error(err, 'Campaign to update is missing.');
+    return responseBuilder.badRequest(err, response);
+  }
+
+  const updateData: CampaignInfo = body.campaigns[0];
   if (
     headers.user['cognito:groups'][0] === 'Manager' ||
     (headers.user['cognito:groups'][0] === 'Admin' && !updateData.manager)

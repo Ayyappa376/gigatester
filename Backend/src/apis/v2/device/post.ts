@@ -1,11 +1,11 @@
 import { API, Handler } from '@apis/index';
-import { PlatformInfo } from '@models/index';
-import { appLogger, createPlatform, responseBuilder } from '@utils/index';
+import { DeviceInfo } from '@models/index';
+import { appLogger, createDevice, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
-interface PostPlatforms {
+interface PostDevices {
   body: {
-    platforms: PlatformInfo[];
+    devices: DeviceInfo[];
   };
   headers: {
     user: {
@@ -16,29 +16,29 @@ interface PostPlatforms {
   };
 }
 
-async function handler(request: PostPlatforms, response: Response) {
-  appLogger.info({ PostPlatforms: request }, 'Inside Handler');
+async function handler(request: PostDevices, response: Response) {
+  appLogger.info({ PostDevices: request }, 'Inside Handler');
 
   const { headers, body } = request;
   if (headers.user['cognito:groups'][0] !== 'Admin') {
     const err = new Error('Forbidden Access: Unauthorized user');
-    appLogger.error(err, 'Only Admin can create platforms');
+    appLogger.error(err, 'Only Admin can create devices');
     return responseBuilder.forbidden(err, response);
   }
 
-  if (body.platforms.length < 1) {
+  if (body.devices.length < 1) {
     const err = new Error('BadRequest:Missing values');
-    appLogger.error(err, 'Platform to create is missing.');
+    appLogger.error(err, 'Device to create is missing.');
     return responseBuilder.badRequest(err, response);
   }
 
-  const ok: any = await createPlatform(body.platforms[0], headers.user.email).catch(
+  const ok: any = await createDevice(body.devices[0], headers.user.email).catch(
     (e) => {
-      appLogger.error({ err: e }, 'createPlatform');
-      return { error: e.message ? e.message : 'Platform already exists' };
+      appLogger.error({ err: e }, 'createDevice');
+      return { error: e.message ? e.message : 'Device already exists' };
     }
   );
-  appLogger.info({ createPlatform: ok });
+  appLogger.info({ createDevice: ok });
 
   if (ok) {
     const err = new Error(ok.error);
@@ -51,13 +51,13 @@ async function handler(request: PostPlatforms, response: Response) {
 export const api: API = {
   handler: <Handler>(<unknown>handler),
   method: 'post',
-  route: '/api/v2/platforms',
+  route: '/api/v2/devices',
 };
 
 // async function x(createData: any){
-//     const ok = await createPlatform(createData, 'rachitjobs7@gmail.com').catch(e => {
+//     const ok = await createDevice(createData, 'rachitjobs7@gmail.com').catch(e => {
 //         // console.log({e});
-//         return ({error : 'Platform already exists'});
+//         return ({error : 'Device already exists'});
 //     });
 //     return ok;
 // }

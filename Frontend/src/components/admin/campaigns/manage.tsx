@@ -303,7 +303,7 @@ const ManageCampaigns = (props: any) => {
   const renderEmptyCampaignMessage = () => {
     return (
       <Typography variant='h5'>
-        <Text tid='notManagingAnyPlatform' />
+        <Text tid='notManagingAnyCampaigns' />
       </Typography>
     );
   };

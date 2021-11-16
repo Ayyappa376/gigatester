@@ -50,9 +50,11 @@ import MapMetricsTools from '../../components/admin/map-metrics-tools';
 import CreateCampaign from '../../components/admin/campaigns/create';
 import ManageCampaigns from '../../components/admin/campaigns/manage';
 import EditCampaign from '../../components/admin/campaigns/edit';
-import CreatePlatform from '../../components/admin/platforms/create';
-import ManagePlatforms from '../../components/admin/platforms/manage';
+//import CreatePlatform from '../../components/admin/platforms/create';
 import EditPlatform from '../../components/admin/platforms/edit';
+import ManagePlatforms from '../../components/admin/platforms/manage';
+import EditDevice from '../../components/admin/devices/edit';
+import ManageDevices from '../../components/admin/devices/manage';
 import CreateQuestionnaire from '../../components/admin/questionnaire/create-questionnaire';
 import ManageAssessments from '../../components/admin/questionnaire/manage-questionnaire';
 import EditAssessment from '../../components/admin/questionnaire/manage-questionnaire/editQuestionnaire';
@@ -82,9 +84,11 @@ export const MAP_METRICS_TOOLS = 'map-metrics-tools';
 export const CREATE_CAMPAIGN = 'create-campaign';
 export const MANAGE_CAMPAIGNS = 'manageCampaigns';
 export const EDIT_CAMPAIGN = 'edit-campaign';
-export const CREATE_PLATFORM = 'create-platform';
+//export const CREATE_PLATFORM = 'create-platform';
 export const MANAGE_PLATFORMS = 'managePlatforms';
 export const EDIT_PLATFORM = 'edit-platform';
+export const MANAGE_DEVICES = 'manageDevices';
+export const EDIT_DEVICE = 'edit-device';
 export const CREATE_QUESTIONNAIRE = 'create-questionnaire';
 export const MANAGE_QUESTIONNAIRES = 'manageTestSuits';
 export const EDIT_QUESTIONNAIRE = 'edit-assessment';
@@ -224,6 +228,7 @@ export default function Admin() {
   const [focusTeamId, setFocusTeamId] = useState('');
   const [focusCampaignId, setFocusCampaignId] = useState('');
   const [focusPlatformId, setFocusPlatformId] = useState('');
+  const [focusDeviceId, setFocusDeviceId] = useState('');
   const [focusQuestionData, setFocusQuestionData] = useState<IQuestionDetails>();
   const [focusUserName, setFocusUserName] = useState('');
   const [focusQuestionnaire, setFocusQuestionnaire] = useState<any>();
@@ -324,11 +329,11 @@ export default function Admin() {
     setTitle('editCampaign');
   };
 
-  const handleCreatePlatform = () => {
+/*  const handleCreatePlatform = () => {
     setButtonValue(CREATE_PLATFORM);
     setTitle('createPlatform');
   };
-
+*/
   const handleManagePlatforms = () => {
     setButtonValue(MANAGE_PLATFORMS);
     setTitle('managePlatforms');
@@ -338,6 +343,17 @@ export default function Admin() {
     setButtonValue(EDIT_PLATFORM);
     setFocusPlatformId(platformId);
     setTitle('editPlatform');
+  };
+
+  const handleManageDevices = () => {
+    setButtonValue(MANAGE_DEVICES);
+    setTitle('manageDevices');
+  };
+
+  const editDeviceClickHandler = (deviceId: string) => {
+    setButtonValue(EDIT_DEVICE);
+    setFocusDeviceId(deviceId);
+    setTitle('editDevice');
   };
 
   const handleCreateQuestionnaire = () => {
@@ -514,8 +530,8 @@ export default function Admin() {
         );
       case EDIT_CAMPAIGN:
         return <EditCampaign campaignId={focusCampaignId} goBack={switchPage} />;
-      case CREATE_PLATFORM:
-        return <CreatePlatform goBack={switchToAdminHome} />;
+//      case CREATE_PLATFORM:
+//        return <CreatePlatform goBack={switchPage} />;
       case MANAGE_PLATFORMS:
         return (
           <ManagePlatforms
@@ -525,6 +541,15 @@ export default function Admin() {
         );
       case EDIT_PLATFORM:
         return <EditPlatform platformId={focusPlatformId} goBack={switchPage} />;
+      case MANAGE_DEVICES:
+        return (
+          <ManageDevices
+            editClicked={editDeviceClickHandler}
+            goBack={switchToAdminHome}
+          />
+        );
+      case EDIT_DEVICE:
+        return <EditDevice deviceId={focusDeviceId} goBack={switchPage} />;
       case CREATE_QUESTIONNAIRE:
         return <CreateQuestionnaire goBack={switchToAdminHome} />;
       case MANAGE_QUESTIONNAIRES:
@@ -653,7 +678,7 @@ export default function Admin() {
         <List disablePadding={true}>
           <ListItem button onClick={handleCreateUser}>
             <Tooltip
-              title={<Typography>{<Text tid='addTester2' />}</Typography>}
+              title={<Typography>{<Text tid='addUsers2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -662,7 +687,7 @@ export default function Admin() {
                 <PersonAddIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='addTester2' />} />
+            <ListItemText primary={<Text tid='addUsers2' />} />
           </ListItem>
         </List>
         <List disablePadding={true}>
@@ -672,7 +697,7 @@ export default function Admin() {
             style={{ paddingTop: '0px' }}
           >
             <Tooltip
-              title={<Typography>{<Text tid='manageTesters2' />}</Typography>}
+              title={<Typography>{<Text tid='manageUsers2' />}</Typography>}
               disableHoverListener={open ? true : false}
               placement='right'
               arrow={true}
@@ -681,7 +706,7 @@ export default function Admin() {
                 <PeopleOutlineIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid='manageTesters2' />} />
+            <ListItemText primary={<Text tid='manageUsers2' />} />
           </ListItem>
         </List>
         <Divider />
@@ -747,7 +772,7 @@ export default function Admin() {
           </ListItem>
         </List>
         <Divider />
-        <List disablePadding={true}>
+        {/*<List disablePadding={true}>
           <ListItem button onClick={handleCreatePlatform}>
             <Tooltip
               title={<Typography>{<Text tid='createPlatform2' />}</Typography>}
@@ -761,7 +786,7 @@ export default function Admin() {
             </Tooltip>
             <ListItemText primary={<Text tid='createPlatform2' />} />
           </ListItem>
-        </List>
+        </List>*/}
         <List disablePadding={true}>
           <ListItem button onClick={handleManagePlatforms}>
             <Tooltip
@@ -775,6 +800,21 @@ export default function Admin() {
               </ListItemIcon>
             </Tooltip>
             <ListItemText primary={<Text tid='managePlatforms2' />} />
+          </ListItem>
+        </List>
+        <List disablePadding={true}>
+          <ListItem button onClick={handleManageDevices}>
+            <Tooltip
+              title={<Typography>{<Text tid='manageDevices2' />}</Typography>}
+              disableHoverListener={open ? true : false}
+              placement='right'
+              arrow={true}
+            >
+              <ListItemIcon className={classes.iconWidth}>
+                <GroupIcon />
+              </ListItemIcon>
+            </Tooltip>
+            <ListItemText primary={<Text tid='manageDevices2' />} />
           </ListItem>
         </List>
         <Divider />

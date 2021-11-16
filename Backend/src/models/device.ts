@@ -1,4 +1,4 @@
-export interface PlatformInfo {
+export interface DeviceInfo {
     description?: string;
     id: string;
     name: string;

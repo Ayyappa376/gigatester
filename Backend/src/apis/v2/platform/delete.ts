@@ -16,16 +16,22 @@ interface DelPlatforms {
 }
 
 async function handler(request: DelPlatforms, response: Response) {
-  appLogger.info({ GetPlatformConfig: request }, 'Inside Handler');
+  appLogger.info({ DelPlatforms: request }, 'Inside Handler');
 
-  const { headers } = request;
-  const { params } = request;
-  const cognitoUserId = headers.user['cognito:username'];
-  if (!cognitoUserId || !params.id) {
-    const err = new Error('InvalidUser');
-    appLogger.error(err, 'Unauthorized');
-    return responseBuilder.unauthorized(err, response);
+  const { headers, params } = request;
+
+  if (headers.user['cognito:groups'][0] !== 'Admin') {
+    const err = new Error('Forbidden Access: Unauthorized user');
+    appLogger.error(err, 'Only Admin can delete platforms');
+    return responseBuilder.forbidden(err, response);
   }
+
+  if (!params.id) {
+    const err = new Error('BadRequest: Missing params');
+    appLogger.error(err, 'Platform id to delete is missing.');
+    return responseBuilder.badRequest(err, response);
+  }
+
   const resp: any = await deactivatePlatform(params.id, headers.user.email);
   appLogger.info({ deactivatePlatform_Resp: resp });
   return responseBuilder.ok(resp, response);

@@ -20,11 +20,11 @@ import {
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IFieldConfigAttributes, IPlatformParams, IPlatformConfig, IPlatformInfo } from '../../../model';
+import { IFieldConfigAttributes, IDeviceParams, IDeviceConfig, IDeviceInfo } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
-import { MANAGE_PLATFORMS } from '../../../pages/admin';
+import { MANAGE_DEVICES } from '../../../pages/admin';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
@@ -72,24 +72,24 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditPlatform = (props: any) => {
+const EditDevice = (props: any) => {
   const classes = useStyles();
-  const [platformPosted, setPlatformPosted] = useState(false);
+  const [devicePosted, setDevicePosted] = useState(false);
   const [failure, setFailure] = useState(false);
-  const [platformDataFetched, setPlatformDataFetched] = useState(false);
+  const [deviceDataFetched, setDeviceDataFetched] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [platformState, setPlatformState] = React.useState<IPlatformParams | undefined>();
+  const [deviceState, setDeviceState] = React.useState<IDeviceParams | undefined>();
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='platformDetailsSavedSuccessfully' />;
+  let msgSuccess = <Text tid='deviceDetailsSavedSuccessfully' />;
 
   useEffect(() => {
     Http.get({
-      url: `/api/v2/platforms/${props.platformId} `,
+      url: `/api/v2/devices/${props.deviceId} `,
       state: stateVariable,
     })
     .then((response: any) => {
@@ -108,27 +108,27 @@ const EditPlatform = (props: any) => {
   }, []);
 
   const handleSave = () => {
-    const postData = platformState;
-    if(postData && postData.platforms) {
-      if(postData.platforms[0].id) {
+    const postData = deviceState;
+    if(postData && postData.devices) {
+      if(postData.devices[0].id) {
         Http.put({
-          url: `/api/v2/platforms`,
+          url: `/api/v2/devices`,
           body: {
             ...postData,
           },
           state: stateVariable,
         })
-        .then((response: any) => { setPlatformPosted(true); })
+        .then((response: any) => { setDevicePosted(true); })
         .catch((error: any) => { handleSaveError(error); });
       } else {
         Http.post({
-          url: `/api/v2/platforms`,
+          url: `/api/v2/devices`,
           body: {
             ...postData,
           },
           state: stateVariable,
         })
-        .then((response: any) => { setPlatformPosted(true); })
+        .then((response: any) => { setDevicePosted(true); })
         .catch((error: any) => { handleSaveError(error); });
       }
     }
@@ -148,16 +148,16 @@ const EditPlatform = (props: any) => {
 }
 
   const fixMultiSelectValuesAndSave = (response: any) => {
-    if (response.platforms) {
-      fixOtherValuesMultiSelect(response.platformConfig, response.platforms[0]);
+    if (response.devices) {
+      fixOtherValuesMultiSelect(response.deviceConfig, response.devices[0]);
     } else {
-      response.platforms = [{}];
+      response.devices = [{}];
     }
-    setPlatformState(response);
-    setPlatformDataFetched(true);
+    setDeviceState(response);
+    setDeviceDataFetched(true);
   };
 
-  const fixOtherValuesMultiSelect = (config: IPlatformConfig, values: IPlatformInfo) => {
+  const fixOtherValuesMultiSelect = (config: IDeviceConfig, values: IDeviceInfo) => {
     Object.keys(config).forEach((el) => {
       if (config[el].type === 'multi-list' && values && values[el]) {
         values[el].forEach((opt: any, index: number) => {
@@ -186,16 +186,16 @@ const EditPlatform = (props: any) => {
   function mandatoryFieldsCheck(): boolean {
     let check: boolean = true;
     // tslint:disable-next-line: ter-arrow-parens
-    if (!platformState) {
+    if (!deviceState) {
       return false;
     }
-    Object.keys(platformState.platformConfig).forEach((el) => {
-      if (platformState.platformConfig[el].mandatory) {
-        if (!platformState.platforms || platformState.platforms.length === 0 ||
-            !platformState.platforms[0] || !platformState.platforms[0][el]) {
+    Object.keys(deviceState.deviceConfig).forEach((el) => {
+      if (deviceState.deviceConfig[el].mandatory) {
+        if (!deviceState.devices || deviceState.devices.length === 0 ||
+            !deviceState.devices[0] || !deviceState.devices[0][el]) {
           check = false;
-        } else if ((platformState.platformConfig[el].type === 'multi-list') &&
-          (platformState.platforms[0][el].length === 0)) {
+        } else if ((deviceState.deviceConfig[el].type === 'multi-list') &&
+          (deviceState.devices[0][el].length === 0)) {
           check = false;
         }
       }
@@ -205,21 +205,21 @@ const EditPlatform = (props: any) => {
   }
 
   const handleChangeValue = (event: any, key: string) => {
-    if (platformState) {
-      const temp: IPlatformParams | null | undefined = { ...platformState };
-      let values: any = temp.platforms;
+    if (deviceState) {
+      const temp: IDeviceParams | null | undefined = { ...deviceState };
+      let values: any = temp.devices;
 
       if (values) {
         values[0][key] = event.target.value;
-        setPlatformState(temp);
+        setDeviceState(temp);
       }
     }
   };
 
   const handleChangeOtherValueList = (event: any, key: string) => {
-    if (platformState) {
-      const temp: IPlatformParams | null | undefined = { ...platformState };
-      let values: any = temp.platforms;
+    if (deviceState) {
+      const temp: IDeviceParams | null | undefined = { ...deviceState };
+      let values: any = temp.devices;
 
       if (values) {
         if (event.target.value === '') {
@@ -227,7 +227,7 @@ const EditPlatform = (props: any) => {
         } else {
           values[0][key] = event.target.value;
         }
-        setPlatformState(temp);
+        setDeviceState(temp);
       }
     }
   };
@@ -243,9 +243,9 @@ const EditPlatform = (props: any) => {
   };
 
   const handleChangeOtherMultilist = (event: any, key: string) => {
-    if (platformState) {
-      const temp: IPlatformParams | null | undefined = { ...platformState };
-      let values: any = temp.platforms;
+    if (deviceState) {
+      const temp: IDeviceParams | null | undefined = { ...deviceState };
+      let values: any = temp.devices;
 
       if (values) {
         const updatedString = `${OTHER_STRING}: ${event.target.value}`;
@@ -253,21 +253,21 @@ const EditPlatform = (props: any) => {
         const indexOfOther = returnIndexOfOther(valueArray);
         valueArray[indexOfOther] = updatedString;
         values[0][key] = valueArray;
-        setPlatformState(temp);
+        setDeviceState(temp);
       }
     }
   };
 
   const handleChangeMultiValue = (event: any, key: string) => {
-    if (platformState) {
-      const temp: IPlatformParams | null | undefined = { ...platformState };
-      let values: any = temp.platforms;
+    if (deviceState) {
+      const temp: IDeviceParams | null | undefined = { ...deviceState };
+      let values: any = temp.devices;
 
       if (values) {
         let valueArray = values[0][key] || [];
         valueArray = [...event.target.value];
         values[0][key] = valueArray;
-        setPlatformState(temp);
+        setDeviceState(temp);
       }
     }
   };
@@ -303,7 +303,7 @@ const EditPlatform = (props: any) => {
     return val;
   };
 
-  const renderElements = (key: string, config: IPlatformConfig, values: IPlatformInfo) => {
+  const renderElements = (key: string, config: IDeviceConfig, values: IDeviceInfo) => {
     const element: IFieldConfigAttributes = config[key];
     switch (element.type) {
       case 'string':
@@ -559,7 +559,7 @@ const EditPlatform = (props: any) => {
   };
 
   const renderFormData = () => {
-    if (platformPosted) {
+    if (devicePosted) {
       return (
         <Fragment>
           <Success message={msgSuccess} />
@@ -568,7 +568,7 @@ const EditPlatform = (props: any) => {
               className={classes.button}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_PLATFORMS);
+                props.goBack(MANAGE_DEVICES);
               }}
             >
               <Text tid='goBack' />
@@ -581,10 +581,10 @@ const EditPlatform = (props: any) => {
     return (
       <Fragment>
         <Grid container spacing={3} className={classes.grid}>
-          {Object.keys(platformState!.platformConfig).map((el) => {
+          {Object.keys(deviceState!.deviceConfig).map((el) => {
             return (
               <Grid key={el} item xs={12}>
-                {platformState!.platforms && renderElements(el, platformState!.platformConfig, platformState!.platforms[0])}
+                {deviceState!.devices && renderElements(el, deviceState!.deviceConfig, deviceState!.devices[0])}
               </Grid>
             );
           })}
@@ -594,7 +594,7 @@ const EditPlatform = (props: any) => {
             className={classes.button}
             variant='outlined'
             onClick={() => {
-              props.goBack(MANAGE_PLATFORMS);
+              props.goBack(MANAGE_DEVICES);
             }}
           >
             <Text tid='goBack' />
@@ -638,7 +638,7 @@ const EditPlatform = (props: any) => {
 
   return (
     <Fragment>
-      {platformDataFetched ? (
+      {deviceDataFetched ? (
         renderFormData()
       ) : (
         <Container className='loaderStyle'>
@@ -649,4 +649,4 @@ const EditPlatform = (props: any) => {
   );
 };
 
-export default withRouter(EditPlatform);
+export default withRouter(EditDevice);

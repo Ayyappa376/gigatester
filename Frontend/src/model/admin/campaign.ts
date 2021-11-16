@@ -1,11 +1,10 @@
-import  { IFieldConfigAttributes, IPlatformInfo } from '..';
+import  { IDeviceInfo, IFieldConfigAttributes, IPlatformInfo } from '..';
  
 export interface ICampaignInfo {
   active: string;
   createdBy?: string;
   createdOn?: number;
-  manager?: string;
-  managerId?: string;
+  managers?: string[];
   id: string;
   name: string;
   products: IProductInfo[];
@@ -14,6 +13,7 @@ export interface ICampaignInfo {
 }
 
 export interface IProductInfo {
+  devices: IDeviceInfo[];
   id: string;
   name: string;
   instructions?: string;

@@ -1,35 +1,35 @@
-import { CampaignInfo, ConfigItem, PlatformInfo, ProductInfo } from '@models/index';
+import { CampaignInfo, ConfigItem, DeviceInfo, ProductInfo } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, getCampaignsList, getPlatformConfig } from '@utils/index';
+import { appLogger, getCampaignsList, getDeviceConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
 import { deleteItem, get, put, scan, update } from './sdk';
 
 const regex = /Other:[a-zA-Z0-9!-*]/g;
 
-// Creating Platform and validating parameters
-export const createPlatform = async (platformData: PlatformInfo, userId: string) => {
+// Creating Device and validating parameters
+export const createDevice = async (deviceData: DeviceInfo, userId: string) => {
   if (!userId) {
     const err = new Error('Unauthorized attempt');
     appLogger.error(err);
     throw err;
   }
 
-  const item: PlatformInfo = {
-    id: `platform_${uuidv1()}`,
-    name: platformData.name,
+  const item: DeviceInfo = {
+    id: `device_${uuidv1()}`,
+    name: deviceData.name,
   };
 
-  Object.keys(platformData).forEach((val, i) => {
+  Object.keys(deviceData).forEach((val, i) => {
     if (
       !(
         val === 'id' ||
         val === 'name'
       )
     ) {
-      if (platformData[val].length > 0 && typeof platformData[val] === 'object') {
+      if (deviceData[val].length > 0 && typeof deviceData[val] === 'object') {
         item[val] = new Array();
-        platformData[val].forEach((ele: any, j: number) => {
+        deviceData[val].forEach((ele: any, j: number) => {
           if ((typeof(ele) === 'string') && (ele.match(regex))) {
               item[val].push(ele.split('Other:')[1]);
           } else {
@@ -37,7 +37,7 @@ export const createPlatform = async (platformData: PlatformInfo, userId: string)
           }
         });
       } else {
-        item[val] = platformData[val];
+        item[val] = deviceData[val];
       }
     }
   });
@@ -45,60 +45,60 @@ export const createPlatform = async (platformData: PlatformInfo, userId: string)
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
     ConditionExpression: 'attribute_not_exists(id)',
     Item: item,
-    TableName: TableNames.getPlatformsTableName(),
+    TableName: TableNames.getDevicesTableName(),
   });
 
-  appLogger.info({ createPlatform_put_params: params });
+  appLogger.info({ createDevice_put_params: params });
   return put<DynamoDB.PutItemInput>(params);
 };
 
-//fetch platform Config from dynamoDb and fill in the options
-export const getCreatePlatformConfig = async (
+//fetch device Config from dynamoDb and fill in the options
+export const getCreateDeviceConfig = async (
   orgId: string
 ): Promise<ConfigItem> => {
-  const platformConfig: ConfigItem = await getPlatformConfig(orgId);
-  appLogger.info({ getPlatformConfig: platformConfig });
-  return platformConfig;
+  const deviceConfig: ConfigItem = await getDeviceConfig(orgId);
+  appLogger.info({ getDeviceConfig: deviceConfig });
+  return deviceConfig;
 };
 
-// fetch platform info
-export const getPlatformDetails = async (id: string): Promise<PlatformInfo> => {
+// fetch device info
+export const getDeviceDetails = async (id: string): Promise<DeviceInfo> => {
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
     Key: {
       id,
     },
-    TableName: TableNames.getPlatformsTableName(),
+    TableName: TableNames.getDevicesTableName(),
   });
-  appLogger.info({ getPlatformDetails_get_params: params });
-  return get<PlatformInfo>(params);
+  appLogger.info({ getDeviceDetails_get_params: params });
+  return get<DeviceInfo>(params);
 };
 
-// soft delete a platform
-export const deactivatePlatform = async (id: string, userId: string): Promise<PlatformInfo | undefined> => {
+// soft delete a device
+export const deactivateDevice = async (id: string, userId: string): Promise<DeviceInfo | undefined> => {
   const campaigns: CampaignInfo[] = await getCampaignsList(userId);
-  const platformUsed: boolean = campaigns.some((campaign: CampaignInfo) =>
+  const deviceUsed: boolean = campaigns.some((campaign: CampaignInfo) =>
     campaign.products.some((product: ProductInfo) =>
-      product.platforms.some((platform: PlatformInfo) =>
-        (platform.id === id) ? true : false
+      product.devices.some((device: DeviceInfo) =>
+        (device.id === id) ? true : false
       )
     )
   );
 
-  if(!platformUsed) {
+  if(!deviceUsed) {
     const params: DynamoDB.DeleteItemInput = <DynamoDB.DeleteItemInput>(<unknown>{
       Key: {
         id,
       },
-      TableName: TableNames.getPlatformsTableName()
+      TableName: TableNames.getDevicesTableName()
     });
-    appLogger.info({ deactivatePlatform_delete_params: params });
+    appLogger.info({ deactivateDevice_delete_params: params });
     return deleteItem(params);
   }
   return undefined;
 };
 
-//Update platform details -- used by update createPlatform API
-export const updatePlatform = async (updateInfo: PlatformInfo, userId: string) => {
+//Update device details -- used by update createDevice API
+export const updateDevice = async (updateInfo: DeviceInfo, userId: string) => {
   if (!userId) {
     const err = new Error('Unauthorized attempt');
     appLogger.error(err);
@@ -144,24 +144,24 @@ export const updatePlatform = async (updateInfo: PlatformInfo, userId: string) =
     Key: {
       id: updateInfo.id,
     },
-    TableName: TableNames.getPlatformsTableName(),
+    TableName: TableNames.getDevicesTableName(),
     UpdateExpression: SET,
   });
 
-  appLogger.info({ updatePlatform_update_params: params });
+  appLogger.info({ updateDevice_update_params: params });
   return update<DynamoDB.UpdateItemInput>(params);
 };
 
-export const getPlatformsList = async (userEmail: string): Promise<PlatformInfo[]> => {
+export const getDevicesList = async (userEmail: string): Promise<DeviceInfo[]> => {
   let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
-    TableName: TableNames.getPlatformsTableName(),
+    TableName: TableNames.getDevicesTableName(),
   };
 
   if (userEmail !== 'admin') {
     params = <DynamoDB.ScanInput>{
-      TableName: TableNames.getPlatformsTableName(),
+      TableName: TableNames.getDevicesTableName(),
     };
   }
-  appLogger.info({ getPlatformList_scan_params: params });
-  return scan<PlatformInfo[]>(params);
+  appLogger.info({ getDeviceList_scan_params: params });
+  return scan<DeviceInfo[]>(params);
 };

@@ -24,3 +24,4 @@ export * from './configTableFunctions';
 export * from './getTableNames';
 export * from './campaignsManagement';
 export * from './platformsManagement';
+export * from './devicesManagement';

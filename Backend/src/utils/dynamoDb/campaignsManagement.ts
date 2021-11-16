@@ -132,7 +132,7 @@ export const getCreateCampaignConfig = async (
   const createCampaignConfig: ConfigItem = { config: configDetails, orgId };
 */
   const managers = await fetchManagers();
-  const key = 'manager';
+  const key = 'managers';
   campaignConfig.config[key].options = { custom: managers.join(',') };
   return campaignConfig;
 };

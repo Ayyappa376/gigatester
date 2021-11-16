@@ -34,7 +34,7 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IPlatformInfo } from '../../../model';
+import { IDeviceInfo } from '../../../model';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -55,22 +55,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ManagePlatforms = (props: any) => {
+const ManageDevices = (props: any) => {
   const classes = useStyles();
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [fetchPlatforms, setFetchPlatforms] = React.useState(false);
-  const [allPlatforms, setAllPlatforms] = React.useState<Object[]>([]);
+  const [fetchDevices, setFetchDevices] = React.useState(false);
+  const [allDevices, setAllDevices] = React.useState<IDeviceInfo[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [deletePlatformId, setDeletePlatformId] = useState('');
+  const [deleteDeviceId, setDeleteDeviceId] = useState('');
   const [searchString, setSearchString] = useState('');
-  const [platforms, setPlatforms] = useState<IPlatformInfo[]>([]);
+  const [devices, setDevices] = useState<IDeviceInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [numberOfPlatforms, setNumberOfPlatforms] = useState(0);
+  const [numberOfDevices, setNumberOfDevices] = useState(0);
   const [itemLimit, setItemLimit] = useState({
     lowerLimit: 0,
     upperLimit: 9,
@@ -80,23 +80,23 @@ const ManagePlatforms = (props: any) => {
   const [orderBy, setOrderBy] = useState('name');
   /* Initialization Order related variables ends here */
 
-  const fetchPlatformList = () => {
+  const fetchDeviceList = () => {
     setBackdropOpen(true);
     Http.get({
-      url: `/api/v2/platforms`,
+      url: `/api/v2/devices`,
       state: stateVariable,
     })
     .then((response: any) => {
-      response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
+      response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
           return a.name.localeCompare(b.name);
       });
-      setFetchPlatforms(true);
-      setAllPlatforms(response.platforms);
-      setPlatforms(response.platforms);
+      setFetchDevices(true);
+      setAllDevices(response.devices);
+      setDevices(response.devices);
       setBackdropOpen(false);
     })
     .catch((error: any) => {
-      setFetchPlatforms(true);
+      setFetchDevices(true);
       setBackdropOpen(false);
       const perror = JSON.stringify(error);
       const object = JSON.parse(perror);
@@ -109,11 +109,11 @@ const ManagePlatforms = (props: any) => {
   };
 
   useEffect(() => {
-    setNumberOfPlatforms(platforms.length);
-  }, [platforms]);
+    setNumberOfDevices(devices.length);
+  }, [devices]);
 
   useEffect(() => {
-    fetchPlatformList();
+    fetchDeviceList();
     setSearchString('');
     setCurrentPage(1);
   }, []);
@@ -123,14 +123,14 @@ const ManagePlatforms = (props: any) => {
       setSearchButtonPressed(false);
       const searchedItems: any = [];
       if (searchString === '') {
-        setPlatforms([]);
+        setDevices([]);
       }
-      allPlatforms.forEach((el: any) => {
+      allDevices.forEach((el: any) => {
         if (el.name.toLowerCase().includes(searchString.toLowerCase())) {
           searchedItems.push(el);
         }
       });
-      setPlatforms(searchedItems);
+      setDevices(searchedItems);
       setCurrentPage(1);
     }
   }, [searchButtonPressed]);
@@ -145,22 +145,22 @@ const ManagePlatforms = (props: any) => {
   }, [itemsPerPage]);
 
   useEffect(() => {
-    if (platforms !== []) {
-      const tempSortedPlatforms = [...platforms];
+    if (devices !== []) {
+      const tempSortedDevices = [...devices];
       if (order === 'asc') {
-        if (orderBy === 'platform') {
-          setPlatforms(tempSortedPlatforms.sort(comparePlatform));
+        if (orderBy === 'device') {
+          setDevices(tempSortedDevices.sort(compareDevice));
         }
       }
       if (order === 'desc') {
-        if (orderBy === 'platform') {
-          setPlatforms(tempSortedPlatforms.sort(comparePlatformD));
+        if (orderBy === 'device') {
+          setDevices(tempSortedDevices.sort(compareDeviceD));
         }
       }
     }
   }, [order, orderBy]);
 
-  function comparePlatform(a: IPlatformInfo, b: IPlatformInfo) {
+  function compareDevice(a: IDeviceInfo, b: IDeviceInfo) {
     if (a.name.toLowerCase() < b.name.toLowerCase()) {
       return -1;
     }
@@ -170,7 +170,7 @@ const ManagePlatforms = (props: any) => {
     return 0;
   }
 
-  function comparePlatformD(a: IPlatformInfo, b: IPlatformInfo) {
+  function compareDeviceD(a: IDeviceInfo, b: IDeviceInfo) {
     if (a.name.toLowerCase() < b.name.toLowerCase()) {
       return 1;
     }
@@ -211,8 +211,8 @@ const ManagePlatforms = (props: any) => {
     setCurrentPage(event);
   };
 
-  const deleteClicked = (platformId: string) => {
-    setDeletePlatformId(platformId);
+  const deleteClicked = (deviceId: string) => {
+    setDeleteDeviceId(deviceId);
     setOpenModal(true);
   };
 
@@ -221,22 +221,22 @@ const ManagePlatforms = (props: any) => {
   };
 
   const modalYesClicked = () => {
-    if (deletePlatformId !== '') {
-      deletePlatform(deletePlatformId);
+    if (deleteDeviceId !== '') {
+      deleteDevice(deleteDeviceId);
       setOpenModal(false);
     }
   };
 
-  const deletePlatform = (platformId: string) => {
+  const deleteDevice = (deviceId: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/platforms/${platformId}`,
+      url: `/api/v2/devices/${deviceId}`,
       state: stateVariable,
     })
     .then((response: any) => {
       setBackdropOpen(false);
-      setDeletePlatformId('');
-      fetchPlatformList();
+      setDeleteDeviceId('');
+      fetchDeviceList();
     })
     .catch((error) => {
       const perror = JSON.stringify(error);
@@ -245,11 +245,11 @@ const ManagePlatforms = (props: any) => {
         props.history.push('/relogin');
       }
       setBackdropOpen(false);
-      fetchPlatformList();
+      fetchDeviceList();
     });
   };
 
-  const renderPlatformsTable = () => {
+  const renderDevicesTable = () => {
     return (
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
@@ -267,7 +267,7 @@ const ManagePlatforms = (props: any) => {
                   <AddIcon
                     fontSize='large'
                   />{' '}
-                  <Text tid='addPlatform' />
+                  <Text tid='addDevice' />
                 </Button>
               </Grid>
               <Grid item sm={5}>
@@ -290,14 +290,14 @@ const ManagePlatforms = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <TableSortLabel
-                      active={orderBy === 'platform'}
-                      direction={orderBy === 'platform' ? order : 'asc'}
+                      active={orderBy === 'device'}
+                      direction={orderBy === 'device' ? order : 'asc'}
                       onClick={() => {
-                        handleRequestSort('platform');
+                        handleRequestSort('device');
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='platform' />
+                        <Text tid='device' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
@@ -309,7 +309,7 @@ const ManagePlatforms = (props: any) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {platforms.map((row: any, index: number) => {
+                {devices.map((row: any, index: number) => {
                   if (index < itemLimit.lowerLimit) {
                     return;
                   }
@@ -367,7 +367,7 @@ const ManagePlatforms = (props: any) => {
               pageRangeDisplayed={10}
               activePage={currentPage}
               itemsCountPerPage={itemsPerPage}
-              totalItemsCount={numberOfPlatforms}
+              totalItemsCount={numberOfDevices}
               handleChange={handlePaginationClick}
             />
           </Fragment>
@@ -381,7 +381,7 @@ const ManagePlatforms = (props: any) => {
             </Button>
           </div>
           <ModalComponent
-            message={'deletePlatformConfirmMessage'}
+            message={'deleteDeviceConfirmMessage'}
             openModal={openModal}
             handleModalYesClicked={modalYesClicked}
             handleModalNoClicked={modalNoClicked}
@@ -393,8 +393,8 @@ const ManagePlatforms = (props: any) => {
 
   return (
     <Fragment>
-      {fetchPlatforms ? (
-        renderPlatformsTable()
+      {fetchDevices ? (
+        renderDevicesTable()
       ) : (
         <Container className='loaderStyle'>
           <Loader />
@@ -404,4 +404,4 @@ const ManagePlatforms = (props: any) => {
   );
 };
 
-export default withRouter(ManagePlatforms);
+export default withRouter(ManageDevices);

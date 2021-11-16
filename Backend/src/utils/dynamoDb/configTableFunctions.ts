@@ -17,6 +17,7 @@ const SYSTEM_CONFIG = 'SystemConfig';
 const USER_CONFIG = 'UserConfig';
 const TEAM_CONFIG = 'TeamConfig';
 const CAMPAIGN_CONFIG = 'CampaignConfig';
+const DEVICE_CONFIG = 'DeviceConfig';
 const PLATFORM_CONFIG = 'PlatformConfig';
 const SERVICE_CONFIG = 'ServiceConfig';
 const GENERAL_CONFIG = 'GeneralConfig';
@@ -68,6 +69,9 @@ export const getTeamConfig = async (orgId: string): Promise<ConfigItem> =>
 
 export const getCampaignConfig = async (orgId: string): Promise<ConfigItem> =>
 getConfig(orgId, CAMPAIGN_CONFIG);
+
+export const getDeviceConfig = async (orgId: string): Promise<ConfigItem> =>
+getConfig(orgId, DEVICE_CONFIG);
 
 export const getPlatformConfig = async (orgId: string): Promise<ConfigItem> =>
 getConfig(orgId, PLATFORM_CONFIG);
@@ -121,6 +125,11 @@ export const setCampaignConfig = async (
   orgId: string,
   configDetails: ObjectConfigDetails
 ): Promise<ConfigItem> => setConfig(orgId, CAMPAIGN_CONFIG, configDetails);
+
+export const setDeviceConfig = async (
+  orgId: string,
+  configDetails: ObjectConfigDetails
+): Promise<ConfigItem> => setConfig(orgId, DEVICE_CONFIG, configDetails);
 
 export const setPlatformConfig = async (
   orgId: string,

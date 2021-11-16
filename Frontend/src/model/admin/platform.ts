@@ -3,7 +3,7 @@ import  { IFieldConfigAttributes } from '..';
 export interface IPlatformInfo {
   id: string;
   name: string;
-  altNames?: string;
+  description?: string;
   [keyName: string]: any;
 }
 

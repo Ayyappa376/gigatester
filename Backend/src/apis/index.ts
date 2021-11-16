@@ -14,6 +14,10 @@ import { api as getTeamsConfigV2 } from './v2/createTeam/get';
 import { api as createTeamsConfigV2 } from './v2/createTeam/post';
 import { api as updateTeamsConfigV2 } from './v2/createTeam/put';
 import { api as getAssessmentDetailsV2 } from './v2/details/get';
+import { api as deleteDevicesV2 } from './v2/device/delete';
+import { api as getDevicesV2 } from './v2/device/get';
+import { api as postDevicesV2 } from './v2/device/post';
+import { api as putDevicesV2 } from './v2/device/put';
 import { api as dowloadReportsV2 } from './v2/downloadReports/get';
 import { api as getFeedbackV2 } from './v2/feedback/get';
 import { api as postFeedbackV2 } from './v2/feedback/post';
@@ -73,6 +77,10 @@ const apis: API[] = [
   getPlatformsV2,
   postPlatformsV2,
   putPlatformsV2,
+  deleteDevicesV2,
+  getDevicesV2,
+  postDevicesV2,
+  putDevicesV2,
   postFeedbackV2,
   getFeedbackV2,
   getAssessmentAndTeamDetailsV2,
