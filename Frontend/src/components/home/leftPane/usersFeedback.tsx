@@ -73,12 +73,12 @@ const UsersFeedback = (props: any) => {
                     variant="dots"
                     activeStep={activeStep}
                     nextButton={
-                        <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
+                        <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1} data-testid="nextButton">
                             {<KeyboardArrowRight />}
                         </Button>
                     }
                     backButton={
-                        <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+                        <Button size="small" onClick={handleBack} disabled={activeStep === 0} data-testid="backButton">
                             {<KeyboardArrowLeft />}
                         </Button>
                     }
