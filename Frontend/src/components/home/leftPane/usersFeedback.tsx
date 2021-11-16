@@ -44,14 +44,13 @@ const UsersFeedback = (props: any) => {
             <Typography className='headerText' data-testid="header">BUZZ</Typography>
             <Paper>
                 <AutoPlaySwipeableViews
-                    axis={theme.direction === 'rtl' ? 'x-reverse' : 'x'}
                     index={activeStep}
                     onChangeIndex={handleStepChange}
                     enableMouseEvents
                     className="sliderBackground sliderBorder"
                 >
                     {props.usersFeedback && props.usersFeedback.map((item: any, index: number) => (
-                        <div key={item.label} className={classes.sliderView} >
+                        <div key={index} className={classes.sliderView} >
                             {Math.abs(activeStep - index) <= 2 ? (
                                 <div data-testid="feedbackMessage">
                                     <Grid container spacing={1} >
@@ -75,12 +74,12 @@ const UsersFeedback = (props: any) => {
                     activeStep={activeStep}
                     nextButton={
                         <Button size="small" onClick={handleNext} disabled={activeStep === maxSteps - 1}>
-                            {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+                            {<KeyboardArrowRight />}
                         </Button>
                     }
                     backButton={
                         <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
-                            {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+                            {<KeyboardArrowLeft />}
                         </Button>
                     }
                 >
