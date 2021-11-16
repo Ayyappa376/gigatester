@@ -917,6 +917,24 @@ const PageHeader = (props: any) => {
             </div>
           )}
         </div>
+        <Popper open={openUserMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
+          {({ TransitionProps, placement }) => (
+            <Grow
+              {...TransitionProps}
+              style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
+            >
+              <Paper>
+                <ClickAwayListener onClickAway={handleCloseUserMenu}>
+                  <MenuList autoFocusItem={openUserMenu} id="menu-list-grow" onKeyDown={handleListKeyDown}>
+                    <MenuItem onClick={handleProfileSetting}>Profile Settings</MenuItem>
+                    <MenuItem onClick={handleCloseUserMenu}>Change Password</MenuItem>
+                    <MenuItem onClick={logoutModalActivate}>Logout</MenuItem>
+                  </MenuList>
+                </ClickAwayListener>
+              </Paper>
+            </Grow>
+          )}
+        </Popper>
       </div>
       <ModalComponent
         message={'wantToLogout'}
@@ -934,25 +952,6 @@ const PageHeader = (props: any) => {
       {openSignin &&
         <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
       }
-      <Popper open={openUserMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
-        {({ TransitionProps, placement }) => (
-          <Grow
-            {...TransitionProps}
-            style={{ transformOrigin: placement === 'bottom' ? 'center top' : 'center bottom' }}
-          >
-            <Paper>
-              <ClickAwayListener onClickAway={handleCloseUserMenu}>
-                <MenuList autoFocusItem={openUserMenu} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                  <MenuItem onClick={handleProfileSetting}>Profile Settings</MenuItem>
-                  <MenuItem onClick={handleCloseUserMenu}>Change Password</MenuItem>
-                  <MenuItem onClick={logoutModalActivate}>Logout</MenuItem>
-                </MenuList>
-              </ClickAwayListener>
-            </Paper>
-          </Grow>
-        )}
-      </Popper>
-
     </Fragment>
   );
 };

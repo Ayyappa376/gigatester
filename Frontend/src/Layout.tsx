@@ -120,10 +120,10 @@ const Layout = (props: any) => {
         <Route exact path='/trends' render={() => <Trends {...props} />} />
         <Route
           exact path='/latestNews'
-          render={() => <LatestNews />} />
+          render={() => <LatestNews {...props} />} />
         <Route
           exact path='/profile'
-          render={() => <UserProfile />} />
+          render={() => <UserProfile {...props} />} />
       </Switch>
 
       <IdleTimeOutModal
