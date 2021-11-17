@@ -55,17 +55,17 @@ export const addDynamoUser = async (
     appLogger.error(err);
     throw err;
   }
-  const myTeams = (teams: string[]) => {
-    const arr: AllotedTeam[] = new Array();
-    userDetails.teams.forEach((teamId: string) => {
-      const teamStruct: AllotedTeam = {
-        isLead: false,
-        name: teamId,
-      };
-      arr.push(teamStruct);
-    });
-    return arr;
-  };
+  // const myTeams = (teams: string[]) => {
+  //   const arr: AllotedTeam[] = new Array();
+  //   userDetails.teams.forEach((teamId: string) => {
+  //     const teamStruct: AllotedTeam = {
+  //       isLead: false,
+  //       name: teamId,
+  //     };
+  //     arr.push(teamStruct);
+  //   });
+  //   return arr;
+  // };
   const item: UserDocument = {
     active: true,
     createdBy: managerDetails.emailId,
@@ -75,7 +75,7 @@ export const addDynamoUser = async (
     id,
     orgId: managerDetails.orgId || config.defaults.orgId,
     roles: userDetails.roles,
-    teams: myTeams(userDetails.teams),
+    // teams: myTeams(userDetails.teams),
   };
 
   Object.keys(userDetails).forEach((val, i) => {
