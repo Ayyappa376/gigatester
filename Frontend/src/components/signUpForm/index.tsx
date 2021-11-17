@@ -111,9 +111,6 @@ export default function SignupForm(props: any) {
 
   const getSignInPage = () => {
     setOpenSignin(true);
-    setTimeout(() => {
-      closeDialog();
-    }, 1000);
   };
 
   const closeAlert = () => {
