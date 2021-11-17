@@ -1,8 +1,8 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, deactivateCampaign, responseBuilder } from '@utils/index';
+import { appLogger, deactivatePlatform, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
-interface DelCampaigns {
+interface DelPlatforms {
   headers: {
     user: {
       'cognito:groups': string[];
@@ -15,33 +15,30 @@ interface DelCampaigns {
   };
 }
 
-async function handler(request: DelCampaigns, response: Response) {
-  appLogger.info({ DelCampaigns: request }, 'Inside Handler');
+async function handler(request: DelPlatforms, response: Response) {
+  appLogger.info({ DelPlatforms: request }, 'Inside Handler');
 
   const { headers, params } = request;
 
-  if (
-    headers.user['cognito:groups'][0] !== 'Manager' &&
-    headers.user['cognito:groups'][0] !== 'Admin'
-  ) {
+  if (headers.user['cognito:groups'][0] !== 'Admin') {
     const err = new Error('Forbidden Access: Unauthorized user');
-    appLogger.error(err, 'Only Admin and Managers can delete campaigns');
+    appLogger.error(err, 'Only Admin can delete platforms');
     return responseBuilder.forbidden(err, response);
   }
 
   if (!params.id) {
     const err = new Error('BadRequest: Missing params');
-    appLogger.error(err, 'Campaign id to delete is missing.');
+    appLogger.error(err, 'Platform id to delete is missing.');
     return responseBuilder.badRequest(err, response);
   }
 
-  const resp: any = await deactivateCampaign(params.id);
-  appLogger.info({ deactivateCampaign_Resp: resp });
+  const resp: any = await deactivatePlatform(params.id, headers.user.email);
+  appLogger.info({ deactivatePlatform_Resp: resp });
   return responseBuilder.ok(resp, response);
 }
 
 export const api: API = {
   handler: <Handler>(<unknown>handler),
   method: 'delete',
-  route: '/api/v2/campaigns/:id',
+  route: '/api/v2/platforms/:id',
 };

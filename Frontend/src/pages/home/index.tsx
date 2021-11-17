@@ -18,7 +18,7 @@ import SignupForm from "../../components/signUpForm";
 
 const useStyles = makeStyles({
   root: {
-    paddingTop: "4%",
+    marginTop: "3.2em",
     padding: 0,
     overflow: "hidden",
   },

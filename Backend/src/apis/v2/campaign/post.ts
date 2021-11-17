@@ -5,7 +5,7 @@ import { Response } from 'express';
 
 interface PostCampaigns {
   body: {
-    values: CampaignInfo;
+    campaigns: CampaignInfo[];
   };
   headers: {
     user: {
@@ -17,19 +17,25 @@ interface PostCampaigns {
 }
 
 async function handler(request: PostCampaigns, response: Response) {
-  appLogger.info({ AddCampaigns: request }, 'Inside Handler');
+  appLogger.info({ PostCampaigns: request }, 'Inside Handler');
 
   const { headers, body } = request;
   if (
     headers.user['cognito:groups'][0] !== 'Manager' &&
     headers.user['cognito:groups'][0] !== 'Admin'
   ) {
-    const err = new Error('InvalidUser');
-    appLogger.error(err, 'Forbidden');
+    const err = new Error('Forbidden Access: Unauthorized user');
+    appLogger.error(err, 'Only Admins and Managers can create campaigns');
     return responseBuilder.forbidden(err, response);
   }
 
-  const createData: CampaignInfo = body.values;
+  if (body.campaigns.length < 1) {
+    const err = new Error('BadRequest: Missing values');
+    appLogger.error(err, 'Campaign to create is missing.');
+    return responseBuilder.badRequest(err, response);
+  }
+
+  const createData: CampaignInfo = body.campaigns[0];
   if (
     headers.user['cognito:groups'][0] === 'Manager' ||
     (headers.user['cognito:groups'][0] === 'Admin' && !createData.manager)

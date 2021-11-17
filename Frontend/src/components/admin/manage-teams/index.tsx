@@ -303,7 +303,7 @@ const ManageTeams = (props: any) => {
   const renderEmptyTeamMessage = () => {
     return (
       <Typography variant='h5'>
-        <Text tid='notManagingAnyPlatform' />
+        <Text tid='notManagingAnyTeams' />
       </Typography>
     );
   };

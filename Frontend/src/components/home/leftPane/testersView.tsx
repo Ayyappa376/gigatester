@@ -1,14 +1,18 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Grid, Paper, Typography } from '@material-ui/core';
+import { Avatar, Button, Grid, Paper, Typography } from '@material-ui/core';
 import '../style.css';
 
-const useStyles = makeStyles(() => ({
-    img: {
-        height: 60,
-        width: 60,
-        borderRadius: '50%',
-        margin: '10px 20px'
+const useStyles = makeStyles((theme) => ({
+    root: {
+        display: 'flex',
+        '& > *': {
+            margin: theme.spacing(2),
+        },
+    },
+    large: {
+        width: theme.spacing(7),
+        height: theme.spacing(7),
     },
 }));
 
@@ -28,12 +32,14 @@ const TestersView = (props: any) => {
                 </Grid>
             </Grid>
             <Paper className="sectionBackground sectionBorder" >
-                {props.testersList && props.testersList.map((item: any, index: number) => {
-                    return (
-                        <img aria-label='tester-pic' className={classes.img} src={item.imgPath} alt={item.label} key={index} />
-                    )
-                })
-                }
+                <div className={classes.root}>
+                    {props.testersList && props.testersList.map((item: any, index: number) => {
+                        return (
+                            <Avatar alt={item.label} src={item.imgPath} className={classes.large} key={index} />
+                        )
+                    })
+                    }
+                </div>
             </Paper >
         </div>
     );

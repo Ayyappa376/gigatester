@@ -14,7 +14,11 @@ import {
   Backdrop,
   Grid,
   TableSortLabel,
+  MuiThemeProvider,
+  Tooltip
 } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
+import AddIcon from '@material-ui/icons/Add';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
@@ -24,12 +28,13 @@ import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 import CancelIcon from '@material-ui/icons/Cancel';
 import { withRouter } from 'react-router-dom';
 import { ModalComponent } from '../../modal';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
 import SearchControl from '../../common/searchControl';
 import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
+import { IPlatformInfo } from '../../../model';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -50,22 +55,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ManageCampaigns = (props: any) => {
+const ManagePlatforms = (props: any) => {
   const classes = useStyles();
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [fetchCampaigns, setFetchCampaigns] = React.useState(false);
-  const [allCampaigns, setAllCampaigns] = React.useState<Object[]>([]);
+  const [fetchPlatforms, setFetchPlatforms] = React.useState(false);
+  const [allPlatforms, setAllPlatforms] = React.useState<Object[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [deleteCampaignId, setDeleteCampaignId] = useState('');
+  const [deletePlatformId, setDeletePlatformId] = useState('');
   const [searchString, setSearchString] = useState('');
-  const [campaigns, setCampaigns] = useState<Object[]>([]);
+  const [platforms, setPlatforms] = useState<IPlatformInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [numberOfCampaigns, setNumberOfCampaigns] = useState(0);
+  const [numberOfPlatforms, setNumberOfPlatforms] = useState(0);
   const [itemLimit, setItemLimit] = useState({
     lowerLimit: 0,
     upperLimit: 9,
@@ -75,28 +80,23 @@ const ManageCampaigns = (props: any) => {
   const [orderBy, setOrderBy] = useState('name');
   /* Initialization Order related variables ends here */
 
-  const fetchCampaignList = () => {
+  const fetchPlatformList = () => {
     setBackdropOpen(true);
     Http.get({
-      url: `/api/v2/campaigns`,
+      url: `/api/v2/platforms`,
       state: stateVariable,
     })
     .then((response: any) => {
-      response.campaigns.sort((a: any, b: any) => {
-        if (a.active === b.active) {
-          return a.name.toLowerCase() <= b.name.toLowerCase()
-            ? -1
-            : 1;
-        }
-        return a.active === 'true' ? -1 : 1;
+      response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
+          return a.name.localeCompare(b.name);
       });
-      setFetchCampaigns(true);
-      setAllCampaigns(response.campaigns);
-      setCampaigns(response.campaigns);
+      setFetchPlatforms(true);
+      setAllPlatforms(response.platforms);
+      setPlatforms(response.platforms);
       setBackdropOpen(false);
     })
     .catch((error: any) => {
-      setFetchCampaigns(true);
+      setFetchPlatforms(true);
       setBackdropOpen(false);
       const perror = JSON.stringify(error);
       const object = JSON.parse(perror);
@@ -109,11 +109,11 @@ const ManageCampaigns = (props: any) => {
   };
 
   useEffect(() => {
-    setNumberOfCampaigns(campaigns.length);
-  }, [campaigns]);
+    setNumberOfPlatforms(platforms.length);
+  }, [platforms]);
 
   useEffect(() => {
-    fetchCampaignList();
+    fetchPlatformList();
     setSearchString('');
     setCurrentPage(1);
   }, []);
@@ -123,14 +123,14 @@ const ManageCampaigns = (props: any) => {
       setSearchButtonPressed(false);
       const searchedItems: any = [];
       if (searchString === '') {
-        setCampaigns([]);
+        setPlatforms([]);
       }
-      allCampaigns.forEach((el: any) => {
+      allPlatforms.forEach((el: any) => {
         if (el.name.toLowerCase().includes(searchString.toLowerCase())) {
           searchedItems.push(el);
         }
       });
-      setCampaigns(searchedItems);
+      setPlatforms(searchedItems);
       setCurrentPage(1);
     }
   }, [searchButtonPressed]);
@@ -145,38 +145,22 @@ const ManageCampaigns = (props: any) => {
   }, [itemsPerPage]);
 
   useEffect(() => {
-    if (campaigns !== []) {
-      const tempSortedCampaigns = [...campaigns];
+    if (platforms !== []) {
+      const tempSortedPlatforms = [...platforms];
       if (order === 'asc') {
-        if (orderBy === 'status') {
-          setCampaigns(tempSortedCampaigns.sort(compareStatus));
-        }
-        if (orderBy === 'campaign') {
-          setCampaigns(tempSortedCampaigns.sort(compareCampaign));
+        if (orderBy === 'platform') {
+          setPlatforms(tempSortedPlatforms.sort(comparePlatform));
         }
       }
       if (order === 'desc') {
-        if (orderBy === 'status') {
-          setCampaigns(tempSortedCampaigns.sort(compareStatusD));
-        }
-        if (orderBy === 'campaign') {
-          setCampaigns(tempSortedCampaigns.sort(compareCampaignD));
+        if (orderBy === 'platform') {
+          setPlatforms(tempSortedPlatforms.sort(comparePlatformD));
         }
       }
     }
   }, [order, orderBy]);
 
-  function compareStatus(a: any, b: any) {
-    if (a.active === 'true' && b.active === 'false') {
-      return -1;
-    }
-    if (a.active === 'false' && b.active === 'true') {
-      return 1;
-    }
-    return 0;
-  }
-
-  function compareCampaign(a: any, b: any) {
+  function comparePlatform(a: IPlatformInfo, b: IPlatformInfo) {
     if (a.name.toLowerCase() < b.name.toLowerCase()) {
       return -1;
     }
@@ -186,17 +170,7 @@ const ManageCampaigns = (props: any) => {
     return 0;
   }
 
-  function compareStatusD(a: any, b: any) {
-    if (a.active === 'true' && b.active === 'false') {
-      return 1;
-    }
-    if (a.active === 'false' && b.active === 'true') {
-      return -1;
-    }
-    return 0;
-  }
-
-  function compareCampaignD(a: any, b: any) {
+  function comparePlatformD(a: IPlatformInfo, b: IPlatformInfo) {
     if (a.name.toLowerCase() < b.name.toLowerCase()) {
       return 1;
     }
@@ -237,8 +211,8 @@ const ManageCampaigns = (props: any) => {
     setCurrentPage(event);
   };
 
-  const disableClicked = (campaignId: string) => {
-    setDeleteCampaignId(campaignId);
+  const deleteClicked = (platformId: string) => {
+    setDeletePlatformId(platformId);
     setOpenModal(true);
   };
 
@@ -247,68 +221,35 @@ const ManageCampaigns = (props: any) => {
   };
 
   const modalYesClicked = () => {
-    if (deleteCampaignId !== '') {
-      disableCampaign(deleteCampaignId);
+    if (deletePlatformId !== '') {
+      deletePlatform(deletePlatformId);
       setOpenModal(false);
     }
   };
 
-  const disableCampaign = (campaignId: string) => {
+  const deletePlatform = (platformId: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/campaigns/${campaignId}`,
+      url: `/api/v2/platforms/${platformId}`,
       state: stateVariable,
     })
-      .then((response: any) => {
-        setBackdropOpen(false);
-        setDeleteCampaignId('');
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        }
-        setBackdropOpen(false);
-        fetchCampaignList();
-      });
-  };
-
-  const enableClicked = (row: any) => {
-    setBackdropOpen(true);
-    const postData = { ...row, active: 'true' };
-    Http.put({
-      url: `/api/v2/campaigns`,
-      body: {
-        orgId: postData.orgId,
-        values: postData,
-      },
-      state: stateVariable,
+    .then((response: any) => {
+      setBackdropOpen(false);
+      setDeletePlatformId('');
+      fetchPlatformList();
     })
-      .then((response: any) => {
-        setBackdropOpen(false);
-        fetchCampaignList();
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        }
-        setBackdropOpen(false);
-        fetchCampaignList();
-      });
+    .catch((error) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      }
+      setBackdropOpen(false);
+      fetchPlatformList();
+    });
   };
 
-  const renderEmptyCampaignMessage = () => {
-    return (
-      <Typography variant='h5'>
-        <Text tid='notManagingAnyCampaigns' />
-      </Typography>
-    );
-  };
-
-  const renderCampaignsTable = () => {
+  const renderPlatformsTable = () => {
     return (
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
@@ -317,7 +258,18 @@ const ManageCampaigns = (props: any) => {
           </Backdrop>
           <div style={{ width: '100%' }}>
             <Grid container spacing={3}>
-              <Grid item sm={5} />
+              <Grid item sm={5}>
+                <Button
+                  className={classes.backButton}
+                  variant='outlined'
+                  onClick={() => { props.editClicked(0); }}
+                >
+                  <AddIcon
+                    fontSize='large'
+                  />{' '}
+                  <Text tid='addPlatform' />
+                </Button>
+              </Grid>
               <Grid item sm={5}>
                 <SearchControl
                   searchString={searchString}
@@ -338,10 +290,10 @@ const ManageCampaigns = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <TableSortLabel
-                      active={orderBy === 'campaign'}
-                      direction={orderBy === 'campaign' ? order : 'asc'}
+                      active={orderBy === 'platform'}
+                      direction={orderBy === 'platform' ? order : 'asc'}
                       onClick={() => {
-                        handleRequestSort('campaign');
+                        handleRequestSort('platform');
                       }}
                     >
                       <Typography className='tableHeadText'>
@@ -354,23 +306,10 @@ const ManageCampaigns = (props: any) => {
                       <Text tid='actions' />
                     </Typography>
                   </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
-                    <TableSortLabel
-                      active={orderBy === 'status'}
-                      direction={orderBy === 'status' ? order : 'asc'}
-                      onClick={() => {
-                        handleRequestSort('status');
-                      }}
-                    >
-                      <Typography className='tableHeadText'>
-                        <Text tid='status' />
-                      </Typography>
-                    </TableSortLabel>
-                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {campaigns.map((row: any, index: number) => {
+                {platforms.map((row: any, index: number) => {
                   if (index < itemLimit.lowerLimit) {
                     return;
                   }
@@ -391,76 +330,31 @@ const ManageCampaigns = (props: any) => {
                         scope='row'
                         className='tableCell'
                       >
-                        <Typography className='tableBodyText'>
-                          {row.name}
-                        </Typography>
+                        <MaterialLink
+                          href='#'
+                          onClick={() => { props.editClicked(row.id); }}
+                        >
+                          <Typography className='tableBodyText'>
+                            {row.name}
+                          </Typography>
+                        </MaterialLink>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
-                        <div className={classes.actionsBlock}>
-                          {row.active === 'true' ? (
-                            <Fragment>
-                              <MaterialLink
-                                href='#'
-                                onClick={() => {
-                                  props.editClicked(row.id);
-                                }}
-                              >
-                                <Typography>
-                                  <Text tid='editProfile' />
+                        <div className={classes.actionsBlock} style={{ cursor: 'pointer' }}>
+                          <MuiThemeProvider theme={tooltipTheme}>
+                            <Tooltip
+                              title={
+                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                  <Text tid='delete' />
                                 </Typography>
-                              </MaterialLink>
-                              <Typography>&nbsp;|&nbsp;</Typography>
-                              <MaterialLink
-                                href='#'
-                                onClick={() => {
-                                  disableClicked(row.id);
-                                }}
-                              >
-                                <Typography>
-                                  <Text tid='disable' />
-                                </Typography>
-                              </MaterialLink>
-                              {/*<Typography>&nbsp;|&nbsp;</Typography>
-                              <MaterialLink
-                                href='#'
-                                onClick={() => {
-                                  props.assignClicked(row.id);
-                                }}
-                              >
-                                <Typography>
-                                  <Text tid='assign' />
-                                </Typography>
-                              </MaterialLink>*/}
-                            </Fragment>
-                          ) : (
-                            <MaterialLink
-                              align='center'
-                              href='#'
-                              onClick={() => {
-                                enableClicked(row);
-                              }}
+                              }
                             >
-                              <Typography align='center'>
-                                <Text tid='enable' />
+                              <Typography>
+                                <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
                               </Typography>
-                            </MaterialLink>
-                          )}
+                            </Tooltip>
+                          </MuiThemeProvider>
                         </div>
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        scope='row'
-                        align='center'
-                        className='tableCell'
-                      >
-                        {row.active === 'true' ? (
-                          <CheckCircleIcon
-                            fontSize='large'
-                            htmlColor='#66bb6a'
-                          />
-                        ) : (
-                          <CancelIcon fontSize='large' htmlColor='#dd0000' />
-                        )}
                       </TableCell>
                     </TableRow>
                   );
@@ -473,7 +367,7 @@ const ManageCampaigns = (props: any) => {
               pageRangeDisplayed={10}
               activePage={currentPage}
               itemsCountPerPage={itemsPerPage}
-              totalItemsCount={numberOfCampaigns}
+              totalItemsCount={numberOfPlatforms}
               handleChange={handlePaginationClick}
             />
           </Fragment>
@@ -487,7 +381,7 @@ const ManageCampaigns = (props: any) => {
             </Button>
           </div>
           <ModalComponent
-            message={'disableThePlatformAndTheRelatedTestData'}
+            message={'deletePlatformConfirmMessage'}
             openModal={openModal}
             handleModalYesClicked={modalYesClicked}
             handleModalNoClicked={modalNoClicked}
@@ -499,12 +393,8 @@ const ManageCampaigns = (props: any) => {
 
   return (
     <Fragment>
-      {fetchCampaigns ? (
-        allCampaigns.length === 0 ? (
-          renderEmptyCampaignMessage()
-        ) : (
-          renderCampaignsTable()
-        )
+      {fetchPlatforms ? (
+        renderPlatformsTable()
       ) : (
         <Container className='loaderStyle'>
           <Loader />
@@ -514,4 +404,4 @@ const ManageCampaigns = (props: any) => {
   );
 };
 
-export default withRouter(ManageCampaigns);
+export default withRouter(ManagePlatforms);

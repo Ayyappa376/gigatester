@@ -4,11 +4,12 @@ import { Button, Grid, InputLabel, Paper, Typography } from "@material-ui/core";
 import SignupForm from "../../signUpForm";
 import "../style.css";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   root: {
     background: "#F0F0F0",
-    padding: "10px",
+    paddingTop: "10px",
     fontFamily: "Montserrat",
+    width: "100%",
   },
   title: {
     padding: "10px 0px",

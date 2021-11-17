@@ -18,6 +18,7 @@ import {
   TeamAssessments,
   TeamSelect,
   Trends,
+  UserProfile,
   ViewAssessment,
   ViewTeams,
 } from './pages';
@@ -119,7 +120,10 @@ const Layout = (props: any) => {
         <Route exact path='/trends' render={() => <Trends {...props} />} />
         <Route
           exact path='/latestNews'
-          render={() => <LatestNews />} />
+          render={() => <LatestNews {...props} />} />
+        <Route
+          exact path='/profile'
+          render={() => <UserProfile {...props} />} />
       </Switch>
 
       <IdleTimeOutModal
