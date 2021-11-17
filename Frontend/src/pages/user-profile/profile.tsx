@@ -202,7 +202,7 @@ export default function Profile(props: any) {
 
     const renderProfileForm = () => {
         return (
-            <Grid container spacing={2}>
+            <Grid container spacing={2} data-testid="profileForm">
                 <Grid container style={{ height: '300px' }}>
                     <Grid item xs={5} sm={5} className={classes.topBar}>
                         <Grid container style={{ padding: '8px' }}>
@@ -293,7 +293,7 @@ export default function Profile(props: any) {
     }
 
     return (
-        <Fragment>
+        <div data-testid="profileForm">
             {userDataFetched && teamDataFetched ? (
                 renderProfileForm()
             ) : (
@@ -301,6 +301,6 @@ export default function Profile(props: any) {
                     <Loader />
                 </Container>
             )}
-        </Fragment>
+        </div>
     );
 }
