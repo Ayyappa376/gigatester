@@ -52,6 +52,7 @@ export const createCampaign = async (campaignData: CampaignInfo, userId: string)
     manager: campaignData.manager,
     managerId: managerId[0].id,
     name: campaignData.name,
+    products: []
   };
 
   Object.keys(campaignData).forEach((val, i) => {
@@ -131,7 +132,7 @@ export const getCreateCampaignConfig = async (
   const createCampaignConfig: ConfigItem = { config: configDetails, orgId };
 */
   const managers = await fetchManagers();
-  const key = 'manager';
+  const key = 'managers';
   campaignConfig.config[key].options = { custom: managers.join(',') };
   return campaignConfig;
 };
