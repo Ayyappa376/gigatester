@@ -66,3 +66,8 @@ export const PLRPathList = [
 
 // tslint:disable-next-line: max-line-length
 export const StaffRequestAccessURL = 'https://teamtelstra.sharepoint.com/sites/B2BDigitalTransformationHub/SitePages/Staff-Access-to-Telstra-Connect.aspx?web=1';
+
+export const SuperUser = {
+    userName : "darshan.hn@pinimbus.com",
+    password : "Giga@2021"
+}

@@ -14,7 +14,7 @@ export interface UserDocument {
     modifiedOn?: number;
     orgId?: string;
     roles?: string[];
-    teams: AllotedTeam[];
+    teams?: AllotedTeam[];
     [keyName: string]: any;
 }
 

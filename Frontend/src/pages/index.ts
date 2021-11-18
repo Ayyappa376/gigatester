@@ -18,6 +18,7 @@ import TrialHome from './trial-home';
 import TrialClose from './trial-close';
 import Trends from './trends';
 import MetricSelect from './metrics/metric-select';
+import UserProfile from './user-profile';
 
 export {
   About,
@@ -38,6 +39,7 @@ export {
   TrialClose,
   TrialHome,
   Trends,
+  UserProfile,
   ViewAssessment,
   ViewTeams,
 };
