@@ -123,6 +123,10 @@ export default function SignupForm(props: any) {
     // props.getSignInState(false);
   };
 
+  const getSignInState = (state: boolean) => {
+    setOpenSignin(state);
+  };
+
   const handleSubmit = () => {
     setLoading(true);
     const { emailId } = userParamState;
@@ -173,42 +177,46 @@ export default function SignupForm(props: any) {
 
   const signUpForm = () => {
     return (
-      <Grid container spacing={1}>
-        <Grid item xs={12} sm={5}>
-          <TextField
-            required
-            id="Firs_5918865382"
-            name="Firs_5918865382"
-            label="First name"
-            value={userParamState.Firs_5918865382 || ""}
-            fullWidth
-            onChange={handleChangeValue}
-          />
-        </Grid>
-        <Grid item xs={12} sm={2} />
-        <Grid item xs={12} sm={5}>
-          <TextField
-            id="Last_1057488597"
-            name="Last_1057488597"
-            label="Last name"
-            value={userParamState.Last_1057488597 || ""}
-            fullWidth
-            onChange={handleChangeValue}
-          />
-        </Grid>
-        <Grid item xs={12} sm={12}>
-          <TextField
-            required
-            id="emailId"
-            name="emailId"
-            label="Email Id"
-            value={userParamState.emailId || ""}
-            fullWidth
-            onChange={handleChangeValue}
-          />
-        </Grid>
+      <React.Fragment>
+        <Typography variant="h6">
+          <Text tid="createAccount" />
+        </Typography>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={5}>
+            <TextField
+              required
+              id="Firs_5918865382"
+              name="Firs_5918865382"
+              label="First name"
+              value={userParamState.Firs_5918865382 || ""}
+              fullWidth
+              onChange={handleChangeValue}
+            />
+          </Grid>
+          <Grid item xs={12} sm={2} />
+          <Grid item xs={12} sm={5}>
+            <TextField
+              id="Last_1057488597"
+              name="Last_1057488597"
+              label="Last name"
+              value={userParamState.Last_1057488597 || ""}
+              fullWidth
+              onChange={handleChangeValue}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12}>
+            <TextField
+              required
+              id="emailId"
+              name="emailId"
+              label="Email Id"
+              value={userParamState.emailId || ""}
+              fullWidth
+              onChange={handleChangeValue}
+            />
+          </Grid>
 
-        {/* <Grid item xs={12} sm={12}>
+          {/* <Grid item xs={12} sm={12}>
     <FormControl required style={{ width: "100%" }}>
       <InputLabel id="country">Country</InputLabel>
       <Select
@@ -222,51 +230,52 @@ export default function SignupForm(props: any) {
       </Select>
     </FormControl>
   </Grid> */}
-        <Grid item xs={12} sm={12}>
-          <FormControlLabel
-            value="end"
-            control={
-              <Checkbox
-                color="primary"
-                checked={checkBox}
-                onChange={(e) => {
-                  setcheckBox(e.target.checked);
-                }}
-              />
-            }
-            label={"I agree to Privacy and Terms and Conditions of this site"}
-            labelPlacement="end"
-          />
-          {/* <Link >{"Privacy and Terms and Conditions"} </Link>
+          <Grid item xs={12} sm={12}>
+            <FormControlLabel
+              value="end"
+              control={
+                <Checkbox
+                  color="primary"
+                  checked={checkBox}
+                  onChange={(e) => {
+                    setcheckBox(e.target.checked);
+                  }}
+                />
+              }
+              label={"I agree to Privacy and Terms and Conditions of this site"}
+              labelPlacement="end"
+            />
+            {/* <Link >{"Privacy and Terms and Conditions"} </Link>
 {"of this site."}<br /> */}
+          </Grid>
+          <br />
+          <br />
+          <br />
+          <Grid item xs={8} sm={8}>
+            {"Already have an account"} <br />
+            <Link onClick={getSignInPage} component="button" variant="body2">
+              {"Login here"}
+            </Link>
+          </Grid>
+          <Grid item xs={1} sm={1}></Grid>
+          <Grid item xs={3} sm={3}>
+            <Button
+              variant="contained"
+              color="primary"
+              size="medium"
+              type="submit"
+              // disabled={loading}
+              style={{ textAlign: "center" }}
+              onClick={handleSubmit}
+            >
+              {loading && (
+                <CircularProgress size={20} style={{ marginRight: 20 }} />
+              )}
+              Sign Up
+            </Button>
+          </Grid>
         </Grid>
-        <br />
-        <br />
-        <br />
-        <Grid item xs={8} sm={8}>
-          {"Already have an account"} <br />
-          <Link component="button" variant="body2">
-            {"Login here"}
-          </Link>
-        </Grid>
-        <Grid item xs={4} sm={4} justify="flex-end">
-          <Button
-            variant="contained"
-            color="primary"
-            size="medium"
-            type="submit"
-            // disabled={loading}
-            style={{ textAlign: "center" }}
-            onClick={handleSubmit}
-          >
-            {loading && (
-              <CircularProgress size={20} style={{ marginRight: 20 }} />
-            )}
-            Sign Up
-          </Button>
-        </Grid>
-        <br />
-      </Grid>
+      </React.Fragment>
     );
   };
 
@@ -312,10 +321,7 @@ export default function SignupForm(props: any) {
               <Text tid={"gigaTester"} />
             </Typography>
           </DialogTitle>
-          <DialogContent>
-            <Typography variant="h6">
-              <Text tid="createAccount" />
-            </Typography>
+          <DialogContent style={{ marginBottom: "20px" }}>
             <CssBaseline />
             {verifyEmail ? signUpAcknowledgement() : signUpForm()}
           </DialogContent>
@@ -325,7 +331,7 @@ export default function SignupForm(props: any) {
   };
 
   return openSignin ? (
-    <SignInForm openSignin={openSignin} />
+    <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
   ) : (
     <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
       {signUpDialog()}
