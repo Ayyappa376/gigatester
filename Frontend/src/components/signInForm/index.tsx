@@ -144,14 +144,30 @@ export default function SignInForm(props: any) {
                     ),
                     team:
                       tokenInfo["custom:teamName"] &&
-                      tokenInfo["custom:teamName"] !== ""
+                        tokenInfo["custom:teamName"] !== ""
                         ? tokenInfo["custom:teamName"]
                         : "Others",
                     roles: tokenInfo["cognito:groups"],
                   });
-                  history.push("/assessmentselect");
-                  setDialogOpen(false);
-                  setLoading(true);
+
+                  if (tokenInfo["cognito:groups"].length) {
+                    if (
+                      tokenInfo["cognito:groups"].includes('Admin') ||
+                      tokenInfo["cognito:groups"].includes('Manager')
+                    ) {
+                      return (
+                        history.push("/admin"),
+                        setDialogOpen(false),
+                        setLoading(true)
+                      );
+                    } else {
+                      return (
+                        history.push("/profile"),
+                        setDialogOpen(false),
+                        setLoading(true)
+                      );
+                    }
+                  }
                 }
               })
               .catch((e) => {
@@ -177,13 +193,27 @@ export default function SignInForm(props: any) {
             userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
             team:
               tokenInfo["custom:teamName"] &&
-              tokenInfo["custom:teamName"] !== ""
+                tokenInfo["custom:teamName"] !== ""
                 ? tokenInfo["custom:teamName"]
                 : "Others",
             roles: tokenInfo["cognito:groups"],
           });
-          history.push("/assessmentselect");
-          setDialogOpen(false);
+          if (tokenInfo["cognito:groups"].length) {
+            if (
+              tokenInfo["cognito:groups"].includes('Admin') ||
+              tokenInfo["cognito:groups"].includes('Manager')
+            ) {
+              return (
+                history.push("/admin"),
+                setDialogOpen(false)
+              );
+            } else {
+              return (
+                history.push("/profile"),
+                setDialogOpen(false)
+              );
+            }
+          }
         }
       } catch (error) {
         let errResponse: any = error;
@@ -256,7 +286,7 @@ export default function SignInForm(props: any) {
       >
         <DialogTitle
           id="form-dialog-title"
-          style={{ textAlign: "center", padding: "40px 0px" }}
+          style={{ textAlign: "center", padding: "30px 0px" }}
         >
           <Typography variant="h4">
             <Text tid={"gigaTester"} />

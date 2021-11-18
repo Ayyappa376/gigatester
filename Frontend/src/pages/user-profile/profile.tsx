@@ -1,33 +1,33 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import {
     Grid,
     makeStyles,
     TextField,
     Button,
-    FormControl,
+    // FormControl,
     Container,
-    MenuItem,
-    Select,
-    InputLabel,
-    Input,
-    Chip,
+    // MenuItem,
+    // Select,
+    // InputLabel,
+    // Input,
+    // Chip,
 } from '@material-ui/core';
 import Loader from '../../components/loader';
-import { IUserParams, ITeamInfo, IUserAttributes } from '../../model';
+import { IUserParams, IUserAttributes } from '../../model';
 import PersonOutlineOutlinedIcon from '@material-ui/icons/PersonOutlineOutlined';
 import DevicesOutlinedIcon from '@material-ui/icons/DevicesOutlined';
 import HomeOutlinedIcon from '@material-ui/icons/HomeOutlined';
 
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-            maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-            width: 250,
-        },
-    },
-};
+// const ITEM_HEIGHT = 48;
+// const ITEM_PADDING_TOP = 8;
+// const MenuProps = {
+//     PaperProps: {
+//         style: {
+//             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//             width: 250,
+//         },
+//     },
+// };
 
 const useStyles = makeStyles(() => ({
     topBar: {
@@ -55,7 +55,7 @@ const useStyles = makeStyles(() => ({
 
 export default function Profile(props: any) {
     const classes = useStyles();
-    const { userState, userDataFetched, teams, teamDataFetched, getUserParamState } = props;
+    const { userState, userDataFetched, getUserParamState } = props;
 
     const handleChangeValue = (event: any) => {
         if (userState) {
@@ -67,29 +67,29 @@ export default function Profile(props: any) {
         }
     };
 
-    const handleChangeMultiValue = (event: any) => {
-        if (userState) {
-            const temp: IUserParams | null | undefined = { ...userState };
-            let valueArray = temp && temp.values[event.target.name] || [];
-            valueArray = [...event.target.value];
-            temp!.values[event.target.name] = valueArray;
-            getUserParamState(temp);
-        }
-    };
+    // const handleChangeMultiValue = (event: any) => {
+    //     if (userState) {
+    //         const temp: IUserParams | null | undefined = { ...userState };
+    //         let valueArray = temp && temp.values[event.target.name] || [];
+    //         valueArray = [...event.target.value];
+    //         temp!.values[event.target.name] = valueArray;
+    //         getUserParamState(temp);
+    //     }
+    // };
 
-    const renderChips = (selected: any, el: string) => {
-        return (
-            <div className={classes.chips}>
-                {(selected as string[]).map((value) => (
-                    <Chip
-                        key={value}
-                        label={el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName : value}
-                        className={classes.chip}
-                    />
-                ))}
-            </div>
-        );
-    };
+    // const renderChips = (selected: any, el: string) => {
+    //     return (
+    //         <div className={classes.chips}>
+    //             {(selected as string[]).map((value) => (
+    //                 <Chip
+    //                     key={value}
+    //                     label={el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName : value}
+    //                     className={classes.chip}
+    //                 />
+    //             ))}
+    //         </div>
+    //     );
+    // };
 
     const renderElements = (el: string) => {
         const element: IUserAttributes = userState!.config[el];
@@ -130,73 +130,73 @@ export default function Profile(props: any) {
                     // </div>
                 );
 
-            case 'list':
-                return (
-                    <FormControl className={classes.formControl}>
-                        <InputLabel
-                            id='demo-simple-select-label'
-                            required={element.Mandatory}
-                        >
-                            {element.displayName}
-                        </InputLabel>
-                        <Select
-                            name={el}
-                            value={values ? (values[el] ? values[el] : '') : ''}
-                            onChange={handleChangeValue}
-                        >
-                            {element.options.map((opt: string) => {
-                                return (
-                                    <MenuItem key={opt} value={opt}>
-                                        {
-                                            el === 'teams'
-                                                ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-                                                : opt
-                                        }
-                                    </MenuItem>
-                                );
-                            })}
-                        </Select>
-                    </FormControl>
-                );
-            case 'multi-list':
-                return (
-                    <FormControl className={classes.formControl}>
-                        <InputLabel
-                            id='demo-mutiple-chip-label'
-                            required={element.Mandatory}
-                        >
-                            {element.displayName}
-                        </InputLabel>
-                        <Select
-                            id='demo-mutiple-chip'
-                            name={el}
-                            multiple
-                            value={
-                                values
-                                    ? values[el]
-                                        ? values[el] !== ''
-                                            ? values[el]
-                                            : []
-                                        : []
-                                    : []
-                            }
-                            onChange={handleChangeMultiValue}
-                            input={<Input id='select-multiple-chip' />}
-                            renderValue={(value: any) => renderChips(value, el)}
-                            MenuProps={MenuProps}
-                        >
-                            {element.options.map((opt: any) => (
-                                <MenuItem key={opt} value={opt}>
-                                    {
-                                        el === 'teams'
-                                            ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-                                            : opt
-                                    }
-                                </MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                );
+            // case 'list':
+            //     return (
+            //         <FormControl className={classes.formControl}>
+            //             <InputLabel
+            //                 id='demo-simple-select-label'
+            //                 required={element.Mandatory}
+            //             >
+            //                 {element.displayName}
+            //             </InputLabel>
+            //             <Select
+            //                 name={el}
+            //                 value={values ? (values[el] ? values[el] : '') : ''}
+            //                 onChange={handleChangeValue}
+            //             >
+            //                 {element.options.map((opt: string) => {
+            //                     return (
+            //                         <MenuItem key={opt} value={opt}>
+            //                             {
+            //                                 el === 'teams'
+            //                                     ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
+            //                                     : opt
+            //                             }
+            //                         </MenuItem>
+            //                     );
+            //                 })}
+            //             </Select>
+            //         </FormControl>
+            //     );
+            // case 'multi-list':
+            //     return (
+            //         <FormControl className={classes.formControl}>
+            //             <InputLabel
+            //                 id='demo-mutiple-chip-label'
+            //                 required={element.Mandatory}
+            //             >
+            //                 {element.displayName}
+            //             </InputLabel>
+            //             <Select
+            //                 id='demo-mutiple-chip'
+            //                 name={el}
+            //                 multiple
+            //                 value={
+            //                     values
+            //                         ? values[el]
+            //                             ? values[el] !== ''
+            //                                 ? values[el]
+            //                                 : []
+            //                             : []
+            //                         : []
+            //                 }
+            //                 onChange={handleChangeMultiValue}
+            //                 input={<Input id='select-multiple-chip' />}
+            //                 renderValue={(value: any) => renderChips(value, el)}
+            //                 MenuProps={MenuProps}
+            //             >
+            //                 {element.options.map((opt: any) => (
+            //                     <MenuItem key={opt} value={opt}>
+            //                         {
+            //                             el === 'teams'
+            //                                 ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
+            //                                 : opt
+            //                         }
+            //                     </MenuItem>
+            //                 ))}
+            //             </Select>
+            //         </FormControl>
+            //     );
         }
     };
 
@@ -294,7 +294,7 @@ export default function Profile(props: any) {
 
     return (
         <div data-testid="profileForm">
-            {userDataFetched && teamDataFetched ? (
+            {userDataFetched ? (
                 renderProfileForm()
             ) : (
                 <Container className='loaderStyle'>

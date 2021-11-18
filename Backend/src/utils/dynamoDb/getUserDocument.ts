@@ -3,7 +3,7 @@ import { config } from '@root/config';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, getUserConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { getTeams2 } from './getTeams';
+// import { getTeams2 } from './getTeams';
 import { get, put, scan, update } from './sdk';
 
 const regex = /Other:[a-zA-Z0-9!-*]/g;
@@ -143,25 +143,25 @@ export const updateDynamoUser = async (
   const EAV: any = {};
   let SET = 'SET ';
 
-  const myTeams = (teams: string[]) => {
-    const arr: AllotedTeam[] = new Array();
-    userDetails.teams.forEach((teamId: string) => {
-      const teamStruct: AllotedTeam = {
-        isLead: false,
-        name: teamId,
-      };
-      arr.push(teamStruct);
-    });
-    return arr;
-  };
+  // const myTeams = (teams: string[]) => {
+  //   const arr: AllotedTeam[] = new Array();
+  //   userDetails.teams.forEach((teamId: string) => {
+  //     const teamStruct: AllotedTeam = {
+  //       isLead: false,
+  //       name: teamId,
+  //     };
+  //     arr.push(teamStruct);
+  //   });
+  //   return arr;
+  // };
 
   EAN['#modifiedBy'] = 'modifiedBy';
   EAV[':modifiedBy'] = managerDetails.emailId;
   EAN['#modifiedOn'] = 'modifiedOn';
   EAV[':modifiedOn'] = new Date().getTime();
-  EAN['#teams'] = 'teams';
-  EAV[':teams'] = myTeams(userDetails.teams);
-  SET += `#modifiedBy = :modifiedBy, #modifiedOn = :modifiedOn, #teams = :teams`;
+  // EAN['#teams'] = 'teams';
+  // EAV[':teams'] = myTeams(userDetails.teams);
+  SET += `#modifiedBy = :modifiedBy, #modifiedOn = :modifiedOn`;
   Object.keys(userDetails).forEach((val, i) => {
     if (
       !(
@@ -172,8 +172,9 @@ export const updateDynamoUser = async (
         val === 'createdOn' ||
         val === 'emailId' ||
         val === 'emailVerified' ||
-        val === 'orgId' ||
-        val === 'teams'
+        val === 'orgId'
+        // ||
+        // val === 'teams'
       )
     ) {
       if (userDetails[val].length > 0 && typeof userDetails[val] === 'object') {
@@ -287,14 +288,14 @@ export const getCreateUserConfig = async (
 
   const createUserConfig: CreateUserConfig = { config: configDetails, orgId };
   appLogger.info({ createUserConfig_before: createUserConfig });
-  const teamList: any = await getTeams2(order).then((teams: any) =>
-    teams
-      .filter((filteredTeams: any) => filteredTeams.active === 'true')
-      .map((team: any) => team.teamId)
-  );
-  appLogger.info({ getTeams2: teamList });
-  createUserConfig.config.teams.options = teamList;
-  appLogger.info({ createUserConfig_after: createUserConfig });
+  // const teamList: any = await getTeams2(order).then((teams: any) =>
+  //   teams
+  //     .filter((filteredTeams: any) => filteredTeams.active === 'true')
+  //     .map((team: any) => team.teamId)
+  // );
+  // appLogger.info({ getTeams2: teamList });
+  // createUserConfig.config.teams.options = teamList;
+  // appLogger.info({ createUserConfig_after: createUserConfig });
   return createUserConfig;
 };
 
