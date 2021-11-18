@@ -19,13 +19,12 @@ import {
 } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { default as MaterialLink } from '@material-ui/core/Link';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
 import { withRouter } from 'react-router-dom';
 import { ModalComponent } from '../../modal';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -330,14 +329,9 @@ const ManagePlatforms = (props: any) => {
                         scope='row'
                         className='tableCell'
                       >
-                        <MaterialLink
-                          href='#'
-                          onClick={() => { props.editClicked(row.id); }}
-                        >
-                          <Typography className='tableBodyText'>
-                            {row.name}
-                          </Typography>
-                        </MaterialLink>
+                        <Typography className='tableBodyText'>
+                          {row.name}
+                        </Typography>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
                         <div className={classes.actionsBlock} style={{ cursor: 'pointer' }}>
@@ -351,6 +345,19 @@ const ManagePlatforms = (props: any) => {
                             >
                               <Typography>
                                 <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
+                              </Typography>
+                            </Tooltip>
+                          </MuiThemeProvider>
+                          <MuiThemeProvider theme={tooltipTheme}>
+                            <Tooltip
+                              title={
+                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                  <Text tid='edit' />
+                                </Typography>
+                              }
+                            >
+                              <Typography>
+                                <EditIcon onClick={() => { props.editClicked(row.id); }}/>
                               </Typography>
                             </Tooltip>
                           </MuiThemeProvider>

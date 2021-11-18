@@ -43,7 +43,7 @@ import { buttonStyle } from '../../../common/common';
 import {
   IFieldConfigAttributes,
   IObjectConfigDetails,
-} from '../../../model/system';
+} from '../../../model/settings';
 import { LightTooltip } from '../../common/tooltip';
 import { ModalComponent } from '../../modal';
 import { Text } from '../../../common/Language';

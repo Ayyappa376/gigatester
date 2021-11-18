@@ -51,7 +51,7 @@ async function handler(request: GetDevices, response: Response) {
       };
     }
   } else {
-    const deviceDetailsList: DeviceInfo[] = await getDevicesList(headers.user.email);
+    const deviceDetailsList: DeviceInfo[] = await getDevicesList();
     appLogger.info({ getDevicesList: deviceDetailsList });
     result = {
       devices: deviceDetailsList,

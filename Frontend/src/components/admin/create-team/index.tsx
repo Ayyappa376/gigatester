@@ -25,7 +25,7 @@ import { default as MaterialLink } from '@material-ui/core/Link';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IServiceInfo, /*ITeamAttributes*/IFieldConfigAttributes, ITeamParams, ITeamConfig } from '../../../model';
+import { IServiceInfo, /*ITeamAttributes*/IFieldConfigAttributes, ITeamParams, IObjectConfigDetails } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
@@ -404,7 +404,7 @@ const CreateTeam = (props: any) => {
   // const editMetrics = (indexPath: number[]) => {
   // }
 
-  const renderElements = (key: string, config: ITeamConfig, values: any, indexPath: number[]) => {
+  const renderElements = (key: string, config: IObjectConfigDetails, values: any, indexPath: number[]) => {
     const element: IFieldConfigAttributes = config[key];
     switch (element.type) {
       case 'string':

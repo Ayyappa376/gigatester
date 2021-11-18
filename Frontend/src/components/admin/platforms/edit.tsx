@@ -20,7 +20,7 @@ import {
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IFieldConfigAttributes, IPlatformParams, IPlatformConfig, IPlatformInfo } from '../../../model';
+import { IFieldConfigAttributes, IPlatformParams, IObjectConfigDetails, IPlatformInfo } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
@@ -157,7 +157,7 @@ const EditPlatform = (props: any) => {
     setPlatformDataFetched(true);
   };
 
-  const fixOtherValuesMultiSelect = (config: IPlatformConfig, values: IPlatformInfo) => {
+  const fixOtherValuesMultiSelect = (config: IObjectConfigDetails, values: IPlatformInfo) => {
     Object.keys(config).forEach((el) => {
       if (config[el].type === 'multi-list' && values && values[el]) {
         values[el].forEach((opt: any, index: number) => {
@@ -303,7 +303,7 @@ const EditPlatform = (props: any) => {
     return val;
   };
 
-  const renderElements = (key: string, config: IPlatformConfig, values: IPlatformInfo) => {
+  const renderElements = (key: string, config: IObjectConfigDetails, values: IPlatformInfo) => {
     const element: IFieldConfigAttributes = config[key];
     switch (element.type) {
       case 'string':

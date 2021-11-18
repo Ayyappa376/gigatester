@@ -1,17 +1,14 @@
-import  { IFieldConfigAttributes } from '..';
+import  { IObjectConfigDetails } from '..';
 
 export interface IDeviceInfo {
   id: string;
   name: string;
   description?: string;
+  platforms: string[];
   [keyName: string]: any;
 }
 
 export interface IDeviceParams {
-    deviceConfig: IDeviceConfig;
+    deviceConfig: IObjectConfigDetails;
     devices?: IDeviceInfo[];
-}
-
-export interface IDeviceConfig {
-    [keyName: string]: IFieldConfigAttributes;
 }

@@ -1,5 +1,5 @@
 import { FetchAction, IAssessmentListItem } from '..';
-import { ILevelAttributes } from '../system';
+import { ILevelAttributes } from '../settings';
 
 export interface IAssessmentTeamView {
   teams: {

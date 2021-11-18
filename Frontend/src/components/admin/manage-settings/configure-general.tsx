@@ -31,7 +31,7 @@ import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
 import Success from '../../success-page';
 import { buttonStyle } from '../../../common/common';
-import { ILevelAttributes, IGeneralConfigDetails } from '../../../model/system';
+import { ILevelAttributes, IGeneralConfigDetails } from '../../../model/settings';
 import { LightTooltip } from '../../common/tooltip';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
