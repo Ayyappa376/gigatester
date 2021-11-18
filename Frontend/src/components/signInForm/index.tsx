@@ -149,7 +149,7 @@ export default function SignInForm(props: any) {
                         : "Others",
                     roles: tokenInfo["cognito:groups"],
                   });
-                  history.push("/assessmentselect");
+                  history.push("/profile");
                   setDialogOpen(false);
                   setLoading(true);
                 }
@@ -182,7 +182,7 @@ export default function SignInForm(props: any) {
                 : "Others",
             roles: tokenInfo["cognito:groups"],
           });
-          history.push("/assessmentselect");
+          history.push("/profile");
           setDialogOpen(false);
         }
       } catch (error) {
