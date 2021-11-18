@@ -86,7 +86,7 @@ export default function SignupForm(props: any) {
             userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
             team:
               tokenInfo["custom:teamName"] &&
-              tokenInfo["custom:teamName"] !== ""
+                tokenInfo["custom:teamName"] !== ""
                 ? tokenInfo["custom:teamName"]
                 : "Others",
             teams: [],
@@ -315,7 +315,7 @@ export default function SignupForm(props: any) {
         >
           <DialogTitle
             id="form-dialog-title"
-            style={{ textAlign: "center", padding: "40px 0px" }}
+            style={{ textAlign: "center", padding: "30px 0px" }}
           >
             <Typography variant="h4">
               <Text tid={"gigaTester"} />
