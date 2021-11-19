@@ -179,14 +179,14 @@ export const updateDynamoUser = async (
     ) {
       if (userDetails[val].length > 0 && typeof userDetails[val] === 'object') {
         const item = new Array();
-        userDetails[val].forEach((ele: string, j: number) => {
-          if (ele.match(regex)) {
-            item.push(ele.split('Other:')[1]);
-            // updateUserConfig(userDetails.orgId, item[val][j]);
-          } else {
-            item.push(ele);
-          }
-        });
+        // userDetails[val].forEach((ele: string, j: number) => {
+        //   if (ele.match(regex)) {
+        //     item.push(ele.split('Other:')[1]);
+        //     // updateUserConfig(userDetails.orgId, item[val][j]);
+        //   } else {
+        //     item.push(ele);
+        //   }
+        // });
         EAN[`#${val}`] = val;
         EAV[`:${val}`] = item;
         SET = SET + `, #${val} = :${val}`;
