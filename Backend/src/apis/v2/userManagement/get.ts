@@ -7,8 +7,8 @@ import {
   getCognitoUser,
   getCreateUserConfig,
   getTeamMembersDetails,
-  getTeams2,
-  getUserDocument,
+  // getTeams2,
+  // getUserDocument,
   getUserDocumentFromEmail,
   responseBuilder,
   TeamMembers,
@@ -58,9 +58,9 @@ async function handler(request: GetUsers, response: Response) {
   if (params.type === 'getusers' && query.email) {
     const getUserDetails: any = await getUserDocumentFromEmail(query.email);
     appLogger.info({ getUserDocumentFromEmail: getUserDetails });
-    getUserDetails[0].teams = getUserDetails[0].teams.map(
-      (team: any) => team.name
-    );
+    // getUserDetails[0].teams = getUserDetails[0].teams.map(
+    //   (team: any) => team.name
+    // );
     const createUser: any = await getCreateUserConfig(
       headers.user.orgId ? headers.user.orgId : config.defaults.orgId,
       headers.user['cognito:groups'][0] === 'Admin'
@@ -78,55 +78,55 @@ async function handler(request: GetUsers, response: Response) {
     appLogger.info({ getUserStatus: userStatus });
     return responseBuilder.ok(userStatus, response);
   }
-  if (params.type === 'allUsers') {
-    const teamList: string[] = (
-      await getTeams2(
-        headers.user['cognito:groups'][0] === 'Admin'
-          ? 'admin'
-          : headers.user.email
-      )
-    ).map((val: any) => val.teamId);
-    appLogger.info({ getTeams2: teamList });
-    const userDoc: UserDocument = await getUserDocument({
-      cognitoUserId: headers.user['cognito:username'],
-    });
-    appLogger.info({ getUserDocument: userDoc });
-    /*userDoc.teams.forEach((val: any) => {
-            if(!teamList.includes(val.name)) {
-                teamList.push(val.name);
-            }
-        });*/
-    let teamMembersForATeam: TeamMembers[] = new Array();
-    for (const team of teamList) {
-      teamMembersForATeam = teamMembersForATeam.concat(
-        await getTeamMembersDetails(team)
-      );
-    }
-    //let resultArray = teamMembersForATeam;
-    const temp = new Set();
-    teamMembersForATeam = teamMembersForATeam.filter((val: TeamMembers) => {
-      if (!temp.has(val.emailId)) {
-        temp.add(val.emailId);
-        return true;
-      }
-      return false;
-    });
-    teamMembersForATeam.sort((a: TeamMembers, b: TeamMembers) => {
-      if (a.emailId > b.emailId) {
-        return 1;
-      }
-      if (a.emailId < b.emailId) {
-        return -1;
-      }
-      return 0;
-    });
-    appLogger.info({ teamMembersForATeam });
-    const userCount = teamMembersForATeam.length;
-    return responseBuilder.ok(
-      { users: teamMembersForATeam, userCount },
-      response
-    );
-  }
+  // if (params.type === 'allUsers') {
+  //   const teamList: string[] = (
+  //     await getTeams2(
+  //       headers.user['cognito:groups'][0] === 'Admin'
+  //         ? 'admin'
+  //         : headers.user.email
+  //     )
+  //   ).map((val: any) => val.teamId);
+  //   appLogger.info({ getTeams2: teamList });
+  //   const userDoc: UserDocument = await getUserDocument({
+  //     cognitoUserId: headers.user['cognito:username'],
+  //   });
+  //   appLogger.info({ getUserDocument: userDoc });
+  //   /*userDoc.teams.forEach((val: any) => {
+  //           if(!teamList.includes(val.name)) {
+  //               teamList.push(val.name);
+  //           }
+  //       });*/
+  //   let teamMembersForATeam: TeamMembers[] = new Array();
+  //   for (const team of teamList) {
+  //     teamMembersForATeam = teamMembersForATeam.concat(
+  //       await getTeamMembersDetails(team)
+  //     );
+  //   }
+  //   //let resultArray = teamMembersForATeam;
+  //   const temp = new Set();
+  //   teamMembersForATeam = teamMembersForATeam.filter((val: TeamMembers) => {
+  //     if (!temp.has(val.emailId)) {
+  //       temp.add(val.emailId);
+  //       return true;
+  //     }
+  //     return false;
+  //   });
+  //   teamMembersForATeam.sort((a: TeamMembers, b: TeamMembers) => {
+  //     if (a.emailId > b.emailId) {
+  //       return 1;
+  //     }
+  //     if (a.emailId < b.emailId) {
+  //       return -1;
+  //     }
+  //     return 0;
+  //   });
+  //   appLogger.info({ teamMembersForATeam });
+  //   const userCount = teamMembersForATeam.length;
+  //   return responseBuilder.ok(
+  //     { users: teamMembersForATeam, userCount },
+  //     response
+  //   );
+  // }
   if (params.type) {
     const teamMembersDetails: any = await getTeamMembersDetails(params.type);
     teamMembersDetails.sort((a: TeamMembers, b: TeamMembers) => {

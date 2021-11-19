@@ -16,6 +16,11 @@ import {
   CircularProgress,
   CssBaseline,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Chip,
 } from "@material-ui/core";
 
 import { Http } from "../../utils";
@@ -34,6 +39,13 @@ const useStyles = makeStyles((theme) => ({
   dialogPaper: {
     minHeight: "80vh",
     maxHeight: "80vh",
+  },
+  chips: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  chip: {
+    margin: 2,
   },
 }));
 
@@ -205,19 +217,26 @@ export default function SignupForm(props: any) {
           </Grid>
 
           {/* <Grid item xs={12} sm={12}>
-    <FormControl required style={{ width: "100%" }}>
-      <InputLabel id="country">Country</InputLabel>
-      <Select
-        id="country"
-        name="country"
-        fullWidth
-        value={userParamState.country || ""}
-        onChange={handleChangeValue}
-      >
-        <MenuItem value={"unitedStates"}>United States</MenuItem>
-      </Select>
-    </FormControl>
-  </Grid> */}
+            <FormControl required style={{ width: "100%" }}>
+              <InputLabel id="country">Country</InputLabel>
+              <Select
+                id="country"
+                name="country"
+                fullWidth
+                value={userParamState.country || ""}
+                onChange={handleChangeValue}
+              >
+                <div className={classes.chips}>
+                  <MenuItem value={"unitedStates"}>United States</MenuItem>
+                  <Chip
+                    key={"unitedStates"}
+                    label={"unitedStates"}
+                    className={classes.chip}
+                  />
+                </div>
+              </Select>
+            </FormControl>
+          </Grid> */}
           <Grid item xs={12} sm={12}>
             <FormControlLabel
               value="end"
@@ -303,7 +322,7 @@ export default function SignupForm(props: any) {
         >
           <DialogTitle
             id="form-dialog-title"
-            style={{ textAlign: "center", padding: "40px 0px" }}
+            style={{ textAlign: "center", padding: "30px 0px" }}
           >
             <Typography variant="h4">
               <Text tid={"gigaTester"} />
