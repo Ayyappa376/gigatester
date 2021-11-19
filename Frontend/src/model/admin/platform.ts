@@ -1,4 +1,4 @@
-import  { IFieldConfigAttributes } from '..';
+import  { IObjectConfigDetails } from '..';
 
 export interface IPlatformInfo {
   id: string;
@@ -8,10 +8,6 @@ export interface IPlatformInfo {
 }
 
 export interface IPlatformParams {
-    platformConfig: IPlatformConfig;
+    platformConfig: IObjectConfigDetails;
     platforms?: IPlatformInfo[];
-}
-
-export interface IPlatformConfig {
-    [keyName: string]: IFieldConfigAttributes;
 }

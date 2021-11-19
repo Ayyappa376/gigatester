@@ -20,7 +20,7 @@ import {
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IFieldConfigAttributes, IDeviceParams, IDeviceConfig, IDeviceInfo } from '../../../model';
+import { IFieldConfigAttributes, IDeviceParams, IObjectConfigDetails, IDeviceInfo } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
@@ -157,7 +157,7 @@ const EditDevice = (props: any) => {
     setDeviceDataFetched(true);
   };
 
-  const fixOtherValuesMultiSelect = (config: IDeviceConfig, values: IDeviceInfo) => {
+  const fixOtherValuesMultiSelect = (config: IObjectConfigDetails, values: IDeviceInfo) => {
     Object.keys(config).forEach((el) => {
       if (config[el].type === 'multi-list' && values && values[el]) {
         values[el].forEach((opt: any, index: number) => {
@@ -294,27 +294,21 @@ const EditDevice = (props: any) => {
   };
 
   const removeOthersText = (values: string[]) => {
-    const val = values.forEach((el) => {
-      if (el.includes(`${OTHER_STRING}:`)) {
-        return OTHER_STRING;
-      }
-      return el;
-    });
-    return val;
+    return values.map((el) => el.includes(`${OTHER_STRING}:`) ? OTHER_STRING : el);
   };
 
-  const renderElements = (key: string, config: IDeviceConfig, values: IDeviceInfo) => {
-    const element: IFieldConfigAttributes = config[key];
-    switch (element.type) {
+  const renderElements = (key: string, config: IObjectConfigDetails, values: IDeviceInfo) => {
+    const attrConfig: IFieldConfigAttributes = config[key];
+    switch (attrConfig.type) {
       case 'string':
         return (
           <TextField
-            required={element.mandatory}
+            required={attrConfig.mandatory}
             type='string'
             id={`${key}`}
             name={`${key}`}
             value={values ? (values[key] ? values[key] : '') : ''}
-            label={element.displayName}
+            label={attrConfig.displayName}
             onChange={(event) => handleChangeValue(event, key)}
             fullWidth
             autoComplete='off'
@@ -325,12 +319,12 @@ const EditDevice = (props: any) => {
         return (
           <div className='numberInput'>
             <TextField
-              required={element.mandatory}
+              required={attrConfig.mandatory}
               type='number'
               id={`${key}`}
               name={`${key}`}
               value={values ? (values[key] ? values[key] : '') : ''}
-              label={element.displayName}
+              label={attrConfig.displayName}
               onChange={(event) => handleChangeValue(event, key)}
               fullWidth
               autoComplete='off'
@@ -345,22 +339,22 @@ const EditDevice = (props: any) => {
             <FormControl className={classes.formControl}>
               <InputLabel
                 id={`label_${key}`}
-                required={element.mandatory}
+                required={attrConfig.mandatory}
               >
-                {element.displayName}
+                {attrConfig.displayName}
               </InputLabel>
               <Select
                 name={`select_${key}`}
                 value={
                   values
                     ? values[key]
-                      ? element.options
-                        ? element.options.custom
-                          ? element.options.custom.split(',').includes(values[key])
+                      ? attrConfig.options
+                        ? attrConfig.options.custom
+                          ? attrConfig.options.custom.split(',').includes(values[key])
                             ? values[key]
                             : OTHER_STRING
-                          : element.options.customFixed
-                            ? element.options.customFixed.split(',').includes(values[key])
+                          : attrConfig.options.customFixed
+                            ? attrConfig.options.customFixed.split(',').includes(values[key])
                               ? values[key]
                               : OTHER_STRING
                             : OTHER_STRING
@@ -370,8 +364,8 @@ const EditDevice = (props: any) => {
                 }
                 onChange={(event) => handleChangeValue(event, key)}
               >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
+                {attrConfig.options && attrConfig.options.custom ? (
+                  attrConfig.options.custom.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -379,8 +373,8 @@ const EditDevice = (props: any) => {
                     );
                   })
                 ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
+                  attrConfig.options && attrConfig.options.customFixed ? (
+                    attrConfig.options.customFixed.split(',').map((opt: string) => {
                       return (
                         <MenuItem key={opt} value={opt}>
                           {opt}
@@ -397,21 +391,21 @@ const EditDevice = (props: any) => {
               </Select>
             </FormControl>
             <TextField
-              required={element.mandatory}
+              required={attrConfig.mandatory}
               type='string'
               id={`text_${key}`}
               name={`text_${key}`}
               disabled={
                 !values || !values[key] ||
-                (element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) ||
-                (element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                (attrConfig.options && attrConfig.options.custom && attrConfig.options.custom.split(',').includes(values[key])) ||
+                (attrConfig.options && attrConfig.options.customFixed && attrConfig.options.customFixed.split(',').includes(values[key]))
               }
               label={`(specify, if ${OTHER_STRING})`}
               value={
                 values &&
                 values[key] &&
-                !(element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) &&
-                !(element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                !(attrConfig.options && attrConfig.options.custom && attrConfig.options.custom.split(',').includes(values[key])) &&
+                !(attrConfig.options && attrConfig.options.customFixed && attrConfig.options.customFixed.split(',').includes(values[key]))
                 ? values[key] === OTHER_STRING
                   ? ''
                   : values[key]
@@ -428,22 +422,22 @@ const EditDevice = (props: any) => {
           <FormControl className={classes.formControl}>
             <InputLabel
               id={`label_${key}`}
-              required={element.mandatory}
+              required={attrConfig.mandatory}
             >
-              {element.displayName}
+              {attrConfig.displayName}
             </InputLabel>
             <Select
               name={`select_${key}`}
               value={
                 values
                   ? values[key]
-                    ? element.options
-                      ? element.options.custom
-                        ? element.options.custom.split(',').includes(values[key])
+                    ? attrConfig.options
+                      ? attrConfig.options.custom
+                        ? attrConfig.options.custom.split(',').includes(values[key])
                           ? values[key]
                           : ''
-                        : element.options.customFixed
-                          ? element.options.customFixed.split(',').includes(values[key])
+                        : attrConfig.options.customFixed
+                          ? attrConfig.options.customFixed.split(',').includes(values[key])
                             ? values[key]
                             : ''
                           : ''
@@ -453,8 +447,8 @@ const EditDevice = (props: any) => {
               }
               onChange={(event) => handleChangeValue(event, key)}
             >
-              {element.options && element.options.custom ? (
-                element.options.custom.split(',').map((opt: string) => {
+              {attrConfig.options && attrConfig.options.custom ? (
+                attrConfig.options.custom.split(',').map((opt: string) => {
                   return (
                     <MenuItem key={opt} value={opt}>
                       {opt}
@@ -462,8 +456,8 @@ const EditDevice = (props: any) => {
                   );
                 })
               ) : (
-                element.options && element.options.customFixed ? (
-                  element.options.customFixed.split(',').map((opt: string) => {
+                attrConfig.options && attrConfig.options.customFixed ? (
+                  attrConfig.options.customFixed.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -483,9 +477,9 @@ const EditDevice = (props: any) => {
             <FormControl className={classes.formControl}>
               <InputLabel
                 id={`label_${key}`}
-                required={element.mandatory}
+                required={attrConfig.mandatory}
               >
-                {element.displayName}
+                {attrConfig.displayName}
               </InputLabel>
               <Select
                 id={`select_${key}`}
@@ -494,7 +488,7 @@ const EditDevice = (props: any) => {
                 value={
                   values
                     ? values[key]
-                      ? values[key] !== ''
+                      ? values[key].length > 0
                         ? removeOthersText(values[key])
                         : []
                       : []
@@ -505,50 +499,19 @@ const EditDevice = (props: any) => {
                 renderValue={renderChips}
                 MenuProps={MenuProps}
               >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
+                {attrConfig.options ? (
+                  Object.keys(attrConfig.options).map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
-                        {opt}
+                        {attrConfig.options[opt]}
                       </MenuItem>
                     );
                   })
                 ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
-                      return (
-                        <MenuItem key={opt} value={opt}>
-                          {opt}
-                        </MenuItem>
-                      );
-                    })
-                  ) : (
-                    <div />
-                  )
+                  <div />
                 )}
-                <MenuItem key={OTHER_STRING} value={OTHER_STRING}>
-                  <Text tid='other' />
-                </MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              required={element.mandatory}
-              type='string'
-              id={`text_${key}`}
-              name={`text_${key}`}
-              disabled={!(values && values[key] && includesOther(values[key]))}
-              value={
-                values
-                  ? values[key]
-                    ? getMultiListOtherTextValue(values[key])
-                    : ''
-                  : ''
-              }
-              label={'(specify, if ${OTHER_STRING})'}
-              onChange={(event) => handleChangeOtherMultilist(event, key)}
-              autoComplete='off'
-              className='textFieldStyle'
-            />
           </Fragment>
         );
     }

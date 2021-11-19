@@ -7,7 +7,7 @@ import * as adminReducer from './admin';
 import * as displayStateReducer from './display';
 import * as systemDetailsReducer from './system';
 import { IDisplayState } from '../model/display';
-import { ISystemDetails } from '../model/system';
+import { ISystemDetails } from '../model/settings';
 
 export interface IRootState {
 	assessment: IAssessment;

@@ -1,5 +1,5 @@
 import { FetchAction } from '../';
-import  { IFieldConfigAttributes, IMetricsTool } from '..';
+import  { IObjectConfigDetails, IMetricsTool } from '..';
 
 export interface ICreateTeamParamsRequest {
     data: ITeamParams | null,
@@ -14,7 +14,6 @@ export interface ITeamInfo {
     manager?: string;
     managerId?: string;
     metrics?: IMetricsTool[];
-  //  order: [string];
     orgId: string;
     services?: IServiceInfo[];
     teamId: string;
@@ -44,12 +43,8 @@ export interface ITeamAttributes {
 }
 */
 export interface ITeamParams {
-    teamConfig: ITeamConfig;
-    serviceConfig: ITeamConfig;
+    teamConfig: IObjectConfigDetails;
+    serviceConfig: IObjectConfigDetails;
     orgId: string;
     values?: ITeamInfo;
-}
-
-export interface ITeamConfig {
-    [keyName: string]: IFieldConfigAttributes;
 }

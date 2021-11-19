@@ -20,7 +20,7 @@ import {
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IFieldConfigAttributes, ICampaignParams, ICampaignConfig, ICampaignInfo } from '../../../model';
+import { IFieldConfigAttributes, ICampaignParams, IObjectConfigDetails, ICampaignInfo } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
@@ -282,7 +282,7 @@ const CreateCampaign = (props: any) => {
     return val;
   };
 
-  const renderElements = (key: string, config: ICampaignConfig, values: ICampaignInfo) => {
+  const renderElements = (key: string, config: IObjectConfigDetails, values: ICampaignInfo) => {
     const element: IFieldConfigAttributes = config[key];
     switch (element.type) {
       case 'string':
