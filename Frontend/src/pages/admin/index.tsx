@@ -329,11 +329,11 @@ export default function Admin() {
     setTitle('editCampaign');
   };
 
-/*  const handleCreatePlatform = () => {
-    setButtonValue(CREATE_PLATFORM);
-    setTitle('createPlatform');
-  };
-*/
+  /*  const handleCreatePlatform = () => {
+      setButtonValue(CREATE_PLATFORM);
+      setTitle('createPlatform');
+    };
+  */
   const handleManagePlatforms = () => {
     setButtonValue(MANAGE_PLATFORMS);
     setTitle('managePlatforms');
@@ -530,8 +530,8 @@ export default function Admin() {
         );
       case EDIT_CAMPAIGN:
         return <EditCampaign campaignId={focusCampaignId} goBack={switchPage} />;
-//      case CREATE_PLATFORM:
-//        return <CreatePlatform goBack={switchPage} />;
+      //      case CREATE_PLATFORM:
+      //        return <CreatePlatform goBack={switchPage} />;
       case MANAGE_PLATFORMS:
         return (
           <ManagePlatforms
@@ -625,7 +625,7 @@ export default function Admin() {
       <AppBar
         position='fixed'
         className={clsx(classes.appBar, open && classes.appBarShift)}
-        style={{ marginTop: '50px' }}
+        style={{ marginTop: '50px', display: 'none' }}
       >
         <Toolbar className={classes.toolbar}>
           <IconButton

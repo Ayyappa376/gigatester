@@ -29,7 +29,6 @@ interface AddUser {
 
 async function handler(request: AddUser, response: Response) {
   appLogger.info({ AddTeams: request }, 'Inside Handler');
-
   const { headers, body } = request;
   if (
     headers.user['cognito:groups'][0] !== 'Manager' &&
@@ -53,7 +52,7 @@ async function handler(request: AddUser, response: Response) {
     appLogger.error(err, 'Forbidden');
     return responseBuilder.forbidden(err, response);
   }
-  const userDetails: any = await addCognitoUser(body.emailId, body.teams).catch(
+  const userDetails: any = await addCognitoUser(body.emailId).catch(
     (e) => {
       appLogger.error({ err: e }, 'addCognitoUser');
       return { error: e.message ? e.message : 'User already exists' };
@@ -98,22 +97,3 @@ export const api: API = {
   method: 'post',
   route: '/api/v2/admin/users',
 };
-
-// async function test(body: any, manager: string) {
-//     const managerDetails: any = await getUserDocument({cognitoUserId: manager})
-//     const userDetails: any = await addCognitoUser(body.email, body.teams);
-//     await addUserToCognitoGroup(userDetails.User.Username, body.roles);
-//     await addDynamoUser(userDetails.User.Username, managerDetails, body);
-//     return userDetails;
-// }
-
-// var x = {
-//     email: 'user@gmail.com',
-//     roles: ['Member']
-// }
-
-// test(x,'d3338487-5ffd-4071-a530-b8f1e6f6d5bf').then(res=>{
-//     console.log(res)
-// }).catch(e=>{
-//     console.log(e)
-// })

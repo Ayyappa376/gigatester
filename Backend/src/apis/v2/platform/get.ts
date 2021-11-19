@@ -51,7 +51,7 @@ async function handler(request: GetPlatforms, response: Response) {
       };
     }
   } else {
-    const platformDetailsList: PlatformInfo[] = await getPlatformsList(headers.user.email);
+    const platformDetailsList: PlatformInfo[] = await getPlatformsList();
     appLogger.info({ getPlatformsList: platformDetailsList });
     result = {
       platforms: platformDetailsList,

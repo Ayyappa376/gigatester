@@ -108,6 +108,7 @@ export const updatePlatform = async (updateInfo: PlatformInfo, userId: string) =
   const EAN: any = {};
   const EAV: any = {};
   let SET = 'SET ';
+  let sep = '';
 
   Object.keys(updateInfo).forEach((val, i) => {
     if (
@@ -129,11 +130,13 @@ export const updatePlatform = async (updateInfo: PlatformInfo, userId: string) =
         });
         EAN[`#${val}`] = val;
         EAV[`:${val}`] = item;
-        SET = SET + `, #${val} = :${val}`;
+        SET = SET + `${sep} #${val} = :${val}`;
+        sep = ',';
       } else {
         EAN[`#${val}`] = val;
         EAV[`:${val}`] = updateInfo[val];
-        SET = SET + `, #${val} = :${val}`;
+        SET = SET + `${sep} #${val} = :${val}`;
+        sep = ',';
       }
     }
   });
@@ -152,16 +155,11 @@ export const updatePlatform = async (updateInfo: PlatformInfo, userId: string) =
   return update<DynamoDB.UpdateItemInput>(params);
 };
 
-export const getPlatformsList = async (userEmail: string): Promise<PlatformInfo[]> => {
-  let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
+export const getPlatformsList = async (): Promise<PlatformInfo[]> => {
+  const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
     TableName: TableNames.getPlatformsTableName(),
   };
 
-  if (userEmail !== 'admin') {
-    params = <DynamoDB.ScanInput>{
-      TableName: TableNames.getPlatformsTableName(),
-    };
-  }
   appLogger.info({ getPlatformList_scan_params: params });
   return scan<PlatformInfo[]>(params);
 };

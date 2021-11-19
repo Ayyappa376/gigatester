@@ -21,7 +21,7 @@ interface UpdateUser {
     resetPassword?: boolean;
     roles: string[];
     //        supervisor?: string;
-    teams?: any[];
+    // teams?: any[];
     temporaryPassword?: string;
   };
   headers: {
@@ -37,38 +37,38 @@ async function handler(request: UpdateUser, response: Response) {
   appLogger.info({ UpdateUser: request }, 'Inside Handler');
 
   const { headers, body } = request;
-  if (
-    headers.user['cognito:groups'][0] !== 'Manager' &&
-    headers.user['cognito:groups'][0] !== 'Admin'
-  ) {
-    const err = new Error('InvalidUser');
-    appLogger.error(err, 'Unauthorized');
-    return responseBuilder.unauthorized(err, response);
-  }
+  // if (
+  //   headers.user['cognito:groups'][0] !== 'Manager' &&
+  //   headers.user['cognito:groups'][0] !== 'Admin'
+  // ) {
+  //   const err = new Error('InvalidUser');
+  //   appLogger.error(err, 'Unauthorized');
+  //   return responseBuilder.unauthorized(err, response);
+  // }
   const managerDetails: UserDocument = await getUserDocument({
     cognitoUserId: headers.user['cognito:username'],
   });
   appLogger.info({ getUserDocument: managerDetails });
-  if (
-    managerDetails &&
-    managerDetails.roles &&
-    !managerDetails.roles.includes('Manager') &&
-    !managerDetails.roles.includes('Admin')
-  ) {
-    const err = new Error('Forbidden Access, Unauthorized user');
-    appLogger.error(err, 'Forbidden');
-    return responseBuilder.forbidden(err, response);
-  }
+  // if (
+  //   managerDetails &&
+  //   managerDetails.roles &&
+  //   !managerDetails.roles.includes('Manager') &&
+  //   !managerDetails.roles.includes('Admin')
+  // ) {
+  //   const err = new Error('Forbidden Access, Unauthorized user');
+  //   appLogger.error(err, 'Forbidden');
+  //   return responseBuilder.forbidden(err, response);
+  // }
   const userDetails: any = await getUserDocument({ cognitoUserId: body.id });
   appLogger.info({ getUserDocument: userDetails });
-  if (
-    !(headers.user['cognito:groups'][0] === 'Admin') &&
-    !userDetails.order.includes(headers.user.email)
-  ) {
-    const err = new Error('Forbidden Access, Unauthorized user');
-    appLogger.error(err, 'Forbidden');
-    return responseBuilder.forbidden(err, response);
-  }
+  // if (
+  //   !(headers.user['cognito:groups'][0] === 'Admin') &&
+  //   !userDetails.order.includes(headers.user.email)
+  // ) {
+  //   const err = new Error('Forbidden Access, Unauthorized user');
+  //   appLogger.error(err, 'Forbidden');
+  //   return responseBuilder.forbidden(err, response);
+  // }
   const removeRoles = new Array();
   if (userDetails.roles) {
     for (const role of userDetails.roles) {

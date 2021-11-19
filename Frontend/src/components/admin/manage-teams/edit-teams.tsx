@@ -23,7 +23,7 @@ import { default as MaterialLink } from '@material-ui/core/Link';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IServiceInfo, /*ITeamAttributes*/IFieldConfigAttributes, ITeamParams, ITeamConfig } from '../../../model';
+import { IServiceInfo, /*ITeamAttributes*/IFieldConfigAttributes, ITeamParams, IObjectConfigDetails } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 //import MapMetricsTools from '../map-metrics-tools';
@@ -153,7 +153,7 @@ const EditTeam = (props: any) => {
     setTeamDataFetched(true);
   };
 
-  const fixServicesMultiSelectValues = (config: ITeamConfig, services: any[]) => {
+  const fixServicesMultiSelectValues = (config: IObjectConfigDetails, services: any[]) => {
     services.forEach((service: any) => {
       fixOtherValuesMultiSelect(config, service);
       if (service.services) {
@@ -162,7 +162,7 @@ const EditTeam = (props: any) => {
     });
   };
 
-  const fixOtherValuesMultiSelect = (config: ITeamConfig, values: any) => {
+  const fixOtherValuesMultiSelect = (config: IObjectConfigDetails, values: any) => {
     Object.keys(config).forEach((el) => {
       if (config[el].type === 'multi-list' && values && values[el]) {
         values[el].forEach((opt: any, index: number) => {
@@ -447,7 +447,7 @@ const EditTeam = (props: any) => {
     handleSave(true);
   };
 
-  const renderElements = (key: string, config: ITeamConfig, values: any, indexPath: number[]) => {
+  const renderElements = (key: string, config: IObjectConfigDetails, values: any, indexPath: number[]) => {
     const element: IFieldConfigAttributes = config[key];
     //    const values = teamState ? teamState.values : null;
     switch (element.type) {

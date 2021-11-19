@@ -1,4 +1,4 @@
-import  { IDeviceInfo, IFieldConfigAttributes, IPlatformInfo } from '..';
+import  { IDeviceInfo, IObjectConfigDetails, IPlatformInfo } from '..';
  
 export interface ICampaignInfo {
   active: string;
@@ -24,10 +24,6 @@ export interface IProductInfo {
 }
 
 export interface ICampaignParams {
-    campaignConfig: ICampaignConfig;
+    campaignConfig: IObjectConfigDetails;
     campaigns?: ICampaignInfo[];
-}
-
-export interface ICampaignConfig {
-    [keyName: string]: IFieldConfigAttributes;
 }

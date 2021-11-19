@@ -44,7 +44,7 @@ import {
   IFieldConfigAttributes,
   ICollectorConfigDetails,
   ICollectorConfig,
-} from '../../../model/system';
+} from '../../../model/settings';
 import { LightTooltip } from '../../common/tooltip';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';

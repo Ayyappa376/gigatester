@@ -20,7 +20,7 @@ import {
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IFieldConfigAttributes, ICampaignParams, ICampaignConfig, ICampaignInfo } from '../../../model';
+import { IFieldConfigAttributes, ICampaignParams, IObjectConfigDetails, ICampaignInfo } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
@@ -141,7 +141,7 @@ const EditCampaign = (props: any) => {
     setCampaignDataFetched(true);
   };
 
-  const fixOtherValuesMultiSelect = (config: ICampaignConfig, values: ICampaignInfo) => {
+  const fixOtherValuesMultiSelect = (config: IObjectConfigDetails, values: ICampaignInfo) => {
     Object.keys(config).forEach((el) => {
       if (config[el].type === 'multi-list' && values && values[el]) {
         values[el].forEach((opt: any, index: number) => {
@@ -287,7 +287,7 @@ const EditCampaign = (props: any) => {
     return val;
   };
 
-  const renderElements = (key: string, config: ICampaignConfig, values: ICampaignInfo) => {
+  const renderElements = (key: string, config: IObjectConfigDetails, values: ICampaignInfo) => {
     const element: IFieldConfigAttributes = config[key];
     switch (element.type) {
       case 'string':

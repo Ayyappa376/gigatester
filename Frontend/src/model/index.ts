@@ -5,5 +5,5 @@ export * from './user';
 export * from './result';
 export * from './feedback';
 export * from './admin';
-export * from './system';
+export * from './settings';
 export * from './metrics';

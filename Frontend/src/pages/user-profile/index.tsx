@@ -5,7 +5,7 @@ import { AppBar, Box, Button, Grid, InputLabel, Tabs, Tab, Typography } from '@m
 import { Http } from '../../utils';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
-import { IUserParams, ITeamInfo } from '../../model';
+import { IUserParams } from '../../model';
 import Profile from './profile';
 import Notification from '../../common/notification';
 
@@ -61,15 +61,15 @@ const useStyles = makeStyles((theme) => ({
 
 const UserProfile = (props: any) => {
     const classes = useStyles();
-    const [value, setValue] = React.useState(0);
+    const [value, setValue] = useState(0);
     const [userState, setUserState] = useState<IUserParams | undefined>();
     const [userDataFetched, setUserDataFetched] = useState(false);
     const stateVariable = useSelector((state: IRootState) => {
         return state;
     });
-    const [teams, setTeams] = useState<ITeamInfo[]>([]);
+    // const [teams, setTeams] = useState<ITeamInfo[]>([]);
     const [userParamState, setUserParamState] = useState<any>({});
-    const [teamDataFetched, setTeamDataFetched] = useState(false);
+    // const [teamDataFetched, setTeamDataFetched] = useState(false);
     const [notify, setNotify] = useState({
         isOpen: false,
         message: '',
@@ -77,34 +77,10 @@ const UserProfile = (props: any) => {
     });
 
     useEffect(() => {
-        fetchTeamList();
         fetchUserDetails();
     }, []);
 
-    const fetchTeamList = () => {
-        Http.get({
-            url: `/api/v2/teamlist`,
-            state: stateVariable,
-        })
-            .then((response: any) => {
-                response.sort((a: any, b: any) => {
-                    if (a.active === b.active) {
-                        return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
-                            ? -1
-                            : 1;
-                    }
-                    return a.active === 'true' ? -1 : 1;
-                });
-                setTeams(response);
-                setTeamDataFetched(true);
-            })
-            .catch((error: any) => {
-                props.history.push('/relogin');
-            })
-    };
-
     const fetchUserDetails = () => {
-        console.log(stateVariable.user.userDetails.email)
         Http.get({
             url: `/api/v2/admin/users/getusers?email=${stateVariable.user.userDetails.email}`,
             state: stateVariable,
@@ -114,6 +90,7 @@ const UserProfile = (props: any) => {
                 setUserDataFetched(true);
             })
             .catch((error) => {
+                console.log(error);
                 props.history.push('/relogin');
             });
     };
@@ -203,7 +180,7 @@ const UserProfile = (props: any) => {
                             </Tabs>
                         </AppBar>
                         <TabPanel value={value} index={0}>
-                            <Profile userState={userState} userDataFetched={userDataFetched} teams={teams} teamDataFetched={teamDataFetched} getUserParamState={getUserParamState} />
+                            <Profile userState={userState} userDataFetched={userDataFetched} getUserParamState={getUserParamState} />
                         </TabPanel>
                         <TabPanel value={value} index={1}>
                             My History
