@@ -190,8 +190,6 @@ const Home = (props: any) => {
       state: superUserStateVariable,
     })
       .then((response: any) => {
-        console.log(response.users, "List of users");
-        console.log(response);
         setTesterCount(response.userCount);
         setTesterList(response.users);
       })
@@ -261,7 +259,6 @@ const Home = (props: any) => {
   const handleCloseSignup = (state: boolean) => {
     setOpenSignup(state);
   };
-  console.log(platformList, "platformList");
 
   return (
     <Container
