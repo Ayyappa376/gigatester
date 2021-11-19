@@ -1,5 +1,6 @@
 import QuestionRenderer from './question';
 import PageHeader from './pageHeader';
+import PageFooter from './pageFooter';
 import ButtonComponent from './button';
 import ResultRenderer from './result_new';
 import Feedback from './feedback_modal';
@@ -15,6 +16,7 @@ export * from './dropdown';
 
 export {
     PageHeader,
+    PageFooter,
     QuestionRenderer,
     ButtonComponent,
     ResultRenderer,

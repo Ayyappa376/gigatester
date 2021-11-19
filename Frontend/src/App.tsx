@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
 import { history } from './configureStore';
 import { Home } from './pages';
-import { PageHeader } from './components';
+import { PageHeader, PageFooter } from './components';
 import { useSelector } from 'react-redux';
 import { useActions, removeUserDetails } from './actions';
 import { IRootState } from './reducers';
@@ -68,6 +68,7 @@ const DoItRight = (props: IDoitrightProps) => {
           <Route exact path='/' component={Home} />
           <Route render={(props) => <Layout {...props} metricType={metricType} metricSelection={metricSelection} />} />
         </Switch>
+        <PageFooter />
       </Router>
     </LanguageProvider >
   );

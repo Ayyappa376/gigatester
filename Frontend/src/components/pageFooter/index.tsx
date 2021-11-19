@@ -7,11 +7,13 @@ import {
 const useStyles = makeStyles(() => ({
   root: {
     width: '100%',
-    height: '40px',
+    height: '30px',
     backgroundColor: '#060C22',
     color: "#FFFFFF",
     textAlign: 'center',
-    paddingTop: '6px'
+    paddingTop: '5px',
+    position: 'fixed',
+    bottom: 0,
   },
 }));
 

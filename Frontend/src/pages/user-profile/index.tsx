@@ -146,6 +146,10 @@ const UserProfile = (props: any) => {
             });
     };
 
+    const handleProductSelectionPage = () => {
+        props.history.push('/selectProduct');
+    }
+
     return (
         <Fragment>
             <div className={classes.topBar}>
@@ -155,7 +159,7 @@ const UserProfile = (props: any) => {
                         <InputLabel style={{ paddingTop: '12px' }} > Home | Profile </InputLabel>
                     </Grid>
                     <Grid item xs={1} sm={1}>
-                        <Button variant="outlined" color="primary" size='small' className='button' data-testid="skip" style={{ marginTop: '8px' }}>
+                        <Button variant="outlined" color="primary" size='small' className='button' data-testid="skip" style={{ marginTop: '8px' }} onClick={handleProductSelectionPage}>
                             Skip
                         </Button>
                     </Grid>

@@ -15,6 +15,7 @@ import {
   MetricSelect,
   Relogin,
   Result,
+  ProductDetails,
   TeamAssessments,
   TeamSelect,
   Trends,
@@ -124,6 +125,9 @@ const Layout = (props: any) => {
         <Route
           exact path='/profile'
           render={() => <UserProfile {...props} />} />
+        <Route
+          exact path='/selectProduct'
+          render={() => <ProductDetails {...props} />} />
       </Switch>
 
       <IdleTimeOutModal

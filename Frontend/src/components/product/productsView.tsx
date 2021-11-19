@@ -1,7 +1,6 @@
 import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
-import { Button, Grid, InputLabel, Paper, Typography } from '@material-ui/core';
-import '../style.css';
+import { Grid, InputLabel, Paper, Typography } from '@material-ui/core';
 
 const useStyles = makeStyles(() => ({
     img: {
@@ -19,43 +18,38 @@ const useStyles = makeStyles(() => ({
     }
 }));
 
-const PlatformsView = (props: any) => {
+const ProductsView = (props: any) => {
     const classes = useStyles();
     return (
-        <div data-testid="platform">
+        <div data-testid="product">
             <Grid container spacing={1} >
                 <Grid item xs={12} sm={6}>
-                    <Typography className='headerText' data-testid="header" >Platforms</Typography>
+                    <Typography data-testid="header" >Showing 63</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                    <Button variant="outlined" color="primary" size='small' className='button buttonMarginLeftPane' data-testid="viewAllButton">
-                        View All
-                    </Button>
                 </Grid>
             </Grid>
-            <Paper className="platformViewSection sectionBackground sectionBorder" >
-                <Grid container spacing={3} >
-                    {props.platformList && props.platformList.map((item: any, index: number) => {
-                        return (
-                            <Grid item xs={12} sm={6} key={index} >
-                                <Paper className={classes.block} data-testid={`platform-${item.id}`} >
-                                    <Grid container spacing={4} >
-                                        <Grid item xs={3} sm={3} md={3} >
-                                            <img className={classes.img} src={item.imgPath} alt={item.label} />
-                                        </Grid>
-                                        <Grid item xs={9} sm={9} md={9}>
-                                            <Typography>{item.label}</Typography>
-                                            <InputLabel className={classes.subTitle}>{item.label}</InputLabel>
-                                        </Grid>
+            <Grid container spacing={3} >
+                {props.productList && props.productList.map((item: any, index: number) => {
+                    return (
+                        <Grid item xs={12} sm={6} key={index} >
+                            <Paper className={classes.block} data-testid={`platform-${item.id}`} >
+                                <Grid container spacing={2} >
+                                    <Grid item xs={3} sm={3} md={3} >
+                                        <img className={classes.img} src={item.imgPath} alt={item.label} />
                                     </Grid>
-                                </Paper>
-                            </Grid>
-                        )
-                    })}
-                </Grid>
-            </Paper >
+                                    <Grid item xs={9} sm={9} md={9}>
+                                        <Typography>{item.label}</Typography>
+                                        <InputLabel className={classes.subTitle}>{item.label}</InputLabel>
+                                    </Grid>
+                                </Grid>
+                            </Paper>
+                        </Grid>
+                    )
+                })}
+            </Grid>
         </div >
     );
 };
 
-export default PlatformsView;
+export default ProductsView;

@@ -19,6 +19,7 @@ import TrialClose from './trial-close';
 import Trends from './trends';
 import MetricSelect from './metrics/metric-select';
 import UserProfile from './user-profile';
+import ProductDetails from './product-details';
 
 export {
   About,
@@ -32,6 +33,7 @@ export {
   Logout,
   ManageSoftwareFiles,
   MetricSelect,
+  ProductDetails,
   Relogin,
   Result,
   TeamAssessments,
