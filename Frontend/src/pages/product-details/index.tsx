@@ -1,7 +1,7 @@
 import React from 'react';
 import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import TopPane from '../../components/product/topPane'
+// import TopPane from '../../components/product/topPane'
 import ProductView from '../../components/product/productsView';
 
 const useStyles = makeStyles({
@@ -59,7 +59,7 @@ function ProductDetails(props: any) {
             }}
         >
             <Grid container spacing={2}>
-                <TopPane />
+                {/* <TopPane /> */}
                 <Grid container className={classes.marginTopTwenty}>
                     <Grid item xs={12} sm={1} />
                     <Grid item xs={12} sm={7}>

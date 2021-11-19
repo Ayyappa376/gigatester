@@ -10,6 +10,7 @@ const useStyles = makeStyles(() => ({
     },
     block: {
         padding: '10px 20px',
+        marginTop: '10px',
         borderLeft: '2px solid #000000'
     },
     subTitle: {
@@ -24,12 +25,12 @@ const ProductsView = (props: any) => {
         <div data-testid="product">
             <Grid container spacing={1} >
                 <Grid item xs={12} sm={6}>
-                    <Typography data-testid="header" >Showing 63</Typography>
+                    <Typography data-testid="header" >Showing 5 campaigns</Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
                 </Grid>
             </Grid>
-            <Grid container spacing={3} >
+            <Grid container spacing={2} >
                 {props.productList && props.productList.map((item: any, index: number) => {
                     return (
                         <Grid item xs={12} sm={6} key={index} >
