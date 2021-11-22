@@ -103,7 +103,7 @@ export const getTeamMembersDetails = (
         emailId: userDocument.emailId,
         orgId: userDocument.orgId,
         roles: userDocument.roles,
-        teams: userDocument.teams.map((team: any) => team.name),
+        teams: userDocument.teams ? userDocument.teams.map((team: any) => team.name) : 'Others',
       };
       return teamMembers;
     })

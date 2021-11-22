@@ -1,6 +1,6 @@
-import { CampaignInfo, ConfigItem, PlatformInfo, ProductInfo } from '@models/index';
+import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, getCampaignsList, getPlatformConfig } from '@utils/index';
+import { appLogger, getCampaignsList, getDevicesList, getPlatformConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
 import { deleteItem, get, put, scan, update } from './sdk';
@@ -73,16 +73,21 @@ export const getPlatformDetails = async (id: string): Promise<PlatformInfo> => {
   return get<PlatformInfo>(params);
 };
 
-// soft delete a platform
-export const deactivatePlatform = async (id: string, userId: string): Promise<PlatformInfo | undefined> => {
+// delete a platform, if it is not used anywhere
+export const deletePlatform = async (id: string, userId: string): Promise<PlatformInfo | undefined> => {
   const campaigns: CampaignInfo[] = await getCampaignsList(userId);
+  const devices: DeviceInfo[] = await getDevicesList();
   const platformUsed: boolean = campaigns.some((campaign: CampaignInfo) =>
     campaign.products.some((product: ProductInfo) =>
-      product.platforms.some((platform: PlatformInfo) =>
-        (platform.id === id) ? true : false
+      product.platforms.some((platformId: string) =>
+        (platformId === id) ? true : false
       )
     )
-  );
+  ) && devices.some((device: DeviceInfo) =>
+    device.platforms.some((platformId: string) =>
+      (platformId === id) ? true : false
+  )
+);
 
   if(!platformUsed) {
     const params: DynamoDB.DeleteItemInput = <DynamoDB.DeleteItemInput>(<unknown>{
@@ -91,7 +96,7 @@ export const deactivatePlatform = async (id: string, userId: string): Promise<Pl
       },
       TableName: TableNames.getPlatformsTableName()
     });
-    appLogger.info({ deactivatePlatform_delete_params: params });
+    appLogger.info({ deletePlatform_delete_params: params });
     return deleteItem(params);
   }
   return undefined;

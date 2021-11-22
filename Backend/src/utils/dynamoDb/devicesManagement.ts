@@ -79,14 +79,14 @@ export const getDeviceDetails = async (id: string): Promise<DeviceInfo> => {
   return get<DeviceInfo>(params);
 };
 
-// delete a device
-export const deactivateDevice = async (id: string, userId: string): Promise<DeviceInfo | undefined> => {
+// delete a device, if it is not used anywhere
+export const deleteDevice = async (id: string, userId: string): Promise<DeviceInfo | undefined> => {
   const campaigns: CampaignInfo[] = await getCampaignsList(userId);
   const deviceUsed: boolean = campaigns.some((campaign: CampaignInfo) =>
     campaign.products.some((product: ProductInfo) =>
-      product.devices.some((device: DeviceInfo) =>
-        (device.id === id) ? true : false
-      )
+      product.devices ? product.devices.some((deviceId: string) =>
+        (deviceId === id) ? true : false
+      ) : false
     )
   );
 
@@ -97,7 +97,7 @@ export const deactivateDevice = async (id: string, userId: string): Promise<Devi
       },
       TableName: TableNames.getDevicesTableName()
     });
-    appLogger.info({ deactivateDevice_delete_params: params });
+    appLogger.info({ deleteDevice_delete_params: params });
     return deleteItem(params);
   }
   return undefined;
