@@ -1,7 +1,7 @@
 //import { config } from '@root/config';
 import { CampaignInfo, ConfigItem, ProductInfo, STATUS_CAMPAIGN_DRAFT } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, fetchManagers, getCampaignConfig } from '@utils/index';
+import { appLogger, fetchAdmins, fetchManagers, getCampaignConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
 //import { getUserDocumentFromEmail } from './getUserDocument';
@@ -143,9 +143,11 @@ export const getCreateCampaignConfig = async (
   const createCampaignConfig: ConfigItem = { config: configDetails, orgId };
 */
   const managers = await fetchManagers();
+  const admins = await fetchAdmins();
   const key = 'managers';
   campaignConfig.config[key].options = {};
   managers.forEach((val: string) => campaignConfig.config[key].options[val] = val);
+  admins.forEach((val: string) => campaignConfig.config[key].options[val] = val);
   return campaignConfig;
 };
 
@@ -288,9 +290,9 @@ export const getCampaignsList = async (userEmail: string): Promise<CampaignInfo[
   if (userEmail !== 'admin') {
     params = <DynamoDB.ScanInput>{
       ScanFilter: {
-        manager: {
+        managers: {
           AttributeValueList: [userEmail],
-          ComparisonOperator: 'IN',
+          ComparisonOperator: 'CONTAINS',
         },
       },
       TableName: TableNames.getCampaignsTableName(),
