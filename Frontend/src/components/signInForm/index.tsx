@@ -144,7 +144,7 @@ export default function SignInForm(props: any) {
                     ),
                     team:
                       tokenInfo["custom:teamName"] &&
-                        tokenInfo["custom:teamName"] !== ""
+                      tokenInfo["custom:teamName"] !== ""
                         ? tokenInfo["custom:teamName"]
                         : "Others",
                     roles: tokenInfo["cognito:groups"],
@@ -152,8 +152,8 @@ export default function SignInForm(props: any) {
 
                   if (tokenInfo["cognito:groups"].length) {
                     if (
-                      tokenInfo["cognito:groups"].includes('Admin') ||
-                      tokenInfo["cognito:groups"].includes('Manager')
+                      tokenInfo["cognito:groups"].includes("Admin") ||
+                      tokenInfo["cognito:groups"].includes("Manager")
                     ) {
                       return (
                         history.push("/admin"),
@@ -193,25 +193,19 @@ export default function SignInForm(props: any) {
             userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
             team:
               tokenInfo["custom:teamName"] &&
-                tokenInfo["custom:teamName"] !== ""
+              tokenInfo["custom:teamName"] !== ""
                 ? tokenInfo["custom:teamName"]
                 : "Others",
             roles: tokenInfo["cognito:groups"],
           });
           if (tokenInfo["cognito:groups"].length) {
             if (
-              tokenInfo["cognito:groups"].includes('Admin') ||
-              tokenInfo["cognito:groups"].includes('Manager')
+              tokenInfo["cognito:groups"].includes("Admin") ||
+              tokenInfo["cognito:groups"].includes("Manager")
             ) {
-              return (
-                history.push("/admin"),
-                setDialogOpen(false)
-              );
+              return history.push("/admin"), setDialogOpen(false);
             } else {
-              return (
-                history.push("/profile"),
-                setDialogOpen(false)
-              );
+              return history.push("/profile"), setDialogOpen(false);
             }
           }
         }

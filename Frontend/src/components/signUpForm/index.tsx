@@ -16,9 +16,13 @@ import {
   CircularProgress,
   CssBaseline,
   DialogTitle,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  Chip,
 } from "@material-ui/core";
-import { Auth } from "aws-amplify";
-import jwtDecode from "jwt-decode";
+
 import { Http } from "../../utils";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useSelector } from "react-redux";
@@ -36,6 +40,13 @@ const useStyles = makeStyles((theme) => ({
     minHeight: "80vh",
     maxHeight: "80vh",
   },
+  chips: {
+    display: "flex",
+    flexWrap: "wrap",
+  },
+  chip: {
+    margin: 2,
+  },
 }));
 
 function Alert(props: any) {
@@ -45,9 +56,9 @@ function Alert(props: any) {
 export default function SignupForm(props: any) {
   const classes = useStyles();
   const [userParamState, setUserParamState] = React.useState<any>({});
-  const stateVariable = useSelector((state: IRootState) => {
-    return state;
-  });
+  // const stateVariable = useSelector((state: IRootState) => {
+  //   return state;
+  // });
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState(false);
   const [checkBox, setcheckBox] = useState(false);
@@ -59,7 +70,10 @@ export default function SignupForm(props: any) {
   );
   const [openSignin, setOpenSignin] = useState(false);
   const [loading, setLoading] = useState(false);
-  const signUpStateVariable = stateVariable;
+  const [superUserStateVariable, setSuperUserStateVariable] = useState(
+    props.superUserStateVariable
+  );
+  console.log(props.superUserStateVariable);
 
   const validateEmail = (email: string) => {
     const re =
@@ -67,40 +81,25 @@ export default function SignupForm(props: any) {
     return re.test(String(email).toLowerCase());
   };
 
-  useEffect(() => {
-    const getServiceUserToken = async () => {
-      const { userName, password } = SuperUser;
-      try {
-        const user = await Auth.signIn(userName, password);
-        if (
-          user &&
-          user.signInUserSession.idToken &&
-          user.signInUserSession.accessToken
-        ) {
-          const tokenInfo: any = jwtDecode(
-            user.signInUserSession.idToken.jwtToken
-          );
-          signUpStateVariable["user"] = {
-            idToken: user.signInUserSession.idToken.jwtToken,
-            accessToken: user.signInUserSession.accessToken,
-            userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
-            team:
-              tokenInfo["custom:teamName"] &&
-                tokenInfo["custom:teamName"] !== ""
-                ? tokenInfo["custom:teamName"]
-                : "Others",
-            teams: [],
-            roles: ["Admin"],
-          };
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    getServiceUserToken();
-  }, []);
-
+  // const platformValues = () => {
+  //   if (signUpStateVariable) {
+  //     console.log(signUpStateVariable);
+  //     Http.get({
+  //       url: "/api/v2/platforms/",
+  //       state: signUpStateVariable,
+  //     })
+  //       .then((response: any) => {
+  //         console.log(signUpStateVariable);
+  //         console.log(response.platforms);
+  //       })
+  //       .catch((error: any) => {
+  //         console.log(error);
+  //       });
+  //   }
+  // };
+  // setTimeout(() => {
+  //   platformValues();
+  // }, 500);
   const handleChangeValue = (event: any) => {
     if (userParamState) {
       const temp: any = { ...userParamState };
@@ -130,6 +129,7 @@ export default function SignupForm(props: any) {
   const handleSubmit = () => {
     setLoading(true);
     const { emailId } = userParamState;
+    console.log(superUserStateVariable);
     if (validateEmail(emailId)) {
       if (checkBox) {
         const postData = userParamState;
@@ -140,7 +140,7 @@ export default function SignupForm(props: any) {
             body: {
               ...postData,
             },
-            state: signUpStateVariable,
+            state: superUserStateVariable,
           })
             .then((response: any) => {
               setVerifyEmail(true);
@@ -217,19 +217,26 @@ export default function SignupForm(props: any) {
           </Grid>
 
           {/* <Grid item xs={12} sm={12}>
-    <FormControl required style={{ width: "100%" }}>
-      <InputLabel id="country">Country</InputLabel>
-      <Select
-        id="country"
-        name="country"
-        fullWidth
-        value={userParamState.country || ""}
-        onChange={handleChangeValue}
-      >
-        <MenuItem value={"unitedStates"}>United States</MenuItem>
-      </Select>
-    </FormControl>
-  </Grid> */}
+            <FormControl required style={{ width: "100%" }}>
+              <InputLabel id="country">Country</InputLabel>
+              <Select
+                id="country"
+                name="country"
+                fullWidth
+                value={userParamState.country || ""}
+                onChange={handleChangeValue}
+              >
+                <div className={classes.chips}>
+                  <MenuItem value={"unitedStates"}>United States</MenuItem>
+                  <Chip
+                    key={"unitedStates"}
+                    label={"unitedStates"}
+                    className={classes.chip}
+                  />
+                </div>
+              </Select>
+            </FormControl>
+          </Grid> */}
           <Grid item xs={12} sm={12}>
             <FormControlLabel
               value="end"

@@ -78,6 +78,8 @@ async function handler(request: GetUsers, response: Response) {
     appLogger.info({ getUserStatus: userStatus });
     return responseBuilder.ok(userStatus, response);
   }
+
+  
   // if (params.type === 'allUsers') {
   //   const teamList: string[] = (
   //     await getTeams2(
@@ -87,9 +89,9 @@ async function handler(request: GetUsers, response: Response) {
   //     )
   //   ).map((val: any) => val.teamId);
   //   appLogger.info({ getTeams2: teamList });
-  //   const userDoc: UserDocument = await getUserDocument({
-  //     cognitoUserId: headers.user['cognito:username'],
-  //   });
+    // const userDoc: UserDocument = await getUserDocument({
+    //   cognitoUserId: headers.user['cognito:username'],
+    // });
   //   appLogger.info({ getUserDocument: userDoc });
   //   /*userDoc.teams.forEach((val: any) => {
   //           if(!teamList.includes(val.name)) {
