@@ -294,27 +294,21 @@ const EditPlatform = (props: any) => {
   };
 
   const removeOthersText = (values: string[]) => {
-    const val = values.forEach((el) => {
-      if (el.includes(`${OTHER_STRING}:`)) {
-        return OTHER_STRING;
-      }
-      return el;
-    });
-    return val;
+    return values.map((el) => el.includes(`${OTHER_STRING}:`) ? OTHER_STRING : el);
   };
 
   const renderElements = (key: string, config: IObjectConfigDetails, values: IPlatformInfo) => {
-    const element: IFieldConfigAttributes = config[key];
-    switch (element.type) {
+    const attrConfig: IFieldConfigAttributes = config[key];
+    switch (attrConfig.type) {
       case 'string':
         return (
           <TextField
-            required={element.mandatory}
+            required={attrConfig.mandatory}
             type='string'
             id={`${key}`}
             name={`${key}`}
             value={values ? (values[key] ? values[key] : '') : ''}
-            label={element.displayName}
+            label={attrConfig.displayName}
             onChange={(event) => handleChangeValue(event, key)}
             fullWidth
             autoComplete='off'
@@ -325,12 +319,12 @@ const EditPlatform = (props: any) => {
         return (
           <div className='numberInput'>
             <TextField
-              required={element.mandatory}
+              required={attrConfig.mandatory}
               type='number'
               id={`${key}`}
               name={`${key}`}
               value={values ? (values[key] ? values[key] : '') : ''}
-              label={element.displayName}
+              label={attrConfig.displayName}
               onChange={(event) => handleChangeValue(event, key)}
               fullWidth
               autoComplete='off'
@@ -345,22 +339,22 @@ const EditPlatform = (props: any) => {
             <FormControl className={classes.formControl}>
               <InputLabel
                 id={`label_${key}`}
-                required={element.mandatory}
+                required={attrConfig.mandatory}
               >
-                {element.displayName}
+                {attrConfig.displayName}
               </InputLabel>
               <Select
                 name={`select_${key}`}
                 value={
                   values
                     ? values[key]
-                      ? element.options
-                        ? element.options.custom
-                          ? element.options.custom.split(',').includes(values[key])
+                      ? attrConfig.options
+                        ? attrConfig.options.custom
+                          ? attrConfig.options.custom.split(',').includes(values[key])
                             ? values[key]
                             : OTHER_STRING
-                          : element.options.customFixed
-                            ? element.options.customFixed.split(',').includes(values[key])
+                          : attrConfig.options.customFixed
+                            ? attrConfig.options.customFixed.split(',').includes(values[key])
                               ? values[key]
                               : OTHER_STRING
                             : OTHER_STRING
@@ -370,8 +364,8 @@ const EditPlatform = (props: any) => {
                 }
                 onChange={(event) => handleChangeValue(event, key)}
               >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
+                {attrConfig.options && attrConfig.options.custom ? (
+                  attrConfig.options.custom.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -379,8 +373,8 @@ const EditPlatform = (props: any) => {
                     );
                   })
                 ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
+                  attrConfig.options && attrConfig.options.customFixed ? (
+                    attrConfig.options.customFixed.split(',').map((opt: string) => {
                       return (
                         <MenuItem key={opt} value={opt}>
                           {opt}
@@ -397,21 +391,21 @@ const EditPlatform = (props: any) => {
               </Select>
             </FormControl>
             <TextField
-              required={element.mandatory}
+              required={attrConfig.mandatory}
               type='string'
               id={`text_${key}`}
               name={`text_${key}`}
               disabled={
                 !values || !values[key] ||
-                (element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) ||
-                (element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                (attrConfig.options && attrConfig.options.custom && attrConfig.options.custom.split(',').includes(values[key])) ||
+                (attrConfig.options && attrConfig.options.customFixed && attrConfig.options.customFixed.split(',').includes(values[key]))
               }
               label={`(specify, if ${OTHER_STRING})`}
               value={
                 values &&
                 values[key] &&
-                !(element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) &&
-                !(element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                !(attrConfig.options && attrConfig.options.custom && attrConfig.options.custom.split(',').includes(values[key])) &&
+                !(attrConfig.options && attrConfig.options.customFixed && attrConfig.options.customFixed.split(',').includes(values[key]))
                 ? values[key] === OTHER_STRING
                   ? ''
                   : values[key]
@@ -428,22 +422,22 @@ const EditPlatform = (props: any) => {
           <FormControl className={classes.formControl}>
             <InputLabel
               id={`label_${key}`}
-              required={element.mandatory}
+              required={attrConfig.mandatory}
             >
-              {element.displayName}
+              {attrConfig.displayName}
             </InputLabel>
             <Select
               name={`select_${key}`}
               value={
                 values
                   ? values[key]
-                    ? element.options
-                      ? element.options.custom
-                        ? element.options.custom.split(',').includes(values[key])
+                    ? attrConfig.options
+                      ? attrConfig.options.custom
+                        ? attrConfig.options.custom.split(',').includes(values[key])
                           ? values[key]
                           : ''
-                        : element.options.customFixed
-                          ? element.options.customFixed.split(',').includes(values[key])
+                        : attrConfig.options.customFixed
+                          ? attrConfig.options.customFixed.split(',').includes(values[key])
                             ? values[key]
                             : ''
                           : ''
@@ -453,8 +447,8 @@ const EditPlatform = (props: any) => {
               }
               onChange={(event) => handleChangeValue(event, key)}
             >
-              {element.options && element.options.custom ? (
-                element.options.custom.split(',').map((opt: string) => {
+              {attrConfig.options && attrConfig.options.custom ? (
+                attrConfig.options.custom.split(',').map((opt: string) => {
                   return (
                     <MenuItem key={opt} value={opt}>
                       {opt}
@@ -462,8 +456,8 @@ const EditPlatform = (props: any) => {
                   );
                 })
               ) : (
-                element.options && element.options.customFixed ? (
-                  element.options.customFixed.split(',').map((opt: string) => {
+                attrConfig.options && attrConfig.options.customFixed ? (
+                  attrConfig.options.customFixed.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -483,9 +477,9 @@ const EditPlatform = (props: any) => {
             <FormControl className={classes.formControl}>
               <InputLabel
                 id={`label_${key}`}
-                required={element.mandatory}
+                required={attrConfig.mandatory}
               >
-                {element.displayName}
+                {attrConfig.displayName}
               </InputLabel>
               <Select
                 id={`select_${key}`}
@@ -505,8 +499,8 @@ const EditPlatform = (props: any) => {
                 renderValue={renderChips}
                 MenuProps={MenuProps}
               >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
+                {attrConfig.options && attrConfig.options.custom ? (
+                  attrConfig.options.custom.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -514,8 +508,8 @@ const EditPlatform = (props: any) => {
                     );
                   })
                 ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
+                  attrConfig.options && attrConfig.options.customFixed ? (
+                    attrConfig.options.customFixed.split(',').map((opt: string) => {
                       return (
                         <MenuItem key={opt} value={opt}>
                           {opt}
@@ -532,7 +526,7 @@ const EditPlatform = (props: any) => {
               </Select>
             </FormControl>
             <TextField
-              required={element.mandatory}
+              required={attrConfig.mandatory}
               type='string'
               id={`text_${key}`}
               name={`text_${key}`}
@@ -631,10 +625,6 @@ const EditPlatform = (props: any) => {
       </Fragment>
     );
   };
-
-  // const renderForm = () => {
-  //   return renderFormData();
-  // };
 
   return (
     <Fragment>

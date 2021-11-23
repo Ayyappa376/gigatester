@@ -252,6 +252,28 @@ export const fetchManagers = async (): Promise<string[]> => {
   });
 };
 
+//Fetch all Admins in the environment
+export const fetchAdmins = async (): Promise<string[]> => {
+  const params = <DynamoDB.ScanInput>{
+    ExpressionAttributeNames: {
+      '#roles': 'roles',
+    },
+    ExpressionAttributeValues: {
+      ':admin': 'Admin',
+    },
+    FilterExpression: 'contains(#roles, :admin)',
+    TableName: TableNames.getCognitoUsersTableName(),
+  };
+
+  appLogger.info({ fetchAdmins_scan_params: params });
+  return scan<UserDocument[]>(params).then((userDocs) => {
+    const userList = userDocs.map((user: any) => user.emailId);
+    userList.sort();
+    appLogger.info({ userList });
+    return userList;
+  });
+};
+
 // Fetch UserConfig from configs and fills data into options
 export const getCreateUserConfig = async (
   orgId: string,

@@ -1,5 +1,5 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, deactivateCampaign, responseBuilder } from '@utils/index';
+import { appLogger, deleteCampaign, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface DelCampaigns {
@@ -35,8 +35,8 @@ async function handler(request: DelCampaigns, response: Response) {
     return responseBuilder.badRequest(err, response);
   }
 
-  const resp: any = await deactivateCampaign(params.id);
-  appLogger.info({ deactivateCampaign_Resp: resp });
+  const resp: any = await deleteCampaign(params.id);
+  appLogger.info({ deleteCampaign_Resp: resp });
   return responseBuilder.ok(resp, response);
 }
 

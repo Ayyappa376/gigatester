@@ -1,5 +1,5 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, deactivatePlatform, responseBuilder } from '@utils/index';
+import { appLogger, deletePlatform, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface DelPlatforms {
@@ -32,8 +32,8 @@ async function handler(request: DelPlatforms, response: Response) {
     return responseBuilder.badRequest(err, response);
   }
 
-  const resp: any = await deactivatePlatform(params.id, headers.user.email);
-  appLogger.info({ deactivatePlatform_Resp: resp });
+  const resp: any = await deletePlatform(params.id, headers.user.email);
+  appLogger.info({ deletePlatform_Resp: resp });
   return responseBuilder.ok(resp, response);
 }
 

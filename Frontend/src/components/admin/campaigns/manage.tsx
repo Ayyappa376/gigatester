@@ -14,22 +14,31 @@ import {
   Backdrop,
   Grid,
   TableSortLabel,
+  MuiThemeProvider,
+  Snackbar,
+  SnackbarContent,
+  Tooltip
 } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import PublishIcon from '@material-ui/icons/Publish';
+import FileCopyIcon from '@material-ui/icons/FileCopy';
+import StopIcon from '@material-ui/icons/Stop';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { default as MaterialLink } from '@material-ui/core/Link';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
 import { withRouter } from 'react-router-dom';
 import { ModalComponent } from '../../modal';
-import { buttonStyle } from '../../../common/common';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
 import SearchControl from '../../common/searchControl';
 import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
+import { ICampaignInfo, STATUS_CAMPAIGN_DRAFT, STATUS_CAMPAIGN_PUBLISHED } from '../../../model';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -56,12 +65,12 @@ const ManageCampaigns = (props: any) => {
     return state;
   });
   const [fetchCampaigns, setFetchCampaigns] = React.useState(false);
-  const [allCampaigns, setAllCampaigns] = React.useState<Object[]>([]);
+  const [allCampaigns, setAllCampaigns] = React.useState<ICampaignInfo[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [deleteCampaignId, setDeleteCampaignId] = useState('');
+  const [selectedCampaignId, setSelectedCampaignId] = useState('');
   const [searchString, setSearchString] = useState('');
-  const [campaigns, setCampaigns] = useState<Object[]>([]);
+  const [campaigns, setCampaigns] = useState<ICampaignInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
@@ -70,10 +79,14 @@ const ManageCampaigns = (props: any) => {
     lowerLimit: 0,
     upperLimit: 9,
   });
-  /* Order related changes */
+  const [actionCallback, setActionCallback] = useState<(id: string) => void>(() => {});
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
-  /* Initialization Order related variables ends here */
+  const [failure, setFailure] = useState(false);
+  const [failureMessage, setFailureMessage] = useState(
+    <Text tid='somethingWentWrong' />
+  );
+  let msgFailure = failureMessage;
 
   const fetchCampaignList = () => {
     setBackdropOpen(true);
@@ -82,13 +95,8 @@ const ManageCampaigns = (props: any) => {
       state: stateVariable,
     })
     .then((response: any) => {
-      response.campaigns.sort((a: any, b: any) => {
-        if (a.active === b.active) {
-          return a.name.toLowerCase() <= b.name.toLowerCase()
-            ? -1
-            : 1;
-        }
-        return a.active === 'true' ? -1 : 1;
+      response.campaigns.sort((a: ICampaignInfo, b: ICampaignInfo) => {
+        return a.name.localeCompare(b.name)
       });
       setFetchCampaigns(true);
       setAllCampaigns(response.campaigns);
@@ -166,44 +174,20 @@ const ManageCampaigns = (props: any) => {
     }
   }, [order, orderBy]);
 
-  function compareStatus(a: any, b: any) {
-    if (a.active === 'true' && b.active === 'false') {
-      return -1;
-    }
-    if (a.active === 'false' && b.active === 'true') {
-      return 1;
-    }
-    return 0;
+  function compareStatus(a: ICampaignInfo, b: ICampaignInfo) {
+    return a.status.localeCompare(b.status);
   }
 
-  function compareCampaign(a: any, b: any) {
-    if (a.name.toLowerCase() < b.name.toLowerCase()) {
-      return -1;
-    }
-    if (a.name.toLowerCase() > b.name.toLowerCase()) {
-      return 1;
-    }
-    return 0;
+  function compareCampaign(a: ICampaignInfo, b: ICampaignInfo) {
+    return a.name.localeCompare(b.name);
   }
 
-  function compareStatusD(a: any, b: any) {
-    if (a.active === 'true' && b.active === 'false') {
-      return 1;
-    }
-    if (a.active === 'false' && b.active === 'true') {
-      return -1;
-    }
-    return 0;
+  function compareStatusD(a: ICampaignInfo, b: ICampaignInfo) {
+    return b.status.localeCompare(a.status);
   }
 
-  function compareCampaignD(a: any, b: any) {
-    if (a.name.toLowerCase() < b.name.toLowerCase()) {
-      return 1;
-    }
-    if (a.name.toLowerCase() > b.name.toLowerCase()) {
-      return -1;
-    }
-    return 0;
+  function compareCampaignD(a: ICampaignInfo, b: ICampaignInfo) {
+    return b.name.localeCompare(a.name);
   }
 
   const handleRequestSort = (property: string) => {
@@ -237,9 +221,24 @@ const ManageCampaigns = (props: any) => {
     setCurrentPage(event);
   };
 
-  const disableClicked = (campaignId: string) => {
-    setDeleteCampaignId(campaignId);
+  const deleteClicked = (campaignId: string, callback: (id: string) => void) => {
+    setSelectedCampaignId(campaignId);
+    setActionCallback(callback);
     setOpenModal(true);
+  };
+
+  const publishClicked = (campaignId: string, callback: (id: string) => void) => {
+    setSelectedCampaignId(campaignId);
+    setActionCallback(callback);
+    setOpenModal(true);
+  };
+
+  const cloneClicked = (campaignId: string) => {
+    //TODO: implement like creating new campaign with prefilled data
+  };
+
+  const endClicked = (campaignId: string) => {
+    //TODO: implement like edit with status set to end
   };
 
   const modalNoClicked = () => {
@@ -247,36 +246,42 @@ const ManageCampaigns = (props: any) => {
   };
 
   const modalYesClicked = () => {
-    if (deleteCampaignId !== '') {
-      disableCampaign(deleteCampaignId);
+    if (selectedCampaignId !== '') {
+      actionCallback(selectedCampaignId);
       setOpenModal(false);
     }
   };
 
-  const disableCampaign = (campaignId: string) => {
+  const deleteCampaign = (campaignId: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
       url: `/api/v2/campaigns/${campaignId}`,
       state: stateVariable,
     })
-      .then((response: any) => {
-        setBackdropOpen(false);
-        setDeleteCampaignId('');
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        }
-        setBackdropOpen(false);
-        fetchCampaignList();
-      });
+    .then((response: any) => {
+      setBackdropOpen(false);
+      setSelectedCampaignId('');
+      fetchCampaignList();
+    })
+    .catch((error) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+      } else if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setFailure(true);
+      }
+      setBackdropOpen(false);
+      fetchCampaignList();
+    });
   };
 
-  const enableClicked = (row: any) => {
+  const publishCampaign = (row: any) => {
     setBackdropOpen(true);
-    const postData = { ...row, active: 'true' };
+    const postData = { ...row, status: STATUS_CAMPAIGN_PUBLISHED };
     Http.put({
       url: `/api/v2/campaigns`,
       body: {
@@ -285,29 +290,39 @@ const ManageCampaigns = (props: any) => {
       },
       state: stateVariable,
     })
-      .then((response: any) => {
-        setBackdropOpen(false);
-        fetchCampaignList();
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        }
-        setBackdropOpen(false);
-        fetchCampaignList();
-      });
+    .then((response: any) => {
+      setBackdropOpen(false);
+      setSelectedCampaignId('');
+      fetchCampaignList();
+    })
+    .catch((error) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+      } else if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setFailure(true);
+      }
+      setBackdropOpen(false);
+      fetchCampaignList();
+    });
   };
 
-  const renderEmptyCampaignMessage = () => {
+  const handleClose = () => {
+    setFailure(false);
+  };
+
+/*  const renderEmptyCampaignMessage = () => {
     return (
       <Typography variant='h5'>
         <Text tid='notManagingAnyCampaigns' />
       </Typography>
     );
   };
-
+*/
   const renderCampaignsTable = () => {
     return (
       <Fragment>
@@ -317,7 +332,18 @@ const ManageCampaigns = (props: any) => {
           </Backdrop>
           <div style={{ width: '100%' }}>
             <Grid container spacing={3}>
-              <Grid item sm={5} />
+              <Grid item sm={5}>
+                <Button
+                    className={classes.backButton}
+                    variant='outlined'
+                    onClick={() => { props.editClicked(0); }}
+                  >
+                  <AddIcon
+                    fontSize='large'
+                  />{' '}
+                  <Text tid='addCampaign' />
+                </Button>
+              </Grid>
               <Grid item sm={5}>
                 <SearchControl
                   searchString={searchString}
@@ -345,14 +371,9 @@ const ManageCampaigns = (props: any) => {
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='platform' />
+                        <Text tid='manageCampaigns2' />
                       </Typography>
                     </TableSortLabel>
-                  </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='actions' />
-                    </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <TableSortLabel
@@ -367,10 +388,15 @@ const ManageCampaigns = (props: any) => {
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='actions' />
+                    </Typography>
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-                {campaigns.map((row: any, index: number) => {
+                {campaigns.map((row: ICampaignInfo, index: number) => {
                   if (index < itemLimit.lowerLimit) {
                     return;
                   }
@@ -395,72 +421,91 @@ const ManageCampaigns = (props: any) => {
                           {row.name}
                         </Typography>
                       </TableCell>
-                      <TableCell align='center' className='tableCell'>
-                        <div className={classes.actionsBlock}>
-                          {row.active === 'true' ? (
-                            <Fragment>
-                              <MaterialLink
-                                href='#'
-                                onClick={() => {
-                                  props.editClicked(row.id);
-                                }}
-                              >
-                                <Typography>
-                                  <Text tid='editProfile' />
-                                </Typography>
-                              </MaterialLink>
-                              <Typography>&nbsp;|&nbsp;</Typography>
-                              <MaterialLink
-                                href='#'
-                                onClick={() => {
-                                  disableClicked(row.id);
-                                }}
-                              >
-                                <Typography>
-                                  <Text tid='disable' />
-                                </Typography>
-                              </MaterialLink>
-                              {/*<Typography>&nbsp;|&nbsp;</Typography>
-                              <MaterialLink
-                                href='#'
-                                onClick={() => {
-                                  props.assignClicked(row.id);
-                                }}
-                              >
-                                <Typography>
-                                  <Text tid='assign' />
-                                </Typography>
-                              </MaterialLink>*/}
-                            </Fragment>
-                          ) : (
-                            <MaterialLink
-                              align='center'
-                              href='#'
-                              onClick={() => {
-                                enableClicked(row);
-                              }}
-                            >
-                              <Typography align='center'>
-                                <Text tid='enable' />
-                              </Typography>
-                            </MaterialLink>
-                          )}
-                        </div>
-                      </TableCell>
                       <TableCell
                         component='th'
                         scope='row'
                         align='center'
                         className='tableCell'
                       >
-                        {row.active === 'true' ? (
-                          <CheckCircleIcon
-                            fontSize='large'
-                            htmlColor='#66bb6a'
-                          />
-                        ) : (
-                          <CancelIcon fontSize='large' htmlColor='#dd0000' />
-                        )}
+                        <Typography className='tableBodyText'>
+                          {row.status}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align='center' className='tableCell'>
+                        <div className={classes.actionsBlock}>
+                          {row.status === STATUS_CAMPAIGN_DRAFT ? (
+                            <Fragment>
+                              <MuiThemeProvider theme={tooltipTheme}>
+                                <Tooltip
+                                  title={
+                                    <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                      <Text tid='edit' />
+                                    </Typography>
+                                  }
+                                >
+                                  <Typography style={{ padding: '0 6px' }}>
+                                    <EditIcon onClick={() => { props.editClicked(row.id); }}/>
+                                  </Typography>
+                                </Tooltip>
+                              </MuiThemeProvider>
+                              <MuiThemeProvider theme={tooltipTheme}>
+                                <Tooltip
+                                  title={
+                                    <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                      <Text tid='delete' />
+                                    </Typography>
+                                  }
+                                >
+                                  <Typography style={{ padding: '0 6px' }}>
+                                    <ClearIcon onClick={() => { deleteClicked(row.id, deleteCampaign); }}/>
+                                  </Typography>
+                                </Tooltip>
+                              </MuiThemeProvider>
+                              <MuiThemeProvider theme={tooltipTheme}>
+                                <Tooltip
+                                  title={
+                                    <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                      <Text tid='publish' />
+                                    </Typography>
+                                  }
+                                >
+                                  <Typography style={{ padding: '0 6px' }}>
+                                    <PublishIcon onClick={() => { publishClicked(row.id, publishCampaign); }}/>
+                                  </Typography>
+                                </Tooltip>
+                              </MuiThemeProvider>
+                            </Fragment>
+                          ) : (
+                            <Fragment>
+                              <MuiThemeProvider theme={tooltipTheme}>
+                                <Tooltip
+                                  title={
+                                    <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                      <Text tid='clone' />
+                                    </Typography>
+                                  }
+                                >
+                                  <Typography style={{ padding: '0 6px' }}>
+                                    <FileCopyIcon onClick={() => { cloneClicked(row.id); }}/>
+                                  </Typography>
+                                </Tooltip>
+                              </MuiThemeProvider>
+                              <MuiThemeProvider theme={tooltipTheme}>
+                                <Tooltip
+                                  title={
+                                    <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                      <Text tid='clone' />
+                                    </Typography>
+                                  }
+                                >
+                                  <Typography style={{ padding: '0 6px' }}>
+                                    <StopIcon onClick={() => { endClicked(row.id); }}/>
+                                  </Typography>
+                                </Tooltip>
+                              </MuiThemeProvider>
+                            </Fragment>
+                          )}
+                        </div>
                       </TableCell>
                     </TableRow>
                   );
@@ -493,6 +538,19 @@ const ManageCampaigns = (props: any) => {
             handleModalNoClicked={modalNoClicked}
           />
         </Container>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={failure}
+          onClose={handleClose}
+          autoHideDuration={9000}
+        >
+          <SnackbarContent
+            style={{
+              backgroundColor: '#dd0000',
+            }}
+            message={msgFailure}
+          />
+        </Snackbar>
       </Fragment>
     );
   };
@@ -500,11 +558,11 @@ const ManageCampaigns = (props: any) => {
   return (
     <Fragment>
       {fetchCampaigns ? (
-        allCampaigns.length === 0 ? (
-          renderEmptyCampaignMessage()
-        ) : (
+//        allCampaigns.length === 0 ? (
+//          renderEmptyCampaignMessage()
+//        ) : (
           renderCampaignsTable()
-        )
+//        )
       ) : (
         <Container className='loaderStyle'>
           <Loader />

@@ -16,15 +16,24 @@ import {
   Snackbar,
   SnackbarContent,
   Tooltip,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
 } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IFieldConfigAttributes, ICampaignParams, IObjectConfigDetails, ICampaignInfo } from '../../../model';
+import { IFieldConfigAttributes, ICampaignParams, IObjectConfigDetails, ICampaignInfo, IProductInfo, IPlatformInfo, IDeviceInfo, STATUS_CAMPAIGN_DRAFT } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
-import { MANAGE_TEAMS } from '../../../pages/admin';
+import { MANAGE_CAMPAIGNS } from '../../../pages/admin';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
@@ -83,11 +92,87 @@ const EditCampaign = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
+  const [allPlatforms, setAllPlatforms] = useState<IPlatformInfo[]>([]);
+  const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
+  const [allTestSuites, setAllTestSuites] = useState<any[]/*IQuestionnaire[]*/>([]);
   const [campaignState, setCampaignState] = React.useState<ICampaignParams | undefined>();
   let msgFailure = failureMessage;
   let msgSuccess = <Text tid='platformDetailsUpdatedSuccessfully' />;
 
   useEffect(() => {
+    fetchAllPlatforms();
+    fetchAllDevices();
+//    fetchAllTestSuites();
+    fetchCampaignDetails();
+  }, []);
+
+  const fetchAllPlatforms = () => {
+    Http.get({
+      url: `/api/v2/platforms`,
+      state: stateVariable,
+    })
+    .then((response: any) => {
+      response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
+        return a.name.localeCompare(b.name);
+      });
+      setAllPlatforms(response.platforms);
+    })
+    .catch((error: any) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+    })
+  };
+
+  const fetchAllDevices = () => {
+    Http.get({
+      url: `/api/v2/devices`,
+      state: stateVariable,
+    })
+    .then((response: any) => {
+      response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
+        return a.name.localeCompare(b.name);
+      });
+      setAllDevices(response.devices);
+    })
+    .catch((error: any) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+    })
+  };
+
+  const fetchAllTestSuites = () => {
+    Http.get({
+      url: `/api/v2/testSuites`,
+      state: stateVariable,
+    })
+    .then((response: any) => {
+      response.testSuites.sort((a: any/*IQuestionnaire*/, b: any/*IQuestionnaire*/) => {
+        return a.name.localeCompare(b.name);
+      });
+      setAllTestSuites(response.testSuites);
+    })
+    .catch((error: any) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+    })
+  };
+
+  const fetchCampaignDetails = () => {
     Http.get({
       url: `/api/v2/campaigns/${props.campaignId} `,
       state: stateVariable,
@@ -105,37 +190,61 @@ const EditCampaign = (props: any) => {
         }
         setFailure(true);
       });
-  }, []);
+  };
 
   const handleSave = () => {
     const postData = campaignState;
-    Http.put({
-      url: `/api/v2/campaigns`,
-      body: {
-        ...postData,
-      },
-      state: stateVariable,
-    })
-      .then((response: any) => {
-        setCampaignPosted(true);
-      })
-      .catch((error: any) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 400) {
-          setFailureMessage(object.apiError.msg);
-        } else if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          setFailureMessage(<Text tid='somethingWentWrong' />);
-          setFailure(true);
-        }
-      });
+    if(postData && postData.campaigns) {
+      if(postData.campaigns[0].id) {
+        Http.put({
+          url: `/api/v2/campaigns`,
+          body: {
+            ...postData,
+          },
+          state: stateVariable,
+        })
+        .then((response: any) => { setCampaignPosted(true); })
+        .catch((error: any) => { handleSaveError(error); });
+      } else {
+        Http.post({
+          url: `/api/v2/campaigns`,
+          body: {
+            ...postData,
+          },
+          state: stateVariable,
+        })
+        .then((response: any) => { setCampaignPosted(true); })
+        .catch((error: any) => { handleSaveError(error); });
+      }
+    }
   };
+
+  const handleSaveError = (error: any) => {
+    const perror = JSON.stringify(error);
+    const object = JSON.parse(perror);
+    if (object.code === 400) {
+      setFailureMessage(object.apiError.msg);
+    } else if (object.code === 401) {
+      props.history.push('/relogin');
+    } else {
+      setFailureMessage(<Text tid='somethingWentWrong' />);
+      setFailure(true);
+    }
+  }
 
   const fixMultiSelectValuesAndSave = (response: ICampaignParams) => {
     if (response.campaigns) {
       fixOtherValuesMultiSelect(response.campaignConfig, response.campaigns[0]);
+    } else {
+      response.campaigns = [];
+      response.campaigns.push({
+        name: '',
+        products: [],
+        status: STATUS_CAMPAIGN_DRAFT,
+        managers: [],
+        startDate: 0,
+        id: ''
+      })
     }
     setCampaignState(response);
     setCampaignDataFetched(true);
@@ -278,27 +387,108 @@ const EditCampaign = (props: any) => {
   };
 
   const removeOthersText = (values: string[]) => {
-    const val = values.forEach((el) => {
-      if (el.includes(`${OTHER_STRING}:`)) {
-        return OTHER_STRING;
+    return values.map((el) => el.includes(`${OTHER_STRING}:`) ? OTHER_STRING : el);
+  };
+
+  const addProduct = () => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        if(! values[0].products) {
+          values[0].products = [];
+        }
+        values[0].products.push({
+          id: '',
+          name: '',
+          platforms: []
+        });
+        setCampaignState(temp);
       }
-      return el;
-    });
-    return val;
+    }
+  }
+
+  const deleteProduct = (index: number) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        values[0].products.splice(index, 1);
+        setCampaignState(temp);
+      }
+    }
+  }
+
+  const handleChangeProductName = (event: any, index: number) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        values[0].products[index].name = event.target.value;
+        setCampaignState(temp);
+      }
+    }
+  };
+
+  const handleChangeProductPlatforms = (event: any, index: number) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        let valueArray = values[0].products[index].platforms || [];
+        valueArray = [...event.target.value];
+        values[0].products[index].platforms = valueArray;
+        setCampaignState(temp);
+      }
+    }
+  };
+
+  const handleChangeProductDevices = (event: any, index: number) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        let valueArray = values[0].products[index].devices || [];
+        valueArray = [...event.target.value];
+        values[0].products[index].devices = valueArray;
+        setCampaignState(temp);
+      }
+    }
+  };
+
+  const handleChangeProductTestSuite = (event: any, index: number) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        values[0].products[index].testSuite = event.target.value;
+        setCampaignState(temp);
+      }
+    }
+  };
+
+  const handleClose = () => {
+    setFailure(false);
   };
 
   const renderElements = (key: string, config: IObjectConfigDetails, values: ICampaignInfo) => {
-    const element: IFieldConfigAttributes = config[key];
-    switch (element.type) {
+    const attrConfig: IFieldConfigAttributes = config[key];
+    switch (attrConfig.type) {
       case 'string':
         return (
           <TextField
-            required={element.mandatory}
+            required={attrConfig.mandatory}
             type='string'
             id={`${key}`}
             name={`${key}`}
             value={values ? (values[key] ? values[key] : '') : ''}
-            label={element.displayName}
+            label={attrConfig.displayName}
             onChange={(event) => handleChangeValue(event, key)}
             fullWidth
             autoComplete='off'
@@ -309,12 +499,12 @@ const EditCampaign = (props: any) => {
         return (
           <div className='numberInput'>
             <TextField
-              required={element.mandatory}
+              required={attrConfig.mandatory}
               type='number'
               id={`${key}`}
               name={`${key}`}
               value={values ? (values[key] ? values[key] : '') : ''}
-              label={element.displayName}
+              label={attrConfig.displayName}
               onChange={(event) => handleChangeValue(event, key)}
               fullWidth
               autoComplete='off'
@@ -329,22 +519,22 @@ const EditCampaign = (props: any) => {
             <FormControl className={classes.formControl}>
               <InputLabel
                 id={`label_${key}`}
-                required={element.mandatory}
+                required={attrConfig.mandatory}
               >
-                {element.displayName}
+                {attrConfig.displayName}
               </InputLabel>
               <Select
                 name={`select_${key}`}
                 value={
                   values
                     ? values[key]
-                      ? element.options
-                        ? element.options.custom
-                          ? element.options.custom.split(',').includes(values[key])
+                      ? attrConfig.options
+                        ? attrConfig.options.custom
+                          ? attrConfig.options.custom.split(',').includes(values[key])
                             ? values[key]
                             : OTHER_STRING
-                          : element.options.customFixed
-                            ? element.options.customFixed.split(',').includes(values[key])
+                          : attrConfig.options.customFixed
+                            ? attrConfig.options.customFixed.split(',').includes(values[key])
                               ? values[key]
                               : OTHER_STRING
                             : OTHER_STRING
@@ -354,8 +544,8 @@ const EditCampaign = (props: any) => {
                 }
                 onChange={(event) => handleChangeValue(event, key)}
               >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
+                {attrConfig.options && attrConfig.options.custom ? (
+                  attrConfig.options.custom.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -363,8 +553,8 @@ const EditCampaign = (props: any) => {
                     );
                   })
                 ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
+                  attrConfig.options && attrConfig.options.customFixed ? (
+                    attrConfig.options.customFixed.split(',').map((opt: string) => {
                       return (
                         <MenuItem key={opt} value={opt}>
                           {opt}
@@ -381,21 +571,21 @@ const EditCampaign = (props: any) => {
               </Select>
             </FormControl>
             <TextField
-              required={element.mandatory}
+              required={attrConfig.mandatory}
               type='string'
               id={`text_${key}`}
               name={`text_${key}`}
               disabled={
                 !values || !values[key] ||
-                (element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) ||
-                (element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                (attrConfig.options && attrConfig.options.custom && attrConfig.options.custom.split(',').includes(values[key])) ||
+                (attrConfig.options && attrConfig.options.customFixed && attrConfig.options.customFixed.split(',').includes(values[key]))
               }
               label={`(specify, if ${OTHER_STRING})`}
               value={
                 values &&
                 values[key] &&
-                !(element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) &&
-                !(element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
+                !(attrConfig.options && attrConfig.options.custom && attrConfig.options.custom.split(',').includes(values[key])) &&
+                !(attrConfig.options && attrConfig.options.customFixed && attrConfig.options.customFixed.split(',').includes(values[key]))
                 ? values[key] === OTHER_STRING
                   ? ''
                   : values[key]
@@ -412,22 +602,22 @@ const EditCampaign = (props: any) => {
           <FormControl className={classes.formControl}>
             <InputLabel
               id={`label_${key}`}
-              required={element.mandatory}
+              required={attrConfig.mandatory}
             >
-              {element.displayName}
+              {attrConfig.displayName}
             </InputLabel>
             <Select
               name={`select_${key}`}
               value={
                 values
                   ? values[key]
-                    ? element.options
-                      ? element.options.custom
-                        ? element.options.custom.split(',').includes(values[key])
+                    ? attrConfig.options
+                      ? attrConfig.options.custom
+                        ? attrConfig.options.custom.split(',').includes(values[key])
                           ? values[key]
                           : ''
-                        : element.options.customFixed
-                          ? element.options.customFixed.split(',').includes(values[key])
+                        : attrConfig.options.customFixed
+                          ? attrConfig.options.customFixed.split(',').includes(values[key])
                             ? values[key]
                             : ''
                           : ''
@@ -437,8 +627,8 @@ const EditCampaign = (props: any) => {
               }
               onChange={(event) => handleChangeValue(event, key)}
             >
-              {element.options && element.options.custom ? (
-                element.options.custom.split(',').map((opt: string) => {
+              {attrConfig.options && attrConfig.options.custom ? (
+                attrConfig.options.custom.split(',').map((opt: string) => {
                   return (
                     <MenuItem key={opt} value={opt}>
                       {opt}
@@ -446,8 +636,8 @@ const EditCampaign = (props: any) => {
                   );
                 })
               ) : (
-                element.options && element.options.customFixed ? (
-                  element.options.customFixed.split(',').map((opt: string) => {
+                attrConfig.options && attrConfig.options.customFixed ? (
+                  attrConfig.options.customFixed.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -467,9 +657,9 @@ const EditCampaign = (props: any) => {
             <FormControl className={classes.formControl}>
               <InputLabel
                 id={`label_${key}`}
-                required={element.mandatory}
+                required={attrConfig.mandatory}
               >
-                {element.displayName}
+                {attrConfig.displayName}
               </InputLabel>
               <Select
                 id={`select_${key}`}
@@ -478,7 +668,7 @@ const EditCampaign = (props: any) => {
                 value={
                   values
                     ? values[key]
-                      ? values[key] !== ''
+                      ? values[key].length > 0
                         ? removeOthersText(values[key])
                         : []
                       : []
@@ -489,57 +679,257 @@ const EditCampaign = (props: any) => {
                 renderValue={renderChips}
                 MenuProps={MenuProps}
               >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
+                {attrConfig.options ? (
+                  Object.keys(attrConfig.options).map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
-                        {opt}
+                        {attrConfig.options[opt]}
                       </MenuItem>
                     );
                   })
                 ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
-                      return (
-                        <MenuItem key={opt} value={opt}>
-                          {opt}
-                        </MenuItem>
-                      );
-                    })
-                  ) : (
-                    <div />
-                  )
+                  <div />
                 )}
-                <MenuItem key={OTHER_STRING} value={OTHER_STRING}>
-                  <Text tid='other' />
-                </MenuItem>
               </Select>
             </FormControl>
-            <TextField
-              required={element.mandatory}
-              type='string'
-              id={`text_${key}`}
-              name={`text_${key}`}
-              disabled={!(values && values[key] && includesOther(values[key]))}
-              value={
-                values
-                  ? values[key]
-                    ? getMultiListOtherTextValue(values[key])
-                    : ''
-                  : ''
-              }
-              label={'(specify, if ${OTHER_STRING})'}
-              onChange={(event) => handleChangeOtherMultilist(event, key)}
-              autoComplete='off'
-              className='textFieldStyle'
-            />
           </Fragment>
         );
     }
   };
 
-  const handleClose = () => {
-    setFailure(false);
+  const renderProductsTable = (campaign: ICampaignInfo) => {
+    return (
+      <Fragment>
+        <Container component='div'>
+          <div style={{ width: '100%' }}>
+            <Grid container spacing={3}>
+              <Grid item sm={5}>
+                <Button
+                    className={classes.button}
+                    variant='outlined'
+                    onClick={() => { addProduct(); }}
+                  >
+                  <AddIcon
+                    fontSize='large'
+                  />{' '}
+                  <Text tid='addProduct' />
+                </Button>
+              </Grid>
+              <Grid item sm={5}>
+                {/*<SearchControl
+                  searchString={searchString}
+                  handleSearch={handleSearch}
+                />*/}
+              </Grid>
+              <Grid item sm={2}>
+                {/*<PageSizeDropDown
+                  handleChange={handleChangeItemsPerPage}
+                  itemCount={itemsPerPage}
+                />*/}
+              </Grid>
+            </Grid>
+          </div>
+          <Paper className='tableArea'>
+            <Table className='table'>
+              <TableHead className='tableHead'>
+                <TableRow>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='manageProducts2' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='managePlatforms2' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='manageDevices2' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='software' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='manageTestSuits2' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='testers' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='delete' />
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {campaign.products && campaign.products.map((product: IProductInfo, index: number) => {
+                  return (
+                    <TableRow
+                      key={index}
+                      style={
+                        index % 2
+                          ? { background: '#EFEFEF' }
+                          : { background: 'white' }
+                      }
+                    >
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        className='tableCell'
+                      >
+                        <TextField
+                          required={true}
+                          type='string'
+                          id={`productName_${index}`}
+                          name={`productName_${index}`}
+                          value={product.name ? product.name : ''}
+                          onChange={(event) => handleChangeProductName(event, index)}
+                          fullWidth
+                          autoComplete='off'
+                          className='textFieldStyle'
+                        />
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <FormControl className={classes.formControl}>
+                          <Select
+                            id={`productPlatform_${index}`}
+                            name={`productPlatform_${index}`}
+                            multiple
+                            value={
+                              product.platforms ? product.platforms : []
+                            }
+                            onChange={(event) => handleChangeProductPlatforms(event, index)}
+                            input={<Input id='select-multiple-chip' />}
+                            renderValue={renderChips}
+                            MenuProps={MenuProps}
+                          >
+                            {allPlatforms && allPlatforms.map((opt: IPlatformInfo) => {
+                                return (
+                                  <MenuItem key={opt.id} value={opt.id}>
+                                    {opt.name}
+                                  </MenuItem>
+                                );
+                              })}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <FormControl className={classes.formControl}>
+                          <Select
+                            id={`productDevices_${index}`}
+                            name={`productDevices_${index}`}
+                            multiple
+                            value={
+                              product.devices ? product.devices : []
+                            }
+                            onChange={(event) => handleChangeProductDevices(event, index)}
+                            input={<Input id='select-multiple-chip' />}
+                            renderValue={renderChips}
+                            MenuProps={MenuProps}
+                          >
+                            {allDevices && allDevices.map((opt: IDeviceInfo) => {
+                                return (
+                                  <MenuItem key={opt.id} value={opt.id}>
+                                    {opt.name}
+                                  </MenuItem>
+                                );
+                              })}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <Typography className='tableBodyText'>
+                          {product.software ? product.software : ''}
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <FormControl className={classes.formControl}>
+                          <Select
+                            id={`productTestSuite_${index}`}
+                            name={`productTestSuite_${index}`}
+                            value={
+                              product.testSuite ? product.testSuite : ''
+                            }
+                            onChange={(event) => handleChangeProductTestSuite(event, index)}
+                          >
+                            {allTestSuites && allTestSuites.map((opt: any/*IQuestionnaire*/) => {
+                                return (
+                                  <MenuItem key={opt.id} value={opt.id}>
+                                    {opt.name}
+                                  </MenuItem>
+                                );
+                              })}
+                          </Select>
+                        </FormControl>
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <Typography className='tableBodyText'>
+                          {product.testers ? product.testers : ''}
+                        </Typography>
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <MuiThemeProvider theme={tooltipTheme}>
+                          <Tooltip
+                            title={
+                              <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                <Text tid='delete' />
+                              </Typography>
+                            }
+                          >
+                            <Typography style={{ padding: '0 6px' }}>
+                              <ClearIcon onClick={() => { deleteProduct(index); }}/>
+                            </Typography>
+                          </Tooltip>
+                        </MuiThemeProvider>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>
+          </Paper>
+        </Container>
+      </Fragment>
+    );
   };
 
   const renderFormData = () => {
@@ -552,7 +942,7 @@ const EditCampaign = (props: any) => {
               className={classes.button}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_TEAMS);
+                props.goBack(MANAGE_CAMPAIGNS);
               }}
             >
               <Text tid='goBack' />
@@ -573,12 +963,15 @@ const EditCampaign = (props: any) => {
             );
           })}
         </Grid>
+        <Grid container spacing={3} className={classes.grid}>
+          {campaignState!.campaigns && renderProductsTable(campaignState!.campaigns[0])}
+        </Grid>
         <div className='bottomButtonsContainer'>
           <Button
             className={classes.button}
             variant='outlined'
             onClick={() => {
-              props.goBack(MANAGE_TEAMS);
+              props.goBack(MANAGE_CAMPAIGNS);
             }}
           >
             <Text tid='goBack' />
@@ -615,10 +1008,6 @@ const EditCampaign = (props: any) => {
       </Fragment>
     );
   };
-
-  // const renderForm = () => {
-  //   return renderFormData();
-  // };
 
   return (
     <Fragment>

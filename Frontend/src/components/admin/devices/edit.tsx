@@ -595,10 +595,6 @@ const EditDevice = (props: any) => {
     );
   };
 
-  // const renderForm = () => {
-  //   return renderFormData();
-  // };
-
   return (
     <Fragment>
       {deviceDataFetched ? (

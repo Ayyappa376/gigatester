@@ -1,5 +1,5 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, deactivateDevice, responseBuilder } from '@utils/index';
+import { appLogger, deleteDevice, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface DelDevices {
@@ -32,8 +32,8 @@ async function handler(request: DelDevices, response: Response) {
     return responseBuilder.badRequest(err, response);
   }
 
-  const resp: any = await deactivateDevice(params.id, headers.user.email);
-  appLogger.info({ deactivateDevice_Resp: resp });
+  const resp: any = await deleteDevice(params.id, headers.user.email);
+  appLogger.info({ deleteDevice_Resp: resp });
   return responseBuilder.ok(resp, response);
 }
 
