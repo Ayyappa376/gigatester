@@ -15,6 +15,8 @@ import {
   Grid,
   TableSortLabel,
   MuiThemeProvider,
+  Snackbar,
+  SnackbarContent,
   Tooltip
 } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -24,7 +26,6 @@ import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
-import { default as MaterialLink } from '@material-ui/core/Link';
 import { withRouter } from 'react-router-dom';
 import { ModalComponent } from '../../modal';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -74,10 +75,13 @@ const ManagePlatforms = (props: any) => {
     lowerLimit: 0,
     upperLimit: 9,
   });
-  /* Order related changes */
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
-  /* Initialization Order related variables ends here */
+  const [failure, setFailure] = useState(false);
+  const [failureMessage, setFailureMessage] = useState(
+    <Text tid='somethingWentWrong' />
+  );
+  let msgFailure = failureMessage;
 
   const fetchPlatformList = () => {
     setBackdropOpen(true);
@@ -87,7 +91,7 @@ const ManagePlatforms = (props: any) => {
     })
     .then((response: any) => {
       response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
-          return a.name.localeCompare(b.name);
+        return a.name.localeCompare(b.name);
       });
       setFetchPlatforms(true);
       setAllPlatforms(response.platforms);
@@ -160,23 +164,11 @@ const ManagePlatforms = (props: any) => {
   }, [order, orderBy]);
 
   function comparePlatform(a: IPlatformInfo, b: IPlatformInfo) {
-    if (a.name.toLowerCase() < b.name.toLowerCase()) {
-      return -1;
-    }
-    if (a.name.toLowerCase() > b.name.toLowerCase()) {
-      return 1;
-    }
-    return 0;
+    return a.name.localeCompare(b.name);
   }
 
   function comparePlatformD(a: IPlatformInfo, b: IPlatformInfo) {
-    if (a.name.toLowerCase() < b.name.toLowerCase()) {
-      return 1;
-    }
-    if (a.name.toLowerCase() > b.name.toLowerCase()) {
-      return -1;
-    }
-    return 0;
+    return b.name.localeCompare(a.name);
   }
 
   const handleRequestSort = (property: string) => {
@@ -240,12 +232,21 @@ const ManagePlatforms = (props: any) => {
     .catch((error) => {
       const perror = JSON.stringify(error);
       const object = JSON.parse(perror);
-      if (object.code === 401) {
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+      } else if (object.code === 401) {
         props.history.push('/relogin');
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setFailure(true);
       }
       setBackdropOpen(false);
       fetchPlatformList();
     });
+  };
+
+  const handleClose = () => {
+    setFailure(false);
   };
 
   const renderPlatformsTable = () => {
@@ -296,7 +297,7 @@ const ManagePlatforms = (props: any) => {
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='platform' />
+                        <Text tid='managePlatforms2' />
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
@@ -339,12 +340,12 @@ const ManagePlatforms = (props: any) => {
                             <Tooltip
                               title={
                                 <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                                  <Text tid='delete' />
+                                  <Text tid='edit' />
                                 </Typography>
                               }
                             >
-                              <Typography>
-                                <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
+                              <Typography style={{ padding: '0 6px' }}>
+                                <EditIcon onClick={() => { props.editClicked(row.id); }}/>
                               </Typography>
                             </Tooltip>
                           </MuiThemeProvider>
@@ -352,12 +353,12 @@ const ManagePlatforms = (props: any) => {
                             <Tooltip
                               title={
                                 <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                                  <Text tid='edit' />
+                                  <Text tid='delete' />
                                 </Typography>
                               }
                             >
-                              <Typography>
-                                <EditIcon onClick={() => { props.editClicked(row.id); }}/>
+                              <Typography style={{ padding: '0 6px' }}>
+                                <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
                               </Typography>
                             </Tooltip>
                           </MuiThemeProvider>
@@ -394,6 +395,19 @@ const ManagePlatforms = (props: any) => {
             handleModalNoClicked={modalNoClicked}
           />
         </Container>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={failure}
+          onClose={handleClose}
+          autoHideDuration={9000}
+        >
+          <SnackbarContent
+            style={{
+              backgroundColor: '#dd0000',
+            }}
+            message={msgFailure}
+          />
+        </Snackbar>
       </Fragment>
     );
   };

@@ -1,25 +1,33 @@
-import { DeviceInfo, PlatformInfo, Questionnaire } from '.';
-
 export interface CampaignInfo {
-    active: string;
-    createdBy: string;
-    createdOn: number;
+    createdBy?: string;
+    createdOn?: number;
+    description?: string;
+    endDate?: number;
     id: string;
-    managers?: string[];
-    modifiedBy?: string;
-    modifiedOn?: number;
+    managers: string[];
     name: string;
     products: ProductInfo[];
-    type?: string;
+    startDate: number;
+    status: string;
     [keyName: string]: any;
 }
 
 export interface ProductInfo {
-    devices: DeviceInfo[];
+    devices?: string[];
     id: string;
     instructions?: string;
     name: string;
-    platforms: PlatformInfo[];
+    platforms: string[];
     software?: string;
-    testSuite: Questionnaire;
+    testers?: TesterStatus[];
+    testSuite?: string;
 }
+
+export interface TesterStatus {
+    approved: boolean;
+    id: string;
+}
+
+export const STATUS_CAMPAIGN_DRAFT = 'draft';
+export const STATUS_CAMPAIGN_PUBLISHED = 'published';
+export const STATUS_CAMPAIGN_ENDED = 'ended';

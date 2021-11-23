@@ -93,12 +93,10 @@ async function handler(request: GetQuestionnaire, response: Response) {
 
     const questionnaireList: any = [];
 
-    const teams = (
-      await getUserDocument({ cognitoUserId: user['cognito:username'] })
-    ).teams[0];
+    const teams = (await getUserDocument({ cognitoUserId: user['cognito:username'] })).teams;
     appLogger.info({ getUserDocument_first_teams: teams });
     const getList: string[] = await getQuestionnairesAssigned(
-      teams ? teams.name : 'Others'
+      teams ? teams[0].name : 'Others'
     );
     appLogger.info({ getQuestionnairesAssigned: getList });
 

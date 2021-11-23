@@ -1,29 +1,40 @@
-import  { IDeviceInfo, IObjectConfigDetails, IPlatformInfo } from '..';
+import  { IObjectConfigDetails } from '..';
  
 export interface ICampaignInfo {
-  active: string;
-  createdBy?: string;
-  createdOn?: number;
-  managers?: string[];
   id: string;
   name: string;
+  description?: string;
+  status: string;
+  createdBy?: string;
+  createdOn?: number;
+  managers: string[];
   products: IProductInfo[];
-  type?: string;
+  startDate: number;
+  endDate?: number;
   [keyName: string]: any;
 }
 
 export interface IProductInfo {
-  devices: IDeviceInfo[];
   id: string;
   name: string;
   instructions?: string;
+  devices?: string[];
   software?: string;
-  platforms: IPlatformInfo[];
-//  testSuite: IQuestionnaire;
-  testSuite: any;
+  platforms: string[];
+  testSuite?: string;
+  testers?: ITesterStatus[];
+}
+
+export interface ITesterStatus {
+    id: string;
+    approved: boolean;
 }
 
 export interface ICampaignParams {
-    campaignConfig: IObjectConfigDetails;
-    campaigns?: ICampaignInfo[];
+  campaignConfig: IObjectConfigDetails;
+  campaigns?: ICampaignInfo[];
 }
+
+export const STATUS_CAMPAIGN_DRAFT = 'draft';
+export const STATUS_CAMPAIGN_PUBLISHED = 'published';
+export const STATUS_CAMPAIGN_ENDED = 'ended';

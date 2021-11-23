@@ -37,10 +37,10 @@ async function handler(request: PostCampaigns, response: Response) {
 
   const createData: CampaignInfo = body.campaigns[0];
   if (
-    headers.user['cognito:groups'][0] === 'Manager' ||
-    (headers.user['cognito:groups'][0] === 'Admin' && !createData.manager)
+    (!createData.managers || createData.managers.length === 0) &&
+    ((headers.user['cognito:groups'][0] === 'Manager') || (headers.user['cognito:groups'][0] === 'Admin'))
   ) {
-    createData.manager = headers.user.email;
+    createData.managers = [headers.user.email];
   }
   const ok: any = await createCampaign(createData, headers.user.email).catch(
     (e) => {

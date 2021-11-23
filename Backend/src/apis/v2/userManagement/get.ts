@@ -79,7 +79,6 @@ async function handler(request: GetUsers, response: Response) {
     return responseBuilder.ok(userStatus, response);
   }
 
-  
   // if (params.type === 'allUsers') {
   //   const teamList: string[] = (
   //     await getTeams2(
