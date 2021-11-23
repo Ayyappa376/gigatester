@@ -91,6 +91,7 @@
   "delete": "Delete",
   "publish": "Publish",
   "clone": "Clone",
+  "end": "End",
   "stringInput": "String Input",
   "numberInput": "Number Input",
   "passwordInput": "Password Input",
@@ -350,6 +351,7 @@
   "teamIsCreated": "Team is created",
   "teamAttributesUpdatedSuccessfully": "Team attributes updated successfully",
   "teamDetailsUpdatedSuccessfully": "Team details updated successfully",
+  "campaignDetailsSavedSuccessfully": "Campaign details saved successfully",
   "platformDetailsSavedSuccessfully": "Platform details saved successfully",
   "deviceDetailsSavedSuccessfully": "Device details saved successfully",
   "userProfileIsCreated": "User profile is created",
@@ -438,5 +440,9 @@
   "resetConfirmation": "Reset Confirmation",
   "areYouSureYouWantToResetTheUserPassword": "Are you sure you want to reset the user's password?",
   "gigaTester": "GigaTester",
-  "createAccount":"Create Account"
+  "createAccount":"Create Account",
+  "deleteCampaignMsg": "Are you sure you want to delete this campaign?",
+  "publishCampaignMsg": "End users will see the campaign's products and apply for testing it after you publish this campaign. You won't be able to edit it any more. Publish the campaign now?",
+  "endCampaignMsg": "Users won't be able to provide feedback on this campaign's products any more after you end the campaign. End this campaign now?",
+  "cloneCampaignMsg": "New campaign in draft state with all other data identical to this campaign will be created. Confirm you want to the campaign?"
 }

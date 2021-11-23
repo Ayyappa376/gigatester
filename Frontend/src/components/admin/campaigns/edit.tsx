@@ -38,7 +38,7 @@ import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 
-import  { OTHER_STRING } from './create';
+const OTHER_STRING = 'Other';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -97,7 +97,7 @@ const EditCampaign = (props: any) => {
   const [allTestSuites, setAllTestSuites] = useState<any[]/*IQuestionnaire[]*/>([]);
   const [campaignState, setCampaignState] = React.useState<ICampaignParams | undefined>();
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='platformDetailsUpdatedSuccessfully' />;
+  let msgSuccess = <Text tid='campaignDetailsSavedSuccessfully' />;
 
   useEffect(() => {
     fetchAllPlatforms();

@@ -36,5 +36,5 @@ export interface ICampaignParams {
 }
 
 export const STATUS_CAMPAIGN_DRAFT = 'draft';
-export const STATUS_CAMPAIGN_PUBLISHED = 'published';
+export const STATUS_CAMPAIGN_ACTIVE = 'active';
 export const STATUS_CAMPAIGN_ENDED = 'ended';
