@@ -12,6 +12,7 @@ import {
   // Input,
   // Chip,
 } from "@material-ui/core";
+import UserProfileStatus from "../../components/userProfileStatus";
 import Loader from "../../components/loader";
 import { IUserParams, IUserAttributes } from "../../model";
 import PersonOutlineOutlinedIcon from "@material-ui/icons/PersonOutlineOutlined";
@@ -40,7 +41,10 @@ export default function Profile(props: any) {
     <div data-testid="profileForm">
       {userDataFetched ? (
         <Grid container spacing={2} data-testid="profileForm">
-          <Grid item xs={12} sm={4}></Grid>
+          <Grid item xs={12} sm={4}>
+            {" "}
+            <UserProfileStatus />
+          </Grid>
           <Grid item xs={12} sm={8}>
             <ProfileForm
               userState={userState}

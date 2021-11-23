@@ -1,186 +1,147 @@
-// import { Avatar, Button as MuiButton, Typography } from "@material-ui/core";
-// import { grey } from "@material-ui/core/colors";
-// import {
-//   CloudUpload as MuiCloudUpload,
-//   Delete as MuiDelete,
-// } from "@material-ui/icons";
-// import { spacing } from "@material-ui/system";
-// import React, { createRef, useState } from "react";
-// import styled from "styled-components";
-
-// const Button = styled(MuiButton)(spacing);
-// const UploadIcon = styled(MuiCloudUpload)(spacing);
-// const DeleteIcon = styled(MuiDelete)(spacing);
-
-// const CenteredContent = styled.div`
-//   text-align: center;
-// `;
-
-// const BigAvatar = styled(Avatar)`
-//   width: 120px;
-//   height: 120px;
-//   margin: 0 auto ${(props) => props.theme.spacing(2)}px;
-//   ${({ $withBorder }) =>
-//     $withBorder &&
-//     `border: 1px solid ${grey[500]};
-//      box-shadow: 0 0 1px 0 ${grey[500]} inset, 0 0 1px 0 ${grey[500]};`}
-// `;
-
-// const AvatarUpload = () => {
-//   const [image, _setImage] = useState(null);
-//   const inputFileRef = createRef(null);
-
-//   const cleanup = () => {
-//     URL.revokeObjectURL(image);
-//     inputFileRef.current.value = null;
-//   };
-
-//   const setImage = (newImage) => {
-//     if (image) {
-//       cleanup();
-//     }
-//     _setImage(newImage);
-//   };
-
-//   const handleOnChange = (event) => {
-//     const newImage = event.target?.files?.[0];
-
-//     if (newImage) {
-//       setImage(URL.createObjectURL(newImage));
-//     }
-//   };
-
-//   /**
-//    *
-//    * @param {React.MouseEvent<HTMLButtonElement, MouseEvent>} event
-//    */
-//   const handleClick = (event) => {
-//     if (image) {
-//       event.preventDefault();
-//       setImage(null);
-//     }
-//   };
-
-//   return (
-//     <CenteredContent>
-//       <BigAvatar
-//         $withBorder
-//         alt="Avatar"
-//         src={image || "/static/img/avatars/default-profile.svg"}
-//         imgProps={{
-//           style: {
-//             maxHeight: "100%",
-//             maxWidth: "100%",
-//             objectFit: "cover",
-//           },
-//         }}
-//       />
-//       <input
-//         ref={inputFileRef}
-//         accept="image/*"
-//         hidden
-//         id="avatar-image-upload"
-//         type="file"
-//         onChange={handleOnChange}
-//       />
-//       <label htmlFor="avatar-image-upload">
-//         <Button
-//           variant="contained"
-//           color="primary"
-//           component="span"
-//           mb={2}
-//           onClick={handleClick}
-//         >
-//           {image ? <DeleteIcon mr={2} /> : <UploadIcon mr={2} />}
-//           {image ? "Limpar" : "Upload"}
-//         </Button>
-//       </label>
-//       <Typography variant="caption" display="block" gutterBottom>
-//         Para obter os melhores resultados, use uma imagem de pelo menos 128 x
-//         128 pixels no formato .jpg
-//       </Typography>
-//     </CenteredContent>
-//   );
-// };
-
-// export default AvatarUpload;
-
 import React from "react";
-import { makeStyles } from "@material-ui/core/styles";
-import { Button, Grid, InputLabel, Paper, Typography } from "@material-ui/core";
-import "../style.css";
+import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
+import Avatar from "@material-ui/core/Avatar";
+import {
+  Box,
+  Button,
+  Grid,
+  LinearProgress,
+  Paper,
+  Typography,
+} from "@material-ui/core";
 
-const useStyles = makeStyles(() => ({
-  img: {
-    height: 40,
-    width: 40,
-    borderRadius: "20%",
-  },
-  block: {
-    padding: "10px 20px",
-    borderLeft: "2px solid #000000",
-  },
-  subTitle: {
-    fontSize: "12px",
-    paddingTop: "2px",
-  },
-}));
+const useStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      "& > *": {
+        margin: theme.spacing(1),
+      },
+      height: "550px",
+      width: "300px",
+      backgroundColor: "#F3F3F3",
+      boxShadow: "0px 2px 8px #00000033",
+      // alignItems: "center",
+      // alignContent: "center",
+    },
+    small: {
+      width: theme.spacing(3),
+      height: theme.spacing(3),
+    },
+    large: {
+      width: theme.spacing(20),
+      height: theme.spacing(20),
+      marginLeft: "63px",
+    },
+  })
+);
 
-const PlatformsView = (props: any) => {
-  const classes = useStyles();
+function LinearProgressWithLabel(props: any) {
   return (
-    <div data-testid="platform">
-      <Grid container spacing={1}>
-        <Grid item xs={12} sm={6}>
-          <Typography className="headerText" data-testid="header">
-            Platforms
+    <Box
+      style={{
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        padding: "5px",
+        paddingBottom: "10px",
+      }}
+    >
+      <Box style={{ width: "100%", margin: "5px" }}>
+        <Box>
+          <Typography display="inline" style={{ marginBottom: "15px" }}>
+            Profile Progress
+            <Typography
+              display="inline"
+              style={{ marginLeft: "90px" }}
+            >{`${Math.round(props.value)}%`}</Typography>
+          </Typography>
+        </Box>
+
+        <LinearProgress
+          variant="determinate"
+          style={{ marginTop: "10px" }}
+          {...props}
+        />
+      </Box>
+    </Box>
+  );
+}
+
+export default function UserProfileStatus() {
+  const classes = useStyles();
+  const [progress, setProgress] = React.useState(10);
+
+  return (
+    <div className={classes.root}>
+      {/* <Avatar
+        alt="Remy Sharp"
+        src="/static/images/avatar/1.jpg"
+        className={classes.small}
+      />
+      <Avatar alt="Remy Sharp" src="/static/images/avatar/1.jpg" /> */}
+      {/* <Paper> */}
+      <Grid style={{ overflow: "hidden" }}>
+        <Grid
+          item
+          xs={12}
+          sm={12}
+          style={{ paddingTop: "20px", paddingBottom: "40px" }}
+        >
+          <Avatar
+            alt="Tester"
+            src="https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236_960_720.png"
+            className={classes.large}
+            style={{
+              border: "7px solid white",
+              paddingBottom: "40px",
+            }}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <Typography
+            style={{ textAlign: "center", fontSize: "16px", fontStyle: "bold" }}
+          >
+            Username
+            <br />
+            Username @gmail.com
           </Typography>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Button
-            variant="outlined"
-            color="primary"
-            size="small"
-            className="button buttonMarginLeftPane"
-            data-testid="viewAllButton"
+        <Grid item xs={12} sm={12}></Grid>
+        <Paper
+          style={{
+            backgroundColor: "#E7E7E7",
+            display: "flex",
+            alignItems: "center",
+            margin: "10px",
+            marginTop: "30px",
+          }}
+        >
+          <LinearProgressWithLabel value={progress} />
+        </Paper>
+        <Grid item xs={12} sm={12}>
+          <Paper
+            style={{
+              backgroundColor: "#E7E7E7",
+              display: "flex",
+              alignItems: "center",
+              margin: "10px",
+              marginTop: "30px",
+            }}
           >
-            View All
-          </Button>
+            <Typography style={{ margin: "5px", marginRight: "80px" }}>
+              Status
+            </Typography>
+            <Button style={{ color: "red" }}>InComplete</Button>
+          </Paper>
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <Typography
+            style={{ margin: "15px", color: "#969696", marginTop: "30px" }}
+          >
+            Complete your profile 100% to continue testing for products
+          </Typography>
         </Grid>
       </Grid>
-      <Paper className="platformViewSection sectionBackground sectionBorder">
-        <Grid container spacing={3}>
-          {props.platformList &&
-            props.platformList.map((item: any, index: number) => {
-              return (
-                <Grid item xs={12} sm={6} key={index}>
-                  <Paper
-                    className={classes.block}
-                    data-testid={`platform-${item.id}`}
-                  >
-                    <Grid container spacing={4}>
-                      <Grid item xs={3} sm={3} md={3}>
-                        <img
-                          className={classes.img}
-                          src={item.imgPath}
-                          alt={item.label}
-                        />
-                      </Grid>
-                      <Grid item xs={9} sm={9} md={9}>
-                        <Typography>{item.label}</Typography>
-                        <InputLabel className={classes.subTitle}>
-                          {item.label}
-                        </InputLabel>
-                      </Grid>
-                    </Grid>
-                  </Paper>
-                </Grid>
-              );
-            })}
-        </Grid>
-      </Paper>
     </div>
   );
-};
-
-export default PlatformsView;
+}
