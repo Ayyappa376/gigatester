@@ -211,6 +211,7 @@ const Home = (props: any) => {
       })
         .then((response: any) => {
           setSysDetails(response);
+          console.log(response, "response");
         })
         .catch((error: any) => {
           props.history.push("/error");
