@@ -282,22 +282,36 @@ export const updateCampaign = async (updateInfo: CampaignInfo, userId: string): 
 //  });
 };
 
-export const getCampaignsList = async (userEmail: string): Promise<CampaignInfo[]> => {
-  let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
-    TableName: TableNames.getCampaignsTableName(),
-  };
+export const getCampaignsList = async (userEmail: string | undefined, queryStatus?: string): Promise<CampaignInfo[]> => {
+  const EAN: any = {};
+  const EAV: any = {};
+  let FE = '';
 
-  if (userEmail !== 'admin') {
-    params = <DynamoDB.ScanInput>{
-      ScanFilter: {
-        managers: {
-          AttributeValueList: [userEmail],
-          ComparisonOperator: 'CONTAINS',
-        },
-      },
-      TableName: TableNames.getCampaignsTableName(),
-    };
+  if(userEmail && userEmail !== 'admin') {
+    EAN['#managers'] = 'managers';
+    EAV[':email'] = userEmail;
+    FE = '#managers CONTAINS :email';
   }
+
+  if(queryStatus) {
+    EAN['#status'] = 'status';
+    EAV[':status'] = queryStatus;
+    FE = (FE === '') ? '#status = :status' : `(${FE}) and (#status = :status)`;
+  }
+
+  let params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
+    TableName: TableNames.getCampaignsTableName(),
+  });
+
+  if(FE !== '') {
+    params = <DynamoDB.UpdateItemInput>(<unknown>{
+      ExpressionAttributeNames: EAN,
+      ExpressionAttributeValues: EAV,
+      FilterExpression: FE,
+      TableName: TableNames.getCampaignsTableName(),
+    });
+  }
+
   appLogger.info({ getCampaignList_scan_params: params });
   return scan<CampaignInfo[]>(params);
 };

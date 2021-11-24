@@ -15,13 +15,15 @@ interface GetCampaigns {
   params: {
     id: string;
   };
+  query: {
+    status?: string;
+  };
 }
 
 async function handler(request: GetCampaigns, response: Response) {
   appLogger.info({ GetCampaigns: request }, 'Inside Handler');
 
-  const { headers } = request;
-  const { params } = request;
+  const { headers, params, query } = request;
   const cognitoUserId = headers.user['cognito:username'];
 
   if (!cognitoUserId) {
@@ -51,7 +53,13 @@ async function handler(request: GetCampaigns, response: Response) {
       };
     }
   } else {
-    const campaignDetailsList: CampaignInfo[] = await getCampaignsList(headers.user.email);
+    const userEmail = (headers.user['cognito:groups'][0] === 'Admin')
+    ? 'admin'
+    : (headers.user['cognito:groups'][0] === 'Manager')
+      ? headers.user.email
+      : undefined;
+
+    const campaignDetailsList: CampaignInfo[] = await getCampaignsList(userEmail, query.status);
     appLogger.info({ getCampaignsList: campaignDetailsList });
     result = {
       campaigns: campaignDetailsList,
