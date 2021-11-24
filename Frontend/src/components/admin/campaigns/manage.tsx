@@ -29,7 +29,6 @@ import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
-import { default as MaterialLink } from '@material-ui/core/Link';
 import { withRouter } from 'react-router-dom';
 import { ModalComponent } from '../../modal';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -38,7 +37,12 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { ICampaignInfo, STATUS_CAMPAIGN_DRAFT, STATUS_CAMPAIGN_PUBLISHED } from '../../../model';
+import { ICampaignInfo, STATUS_CAMPAIGN_DRAFT, STATUS_CAMPAIGN_ACTIVE, STATUS_CAMPAIGN_ENDED, ICampaignParams, IProductInfo } from '../../../model';
+
+const DELETE_ACTION: string = 'DELETE';
+const PUBLISH_ACTION: string = 'PUBLISH';
+const END_ACTION: string = 'END';
+const CLONE_ACTION: string = 'CLONE';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -68,7 +72,9 @@ const ManageCampaigns = (props: any) => {
   const [allCampaigns, setAllCampaigns] = React.useState<ICampaignInfo[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedCampaignId, setSelectedCampaignId] = useState('');
+  const [modalMessage, setModalMessage] = useState('');
+  const [selectedCampaign, setSelectedCampaign] = useState<ICampaignInfo | undefined>(undefined);
+  const [action, setAction] = useState<string>('');
   const [searchString, setSearchString] = useState('');
   const [campaigns, setCampaigns] = useState<ICampaignInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
@@ -79,7 +85,6 @@ const ManageCampaigns = (props: any) => {
     lowerLimit: 0,
     upperLimit: 9,
   });
-  const [actionCallback, setActionCallback] = useState<(id: string) => void>(() => {});
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
   const [failure, setFailure] = useState(false);
@@ -221,46 +226,47 @@ const ManageCampaigns = (props: any) => {
     setCurrentPage(event);
   };
 
-  const deleteClicked = (campaignId: string, callback: (id: string) => void) => {
-    setSelectedCampaignId(campaignId);
-    setActionCallback(callback);
+  const performAction = (campaign: ICampaignInfo, message: string, actionType: string) => {
+    setSelectedCampaign(campaign);
+    setAction(actionType);
+    setModalMessage(message);
     setOpenModal(true);
-  };
-
-  const publishClicked = (campaignId: string, callback: (id: string) => void) => {
-    setSelectedCampaignId(campaignId);
-    setActionCallback(callback);
-    setOpenModal(true);
-  };
-
-  const cloneClicked = (campaignId: string) => {
-    //TODO: implement like creating new campaign with prefilled data
-  };
-
-  const endClicked = (campaignId: string) => {
-    //TODO: implement like edit with status set to end
   };
 
   const modalNoClicked = () => {
+    setModalMessage('');
     setOpenModal(false);
   };
 
   const modalYesClicked = () => {
-    if (selectedCampaignId !== '') {
-      actionCallback(selectedCampaignId);
+    if (selectedCampaign) {
+      if(action === DELETE_ACTION) {
+        deleteCampaign(selectedCampaign);
+      }
+      if(action === PUBLISH_ACTION) {
+        publishCampaign(selectedCampaign);
+      }
+      if(action === END_ACTION) {
+        endCampaign(selectedCampaign);
+      }
+      if(action === CLONE_ACTION) {
+        cloneCampaign(selectedCampaign);
+      }
+      setModalMessage('');
       setOpenModal(false);
     }
   };
 
-  const deleteCampaign = (campaignId: string) => {
+  const deleteCampaign = (row: ICampaignInfo) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/campaigns/${campaignId}`,
+      url: `/api/v2/campaigns/${row.id}`,
       state: stateVariable,
     })
     .then((response: any) => {
       setBackdropOpen(false);
-      setSelectedCampaignId('');
+      setSelectedCampaign(undefined);
+      setAction('');
       fetchCampaignList();
     })
     .catch((error) => {
@@ -279,20 +285,96 @@ const ManageCampaigns = (props: any) => {
     });
   };
 
-  const publishCampaign = (row: any) => {
+  const publishCampaign = (row: ICampaignInfo) => {
     setBackdropOpen(true);
-    const postData = { ...row, status: STATUS_CAMPAIGN_PUBLISHED };
+    const newData = { ...row, status: STATUS_CAMPAIGN_ACTIVE, startDate: Date.now() };
+    const postData: ICampaignParams = { 
+      campaignConfig: {},
+      campaigns: [newData],
+    }
     Http.put({
       url: `/api/v2/campaigns`,
       body: {
-        orgId: postData.orgId,
-        values: postData,
+        ...postData,
       },
       state: stateVariable,
     })
     .then((response: any) => {
       setBackdropOpen(false);
-      setSelectedCampaignId('');
+      setSelectedCampaign(undefined);
+      setAction('');
+      fetchCampaignList();
+    })
+    .catch((error) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+      } else if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setFailure(true);
+      }
+      setBackdropOpen(false);
+      fetchCampaignList();
+    });
+  };
+
+  const endCampaign = (row: ICampaignInfo) => {
+    setBackdropOpen(true);
+    const newData = { ...row, status: STATUS_CAMPAIGN_ENDED, endDate: Date.now() };
+    const postData: ICampaignParams = { 
+      campaignConfig: {},
+      campaigns: [newData],
+    }
+    Http.put({
+      url: `/api/v2/campaigns`,
+      body: {
+        ...postData,
+      },
+      state: stateVariable,
+    })
+    .then((response: any) => {
+      setBackdropOpen(false);
+      setSelectedCampaign(undefined);
+      setAction('');
+      fetchCampaignList();
+    })
+    .catch((error) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+      } else if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setFailure(true);
+      }
+      setBackdropOpen(false);
+      fetchCampaignList();
+    });
+  };
+
+  const cloneCampaign = (row: ICampaignInfo) => {
+    setBackdropOpen(true);
+    const clone = getCampaignClone(row);
+    const postData: ICampaignParams = { 
+      campaignConfig: {},
+      campaigns: [clone],
+    }
+    Http.post({
+      url: `/api/v2/campaigns`,
+      body: {
+        ...postData,
+      },
+      state: stateVariable,
+    })
+    .then((response: any) => {
+      setBackdropOpen(false);
+      setSelectedCampaign(undefined);
+      setAction('');
       fetchCampaignList();
     })
     .catch((error) => {
@@ -315,14 +397,20 @@ const ManageCampaigns = (props: any) => {
     setFailure(false);
   };
 
-/*  const renderEmptyCampaignMessage = () => {
-    return (
-      <Typography variant='h5'>
-        <Text tid='notManagingAnyCampaigns' />
-      </Typography>
-    );
+  const getCampaignClone = (campaign: ICampaignInfo): ICampaignInfo => {
+    const newCampaign = { ...campaign };
+    newCampaign.id = '';
+    newCampaign.status = STATUS_CAMPAIGN_DRAFT;
+    newCampaign.startDate = 0;
+    newCampaign.endDate = 0;
+    newCampaign.products.forEach((product: IProductInfo) => {
+      product.id = '';
+      product.testers = [];
+    });
+
+    return newCampaign;
   };
-*/
+
   const renderCampaignsTable = () => {
     return (
       <Fragment>
@@ -457,7 +545,7 @@ const ManageCampaigns = (props: any) => {
                                   }
                                 >
                                   <Typography style={{ padding: '0 6px' }}>
-                                    <ClearIcon onClick={() => { deleteClicked(row.id, deleteCampaign); }}/>
+                                    <ClearIcon onClick={() => { performAction(row, 'deleteCampaignMsg', DELETE_ACTION); }}/>
                                   </Typography>
                                 </Tooltip>
                               </MuiThemeProvider>
@@ -470,7 +558,7 @@ const ManageCampaigns = (props: any) => {
                                   }
                                 >
                                   <Typography style={{ padding: '0 6px' }}>
-                                    <PublishIcon onClick={() => { publishClicked(row.id, publishCampaign); }}/>
+                                    <PublishIcon onClick={() => { performAction(row, 'publishCampaignMsg', PUBLISH_ACTION); }}/>
                                   </Typography>
                                 </Tooltip>
                               </MuiThemeProvider>
@@ -486,7 +574,7 @@ const ManageCampaigns = (props: any) => {
                                   }
                                 >
                                   <Typography style={{ padding: '0 6px' }}>
-                                    <FileCopyIcon onClick={() => { cloneClicked(row.id); }}/>
+                                    <FileCopyIcon onClick={() => { performAction(row, 'cloneCampaignMsg', CLONE_ACTION); }}/>
                                   </Typography>
                                 </Tooltip>
                               </MuiThemeProvider>
@@ -494,12 +582,12 @@ const ManageCampaigns = (props: any) => {
                                 <Tooltip
                                   title={
                                     <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                                      <Text tid='clone' />
+                                      <Text tid='end' />
                                     </Typography>
                                   }
                                 >
                                   <Typography style={{ padding: '0 6px' }}>
-                                    <StopIcon onClick={() => { endClicked(row.id); }}/>
+                                    <StopIcon onClick={() => { performAction(row, 'endCampaignMsg', END_ACTION); }}/>
                                   </Typography>
                                 </Tooltip>
                               </MuiThemeProvider>
@@ -532,7 +620,7 @@ const ManageCampaigns = (props: any) => {
             </Button>
           </div>
           <ModalComponent
-            message={'disableThePlatformAndTheRelatedTestData'}
+            message={modalMessage}
             openModal={openModal}
             handleModalYesClicked={modalYesClicked}
             handleModalNoClicked={modalNoClicked}

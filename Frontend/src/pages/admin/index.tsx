@@ -47,10 +47,8 @@ import ManageTeams from "../../components/admin/manage-teams";
 import EditTeam from "../../components/admin/manage-teams/edit-teams";
 import AssignAssessment from "../../components/admin/assign-assessment";
 import MapMetricsTools from "../../components/admin/map-metrics-tools";
-import CreateCampaign from "../../components/admin/campaigns/create";
 import ManageCampaigns from "../../components/admin/campaigns/manage";
 import EditCampaign from "../../components/admin/campaigns/edit";
-//import CreatePlatform from '../../components/admin/platforms/create';
 import EditPlatform from "../../components/admin/platforms/edit";
 import ManagePlatforms from "../../components/admin/platforms/manage";
 import EditDevice from "../../components/admin/devices/edit";
@@ -81,10 +79,8 @@ export const MANAGE_TEAMS = "manageTeams";
 export const EDIT_TEAM = "edit-team";
 export const ASSIGN_ASSESSMENT = "assign-assessment";
 export const MAP_METRICS_TOOLS = "map-metrics-tools";
-export const CREATE_CAMPAIGN = "create-campaign";
 export const MANAGE_CAMPAIGNS = "manageCampaigns";
 export const EDIT_CAMPAIGN = "edit-campaign";
-//export const CREATE_PLATFORM = 'create-platform';
 export const MANAGE_PLATFORMS = "managePlatforms";
 export const EDIT_PLATFORM = "edit-platform";
 export const MANAGE_DEVICES = "manageDevices";
@@ -314,11 +310,6 @@ export default function Admin() {
     setTitle("mapMetricsTools");
   };
 
-  const handleCreateCampaign = () => {
-    setButtonValue(CREATE_CAMPAIGN);
-    setTitle("createCampaign");
-  };
-
   const handleManageCampaigns = () => {
     setButtonValue(MANAGE_CAMPAIGNS);
     setTitle("manageCampaigns");
@@ -330,11 +321,6 @@ export default function Admin() {
     setTitle("editCampaign");
   };
 
-  /*  const handleCreatePlatform = () => {
-      setButtonValue(CREATE_PLATFORM);
-      setTitle('createPlatform');
-    };
-  */
   const handleManagePlatforms = () => {
     setButtonValue(MANAGE_PLATFORMS);
     setTitle("managePlatforms");
@@ -427,10 +413,8 @@ export default function Admin() {
         // tslint:disable-next-line: jsx-wrap-multiline
         <Grid container spacing={3} className={classes.topMargin}>
           <Grid item xs={12}>
-            {/* <Paper className={fixedHeightPaper}> */}
             <Typography variant="h4">
               <Text tid="manager-title" />
-              {/* Welcome Manager! */}
             </Typography>
             <br />
             <br />
@@ -440,11 +424,7 @@ export default function Admin() {
               <Text tid="manager-description-line2" />
               <br />
               <Text tid="manager-description-line3" />
-              {/* You have the managerial privileges to create and manage users and
-            teams using the screens on the left panel.
-            You can also access summary views using the 'Dashboard' option on the left. */}
             </Typography>
-            {/* </Paper> */}
           </Grid>
         </Grid>
       );
@@ -461,13 +441,7 @@ export default function Admin() {
           <br />
           <Typography variant="h5" className={classes.smallText}>
             <Text tid="admin-description-line1" />
-            {/* You have the administrative privileges to create and manage users,
-          teams, questionnaires and questions using the screens on the left panel. <br /><br />
-          You can access summary views using the 'Dashboard' option. */}
-            {/* <br />
-          You can also check the feedback given by the assessment takers using the 'View Feedback' option on the left panel. */}
           </Typography>
-          {/* <br /> */}
           <Typography variant="h5" className={classes.smallText}>
             <ul>
               <li>
@@ -526,8 +500,6 @@ export default function Admin() {
         return <AssignAssessment teamId={focusTeamId} goBack={switchPage} />;
       case MAP_METRICS_TOOLS:
         return <MapMetricsTools teamId={focusTeamId} goBack={switchPage} />;
-      case CREATE_CAMPAIGN:
-        return <CreateCampaign goBack={switchToAdminHome} />;
       case MANAGE_CAMPAIGNS:
         return (
           <ManageCampaigns
@@ -753,21 +725,6 @@ export default function Admin() {
         </List>
         <Divider />
         <List disablePadding={true}>
-          <ListItem button onClick={handleCreateCampaign}>
-            <Tooltip
-              title={<Typography>{<Text tid="createCampaign2" />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement="right"
-              arrow={true}
-            >
-              <ListItemIcon className={classes.iconWidth}>
-                <GroupAddIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid="createCampaign2" />} />
-          </ListItem>
-        </List>
-        <List disablePadding={true}>
           <ListItem button onClick={handleManageCampaigns}>
             <Tooltip
               title={<Typography>{<Text tid="manageCampaigns2" />}</Typography>}
@@ -783,21 +740,6 @@ export default function Admin() {
           </ListItem>
         </List>
         <Divider />
-        {/*<List disablePadding={true}>
-          <ListItem button onClick={handleCreatePlatform}>
-            <Tooltip
-              title={<Typography>{<Text tid='createPlatform2' />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement='right'
-              arrow={true}
-            >
-              <ListItemIcon className={classes.iconWidth}>
-                <GroupAddIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid='createPlatform2' />} />
-          </ListItem>
-        </List>*/}
         <List disablePadding={true}>
           <ListItem button onClick={handleManagePlatforms}>
             <Tooltip
