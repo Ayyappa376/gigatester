@@ -1,12 +1,15 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
 import { Http } from '../../utils';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
-import { Grid, InputLabel, Paper, Typography } from '@material-ui/core';
+import { Container, FormControl, Grid, InputLabel, Paper, Select, Typography } from '@material-ui/core';
+import { ICampaignParams, IPlatformInfo, IProductInfo, IDeviceInfo, STATUS_CAMPAIGN_ACTIVE } from '../../model';
+import Loader from '../loader';
+import SearchControl from '../common/searchControl';
 
-const useStyles = makeStyles(() => ({
+const useStyles = makeStyles((theme) => ({
     img: {
         height: 40,
         width: 40,
@@ -20,7 +23,11 @@ const useStyles = makeStyles(() => ({
     subTitle: {
         fontSize: '12px',
         paddingTop: '2px',
-    }
+    },
+    formControl: {
+        margin: theme.spacing(1),
+        minWidth: 120,
+    },
 }));
 
 const ProductsView = (props: any) => {
@@ -28,17 +35,34 @@ const ProductsView = (props: any) => {
     const stateVariable = useSelector((state: IRootState) => {
         return state;
     });
+    const [searchString, setSearchString] = useState('');
+    const [allProducts, setAllProducts] = useState<IProductInfo[]>([]);
+    const [allPlatforms, setAllPlatforms] = useState<IPlatformInfo[]>([]);
+    const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
+    const [selectedDevice, setSelectedDevice] = useState<any>('');
+    const [selectedPlatform, setSelectedPlatform] = useState<any>('');
+
     const history = useHistory();
 
     useEffect(() => {
+        fetchAllPlatforms();
+        fetchAllDevices();
+        //    fetchAllTestSuites();
+        fetchCampaignDetails();
+    }, []);
+
+    const fetchAllPlatforms = () => {
         Http.get({
-            url: `/api/v2/campaigns`,
+            url: `/api/v2/platforms`,
             state: stateVariable,
         })
             .then((response: any) => {
-                // console.log(response);
+                response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
+                    return a.name.localeCompare(b.name);
+                });
+                setAllPlatforms(response.platforms);
             })
-            .catch((error) => {
+            .catch((error: any) => {
                 const perror = JSON.stringify(error);
                 const object = JSON.parse(perror);
                 if (object.code === 401) {
@@ -46,37 +70,148 @@ const ProductsView = (props: any) => {
                 } else {
                     history.push('/error');
                 }
+            })
+    };
+
+    const fetchAllDevices = () => {
+        Http.get({
+            url: `/api/v2/devices`,
+            state: stateVariable,
+        })
+            .then((response: any) => {
+                response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
+                    return a.name.localeCompare(b.name);
+                });
+                setAllDevices(response.devices);
+            })
+            .catch((error: any) => {
+                const perror = JSON.stringify(error);
+                const object = JSON.parse(perror);
+                if (object.code === 401) {
+                    history.push('/relogin');
+                } else {
+                    history.push('/error');
+                }
+            })
+    };
+
+    const fetchCampaignDetails = () => {
+        let products: any[] = [];
+        Http.get({
+            url: `/api/v2/campaigns?status${STATUS_CAMPAIGN_ACTIVE}`,
+            state: stateVariable,
+        })
+            .then((response: any) => {
+                response.campaigns.forEach((item: any, index: number) => {
+                    item.products.forEach((item: any, index: number) => {
+                        products.push(item)
+                    })
+                })
+                setAllProducts(products)
+            })
+            .catch((error: any) => {
+                const perror = JSON.stringify(error);
+                const object = JSON.parse(perror);
+                if (object.code === 401) {
+                    history.push('/relogin');
+                } else {
+                    history.push('/error');
+                }
+                // setFailure(true);
             });
-    }, []);
+    };
+
+
+    const handleSearch = (str: string) => {
+        if (typeof str !== 'undefined') {
+            setSearchString(str);
+        }
+    };
 
     return (
         <div data-testid="product">
-            <Grid container spacing={1} >
-                <Grid item xs={12} sm={6}>
-                    <Typography data-testid="header" >Showing 5 campaigns</Typography>
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                </Grid>
-            </Grid>
             <Grid container spacing={2} >
-                {props.productList && props.productList.map((item: any, index: number) => {
-                    return (
-                        <Grid item xs={12} sm={6} key={index} >
-                            <Paper className={classes.block} data-testid={`platform-${item.id}`} >
-                                <Grid container spacing={2} >
-                                    <Grid item xs={3} sm={3} md={3} >
-                                        <img className={classes.img} src={item.imgPath} alt={item.label} />
-                                    </Grid>
-                                    <Grid item xs={9} sm={9} md={9}>
-                                        <Typography>{item.label}</Typography>
-                                        <InputLabel className={classes.subTitle}>{item.label}</InputLabel>
-                                    </Grid>
-                                </Grid>
-                            </Paper>
-                        </Grid>
-                    )
-                })}
+                <Grid item xs={12} sm={3}>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="platform-native-simple">By Platform</InputLabel>
+                        <Select
+                            native
+                            value={selectedPlatform}
+                            inputProps={{
+                                name: 'platform',
+                                id: 'platform-native-simple',
+                            }}
+                            onChange={(e) => setSelectedPlatform(e.target.value)}
+                        >
+                            <option aria-label="None" value="all" >All</option>
+                            {allPlatforms.length && allPlatforms.map((item, index) => {
+                                return (
+                                    <option value={item.id} key={index}>{item.name}</option>
+                                )
+                            }
+                            )}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={3}>
+                    <FormControl className={classes.formControl}>
+                        <InputLabel htmlFor="device-native-simple">By Device</InputLabel>
+                        <Select
+                            native
+                            value={selectedDevice}
+                            inputProps={{
+                                name: 'device',
+                                id: 'device-native-simple',
+                            }}
+                            onChange={(e) => setSelectedDevice(e.target.value)}
+                        >
+                            <option aria-label="None" value="all" >All</option>
+                            {allDevices.length && allDevices.map((item, index) => {
+                                return (
+                                    <option value={item.id} key={index}>{item.name}</option>
+                                )
+                            }
+                            )}
+                        </Select>
+                    </FormControl>
+                </Grid>
+                <Grid item xs={12} sm={6} style={{ marginTop: '8px' }}>
+                    <SearchControl
+                        searchString={searchString}
+                        handleSearch={handleSearch}
+                    />
+                </Grid>
             </Grid>
+            {allProducts.length ?
+                <Grid container spacing={2} >
+                    <Grid item xs={12} sm={6}>
+                        <Typography data-testid="header" >Showing {allProducts.length} products</Typography>
+                    </Grid>
+                    <Grid item xs={12} sm={6}>
+                    </Grid>
+                    {allProducts.length && allProducts.map((item: any, index: number) => {
+                        return (
+                            <Grid item xs={12} sm={6} key={index} >
+                                <Paper className={classes.block} data-testid={`platform-${item.id}`} >
+                                    <Grid container spacing={2} >
+                                        <Grid item xs={3} sm={3} md={3} >
+                                            <img className={classes.img} src={'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'} alt={item.label} />
+                                        </Grid>
+                                        <Grid item xs={9} sm={9} md={9}>
+                                            <Typography>{item.name}</Typography>
+                                            <InputLabel className={classes.subTitle}>{item.name}</InputLabel>
+                                        </Grid>
+                                    </Grid>
+                                </Paper>
+                            </Grid>
+                        )
+                    })}
+                </Grid>
+                : (
+                    <Container className='loaderStyle'>
+                        <Loader />
+                    </Container>
+                )}
         </div >
     );
 };

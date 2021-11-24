@@ -3,6 +3,7 @@ import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 // import TopPane from '../../components/product/topPane'
 import ProductView from '../../components/product/productsView';
+import UserProfileStatus from "../../components/userProfileStatus";
 
 const useStyles = makeStyles({
     root: {
@@ -62,11 +63,14 @@ function ProductDetails(props: any) {
                 {/* <TopPane /> */}
                 <Grid container className={classes.marginTopTwenty}>
                     <Grid item xs={12} sm={1} />
-                    <Grid item xs={12} sm={7}>
+                    <Grid item xs={12} sm={6}>
                         <ProductView productList={productList} />
-                    </Grid>
+                    </Grid>'
+                    <Grid item xs={12} sm={1} />
                     <Grid item xs={12} sm={3} >
+                        <UserProfileStatus updateProfile={true} />
                     </Grid>
+                    <Grid item xs={12} sm={1} />
                 </Grid>
             </Grid>
         </Container >

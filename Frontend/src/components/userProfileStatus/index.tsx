@@ -9,6 +9,7 @@ import {
   Paper,
   Typography,
 } from "@material-ui/core";
+import { useHistory } from "react-router-dom";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
@@ -16,7 +17,7 @@ const useStyles = makeStyles((theme: Theme) =>
       "& > *": {
         margin: theme.spacing(1),
       },
-      height: "550px",
+      // height: "350px",
       width: "300px",
       backgroundColor: "#F3F3F3",
       boxShadow: "0px 2px 8px #00000033",
@@ -67,9 +68,14 @@ function LinearProgressWithLabel(props: any) {
   );
 }
 
-export default function UserProfileStatus() {
+export default function UserProfileStatus(props: any) {
   const classes = useStyles();
   const [progress, setProgress] = React.useState(10);
+  const history = useHistory();
+
+  const getProfilePage = () => {
+    history.push("/profile")
+  }
 
   return (
     <div className={classes.root}>
@@ -85,7 +91,7 @@ export default function UserProfileStatus() {
           item
           xs={12}
           sm={12}
-          style={{ paddingTop: "20px", paddingBottom: "40px" }}
+          style={{ paddingTop: "20px", paddingBottom: "20px" }}
         >
           <Avatar
             alt="Tester"
@@ -103,7 +109,7 @@ export default function UserProfileStatus() {
           >
             Username
             <br />
-            Username @gmail.com
+            username@abc.com
           </Typography>
         </Grid>
         <Grid item xs={12} sm={12}></Grid>
@@ -113,7 +119,7 @@ export default function UserProfileStatus() {
             display: "flex",
             alignItems: "center",
             margin: "10px",
-            marginTop: "30px",
+            marginTop: "20px",
           }}
         >
           <LinearProgressWithLabel value={progress} />
@@ -141,6 +147,17 @@ export default function UserProfileStatus() {
             Complete your profile 100% to continue testing for products
           </Typography>
         </Grid>
+        {props.updateProfile &&
+          <div style={{ textAlign: 'center', margin: '20px' }}
+          >
+            <Button
+              variant='outlined'
+              onClick={getProfilePage}
+            >
+              Update Profile
+            </Button>
+          </div>
+        }
       </Grid>
     </div>
   );
