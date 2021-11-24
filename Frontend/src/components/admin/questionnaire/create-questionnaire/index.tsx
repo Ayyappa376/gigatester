@@ -1,4 +1,4 @@
-import React, { useState, Fragment } from 'react';
+import React, { useState, Fragment } from "react";
 import {
   Typography,
   Grid,
@@ -13,24 +13,24 @@ import {
   CircularProgress,
   Tooltip,
   TextField,
-} from '@material-ui/core';
-import { buttonStyle, tooltipTheme } from '../../../../common/common';
-import { ADMIN_HOME } from '../../../../pages/admin';
-import { Http } from '../../../../utils';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../../../reducers';
-import Success from '../../../success-page';
-import { withRouter } from 'react-router-dom';
+} from "@material-ui/core";
+import { buttonStyle, tooltipTheme } from "../../../../common/common";
+import { ADMIN_HOME } from "../../../../pages/admin";
+import { Http } from "../../../../utils";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../../../reducers";
+import Success from "../../../success-page";
+import { withRouter } from "react-router-dom";
 import MapQuestionsToQuestionnaires, {
   ICategoriesMap,
-} from '../common/map_questions';
-import ClearIcon from '@material-ui/icons/Clear';
-import AddIcon from '@material-ui/icons/Add';
-import { ModalComponent } from '../../../modal';
-import InfoIcon from '@material-ui/icons/Info';
-import DropDown from '../../../common/dropDown';
-import { Text } from '../../../../common/Language';
-import '../../../../css/assessments/style.css';
+} from "../common/map_questions";
+import ClearIcon from "@material-ui/icons/Clear";
+import AddIcon from "@material-ui/icons/Add";
+import { ModalComponent } from "../../../modal";
+import InfoIcon from "@material-ui/icons/Info";
+import DropDown from "../../../common/dropDown";
+import { Text } from "../../../../common/Language";
+import "../../../../css/assessments/style.css";
 
 const warningTimePercentageArray = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
@@ -54,34 +54,34 @@ export interface IQuestionnaireData {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
+    marginTop: "36px",
+    position: "relative",
+    minWidth: "10%",
     ...buttonStyle,
   },
   grid: {
     marginTop: theme.spacing(2),
   },
   backButton: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
-    marginRight: '20px',
+    marginTop: "36px",
+    position: "relative",
+    minWidth: "10%",
+    marginRight: "20px",
     ...buttonStyle,
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
   messageContainer: {
-    minHeight: '100%',
-    position: 'relative',
+    minHeight: "100%",
+    position: "relative",
   },
   message: {
-    position: 'absolute',
-    bottom: '0px',
-    left: '0px',
-    fontSize: '14px',
+    position: "absolute",
+    bottom: "0px",
+    left: "0px",
+    fontSize: "14px",
   },
 }));
 
@@ -89,21 +89,21 @@ const CreateQuestionnaire = (props: any) => {
   const classes = useStyles();
   const [questionnairePosted, setQuestionnairePosted] = useState(false);
   const [failure, setFailure] = useState(false);
-  const [categoryArray, setCategoryArray] = useState<string[]>(['']);
+  const [categoryArray, setCategoryArray] = useState<string[]>([""]);
   const [mapQuestions, setMapQuestions] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
+    <Text tid="somethingWentWrong" />
   );
   const [showModal, setShowModal] = useState(false);
   const [backdropOpen, setBackdropOpen] = useState(false);
   const [created, setCreated] = useState(false);
-  const [questionnaireId, setQuestionnaireId] = useState('');
+  const [questionnaireId, setQuestionnaireId] = useState("");
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
   const emptyPostData: IQuestionnaireData = {
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     randomize: false,
     categories: [],
     categoriesMap: {},
@@ -116,27 +116,27 @@ const CreateQuestionnaire = (props: any) => {
   };
   const [postData, setPostData] = useState<IQuestionnaireData>(emptyPostData);
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='testSuitIsCreated' />;
+  let msgSuccess = <Text tid="testSuitIsCreated" />;
 
   const handleSave = () => {
-    if (postData.name === '') {
+    if (postData.name === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
-    } else if (postData.description === '') {
+      setFailureMessage(<Text tid="testSuitNameCannotBeBlank" />);
+    } else if (postData.description === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
-    } else if (categoryArray.length === 1 && categoryArray[0] === '') {
+      setFailureMessage(<Text tid="testSuitDescriptionCannotBeBlank" />);
+    } else if (categoryArray.length === 1 && categoryArray[0] === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='addCategoriesToTheTestSuit' />);
+      setFailureMessage(<Text tid="addCategoriesToTheTestSuit" />);
     } else if (categoryArray.length < 2) {
       setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
+      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
     } else if (
       categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ''
+      categoryArray[categoryArray.length - 1] === ""
     ) {
       setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
+      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
     } else if (
       categoryArray.indexOf(categoryArray[categoryArray.length - 1]) !==
       categoryArray.length - 1
@@ -144,10 +144,10 @@ const CreateQuestionnaire = (props: any) => {
       // here we are checking if the last category entered by user isn't already present in the categoryArray
       // Other elements are checked when the user presses the + button.
       setFailure(true);
-      setFailureMessage(<Text tid='categoryAlreadyExists' />);
+      setFailureMessage(<Text tid="categoryAlreadyExists" />);
     } else if (postData.timeOut && !postData.timeOutTime) {
       setFailure(true);
-      setFailureMessage(<Text tid='invalidTimeOutTime' />);
+      setFailureMessage(<Text tid="invalidTimeOutTime" />);
     } else if (
       postData.timeOut &&
       postData.timeOutTime &&
@@ -155,7 +155,7 @@ const CreateQuestionnaire = (props: any) => {
     ) {
       setFailure(true);
       setFailureMessage(
-        <Text tid='timeOutTimeCannotBeLesserThanFiveMinutes' />
+        <Text tid="timeOutTimeCannotBeLesserThanFiveMinutes" />
       );
     } else if (
       postData.benchmarkScore &&
@@ -163,7 +163,7 @@ const CreateQuestionnaire = (props: any) => {
     ) {
       setFailure(true);
       setFailureMessage(
-        <Text tid='benchmarkScoreShouldHaveValueBetweenFiftyAndHundred' />
+        <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
       );
       return {};
     } else {
@@ -174,9 +174,9 @@ const CreateQuestionnaire = (props: any) => {
       if (Object.keys(validatedData).length > 0) {
         if (created) {
           Http.put({
-            url: '/api/v2/questionnaire',
+            url: "/api/v2/testSuite",
             body: {
-              type: 'create',
+              type: "create",
               questionnaire: { ...validatedData, questionnaireId },
             },
             state: stateVariable,
@@ -192,18 +192,18 @@ const CreateQuestionnaire = (props: any) => {
                 setFailureMessage(object.apiError.msg);
                 setFailure(true);
               } else if (object.code === 401) {
-                props.history.push('/relogin');
+                props.history.push("/relogin");
               } else {
                 setBackdropOpen(false);
-                setFailureMessage(<Text tid='somethingWentWrong' />);
+                setFailureMessage(<Text tid="somethingWentWrong" />);
                 setFailure(true);
               }
             });
         } else {
           Http.post({
-            url: '/api/v2/questionnaire',
+            url: "/api/v2/testSuite",
             body: {
-              type: 'create',
+              type: "create",
               questionnaire: validatedData,
             },
             state: stateVariable,
@@ -222,10 +222,10 @@ const CreateQuestionnaire = (props: any) => {
                 setFailureMessage(object.apiError.msg);
                 setFailure(true);
               } else if (object.code === 401) {
-                props.history.push('/relogin');
+                props.history.push("/relogin");
               } else {
                 setBackdropOpen(false);
-                setFailureMessage(<Text tid='somethingWentWrong' />);
+                setFailureMessage(<Text tid="somethingWentWrong" />);
                 setFailure(true);
               }
             });
@@ -244,48 +244,48 @@ const CreateQuestionnaire = (props: any) => {
   };
 
   const validatePostData = (categoriesMapped: ICategoriesMap) => {
-    if (postData.name === '') {
+    if (postData.name === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
+      setFailureMessage(<Text tid="testSuitNameCannotBeBlank" />);
       return {};
     }
-    if (postData.description === '') {
+    if (postData.description === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
+      setFailureMessage(<Text tid="testSuitDescriptionCannotBeBlank" />);
       return {};
     }
     if (categoryArray.length < 2) {
       setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
+      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
       return {};
     }
     if (
       categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ''
+      categoryArray[categoryArray.length - 1] === ""
     ) {
       setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
+      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
       return {};
     }
     if (postData.benchmarkScore) {
       if (postData.benchmarkScore < 50 || postData.benchmarkScore > 100) {
         setFailure(true);
         setFailureMessage(
-          <Text tid='benchmarkScoreShouldHaveValueBetweenFiftyAndHundred' />
+          <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
         );
         return {};
       }
     }
 
     const postDataCopy = { ...postData };
-    if (questionnaireId === '') {
+    if (questionnaireId === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='somethingWentWrong' />);
+      setFailureMessage(<Text tid="somethingWentWrong" />);
       return {};
     }
     if (Object.keys(categoriesMapped).length === 0) {
       setFailure(true);
-      setFailureMessage(<Text tid='mapTestCasesBeforeProceeding' />);
+      setFailureMessage(<Text tid="mapTestCasesBeforeProceeding" />);
       return {};
     }
     const questionArray: string[] = [];
@@ -315,9 +315,9 @@ const CreateQuestionnaire = (props: any) => {
   };
 
   const addCategory = (i: number) => {
-    if (categoryArray[categoryArray.length - 1] === '') {
+    if (categoryArray[categoryArray.length - 1] === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='enterValidCategory' />);
+      setFailureMessage(<Text tid="enterValidCategory" />);
     } else {
       let validCategory = true;
       categoryArray.forEach((el: any, i: number) => {
@@ -329,11 +329,11 @@ const CreateQuestionnaire = (props: any) => {
       });
       if (validCategory) {
         const categoryArrayCopy = [...categoryArray];
-        categoryArrayCopy.push('');
+        categoryArrayCopy.push("");
         setCategoryArray(categoryArrayCopy);
       } else {
         setFailure(true);
-        setFailureMessage(<Text tid='categoryAlreadyExists' />);
+        setFailureMessage(<Text tid="categoryAlreadyExists" />);
       }
     }
   };
@@ -374,7 +374,7 @@ const CreateQuestionnaire = (props: any) => {
       setPostData({
         ...postData,
         timeOut: !postData.timeOut,
-        timeOutTime: parseInt('', 10),
+        timeOutTime: parseInt("", 10),
       });
     } else {
       setPostData({
@@ -406,9 +406,9 @@ const CreateQuestionnaire = (props: any) => {
     const validatedData = validatePostData(mappedQuestions);
     if (Object.keys(validatedData).length > 0) {
       Http.put({
-        url: '/api/v2/questionnaire',
+        url: "/api/v2/testSuite",
         body: {
-          type: 'create',
+          type: "create",
           questionnaire: validatedData,
         },
         state: stateVariable,
@@ -418,7 +418,7 @@ const CreateQuestionnaire = (props: any) => {
           setQuestionnairePosted(true);
         })
         .catch((error) => {
-          setFailureMessage(<Text tid='somethingWentWrong' />);
+          setFailureMessage(<Text tid="somethingWentWrong" />);
           setFailure(true);
         });
     }
@@ -458,11 +458,11 @@ const CreateQuestionnaire = (props: any) => {
             <Grid item xs={5}>
               <TextField
                 required={categoryArray.length <= 2}
-                type='string'
+                type="string"
                 id={i.toString()}
                 name={i.toString()}
                 value={el}
-                label={'Category'}
+                label={"Category"}
                 onChange={(event: any) => {
                   handleCategoryChangeValue(event, i);
                 }}
@@ -470,9 +470,9 @@ const CreateQuestionnaire = (props: any) => {
               />
             </Grid>
             <Grid item xs={1}>
-              <div style={{ marginTop: '15px', cursor: 'pointer' }}>
+              <div style={{ marginTop: "15px", cursor: "pointer" }}>
                 <AddIcon
-                  fontSize='large'
+                  fontSize="large"
                   onClick={() => {
                     addCategory(i);
                   }}
@@ -488,11 +488,11 @@ const CreateQuestionnaire = (props: any) => {
         <Grid container spacing={3}>
           <Grid item xs={5}>
             <TextField
-              type='string'
+              type="string"
               id={i.toString()}
               name={i.toString()}
               value={el}
-              label={'Category'}
+              label={"Category"}
               onChange={(event: any) => {
                 handleCategoryChangeValue(event, i);
               }}
@@ -500,9 +500,9 @@ const CreateQuestionnaire = (props: any) => {
             />
           </Grid>
           <Grid item xs={1}>
-            <div style={{ marginTop: '15px', cursor: 'pointer' }}>
+            <div style={{ marginTop: "15px", cursor: "pointer" }}>
               <ClearIcon
-                fontSize='large'
+                fontSize="large"
                 onClick={() => {
                   deleteCategory(i);
                 }}
@@ -521,11 +521,11 @@ const CreateQuestionnaire = (props: any) => {
           updateWarningTimePercentage(event);
         }}
         disabled={postData.timeOut ? false : true}
-        postFix={'%'}
+        postFix={"%"}
         value={postData.warningTimePercentage}
         list={warningTimePercentageArray}
-        label={'Choose the warning time(%)'}
-        dropDownClass='dropdownWidth'
+        label={"Choose the warning time(%)"}
+        dropDownClass="dropdownWidth"
       />
     );
   };
@@ -545,13 +545,14 @@ const CreateQuestionnaire = (props: any) => {
     return (
       <div>
         <TextField
-          className='textFieldStyle'
+          className="textFieldStyle"
           multiline
           disabled
           fullWidth
-          value={`Warning Time : ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute' : 'minutes'
-            }`}
-          variant='outlined'
+          value={`Warning Time : ${warningTimeMinutes} ${
+            warningTimeMinutes === 1 ? "minute" : "minutes"
+          }`}
+          variant="outlined"
         />
       </div>
     );
@@ -565,24 +566,24 @@ const CreateQuestionnaire = (props: any) => {
             <Checkbox
               checked={postData.randomize}
               onChange={changeRandomize}
-              value='randomize'
+              value="randomize"
             />
           }
           label={
-            <Typography color='textSecondary'>
-              <Text tid='randomize' />
+            <Typography color="textSecondary">
+              <Text tid="randomize" />
             </Typography>
           }
         />
         <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography className='tooltipTitleStyle'>
-                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheTest' />
+              <Typography className="tooltipTitleStyle">
+                <Text tid="theAnswersWillBeRandomizedWhenUserTakesTheTest" />
               </Typography>
             }
           >
-            <InfoIcon className='infoIconStyle' />
+            <InfoIcon className="infoIconStyle" />
           </Tooltip>
         </MuiThemeProvider>
       </div>
@@ -597,30 +598,30 @@ const CreateQuestionnaire = (props: any) => {
             <Checkbox
               checked={postData.hideResult}
               onChange={changeHideResult}
-              value='hideResult'
+              value="hideResult"
               disabled={postData.showRecommendations}
             />
           }
           label={
-            <Typography color='textSecondary'>
-              <Text tid='hideResult' />
+            <Typography color="textSecondary">
+              <Text tid="hideResult" />
             </Typography>
           }
         />
         <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography className='tooltipTitleStyle'>
-                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheTest' />
+              <Typography className="tooltipTitleStyle">
+                <Text tid="resultWillNotBeDisplayedAtTheEndOfTheTest" />
                 <br />
                 <strong>
-                  <Text tid='note' /> &nbsp;
+                  <Text tid="note" /> &nbsp;
                 </strong>
-                <Text tid='optionDisabledWhenShowRecommendationsSelected' />
+                <Text tid="optionDisabledWhenShowRecommendationsSelected" />
               </Typography>
             }
           >
-            <InfoIcon className='infoIconStyle' />
+            <InfoIcon className="infoIconStyle" />
           </Tooltip>
         </MuiThemeProvider>
       </div>
@@ -635,30 +636,30 @@ const CreateQuestionnaire = (props: any) => {
             <Checkbox
               checked={postData.showRecommendations}
               onChange={changeShowRecommendations}
-              value='Show Recommendation'
+              value="Show Recommendation"
               disabled={postData.timeOut || postData.hideResult}
             />
           }
           label={
-            <Typography color='textSecondary'>
-              <Text tid='showRecommendations' />
+            <Typography color="textSecondary">
+              <Text tid="showRecommendations" />
             </Typography>
           }
         />
         <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography className='tooltipTitleStyle'>
-                <Text tid='recommendationsWillBeDisplayed' />
+              <Typography className="tooltipTitleStyle">
+                <Text tid="recommendationsWillBeDisplayed" />
                 <br />
                 <strong>
-                  <Text tid='note' /> &nbsp;
+                  <Text tid="note" /> &nbsp;
                 </strong>
-                <Text tid='hideResultSelected' />
+                <Text tid="hideResultSelected" />
               </Typography>
             }
           >
-            <InfoIcon className='infoIconStyle' />
+            <InfoIcon className="infoIconStyle" />
           </Tooltip>
         </MuiThemeProvider>
       </div>
@@ -670,13 +671,13 @@ const CreateQuestionnaire = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className='bottomButtonsContainer'>
+          <div className="bottomButtonsContainer">
             <Button
               className={classes.backButton}
-              variant='outlined'
+              variant="outlined"
               onClick={handleSuccessPageBackButton}
             >
-              <Text tid='goBack' />
+              <Text tid="goBack" />
             </Button>
           </div>
         </Fragment>
@@ -685,31 +686,31 @@ const CreateQuestionnaire = (props: any) => {
     return (
       <Fragment>
         <Backdrop className={classes.backdrop} open={backdropOpen}>
-          <CircularProgress color='inherit' />
+          <CircularProgress color="inherit" />
         </Backdrop>
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={12} sm={6}>
             <TextField
               required
-              type='string'
-              id='QuestionnaireName'
-              name='QuestionnaireName'
-              label='Test Suit name'
-              variant='outlined'
+              type="string"
+              id="QuestionnaireName"
+              name="QuestionnaireName"
+              label="Test Suit name"
+              variant="outlined"
               value={postData.name}
               onChange={handleNameChange}
               fullWidth
-              className='textFieldStyle'
+              className="textFieldStyle"
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <div className={classes.messageContainer}>
               <Typography
-                variant='caption'
+                variant="caption"
                 className={classes.message}
-                color='textSecondary'
+                color="textSecondary"
               >
-                <Text tid='testSuitNameCannotBeChanged' />
+                <Text tid="testSuitNameCannotBeChanged" />
               </Typography>
             </div>
           </Grid>
@@ -719,10 +720,10 @@ const CreateQuestionnaire = (props: any) => {
             <TextField
               required
               multiline
-              id='description'
-              name='description'
-              variant='outlined'
-              label='Test Suit description'
+              id="description"
+              name="description"
+              variant="outlined"
+              label="Test Suit description"
               value={postData.description}
               onChange={handleDescriptionChange}
               fullWidth
@@ -735,10 +736,10 @@ const CreateQuestionnaire = (props: any) => {
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={2}>
             <TextField
-              type='number'
-              id='benchmarkScore'
-              name='benchmarkScore'
-              label='Benchmark Score'
+              type="number"
+              id="benchmarkScore"
+              name="benchmarkScore"
+              label="Benchmark Score"
               value={postData.benchmarkScore}
               onChange={handleBenchmarkScoreChange}
               InputProps={{ disableUnderline: true }}
@@ -754,49 +755,49 @@ const CreateQuestionnaire = (props: any) => {
                   <Checkbox
                     checked={postData.timeOut}
                     onChange={changeTimeOutFlag}
-                    value='Timed'
+                    value="Timed"
                     disabled={postData.showRecommendations}
                   />
                 }
                 label={
-                  <Typography color='textSecondary'>
-                    <Text tid='timed' />
+                  <Typography color="textSecondary">
+                    <Text tid="timed" />
                   </Typography>
                 }
               />
               <MuiThemeProvider theme={tooltipTheme}>
                 <Tooltip
                   title={
-                    <Typography className='tooltipTitleStyle'>
-                      <Text tid='testWillBeTimed' />
+                    <Typography className="tooltipTitleStyle">
+                      <Text tid="testWillBeTimed" />
 
                       <br />
                       <strong>
-                        <Text tid='note' /> &nbsp;
+                        <Text tid="note" /> &nbsp;
                       </strong>
-                      <Text tid='optionDisabledWhenShowRecommendationsSelected' />
+                      <Text tid="optionDisabledWhenShowRecommendationsSelected" />
                     </Typography>
                   }
                 >
-                  <InfoIcon className='infoIconStyle' />
+                  <InfoIcon className="infoIconStyle" />
                 </Tooltip>
               </MuiThemeProvider>
             </div>
           </Grid>
           <Grid item xs={3}>
-            <div className='numberInput'>
+            <div className="numberInput">
               <TextField
                 required={postData.timeOut ? false : true}
-                type='number'
-                id='timeOutTime'
-                name='timeOutTime'
-                label='Time-Out Time(minutes)'
+                type="number"
+                id="timeOutTime"
+                name="timeOutTime"
+                label="Time-Out Time(minutes)"
                 fullWidth
                 value={postData.timeOutTime}
                 onChange={updateTimeOutTime}
                 disabled={postData.timeOut ? false : true}
                 InputProps={{ disableUnderline: true }}
-                className='textFieldStyle'
+                className="textFieldStyle"
               />
             </div>
           </Grid>
@@ -820,26 +821,26 @@ const CreateQuestionnaire = (props: any) => {
             {renderShowRecommendationCheckbox()}
           </Grid>
         </Grid>
-        <div className='bottomButtonsContainer'>
+        <div className="bottomButtonsContainer">
           <Button
             className={classes.backButton}
-            variant='outlined'
+            variant="outlined"
             onClick={() => {
               props.goBack(ADMIN_HOME);
             }}
           >
-            <Text tid='goBack' />
+            <Text tid="goBack" />
           </Button>
           <Button
             className={classes.button}
             onClick={handleSave}
-            variant='outlined'
+            variant="outlined"
           >
-            <Text tid='save' />
+            <Text tid="save" />
           </Button>
         </div>
         <ModalComponent
-          message={'mapTestCasesToTheSavedTestSuit'}
+          message={"mapTestCasesToTheSavedTestSuit"}
           openModal={showModal}
           handleModalNoClicked={handleModalNo}
           handleModalYesClicked={handleModalYes}
@@ -851,14 +852,14 @@ const CreateQuestionnaire = (props: any) => {
     <Fragment>
       {mapQuestions ? renderMapQuestions() : questionnaireComponent()}
       <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={failure}
         onClose={handleClose}
         autoHideDuration={9000}
       >
         <SnackbarContent
           style={{
-            backgroundColor: '#dd0000',
+            backgroundColor: "#dd0000",
           }}
           message={msgFailure}
         />

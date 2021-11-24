@@ -198,6 +198,18 @@ const Home = (props: any) => {
       });
   };
 
+  const getTestSuites = () => {
+    Http.get({
+      url: "/api/v2/testSuite",
+      state: superUserStateVariable,
+    })
+      .then((response: any) => {
+        console.log(response, "Test Suites");
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     setCurrentPageValue("");
     if (
@@ -246,6 +258,7 @@ const Home = (props: any) => {
         }
         getUserList();
         getPlatformList();
+        getTestSuites();
       } catch (error) {
         console.log(error);
       }

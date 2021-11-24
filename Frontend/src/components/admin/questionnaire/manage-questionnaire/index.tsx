@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from "react";
 import {
   Container,
   Paper,
@@ -14,20 +14,30 @@ import {
   makeStyles,
   Backdrop,
   CircularProgress,
-} from '@material-ui/core';
-import { Loader } from '../../..';
-import { buttonStyle } from '../../../../common/common';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../../../reducers';
-import { Http } from '../../../../utils';
-import { default as MaterialLink } from '@material-ui/core/Link';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import CancelIcon from '@material-ui/icons/Cancel';
-import { withRouter } from 'react-router-dom';
-import { ModalComponent } from '../../../modal';
-import { getDate } from '../../../../utils/data';
-import { Text } from '../../../../common/Language';
-import '../../../../css/assessments/style.css';
+  MuiThemeProvider,
+  Tooltip,
+  Grid,
+} from "@material-ui/core";
+import { Loader } from "../../..";
+import EditIcon from "@material-ui/icons/Edit";
+import ClearIcon from "@material-ui/icons/Clear";
+import AddIcon from "@material-ui/icons/Add";
+import NoteAddIcon from "@material-ui/icons/NoteAdd";
+import { buttonStyle, tooltipTheme } from "../../../../common/common";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../../../reducers";
+import { Http } from "../../../../utils";
+import { default as MaterialLink } from "@material-ui/core/Link";
+import CheckCircleIcon from "@material-ui/icons/CheckCircle";
+import CancelIcon from "@material-ui/icons/Cancel";
+import { withRouter } from "react-router-dom";
+import { ModalComponent } from "../../../modal";
+import { getDate } from "../../../../utils/data";
+import { Text } from "../../../../common/Language";
+import "../../../../css/assessments/style.css";
+import SearchControl from "../../../common/searchControl";
+import PageSizeDropDown from "../../../common/page-size-dropdown";
+import RenderPagination from "../../../common/pagination";
 
 export interface Questionnaire {
   active?: boolean;
@@ -55,27 +65,27 @@ export interface CategoriesMap {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '36px',
-    position: 'relative',
-    left: '45%',
-    minWidth: '10%',
+    marginTop: "36px",
+    position: "relative",
+    left: "45%",
+    minWidth: "10%",
     ...buttonStyle,
   },
   actionsBlock: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    justifyContent: 'center',
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "center",
   },
   backButton: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
-    marginRight: '20px',
+    marginTop: "36px",
+    position: "relative",
+    minWidth: "10%",
+    marginRight: "20px",
     ...buttonStyle,
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
 }));
 
@@ -94,14 +104,14 @@ const ManageQuestionnaires = (props: any) => {
   });
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
+    <Text tid="somethingWentWrong" />
   );
   let msgFailure = failureMessage;
 
   const fetchQuestionnaireList = () => {
     setBackdropOpen(true);
     Http.get({
-      url: '/api/v2/questionnaire?status=all&latest=true',
+      url: "/api/v2/testSuite?status=all&latest=true",
       state: stateVariable,
     })
       .then((response: any) => {
@@ -113,11 +123,11 @@ const ManageQuestionnaires = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 400) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else if (object.code === 401) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else {
-          props.history.push('/error');
+          props.history.push("/error");
         }
       });
   };
@@ -135,6 +145,7 @@ const ManageQuestionnaires = (props: any) => {
   };
 
   const mapQuestionsClicked = (questionnaireSelected: any) => {
+    console.log(questionnaireSelected, "questionnaireSelected");
     props.handleMapQuestionStandalone(questionnaireSelected);
   };
 
@@ -147,10 +158,10 @@ const ManageQuestionnaires = (props: any) => {
     setBackdropOpen(true);
     const postData = { ...focusQuestionnaire, active: true };
     Http.put({
-      url: '/api/v2/questionnaire',
+      url: "/api/v2/testSuite",
       body: {
-        type: 'publish',
-        questionnaire: postData,
+        type: "publish",
+        testSuite: postData,
       },
       state: stateVariable,
     })
@@ -167,9 +178,9 @@ const ManageQuestionnaires = (props: any) => {
           setFailureMessage(object.apiError.msg);
           setFailure(true);
         } else if (object.code === 401) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else {
-          props.history.push('/error');
+          props.history.push("/error");
         }
       });
   };
@@ -186,37 +197,64 @@ const ManageQuestionnaires = (props: any) => {
   const renderPage = () => {
     return (
       <Fragment>
-        <Container maxWidth='md' component='div' className='containerRoot'>
+        <Container maxWidth="md" component="div" className="containerRoot">
           <Backdrop className={classes.backdrop} open={backdropOpen}>
-            <CircularProgress color='inherit' />
+            <CircularProgress color="inherit" />
           </Backdrop>
-          <Paper className='tableArea'>
-            <Table className='table'>
-              <TableHead className='tableHead'>
+          <div style={{ width: "100%" }}>
+            <Grid container spacing={3}>
+              <Grid item sm={5}>
+                <Button
+                  className={classes.backButton}
+                  variant="outlined"
+                  onClick={() => {
+                    props.editClicked(0);
+                  }}
+                >
+                  <AddIcon fontSize="large" /> <Text tid="addTestSuite" />
+                </Button>
+              </Grid>
+              <Grid item sm={5}>
+                <SearchControl
+                // searchString={searchString}
+                // handleSearch={handleSearch}
+                />
+              </Grid>
+              <Grid item sm={2}>
+                <PageSizeDropDown
+                // handleChange={handleChangeItemsPerPage}
+                // itemCount={itemsPerPage}
+                />
+              </Grid>
+            </Grid>
+          </div>
+          <Paper className="tableArea">
+            <Table className="table">
+              <TableHead className="tableHead">
                 <TableRow>
-                  <TableCell className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='testSuits' />
+                  <TableCell className="tableHeadCell">
+                    <Typography className="tableHeadText">
+                      <Text tid="testSuits" />
                     </Typography>
                   </TableCell>
-                  <TableCell className='tableHeadCell' align='center'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='version' />
+                  <TableCell className="tableHeadCell" align="center">
+                    {/* <Typography className="tableHeadText">
+                      <Text tid="version" />
+                    </Typography> */}
+                  </TableCell>
+                  <TableCell className="tableHeadCell" align="center">
+                    <Typography className="tableHeadText">
+                      <Text tid="actions" />
                     </Typography>
                   </TableCell>
-                  <TableCell className='tableHeadCell' align='center'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='actions' />
+                  <TableCell className="tableHeadCell" align="center">
+                    <Typography className="tableHeadText">
+                      <Text tid="published" />
                     </Typography>
                   </TableCell>
-                  <TableCell className='tableHeadCell' align='center'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='published' />
-                    </Typography>
-                  </TableCell>
-                  <TableCell className='tableHeadCell' align='center'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='modifiedOn' />
+                  <TableCell className="tableHeadCell" align="center">
+                    <Typography className="tableHeadText">
+                      <Text tid="modifiedOn" />
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -227,59 +265,104 @@ const ManageQuestionnaires = (props: any) => {
                     key={index}
                     style={
                       index % 2
-                        ? { background: '#EFEFEF' }
-                        : { background: 'white' }
+                        ? { background: "#EFEFEF" }
+                        : { background: "white" }
                     }
                   >
-                    <TableCell component='th' scope='row' className='tableCell'>
-                      <Typography className='tableBodyText'>
+                    <TableCell component="th" scope="row" className="tableCell">
+                      <Typography className="tableBodyText">
                         {row.name}
                       </Typography>
                     </TableCell>
                     <TableCell
-                      component='th'
-                      scope='row'
-                      className='tableCell'
-                      align='center'
+                      component="th"
+                      scope="row"
+                      className="tableCell"
+                      align="center"
                     >
-                      <Typography className='tableBodyText'>
+                      {/* <Typography className="tableBodyText">
                         {row.version ? row.version : 1}
-                      </Typography>
+                      </Typography> */}
                     </TableCell>
-                    <TableCell component='th' scope='row' className='tableCell'>
+                    <TableCell component="th" scope="row" className="tableCell">
                       <div className={classes.actionsBlock}>
-                        <MaterialLink
-                          href='#'
+                        {/* <MaterialLink
+                          href="#"
                           onClick={() => {
                             editQuestionnaireClicked(row);
                           }}
                         >
                           <Typography>
-                            <Text tid='edit' />
+                            <Text tid="edit" />
                           </Typography>
-                        </MaterialLink>
+                        </MaterialLink> */}
+                        <MuiThemeProvider theme={tooltipTheme}>
+                          <Tooltip
+                            title={
+                              <Typography
+                                style={{
+                                  fontSize: "12px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                <Text tid="edit" />
+                              </Typography>
+                            }
+                          >
+                            <Typography style={{ padding: "0 6px" }}>
+                              <EditIcon
+                                onClick={() => {
+                                  editQuestionnaireClicked(row);
+                                }}
+                              />
+                            </Typography>
+                          </Tooltip>
+                        </MuiThemeProvider>
                         <Typography>&nbsp;|&nbsp;</Typography>
-                        <MaterialLink
-                          href='#'
+                        <MuiThemeProvider theme={tooltipTheme}>
+                          <Tooltip
+                            title={
+                              <Typography
+                                style={{
+                                  fontSize: "12px",
+                                  textAlign: "center",
+                                }}
+                              >
+                                <Text tid="Add Test cases" />
+                              </Typography>
+                            }
+                          >
+                            <Typography style={{ padding: "0 6px" }}>
+                              <NoteAddIcon
+                                onClick={() => {
+                                  mapQuestionsClicked(row);
+                                }}
+                              />
+                            </Typography>
+                          </Tooltip>
+                        </MuiThemeProvider>
+                        {/* <MaterialLink
+                          href="#"
                           onClick={() => {
+                            console.log(row, "mapQuestionsClicked");
                             mapQuestionsClicked(row);
                           }}
                         >
                           <Typography>
-                            <Text tid='map-TestCases' />
+                            <Text tid="map-TestCases" />
                           </Typography>
-                        </MaterialLink>
+                        </MaterialLink> */}
                         {!row.active ? (
                           <Fragment>
                             <Typography>&nbsp;|&nbsp;</Typography>
                             <MaterialLink
-                              href='#'
+                              href="#"
                               onClick={() => {
                                 publishClicked(row);
                               }}
                             >
                               <Typography>
-                                <Text tid='publish' />
+                                <Text tid="publish" />
                               </Typography>
                             </MaterialLink>
                           </Fragment>
@@ -289,31 +372,31 @@ const ManageQuestionnaires = (props: any) => {
                       </div>
                     </TableCell>
                     <TableCell
-                      component='th'
-                      scope='row'
-                      className='tableCell'
-                      align='center'
+                      component="th"
+                      scope="row"
+                      className="tableCell"
+                      align="center"
                     >
                       {row.active ? (
-                        <CheckCircleIcon fontSize='large' htmlColor='#66bb6a' />
+                        <CheckCircleIcon fontSize="large" htmlColor="#66bb6a" />
                       ) : (
-                        <CancelIcon fontSize='large' htmlColor='#dd0000' />
+                        <CancelIcon fontSize="large" htmlColor="#dd0000" />
                       )}
                     </TableCell>
                     <TableCell
-                      component='th'
-                      scope='row'
-                      align='center'
-                      className='tableCell'
+                      component="th"
+                      scope="row"
+                      align="center"
+                      className="tableCell"
                     >
-                      <Typography className='tableBodyText'>
+                      <Typography className="tableBodyText">
                         {row.active
                           ? row.publishedOn
                             ? getDate(row.publishedOn)
                             : row.modifiedOn
-                              ? getDate(row.modifiedOn)
-                              : getDate(row.createdOn)
-                          : 'NA'}
+                            ? getDate(row.modifiedOn)
+                            : getDate(row.createdOn)
+                          : "NA"}
                       </Typography>
                     </TableCell>
                   </TableRow>
@@ -321,31 +404,31 @@ const ManageQuestionnaires = (props: any) => {
               </TableBody>
             </Table>
           </Paper>
-          <div className='bottomButtonsContainer'>
+          <div className="bottomButtonsContainer">
             <Button
               className={classes.backButton}
-              variant='outlined'
+              variant="outlined"
               onClick={props.goBack}
             >
-              <Text tid='goBack' />
+              <Text tid="goBack" />
             </Button>
           </div>
         </Container>
         <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
           open={failure}
           onClose={handleClose}
           autoHideDuration={9000}
         >
           <SnackbarContent
             style={{
-              backgroundColor: '#dd0000',
+              backgroundColor: "#dd0000",
             }}
             message={msgFailure}
           />
         </Snackbar>
         <ModalComponent
-          message={'publishTheTestSuit'}
+          message={"publishTheTestSuit"}
           openModal={openModal}
           handleModalNoClicked={handleModalNo}
           handleModalYesClicked={handleModalYes}
@@ -358,7 +441,7 @@ const ManageQuestionnaires = (props: any) => {
       {fetchQuestionnaires ? (
         renderPage()
       ) : (
-        <Container className='loaderStyle'>
+        <Container className="loaderStyle">
           <Loader />
         </Container>
       )}
