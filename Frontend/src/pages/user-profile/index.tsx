@@ -155,40 +155,25 @@ const UserProfile = (props: any) => {
       });
   };
 
+  const handleProductSelectionPage = () => {
+    props.history.push('/selectProduct');
+  }
+
   return (
     <Fragment>
       <div className={classes.topBar}>
-        <Grid container spacing={2}>
-          <Grid item xs={1} sm={1} />
-          <Grid item xs={9} sm={9}>
-            <InputLabel style={{ paddingTop: "12px" }}>
-              {" "}
-              Home | Profile{" "}
-            </InputLabel>
+        <Grid container spacing={2} >
+          <Grid item xs={2} sm={2} />
+          <Grid item xs={6} sm={6} >
+            <InputLabel style={{ paddingTop: '12px' }} > Home | Profile </InputLabel>
           </Grid>
-          {/* <Grid item xs={1} sm={1}>
-          
-          </Grid> */}
-          <Grid item xs={2} sm={2}>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              className="button"
-              data-testid="skip"
-              style={{ marginTop: "8px", marginRight: "20px" }}
-            >
+          <Grid item xs={1} sm={1}>
+            <Button variant="outlined" color="primary" size='small' className='button' data-testid="skip" style={{ marginTop: '8px' }} onClick={handleProductSelectionPage}>
               Skip
             </Button>
-            <Button
-              variant="outlined"
-              color="primary"
-              size="small"
-              className="button"
-              data-testid="save"
-              style={{ marginTop: "8px" }}
-              onClick={handleSave}
-            >
+          </Grid>
+          <Grid item xs={1} sm={1}>
+            <Button variant="outlined" color="primary" size='small' className='button' data-testid="save" style={{ marginTop: '8px' }} onClick={handleSave}>
               Save
             </Button>
           </Grid>

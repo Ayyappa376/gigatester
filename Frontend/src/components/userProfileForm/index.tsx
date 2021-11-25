@@ -5,7 +5,6 @@ import {
   TextField,
   Button,
   // FormControl,
-  Container,
   // MenuItem,
   // Select,
   // InputLabel,
@@ -20,12 +19,12 @@ import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
 // const ITEM_HEIGHT = 48;
 // const ITEM_PADDING_TOP = 8;
 // const MenuProps = {
-//     PaperProps: {
-//         style: {
-//             maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-//             width: 250,
-//         },
+//   PaperProps: {
+//     style: {
+//       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+//       width: 250,
 //     },
+//   },
 // };
 
 const useStyles = makeStyles(() => ({
@@ -77,17 +76,17 @@ export default function ProfileForm(props: any) {
   // };
 
   // const renderChips = (selected: any, el: string) => {
-  //     return (
-  //         <div className={classes.chips}>
-  //             {(selected as string[]).map((value) => (
-  //                 <Chip
-  //                     key={value}
-  //                     label={el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName : value}
-  //                     className={classes.chip}
-  //                 />
-  //             ))}
-  //         </div>
-  //     );
+  //   return (
+  //     <div className={classes.chips}>
+  //       {(selected as string[]).map((value) => (
+  //         <Chip
+  //           key={value}
+  //           label={el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName : value}
+  //           className={classes.chip}
+  //         />
+  //       ))}
+  //     </div>
+  //   );
   // };
 
   const renderElements = (el: string) => {
@@ -130,72 +129,73 @@ export default function ProfileForm(props: any) {
         );
 
       // case 'list':
-      //     return (
-      //         <FormControl className={classes.formControl}>
-      //             <InputLabel
-      //                 id='demo-simple-select-label'
-      //                 required={element.Mandatory}
-      //             >
-      //                 {element.displayName}
-      //             </InputLabel>
-      //             <Select
-      //                 name={el}
-      //                 value={values ? (values[el] ? values[el] : '') : ''}
-      //                 onChange={handleChangeValue}
-      //             >
-      //                 {element.options.map((opt: string) => {
-      //                     return (
-      //                         <MenuItem key={opt} value={opt}>
-      //                             {
-      //                                 el === 'teams'
-      //                                     ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-      //                                     : opt
-      //                             }
-      //                         </MenuItem>
-      //                     );
-      //                 })}
-      //             </Select>
-      //         </FormControl>
-      //     );
+      //   return (
+      //     <FormControl className={classes.formControl}>
+      //       <InputLabel
+      //         id='demo-simple-select-label'
+      //         required={element.Mandatory}
+      //       >
+      //         {element.displayName}
+      //       </InputLabel>
+      //       <Select
+      //         name={el}
+      //         value={values ? (values[el] ? values[el] : '') : ''}
+      //         onChange={handleChangeValue}
+      //       >
+      //         {element.options.map((opt: string) => {
+      //           return (
+      //             <MenuItem key={opt} value={opt}>
+      //               {
+      //                 el === 'teams'
+      //                   ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
+      //                   : opt
+      //               }
+      //             </MenuItem>
+      //           );
+      //         })}
+      //       </Select>
+      //     </FormControl>
+      //   );
       // case 'multi-list':
-      //     return (
-      //         <FormControl className={classes.formControl}>
-      //             <InputLabel
-      //                 id='demo-mutiple-chip-label'
-      //                 required={element.Mandatory}
-      //             >
-      //                 {element.displayName}
-      //             </InputLabel>
-      //             <Select
-      //                 id='demo-mutiple-chip'
-      //                 name={el}
-      //                 multiple
-      //                 value={
-      //                     values
-      //                         ? values[el]
-      //                             ? values[el] !== ''
-      //                                 ? values[el]
-      //                                 : []
-      //                             : []
-      //                         : []
-      //                 }
-      //                 onChange={handleChangeMultiValue}
-      //                 input={<Input id='select-multiple-chip' />}
-      //                 renderValue={(value: any) => renderChips(value, el)}
-      //                 MenuProps={MenuProps}
-      //             >
-      //                 {element.options.map((opt: any) => (
-      //                     <MenuItem key={opt} value={opt}>
-      //                         {
-      //                             el === 'teams'
-      //                                 ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-      //                                 : opt
-      //                         }
-      //                     </MenuItem>
-      //                 ))}
-      //             </Select>
-      //         </FormControl>
-      //     );
+      //   return (
+      //     <FormControl className={classes.formControl}>
+      //       <InputLabel
+      //         id='demo-mutiple-chip-label'
+      //         required={element.Mandatory}
+      //       >
+      //         {element.displayName}
+      //       </InputLabel>
+      //       <Select
+      //         id='demo-mutiple-chip'
+      //         name={el}
+      //         multiple
+      //         value={
+      //           values
+      //             ? values[el]
+      //               ? values[el] !== ''
+      //                 ? values[el]
+      //                 : []
+      //               : []
+      //             : []
+      //         }
+      //         // onChange={handleChangeMultiValue}
+      //         input={<Input id='select-multiple-chip' />}
+      //         // renderValue={(value: any) => renderChips(value, el)}
+      //         MenuProps={MenuProps}
+      //       >
+      //         {element.options.map((opt: any) => (
+      //           <MenuItem key={opt} value={opt}>
+
+      //             {
+      //               el === 'teams'
+      //                 ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
+      //                 : opt
+      //             }
+      //           </MenuItem>
+      //         ))}
+      //       </Select>
+      //     </FormControl >
+      //   );
     }
   };
 
@@ -231,7 +231,7 @@ export default function ProfileForm(props: any) {
               item
               xs={12}
               sm={12}
-              style={{ height: "200px", overflow: "auto", marginTop: "20px" }}
+              style={{ height: "200px", overflow: "auto", marginTop: "10px" }}
             >
               {Object.keys(userState!.config).map((el) => {
                 if (
@@ -256,7 +256,7 @@ export default function ProfileForm(props: any) {
               />
             </Grid>
             <Grid item xs={8} sm={8}>
-              <strong> Device & Skill Set </strong>
+              <strong> Device & Platform </strong>
             </Grid>
             <Grid item xs={2} sm={2}>
               <Button
@@ -274,7 +274,7 @@ export default function ProfileForm(props: any) {
             item
             xs={12}
             sm={12}
-            style={{ height: "200px", overflow: "auto", marginTop: "20px" }}
+            style={{ height: "200px", overflow: "auto", marginTop: "10px" }}
           >
             {Object.keys(userState!.config).map((el) => {
               if (el === "Devi_3825988043") {
@@ -285,7 +285,7 @@ export default function ProfileForm(props: any) {
         </Grid>
       </Grid>
 
-      <Grid container style={{ height: "400px" }}>
+      <Grid container style={{ height: "200px" }}>
         <Grid item xs={5} sm={5} className={classes.topBar}>
           <Grid container style={{ padding: "8px" }}>
             <Grid item xs={1} sm={1}>
@@ -312,7 +312,7 @@ export default function ProfileForm(props: any) {
             item
             xs={12}
             sm={12}
-            style={{ height: "300px", overflow: "auto", marginTop: "20px" }}
+            style={{ height: "300px", overflow: "auto", marginTop: "10px" }}
           >
             {Object.keys(userState!.config).map((el) => {
               if (

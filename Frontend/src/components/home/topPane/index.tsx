@@ -10,6 +10,7 @@ const useStyles = makeStyles(() => ({
     paddingTop: "10px",
     fontFamily: "Montserrat",
     width: "100%",
+    height: '10em'
   },
   title: {
     padding: "10px 0px",

@@ -16,7 +16,6 @@ import {
 } from "../../components/home/leftPane";
 import TopPane from "../../components/home/topPane";
 import { LatestNews } from "../../components/home/rightPane";
-import PageFooter from "../../components/pageFooter";
 import SignupForm from "../../components/signUpForm";
 
 const useStyles = makeStyles({
@@ -314,7 +313,6 @@ const Home = (props: any) => {
         <Grid item xs={12} sm={3} className={classes.marginTopTen}>
           <LatestNews latestNews={latestNews} />
         </Grid>
-        <PageFooter />
       </Grid>
       {openSignup && (
         <SignupForm
