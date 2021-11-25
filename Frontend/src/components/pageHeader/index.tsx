@@ -814,7 +814,7 @@ const PageHeader = (props: any) => {
   const renderHomeButton = () => {
     return (
       <div className='header-item'>
-        <NavLink to='/'>
+        <NavLink to={userStatus.idToken ? '/selectProduct' : '/'}>
           <Typography className={classes.headerItem}>
             <Text tid='home' />
           </Typography>
