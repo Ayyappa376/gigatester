@@ -7,8 +7,9 @@ import UserProfileStatus from "../../components/userProfileStatus";
 
 const useStyles = makeStyles({
     root: {
-        marginTop: '3.2em',
-        padding: 0,
+        // marginTop: '3.2em',
+        padding: '3.2em 0',
+        // padding: 0,
         overflow: 'hidden',
     },
     marginTopTwenty: {
@@ -65,7 +66,7 @@ function ProductDetails(props: any) {
                     <Grid item xs={12} sm={1} />
                     <Grid item xs={12} sm={6}>
                         <ProductView productList={productList} />
-                    </Grid>'
+                    </Grid>
                     <Grid item xs={12} sm={1} />
                     <Grid item xs={12} sm={3} >
                         <UserProfileStatus updateProfile={true} />

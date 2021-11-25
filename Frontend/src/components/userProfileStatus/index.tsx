@@ -148,12 +148,8 @@ export default function UserProfileStatus(props: any) {
           </Typography>
         </Grid>
         {props.updateProfile &&
-          <div style={{ textAlign: 'center', margin: '20px' }}
-          >
-            <Button
-              variant='outlined'
-              onClick={getProfilePage}
-            >
+          <div style={{ textAlign: 'center', margin: '20px' }}>
+            <Button variant="outlined" color="primary" size='medium' className='button' data-testid="save" onClick={getProfilePage}>
               Update Profile
             </Button>
           </div>
