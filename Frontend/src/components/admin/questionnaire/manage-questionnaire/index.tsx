@@ -21,6 +21,7 @@ import {
 import { Loader } from "../../..";
 import EditIcon from "@material-ui/icons/Edit";
 import ClearIcon from "@material-ui/icons/Clear";
+import PublishIcon from "@material-ui/icons/Publish";
 import AddIcon from "@material-ui/icons/Add";
 import NoteAddIcon from "@material-ui/icons/NoteAdd";
 import { buttonStyle, tooltipTheme } from "../../../../common/common";
@@ -35,8 +36,8 @@ import { ModalComponent } from "../../../modal";
 import { getDate } from "../../../../utils/data";
 import { Text } from "../../../../common/Language";
 import "../../../../css/assessments/style.css";
-import SearchControl from "../../../common/searchControl";
-import PageSizeDropDown from "../../../common/page-size-dropdown";
+// import SearchControl from "../../../common/searchControl";
+// import PageSizeDropDown from "../../../common/page-size-dropdown";
 import RenderPagination from "../../../common/pagination";
 
 export interface Questionnaire {
@@ -166,6 +167,7 @@ const ManageQuestionnaires = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
+        console.log(response, "edit response");
         setBackdropOpen(false);
         fetchQuestionnaireList();
       })
@@ -208,23 +210,23 @@ const ManageQuestionnaires = (props: any) => {
                   className={classes.backButton}
                   variant="outlined"
                   onClick={() => {
-                    props.editClicked(0);
+                    props.handleCreateQuestionnaire();
                   }}
                 >
                   <AddIcon fontSize="large" /> <Text tid="addTestSuite" />
                 </Button>
               </Grid>
               <Grid item sm={5}>
-                <SearchControl
+                {/* <SearchControl
                 // searchString={searchString}
                 // handleSearch={handleSearch}
-                />
+                /> */}
               </Grid>
               <Grid item sm={2}>
-                <PageSizeDropDown
+                {/* <PageSizeDropDown
                 // handleChange={handleChangeItemsPerPage}
                 // itemCount={itemsPerPage}
-                />
+                /> */}
               </Grid>
             </Grid>
           </div>
@@ -355,7 +357,29 @@ const ManageQuestionnaires = (props: any) => {
                         {!row.active ? (
                           <Fragment>
                             <Typography>&nbsp;|&nbsp;</Typography>
-                            <MaterialLink
+                            <MuiThemeProvider theme={tooltipTheme}>
+                              <Tooltip
+                                title={
+                                  <Typography
+                                    style={{
+                                      fontSize: "12px",
+                                      textAlign: "center",
+                                    }}
+                                  >
+                                    <Text tid="publish" />
+                                  </Typography>
+                                }
+                              >
+                                <Typography style={{ padding: "0 6px" }}>
+                                  <PublishIcon
+                                    onClick={() => {
+                                      publishClicked(row);
+                                    }}
+                                  />
+                                </Typography>
+                              </Tooltip>
+                            </MuiThemeProvider>
+                            {/* <MaterialLink
                               href="#"
                               onClick={() => {
                                 publishClicked(row);
@@ -364,7 +388,7 @@ const ManageQuestionnaires = (props: any) => {
                               <Typography>
                                 <Text tid="publish" />
                               </Typography>
-                            </MaterialLink>
+                            </MaterialLink> */}
                           </Fragment>
                         ) : (
                           <Typography>&nbsp;</Typography>

@@ -36,7 +36,7 @@ const warningTimePercentageArray = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
 export interface IQuestionnaireData {
   name: string;
-  questionnaireId?: string;
+  id?: string;
   description: string;
   randomize: boolean;
   questions: string[];
@@ -108,10 +108,10 @@ const CreateQuestionnaire = (props: any) => {
     categories: [],
     categoriesMap: {},
     questions: [],
-    timeOut: false,
-    timeOutTime: 0,
-    warningTimePercentage: 0,
-    hideResult: false,
+    // timeOut: false,
+    // timeOutTime: 0,
+    // warningTimePercentage: 0,
+    // hideResult: false,
     showRecommendations: false,
   };
   const [postData, setPostData] = useState<IQuestionnaireData>(emptyPostData);
@@ -128,16 +128,19 @@ const CreateQuestionnaire = (props: any) => {
     } else if (categoryArray.length === 1 && categoryArray[0] === "") {
       setFailure(true);
       setFailureMessage(<Text tid="addCategoriesToTheTestSuit" />);
-    } else if (categoryArray.length < 2) {
-      setFailure(true);
-      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
-    } else if (
-      categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ""
-    ) {
-      setFailure(true);
-      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
-    } else if (
+    }
+    //  else if (categoryArray.length < 2) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    // }
+    // else if (
+    //   categoryArray.length === 2 &&
+    //   categoryArray[categoryArray.length - 1] === ""
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    // }
+    else if (
       categoryArray.indexOf(categoryArray[categoryArray.length - 1]) !==
       categoryArray.length - 1
     ) {
@@ -145,28 +148,30 @@ const CreateQuestionnaire = (props: any) => {
       // Other elements are checked when the user presses the + button.
       setFailure(true);
       setFailureMessage(<Text tid="categoryAlreadyExists" />);
-    } else if (postData.timeOut && !postData.timeOutTime) {
-      setFailure(true);
-      setFailureMessage(<Text tid="invalidTimeOutTime" />);
-    } else if (
-      postData.timeOut &&
-      postData.timeOutTime &&
-      postData.timeOutTime < 5
-    ) {
-      setFailure(true);
-      setFailureMessage(
-        <Text tid="timeOutTimeCannotBeLesserThanFiveMinutes" />
-      );
-    } else if (
-      postData.benchmarkScore &&
-      (postData.benchmarkScore < 50 || postData.benchmarkScore > 100)
-    ) {
-      setFailure(true);
-      setFailureMessage(
-        <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
-      );
-      return {};
-    } else {
+    }
+    // else if (postData.timeOut && !postData.timeOutTime) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="invalidTimeOutTime" />);
+    // } else if (
+    //   postData.timeOut &&
+    //   postData.timeOutTime &&
+    //   postData.timeOutTime < 5
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(
+    //     <Text tid="timeOutTimeCannotBeLesserThanFiveMinutes" />
+    //   );
+    // } else if (
+    //   postData.benchmarkScore &&
+    //   (postData.benchmarkScore < 50 || postData.benchmarkScore > 100)
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(
+    //     <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
+    //   );
+    //   return {};
+    // }
+    else {
       const validatedData = { ...postData };
       validatedData.categories = categoryArray;
       setPostData(validatedData);
@@ -177,7 +182,7 @@ const CreateQuestionnaire = (props: any) => {
             url: "/api/v2/testSuite",
             body: {
               type: "create",
-              questionnaire: { ...validatedData, questionnaireId },
+              testSuite: { ...validatedData, questionnaireId },
             },
             state: stateVariable,
           })
@@ -204,7 +209,7 @@ const CreateQuestionnaire = (props: any) => {
             url: "/api/v2/testSuite",
             body: {
               type: "create",
-              questionnaire: validatedData,
+              testSuite: validatedData,
             },
             state: stateVariable,
           })
@@ -212,7 +217,7 @@ const CreateQuestionnaire = (props: any) => {
               setBackdropOpen(false);
               setShowModal(true);
               setCreated(true);
-              setQuestionnaireId(response.questionnaireId);
+              setQuestionnaireId(response.id);
             })
             .catch((error) => {
               const perror = JSON.stringify(error);
@@ -254,28 +259,28 @@ const CreateQuestionnaire = (props: any) => {
       setFailureMessage(<Text tid="testSuitDescriptionCannotBeBlank" />);
       return {};
     }
-    if (categoryArray.length < 2) {
-      setFailure(true);
-      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
-      return {};
-    }
-    if (
-      categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ""
-    ) {
-      setFailure(true);
-      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
-      return {};
-    }
-    if (postData.benchmarkScore) {
-      if (postData.benchmarkScore < 50 || postData.benchmarkScore > 100) {
-        setFailure(true);
-        setFailureMessage(
-          <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
-        );
-        return {};
-      }
-    }
+    // if (categoryArray.length < 2) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    //   return {};
+    // }
+    // if (
+    //   categoryArray.length === 2 &&
+    //   categoryArray[categoryArray.length - 1] === ""
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    //   return {};
+    // }
+    // if (postData.benchmarkScore) {
+    //   if (postData.benchmarkScore < 50 || postData.benchmarkScore > 100) {
+    //     setFailure(true);
+    //     setFailureMessage(
+    //       <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
+    //     );
+    //     return {};
+    //   }
+    // }
 
     const postDataCopy = { ...postData };
     if (questionnaireId === "") {
@@ -297,7 +302,7 @@ const CreateQuestionnaire = (props: any) => {
     });
     postDataCopy.questions = questionArray;
     postDataCopy.categoriesMap = categoriesMapped;
-    postDataCopy.questionnaireId = questionnaireId;
+    postDataCopy.id = questionnaireId;
     setPostData(postDataCopy);
     return postDataCopy;
   };
@@ -404,20 +409,23 @@ const CreateQuestionnaire = (props: any) => {
 
   const handleMapQuestionSubmit = (mappedQuestions: ICategoriesMap) => {
     const validatedData = validatePostData(mappedQuestions);
+    console.log(mappedQuestions, "mapped questions of create");
     if (Object.keys(validatedData).length > 0) {
       Http.put({
         url: "/api/v2/testSuite",
         body: {
-          type: "create",
-          questionnaire: validatedData,
+          type: "update",
+          testSuite: validatedData,
         },
         state: stateVariable,
       })
         .then((response: any) => {
           setMapQuestions(false);
+          console.log(response, "map response");
           setQuestionnairePosted(true);
         })
         .catch((error) => {
+          console.log(error, "put error");
           setFailureMessage(<Text tid="somethingWentWrong" />);
           setFailure(true);
         });
@@ -733,7 +741,7 @@ const CreateQuestionnaire = (props: any) => {
         {categoryArray.map((el: string, i: number) => {
           return renderCategories(el, i);
         })}
-        <Grid container spacing={3} className={classes.grid}>
+        {/* <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={2}>
             <TextField
               type="number"
@@ -809,7 +817,7 @@ const CreateQuestionnaire = (props: any) => {
           <Grid item xs={3}>
             {renderWarningTime()}
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={4}>
             {renderRandomizeCheckbox()}

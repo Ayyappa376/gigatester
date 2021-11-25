@@ -5,7 +5,7 @@ import {
   responseBuilder,
   appLogger,
 //   getTheLatestQuestionnaireVersion,
-  getTestSuitesId,
+  // getTestSuitesId,
   publishQuestion
 } from '@utils/index';
 import { TestSuite } from '@models/index';
@@ -37,9 +37,9 @@ async function handler(request: PostTestSuite, response: Response) {
       const create: TestSuite = body.testSuite;
       create.modifiedBy = headers.user.email;
       console.log(create, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
-      const latestTestSuite = await getTestSuitesId(
-        create.id,
-      );
+      // const latestTestSuite = await getTestSuitesId(
+      //   create.id,
+      // );
     //   let doVersionUpdate = false;
 
     //   if (create.questions && create.active) {

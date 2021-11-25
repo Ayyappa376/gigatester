@@ -210,6 +210,18 @@ const Home = (props: any) => {
         console.log(error);
       });
   };
+  const getAssignments = () => {
+    Http.get({
+      url: "/api/v2/assignment?teamId='Others'",
+      state: superUserStateVariable,
+    })
+      .then((response: any) => {
+        console.log(response, "Test Suites");
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
   useEffect(() => {
     setCurrentPageValue("");
     if (
@@ -259,6 +271,7 @@ const Home = (props: any) => {
         getUserList();
         getPlatformList();
         getTestSuites();
+        getAssignments();
       } catch (error) {
         console.log(error);
       }

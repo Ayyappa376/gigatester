@@ -27,6 +27,8 @@ interface PostTestSuite {
 
 async function handler(request: PostTestSuite, response: Response) {
   const { body, headers } = request;
+  console.log(request, "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
+  console.log(body,"bodyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", headers , "heaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddddddddders")
   try {
     if (body.type === 'create' && body.testSuite) {
       let id = '';

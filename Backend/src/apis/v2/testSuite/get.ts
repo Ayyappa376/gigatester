@@ -113,5 +113,5 @@ async function handler(request: GetTestSuites, response: Response) {
 export const api: API = {
   handler: <Handler>(<unknown>handler),
   method: 'get',
-  route: '/api/v2/testSuite/',
+  route: '/api/v2/testSuite/:id?',
 };

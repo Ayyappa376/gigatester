@@ -91,6 +91,7 @@ const EditQuestionnaire = (props: any) => {
   useEffect(() => {
     setMapQuestions(props.isMapQuestions);
     setCenterDisplayText(props.questionnaire.name);
+    console.log(props.questionnaire);
     Http.get({
       url: `/api/v2/testSuite?id=${props.questionnaire.id}`,
       state: stateVariable,
@@ -132,13 +133,15 @@ const EditQuestionnaire = (props: any) => {
     } else if (categoryArray.length === 1 && categoryArray[0] === "") {
       setFailure(true);
       setFailureMessage(<Text tid="addCategoriesToTheTestSuit" />);
-    } else if (
-      categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ""
-    ) {
-      setFailure(true);
-      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
-    } else if (
+    }
+    // else if (
+    //   categoryArray.length === 2 &&
+    //   categoryArray[categoryArray.length - 1] === ""
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    // }
+    else if (
       categoryArray.indexOf(categoryArray[categoryArray.length - 1]) !==
       categoryArray.length - 1
     ) {
@@ -146,28 +149,30 @@ const EditQuestionnaire = (props: any) => {
       // Other elements are checked when the user presses the + button.
       setFailure(true);
       setFailureMessage(<Text tid="categoryAlreadyExists" />);
-    } else if (postData.timeOut && !postData.timeOutTime) {
-      setFailure(true);
-      setFailureMessage(<Text tid="invalidTimeOutTime" />);
-    } else if (
-      postData.timeOut &&
-      postData.timeOutTime &&
-      postData.timeOutTime < 5
-    ) {
-      setFailure(true);
-      setFailureMessage(
-        <Text tid="timeOutTimeCannotBeLesserThanFiveMinutes" />
-      );
-    } else if (
-      postData.benchmarkScore &&
-      (postData.benchmarkScore < 50 || postData.benchmarkScore > 100)
-    ) {
-      setFailure(true);
-      setFailureMessage(
-        <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
-      );
-      return {};
-    } else {
+    }
+    // else if (postData.timeOut && !postData.timeOutTime) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="invalidTimeOutTime" />);
+    // } else if (
+    //   postData.timeOut &&
+    //   postData.timeOutTime &&
+    //   postData.timeOutTime < 5
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(
+    //     <Text tid="timeOutTimeCannotBeLesserThanFiveMinutes" />
+    //   );
+    // } else if (
+    //   postData.benchmarkScore &&
+    //   (postData.benchmarkScore < 50 || postData.benchmarkScore > 100)
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(
+    //     <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
+    //   );
+    //   return {};
+    // }
+    else {
       const validatedData = { ...postData };
       validatedData.categories = [...categoryArray];
       const indexOfNullString = validatedData.categories.indexOf("");
@@ -251,28 +256,28 @@ const EditQuestionnaire = (props: any) => {
       setFailureMessage(<Text tid="testSuitDescriptionCannotBeBlank" />);
       return {};
     }
-    if (categoryArray.length < 2) {
-      setFailure(true);
-      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
-      return {};
-    }
-    if (
-      categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ""
-    ) {
-      setFailure(true);
-      setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
-      return {};
-    }
-    if (postData.benchmarkScore) {
-      if (postData.benchmarkScore < 50 || postData.benchmarkScore > 100) {
-        setFailure(true);
-        setFailureMessage(
-          <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
-        );
-        return {};
-      }
-    }
+    // if (categoryArray.length < 2) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    //   return {};
+    // }
+    // if (
+    //   categoryArray.length === 2 &&
+    //   categoryArray[categoryArray.length - 1] === ""
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    //   return {};
+    // }
+    // if (postData.benchmarkScore) {
+    //   if (postData.benchmarkScore < 50 || postData.benchmarkScore > 100) {
+    //     setFailure(true);
+    //     setFailureMessage(
+    //       <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
+    //     );
+    //     return {};
+    //   }
+    // }
 
     const postDataCopy = { ...postData };
     if (Object.keys(categoriesMapped).length === 0) {
@@ -727,7 +732,7 @@ const EditQuestionnaire = (props: any) => {
         {categoryArray.map((el: string, i: number) => {
           return renderCategories(el, i);
         })}
-        <Grid container spacing={3} className={classes.grid}>
+        {/* <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={2}>
             <TextField
               type="number"
@@ -740,8 +745,8 @@ const EditQuestionnaire = (props: any) => {
               fullWidth
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={5} className={classes.grid}>
+      </Grid>*/}
+        {/* <Grid container spacing={5} className={classes.grid}>
           <Grid item xs={3}>
             <div>
               <FormControlLabel
@@ -799,7 +804,7 @@ const EditQuestionnaire = (props: any) => {
           <Grid item xs={3}>
             {renderWarningTime()}
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={4}>
             {renderRandomizeCheckbox()}

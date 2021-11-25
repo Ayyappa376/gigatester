@@ -123,9 +123,9 @@ export async function getResponseBody({
     );
     const randomize = await getRandomize(
       assessmentDocument.type,
-      assessmentDocument.questionnaireVersion
-        ? assessmentDocument.questionnaireVersion
-        : '1'
+      // assessmentDocument.questionnaireVersion
+      //   ? assessmentDocument.questionnaireVersion
+      //   : '1'
     );
     const questionDetails: Question = questionDetailsArr.filter(
       (o) => o.id === questionId
