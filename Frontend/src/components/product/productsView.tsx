@@ -37,6 +37,7 @@ const ProductsView = (props: any) => {
     });
     const [searchString, setSearchString] = useState('');
     const [allProducts, setAllProducts] = useState<IProductInfo[]>([]);
+    const [listedProducts, setListedProducts] = useState<IProductInfo[]>([]);
     const [allPlatforms, setAllPlatforms] = useState<IPlatformInfo[]>([]);
     const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
     const [selectedDevice, setSelectedDevice] = useState<any>('');
@@ -50,6 +51,38 @@ const ProductsView = (props: any) => {
         fetchAllDevices();
         fetchCampaignDetails();
     }, []);
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        setSelectedPlatform('')
+        allProducts.length && selectedDevice ? allProducts.forEach((item: any) => {
+            item.devices.forEach((id: string) => id === selectedDevice &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+        }) : setListedProducts(allProducts)
+    }, [selectedDevice])
+
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        setSelectedDevice('')
+        allProducts.length && selectedPlatform ? allProducts.forEach((item: any) => {
+            item.platforms.forEach((id: string) => id === selectedPlatform &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+        }) : setListedProducts(allProducts)
+    }, [selectedPlatform])
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        setSelectedDevice('')
+        allProducts.length && searchString ? allProducts.forEach((item: any) => {
+            item.name.includes(searchString) && filteredProductList.push(item)
+            setListedProducts(filteredProductList)
+        }) : setListedProducts(allProducts)
+    }, [searchString])
 
     const fetchAllPlatforms = () => {
         Http.get({
@@ -108,6 +141,7 @@ const ProductsView = (props: any) => {
                     })
                 })
                 setAllProducts(products);
+                setListedProducts(products)
                 setProductsFetched(true);
             })
             .catch((error: any) => {
@@ -148,7 +182,7 @@ const ProductsView = (props: any) => {
                             }}
                             onChange={(e) => setSelectedPlatform(e.target.value)}
                         >
-                            <option aria-label="None" value="all" >All</option>
+                            <option aria-label="None" value="" ></option>
                             {allPlatforms.length && allPlatforms.map((item, index) => {
                                 return (
                                     <option value={item.id} key={index}>{item.name}</option>
@@ -170,7 +204,7 @@ const ProductsView = (props: any) => {
                             }}
                             onChange={(e) => setSelectedDevice(e.target.value)}
                         >
-                            <option aria-label="None" value="all" >All</option>
+                            <option aria-label="None" value="" ></option>
                             {allDevices.length && allDevices.map((item, index) => {
                                 return (
                                     <option value={item.id} key={index}>{item.name}</option>
@@ -190,12 +224,12 @@ const ProductsView = (props: any) => {
             {productsFetched ?
                 <Grid container spacing={2} >
                     <Grid item xs={12} sm={6}>
-                        <Typography data-testid="header" >Showing {allProducts.length} products</Typography>
+                        <Typography data-testid="header" >Showing {listedProducts.length} products</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                     </Grid>
                     {
-                        allProducts.length && allProducts.map((item: any, index: number) => {
+                        listedProducts.length && listedProducts.map((item: any, index: number) => {
                             let platforms = allPlatforms.filter(p1 => item.platforms.some((p2: any) => p1.id === p2));
                             let devices = allDevices.filter(d1 => item.devices.some((d2: any) => d1.id === d2));
 
