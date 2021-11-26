@@ -41,13 +41,13 @@ const ProductsView = (props: any) => {
     const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
     const [selectedDevice, setSelectedDevice] = useState<any>('');
     const [selectedPlatform, setSelectedPlatform] = useState<any>('');
+    const [productsFetched, setProductsFetched] = useState<boolean>(false);
 
     const history = useHistory();
 
     useEffect(() => {
         fetchAllPlatforms();
         fetchAllDevices();
-        //    fetchAllTestSuites();
         fetchCampaignDetails();
     }, []);
 
@@ -98,7 +98,7 @@ const ProductsView = (props: any) => {
     const fetchCampaignDetails = () => {
         let products: any[] = [];
         Http.get({
-            url: `/api/v2/campaigns?status${STATUS_CAMPAIGN_ACTIVE}`,
+            url: `/api/v2/campaigns?status=${STATUS_CAMPAIGN_ACTIVE}`,
             state: stateVariable,
         })
             .then((response: any) => {
@@ -107,9 +107,11 @@ const ProductsView = (props: any) => {
                         products.push(item)
                     })
                 })
-                setAllProducts(products)
+                setAllProducts(products);
+                setProductsFetched(true);
             })
             .catch((error: any) => {
+                setProductsFetched(true);
                 const perror = JSON.stringify(error);
                 const object = JSON.parse(perror);
                 if (object.code === 401) {
@@ -185,7 +187,7 @@ const ProductsView = (props: any) => {
                     />
                 </Grid>
             </Grid>
-            {allProducts.length ?
+            {productsFetched ?
                 <Grid container spacing={2} >
                     <Grid item xs={12} sm={6}>
                         <Typography data-testid="header" >Showing {allProducts.length} products</Typography>
@@ -239,11 +241,11 @@ const ProductsView = (props: any) => {
                                                 </Button>
                                             </Grid>
                                         </Grid>
-                                    </Paper>
-                                </Grid>
+                                    </Paper >
+                                </Grid >
                             )
                         })}
-                </Grid>
+                </Grid >
                 : (
                     <Container className='loaderStyle'>
                         <Loader />
