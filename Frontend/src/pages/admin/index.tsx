@@ -563,6 +563,7 @@ export default function Admin() {
       case MANAGE_QUESTION:
         return (
           <ManageQuestion
+            handleCreateQuestion={handleCreateQuestion}
             editQuestionClicked={editQuestionClickHandler}
             goBack={switchToAdminHome}
           />
@@ -816,7 +817,7 @@ export default function Admin() {
           </ListItem>
         </List>
         <Divider />
-        <List disablePadding={true}>
+        {/* <List disablePadding={true}>
           <ListItem
             button
             onClick={handleCreateQuestion}
@@ -834,7 +835,7 @@ export default function Admin() {
             </Tooltip>
             <ListItemText primary={<Text tid="addTestCase2" />} />
           </ListItem>
-        </List>
+        </List> */}
         <List disablePadding={true}>
           <ListItem
             button

@@ -27,6 +27,7 @@ import Loader from "../../loader";
 import { Http } from "../../../utils";
 import { withRouter } from "react-router-dom";
 import { buttonStyle } from "../../../common/common";
+import AddIcon from "@material-ui/icons/Add";
 import PageSizeDropDown from "../../common/page-size-dropdown";
 import RenderPagination from "../../common/pagination";
 import SearchControl from "../../common/searchControl";
@@ -145,7 +146,6 @@ const ManageQuestion = (props: any) => {
       .then((response: any) => {
         setResponseReceived(true);
         setQuestions(response);
-        console.log(response, "response from questions");
         setAllQuestions(response);
         setBackdropOpen(false);
       })
@@ -238,6 +238,33 @@ const ManageQuestion = (props: any) => {
         <Backdrop className={classes.backdrop} open={backdropOpen}>
           <CircularProgress color="inherit" />
         </Backdrop>
+        <div style={{ width: "100%", marginBottom: "15px" }}>
+          <Grid container spacing={3}>
+            <Grid item sm={5}>
+              <Button
+                className={classes.backButton}
+                variant="outlined"
+                onClick={() => {
+                  props.handleCreateQuestion();
+                }}
+              >
+                <AddIcon fontSize="large" /> <Text tid="addTestCase2" />
+              </Button>
+            </Grid>
+            <Grid item sm={5}>
+              {/* <SearchControl
+                // searchString={searchString}
+                // handleSearch={handleSearch}
+                /> */}
+            </Grid>
+            <Grid item sm={2}>
+              {/* <PageSizeDropDown
+                // handleChange={handleChangeItemsPerPage}
+                // itemCount={itemsPerPage}
+                /> */}
+            </Grid>
+          </Grid>
+        </div>
         <div style={{ width: "100%" }}>
           <Grid container spacing={3}>
             <Grid item sm={5}>

@@ -162,21 +162,18 @@ const EditCampaign = (props: any) => {
         }
       });
   };
-
   const fetchAllTestSuites = () => {
     Http.get({
       url: `/api/v2/testSuite`,
       state: stateVariable,
     })
       .then((response: any) => {
-        console.log(response, "test suites");
-        response.testSuites.sort(
+        response.sort(
           (a: any /*IQuestionnaire*/, b: any /*IQuestionnaire*/) => {
             return a.name.localeCompare(b.name);
           }
         );
-        setAllTestSuites(response.testSuites);
-        console.log(allTestSuites, "all test suite");
+        setAllTestSuites(response);
       })
       .catch((error: any) => {
         const perror = JSON.stringify(error);
@@ -479,9 +476,9 @@ const EditCampaign = (props: any) => {
       let values: ICampaignInfo[] | undefined = temp.campaigns;
 
       if (values) {
-        let valueArray = values[0].products[index].platforms || [];
-        valueArray = [...event.target.value];
-        values[0].products[index].platforms = valueArray;
+        // let valueArray = values[0].products[index].platforms || [];
+        // valueArray = [...event.target.value];
+        values[0].products[index].platforms = event.target.value;
         setCampaignState(temp);
       }
     }
@@ -507,7 +504,9 @@ const EditCampaign = (props: any) => {
       let values: ICampaignInfo[] | undefined = temp.campaigns;
 
       if (values) {
-        values[0].products[index].testSuite = event.target.value;
+        let valueArray = values[0].products[index].testSuite || [];
+        valueArray = [...event.target.value];
+        values[0].products[index].testSuite = valueArray;
         setCampaignState(temp);
       }
     }
@@ -869,16 +868,16 @@ const EditCampaign = (props: any) => {
                               <Select
                                 id={`productPlatform_${index}`}
                                 name={`productPlatform_${index}`}
-                                multiple
+                                // multiple
                                 value={
                                   product.platforms ? product.platforms : []
                                 }
                                 onChange={(event) =>
                                   handleChangeProductPlatforms(event, index)
                                 }
-                                input={<Input id="select-multiple-chip" />}
-                                renderValue={renderChips}
-                                MenuProps={MenuProps}
+                                // input={<Input id="select-multiple-chip" />}
+                                // renderValue={renderChips}
+                                // MenuProps={MenuProps}
                               >
                                 {allPlatforms &&
                                   allPlatforms.map((opt: IPlatformInfo) => {
@@ -941,12 +940,16 @@ const EditCampaign = (props: any) => {
                               <Select
                                 id={`productTestSuite_${index}`}
                                 name={`productTestSuite_${index}`}
+                                multiple
                                 value={
-                                  product.testSuite ? product.testSuite : ""
+                                  product.testSuite ? product.testSuite : []
                                 }
                                 onChange={(event) =>
                                   handleChangeProductTestSuite(event, index)
                                 }
+                                input={<Input id="select-multiple-chip" />}
+                                renderValue={renderChips}
+                                MenuProps={MenuProps}
                               >
                                 {allTestSuites &&
                                   allTestSuites.map(

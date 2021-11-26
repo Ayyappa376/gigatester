@@ -146,7 +146,6 @@ const ManageQuestionnaires = (props: any) => {
   };
 
   const mapQuestionsClicked = (questionnaireSelected: any) => {
-    console.log(questionnaireSelected, "questionnaireSelected");
     props.handleMapQuestionStandalone(questionnaireSelected);
   };
 
@@ -167,7 +166,6 @@ const ManageQuestionnaires = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        console.log(response, "edit response");
         setBackdropOpen(false);
         fetchQuestionnaireList();
       })

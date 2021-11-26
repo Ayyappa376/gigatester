@@ -199,7 +199,7 @@ const Home = (props: any) => {
 
   const getTestSuites = () => {
     Http.get({
-      url: "/api/v2/testSuite",
+      url: "/api/v2/testSuite?status=all&latest=true",
       state: superUserStateVariable,
     })
       .then((response: any) => {
