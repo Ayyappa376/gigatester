@@ -30,13 +30,10 @@ interface PostTestSuite {
 
 async function handler(request: PostTestSuite, response: Response) {
   const { body, headers } = request;
-  console.log(request, "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
-  console.log(body,"bodyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy", headers , "heaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaadddddddddddddddders")
   try {
     if (body.type === 'update' && body.testSuite) {
       const create: TestSuite = body.testSuite;
       create.modifiedBy = headers.user.email;
-      console.log(create, "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF")
       // const latestTestSuite = await getTestSuitesId(
       //   create.id,
       // );
@@ -73,7 +70,6 @@ async function handler(request: PostTestSuite, response: Response) {
       if (done) {
         const err = new Error('Internal error.');
         appLogger.error(err, 'Internal error.');
-        console.log(response, "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
         return responseBuilder.internalServerError(err, response);
       }
       return responseBuilder.ok({ message: 'created' }, response);
