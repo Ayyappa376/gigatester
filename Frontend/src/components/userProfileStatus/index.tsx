@@ -142,7 +142,7 @@ export default function UserProfileStatus(props: any) {
             <Typography style={{ margin: "5px", marginRight: "80px" }}>
               Status
             </Typography>
-            <Button style={{ color: "red" }}>InComplete</Button>
+            <Button style={{ color: "green" }}>Completed</Button>
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12}>
