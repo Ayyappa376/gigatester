@@ -89,7 +89,7 @@ async function handler(request: AssessmentQuestionRequest, response: Response) {
     }
     questionDetails.randomize = await getRandomize(
       quesType,
-      questionnaireVersion
+      // questionnaireVersion
     );
     return responseBuilder.ok(questionDetails, response);
   } catch (err) {

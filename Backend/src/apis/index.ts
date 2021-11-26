@@ -44,6 +44,10 @@ import { api as deleteUsersV2 } from './v2/userManagement/delete';
 import { api as getUserstV2 } from './v2/userManagement/get';
 import { api as createUsersV2 } from './v2/userManagement/post';
 import { api as updateUsersV2 } from './v2/userManagement/put';
+import { api as getTestSuiteV2 } from './v2/testSuite/get';
+import { api as putTestSuiteV2 } from './v2/testSuite/put';
+import { api as postTestSuiteV2 } from './v2/testSuite/post';
+
 
 import { api as buildMetrics } from './metrics/builds/get';
 import { api as doraMetrics } from './metrics/dora/get';
@@ -106,7 +110,10 @@ const apis: API[] = [
   updateQuestionV2,
   dowloadReportsV2,
   getUploadSoftwareV2,
-  postUploadSoftwareV2
+  postUploadSoftwareV2,
+  getTestSuiteV2,
+  putTestSuiteV2,
+  postTestSuiteV2,
 ];
 
 const metricsApis: API[] = [

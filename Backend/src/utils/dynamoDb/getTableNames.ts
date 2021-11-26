@@ -24,6 +24,10 @@ export function getQuestionnairesTableName(): string {
   return `${config.defaults.orgId}_${config.tables.questionnaires}`;
 }
 
+export function getTestSuitesTableName(): string {
+  return `${config.defaults.orgId}_${config.tables.testSuites}`;
+}
+
 export function getQuestionsTableName(): string {
   return `${config.defaults.orgId}_${config.tables.questions}`;
 }

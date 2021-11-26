@@ -534,11 +534,17 @@ export default function Admin() {
       case EDIT_DEVICE:
         return <EditDevice deviceId={focusDeviceId} goBack={switchPage} />;
       case CREATE_QUESTIONNAIRE:
-        return <CreateQuestionnaire goBack={switchToAdminHome} />;
+        return (
+          <CreateQuestionnaire
+            handleMapQuestionStandalone={switchToMapQuestionsStandalone}
+            goBack={switchToAdminHome}
+          />
+        );
       case MANAGE_QUESTIONNAIRES:
         return (
           <ManageAssessments
             handleEditQuestionnaire={switchToEditQuestionnaire}
+            handleCreateQuestionnaire={handleCreateQuestionnaire}
             handleMapQuestionStandalone={switchToMapQuestionsStandalone}
             goBack={switchToAdminHome}
           />
@@ -557,6 +563,7 @@ export default function Admin() {
       case MANAGE_QUESTION:
         return (
           <ManageQuestion
+            handleCreateQuestion={handleCreateQuestion}
             editQuestionClicked={editQuestionClickHandler}
             goBack={switchToAdminHome}
           />
@@ -771,7 +778,7 @@ export default function Admin() {
           </ListItem>
         </List>
         <Divider />
-        <List disablePadding={true}>
+        {/* <List disablePadding={true}>
           <ListItem
             button
             onClick={handleCreateQuestionnaire}
@@ -789,7 +796,7 @@ export default function Admin() {
             </Tooltip>
             <ListItemText primary={<Text tid="addTestSuit2" />} />
           </ListItem>
-        </List>
+        </List> */}
         <List disablePadding={true}>
           <ListItem
             button
@@ -810,7 +817,7 @@ export default function Admin() {
           </ListItem>
         </List>
         <Divider />
-        <List disablePadding={true}>
+        {/* <List disablePadding={true}>
           <ListItem
             button
             onClick={handleCreateQuestion}
@@ -828,7 +835,7 @@ export default function Admin() {
             </Tooltip>
             <ListItemText primary={<Text tid="addTestCase2" />} />
           </ListItem>
-        </List>
+        </List> */}
         <List disablePadding={true}>
           <ListItem
             button

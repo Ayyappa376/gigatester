@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from "react";
 import {
   Typography,
   Grid,
@@ -15,19 +15,19 @@ import {
   Snackbar,
   SnackbarContent,
   Tooltip,
-} from '@material-ui/core';
-import { Http } from '../../../utils';
-import { IRootState } from '../../../reducers';
-import { useSelector } from 'react-redux';
-import Success from '../../success-page';
-import { withRouter } from 'react-router-dom';
-import { buttonStyle, tooltipTheme } from '../../../common/common';
-import { ADMIN_HOME } from '../../../pages/admin';
-import DropDown from '../../common/dropDown';
-import { ModalComponent } from '../../modal';
-import InfoIcon from '@material-ui/icons/Info';
-import { Text } from '../../../common/Language';
-import '../../../css/assessments/style.css';
+} from "@material-ui/core";
+import { Http } from "../../../utils";
+import { IRootState } from "../../../reducers";
+import { useSelector } from "react-redux";
+import Success from "../../success-page";
+import { withRouter } from "react-router-dom";
+import { buttonStyle, tooltipTheme } from "../../../common/common";
+import { ADMIN_HOME } from "../../../pages/admin";
+import DropDown from "../../common/dropDown";
+import { ModalComponent } from "../../modal";
+import InfoIcon from "@material-ui/icons/Info";
+import { Text } from "../../../common/Language";
+import "../../../css/assessments/style.css";
 
 export const numberOfOptionsArray = [2, 3, 4, 5, 6, 7];
 
@@ -46,40 +46,40 @@ export interface IQuestionDetails {
   hint?: string;
   hintURL?: string;
   id: string;
-  level: 'Low' | 'Medium' | 'High';
+  level: "Low" | "Medium" | "High";
   question: string;
   scoreObtained?: number;
   thresholdScore?: number;
   type: string;
   numberOfAnswers: number;
   NA?: boolean;
-  version: number;
+  // version?: number;
   reason?: boolean;
 }
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
+    marginTop: "36px",
+    position: "relative",
+    minWidth: "10%",
     ...buttonStyle,
   },
   grid: {
     marginTop: theme.spacing(2),
   },
   formContainer: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    marginTop: '10px',
+    display: "flex",
+    flexWrap: "wrap",
+    marginTop: "10px",
   },
   formControl: {
-    minWidth: '100%',
+    minWidth: "100%",
   },
   backButton: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
-    marginRight: '20px',
+    marginTop: "36px",
+    position: "relative",
+    minWidth: "10%",
+    marginRight: "20px",
     ...buttonStyle,
   },
 }));
@@ -87,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
 const CreateQuestion = (props: any) => {
   const classes = useStyles();
   const emptyAnswer: IAnswer = {
-    answer: '',
+    answer: "",
     weightageFactor: 1,
   };
   const [answerVariable, setAnswerVariable] = useState<IAnswer[]>([
@@ -96,7 +96,7 @@ const CreateQuestion = (props: any) => {
   const [questionPosted, setQuestionPosted] = useState(false);
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
+    <Text tid="somethingWentWrong" />
   );
   const [numberOfOptions, setNumberOfOptions] = useState(2);
   const [proposedNumberOfOptions, setProposedNumberOfOptions] = useState(0);
@@ -104,14 +104,14 @@ const CreateQuestion = (props: any) => {
   const [openConfirmationModal, setOpenConfirmationModal] = useState(false);
   const defaultPostData: IQuestionDetails = {
     answers: {},
-    comments: '',
-    id: 'ques',
-    version: 1,
-    question: '',
-    type: 'select',
+    comments: "",
+    id: "ques",
+    // version: 1,
+    question: "",
+    type: "select",
     numberOfAnswers: 1,
     NA: false,
-    level: 'Low',
+    level: "Low",
     reason: false,
   };
   const [postData, setPostData] = useState<IQuestionDetails>(defaultPostData);
@@ -119,7 +119,7 @@ const CreateQuestion = (props: any) => {
     return state;
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='testCaseIsCreated' />;
+  let msgSuccess = <Text tid="testCaseIsCreated" />;
 
   const handleAnswerChangeValue = (event: any, i: number) => {
     const answerCopy = [...answerVariable];
@@ -138,21 +138,21 @@ const CreateQuestion = (props: any) => {
     let validAnswer = true;
     let iteration = 0;
     for (const answer of answerVariable) {
-      if (answer.answer === '') {
+      if (answer.answer === "") {
         setFailure(true);
-        setFailureMessage(<Text tid='answerCannotBeBlank' />);
+        setFailureMessage(<Text tid="answerCannotBeBlank" />);
         return false;
       }
       if (!weightageFactorArray.includes(answer.weightageFactor)) {
         setFailure(true);
-        setFailureMessage(<Text tid='weightageFactorCannotBeBlank' />);
+        setFailureMessage(<Text tid="weightageFactorCannotBeBlank" />);
         return false;
       }
       answerVariable.forEach((el, i: number) => {
         if (i !== iteration) {
           if (
             el.weightageFactor === answer.weightageFactor &&
-            postData.type === 'select'
+            postData.type === "select"
           ) {
             validWeightage = false;
           } else if (el.answer === answer.answer) {
@@ -167,32 +167,32 @@ const CreateQuestion = (props: any) => {
     }
     if (!validAnswer) {
       setFailure(true);
-      setFailureMessage(<Text tid='answerMustBeUnique' />);
+      setFailureMessage(<Text tid="answerMustBeUnique" />);
       return false;
     }
     setFailure(true);
-    setFailureMessage(<Text tid='useDistinctWeightages' />);
+    setFailureMessage(<Text tid="useDistinctWeightages" />);
     return false;
   };
 
   const validatePostData = () => {
-    if (postData.question === '') {
+    if (postData.question === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testCaseCannotBeEmpty' />);
+      setFailureMessage(<Text tid="testCaseCannotBeEmpty" />);
       return {};
     }
     if (answerVariable.length < 2) {
       setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoAnswerOptions' />);
+      setFailureMessage(<Text tid="atleastTwoAnswerOptions" />);
       return {};
     }
     const answersValid = validateAnswers();
     if (!answersValid) {
       return {};
     }
-    if (postData.comments === '') {
+    if (postData.comments === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='recommendationsCannotBeEmpty' />);
+      setFailureMessage(<Text tid="recommendationsCannotBeEmpty" />);
       return {};
     }
     const answersData: IAnswers = {};
@@ -204,6 +204,7 @@ const CreateQuestion = (props: any) => {
 
   const handleSubmit = () => {
     const dataValid = validatePostData();
+    console.log(dataValid);
     if (Object.keys(dataValid).length > 0) {
       Http.post({
         url: `/api/v2/admin/createquestion`,
@@ -224,9 +225,9 @@ const CreateQuestion = (props: any) => {
             setFailureMessage(object.apiError.msg);
             setFailure(true);
           } else if (object.code === 401) {
-            props.history.push('/relogin');
+            props.history.push("/relogin");
           } else {
-            setFailureMessage(<Text tid='somethingWentWrong' />);
+            setFailureMessage(<Text tid="somethingWentWrong" />);
             setFailure(true);
           }
         });
@@ -246,10 +247,10 @@ const CreateQuestion = (props: any) => {
   };
 
   const changeMultiSelect = () => {
-    if (postData.type === 'select') {
-      setPostData({ ...postData, type: 'multi-select' });
+    if (postData.type === "select") {
+      setPostData({ ...postData, type: "multi-select" });
     } else {
-      setPostData({ ...postData, type: 'select', numberOfAnswers: 1 });
+      setPostData({ ...postData, type: "select", numberOfAnswers: 1 });
     }
   };
 
@@ -336,8 +337,8 @@ const CreateQuestion = (props: any) => {
         }}
         value={numberOfOptions}
         list={numberOfOptionsArray}
-        label={'Choose Total Number Of Options'}
-        dropDownClass='dropdownWidth'
+        label={"Choose Total Number Of Options"}
+        dropDownClass="dropdownWidth"
       />
     );
   };
@@ -345,17 +346,17 @@ const CreateQuestion = (props: any) => {
   const renderAnswers = (el: IAnswer, i: number) => {
     return (
       <Fragment key={i}>
-        <form className={classes.formContainer} noValidate autoComplete='off'>
+        <form className={classes.formContainer} noValidate autoComplete="off">
           <Grid container spacing={3}>
             <Grid item xs={9}>
               <TextField
                 multiline
-                variant='outlined'
-                type='string'
+                variant="outlined"
+                type="string"
                 id={i.toString()}
                 name={i.toString()}
                 value={el.answer}
-                label={'Answer'}
+                label={"Answer"}
                 onChange={(event: any) => {
                   handleAnswerChangeValue(event, i);
                 }}
@@ -369,8 +370,8 @@ const CreateQuestion = (props: any) => {
                 }}
                 value={el.weightageFactor}
                 list={weightageFactorArray}
-                label={'Choose Weightage Factor'}
-                dropDownClass='dropdownWidth'
+                label={"Choose Weightage Factor"}
+                dropDownClass="dropdownWidth"
               />
             </Grid>
           </Grid>
@@ -392,13 +393,13 @@ const CreateQuestion = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className='bottomButtonsContainer'>
+          <div className="bottomButtonsContainer">
             <Button
               className={classes.backButton}
-              variant='outlined'
+              variant="outlined"
               onClick={resetState}
             >
-              <Text tid='goBack' />
+              <Text tid="goBack" />
             </Button>
           </div>
         </Fragment>
@@ -411,10 +412,10 @@ const CreateQuestion = (props: any) => {
             <TextField
               required
               multiline
-              id='QuestionName'
-              name='QuestionName'
-              variant='outlined'
-              label='Test Case'
+              id="QuestionName"
+              name="QuestionName"
+              variant="outlined"
+              label="Test Case"
               fullWidth
               onChange={updateQuestionName}
             />
@@ -430,13 +431,13 @@ const CreateQuestion = (props: any) => {
             <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography className='tooltipTitleStyle'>
-                    <Text tid='selectTheWeightageFactor' />
+                  <Typography className="tooltipTitleStyle">
+                    <Text tid="selectTheWeightageFactor" />
                   </Typography>
                 }
-                placement='right'
+                placement="right"
               >
-                <InfoIcon className='infoIconStyle' />
+                <InfoIcon className="infoIconStyle" />
               </Tooltip>
             </MuiThemeProvider>
           </Grid>
@@ -447,10 +448,10 @@ const CreateQuestion = (props: any) => {
             <TextField
               required
               multiline
-              variant='outlined'
-              id='recommendation'
-              name='recommendation'
-              label='Add recommendation'
+              variant="outlined"
+              id="recommendation"
+              name="recommendation"
+              label="Add recommendation"
               fullWidth
               onChange={updateRecommendation}
             />
@@ -460,10 +461,10 @@ const CreateQuestion = (props: any) => {
           <Grid item xs={12} sm={12}>
             <TextField
               multiline
-              variant='outlined'
-              id='hint'
-              name='hint'
-              label='Add hint'
+              variant="outlined"
+              id="hint"
+              name="hint"
+              label="Add hint"
               onChange={updateHint}
               fullWidth
             />
@@ -473,32 +474,32 @@ const CreateQuestion = (props: any) => {
           <Grid item xs={12} sm={6}>
             <TextField
               multiline
-              variant='outlined'
-              id='hintUrl'
-              name='hintUrl'
-              label='Add hint-url'
+              variant="outlined"
+              id="hintUrl"
+              name="hintUrl"
+              label="Add hint-url"
               onChange={updateHintUrl}
               fullWidth
             />
           </Grid>
           <Grid item xs={12} sm={6}>
             <FormControl className={classes.formControl}>
-              <InputLabel id='demo-simple-select-label' required={true}>
-                <Text tid='productRating' />
+              <InputLabel id="demo-simple-select-label" required={true}>
+                <Text tid="productRating" />
               </InputLabel>
               <Select
-                name={'level'}
+                name={"level"}
                 value={postData.level}
                 onChange={handleChangeLevelValue}
               >
-                <MenuItem key={'High'} value={'High'}>
-                  <Text tid='high' />
+                <MenuItem key={"High"} value={"High"}>
+                  <Text tid="high" />
                 </MenuItem>
-                <MenuItem key={'Medium'} value={'Medium'}>
-                  <Text tid='medium' />
+                <MenuItem key={"Medium"} value={"Medium"}>
+                  <Text tid="medium" />
                 </MenuItem>
-                <MenuItem key={'Low'} value={'Low'}>
-                  <Text tid='low' />
+                <MenuItem key={"Low"} value={"Low"}>
+                  <Text tid="low" />
                 </MenuItem>
               </Select>
             </FormControl>
@@ -508,10 +509,10 @@ const CreateQuestion = (props: any) => {
           <Grid item xs={12} sm={3}>
             {/* <div className={classes.numberInput}> */}
             <TextField
-              type='number'
-              id='thresholdScore'
-              name='thresholdScore'
-              label='Threshold Score'
+              type="number"
+              id="thresholdScore"
+              name="thresholdScore"
+              label="Threshold Score"
               fullWidth
               value={postData.thresholdScore}
               onChange={updateThresholdScore}
@@ -525,14 +526,14 @@ const CreateQuestion = (props: any) => {
             <FormControlLabel
               control={
                 <Checkbox
-                  checked={postData.type === 'multi-select'}
+                  checked={postData.type === "multi-select"}
                   onChange={changeMultiSelect}
-                  value='multi-select'
+                  value="multi-select"
                 />
               }
               label={
-                <Typography color='textSecondary'>
-                  <Text tid='multiSelect' />
+                <Typography color="textSecondary">
+                  <Text tid="multiSelect" />
                 </Typography>
               }
             />
@@ -541,14 +542,14 @@ const CreateQuestion = (props: any) => {
             {/* <div className={classes.numberInput}> */}
             <TextField
               required
-              type='number'
-              id='numberOfAnswers'
-              name='numberOfAnswers'
-              label='Number Of Answers'
+              type="number"
+              id="numberOfAnswers"
+              name="numberOfAnswers"
+              label="Number Of Answers"
               fullWidth
               value={postData.numberOfAnswers}
               onChange={updateNumberOfAnswers}
-              disabled={postData.type === 'select'}
+              disabled={postData.type === "select"}
               InputProps={{ disableUnderline: true }}
             />
             {/* </div> */}
@@ -561,12 +562,12 @@ const CreateQuestion = (props: any) => {
                 <Checkbox
                   checked={postData.NA}
                   onChange={changeNaFlag}
-                  value='na'
+                  value="na"
                 />
               }
               label={
-                <Typography color='textSecondary'>
-                  <Text tid='addNotApplicableOption' />
+                <Typography color="textSecondary">
+                  <Text tid="addNotApplicableOption" />
                 </Typography>
               }
             />
@@ -579,63 +580,63 @@ const CreateQuestion = (props: any) => {
                 <Checkbox
                   checked={postData.reason}
                   onChange={changeReasonFlag}
-                  value='reason'
+                  value="reason"
                 />
               }
               label={
-                <Typography color='textSecondary'>
-                  <Text tid='reason' />
+                <Typography color="textSecondary">
+                  <Text tid="reason" />
                 </Typography>
               }
             />
             <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
-                  <Typography className='tooltipTitleStyle'>
-                    <Text tid='reasonForThisSelection' />
+                  <Typography className="tooltipTitleStyle">
+                    <Text tid="reasonForThisSelection" />
                   </Typography>
                 }
-                placement='right'
+                placement="right"
               >
-                <InfoIcon className='infoIconStyle' />
+                <InfoIcon className="infoIconStyle" />
               </Tooltip>
             </MuiThemeProvider>
           </Grid>
         </Grid>
-        <div className='bottomButtonsContainer'>
+        <div className="bottomButtonsContainer">
           <Button
             className={classes.backButton}
-            variant='outlined'
+            variant="outlined"
             onClick={() => {
               props.goBack(ADMIN_HOME);
             }}
           >
-            <Text tid='goBack' />
+            <Text tid="goBack" />
           </Button>
           <Button
             className={classes.button}
             onClick={handleSubmit}
-            variant='outlined'
+            variant="outlined"
           >
-            <Text tid='submit' />
+            <Text tid="submit" />
           </Button>
         </div>
         <Snackbar
-          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          anchorOrigin={{ vertical: "top", horizontal: "center" }}
           open={failure}
           onClose={handleClose}
           autoHideDuration={9000}
         >
           <SnackbarContent
             style={{
-              backgroundColor: '#dd0000',
+              backgroundColor: "#dd0000",
             }}
             message={msgFailure}
           />
         </Snackbar>
         <ModalComponent
           openModal={openConfirmationModal}
-          message={'deleteTheExtraNumberOfOptionsFromTheEnd'}
+          message={"deleteTheExtraNumberOfOptionsFromTheEnd"}
           handleModalNoClicked={confirmationModalNoClicked}
           handleModalYesClicked={confirmationModalYesClicked}
         />
