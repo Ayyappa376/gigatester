@@ -70,7 +70,7 @@ function LinearProgressWithLabel(props: any) {
 
 export default function UserProfileStatus(props: any) {
   const classes = useStyles();
-  const [progress, setProgress] = React.useState(100);
+  const [progress, setProgress] = React.useState(10);
   const history = useHistory();
 
   useEffect(() => {
@@ -142,7 +142,7 @@ export default function UserProfileStatus(props: any) {
             <Typography style={{ margin: "5px", marginRight: "80px" }}>
               Status
             </Typography>
-            <Button style={{ color: "green" }}>Completed</Button>
+            <Button style={{ color: progress < 100 ? "red" : "green" }}>{progress < 100 ? 'Incomplete' : 'Completed'}</Button>
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12}>
