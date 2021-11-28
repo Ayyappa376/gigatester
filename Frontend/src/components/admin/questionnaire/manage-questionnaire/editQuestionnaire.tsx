@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from "react";
 import {
   Typography,
   Grid,
@@ -14,36 +14,36 @@ import {
   Backdrop,
   CircularProgress,
   Tooltip,
-} from '@material-ui/core';
-import { buttonStyle, tooltipTheme } from '../../../../common/common';
-import ClearIcon from '@material-ui/icons/Clear';
-import AddIcon from '@material-ui/icons/Add';
-import { MANAGE_QUESTIONNAIRES } from '../../../../pages/admin';
-import { Http } from '../../../../utils';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../../../reducers';
-import Success from '../../../success-page';
-import { withRouter } from 'react-router-dom';
+} from "@material-ui/core";
+import { buttonStyle, tooltipTheme } from "../../../../common/common";
+import ClearIcon from "@material-ui/icons/Clear";
+import AddIcon from "@material-ui/icons/Add";
+import { MANAGE_QUESTIONNAIRES } from "../../../../pages/admin";
+import { Http } from "../../../../utils";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../../../reducers";
+import Success from "../../../success-page";
+import { withRouter } from "react-router-dom";
 import MapQuestionsToQuestionnaires, {
   ICategoriesMap,
-} from '../common/map_questions';
-import { Loader } from '../../..';
-import { IQuestionnaireData } from '../create-questionnaire';
-import { ModalComponent } from '../../../modal';
-import InfoIcon from '@material-ui/icons/Info';
-import { useActions, setAppBarCenterText } from '../../../../actions';
-import DropDown from '../../../common/dropDown';
-import { Text } from '../../../../common/Language';
-import '../../../../css/assessments/style.css';
+} from "../common/map_questions";
+import { Loader } from "../../..";
+import { IQuestionnaireData } from "../create-questionnaire";
+import { ModalComponent } from "../../../modal";
+import InfoIcon from "@material-ui/icons/Info";
+import { useActions, setAppBarCenterText } from "../../../../actions";
+import DropDown from "../../../common/dropDown";
+import { Text } from "../../../../common/Language";
+import "../../../../css/assessments/style.css";
 
 const warningTimePercentageArray = [0, 10, 15, 20, 25, 30, 35, 40, 45, 50];
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
-    marginRight: '20px',
+    marginTop: "36px",
+    position: "relative",
+    minWidth: "10%",
+    marginRight: "20px",
     ...buttonStyle,
   },
   grid: {
@@ -51,19 +51,19 @@ const useStyles = makeStyles((theme) => ({
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
 }));
 
 const EditQuestionnaire = (props: any) => {
   const classes = useStyles();
   const [questionnairePosted, setQuestionnairePosted] = useState(false);
-  const [categoryArray, setCategoryArray] = useState<string[]>(['']);
+  const [categoryArray, setCategoryArray] = useState<string[]>([""]);
   const [dataFetched, setDataFetched] = useState(false);
   const [failure, setFailure] = useState(false);
   const [mapQuestions, setMapQuestions] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
+    <Text tid="somethingWentWrong" />
   );
   const [showModal, setShowModal] = useState(false);
   const [backdropOpen, setBackdropOpen] = useState(false);
@@ -71,8 +71,8 @@ const EditQuestionnaire = (props: any) => {
     return state;
   });
   const emptyPostData: IQuestionnaireData = {
-    name: '',
-    description: '',
+    name: "",
+    description: "",
     randomize: false,
     categories: [],
     categoriesMap: {},
@@ -86,19 +86,22 @@ const EditQuestionnaire = (props: any) => {
   const [postData, setPostData] = useState<IQuestionnaireData>(emptyPostData);
   const setCenterDisplayText = useActions(setAppBarCenterText);
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='testSuitIsUpdated' />;
+  let msgSuccess = <Text tid="testSuitIsUpdated" />;
 
   useEffect(() => {
     setMapQuestions(props.isMapQuestions);
     setCenterDisplayText(props.questionnaire.name);
+    console.log(props.questionnaire);
     Http.get({
-      url: `/api/v2/questionnaire?questionnaireId=${props.questionnaire.questionnaireId}&questionnaireVersion=${props.questionnaire.version}`,
+      url: `/api/v2/testSuite?id=${props.questionnaire.id}`,
       state: stateVariable,
     })
       .then((response: any) => {
         setPostData(response);
-        setCategoryArray([...response.categories, '']);
+        console.log(response, "questionarie IDS");
+        setCategoryArray([...response.categories, ""]);
         setDataFetched(true);
+        console.log(categoryArray, "category array");
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
@@ -107,67 +110,72 @@ const EditQuestionnaire = (props: any) => {
           setFailureMessage(object.apiError.msg);
           setFailure(true);
         } else if (object.code === 401) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else {
-          setFailureMessage(<Text tid='somethingWentWrong' />);
+          console.log(error, "error");
+          setFailureMessage(<Text tid="somethingWentWrong" />);
           setFailure(true);
         }
       });
 
     return () => {
-      setCenterDisplayText('');
+      setCenterDisplayText("");
     };
   }, []);
 
   const handleSave = (isMapQuestion?: boolean) => {
-    if (postData.name === '') {
+    if (postData.name === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
-    } else if (postData.description === '') {
+      setFailureMessage(<Text tid="testSuitNameCannotBeBlank" />);
+    } else if (postData.description === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
-    } else if (categoryArray.length === 1 && categoryArray[0] === '') {
+      setFailureMessage(<Text tid="testSuitDescriptionCannotBeBlank" />);
+    } else if (categoryArray.length === 1 && categoryArray[0] === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='addCategoriesToTheTestSuit' />);
-    } else if (
-      categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ''
-    ) {
-      setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
-    } else if (
+      setFailureMessage(<Text tid="addCategoriesToTheTestSuit" />);
+    }
+    // else if (
+    //   categoryArray.length === 2 &&
+    //   categoryArray[categoryArray.length - 1] === ""
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    // }
+    else if (
       categoryArray.indexOf(categoryArray[categoryArray.length - 1]) !==
       categoryArray.length - 1
     ) {
       // here we are checking if the last category entered by user isn't already present in the categoryArray
       // Other elements are checked when the user presses the + button.
       setFailure(true);
-      setFailureMessage(<Text tid='categoryAlreadyExists' />);
-    } else if (postData.timeOut && !postData.timeOutTime) {
-      setFailure(true);
-      setFailureMessage(<Text tid='invalidTimeOutTime' />);
-    } else if (
-      postData.timeOut &&
-      postData.timeOutTime &&
-      postData.timeOutTime < 5
-    ) {
-      setFailure(true);
-      setFailureMessage(
-        <Text tid='timeOutTimeCannotBeLesserThanFiveMinutes' />
-      );
-    } else if (
-      postData.benchmarkScore &&
-      (postData.benchmarkScore < 50 || postData.benchmarkScore > 100)
-    ) {
-      setFailure(true);
-      setFailureMessage(
-        <Text tid='benchmarkScoreShouldHaveValueBetweenFiftyAndHundred' />
-      );
-      return {};
-    } else {
+      setFailureMessage(<Text tid="categoryAlreadyExists" />);
+    }
+    // else if (postData.timeOut && !postData.timeOutTime) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="invalidTimeOutTime" />);
+    // } else if (
+    //   postData.timeOut &&
+    //   postData.timeOutTime &&
+    //   postData.timeOutTime < 5
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(
+    //     <Text tid="timeOutTimeCannotBeLesserThanFiveMinutes" />
+    //   );
+    // } else if (
+    //   postData.benchmarkScore &&
+    //   (postData.benchmarkScore < 50 || postData.benchmarkScore > 100)
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(
+    //     <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
+    //   );
+    //   return {};
+    // }
+    else {
       const validatedData = { ...postData };
       validatedData.categories = [...categoryArray];
-      const indexOfNullString = validatedData.categories.indexOf('');
+      const indexOfNullString = validatedData.categories.indexOf("");
       if (indexOfNullString >= 0) {
         validatedData.categories.splice(indexOfNullString, 1);
       }
@@ -176,15 +184,16 @@ const EditQuestionnaire = (props: any) => {
       setBackdropOpen(true);
       if (Object.keys(validatedData).length > 0) {
         Http.put({
-          url: '/api/v2/questionnaire',
+          url: "/api/v2/testSuite",
           body: {
-            type: 'update',
-            questionnaire: validatedData,
+            type: "update",
+            testSuite: validatedData,
           },
           state: stateVariable,
         })
           .then((response: any) => {
             setBackdropOpen(false);
+            console.log(response);
             if (isMapQuestion) {
               setMapQuestions(true);
             } else {
@@ -199,10 +208,10 @@ const EditQuestionnaire = (props: any) => {
               setFailureMessage(object.apiError.msg);
               setFailure(true);
             } else if (object.code === 401) {
-              props.history.push('/relogin');
+              props.history.push("/relogin");
             } else {
               setBackdropOpen(false);
-              setFailureMessage(<Text tid='somethingWentWrong' />);
+              setFailureMessage(<Text tid="somethingWentWrong" />);
               setFailure(true);
             }
           });
@@ -237,43 +246,43 @@ const EditQuestionnaire = (props: any) => {
   };
 
   const validatePostData = (categoriesMapped: ICategoriesMap) => {
-    if (postData.name === '') {
+    if (postData.name === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitNameCannotBeBlank' />);
+      setFailureMessage(<Text tid="testSuitNameCannotBeBlank" />);
       return {};
     }
-    if (postData.description === '') {
+    if (postData.description === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='testSuitDescriptionCannotBeBlank' />);
+      setFailureMessage(<Text tid="testSuitDescriptionCannotBeBlank" />);
       return {};
     }
-    if (categoryArray.length < 2) {
-      setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
-      return {};
-    }
-    if (
-      categoryArray.length === 2 &&
-      categoryArray[categoryArray.length - 1] === ''
-    ) {
-      setFailure(true);
-      setFailureMessage(<Text tid='atleastTwoCategoriesShouldBeThere' />);
-      return {};
-    }
-    if (postData.benchmarkScore) {
-      if (postData.benchmarkScore < 50 || postData.benchmarkScore > 100) {
-        setFailure(true);
-        setFailureMessage(
-          <Text tid='benchmarkScoreShouldHaveValueBetweenFiftyAndHundred' />
-        );
-        return {};
-      }
-    }
+    // if (categoryArray.length < 2) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    //   return {};
+    // }
+    // if (
+    //   categoryArray.length === 2 &&
+    //   categoryArray[categoryArray.length - 1] === ""
+    // ) {
+    //   setFailure(true);
+    //   setFailureMessage(<Text tid="atleastTwoCategoriesShouldBeThere" />);
+    //   return {};
+    // }
+    // if (postData.benchmarkScore) {
+    //   if (postData.benchmarkScore < 50 || postData.benchmarkScore > 100) {
+    //     setFailure(true);
+    //     setFailureMessage(
+    //       <Text tid="benchmarkScoreShouldHaveValueBetweenFiftyAndHundred" />
+    //     );
+    //     return {};
+    //   }
+    // }
 
     const postDataCopy = { ...postData };
     if (Object.keys(categoriesMapped).length === 0) {
       setFailure(true);
-      setFailureMessage(<Text tid='mapTestCasesBeforeProceeding' />);
+      setFailureMessage(<Text tid="mapTestCasesBeforeProceeding" />);
       return {};
     }
     const questionArray: string[] = [];
@@ -286,7 +295,7 @@ const EditQuestionnaire = (props: any) => {
     postDataCopy.questions = questionArray;
     postDataCopy.categoriesMap = categoriesMapped;
     postDataCopy.categories = categoryArray;
-    const indexOfNullString = postDataCopy.categories.indexOf('');
+    const indexOfNullString = postDataCopy.categories.indexOf("");
     if (indexOfNullString >= 0) {
       postDataCopy.categories.splice(indexOfNullString, 1);
     }
@@ -323,7 +332,7 @@ const EditQuestionnaire = (props: any) => {
       setPostData({
         ...postData,
         timeOut: !postData.timeOut,
-        timeOutTime: parseInt('', 10),
+        timeOutTime: parseInt("", 10),
       });
     } else {
       setPostData({
@@ -363,7 +372,7 @@ const EditQuestionnaire = (props: any) => {
     });
     if (isMapped) {
       setFailure(true);
-      setFailureMessage(<Text tid='cannotDeleteCategoryMappedToTestCase' />);
+      setFailureMessage(<Text tid="cannotDeleteCategoryMappedToTestCase" />);
     } else {
       const categoryArrayCopy = [...categoryArray];
       categoryArrayCopy.splice(i, 1);
@@ -372,9 +381,9 @@ const EditQuestionnaire = (props: any) => {
   };
 
   const addCategory = (i: number) => {
-    if (categoryArray[categoryArray.length - 1] === '') {
+    if (categoryArray[categoryArray.length - 1] === "") {
       setFailure(true);
-      setFailureMessage(<Text tid='enterValidCategory' />);
+      setFailureMessage(<Text tid="enterValidCategory" />);
     } else {
       let validCategory = true;
       categoryArray.forEach((el: any, i: number) => {
@@ -386,11 +395,11 @@ const EditQuestionnaire = (props: any) => {
       });
       if (validCategory) {
         const categoryArrayCopy = [...categoryArray];
-        categoryArrayCopy.push('');
+        categoryArrayCopy.push("");
         setCategoryArray(categoryArrayCopy);
       } else {
         setFailure(true);
-        setFailureMessage(<Text tid='categoryAlreadyExists' />);
+        setFailureMessage(<Text tid="categoryAlreadyExists" />);
       }
     }
   };
@@ -399,10 +408,10 @@ const EditQuestionnaire = (props: any) => {
     const validatedData = validatePostData(mappedQuestions);
     if (Object.keys(validatedData).length > 0) {
       Http.put({
-        url: '/api/v2/questionnaire',
+        url: "/api/v2/testSuite",
         body: {
-          type: 'update',
-          questionnaire: validatedData,
+          type: "update",
+          testSuite: validatedData,
         },
         state: stateVariable,
       })
@@ -417,13 +426,14 @@ const EditQuestionnaire = (props: any) => {
             setFailureMessage(object.apiError.msg);
             setFailure(true);
           } else if (object.code === 401) {
-            props.history.push('/relogin');
-          } else if (perror === '{}') {
+            props.history.push("/relogin");
+          } else if (perror === "{}") {
             setMapQuestions(false);
             setQuestionnairePosted(true);
           } else {
-            setFailureMessage(<Text tid='somethingWentWrong' />);
+            setFailureMessage(<Text tid="somethingWentWrong" />);
             setFailure(true);
+            console.log(error);
           }
         });
     }
@@ -446,7 +456,7 @@ const EditQuestionnaire = (props: any) => {
     props.handleMapQuestionStandalone(props.questionnaire);
     return (
       <MapQuestionsToQuestionnaires
-        questionnaire={`${props.questionnaire.name} v${props.questionnaire.version}`}
+        questionnaire={`${props.questionnaire.name}`}
         categories={categoryArray}
         categoriesMap={postData.categoriesMap}
         onBack={handleMapQuestionsBackButton}
@@ -468,11 +478,11 @@ const EditQuestionnaire = (props: any) => {
             <Grid item xs={5}>
               <TextField
                 required={categoryArray.length <= 2}
-                type='string'
+                type="string"
                 id={i.toString()}
                 name={i.toString()}
                 value={el}
-                label={'Category'}
+                label={"Category"}
                 onChange={(event: any) => {
                   handleCategoryChangeValue(event, i, el);
                 }}
@@ -480,9 +490,9 @@ const EditQuestionnaire = (props: any) => {
               />
             </Grid>
             <Grid item xs={1}>
-              <div style={{ marginTop: '15px', cursor: 'pointer' }}>
+              <div style={{ marginTop: "15px", cursor: "pointer" }}>
                 <AddIcon
-                  fontSize='large'
+                  fontSize="large"
                   onClick={() => {
                     addCategory(i);
                   }}
@@ -498,12 +508,12 @@ const EditQuestionnaire = (props: any) => {
         <Grid container spacing={3}>
           <Grid item xs={5}>
             <TextField
-              type='string'
+              type="string"
               id={i.toString()}
               name={i.toString()}
               value={el}
               disabled={true}
-              label={'Category'}
+              label={"Category"}
               onChange={(event: any) => {
                 handleCategoryChangeValue(event, i, el);
               }}
@@ -511,9 +521,9 @@ const EditQuestionnaire = (props: any) => {
             />
           </Grid>
           <Grid item xs={1}>
-            <div style={{ marginTop: '15px', cursor: 'pointer' }}>
+            <div style={{ marginTop: "15px", cursor: "pointer" }}>
               <ClearIcon
-                fontSize='large'
+                fontSize="large"
                 onClick={() => {
                   deleteCategory(i, el);
                 }}
@@ -532,11 +542,11 @@ const EditQuestionnaire = (props: any) => {
           updateWarningTimePercentage(event);
         }}
         disabled={postData.timeOut ? false : true}
-        postFix={'%'}
+        postFix={"%"}
         value={postData.warningTimePercentage}
         list={warningTimePercentageArray}
-        label={'Choose the warning time(%)'}
-        dropDownClass='dropdownWidth'
+        label={"Choose the warning time(%)"}
+        dropDownClass="dropdownWidth"
       />
     );
   };
@@ -555,13 +565,14 @@ const EditQuestionnaire = (props: any) => {
     warningTimeMinutes = Math.floor(warningTimeMinutes);
     return (
       <TextField
-        className='textFieldStyle'
+        className="textFieldStyle"
         multiline
         disabled
         fullWidth
-        value={`Warning Time : ${warningTimeMinutes} ${warningTimeMinutes === 1 ? 'minute' : 'minutes'
-          }`}
-        variant='outlined'
+        value={`Warning Time : ${warningTimeMinutes} ${
+          warningTimeMinutes === 1 ? "minute" : "minutes"
+        }`}
+        variant="outlined"
       />
     );
   };
@@ -574,20 +585,20 @@ const EditQuestionnaire = (props: any) => {
             <Checkbox
               checked={postData.randomize}
               onChange={changeRandomize}
-              value='randomize'
+              value="randomize"
             />
           }
-          label={<Typography color='textSecondary'>Randomize</Typography>}
+          label={<Typography color="textSecondary">Randomize</Typography>}
         />
         <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography className='tooltipTitleStyle'>
-                <Text tid='theAnswersWillBeRandomizedWhenUserTakesTheTest' />
+              <Typography className="tooltipTitleStyle">
+                <Text tid="theAnswersWillBeRandomizedWhenUserTakesTheTest" />
               </Typography>
             }
           >
-            <InfoIcon className='infoIconStyle' />
+            <InfoIcon className="infoIconStyle" />
           </Tooltip>
         </MuiThemeProvider>
       </div>
@@ -602,26 +613,26 @@ const EditQuestionnaire = (props: any) => {
             <Checkbox
               checked={postData.hideResult}
               onChange={changeHideResult}
-              value='hideResult'
+              value="hideResult"
               disabled={postData.showRecommendations}
             />
           }
-          label={<Typography color='textSecondary'>Hide Result</Typography>}
+          label={<Typography color="textSecondary">Hide Result</Typography>}
         />
         <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography className='tooltipTitleStyle'>
-                <Text tid='resultWillNotBeDisplayedAtTheEndOfTheTest' />
+              <Typography className="tooltipTitleStyle">
+                <Text tid="resultWillNotBeDisplayedAtTheEndOfTheTest" />
                 <br />
                 <strong>
-                  <Text tid='note' /> &nbsp;
+                  <Text tid="note" /> &nbsp;
                 </strong>
-                <Text tid='optionDisabledWhenShowRecommendationsSelected' />
+                <Text tid="optionDisabledWhenShowRecommendationsSelected" />
               </Typography>
             }
           >
-            <InfoIcon className='infoIconStyle' />
+            <InfoIcon className="infoIconStyle" />
           </Tooltip>
         </MuiThemeProvider>
       </div>
@@ -636,30 +647,30 @@ const EditQuestionnaire = (props: any) => {
             <Checkbox
               checked={postData.showRecommendations}
               onChange={changeShowRecommendations}
-              value='Show Recommendation'
+              value="Show Recommendation"
               disabled={postData.timeOut || postData.hideResult}
             />
           }
           label={
-            <Typography color='textSecondary'>
-              <Text tid='showRecommendations' />
+            <Typography color="textSecondary">
+              <Text tid="showRecommendations" />
             </Typography>
           }
         />
         <MuiThemeProvider theme={tooltipTheme}>
           <Tooltip
             title={
-              <Typography className='tooltipTitleStyle'>
-                <Text tid='recommendationsWillBeDisplayed' />
+              <Typography className="tooltipTitleStyle">
+                <Text tid="recommendationsWillBeDisplayed" />
                 <br />
                 <strong>
-                  <Text tid='note' /> &nbsp;
+                  <Text tid="note" /> &nbsp;
                 </strong>
-                <Text tid='hideResultSelected' />
+                <Text tid="hideResultSelected" />
               </Typography>
             }
           >
-            <InfoIcon className='infoIconStyle' />
+            <InfoIcon className="infoIconStyle" />
           </Tooltip>
         </MuiThemeProvider>
       </div>
@@ -671,13 +682,13 @@ const EditQuestionnaire = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className='bottomButtonsContainer'>
+          <div className="bottomButtonsContainer">
             <Button
               className={classes.button}
-              variant='outlined'
+              variant="outlined"
               onClick={handleSuccessPageBackButton}
             >
-              <Text tid='goBack' />
+              <Text tid="goBack" />
             </Button>
           </div>
         </Fragment>
@@ -686,34 +697,34 @@ const EditQuestionnaire = (props: any) => {
     return (
       <Fragment>
         <Backdrop className={classes.backdrop} open={backdropOpen}>
-          <CircularProgress color='inherit' />
+          <CircularProgress color="inherit" />
         </Backdrop>
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={12} sm={6}>
             <TextField
               required
-              type='string'
-              id='QuestionnaireName'
-              name='QuestionnaireName'
-              label='Test Suit name'
-              variant='outlined'
+              type="string"
+              id="QuestionnaireName"
+              name="QuestionnaireName"
+              label="Test Suit name"
+              variant="outlined"
               value={postData.name}
               onChange={handleNameChange}
               disabled={true}
               fullWidth
-              className='textFieldStyle'
+              className="textFieldStyle"
             />
           </Grid>
           <Grid item xs={12}>
             <TextField
               required
               multiline
-              id='description'
-              name='description'
-              label='Test Suit description'
+              id="description"
+              name="description"
+              label="Test Suit description"
               value={postData.description}
               onChange={handleDescriptionChange}
-              variant='outlined'
+              variant="outlined"
               fullWidth
             />
           </Grid>
@@ -721,21 +732,21 @@ const EditQuestionnaire = (props: any) => {
         {categoryArray.map((el: string, i: number) => {
           return renderCategories(el, i);
         })}
-        <Grid container spacing={3} className={classes.grid}>
+        {/* <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={2}>
             <TextField
-              type='number'
-              id='benchmarkScore'
-              name='benchmarkScore'
-              label='Benchmark Score'
+              type="number"
+              id="benchmarkScore"
+              name="benchmarkScore"
+              label="Benchmark Score"
               value={postData.benchmarkScore}
               onChange={handleBenchmarkScoreChange}
               InputProps={{ disableUnderline: true }}
               fullWidth
             />
           </Grid>
-        </Grid>
-        <Grid container spacing={5} className={classes.grid}>
+      </Grid>*/}
+        {/* <Grid container spacing={5} className={classes.grid}>
           <Grid item xs={3}>
             <div>
               <FormControlLabel
@@ -743,45 +754,45 @@ const EditQuestionnaire = (props: any) => {
                   <Checkbox
                     checked={postData.timeOut}
                     onChange={changeTimeOutFlag}
-                    value='Timed'
+                    value="Timed"
                     disabled={postData.showRecommendations}
                   />
                 }
-                label={<Typography color='textSecondary'>Timed</Typography>}
+                label={<Typography color="textSecondary">Timed</Typography>}
               />
               <MuiThemeProvider theme={tooltipTheme}>
                 <Tooltip
                   title={
-                    <Typography className='tooltipTitleStyle'>
-                      <Text tid='testWillBeTimed' />
+                    <Typography className="tooltipTitleStyle">
+                      <Text tid="testWillBeTimed" />
 
                       <br />
                       <strong>
-                        <Text tid='note' /> &nbsp;
+                        <Text tid="note" /> &nbsp;
                       </strong>
-                      <Text tid='optionDisabledWhenShowRecommendationsSelected' />
+                      <Text tid="optionDisabledWhenShowRecommendationsSelected" />
                     </Typography>
                   }
                 >
-                  <InfoIcon className='infoIconStyle' />
+                  <InfoIcon className="infoIconStyle" />
                 </Tooltip>
               </MuiThemeProvider>
             </div>
           </Grid>
           <Grid item xs={3}>
-            <div className='numberInput'>
+            <div className="numberInput">
               <TextField
                 required={postData.timeOut ? false : true}
-                type='number'
-                id='timeOutTime'
-                name='timeOutTime'
-                label='Time-Out Time(minutes)'
+                type="number"
+                id="timeOutTime"
+                name="timeOutTime"
+                label="Time-Out Time(minutes)"
                 fullWidth
                 value={postData.timeOutTime}
                 onChange={updateTimeOutTime}
                 disabled={postData.timeOut ? false : true}
                 InputProps={{ disableUnderline: true }}
-                className='textFieldStyle'
+                className="textFieldStyle"
               />
             </div>
           </Grid>
@@ -793,7 +804,7 @@ const EditQuestionnaire = (props: any) => {
           <Grid item xs={3}>
             {renderWarningTime()}
           </Grid>
-        </Grid>
+        </Grid> */}
         <Grid container spacing={3} className={classes.grid}>
           <Grid item xs={4}>
             {renderRandomizeCheckbox()}
@@ -805,35 +816,35 @@ const EditQuestionnaire = (props: any) => {
             {renderShowRecommendationCheckbox()}
           </Grid>
         </Grid>
-        <div className='bottomButtonsContainer'>
+        <div className="bottomButtonsContainer">
           <Button
             className={classes.button}
-            variant='outlined'
+            variant="outlined"
             onClick={() => {
               props.goBack(MANAGE_QUESTIONNAIRES);
             }}
           >
-            <Text tid='goBack' />
+            <Text tid="goBack" />
           </Button>
           <Button
             className={classes.button}
             onClick={() => {
               handleSave(false);
             }}
-            variant='outlined'
+            variant="outlined"
           >
-            <Text tid='save' />
+            <Text tid="save" />
           </Button>
           <Button
             className={classes.button}
             onClick={handleMapQuestionsButton}
-            variant='outlined'
+            variant="outlined"
           >
-            <Text tid='mapTestSuits' />
+            <Text tid="mapTestSuits" />
           </Button>
         </div>
         <ModalComponent
-          message={'editTheTestCasesMappingOfUpdatedTestSuit'}
+          message={"editTheTestCasesMappingOfUpdatedTestSuit"}
           openModal={showModal}
           handleModalNoClicked={handleModalNo}
           handleModalYesClicked={handleModalYes}
@@ -851,19 +862,19 @@ const EditQuestionnaire = (props: any) => {
           questionnaireComponent()
         )
       ) : (
-        <Container className='loaderStyle'>
+        <Container className="loaderStyle">
           <Loader />
         </Container>
       )}
       <Snackbar
-        anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+        anchorOrigin={{ vertical: "top", horizontal: "center" }}
         open={failure}
         onClose={handleClose}
         autoHideDuration={9000}
       >
         <SnackbarContent
           style={{
-            backgroundColor: '#dd0000',
+            backgroundColor: "#dd0000",
           }}
           message={msgFailure}
         />

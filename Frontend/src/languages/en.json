@@ -304,7 +304,7 @@
   "addTestCase": "ADD TEST CASE",
   "addTestCase2": "Add Test Case",
   "manageTestCases": "MANAGE TEST CASES",
-  "manageTestCases2": "Manage Test Cases",
+  "manageTestCases2": "Test Cases",
   "editTestCases": "EDIT TEST CASES",
   "feedback": "FEEDBACK",
   "manageSettings": "MANAGE SETTINGS",
@@ -444,5 +444,7 @@
   "deleteCampaignMsg": "Are you sure you want to delete this campaign?",
   "publishCampaignMsg": "End users will see the campaign's products and apply for testing it after you publish this campaign. You won't be able to edit it any more. Publish the campaign now?",
   "endCampaignMsg": "Users won't be able to provide feedback on this campaign's products any more after you end the campaign. End this campaign now?",
-  "cloneCampaignMsg": "New campaign in draft state with all other data identical to this campaign will be created. Confirm you want to the campaign?"
+  "cloneCampaignMsg": "New campaign in draft state with all other data identical to this campaign will be created. Confirm you want to the campaign?",
+  "addTestSuite": "Add Test Suite"
+
 }

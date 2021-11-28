@@ -101,5 +101,6 @@ export const config: Config = {
     questionnaires: 'GT_Questionnaires',
     questions: 'GT_Questions',
     team: 'GT_Team',
+    testSuites: 'GT_TestSuites',
   },
 };
