@@ -142,6 +142,7 @@ const useStyles = makeStyles((theme) => ({
   },
   drawerPaper: {
     position: "fixed",
+    paddingBottom: '50px',
     top: 50,
     whiteSpace: "nowrap",
     width: drawerWidth,
@@ -636,11 +637,11 @@ export default function Admin() {
         }}
         open={open}
       >
-        <div className={classes.toolbarIcon}>
+        {/* <div className={classes.toolbarIcon}>
           <IconButton onClick={handleDrawerClose}>
             <ChevronLeftIcon />
           </IconButton>
-        </div>
+        </div> */}
         <Divider />
         <List disablePadding={true} style={{ padding: "-10px 0px" }}>
           <ListItem button onClick={handleDashboard}>
