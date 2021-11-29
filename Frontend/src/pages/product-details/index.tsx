@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 // import TopPane from '../../components/product/topPane'
@@ -50,8 +50,14 @@ const productList = [
     },
 ];
 
+
 function ProductDetails(props: any) {
     const classes = useStyles();
+    const [userProfileStatusProgress, setUserProfileStatusProgress] = useState<number>();
+
+    const getUserProfileStatus = (status: number) => {
+        setUserProfileStatusProgress(status)
+    }
 
     return (
         <Container
@@ -65,11 +71,11 @@ function ProductDetails(props: any) {
                 <Grid container className={classes.marginTopTwenty}>
                     <Grid item xs={12} sm={1} />
                     <Grid item xs={12} sm={6}>
-                        <ProductView productList={productList} />
+                        <ProductView productList={productList} userProfileStatusProgress={userProfileStatusProgress} />
                     </Grid>
                     <Grid item xs={12} sm={1} />
                     <Grid item xs={12} sm={3} >
-                        <UserProfileStatus updateProfile={true} />
+                        <UserProfileStatus updateProfile={true} getUserProfileStatus={getUserProfileStatus} />
                     </Grid>
                     <Grid item xs={12} sm={1} />
                 </Grid>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import {
@@ -70,8 +70,13 @@ function LinearProgressWithLabel(props: any) {
 
 export default function UserProfileStatus(props: any) {
   const classes = useStyles();
-  const [progress, setProgress] = React.useState(10);
+  const [progress, setProgress] = React.useState(100);
   const history = useHistory();
+
+  useEffect(() => {
+    props.updateProfile &&
+      props.getUserProfileStatus(progress)
+  }, [])
 
   const getProfilePage = () => {
     history.push("/profile")
@@ -137,7 +142,7 @@ export default function UserProfileStatus(props: any) {
             <Typography style={{ margin: "5px", marginRight: "80px" }}>
               Status
             </Typography>
-            <Button style={{ color: "red" }}>InComplete</Button>
+            <Button style={{ color: "green" }}>Completed</Button>
           </Paper>
         </Grid>
         <Grid item xs={12} sm={12}>
