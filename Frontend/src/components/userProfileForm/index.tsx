@@ -1,4 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../reducers';
+import { Http } from '../../utils';
+import { useHistory } from "react-router-dom";
 import {
   Grid,
   makeStyles,
@@ -11,7 +15,8 @@ import {
   // Input,
   // Chip,
 } from "@material-ui/core";
-import { IUserParams, IUserAttributes } from "../../model";
+import MultipleSelect from '../../common/multiSelect';
+import { IDeviceInfo, IPlatformInfo, IUserParams, IUserAttributes } from "../../model";
 import PersonOutlineOutlinedIcon from "@material-ui/icons/PersonOutlineOutlined";
 import DevicesOutlinedIcon from "@material-ui/icons/DevicesOutlined";
 import HomeOutlinedIcon from "@material-ui/icons/HomeOutlined";
@@ -54,6 +59,17 @@ const useStyles = makeStyles(() => ({
 export default function ProfileForm(props: any) {
   const classes = useStyles();
   const { userState, userDataFetched, getUserParamState } = props;
+  const stateVariable = useSelector((state: IRootState) => {
+    return state;
+  });
+  const [allPlatforms, setAllPlatforms] = useState<IPlatformInfo[]>([]);
+  const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
+  const history = useHistory();
+
+  useEffect(() => {
+    fetchAllPlatforms();
+    fetchAllDevices();
+  }, []);
 
   const handleChangeValue = (event: any) => {
     if (userState) {
@@ -65,15 +81,59 @@ export default function ProfileForm(props: any) {
     }
   };
 
-  // const handleChangeMultiValue = (event: any) => {
-  //     if (userState) {
-  //         const temp: IUserParams | null | undefined = { ...userState };
-  //         let valueArray = temp && temp.values[event.target.name] || [];
-  //         valueArray = [...event.target.value];
-  //         temp!.values[event.target.name] = valueArray;
-  //         getUserParamState(temp);
-  //     }
-  // };
+  const fetchAllPlatforms = () => {
+    Http.get({
+      url: `/api/v2/platforms`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
+          return a.name.localeCompare(b.name);
+        });
+        setAllPlatforms(response.platforms);
+      })
+      .catch((error: any) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          history.push('/relogin');
+        } else {
+          history.push('/error');
+        }
+      })
+  };
+
+  const fetchAllDevices = () => {
+    Http.get({
+      url: `/api/v2/devices`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
+          return a.name.localeCompare(b.name);
+        });
+        setAllDevices(response.devices);
+      })
+      .catch((error: any) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          history.push('/relogin');
+        } else {
+          history.push('/error');
+        }
+      })
+  };
+
+  const handleChangeMultiValue = (event: any) => {
+    if (userState) {
+      const temp: IUserParams | null | undefined = { ...userState };
+      let valueArray = temp && temp.values[event.target.name] || [];
+      valueArray = [...event.target.value];
+      temp!.values[event.target.name] = valueArray;
+      getUserParamState(temp);
+    }
+  };
 
   // const renderChips = (selected: any, el: string) => {
   //   return (
@@ -156,46 +216,46 @@ export default function ProfileForm(props: any) {
       //       </Select>
       //     </FormControl>
       //   );
-      // case 'multi-list':
-      //   return (
-      //     <FormControl className={classes.formControl}>
-      //       <InputLabel
-      //         id='demo-mutiple-chip-label'
-      //         required={element.Mandatory}
-      //       >
-      //         {element.displayName}
-      //       </InputLabel>
-      //       <Select
-      //         id='demo-mutiple-chip'
-      //         name={el}
-      //         multiple
-      //         value={
-      //           values
-      //             ? values[el]
-      //               ? values[el] !== ''
-      //                 ? values[el]
+      //   case 'multi-list':
+      //     return (
+      //       <FormControl className={classes.formControl}>
+      //         <InputLabel
+      //           id='demo-mutiple-chip-label'
+      //           required={element.Mandatory}
+      //         >
+      //           {element.displayName}
+      //         </InputLabel>
+      //         <Select
+      //           id='demo-mutiple-chip'
+      //           name={el}
+      //           multiple
+      //           value={
+      //             values
+      //               ? values[el]
+      //                 ? values[el] !== ''
+      //                   ? values[el]
+      //                   : []
       //                 : []
       //               : []
-      //             : []
-      //         }
-      //         // onChange={handleChangeMultiValue}
-      //         input={<Input id='select-multiple-chip' />}
-      //         // renderValue={(value: any) => renderChips(value, el)}
-      //         MenuProps={MenuProps}
-      //       >
-      //         {element.options.map((opt: any) => (
-      //           <MenuItem key={opt} value={opt}>
+      //           }
+      //           // onChange={handleChangeMultiValue}
+      //           input={<Input id='select-multiple-chip' />}
+      //           // renderValue={(value: any) => renderChips(value, el)}
+      //           MenuProps={MenuProps}
+      //         >
+      //           {element.options.map((opt: any) => (
+      //             <MenuItem key={opt} value={opt}>
 
-      //             {
-      //               el === 'teams'
-      //                 ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-      //                 : opt
-      //             }
-      //           </MenuItem>
-      //         ))}
-      //       </Select>
-      //     </FormControl >
-      //   );
+      //               {
+      //                 el === 'teams'
+      //                   ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
+      //                   : opt
+      //               }
+      //             </MenuItem>
+      //           ))}
+      //         </Select>
+      //       </FormControl >
+      //     );
     }
   };
 
@@ -274,13 +334,10 @@ export default function ProfileForm(props: any) {
             item
             xs={12}
             sm={12}
-            style={{ height: "200px", overflow: "auto", marginTop: "10px" }}
+            style={{ height: "200px", marginTop: "10px" }}
           >
-            {Object.keys(userState!.config).map((el) => {
-              if (el === "Devi_3825988043") {
-                return <div key={el}>{renderElements(el)}</div>;
-              }
-            })}
+            <MultipleSelect list={allPlatforms} label={'Platform'} values={userState.values} handleChangeMultiValue={handleChangeMultiValue} />
+            <MultipleSelect list={allDevices} label={'Devices'} values={userState.values} handleChangeMultiValue={handleChangeMultiValue} />
           </Grid>
         </Grid>
       </Grid>

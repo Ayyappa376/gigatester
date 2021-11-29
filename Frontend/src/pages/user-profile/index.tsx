@@ -119,7 +119,7 @@ const UserProfile = (props: any) => {
       type: "info",
     });
     const postData = userParamState!.values;
-    console.log(postData);
+    // console.log(postData);
     Http.put({
       url: `/api/v2/admin/users`,
       body: {
