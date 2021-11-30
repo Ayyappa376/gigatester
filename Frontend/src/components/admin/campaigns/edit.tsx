@@ -49,6 +49,7 @@ import Success from "../../success-page";
 import { withRouter } from "react-router-dom";
 import { MANAGE_CAMPAIGNS } from "../../../pages/admin";
 import { buttonStyle, tooltipTheme } from "../../../common/common";
+import Notification from "../../../common/notification";
 import { Text } from "../../../common/Language";
 import "../../../css/assessments/style.css";
 
@@ -119,8 +120,12 @@ const EditCampaign = (props: any) => {
     ICampaignParams | undefined
   >();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [userParamState, setUserParamState] = React.useState<any>({});
-  const [softwareIndex, setSoftwareIndex] = useState(0);
+  const [userParamState, setUserParamState] = React.useState<any>("");
+  const [softwareIndex, setSoftwareIndex] = useState(-1);
+  const [softwareOption, setSoftwareOption] = useState(false);
+  const [fileContentType, setFileContentType] = useState("");
+  const [fileSelected, setFileSelected] = useState("");
+  const [fileName, setFileName] = useState("");
   const [notify, setNotify] = useState({
     isOpen: false,
     message: "",
@@ -220,6 +225,55 @@ const EditCampaign = (props: any) => {
           props.history.push("/error");
         }
         setFailure(true);
+      });
+  };
+
+  const getUploadPreSignedUrl = (event: any) => {
+    event.preventDefault();
+    console.log(event.target.files[0], "file");
+    setFileSelected(event.target.files[0]);
+    setFileName(event.target.files[0].name);
+    setFileContentType(event.target.files[0].type);
+  };
+  const uploadPreSignedUrlSoftware = () => {
+    setNotify({
+      isOpen: true,
+      message: "Uploading...",
+      type: "info",
+    });
+    Http.post({
+      url: `/api/v2/software/upload/`,
+      state: stateVariable,
+      body: {
+        fileName: fileName,
+        fileType: fileContentType,
+      },
+    })
+      .then((response: any) => {
+        console.log(response, "reponse");
+        console.log(response.filePath, "preSigned Url");
+        console.log(fileSelected, "file");
+        fetch(response.filePath, {
+          method: "PUT",
+          body: fileSelected,
+        })
+          .then((response) => {
+            console.log(response);
+            setNotify({
+              isOpen: true,
+              message: `The ${fileName} has been uploaded successfully.`,
+              type: "info",
+            });
+            setFileName("");
+            handleChangeProductSoftware();
+            // response.json();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+      .catch((error: any) => {
+        console.log(error);
       });
   };
 
@@ -410,21 +464,35 @@ const EditCampaign = (props: any) => {
   };
   const closeDialog = () => {
     setDialogOpen(false);
+    setSoftwareOption(false);
     // props.handleCloseSignup(false);
     // props.getSignInState(false);
   };
 
   const handleChangedValue = (event: any) => {
-    if (userParamState) {
-      const temp: any = { ...userParamState };
-      temp[event.target.name] = event.target.value;
-      setUserParamState(temp);
+    if (event.target.value) {
+      setUserParamState(event.target.value);
+
+      setSoftwareOption(true);
+    } else {
+      setSoftwareOption(false);
     }
 
-    handleChangeProductSoftware(event, softwareIndex);
-    console.log(userParamState);
+    // handleChangeProductSoftware(event, softwareIndex);
+    // console.log(userParamState);
   };
 
+  const deleteSoftware = (index: number) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        values[0].products[index].software = "";
+        setCampaignState(temp);
+      }
+    }
+  };
   const uploadForm = () => {
     return (
       <React.Fragment>
@@ -432,8 +500,8 @@ const EditCampaign = (props: any) => {
           <Grid item xs={12} sm={12}>
             <TextField
               // required
-              id="Firs_5918865382"
-              name="Firs_5918865382"
+              id="uploadFile"
+              name="uploadFile"
               // id={`Firs_5918865382`}
               // name={`Firs_5918865382`}
               label="External File URL"
@@ -444,32 +512,58 @@ const EditCampaign = (props: any) => {
             />
           </Grid>
           <Grid item xs={12} sm={12} />
-          <Grid item xs={5} sm={5} />
-          <button>ok</button>
-          <Grid item xs={5} sm={5} />
           <br />
           <Grid item xs={5} sm={5} />
-          <Typography variant="h6"> OR</Typography>
-          <Grid item xs={5} sm={5} />
+          <Typography style={{ fontSize: "16px" }}> OR</Typography>
           <Grid item xs={12} sm={12} />
-          <Grid item xs={4} sm={4} />
+          <br />
+          <Grid item xs={3} sm={3} />
           <input
             style={{ display: "none" }}
             id="upload-software-file"
             multiple
             type="file"
-            onChange={(e) => uploadSoftware(e)}
+            onChange={(e) => getUploadPreSignedUrl(e)}
           />
-          <label htmlFor="upload-software-file">
-            <Button
-              component="span"
-              variant="outlined"
-              className={classes.button}
-            >
-              Upload Software
-            </Button>
-          </label>
-          <Grid item xs={5} sm={5} />
+          <Link style={{ fontSize: "14px" }}>
+            <label htmlFor="upload-software-file">
+              {fileName ? fileName : "Click here to upload local software"}
+            </label>
+          </Link>
+          <Grid item xs={4} sm={4} />
+          <Grid item xs={4} sm={4} />
+          <Button
+            component="span"
+            variant="outlined"
+            disabled={softwareOption}
+            className={classes.button}
+            onClick={uploadPreSignedUrlSoftware}
+          >
+            Upload Software
+          </Button>
+          <Grid item xs={12} sm={12} />
+          <br />
+          <br />
+          <Grid item xs={12} sm={12} />
+          <Grid item xs={3} sm={3} />
+          <Button
+            component="span"
+            variant="outlined"
+            onClick={handleChangeProductSoftware}
+          >
+            ok
+          </Button>
+          <Grid item xs={2} sm={2} />
+          <Button
+            component="span"
+            variant="outlined"
+            onClick={() => {
+              setDialogOpen(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Grid item xs={4} sm={4} />
         </Grid>
       </React.Fragment>
     );
@@ -493,7 +587,7 @@ const EditCampaign = (props: any) => {
             id="form-dialog-title"
             style={{ textAlign: "center", padding: "30px 0px" }}
           >
-            <Typography variant="h6">
+            <Typography style={{ fontSize: "14px" }}>
               <Text tid={"Upload Software"} />
             </Typography>
           </DialogTitle>
@@ -503,6 +597,7 @@ const EditCampaign = (props: any) => {
             {/* {verifyEmail ? signUpAcknowledgement() : signUpForm()} */}
           </DialogContent>
         </Dialog>
+        <Notification notify={notify} setNotify={setNotify} />
       </React.Fragment>
     );
   };
@@ -621,7 +716,7 @@ const EditCampaign = (props: any) => {
     if (campaignState) {
       const temp: ICampaignParams = { ...campaignState };
       let values: ICampaignInfo[] | undefined = temp.campaigns;
-
+      console.log(index, "index");
       if (values) {
         // let valueArray = values[0].products[index].platforms || [];
         // valueArray = [...event.target.value];
@@ -631,16 +726,32 @@ const EditCampaign = (props: any) => {
     }
   };
 
-  const handleChangeProductSoftware = (event: any, index: number) => {
+  const handleChangeProductSoftware = () => {
     if (campaignState) {
       const temp: ICampaignParams = { ...campaignState };
       let values: ICampaignInfo[] | undefined = temp.campaigns;
 
       if (values) {
-        values[0].products[index].software = event.target.value;
-        setCampaignState(temp);
+        console.log(softwareIndex, "softwareIndex");
+        console.log(userParamState, "userParamState");
+        if (userParamState) {
+          values[0].products[softwareIndex].software = userParamState;
+          setCampaignState(temp);
+          closeDialog();
+        } else if (fileName) {
+          values[0].products[softwareIndex].software = fileName;
+          setCampaignState(temp);
+          setTimeout(() => {
+            setUserParamState("");
+            closeDialog();
+          }, 2000);
+        }
       }
     }
+    setTimeout(() => {
+      setUserParamState("");
+      closeDialog();
+    }, 2000);
   };
 
   const handleChangeProductDevices = (event: any, index: number) => {
@@ -1085,21 +1196,42 @@ const EditCampaign = (props: any) => {
                             align="center"
                             className="tableCell"
                           >
-                            <Typography className="tableBodyText">
-                              {/* {product.software ? product.software : ""} */}
-                              {userParamState.Firs_5918865382 ? (
-                                <Link href={userParamState.Firs_5918865382}>
-                                  {userParamState.Firs_5918865382}
+                            {/* {product.software ? product.software : ""} */}
+                            {campaign.products[index].software ? (
+                              <>
+                                <Link href={product.software}>
+                                  <TextField
+                                    required={true}
+                                    type="string"
+                                    id={`productSoftware_${index}`}
+                                    name={`productSoftware_${index}`}
+                                    value={
+                                      product.software ? product.software : ""
+                                    }
+                                    // onChange={(event) =>
+                                    //   handleChangeProductName(event, index)
+                                    // }
+                                    fullWidth
+                                    autoComplete="off"
+                                    className="textFieldStyle"
+                                  />
                                 </Link>
-                              ) : (
-                                <button
-                                  // onClick={handleUploadButton(index)}
-                                  onClick={handleUploadButton}
-                                >
-                                  <Typography>Upload</Typography>
-                                </button>
-                              )}
-                            </Typography>
+                                <Typography style={{ padding: "0 6px" }}>
+                                  <ClearIcon
+                                    onClick={() => {
+                                      deleteSoftware(index);
+                                    }}
+                                  />
+                                </Typography>
+                              </>
+                            ) : (
+                              <button
+                                // onClick={handleUploadButton(index)}
+                                onClick={() => handleUploadButton(index)}
+                              >
+                                <Typography>Upload</Typography>
+                              </button>
+                            )}
                           </TableCell>
                           <TableCell
                             component="th"
