@@ -37,6 +37,7 @@ const ProductsView = (props: any) => {
     });
     const [searchString, setSearchString] = useState('');
     const [allProducts, setAllProducts] = useState<IProductInfo[]>([]);
+    const [listedProducts, setListedProducts] = useState<IProductInfo[]>([]);
     const [allPlatforms, setAllPlatforms] = useState<IPlatformInfo[]>([]);
     const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
     const [selectedDevice, setSelectedDevice] = useState<any>('');
@@ -50,6 +51,39 @@ const ProductsView = (props: any) => {
         fetchAllDevices();
         fetchCampaignDetails();
     }, []);
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        // setSelectedPlatform('')
+        allProducts.length && selectedDevice ? allProducts.forEach((item: any) => {
+            item.devices.forEach((id: string) => id === selectedDevice &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+        }) : setListedProducts(allProducts)
+    }, [selectedDevice])
+
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        // setSelectedDevice('')
+        allProducts.length && selectedPlatform ? allProducts.forEach((item: any) => {
+            item.platforms.forEach((id: string) => id === selectedPlatform &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+        }) : setListedProducts(allProducts)
+    }, [selectedPlatform])
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        setSelectedDevice('')
+        setSelectedPlatform('')
+        allProducts.length && searchString ? allProducts.forEach((item: any) => {
+            item.name.includes(searchString) && filteredProductList.push(item)
+            setListedProducts(filteredProductList)
+        }) : setListedProducts(allProducts)
+    }, [searchString])
 
     const fetchAllPlatforms = () => {
         Http.get({
@@ -108,6 +142,7 @@ const ProductsView = (props: any) => {
                     })
                 })
                 setAllProducts(products);
+                setListedProducts(products)
                 setProductsFetched(true);
             })
             .catch((error: any) => {
@@ -122,7 +157,6 @@ const ProductsView = (props: any) => {
                 // setFailure(true);
             });
     };
-
 
     const handleSearch = (str: string) => {
         if (typeof str !== 'undefined') {
@@ -149,7 +183,7 @@ const ProductsView = (props: any) => {
                             }}
                             onChange={(e) => setSelectedPlatform(e.target.value)}
                         >
-                            <option aria-label="None" value="all" >All</option>
+                            <option aria-label="None" value="" ></option>
                             {allPlatforms.length && allPlatforms.map((item, index) => {
                                 return (
                                     <option value={item.id} key={index}>{item.name}</option>
@@ -171,7 +205,7 @@ const ProductsView = (props: any) => {
                             }}
                             onChange={(e) => setSelectedDevice(e.target.value)}
                         >
-                            <option aria-label="None" value="all" >All</option>
+                            <option aria-label="None" value="" ></option>
                             {allDevices.length && allDevices.map((item, index) => {
                                 return (
                                     <option value={item.id} key={index}>{item.name}</option>
@@ -191,65 +225,50 @@ const ProductsView = (props: any) => {
             {productsFetched ?
                 <Grid container spacing={2} >
                     <Grid item xs={12} sm={6}>
-                        <Typography data-testid="header" >Showing {allProducts.length} products</Typography>
+                        <Typography data-testid="header" >Showing {listedProducts.length} products</Typography>
                     </Grid>
                     <Grid item xs={12} sm={6}>
                     </Grid>
-                    {/* {allProducts.length && allProducts.map((item: any, index: number) => {
-                        return (
-                            <Grid item xs={12} sm={6} key={index} >
-                                <Paper className={classes.block} data-testid={`platform-${item.id}`} >
-                                    <Grid container spacing={2} >
-                                        <Grid item xs={3} sm={3} md={3} >
-                                            <img className={classes.img} src={'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'} alt={item.label} />
-                                        </Grid>
-                                        <Grid item xs={9} sm={9} md={9}>
-                                            <Typography>{item.name}</Typography>
-                                            <InputLabel className={classes.subTitle}>{item.name}</InputLabel>
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
-                            </Grid>
-                        )
-                    })} */}
-                    {allProducts.length ?
-                      (allProducts.map((item: any, index: number) => {
-                        let platforms = allPlatforms.filter(p1 => item.platforms.some((p2: any) => p1.id === p2));
-                        let devices = allDevices.filter(d1 => item.devices.some((d2: any) => d1.id === d2));
+                    {
+                        listedProducts.length ? listedProducts.map((item: any, index: number) => {
+                            let platforms = allPlatforms.filter(p1 => item.platforms.some((p2: any) => p1.id === p2));
+                            let devices = allDevices.filter(d1 => item.devices.some((d2: any) => d1.id === d2));
 
-                        return (
-                            <Grid item xs={12} sm={6} key={index} >
-                                <Paper className={classes.block} data-testid={`platform-${item.id}`} >
-                                    <Grid container spacing={2} >
-                                        <Grid item xs={3} sm={3} md={3} >
-                                            <img className={classes.img} src={'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'} alt={item.label} />
+                            return (
+                                <Grid item xs={12} sm={6} key={index} >
+                                    <Paper className={classes.block} data-testid={`platform-${item.id}`} >
+                                        <Grid container spacing={2} >
+                                            <Grid item xs={3} sm={3} md={3} >
+                                                <img className={classes.img} src={'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60'} alt={item.label} />
+                                            </Grid>
+                                            <Grid item xs={9} sm={9} md={9}>
+                                                <Typography>{item.name}</Typography>
+                                                <InputLabel className={classes.subTitle}>{item.name}</InputLabel>
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={12} >
+                                                <Typography variant="subtitle2" style={{ color: '#D35400' }}> PLATFORM </Typography>
+                                                {platforms.length && platforms.map((item) => item.name)}
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={12} >
+                                                <Typography variant="subtitle2" style={{ color: '#D35400' }}> DEVICES </Typography>
+                                                {devices.length && devices.map((item) => item.name)}
+                                            </Grid>
+                                            <Grid item xs={12} sm={12} md={12} style={{ textAlign: 'center', margin: '5px 0px' }} >
+                                                <Button variant="outlined" color="primary" size='small' className='button' data-testid="showInterest" disabled={props.userProfileStatusProgress < 100} onClick={requestInterest}>
+                                                    Request Interest
+                                                </Button>
+                                            </Grid>
                                         </Grid>
-                                        <Grid item xs={9} sm={9} md={9}>
-                                            <Typography>{item.name}</Typography>
-                                            <InputLabel className={classes.subTitle}>{item.name}</InputLabel>
-                                        </Grid>
-                                        <Grid item xs={12} sm={12} md={12} >
-                                            <Typography variant="subtitle2" style={{ color: '#D35400' }}> PLATFORM </Typography>
-                                            {platforms.length && platforms.map((item) => item.name)}
-                                        </Grid>
-                                        <Grid item xs={12} sm={12} md={12} >
-                                            <Typography variant="subtitle2" style={{ color: '#D35400' }}> DEVICES </Typography>
-                                            {devices.length && devices.map((item) => item.name)}
-                                        </Grid>
-                                        <Grid item xs={12} sm={12} md={12} style={{ textAlign: 'center', margin: '5px 0px' }}>
-                                            <Button variant="outlined" color="primary" size='small' className='button' data-testid="save" onClick={requestInterest}>
-                                                Request Interest
-                                            </Button>
-                                        </Grid>
-                                    </Grid>
-                                </Paper>
-                            </Grid>
-                        )
-                      })
-                      ) : (
-                          <div/>
-                      )}
-                </Grid>
+                                    </Paper >
+                                </Grid >
+                            )
+                        }) :
+                            <Paper className={classes.block} style={{ width: '100%', textAlign: 'center' }} >
+                                There is no Records Found
+                            </Paper>
+
+                    }
+                </Grid >
                 : (
                     <Container className='loaderStyle'>
                         <Loader />

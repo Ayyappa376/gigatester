@@ -27,3 +27,5 @@ export * from './platformsManagement';
 export * from './devicesManagement';
 export * from './groupsManagement';
 export * from './organizationsManagement';
+export * from './getTestSuites';
+export * from './testSuiteManagement';

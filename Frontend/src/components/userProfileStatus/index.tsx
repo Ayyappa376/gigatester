@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { makeStyles, createStyles, Theme } from "@material-ui/core/styles";
 import Avatar from "@material-ui/core/Avatar";
 import {
@@ -70,8 +70,13 @@ function LinearProgressWithLabel(props: any) {
 
 export default function UserProfileStatus(props: any) {
   const classes = useStyles();
-  const [progress, setProgress] = React.useState(10);
+  const [progress, setProgress] = React.useState(100);
   const history = useHistory();
+
+  useEffect(() => {
+    props.updateProfile &&
+      props.getUserProfileStatus(progress)
+  }, [])
 
   const getProfilePage = () => {
     history.push("/profile")
@@ -137,16 +142,18 @@ export default function UserProfileStatus(props: any) {
             <Typography style={{ margin: "5px", marginRight: "80px" }}>
               Status
             </Typography>
-            <Button style={{ color: "red" }}>InComplete</Button>
+            <Button style={{ color: progress < 100 ? "red" : "green" }}>{progress < 100 ? 'Incomplete' : 'Completed'}</Button>
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={12}>
-          <Typography
-            style={{ margin: "15px", color: "#969696", marginTop: "30px" }}
-          >
-            Complete your profile 100% to continue testing for products
-          </Typography>
-        </Grid>
+        {progress < 100 &&
+          <Grid item xs={12} sm={12}>
+            <Typography
+              style={{ margin: "15px", color: "#969696", marginTop: "30px" }}
+            >
+              Complete your profile 100% to continue testing for products
+            </Typography>
+          </Grid>
+        }
         {props.updateProfile &&
           <div style={{ textAlign: 'center', margin: '20px' }}>
             <Button variant="outlined" color="primary" size='medium' className='button' data-testid="save" onClick={getProfilePage}>

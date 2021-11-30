@@ -21,7 +21,7 @@ export interface IProductInfo {
   devices?: string[];
   software?: string;
   platforms: string[];
-  testSuite?: string;
+  testSuite?: string[];
   testers?: ITesterStatus[];
 }
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useState, useEffect, Fragment } from "react";
 import {
   createMuiTheme,
   Typography,
@@ -19,21 +19,22 @@ import {
   InputLabel,
   Select,
   MenuItem,
-} from '@material-ui/core';
-import './style.css';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../../reducers';
-import Loader from '../../loader';
-import { Http } from '../../../utils';
-import { withRouter } from 'react-router-dom';
-import { buttonStyle } from '../../../common/common';
-import PageSizeDropDown from '../../common/page-size-dropdown';
-import RenderPagination from '../../common/pagination';
-import SearchControl from '../../common/searchControl';
-import { getDate } from '../../../utils/data';
-import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
-import { Text } from '../../../common/Language';
-import '../../../css/assessments/style.css';
+} from "@material-ui/core";
+import "./style.css";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../../reducers";
+import Loader from "../../loader";
+import { Http } from "../../../utils";
+import { withRouter } from "react-router-dom";
+import { buttonStyle } from "../../../common/common";
+import AddIcon from "@material-ui/icons/Add";
+import PageSizeDropDown from "../../common/page-size-dropdown";
+import RenderPagination from "../../common/pagination";
+import SearchControl from "../../common/searchControl";
+import { getDate } from "../../../utils/data";
+import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
+import { Text } from "../../../common/Language";
+import "../../../css/assessments/style.css";
 
 const theme = createMuiTheme({
   overrides: {
@@ -47,10 +48,10 @@ const theme = createMuiTheme({
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: '36px',
-    position: 'relative',
-    left: '45%',
-    minWidth: '10%',
+    marginTop: "36px",
+    position: "relative",
+    left: "45%",
+    minWidth: "10%",
     ...buttonStyle,
   },
   grid: {
@@ -58,23 +59,23 @@ const useStyles = makeStyles((theme) => ({
   },
   formControl: {
     top: 1,
-    minWidth: '100%',
+    minWidth: "100%",
   },
   actionsBlock: {
-    display: 'flex',
-    flexWrap: 'wrap',
-    marginLeft: '40%',
+    display: "flex",
+    flexWrap: "wrap",
+    marginLeft: "40%",
   },
   backButton: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
-    marginRight: '20px',
+    marginTop: "36px",
+    position: "relative",
+    minWidth: "10%",
+    marginRight: "20px",
     ...buttonStyle,
   },
   backdrop: {
     zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
+    color: "#fff",
   },
   buttons: {
     ...buttonStyle,
@@ -90,13 +91,13 @@ const ManageQuestion = (props: any) => {
   const [allQuestions, setAllQuestions] = useState<Object[]>([]);
   const [questions, setQuestions] = useState<Object[]>([]);
   const [backdropOpen, setBackdropOpen] = useState(false);
-  const [searchString, setSearchString] = useState('');
+  const [searchString, setSearchString] = useState("");
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [numberOfQuestions, setNumberOfQuestions] = useState(0);
   const [questionnaires, setQuestionnaires] = useState<any>(null);
-  const [focusQuestionnaire, setFocusQuestionnaire] = useState('0');
+  const [focusQuestionnaire, setFocusQuestionnaire] = useState("0");
   const userDetails = useSelector((state: IRootState) => {
     return state.user;
   });
@@ -107,15 +108,15 @@ const ManageQuestion = (props: any) => {
 
   const fetchQuestionnaireList = () => {
     Http.get({
-      url: `/api/v2/assignment?teamId=${userDetails.team}`,
+      url: `/api/v2/testSuite`,
       state: stateVariable,
     })
       .then((response: any) => {
         const filteredQuestionnaires: any = [];
-        response.questionnaires.forEach((el: any) => {
-          if (response.questionnaireSelected.includes(el.questionnaireId)) {
-            filteredQuestionnaires.push(el);
-          }
+        response.forEach((el: any) => {
+          // if (response.questionnaireSelected.includes(el.questionnaireId)) {
+          filteredQuestionnaires.push(el);
+          // }
         });
         setQuestionnaires(filteredQuestionnaires);
       })
@@ -123,11 +124,11 @@ const ManageQuestion = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 400) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else if (object.code === 401) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else {
-          props.history.push('/error');
+          props.history.push("/error");
         }
       });
   };
@@ -135,8 +136,8 @@ const ManageQuestion = (props: any) => {
   const fetchQuestionList = () => {
     setBackdropOpen(true);
     let url: string = `/api/v2/admin/createquestion?type=${focusQuestionnaire}`;
-    if (focusQuestionnaire === '0') {
-      url = '/api/v2/admin/createquestion';
+    if (focusQuestionnaire === "0") {
+      url = "/api/v2/admin/createquestion";
     }
     Http.get({
       url: url,
@@ -152,11 +153,11 @@ const ManageQuestion = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 400) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else if (object.code === 401) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else {
-          props.history.push('/error');
+          props.history.push("/error");
         }
         setBackdropOpen(false);
       });
@@ -165,13 +166,13 @@ const ManageQuestion = (props: any) => {
   useEffect(() => {
     fetchQuestionnaireList();
     fetchQuestionList();
-    setSearchString('');
+    setSearchString("");
     setCurrentPage(1);
   }, []);
 
   useEffect(() => {
     fetchQuestionList();
-    setSearchString('');
+    setSearchString("");
     setCurrentPage(1);
   }, [focusQuestionnaire]);
 
@@ -183,7 +184,7 @@ const ManageQuestion = (props: any) => {
     if (searchButtonPressed) {
       setSearchButtonPressed(false);
       const searchedItems: any = [];
-      if (searchString === '') {
+      if (searchString === "") {
         setQuestions([]);
       }
       allQuestions.forEach((el: any) => {
@@ -212,7 +213,7 @@ const ManageQuestion = (props: any) => {
   };
 
   const handleSearch = (str?: string) => {
-    if (typeof str !== 'undefined') {
+    if (typeof str !== "undefined") {
       setSearchString(str);
     }
     setSearchButtonPressed(true);
@@ -233,39 +234,63 @@ const ManageQuestion = (props: any) => {
 
   const renderQuestionsTable = () => {
     return (
-      <Container maxWidth='md' component='div' className='containerRoot'>
+      <Container maxWidth="md" component="div" className="containerRoot">
         <Backdrop className={classes.backdrop} open={backdropOpen}>
-          <CircularProgress color='inherit' />
+          <CircularProgress color="inherit" />
         </Backdrop>
-        <div style={{ width: '100%' }}>
+        <div style={{ width: "100%", marginBottom: "15px" }}>
+          <Grid container spacing={3}>
+            <Grid item sm={5}>
+              <Button
+                className={classes.backButton}
+                variant="outlined"
+                onClick={() => {
+                  props.handleCreateQuestion();
+                }}
+              >
+                <AddIcon fontSize="large" /> <Text tid="addTestCase2" />
+              </Button>
+            </Grid>
+            <Grid item sm={5}>
+              {/* <SearchControl
+                // searchString={searchString}
+                // handleSearch={handleSearch}
+                /> */}
+            </Grid>
+            <Grid item sm={2}>
+              {/* <PageSizeDropDown
+                // handleChange={handleChangeItemsPerPage}
+                // itemCount={itemsPerPage}
+                /> */}
+            </Grid>
+          </Grid>
+        </div>
+        <div style={{ width: "100%" }}>
           <Grid container spacing={3}>
             <Grid item sm={5}>
               <FormControl className={classes.formControl}>
-                <InputLabel id='filter-control'>
-                  <Text tid='chooseTestSuit' />
+                <InputLabel id="filter-control">
+                  <Text tid="chooseTestSuit" />
                 </InputLabel>
                 <Select
-                  name={'selectQuestionnaire'}
+                  name={"selectQuestionnaire"}
                   value={focusQuestionnaire}
                   onChange={handleChangeQuestionnaire}
                 >
-                  <MenuItem key={'allQuestions'} value={'0'}>
-                    <Text tid='allTestCases' />
+                  <MenuItem key={"allQuestions"} value={"0"}>
+                    <Text tid="allTestCases" />
                   </MenuItem>
                   {questionnaires && questionnaires.length !== 0 ? (
                     questionnaires.map((el: any) => (
-                      <MenuItem
-                        key={el.questionnaireId}
-                        value={el.questionnaireId}
-                      >
-                        {el.displayName}
+                      <MenuItem key={el.id} value={el.id}>
+                        {el.name}
                       </MenuItem>
                     ))
                   ) : (
                     <div />
                   )}
-                  <MenuItem key={'ummappedQuestions'} value={'0000'}>
-                    <Text tid='unmappedTestCases' />
+                  <MenuItem key={"ummappedQuestions"} value={"0000"}>
+                    <Text tid="unmappedTestCases" />
                   </MenuItem>
                 </Select>
               </FormControl>
@@ -284,33 +309,33 @@ const ManageQuestion = (props: any) => {
             </Grid>
           </Grid>
         </div>
-        <Paper className='tableArea'>
+        <Paper className="tableArea">
           <MuiThemeProvider theme={theme}>
-            <Table className='table'>
-              <TableHead className='tableHead'>
+            <Table className="table">
+              <TableHead className="tableHead">
                 <TableRow>
-                  <TableCell className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='testCase' />
+                  <TableCell className="tableHeadCell">
+                    <Typography className="tableHeadText">
+                      <Text tid="testCase" />
                     </Typography>
                   </TableCell>
                   <TableCell
-                    align='center'
-                    className='tableHeadCell'
-                    style={{ minWidth: '150px' }}
+                    align="center"
+                    className="tableHeadCell"
+                    style={{ minWidth: "150px" }}
                   >
-                    <Typography className='tableHeadText'>
-                      <Text tid='lastUpdate' />
+                    <Typography className="tableHeadText">
+                      <Text tid="lastUpdate" />
                     </Typography>
                   </TableCell>
 
                   <TableCell
-                    align='center'
-                    className='tableHeadCell'
-                    style={{ minWidth: '150px' }}
+                    align="center"
+                    className="tableHeadCell"
+                    style={{ minWidth: "150px" }}
                   >
-                    <Typography className='tableHeadText'>
-                      <Text tid='actions' />
+                    <Typography className="tableHeadText">
+                      <Text tid="actions" />
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -327,35 +352,35 @@ const ManageQuestion = (props: any) => {
                     return (
                       <TableRow key={row.id}>
                         <TableCell
-                          component='th'
-                          scope='row'
-                          className='tableCell'
+                          component="th"
+                          scope="row"
+                          className="tableCell"
                         >
-                          <Typography className='tableBodyText'>
+                          <Typography className="tableBodyText">
                             {row.question}
                           </Typography>
                         </TableCell>
                         <TableCell
-                          component='th'
-                          scope='row'
-                          className='tableCell'
-                          align='center'
+                          component="th"
+                          scope="row"
+                          className="tableCell"
+                          align="center"
                         >
-                          <Typography className='tableBodyText'>
+                          <Typography className="tableBodyText">
                             {row.lastModifiedOn
                               ? getDate(row.lastModifiedOn)
-                              : '-'}
+                              : "-"}
                           </Typography>
                         </TableCell>
-                        <TableCell align='center'>
+                        <TableCell align="center">
                           <Button
-                            variant='outlined'
+                            variant="outlined"
                             className={classes.buttons}
                             onClick={() => {
                               props.editQuestionClicked(row);
                             }}
                           >
-                            <Text tid='edit' /> <ArrowForwardIcon />
+                            <Text tid="edit" /> <ArrowForwardIcon />
                           </Button>
                         </TableCell>
                       </TableRow>
@@ -375,13 +400,13 @@ const ManageQuestion = (props: any) => {
             handleChange={handlePaginationClick}
           />
         </Fragment>
-        <div className='bottomButtonsContainer'>
+        <div className="bottomButtonsContainer">
           <Button
             className={classes.backButton}
-            variant='outlined'
+            variant="outlined"
             onClick={props.goBack}
           >
-            <Text tid='goBack' />
+            <Text tid="goBack" />
           </Button>
         </div>
       </Container>
@@ -393,7 +418,7 @@ const ManageQuestion = (props: any) => {
       {responseReceived ? (
         renderQuestionsTable()
       ) : (
-        <Container className='loaderStyle'>
+        <Container className="loaderStyle">
           <Loader />
         </Container>
       )}

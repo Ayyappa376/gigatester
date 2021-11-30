@@ -104,5 +104,6 @@ export const config: Config = {
     questions: 'GT_Questions',
     team: 'GT_Team',
     users: 'GT_Users',
+    testSuites: 'GT_TestSuites',
   },
 };

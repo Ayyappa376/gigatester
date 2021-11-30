@@ -6,18 +6,18 @@ import { DynamoDB } from 'aws-sdk';
 import { get } from './sdk';
 
 interface QuestionsList {
-  orgName: string;
+  // orgName: string;
   questions: [string];
-  teamName: string;
+  // teamName: string;
 }
 
 //Fetch questionsList for a particular questionnaire
 export const getQuestionsList = async ({
   quesType,
-  version,
+  // version,
 }: {
   quesType: string;
-  version?: string;
+  // version?: string;
 }): Promise<any> => {
   if (!quesType) {
     const err = new Error('Missing quesType');
@@ -28,12 +28,12 @@ export const getQuestionsList = async ({
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
     Key: {
       questionnaireId: quesType,
-      version: version ? version : '1',
+      // version: version ? version : '1',
     },
-    TableName: TableNames.getQuestionnairesTableName(),
+    TableName: TableNames.getTestSuitesTableName(),
   });
 
-  appLogger.info({ getQuestionsList_get_params: params });
+  appLogger.info({ getTestSuitesList_get_params: params });
   return get<QuestionsList>(params).then(
     (item: QuestionsList) => item.questions
   );
@@ -42,7 +42,7 @@ export const getQuestionsList = async ({
 //Fetch categoriesMap for a particular questionnaire
 export const getCategoriesMap = async ({
   quesType,
-  version,
+  // version,
 }: {
   quesType: string;
   version?: string;
@@ -56,9 +56,9 @@ export const getCategoriesMap = async ({
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
     Key: {
       questionnaireId: quesType,
-      version: version ? version : '1',
+      // version: version ? version : '1',
     },
-    TableName: TableNames.getQuestionnairesTableName(),
+    TableName: TableNames.getTestSuitesTableName(),
   });
 
   appLogger.info({ getQuestionsList_get_params: params });
@@ -81,7 +81,7 @@ export const getQuestionsListSorted = async ({
     throw err;
   }
 
-  let categoriesMap = await getCategoriesMap({ quesType, version });
+  let categoriesMap = await getCategoriesMap({ quesType });
   categoriesMap = await sortCategoriesMapByCategories(categoriesMap);
   const questions = Object.keys(categoriesMap);
   return questions;

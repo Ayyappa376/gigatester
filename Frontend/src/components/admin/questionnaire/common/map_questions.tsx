@@ -1,5 +1,5 @@
-import React, { Fragment, useState, useEffect } from 'react';
-import { withRouter } from 'react-router-dom';
+import React, { Fragment, useState, useEffect } from "react";
+import { withRouter } from "react-router-dom";
 import {
   Grid,
   Button,
@@ -21,77 +21,77 @@ import {
   Tooltip,
   InputBase,
   IconButton,
-} from '@material-ui/core';
-import { buttonStyle, tooltipTheme } from '../../../../common/common';
-import { Http } from '../../../../utils';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../../../reducers';
-import { Loader } from '../../..';
-import { IQuestionDetails } from '../../create-question';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import clsx from 'clsx';
-import DoneIcon from '@material-ui/icons/Done';
-import { ModalComponent } from '../../../modal';
-import ClearIcon from '@material-ui/icons/Clear';
-import SearchIcon from '@material-ui/icons/Search';
-import RenderPagination from '../../../common/pagination';
-import PageSizeDropDown from '../../../common/page-size-dropdown';
-import FilterListIcon from '@material-ui/icons/FilterList';
-import { LightTooltip } from '../../../common/tooltip';
-import { Text } from '../../../../common/Language';
-import '../../../../css/assessments/style.css';
+} from "@material-ui/core";
+import { buttonStyle, tooltipTheme } from "../../../../common/common";
+import { Http } from "../../../../utils";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../../../reducers";
+import { Loader } from "../../..";
+import { IQuestionDetails } from "../../create-question";
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import clsx from "clsx";
+import DoneIcon from "@material-ui/icons/Done";
+import { ModalComponent } from "../../../modal";
+import ClearIcon from "@material-ui/icons/Clear";
+import SearchIcon from "@material-ui/icons/Search";
+import RenderPagination from "../../../common/pagination";
+import PageSizeDropDown from "../../../common/page-size-dropdown";
+import FilterListIcon from "@material-ui/icons/FilterList";
+import { LightTooltip } from "../../../common/tooltip";
+import { Text } from "../../../../common/Language";
+import "../../../../css/assessments/style.css";
 
 export interface ICategoriesMap {
   [questionId: string]: string;
 }
-const HIGHLIGHT_BACKGROUND_COLOR = '#EAF5C8';
-const HEADER_TEXT_MARGIN_TOP = '17px';
+const HIGHLIGHT_BACKGROUND_COLOR = "#EAF5C8";
+const HEADER_TEXT_MARGIN_TOP = "17px";
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     root: {
-      margin: 'auto',
+      margin: "auto",
     },
     subPaper: {
-      minWidth: '95%',
-      minHeight: '10%',
-      borderRadius: '0',
-      padding: '8px',
-      margin: '10px',
-      color: 'inherit',
-      backgroundColor: 'inherit',
+      minWidth: "95%",
+      minHeight: "10%",
+      borderRadius: "0",
+      padding: "8px",
+      margin: "10px",
+      color: "inherit",
+      backgroundColor: "inherit",
     },
     submitButton: {
-      marginTop: '36px',
-      position: 'relative',
-      minWidth: '10%',
+      marginTop: "36px",
+      position: "relative",
+      minWidth: "10%",
       ...buttonStyle,
     },
     backButton: {
-      marginTop: '36px',
-      position: 'relative',
-      minWidth: '10%',
-      marginRight: '20px',
+      marginTop: "36px",
+      position: "relative",
+      minWidth: "10%",
+      marginRight: "20px",
       ...buttonStyle,
     },
     formControl: {
-      minWidth: '100%',
+      minWidth: "100%",
     },
     rootp: {
-      width: '100%',
-      marginTop: '4px',
+      width: "100%",
+      marginTop: "4px",
     },
     column: {
-      flexBasis: '25%',
+      flexBasis: "25%",
     },
     bigColumn: {
-      flexBasis: '75%',
+      flexBasis: "75%",
     },
     extraBigColumn: {
-      flexBasis: '87.5%',
+      flexBasis: "87.5%",
     },
     smallColumn: {
-      flexBasis: '12.5%',
+      flexBasis: "12.5%",
     },
     helper: {
       borderLeft: `2px solid ${theme.palette.divider}`,
@@ -102,21 +102,21 @@ const useStyles = makeStyles((theme: Theme) =>
       color: theme.palette.text.secondary,
     },
     detailsHighlighted: {
-      alignItems: 'center',
+      alignItems: "center",
       backgroundColor: HIGHLIGHT_BACKGROUND_COLOR,
     },
     detailsNonHighlighted: {
-      alignItems: 'center',
+      alignItems: "center",
     },
     highlighted: {
       backgroundColor: HIGHLIGHT_BACKGROUND_COLOR,
     },
     nonHighlighted: {
-      color: 'inherit',
-      backgroundColor: 'inherit',
+      color: "inherit",
+      backgroundColor: "inherit",
     },
     categoryDropDown: {
-      color: 'inherit',
+      color: "inherit",
     },
     input: {
       marginLeft: theme.spacing(1),
@@ -126,34 +126,34 @@ const useStyles = makeStyles((theme: Theme) =>
       padding: 10,
     },
     searchRoot: {
-      padding: '2px 4px',
-      display: 'flex',
-      alignItems: 'center',
-      backgroundColor: 'inherit',
-      boxShadow: 'none',
+      padding: "2px 4px",
+      display: "flex",
+      alignItems: "center",
+      backgroundColor: "inherit",
+      boxShadow: "none",
     },
     noResultsContainer: {
-      width: '100%',
-      height: '5%',
-      display: 'flex',
-      justifyContent: 'center',
-      alignContent: 'center',
+      width: "100%",
+      height: "5%",
+      display: "flex",
+      justifyContent: "center",
+      alignContent: "center",
     },
     searchContainer: {
-      marginTop: '10px',
+      marginTop: "10px",
     },
     title: {
       marginTop: HEADER_TEXT_MARGIN_TOP,
     },
     paginationContainer: {
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "center",
     },
     filterIcon: {
       marginTop: HEADER_TEXT_MARGIN_TOP,
-      marginLeft: '30px',
-      cursor: 'pointer',
+      marginLeft: "30px",
+      cursor: "pointer",
     },
   })
 );
@@ -176,7 +176,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
     props.categoriesMap ? props.categoriesMap : {}
   );
   const [showModal, setShowModal] = useState(false);
-  const [searchString, setSearchString] = useState('');
+  const [searchString, setSearchString] = useState("");
   const [searchResults, setSearchResults] = useState<IQuestionDetails[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [isNoResultFound, setIsNoResultFound] = useState(false);
@@ -190,13 +190,14 @@ const MapQuestionsToQuestionnaires = (props: any) => {
   });
 
   useEffect(() => {
-    let url: string = '/api/v2/admin/createquestion';
+    let url: string = "/api/v2/admin/createquestion";
     Http.get({
       url,
       state: stateVariable,
     })
       .then((response: any) => {
         setQuestionBank(response);
+        console.log(response, "question response");
         setQuestionBankInitial(response);
         setNumberOfQuestions(response.length);
         setResponseReceived(true);
@@ -207,11 +208,11 @@ const MapQuestionsToQuestionnaires = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else if (object.code === 400) {
-          props.history.push('/relogin');
+          props.history.push("/relogin");
         } else {
-          props.history.push('/error');
+          props.history.push("/error");
         }
         // setBackdropOpen(false);
       });
@@ -259,16 +260,18 @@ const MapQuestionsToQuestionnaires = (props: any) => {
     response.forEach((el: IQuestionDetails) => {
       if (mappedQuestionString.includes(el.id)) {
         mappedQuestionCopy.push(el);
+        console.log(mappedQuestionCopy);
       }
     });
     setMappedQuestions(mappedQuestionCopy);
   };
 
   const handleSubmit = () => {
+    console.log(mappedQuestions);
     if (mappedQuestions.length === Object.keys(categoriesMap).length) {
       props.onSubmit(categoriesMap);
     } else {
-      props.setErrorMessage(<Text tid='mapCategoriesToAllTheTestCases' />);
+      props.setErrorMessage(<Text tid="mapCategoriesToAllTheTestCases" />);
     }
   };
 
@@ -311,7 +314,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
 
   useEffect(() => {
     const searchedItems: IQuestionDetails[] = [];
-    if (searchString === '') {
+    if (searchString === "") {
       setSearchResults([]);
     }
     questionBank.forEach((el) => {
@@ -327,14 +330,14 @@ const MapQuestionsToQuestionnaires = (props: any) => {
   }, [searchString]);
 
   const startSearch = () => {
-    if (searchString !== '') {
+    if (searchString !== "") {
       setSearchButtonPressed(true);
     }
   };
 
   const stopSearch = () => {
     setSearchButtonPressed(false);
-    setSearchString('');
+    setSearchString("");
     setIsNoResultFound(false);
   };
 
@@ -387,7 +390,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
         <FormControl className={classes.formControl}>
           <Select
             name={el.id}
-            value={categoriesMap[el.id] ? categoriesMap[el.id] : ''}
+            value={categoriesMap[el.id] ? categoriesMap[el.id] : ""}
             onChange={handleChangeCategory}
             // tslint:disable-next-line: jsx-no-lambda
             className={classes.categoryDropDown}
@@ -395,7 +398,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           >
             {props.categories && props.categories.length !== 0 ? (
               props.categories.map((a: any, i: number) => {
-                if (a === '') {
+                if (a === "") {
                   return;
                 }
                 return (
@@ -431,12 +434,12 @@ const MapQuestionsToQuestionnaires = (props: any) => {
                     </div>
                   </Grid>
                   <Grid item md={1}>
-                    <Divider orientation='vertical' />
+                    <Divider orientation="vertical" />
                   </Grid>
                   <Grid item md={2}>
                     <strong>
-                      <Text tid='weightageFactor:' />
-                    </strong>{' '}
+                      <Text tid="weightageFactor:" />
+                    </strong>{" "}
                     {answers[answerEl].weightageFactor}
                   </Grid>
                 </Grid>
@@ -453,8 +456,8 @@ const MapQuestionsToQuestionnaires = (props: any) => {
       <ExpansionPanel>
         <ExpansionPanelSummary
           expandIcon={<ExpandMoreIcon />}
-          aria-controls='panel1c-content'
-          id='panel1c-header'
+          aria-controls="panel1c-content"
+          id="panel1c-header"
           className={
             mappedQuestions.includes(el)
               ? classes.highlighted
@@ -466,7 +469,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
               {el.question}
             </Typography>
           </div>
-          <div className={classes.smallColumn} style={{ textAlign: 'center' }}>
+          <div className={classes.smallColumn} style={{ textAlign: "center" }}>
             {mappedQuestions.includes(el) ? <DoneIcon /> : <div />}
           </div>
         </ExpansionPanelSummary>
@@ -481,8 +484,8 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           <div className={clsx(classes.column, classes.helper)}>
             {mappedQuestions.includes(el) ? (
               <Fragment>
-                <Typography variant='caption'>
-                  <Text tid='selectTheCategoryForThisTestCase' />
+                <Typography variant="caption">
+                  <Text tid="selectTheCategoryForThisTestCase" />
                 </Typography>
               </Fragment>
             ) : (
@@ -490,13 +493,13 @@ const MapQuestionsToQuestionnaires = (props: any) => {
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
                     title={
-                      <Typography className='tooltipTitleStyle'>
-                        <Text tid='mapTheTestCase' />
+                      <Typography className="tooltipTitleStyle">
+                        <Text tid="mapTheTestCase" />
                       </Typography>
                     }
                   >
-                    <Typography variant='caption'>
-                      <Text tid='selectTheCategoryForThisTestCase' />
+                    <Typography variant="caption">
+                      <Text tid="selectTheCategoryForThisTestCase" />
                     </Typography>
                   </Tooltip>
                 </MuiThemeProvider>
@@ -510,16 +513,16 @@ const MapQuestionsToQuestionnaires = (props: any) => {
         <ExpansionPanelActions>
           <Button
             name={el.id}
-            size='small'
-            color='primary'
+            size="small"
+            color="primary"
             onClick={() => {
               mapQuestion(el);
             }}
           >
             {mappedQuestions.includes(el) ? (
-              <Text tid='unmap' />
+              <Text tid="unmap" />
             ) : (
-              <Text tid='map' />
+              <Text tid="map" />
             )}
           </Button>
         </ExpansionPanelActions>
@@ -531,7 +534,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
     return (
       <div className={classes.searchContainer}>
         <div>
-          <Text tid='searchResults:' />
+          <Text tid="searchResults:" />
         </div>
         <div className={classes.noResultsContainer}>No results found.</div>
         <br />
@@ -545,11 +548,11 @@ const MapQuestionsToQuestionnaires = (props: any) => {
   const renderQuestionMap = () => {
     return (
       <Fragment>
-        <div style={{ width: '100%', marginBottom: '20px' }}>
+        <div style={{ width: "100%", marginBottom: "20px" }}>
           <Grid container spacing={2}>
             <Grid item sm={12} md={12}>
-              <Typography variant='h6' gutterBottom className={classes.title}>
-                <Text tid='mapTestSuits' /> - {props.questionnaire}
+              <Typography variant="h6" gutterBottom className={classes.title}>
+                <Text tid="mapTestSuits" /> - {props.questionnaire}
               </Typography>
             </Grid>
           </Grid>
@@ -557,11 +560,11 @@ const MapQuestionsToQuestionnaires = (props: any) => {
             <Grid item sm={3} />
             <Grid item sm={1}>
               <LightTooltip
-                title='Show mapped questions first'
-                aria-label='Show mapped questions first'
+                title="Show mapped questions first"
+                aria-label="Show mapped questions first"
               >
                 <FilterListIcon
-                  fontSize='large'
+                  fontSize="large"
                   className={classes.filterIcon}
                   onClick={handleShowMappedQuestions}
                 />
@@ -575,10 +578,10 @@ const MapQuestionsToQuestionnaires = (props: any) => {
                   multiline={false}
                   value={searchString}
                   onChange={handleSearchChange}
-                  placeholder='Search Test Case'
+                  placeholder="Search Test Case"
                   onKeyDown={keyPressSearchBar}
                 />
-                {searchString !== '' ? (
+                {searchString !== "" ? (
                   <IconButton
                     className={classes.iconButton}
                     onClick={stopSearch}
@@ -608,9 +611,9 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           <Fragment>{renderNoResultsFound()}</Fragment>
         ) : (
           <Fragment>
-            {searchString !== '' && searchResults.length ? (
+            {searchString !== "" && searchResults.length ? (
               <div className={classes.searchContainer}>
-                <Text tid=' searchResults:' />
+                <Text tid=" searchResults:" />
                 Search results:
                 {searchResults.map((el: IQuestionDetails, i: number) => {
                   if (i < itemLimit.lowerLimit) {
@@ -647,24 +650,24 @@ const MapQuestionsToQuestionnaires = (props: any) => {
           </Fragment>
         )}
         <div className={classes.paginationContainer}>{renderPagination()}</div>
-        <div className='bottomButtonsContainer'>
+        <div className="bottomButtonsContainer">
           <Button
             className={classes.backButton}
-            variant='outlined'
+            variant="outlined"
             onClick={handleBackButton}
           >
-            <Text tid='goBack' />
+            <Text tid="goBack" />
           </Button>
           <Button
             className={classes.submitButton}
             onClick={handleSubmit}
-            variant='outlined'
+            variant="outlined"
           >
-            <Text tid='save' />
+            <Text tid="save" />
           </Button>
         </div>
         <ModalComponent
-          message={'notSubmittedTheTestSuitYet'}
+          message={"notSubmittedTheTestSuitYet"}
           handleModalYesClicked={handleGoBackYesClicked}
           handleModalNoClicked={handleGoBackNoClicked}
           openModal={showModal}
@@ -679,7 +682,7 @@ const MapQuestionsToQuestionnaires = (props: any) => {
         {responseReceived ? (
           <Fragment>{renderQuestionMap()}</Fragment>
         ) : (
-          <Container className='loaderStyle'>
+          <Container className="loaderStyle">
             <Loader />
           </Container>
         )}

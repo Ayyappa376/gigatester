@@ -108,13 +108,13 @@ export const checkQuestionnaireNameExist = async (
   return nameExist;
 };
 
-export const getRandomize = async (
-  questionnaireType: string,
-  questionnaireVersion: string
-) => {
-  const questionnaire = await getQuestionnaireId(
-    questionnaireType,
-    questionnaireVersion
-  );
-  return questionnaire.randomize ? questionnaire.randomize : false;
-};
+// export const getRandomize = async (
+//   questionnaireType: string,
+//   questionnaireVersion: string
+// ) => {
+//   const questionnaire = await getQuestionnaireId(
+//     questionnaireType,
+//     questionnaireVersion
+//   );
+//   return questionnaire.randomize ? questionnaire.randomize : false;
+// };
