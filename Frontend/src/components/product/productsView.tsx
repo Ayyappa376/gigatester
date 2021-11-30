@@ -78,6 +78,7 @@ const ProductsView = (props: any) => {
     useEffect(() => {
         let filteredProductList: any[] = [];
         setSelectedDevice('')
+        setSelectedPlatform('')
         allProducts.length && searchString ? allProducts.forEach((item: any) => {
             item.name.includes(searchString) && filteredProductList.push(item)
             setListedProducts(filteredProductList)
