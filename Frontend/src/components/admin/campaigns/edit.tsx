@@ -22,6 +22,11 @@ import {
   TableRow,
   TableCell,
   TableBody,
+  Dialog,
+  DialogContent,
+  Link,
+  CssBaseline,
+  DialogTitle,
 } from "@material-ui/core";
 import ClearIcon from "@material-ui/icons/Clear";
 import AddIcon from "@material-ui/icons/Add";
@@ -88,6 +93,10 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
+  dialogPaper: {
+    minHeight: "80vh",
+    maxHeight: "80vh",
+  },
 }));
 
 const EditCampaign = (props: any) => {
@@ -109,6 +118,14 @@ const EditCampaign = (props: any) => {
   const [campaignState, setCampaignState] = React.useState<
     ICampaignParams | undefined
   >();
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [userParamState, setUserParamState] = React.useState<any>({});
+  const [softwareIndex, setSoftwareIndex] = useState(0);
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
   let msgFailure = failureMessage;
   let msgSuccess = <Text tid="campaignDetailsSavedSuccessfully" />;
 
@@ -360,6 +377,136 @@ const EditCampaign = (props: any) => {
     }
   };
 
+  const uploadSoftware = (event: any) => {
+    event.preventDefault();
+    let uploadedFile = event.target.files[0];
+    let formUpload = new FormData();
+    formUpload.append("file", uploadedFile);
+    formUpload.append("fileName", uploadedFile.name);
+    setNotify({
+      isOpen: true,
+      message: "Uploading...",
+      type: "info",
+    });
+    uploadedFile &&
+      Http.upload({
+        url: `/api/v2/software`,
+        body: formUpload,
+        state: stateVariable,
+      })
+        .then((response: any) => {
+          console.log(formUpload);
+          // getUploadedSoftwares();
+
+          setNotify({
+            isOpen: true,
+            message: `The ${uploadedFile.name} file has been uploaded successfully.`,
+            type: "info",
+          });
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+  };
+  const closeDialog = () => {
+    setDialogOpen(false);
+    // props.handleCloseSignup(false);
+    // props.getSignInState(false);
+  };
+
+  const handleChangedValue = (event: any) => {
+    if (userParamState) {
+      const temp: any = { ...userParamState };
+      temp[event.target.name] = event.target.value;
+      setUserParamState(temp);
+    }
+
+    handleChangeProductSoftware(event, softwareIndex);
+    console.log(userParamState);
+  };
+
+  const uploadForm = () => {
+    return (
+      <React.Fragment>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={12}>
+            <TextField
+              // required
+              id="Firs_5918865382"
+              name="Firs_5918865382"
+              // id={`Firs_5918865382`}
+              // name={`Firs_5918865382`}
+              label="External File URL"
+              // value={}
+              fullWidth
+              // onChange={handleChangedValue}
+              onChange={(event) => handleChangedValue(event)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} />
+          <Grid item xs={5} sm={5} />
+          <button>ok</button>
+          <Grid item xs={5} sm={5} />
+          <br />
+          <Grid item xs={5} sm={5} />
+          <Typography variant="h6"> OR</Typography>
+          <Grid item xs={5} sm={5} />
+          <Grid item xs={12} sm={12} />
+          <Grid item xs={4} sm={4} />
+          <input
+            style={{ display: "none" }}
+            id="upload-software-file"
+            multiple
+            type="file"
+            onChange={(e) => uploadSoftware(e)}
+          />
+          <label htmlFor="upload-software-file">
+            <Button
+              component="span"
+              variant="outlined"
+              className={classes.button}
+            >
+              Upload Software
+            </Button>
+          </label>
+          <Grid item xs={5} sm={5} />
+        </Grid>
+      </React.Fragment>
+    );
+  };
+
+  const handleUploadButton = (index: any) => {
+    setDialogOpen(true);
+    setSoftwareIndex(index);
+  };
+  const handleDialogUpload = () => {
+    return (
+      <React.Fragment>
+        <Dialog
+          className={classes.dialogPaper}
+          open={dialogOpen}
+          aria-labelledby="form-dialog-title"
+          onClose={closeDialog}
+          fullWidth={true}
+        >
+          <DialogTitle
+            id="form-dialog-title"
+            style={{ textAlign: "center", padding: "30px 0px" }}
+          >
+            <Typography variant="h6">
+              <Text tid={"Upload Software"} />
+            </Typography>
+          </DialogTitle>
+          <DialogContent style={{ marginBottom: "20px" }}>
+            <CssBaseline />
+            {uploadForm()}
+            {/* {verifyEmail ? signUpAcknowledgement() : signUpForm()} */}
+          </DialogContent>
+        </Dialog>
+      </React.Fragment>
+    );
+  };
+
   const returnIndexOfOther = (array: string[]) => {
     let index = -1;
     array.forEach((el, i) => {
@@ -479,6 +626,18 @@ const EditCampaign = (props: any) => {
         // let valueArray = values[0].products[index].platforms || [];
         // valueArray = [...event.target.value];
         values[0].products[index].platforms = event.target.value;
+        setCampaignState(temp);
+      }
+    }
+  };
+
+  const handleChangeProductSoftware = (event: any, index: number) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        values[0].products[index].software = event.target.value;
         setCampaignState(temp);
       }
     }
@@ -927,7 +1086,19 @@ const EditCampaign = (props: any) => {
                             className="tableCell"
                           >
                             <Typography className="tableBodyText">
-                              {product.software ? product.software : ""}
+                              {/* {product.software ? product.software : ""} */}
+                              {userParamState.Firs_5918865382 ? (
+                                <Link href={userParamState.Firs_5918865382}>
+                                  {userParamState.Firs_5918865382}
+                                </Link>
+                              ) : (
+                                <button
+                                  // onClick={handleUploadButton(index)}
+                                  onClick={handleUploadButton}
+                                >
+                                  <Typography>Upload</Typography>
+                                </button>
+                              )}
                             </Typography>
                           </TableCell>
                           <TableCell
@@ -1100,7 +1271,9 @@ const EditCampaign = (props: any) => {
 
   return (
     <Fragment>
-      {campaignDataFetched ? (
+      {dialogOpen ? (
+        handleDialogUpload()
+      ) : campaignDataFetched ? (
         renderFormData()
       ) : (
         <Container className="loaderStyle">

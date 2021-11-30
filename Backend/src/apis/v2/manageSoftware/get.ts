@@ -14,6 +14,8 @@ interface GetTeam {
     };
     params: {
         fileKey: string;
+        uploadKey: string;
+        contentType: string;
     };
 }
 
@@ -21,7 +23,7 @@ async function handler(request: GetTeam, response: Response) {
     appLogger.info({ GetTeamConfig: request }, 'Inside Handler');
     const { headers } = request;
     const { params } = request;
-
+    
     const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
 
     const cognitoUserId = headers.user['cognito:username'];
@@ -38,8 +40,22 @@ async function handler(request: GetTeam, response: Response) {
     };
 
     const s3 = new AWS.S3();
-
-    if (params.fileKey) {
+    console.log("ueeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee", params)
+    if (params.fileKey) 
+    {
+        if (params.fileKey === 'all') 
+        {
+            // Call S3 to obtain a list of the objects in the bucket
+            s3.listObjects(bucketParams, function (err: any, data: any) {
+                if (err) {
+                    appLogger.error(err, 'fileListError');
+                } else {
+                    appLogger.info({ fileList: data });
+                    return responseBuilder.ok(data, response);
+                }
+            });
+        }
+    else {
         try {
             const url = await s3.getSignedUrlPromise('getObject', {
                 Bucket: BUCKET_NAME,
@@ -47,25 +63,36 @@ async function handler(request: GetTeam, response: Response) {
                 Key: params.fileKey,
             });
             appLogger.info({ downloadUrl: url });
+            console.log(url, "presigned url")
             return responseBuilder.ok({ filePath: url }, response);
         } catch (err) {
             appLogger.error(err, 'downloadFileError');
         }
-    } else {
-        // Call S3 to obtain a list of the objects in the bucket
-        s3.listObjects(bucketParams, function (err: any, data: any) {
-            if (err) {
-                appLogger.error(err, 'fileListError');
-            } else {
-                appLogger.info({ fileList: data });
-                return responseBuilder.ok(data, response);
-            }
-        });
+    } 
+}
+
+    if (params.uploadKey){
+        try {
+            const url = await s3.getSignedUrlPromise('putObject', {
+                Bucket: BUCKET_NAME,
+                Expires: 60,
+                Key: params.uploadKey,
+            });
+            appLogger.info({ downloadUrl: url });
+            console.log(url, "presigned url")
+            return responseBuilder.ok({headers: {
+				'Access-Control-Allow-Origin': '*',
+				'Access-Control-Allow-Credentials': true
+			},
+            filePath: url }, response);
+        } catch (err) {
+            appLogger.error(err, 'UploadFileError');
+        }
     }
 }
 
 export const api: API = {
     handler: <Handler>(<unknown>handler),
     method: 'get',
-    route: '/api/v2/software/:fileKey?',
+    route: '/api/v2/software/:fileKey?/upload/:uploadKey?/:contentType?',
 };

@@ -1,248 +1,309 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { Http } from '../../utils';
+import React, { Fragment, useEffect, useState } from "react";
+import { Http } from "../../utils";
 import {
-    Button,
-    Typography,
-    makeStyles,
-    Container,
-    Paper,
-    Table,
-    TableHead,
-    TableRow,
-    TableCell,
-    TableBody,
-} from '@material-ui/core';
-import { Loader } from '../../components';
-import Notification from '../../common/notification';
-import { buttonStyle } from '../../common/common';
-import { default as MaterialLink } from '@material-ui/core/Link';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../reducers';
-import '../../css/assessments/style.css';
+  Button,
+  Typography,
+  makeStyles,
+  Container,
+  Paper,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
+} from "@material-ui/core";
+import { Loader } from "../../components";
+import Notification from "../../common/notification";
+import { buttonStyle } from "../../common/common";
+import { default as MaterialLink } from "@material-ui/core/Link";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../reducers";
+import "../../css/assessments/style.css";
+import { filenameToContentType } from "@aws-amplify/core";
 
 const useStyles = makeStyles((theme) => ({
-    root: {
-        width: '100%',
-        height: '100%',
-        paddingTop: '10%',
-        padding: 0,
-    },
-    containerRoot: {
-        display: 'flex',
-        position: 'relative',
-        flexDirection: 'column',
-        alignItems: 'center',
-        width: '100%',
-        top: '120px',
-        paddingBottom: theme.spacing(4),
-    },
-    img: {
-        width: '100%',
-        // objectFit: 'contain',
-        height: '84vh',
-    },
-    textAlign: {
-        position: 'absolute',
-        top: '30%',
-        left: '5%',
-        color: '#042E5B',
-        fontSize: '18px'
-        // transform: 'translate(-50%, -100%)'
-    },
-    button: {
-        ...buttonStyle,
-    },
+  root: {
+    width: "100%",
+    height: "100%",
+    paddingTop: "10%",
+    padding: 0,
+  },
+  containerRoot: {
+    display: "flex",
+    position: "relative",
+    flexDirection: "column",
+    alignItems: "center",
+    width: "100%",
+    top: "120px",
+    paddingBottom: theme.spacing(4),
+  },
+  img: {
+    width: "100%",
+    // objectFit: 'contain',
+    height: "84vh",
+  },
+  textAlign: {
+    position: "absolute",
+    top: "30%",
+    left: "5%",
+    color: "#042E5B",
+    fontSize: "18px",
+    // transform: 'translate(-50%, -100%)'
+  },
+  button: {
+    ...buttonStyle,
+  },
 }));
 
 const ManageSoftwareFiles = (props: any) => {
-    const classes = useStyles();
-    const stateVariable = useSelector((state: IRootState) => {
-        return state;
-    });
-    const userStatus = useSelector((state: IRootState) => {
-        return state.user;
-    });
-    const [notify, setNotify] = useState({
-        isOpen: false,
-        message: '',
-        type: '',
-    });
-    const [softwareList, setSoftwareList] = useState([]);
-    const [downloadedSoftware, setDownloadedSoftware] = useState('')
+  const classes = useStyles();
+  const stateVariable = useSelector((state: IRootState) => {
+    return state;
+  });
+  const userStatus = useSelector((state: IRootState) => {
+    return state.user;
+  });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: "",
+    type: "",
+  });
+  const [softwareList, setSoftwareList] = useState([]);
+  const [downloadedSoftware, setDownloadedSoftware] = useState("");
+  const [fileContentType, setFileContentType] = useState("");
+  const [fileSelected, setFileSelected] = useState("");
+  const [fileName, setFileName] = useState("");
 
-    const getUploadedSoftwares = () => {
-        Http.get({
-            url: `/api/v2/software`,
-            state: stateVariable,
+  const getUploadedSoftwares = () => {
+    Http.get({
+      url: `/api/v2/software/all/upload`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        setSoftwareList(response.Contents);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
+  const getUploadPreSignedUrl = (event: any) => {
+    event.preventDefault();
+    console.log(event.target.files[0], "file");
+    setFileSelected(event.target.files[0]);
+    setFileName(event.target.files[0].name);
+    setFileContentType(event.target.files[0].type);
+  };
+  const uploadPreSignedUrlSoftware = () => {
+    Http.post({
+      url: `/api/v2/software/upload/`,
+      state: stateVariable,
+      body: {
+        fileName: fileName,
+        fileType: fileContentType,
+      },
+    })
+      .then((response: any) => {
+        console.log(response, "reponse");
+        console.log(response.filePath, "preSigned Url");
+        console.log(fileSelected, "file");
+        fetch(response.filePath, {
+          method: "PUT",
+          body: fileSelected,
         })
-            .then((response: any) => {
-                setSoftwareList(response.Contents)
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-    }
+          .then((response) => {
+            console.log(response);
+            getUploadedSoftwares();
+            // response.json();
+          })
+          .then((data) => {
+            console.log(data);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
 
-    useEffect(() => {
-        getUploadedSoftwares()
-    }, [])
+  useEffect(() => {
+    getUploadedSoftwares();
+  }, []);
 
-    const uploadSoftware = (event: any) => {
-        let uploadedFile = event.target.files[0];
-        setNotify({
-            isOpen: true,
-            message: "Uploading...",
-            type: 'info',
-        });
-        uploadedFile &&
-            Http.post({
-                url: `/api/v2/software`,
-                body: {
-                    file: `C:\\Softwares\\${uploadedFile.name}`,
-                },
-                state: stateVariable,
-            })
-                .then((response: any) => {
-                    getUploadedSoftwares();
-                    setNotify({
-                        isOpen: true,
-                        message: `The ${uploadedFile.name} file has been uploaded successfully.`,
-                        type: 'info',
-                    });
-                })
-                .catch((error) => {
-                    console.log(error)
-                });
-    }
-
-    const getDownloadFile = (url: any) => {
-        const a = document.createElement('a');
-        a.setAttribute('hidden', '');
-        a.setAttribute('href', url);
-        a.setAttribute('download', downloadedSoftware);
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-    }
-
-    const downloadSoftware = (software: string) => {
-        setDownloadedSoftware(software)
-        setNotify({
-            isOpen: true,
-            message: "Downloading...",
-            type: 'info',
-        });
-        Http.get({
-            url: `/api/v2/software/${software}`,
-            state: stateVariable,
+  const uploadSoftware = (event: any) => {
+    event.preventDefault();
+    let uploadedFile = event.target.files[0];
+    setFileSelected(uploadedFile);
+    let formUpload = new FormData();
+    formUpload.append("file", uploadedFile);
+    formUpload.append("fileName", uploadedFile.name);
+    setNotify({
+      isOpen: true,
+      message: "Uploading...",
+      type: "info",
+    });
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = String(reader.result).split("base64,")[1];
+      console.log(base64String);
+      const dataInfo = {
+        file: base64String,
+        fileName: uploadedFile.name,
+      };
+      uploadedFile &&
+        Http.post({
+          url: `/api/v2/software`,
+          body: dataInfo,
+          state: stateVariable,
         })
-            .then((response: any) => {
-                getDownloadFile(response.filePath)
-            })
-            .catch((error: any) => {
-                console.log(error);
-            });
-    }
+          .then((response: any) => {
+            console.log(formUpload);
+            getUploadedSoftwares();
 
-    if (softwareList.length) {
-        return (
-            <Container
-                maxWidth='md'
-                component='div'
-                classes={{
-                    root: classes.root,
-                }}
-            >
-                {
-                    (userStatus &&
-                        userStatus.roles &&
-                        (userStatus.roles.includes('Manager') ||
-                            userStatus.roles.includes('Admin'))) &&
-                    <Fragment>
-                        <input
-                            style={{ display: 'none' }}
-                            id="upload-software-file"
-                            multiple
-                            type="file"
-                            onChange={(e) => uploadSoftware(e)}
-                        />
-                        <label htmlFor="upload-software-file">
-                            <Button component="span" variant="outlined" className={classes.button}>
-                                Upload Software
-                            </Button>
-                        </label>
-                    </Fragment>
-                }
-                <Paper className='tableArea'>
-                    <Table className='table'>
-                        <TableHead className='tableHead'>
-                            <TableRow>
-                                <TableCell align='center' className='tableHeadCell'>
-                                    <Typography className='tableHeadText'>
-                                        Software
-                                    </Typography>
-                                </TableCell>
-                                <TableCell align='center' className='tableHeadCell'>
-                                    <Typography className='tableHeadText'>
-                                        Action
-                                    </Typography>
-                                </TableCell>
-                            </TableRow>
-                        </TableHead>
-                        <TableBody>
-                            {softwareList.map((row: any, index: number) => {
-                                return (
-                                    <TableRow
-                                        key={index}
-                                        style={
-                                            index % 2
-                                                ? { background: '#EFEFEF' }
-                                                : { background: 'white' }
-                                        }
-                                    >
-                                        <TableCell
-                                            component='th'
-                                            scope='row'
-                                            className='tableCell'
-                                        >
-                                            <Typography className='tableBodyText'>
-                                                {row.Key}
-                                            </Typography>
-                                        </TableCell>
-                                        <TableCell align='center' className='tableCell'>
-                                            <MaterialLink
-                                                href='#'
-                                                onClick={() => {
-                                                    downloadSoftware(row.Key);
-                                                }}
-                                            >
-                                                <Typography>
-                                                    Download
-                                                </Typography>
-                                            </MaterialLink>
-                                        </TableCell>
-                                    </TableRow>
-                                )
-                            })}
-                        </TableBody>
-                    </Table>
-                </Paper>
-                <Notification notify={notify} setNotify={setNotify} />
-            </Container >
-        )
-    } else {
-        return (
-            <Container
-                maxWidth='md'
-                component='div'
-                classes={{
-                    root: classes.containerRoot,
-                }}
-            >
-                <Loader />
-            </Container>
-        );
+            setNotify({
+              isOpen: true,
+              message: `The ${uploadedFile.name} file has been uploaded successfully.`,
+              type: "info",
+            });
+          })
+          .catch((error) => {
+            console.log(error);
+          });
     };
-}
+    reader.readAsDataURL(uploadedFile);
+  };
+
+  const getDownloadFile = (url: any) => {
+    const a = document.createElement("a");
+    a.setAttribute("hidden", "");
+    a.setAttribute("href", url);
+    a.setAttribute("download", downloadedSoftware);
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  };
+
+  const downloadSoftware = (software: string) => {
+    setDownloadedSoftware(software);
+    setNotify({
+      isOpen: true,
+      message: "Downloading...",
+      type: "info",
+    });
+    Http.get({
+      url: `/api/v2/software/${software}`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        getDownloadFile(response.filePath);
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
+  if (softwareList.length) {
+    return (
+      <Container
+        maxWidth="md"
+        component="div"
+        classes={{
+          root: classes.root,
+        }}
+      >
+        {userStatus &&
+          userStatus.roles &&
+          (userStatus.roles.includes("Manager") ||
+            userStatus.roles.includes("Admin")) && (
+            <Fragment>
+              <input
+                style={{ display: "none" }}
+                id="upload-software-file"
+                multiple
+                type="file"
+                onChange={(e) => getUploadPreSignedUrl(e)}
+              />
+              <label htmlFor="upload-software-file">
+                <Button
+                  component="span"
+                  variant="outlined"
+                  className={classes.button}
+                >
+                  Select Software
+                </Button>
+              </label>
+              <Button
+                component="span"
+                variant="outlined"
+                className={classes.button}
+                onClick={uploadPreSignedUrlSoftware}
+              >
+                Upload Software
+              </Button>
+            </Fragment>
+          )}
+        <Paper className="tableArea">
+          <Table className="table">
+            <TableHead className="tableHead">
+              <TableRow>
+                <TableCell align="center" className="tableHeadCell">
+                  <Typography className="tableHeadText">Software</Typography>
+                </TableCell>
+                <TableCell align="center" className="tableHeadCell">
+                  <Typography className="tableHeadText">Action</Typography>
+                </TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {softwareList.map((row: any, index: number) => {
+                return (
+                  <TableRow
+                    key={index}
+                    style={
+                      index % 2
+                        ? { background: "#EFEFEF" }
+                        : { background: "white" }
+                    }
+                  >
+                    <TableCell component="th" scope="row" className="tableCell">
+                      <Typography className="tableBodyText">
+                        {row.Key}
+                      </Typography>
+                    </TableCell>
+                    <TableCell align="center" className="tableCell">
+                      <MaterialLink
+                        href="#"
+                        onClick={() => {
+                          downloadSoftware(row.Key);
+                        }}
+                      >
+                        <Typography>Download</Typography>
+                      </MaterialLink>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </Paper>
+        <Notification notify={notify} setNotify={setNotify} />
+      </Container>
+    );
+  } else {
+    return (
+      <Container
+        maxWidth="md"
+        component="div"
+        classes={{
+          root: classes.containerRoot,
+        }}
+      >
+        <Loader />
+      </Container>
+    );
+  }
+};
 
 export default ManageSoftwareFiles;
