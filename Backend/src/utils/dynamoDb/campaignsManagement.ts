@@ -47,7 +47,7 @@ export const createCampaign = async (campaignData: CampaignInfo, userId: string)
   const item: CampaignInfo = {
     createdBy: userId,
     createdOn: new Date().getTime(),
-//    endDate?: number;
+//    endDate: campaignData.endDate,
     id: `campaign_${uuidv1()}`,
     managers: campaignData.managers,
     name: campaignData.name,
@@ -85,18 +85,13 @@ export const createCampaign = async (campaignData: CampaignInfo, userId: string)
   });
 
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
-    TableName: TableNames.getCampaignsTableName(),
-    // tslint:disable-next-line: object-literal-sort-keys
+    ConditionExpression: 'attribute_not_exists(id)',
     Item: item,
-    ConditionExpression:
-      'attribute_not_exists(id) AND attribute_not_exists(manager)',
+    TableName: TableNames.getCampaignsTableName(),
   });
 
   appLogger.info({ createCampaign_put_params: params });
   return put<CampaignInfo>(params);
-//  .catch((e: any) => {
-//    appLogger.error({ createCampaign_put_error: e });
-//  });
 };
 
 //add id to products which do not have id
@@ -114,34 +109,6 @@ export const getCreateCampaignConfig = async (
   const campaignConfig: ConfigItem = await getCampaignConfig(orgId);
   appLogger.info({ getCampaignConfig: campaignConfig });
 
-/*  const configDetails = {};
-  Object.keys(campaignConfig.config).forEach((val: any) => {
-    configDetails[val] = {};
-    configDetails[val].displayName = campaignConfig.config[val].displayName;
-    configDetails[val].Mandatory = campaignConfig.config[val].mandatory;
-    configDetails[val].type = campaignConfig.config[val].type;
-    if (campaignConfig.config[val].options) {
-      configDetails[val].options = [];
-      if (
-        campaignConfig.config[val].options.custom &&
-        campaignConfig.config[val].options.custom !== ''
-      ) {
-        configDetails[val].options = campaignConfig.config[val].options.custom
-          .split(',')
-          .map((item: string) => item.trim());
-      } else if (
-        campaignConfig.config[val].options.customFixed &&
-        campaignConfig.config[val].options.customFixed !== ''
-      ) {
-        configDetails[val].options = campaignConfig.config[val].options.customFixed
-          .split(',')
-          .map((item: string) => item.trim());
-      }
-    }
-  });
-
-  const createCampaignConfig: ConfigItem = { config: configDetails, orgId };
-*/
   const managers = await fetchManagers();
   const admins = await fetchAdmins();
   const key = 'managers';
@@ -277,9 +244,6 @@ export const updateCampaign = async (updateInfo: CampaignInfo, userId: string): 
 
   appLogger.info({ updateCampaign_update_params: params });
   return update<CampaignInfo>(params);
-//  .catch((e: any) => {
-//    appLogger.error({ updateCampaign_update_error: e });
-//  });
 };
 
 export const getCampaignsList = async (userEmail: string | undefined, queryStatus?: string): Promise<CampaignInfo[]> => {

@@ -24,9 +24,13 @@ import ChevronLeftIcon from "@material-ui/icons/ChevronLeft";
 import DashboardIcon from "@material-ui/icons/Dashboard";
 import MenuIcon from "@material-ui/icons/Menu";
 import PersonAddIcon from "@material-ui/icons/PersonAdd";
-import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
+//import PeopleOutlineIcon from "@material-ui/icons/PeopleOutline";
 import GroupIcon from "@material-ui/icons/Group";
-import GroupAddIcon from "@material-ui/icons/GroupAdd";
+//import GroupAddIcon from "@material-ui/icons/GroupAdd";
+import AccountTreeIcon from '@material-ui/icons/AccountTree';
+import AssessmentIcon from '@material-ui/icons/Assessment';
+import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
+import DevicesOtherIcon from '@material-ui/icons/DevicesOther';
 import AssignmentIcon from "@material-ui/icons/Assignment";
 import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined";
 import BallotIcon from "@material-ui/icons/Ballot";
@@ -42,11 +46,11 @@ import Dashboard from "../../components/admin/dashboard";
 import CreateUser from "../../components/admin/create-user";
 import ManageUsers from "../../components/admin/manage-users";
 import EditUser from "../../components/admin/manage-users/edit-user";
-import CreateTeam from "../../components/admin/create-team";
-import ManageTeams from "../../components/admin/manage-teams";
-import EditTeam from "../../components/admin/manage-teams/edit-teams";
-import AssignAssessment from "../../components/admin/assign-assessment";
-import MapMetricsTools from "../../components/admin/map-metrics-tools";
+//import CreateTeam from "../../components/admin/create-team";
+import ManageGroups from "../../components/admin/groups/manage";
+import EditGroup from "../../components/admin/groups/edit";
+//import AssignAssessment from "../../components/admin/assign-assessment";
+//import MapMetricsTools from "../../components/admin/map-metrics-tools";
 import ManageCampaigns from "../../components/admin/campaigns/manage";
 import EditCampaign from "../../components/admin/campaigns/edit";
 import EditPlatform from "../../components/admin/platforms/edit";
@@ -74,11 +78,11 @@ export const DASHBOARD = "dashboard";
 export const CREATE_USER = "create-user";
 export const MANAGE_USERS = "manageTesters";
 export const EDIT_USER = "edit-user";
-export const CREATE_TEAM = "create-team";
-export const MANAGE_TEAMS = "manageTeams";
-export const EDIT_TEAM = "edit-team";
-export const ASSIGN_ASSESSMENT = "assign-assessment";
-export const MAP_METRICS_TOOLS = "map-metrics-tools";
+//export const CREATE_TEAM = "create-team";
+export const MANAGE_GROUPS = "manageGroups";
+export const EDIT_GROUP = "edit-group";
+//export const ASSIGN_ASSESSMENT = "assign-assessment";
+//export const MAP_METRICS_TOOLS = "map-metrics-tools";
 export const MANAGE_CAMPAIGNS = "manageCampaigns";
 export const EDIT_CAMPAIGN = "edit-campaign";
 export const MANAGE_PLATFORMS = "managePlatforms";
@@ -221,7 +225,7 @@ export default function Admin() {
   const classes = useStyles();
   const [open, setOpen] = useState(true);
   const [buttonValue, setButtonValue] = useState("");
-  const [focusTeamId, setFocusTeamId] = useState("");
+  const [focusGroupId, setFocusGroupId] = useState("");
   const [focusCampaignId, setFocusCampaignId] = useState("");
   const [focusPlatformId, setFocusPlatformId] = useState("");
   const [focusDeviceId, setFocusDeviceId] = useState("");
@@ -282,33 +286,33 @@ export default function Admin() {
     setTitle("editTester");
   };
 
-  const handleCreateTeam = () => {
-    setButtonValue(CREATE_TEAM);
-    setTitle("createTeam");
+//  const handleCreateTeam = () => {
+//    setButtonValue(CREATE_TEAM);
+//    setTitle("createTeam");
+//  };
+
+  const handleManageGroups = () => {
+    setButtonValue(MANAGE_GROUPS);
+    setTitle("manageGroups");
   };
 
-  const handleManageTeams = () => {
-    setButtonValue(MANAGE_TEAMS);
-    setTitle("manageTeams");
+  const editGroupClickHandler = (groupId: string) => {
+    setButtonValue(EDIT_GROUP);
+    setFocusGroupId(groupId);
+    setTitle("editGroup");
   };
 
-  const editTeamClickHandler = (teamId: string) => {
-    setButtonValue(EDIT_TEAM);
-    setFocusTeamId(teamId);
-    setTitle("editTeam");
-  };
+//  const handleAssignClicked = (teamId: string) => {
+//    setButtonValue(ASSIGN_ASSESSMENT);
+//    setFocusTeamId(teamId);
+//    setTitle("assignTest");
+//  };
 
-  const handleAssignClicked = (teamId: string) => {
-    setButtonValue(ASSIGN_ASSESSMENT);
-    setFocusTeamId(teamId);
-    setTitle("assignTest");
-  };
-
-  const handleMapMetricsClicked = (teamId: string) => {
-    setButtonValue(MAP_METRICS_TOOLS);
-    setFocusTeamId(teamId);
-    setTitle("mapMetricsTools");
-  };
+//  const handleMapMetricsClicked = (teamId: string) => {
+//    setButtonValue(MAP_METRICS_TOOLS);
+//    setFocusTeamId(teamId);
+//    setTitle("mapMetricsTools");
+//  };
 
   const handleManageCampaigns = () => {
     setButtonValue(MANAGE_CAMPAIGNS);
@@ -470,36 +474,33 @@ export default function Admin() {
       case MANAGE_USERS:
         return (
           <ManageUsers
-            team={focusTeamId}
+            team={focusGroupId}
             editUserClicked={editUserClickHandler}
             goBack={switchToAdminHome}
           />
         );
       case EDIT_USER:
         return <EditUser user={focusUserName} goBack={switchPage} />;
-      case CREATE_TEAM:
-        return <CreateTeam goBack={switchToAdminHome} />;
-      case MANAGE_TEAMS:
+//      case CREATE_TEAM:
+//        return <CreateTeam goBack={switchToAdminHome} />;
+      case MANAGE_GROUPS:
         return (
-          <ManageTeams
-            editClicked={editTeamClickHandler}
+          <ManageGroups
+            editClicked={editGroupClickHandler}
             goBack={switchToAdminHome}
-            assignClicked={handleAssignClicked}
-            mapMetricsClicked={handleMapMetricsClicked}
           />
         );
-      case EDIT_TEAM:
+      case EDIT_GROUP:
         return (
-          <EditTeam
-            teamId={focusTeamId}
+          <EditGroup
+            groupId={focusGroupId}
             goBack={switchPage}
-            mapMetricsClicked={handleMapMetricsClicked}
           />
         );
-      case ASSIGN_ASSESSMENT:
-        return <AssignAssessment teamId={focusTeamId} goBack={switchPage} />;
-      case MAP_METRICS_TOOLS:
-        return <MapMetricsTools teamId={focusTeamId} goBack={switchPage} />;
+//      case ASSIGN_ASSESSMENT:
+//        return <AssignAssessment teamId={focusTeamId} goBack={switchPage} />;
+//      case MAP_METRICS_TOOLS:
+//        return <MapMetricsTools teamId={focusTeamId} goBack={switchPage} />;
       case MANAGE_CAMPAIGNS:
         return (
           <ManageCampaigns
@@ -686,14 +687,14 @@ export default function Admin() {
               arrow={true}
             >
               <ListItemIcon className={classes.iconWidth}>
-                <PeopleOutlineIcon />
+                <GroupIcon />
               </ListItemIcon>
             </Tooltip>
             <ListItemText primary={<Text tid="manageUsers2" />} />
           </ListItem>
         </List>
         <Divider />
-        <List disablePadding={true}>
+        {/*<List disablePadding={true}>
           <ListItem button onClick={handleCreateTeam}>
             <Tooltip
               title={<Typography>{<Text tid="createTeam2" />}</Typography>}
@@ -707,39 +708,22 @@ export default function Admin() {
             </Tooltip>
             <ListItemText primary={<Text tid="createTeam2" />} />
           </ListItem>
-        </List>
+        </List>*/}
         <List disablePadding={true}>
-          <ListItem button onClick={handleManageTeams}>
+          <ListItem button onClick={handleManageGroups}>
             <Tooltip
-              title={<Typography>{<Text tid="manageTeams2" />}</Typography>}
+              title={<Typography>{<Text tid="manageGroups2" />}</Typography>}
               disableHoverListener={open ? true : false}
               placement="right"
               arrow={true}
             >
               <ListItemIcon className={classes.iconWidth}>
-                <GroupIcon />
+                <AccountTreeIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid="manageTeams2" />} />
+            <ListItemText primary={<Text tid="manageGroups2" />} />
           </ListItem>
         </List>
-        <Divider />
-        <List disablePadding={true}>
-          <ListItem button onClick={handleManageCampaigns}>
-            <Tooltip
-              title={<Typography>{<Text tid="manageCampaigns2" />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement="right"
-              arrow={true}
-            >
-              <ListItemIcon className={classes.iconWidth}>
-                <GroupIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid="manageCampaigns2" />} />
-          </ListItem>
-        </List>
-        <Divider />
         <List disablePadding={true}>
           <ListItem button onClick={handleManagePlatforms}>
             <Tooltip
@@ -749,7 +733,7 @@ export default function Admin() {
               arrow={true}
             >
               <ListItemIcon className={classes.iconWidth}>
-                <GroupIcon />
+                <DeveloperModeIcon />
               </ListItemIcon>
             </Tooltip>
             <ListItemText primary={<Text tid="managePlatforms2" />} />
@@ -764,10 +748,26 @@ export default function Admin() {
               arrow={true}
             >
               <ListItemIcon className={classes.iconWidth}>
-                <GroupIcon />
+                <DevicesOtherIcon />
               </ListItemIcon>
             </Tooltip>
             <ListItemText primary={<Text tid="manageDevices2" />} />
+          </ListItem>
+        </List>
+        <Divider />
+        <List disablePadding={true}>
+          <ListItem button onClick={handleManageCampaigns}>
+            <Tooltip
+              title={<Typography>{<Text tid="manageCampaigns2" />}</Typography>}
+              disableHoverListener={open ? true : false}
+              placement="right"
+              arrow={true}
+            >
+              <ListItemIcon className={classes.iconWidth}>
+                <AssessmentIcon />
+              </ListItemIcon>
+            </Tooltip>
+            <ListItemText primary={<Text tid="manageCampaigns2" />} />
           </ListItem>
         </List>
         <Divider />

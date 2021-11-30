@@ -76,7 +76,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditTeam = (props: any) => {
+const EditGroup = (props: any) => {
   const classes = useStyles();
   const [teamPosted, setTeamPosted] = useState(false);
   const [failure, setFailure] = useState(false);
@@ -915,4 +915,4 @@ const EditTeam = (props: any) => {
   );
 };
 
-export default withRouter(EditTeam);
+export default withRouter(EditGroup);

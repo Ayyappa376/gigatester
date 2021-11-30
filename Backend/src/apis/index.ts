@@ -21,9 +21,17 @@ import { api as putDevicesV2 } from './v2/device/put';
 import { api as dowloadReportsV2 } from './v2/downloadReports/get';
 import { api as getFeedbackV2 } from './v2/feedback/get';
 import { api as postFeedbackV2 } from './v2/feedback/post';
+import { api as deleteGroupsV2 } from './v2/group/delete';
+import { api as getGroupsV2 } from './v2/group/get';
+import { api as postGroupsV2 } from './v2/group/post';
+import { api as putGroupsV2 } from './v2/group/put';
 import { api as getAssessmentHistoryV2 } from './v2/history/get';
 import { api as getUploadSoftwareV2 } from './v2/manageSoftware/get';
 import { api as postUploadSoftwareV2 } from './v2/manageSoftware/post';
+import { api as deleteOrganizationsV2 } from './v2/organization/delete';
+import { api as getOrganizationsV2 } from './v2/organization/get';
+import { api as postOrganizationsV2 } from './v2/organization/post';
+import { api as putOrganizationsV2 } from './v2/organization/put';
 import { api as deletePlatformsV2 } from './v2/platform/delete';
 import { api as getPlatformsV2 } from './v2/platform/get';
 import { api as postPlatformsV2 } from './v2/platform/post';
@@ -62,6 +70,10 @@ export interface API {
 }
 
 const apis: API[] = [
+  deleteOrganizationsV2,
+  getOrganizationsV2,
+  postOrganizationsV2,
+  putOrganizationsV2,
   getSystemSettingsV2,
   postSystemSettingsV2,
   createTeamsConfigV2,
@@ -81,6 +93,10 @@ const apis: API[] = [
   getDevicesV2,
   postDevicesV2,
   putDevicesV2,
+  deleteGroupsV2,
+  getGroupsV2,
+  postGroupsV2,
+  putGroupsV2,
   postFeedbackV2,
   getFeedbackV2,
   getAssessmentAndTeamDetailsV2,

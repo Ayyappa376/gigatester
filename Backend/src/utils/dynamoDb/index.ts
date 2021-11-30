@@ -25,3 +25,5 @@ export * from './getTableNames';
 export * from './campaignsManagement';
 export * from './platformsManagement';
 export * from './devicesManagement';
+export * from './groupsManagement';
+export * from './organizationsManagement';

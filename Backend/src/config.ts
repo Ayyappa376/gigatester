@@ -97,9 +97,12 @@ export const config: Config = {
     cognitoUsers: 'GT_CognitoUsers',
     configs: 'GT_Configs',
     devices: 'GT_Devices',
+    groups: 'GT_Groups',
+    organizations: 'GT_Organizations',
     platforms: 'GT_Platforms',
     questionnaires: 'GT_Questionnaires',
     questions: 'GT_Questions',
     team: 'GT_Team',
+    users: 'GT_Users',
   },
 };
