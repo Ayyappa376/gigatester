@@ -54,7 +54,7 @@ const ProductsView = (props: any) => {
 
     useEffect(() => {
         let filteredProductList: any[] = [];
-        setSelectedPlatform('')
+        // setSelectedPlatform('')
         allProducts.length && selectedDevice ? allProducts.forEach((item: any) => {
             item.devices.forEach((id: string) => id === selectedDevice &&
                 filteredProductList.push(item)
@@ -66,7 +66,7 @@ const ProductsView = (props: any) => {
 
     useEffect(() => {
         let filteredProductList: any[] = [];
-        setSelectedDevice('')
+        // setSelectedDevice('')
         allProducts.length && selectedPlatform ? allProducts.forEach((item: any) => {
             item.platforms.forEach((id: string) => id === selectedPlatform &&
                 filteredProductList.push(item)
@@ -229,7 +229,7 @@ const ProductsView = (props: any) => {
                     <Grid item xs={12} sm={6}>
                     </Grid>
                     {
-                        listedProducts.length && listedProducts.map((item: any, index: number) => {
+                        listedProducts.length ? listedProducts.map((item: any, index: number) => {
                             let platforms = allPlatforms.filter(p1 => item.platforms.some((p2: any) => p1.id === p2));
                             let devices = allDevices.filter(d1 => item.devices.some((d2: any) => d1.id === d2));
 
@@ -261,7 +261,12 @@ const ProductsView = (props: any) => {
                                     </Paper >
                                 </Grid >
                             )
-                        })}
+                        }) :
+                            <Paper className={classes.block} style={{ width: '100%', textAlign: 'center' }} >
+                                There is no Records Found
+                            </Paper>
+
+                    }
                 </Grid >
                 : (
                     <Container className='loaderStyle'>
