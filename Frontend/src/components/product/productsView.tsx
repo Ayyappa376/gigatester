@@ -5,7 +5,7 @@ import { Http } from '../../utils';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
 import { Button, Container, FormControl, Grid, InputLabel, Paper, Select, Typography } from '@material-ui/core';
-import { IPlatformInfo, IProductInfo, IDeviceInfo, STATUS_CAMPAIGN_ACTIVE } from '../../model';
+import { IPlatformInfo, IProductInfo, IUserParams, IDeviceInfo, STATUS_CAMPAIGN_ACTIVE } from '../../model';
 import Loader from '../loader';
 import SearchControl from '../common/searchControl';
 
@@ -40,17 +40,32 @@ const ProductsView = (props: any) => {
     const [listedProducts, setListedProducts] = useState<IProductInfo[]>([]);
     const [allPlatforms, setAllPlatforms] = useState<IPlatformInfo[]>([]);
     const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
+    const [userState, setUserState] = useState<IUserParams | undefined>();
     const [selectedDevice, setSelectedDevice] = useState<any>('');
     const [selectedPlatform, setSelectedPlatform] = useState<any>('');
     const [productsFetched, setProductsFetched] = useState<boolean>(false);
-
     const history = useHistory();
 
     useEffect(() => {
         fetchAllPlatforms();
         fetchAllDevices();
         fetchCampaignDetails();
+        fetchUserDetails();
     }, []);
+
+    const fetchUserDetails = () => {
+        Http.get({
+            url: `/api/v2/admin/users/getusers?email=${stateVariable.user.userDetails.email}`,
+            state: stateVariable,
+        })
+            .then((response: any) => {
+                setUserState(response);
+            })
+            .catch((error) => {
+                console.log(error);
+                props.history.push("/relogin");
+            });
+    };
 
     useEffect(() => {
         let filteredProductList: any[] = [];
@@ -234,6 +249,12 @@ const ProductsView = (props: any) => {
                             let platforms = allPlatforms.filter(p1 => item.platforms.some((p2: any) => p1.id === p2));
                             let devices = allDevices.filter(d1 => item.devices.some((d2: any) => d1.id === d2));
 
+                            let usersPlatforms = userState && userState.values.platform;
+                            let usersDevices = userState && userState.values.devices;
+
+                            let enableRequestTestbyPlatforms = usersPlatforms && usersPlatforms.length ? platforms.some(o1 => usersPlatforms.includes(o1.id)) : false;
+                            let enableRequestTestbyDevices = usersDevices && usersDevices.length ? devices.some(o1 => usersDevices.includes(o1.id)) : false;
+
                             return (
                                 <Grid item xs={12} sm={6} key={index} >
                                     <Paper className={classes.block} data-testid={`platform-${item.id}`} >
@@ -254,8 +275,8 @@ const ProductsView = (props: any) => {
                                                 {devices.length && devices.map((item) => item.name)}
                                             </Grid>
                                             <Grid item xs={12} sm={12} md={12} style={{ textAlign: 'center', margin: '5px 0px' }} >
-                                                <Button variant="outlined" color="primary" size='small' className='button' data-testid="showInterest" disabled={props.userProfileStatusProgress < 100} onClick={requestInterest}>
-                                                    Request Interest
+                                                <Button variant="outlined" color="primary" size='small' className='button' data-testid="showInterest" disabled={props.userProfileStatusProgress < 100 || (!enableRequestTestbyPlatforms || !enableRequestTestbyDevices)} onClick={requestInterest}>
+                                                    Request to Test
                                                 </Button>
                                             </Grid>
                                         </Grid>
