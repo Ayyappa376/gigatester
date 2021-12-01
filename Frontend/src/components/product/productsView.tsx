@@ -95,7 +95,7 @@ const ProductsView = (props: any) => {
         setSelectedDevice('')
         setSelectedPlatform('')
         allProducts.length && searchString ? allProducts.forEach((item: any) => {
-            item.name.includes(searchString) && filteredProductList.push(item)
+            item.name.toLowerCase().includes(searchString.toLowerCase()) && filteredProductList.push(item)
             setListedProducts(filteredProductList)
         }) : setListedProducts(allProducts)
     }, [searchString])
@@ -285,7 +285,7 @@ const ProductsView = (props: any) => {
                             )
                         }) :
                             <Paper className={classes.block} style={{ width: '100%', textAlign: 'center' }} >
-                                There is no Records Found
+                                There is no Products Found
                             </Paper>
 
                     }

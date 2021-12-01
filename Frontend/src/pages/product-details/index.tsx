@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Grid } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../reducers';
 // import TopPane from '../../components/product/topPane'
 import ProductView from '../../components/product/productsView';
 import UserProfileStatus from "../../components/userProfileStatus";
@@ -54,6 +56,9 @@ const productList = [
 function ProductDetails(props: any) {
     const classes = useStyles();
     const [userProfileStatusProgress, setUserProfileStatusProgress] = useState<number>();
+    const userStatus = useSelector((state: IRootState) => {
+        return state.user;
+    });
 
     const getUserProfileStatus = (status: number) => {
         setUserProfileStatusProgress(status)
@@ -75,7 +80,7 @@ function ProductDetails(props: any) {
                     </Grid>
                     <Grid item xs={12} sm={1} />
                     <Grid item xs={12} sm={3} >
-                        <UserProfileStatus updateProfile={true} getUserProfileStatus={getUserProfileStatus} />
+                        <UserProfileStatus updateProfile={true} getUserProfileStatus={getUserProfileStatus} user={userStatus.userDetails.email} />
                     </Grid>
                     <Grid item xs={12} sm={1} />
                 </Grid>
