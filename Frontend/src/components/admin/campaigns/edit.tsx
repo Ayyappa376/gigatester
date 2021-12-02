@@ -568,7 +568,7 @@ const EditCampaign = (props: any) => {
             className={classes.button}
             onClick={uploadPreSignedUrlSoftware}
           >
-            Upload Software
+            Upload
           </Button>
           <Grid item xs={12} sm={12} />
           <br />
@@ -579,6 +579,7 @@ const EditCampaign = (props: any) => {
             component='span'
             variant='outlined'
             onClick={handleChangeProductSoftware}
+            disabled={!softwareOption}
           >
             ok
           </Button>
