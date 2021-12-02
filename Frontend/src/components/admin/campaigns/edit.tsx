@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Fragment } from "react";
+import React, { useState, useEffect, Fragment } from 'react';
 import {
   Grid,
   makeStyles,
@@ -27,13 +27,13 @@ import {
   Link,
   CssBaseline,
   DialogTitle,
-} from "@material-ui/core";
-import ClearIcon from "@material-ui/icons/Clear";
-import AddIcon from "@material-ui/icons/Add";
-import EditIcon from "@material-ui/icons/Edit";
-import { useSelector } from "react-redux";
-import { IRootState } from "../../../reducers";
-import Loader from "../../loader";
+} from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
+import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../../reducers';
+import Loader from '../../loader';
 import {
   IFieldConfigAttributes,
   ICampaignParams,
@@ -43,17 +43,17 @@ import {
   IPlatformInfo,
   IDeviceInfo,
   STATUS_CAMPAIGN_DRAFT,
-} from "../../../model";
-import { Http } from "../../../utils";
-import Success from "../../success-page";
-import { withRouter } from "react-router-dom";
-import { MANAGE_CAMPAIGNS } from "../../../pages/admin";
-import { buttonStyle, tooltipTheme } from "../../../common/common";
-import Notification from "../../../common/notification";
-import { Text } from "../../../common/Language";
-import "../../../css/assessments/style.css";
+} from '../../../model';
+import { Http } from '../../../utils';
+import Success from '../../success-page';
+import { withRouter } from 'react-router-dom';
+import { MANAGE_CAMPAIGNS } from '../../../pages/admin';
+import { buttonStyle, tooltipTheme } from '../../../common/common';
+import Notification from '../../../common/notification';
+import { Text } from '../../../common/Language';
+import '../../../css/assessments/style.css';
 
-const OTHER_STRING = "Other";
+const OTHER_STRING = 'Other';
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
@@ -68,35 +68,35 @@ const MenuProps = {
 
 const useStyles = makeStyles((theme) => ({
   button: {
-    marginTop: "36px",
-    position: "relative",
-    minWidth: "10%",
-    marginRight: "20px",
+    marginTop: '36px',
+    position: 'relative',
+    minWidth: '10%',
+    marginRight: '20px',
     ...buttonStyle,
   },
   grid: {
     marginTop: theme.spacing(2),
-    width: "90%",
+    width: '90%',
   },
   grid2: {
     marginTop: theme.spacing(2),
     marginLeft: theme.spacing(5),
-    border: "1px solid #dadde9",
-    width: "95%",
+    border: '1px solid #dadde9',
+    width: '95%',
   },
   formControl: {
-    minWidth: "100%",
+    minWidth: '100%',
   },
   chips: {
-    display: "flex",
-    flexWrap: "wrap",
+    display: 'flex',
+    flexWrap: 'wrap',
   },
   chip: {
     margin: 2,
   },
   dialogPaper: {
-    minHeight: "80vh",
-    maxHeight: "80vh",
+    minHeight: '80vh',
+    maxHeight: '80vh',
   },
 }));
 
@@ -106,7 +106,7 @@ const EditCampaign = (props: any) => {
   const [failure, setFailure] = useState(false);
   const [campaignDataFetched, setCampaignDataFetched] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
-    <Text tid="somethingWentWrong" />
+    <Text tid='somethingWentWrong' />
   );
   const stateVariable = useSelector((state: IRootState) => {
     return state;
@@ -120,19 +120,19 @@ const EditCampaign = (props: any) => {
     ICampaignParams | undefined
   >();
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [userParamState, setUserParamState] = React.useState<any>("");
+  const [userParamState, setUserParamState] = React.useState<any>('');
   const [softwareIndex, setSoftwareIndex] = useState(-1);
   const [softwareOption, setSoftwareOption] = useState(false);
-  const [fileContentType, setFileContentType] = useState("");
-  const [fileSelected, setFileSelected] = useState("");
-  const [fileName, setFileName] = useState("");
+  const [fileContentType, setFileContentType] = useState('');
+  const [fileSelected, setFileSelected] = useState('');
+  const [fileName, setFileName] = useState('');
   const [notify, setNotify] = useState({
     isOpen: false,
-    message: "",
-    type: "",
+    message: '',
+    type: '',
   });
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid="campaignDetailsSavedSuccessfully" />;
+  let msgSuccess = <Text tid='campaignDetailsSavedSuccessfully' />;
 
   useEffect(() => {
     fetchAllPlatforms();
@@ -156,9 +156,9 @@ const EditCampaign = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          props.history.push("/relogin");
+          props.history.push('/relogin');
         } else {
-          props.history.push("/error");
+          props.history.push('/error');
         }
       });
   };
@@ -178,9 +178,9 @@ const EditCampaign = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          props.history.push("/relogin");
+          props.history.push('/relogin');
         } else {
-          props.history.push("/error");
+          props.history.push('/error');
         }
       });
   };
@@ -201,9 +201,9 @@ const EditCampaign = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          props.history.push("/relogin");
+          props.history.push('/relogin');
         } else {
-          props.history.push("/error");
+          props.history.push('/error');
         }
       });
   };
@@ -220,9 +220,9 @@ const EditCampaign = (props: any) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
-          props.history.push("/relogin");
+          props.history.push('/relogin');
         } else {
-          props.history.push("/error");
+          props.history.push('/error');
         }
         setFailure(true);
       });
@@ -230,7 +230,7 @@ const EditCampaign = (props: any) => {
 
   const getUploadPreSignedUrl = (event: any) => {
     event.preventDefault();
-    console.log(event.target.files[0], "file");
+    console.log(event.target.files[0], 'file');
     setFileSelected(event.target.files[0]);
     setFileName(event.target.files[0].name);
     setFileContentType(event.target.files[0].type);
@@ -238,8 +238,8 @@ const EditCampaign = (props: any) => {
   const uploadPreSignedUrlSoftware = () => {
     setNotify({
       isOpen: true,
-      message: "Uploading...",
-      type: "info",
+      message: 'Uploading...',
+      type: 'info',
     });
     Http.post({
       url: `/api/v2/software/upload/medium`,
@@ -250,11 +250,11 @@ const EditCampaign = (props: any) => {
       },
     })
       .then((response: any) => {
-        console.log(response, "reponse");
-        console.log(response.filePath, "preSigned Url");
-        console.log(fileSelected, "file");
+        console.log(response, 'reponse');
+        console.log(response.filePath, 'preSigned Url');
+        console.log(fileSelected, 'file');
         fetch(response.filePath, {
-          method: "PUT",
+          method: 'PUT',
           body: fileSelected,
         })
           .then((response) => {
@@ -262,9 +262,9 @@ const EditCampaign = (props: any) => {
             setNotify({
               isOpen: true,
               message: `The ${fileName} has been uploaded successfully.`,
-              type: "info",
+              type: 'info',
             });
-            setFileName("");
+            setFileName('');
             handleChangeProductSoftware();
             // response.json();
           })
@@ -318,9 +318,9 @@ const EditCampaign = (props: any) => {
     if (object.code === 400) {
       setFailureMessage(object.apiError.msg);
     } else if (object.code === 401) {
-      props.history.push("/relogin");
+      props.history.push('/relogin');
     } else {
-      setFailureMessage(<Text tid="somethingWentWrong" />);
+      setFailureMessage(<Text tid='somethingWentWrong' />);
       setFailure(true);
     }
   };
@@ -331,12 +331,12 @@ const EditCampaign = (props: any) => {
     } else {
       response.campaigns = [];
       response.campaigns.push({
-        name: "",
+        name: '',
         products: [],
         status: STATUS_CAMPAIGN_DRAFT,
         managers: [],
         startDate: 0,
-        id: "",
+        id: '',
       });
     }
     setCampaignState(response);
@@ -348,7 +348,7 @@ const EditCampaign = (props: any) => {
     values: ICampaignInfo
   ) => {
     Object.keys(config).forEach((el) => {
-      if (config[el].type === "multi-list" && values && values[el]) {
+      if (config[el].type === 'multi-list' && values && values[el]) {
         values[el].forEach((opt: any, index: number) => {
           if (
             config[el].options &&
@@ -365,7 +365,7 @@ const EditCampaign = (props: any) => {
   };
 
   const getMultiListOtherTextValue = (values: any) => {
-    let ret_value = "";
+    let ret_value = '';
     if (values) {
       values.forEach((el: string) => {
         if (el.includes(`${OTHER_STRING}:`)) {
@@ -392,7 +392,7 @@ const EditCampaign = (props: any) => {
         ) {
           check = false;
         } else if (
-          campaignState.campaignConfig[el].type === "multi-list" &&
+          campaignState.campaignConfig[el].type === 'multi-list' &&
           campaignState.campaigns[0][el].length === 0
         ) {
           check = false;
@@ -421,7 +421,7 @@ const EditCampaign = (props: any) => {
       let values: any = temp.campaigns;
 
       if (values) {
-        if (event.target.value === "") {
+        if (event.target.value === '') {
           values[0][key] = OTHER_STRING;
         } else {
           values[0][key] = event.target.value;
@@ -435,12 +435,12 @@ const EditCampaign = (props: any) => {
     event.preventDefault();
     let uploadedFile = event.target.files[0];
     let formUpload = new FormData();
-    formUpload.append("file", uploadedFile);
-    formUpload.append("fileName", uploadedFile.name);
+    formUpload.append('file', uploadedFile);
+    formUpload.append('fileName', uploadedFile.name);
     setNotify({
       isOpen: true,
-      message: "Uploading...",
-      type: "info",
+      message: 'Uploading...',
+      type: 'info',
     });
     uploadedFile &&
       Http.upload({
@@ -455,7 +455,7 @@ const EditCampaign = (props: any) => {
           setNotify({
             isOpen: true,
             message: `The ${uploadedFile.name} file has been uploaded successfully.`,
-            type: "info",
+            type: 'info',
           });
         })
         .catch((error) => {
@@ -488,14 +488,14 @@ const EditCampaign = (props: any) => {
       let values: ICampaignInfo[] | undefined = temp.campaigns;
 
       if (values) {
-        if (values[0].products[index].softwareType === "url") {
-          values[0].products[index].software = "";
+        if (values[0].products[index].softwareType === 'url') {
+          values[0].products[index].software = '';
           setCampaignState(temp);
         } else {
           setNotify({
             isOpen: true,
-            message: "Deleting... ",
-            type: "info",
+            message: 'Deleting... ',
+            type: 'info',
           });
 
           Http.deleteReq({
@@ -504,7 +504,7 @@ const EditCampaign = (props: any) => {
           })
             .then((response: any) => {
               console.log(response);
-              setFailureMessage(<Text tid="File Deleted Successfully" />);
+              setFailureMessage(<Text tid='File Deleted Successfully' />);
               setFailure(true);
               // setNotify({
               //   isOpen: true,
@@ -514,7 +514,7 @@ const EditCampaign = (props: any) => {
 
               if (values) {
                 /* tslint:disable-next-line */
-                values[0].products[index].software = "";
+                values[0].products[index].software = '';
               }
             })
             .catch((error: any) => {
@@ -530,42 +530,40 @@ const EditCampaign = (props: any) => {
         <Grid container spacing={1}>
           <Grid item xs={12} sm={12}>
             <TextField
-              // required
-              id="uploadFile"
-              name="uploadFile"
-              // id={`Firs_5918865382`}
-              // name={`Firs_5918865382`}
-              label="External File URL"
-              // value={}
+              id='uploadFile'
+              name='uploadFile'
+              label='External File URL'
               fullWidth
-              // onChange={handleChangedValue}
               onChange={(event) => handleChangedValue(event)}
             />
           </Grid>
           <Grid item xs={12} sm={12} />
           <br />
-          <Grid item xs={5} sm={5} />
-          <Typography style={{ fontSize: "16px" }}> OR</Typography>
+          <Grid item xs={6} sm={6} />
+          <Typography style={{ fontSize: '16px' }}> OR</Typography>
           <Grid item xs={12} sm={12} />
           <br />
           <Grid item xs={3} sm={3} />
           <input
-            style={{ display: "none" }}
-            id="upload-software-file"
+            style={{ display: 'none' }}
+            id='upload-software-file'
             multiple
-            type="file"
+            type='file'
             onChange={(e) => getUploadPreSignedUrl(e)}
           />
-          <Link style={{ fontSize: "14px" }}>
-            <label htmlFor="upload-software-file">
-              {fileName ? fileName : "Click here to upload local software"}
+          <Link style={{ fontSize: '14px' }}>
+            <label
+              htmlFor='upload-software-file'
+              style={{ fontSize: '14px', color: '#0645AD' }}
+            >
+              {fileName ? fileName : 'Click here to upload local software'}
             </label>
           </Link>
           <Grid item xs={4} sm={4} />
           <Grid item xs={4} sm={4} />
           <Button
-            component="span"
-            variant="outlined"
+            component='span'
+            variant='outlined'
             disabled={softwareOption}
             className={classes.button}
             onClick={uploadPreSignedUrlSoftware}
@@ -578,16 +576,16 @@ const EditCampaign = (props: any) => {
           <Grid item xs={12} sm={12} />
           <Grid item xs={3} sm={3} />
           <Button
-            component="span"
-            variant="outlined"
+            component='span'
+            variant='outlined'
             onClick={handleChangeProductSoftware}
           >
             ok
           </Button>
           <Grid item xs={2} sm={2} />
           <Button
-            component="span"
-            variant="outlined"
+            component='span'
+            variant='outlined'
             onClick={() => {
               setDialogOpen(false);
             }}
@@ -610,19 +608,19 @@ const EditCampaign = (props: any) => {
         <Dialog
           className={classes.dialogPaper}
           open={dialogOpen}
-          aria-labelledby="form-dialog-title"
+          aria-labelledby='form-dialog-title'
           onClose={closeDialog}
           fullWidth={true}
         >
           <DialogTitle
-            id="form-dialog-title"
-            style={{ textAlign: "center", padding: "30px 0px" }}
+            id='form-dialog-title'
+            style={{ textAlign: 'center', padding: '30px 0px' }}
           >
-            <Typography style={{ fontSize: "14px" }}>
-              <Text tid={"Upload Software"} />
+            <Typography style={{ fontSize: '14px' }}>
+              <Text tid={'Upload Software'} />
             </Typography>
           </DialogTitle>
-          <DialogContent style={{ marginBottom: "20px" }}>
+          <DialogContent style={{ marginBottom: '20px' }}>
             <CssBaseline />
             {uploadForm()}
             {/* {verifyEmail ? signUpAcknowledgement() : signUpForm()} */}
@@ -710,8 +708,8 @@ const EditCampaign = (props: any) => {
           values[0].products = [];
         }
         values[0].products.push({
-          id: "",
-          name: "",
+          id: '',
+          name: '',
           platforms: [],
         });
         setCampaignState(temp);
@@ -747,7 +745,7 @@ const EditCampaign = (props: any) => {
     if (campaignState) {
       const temp: ICampaignParams = { ...campaignState };
       let values: ICampaignInfo[] | undefined = temp.campaigns;
-      console.log(index, "index");
+      console.log(index, 'index');
       if (values) {
         // let valueArray = values[0].products[index].platforms || [];
         // valueArray = [...event.target.value];
@@ -763,11 +761,11 @@ const EditCampaign = (props: any) => {
       let values: ICampaignInfo[] | undefined = temp.campaigns;
 
       if (values) {
-        console.log(softwareIndex, "softwareIndex");
-        console.log(userParamState, "userParamState");
+        console.log(softwareIndex, 'softwareIndex');
+        console.log(userParamState, 'userParamState');
         if (userParamState) {
           values[0].products[softwareIndex].software = userParamState;
-          values[0].products[softwareIndex].softwareType = "url";
+          values[0].products[softwareIndex].softwareType = 'url';
           setCampaignState(temp);
           closeDialog();
         } else if (fileName) {
@@ -775,14 +773,14 @@ const EditCampaign = (props: any) => {
           values[0].products[softwareIndex].softwareType = fileContentType;
           setCampaignState(temp);
           setTimeout(() => {
-            setUserParamState("");
+            setUserParamState('');
             closeDialog();
           }, 2000);
         }
       }
     }
     setTimeout(() => {
-      setUserParamState("");
+      setUserParamState('');
       closeDialog();
     }, 2000);
   };
@@ -826,40 +824,40 @@ const EditCampaign = (props: any) => {
   ) => {
     const attrConfig: IFieldConfigAttributes = config[key];
     switch (attrConfig.type) {
-      case "string":
+      case 'string':
         return (
           <TextField
             required={attrConfig.mandatory}
-            type="string"
+            type='string'
             id={`${key}`}
             name={`${key}`}
-            value={values ? (values[key] ? values[key] : "") : ""}
+            value={values ? (values[key] ? values[key] : '') : ''}
             label={attrConfig.displayName}
             onChange={(event) => handleChangeValue(event, key)}
             fullWidth
-            autoComplete="off"
-            className="textFieldStyle"
+            autoComplete='off'
+            className='textFieldStyle'
           />
         );
-      case "number":
+      case 'number':
         return (
-          <div className="numberInput">
+          <div className='numberInput'>
             <TextField
               required={attrConfig.mandatory}
-              type="number"
+              type='number'
               id={`${key}`}
               name={`${key}`}
-              value={values ? (values[key] ? values[key] : "") : ""}
+              value={values ? (values[key] ? values[key] : '') : ''}
               label={attrConfig.displayName}
               onChange={(event) => handleChangeValue(event, key)}
               fullWidth
-              autoComplete="off"
+              autoComplete='off'
               InputProps={{ disableUnderline: true }}
-              className="textFieldStyle"
+              className='textFieldStyle'
             />
           </div>
         );
-      case "list":
+      case 'list':
         return (
           <Fragment>
             <FormControl className={classes.formControl}>
@@ -874,25 +872,25 @@ const EditCampaign = (props: any) => {
                       ? attrConfig.options
                         ? attrConfig.options.custom
                           ? attrConfig.options.custom
-                              .split(",")
+                              .split(',')
                               .includes(values[key])
                             ? values[key]
                             : OTHER_STRING
                           : attrConfig.options.customFixed
                           ? attrConfig.options.customFixed
-                              .split(",")
+                              .split(',')
                               .includes(values[key])
                             ? values[key]
                             : OTHER_STRING
                           : OTHER_STRING
                         : OTHER_STRING
-                      : ""
-                    : ""
+                      : ''
+                    : ''
                 }
                 onChange={(event) => handleChangeValue(event, key)}
               >
                 {attrConfig.options && attrConfig.options.custom ? (
-                  attrConfig.options.custom.split(",").map((opt: string) => {
+                  attrConfig.options.custom.split(',').map((opt: string) => {
                     return (
                       <MenuItem key={opt} value={opt}>
                         {opt}
@@ -901,7 +899,7 @@ const EditCampaign = (props: any) => {
                   })
                 ) : attrConfig.options && attrConfig.options.customFixed ? (
                   attrConfig.options.customFixed
-                    .split(",")
+                    .split(',')
                     .map((opt: string) => {
                       return (
                         <MenuItem key={opt} value={opt}>
@@ -913,13 +911,13 @@ const EditCampaign = (props: any) => {
                   <div />
                 )}
                 <MenuItem key={OTHER_STRING} value={OTHER_STRING}>
-                  <Text tid="other" />
+                  <Text tid='other' />
                 </MenuItem>
               </Select>
             </FormControl>
             <TextField
               required={attrConfig.mandatory}
-              type="string"
+              type='string'
               id={`text_${key}`}
               name={`text_${key}`}
               disabled={
@@ -927,11 +925,11 @@ const EditCampaign = (props: any) => {
                 !values[key] ||
                 (attrConfig.options &&
                   attrConfig.options.custom &&
-                  attrConfig.options.custom.split(",").includes(values[key])) ||
+                  attrConfig.options.custom.split(',').includes(values[key])) ||
                 (attrConfig.options &&
                   attrConfig.options.customFixed &&
                   attrConfig.options.customFixed
-                    .split(",")
+                    .split(',')
                     .includes(values[key]))
               }
               label={`(specify, if ${OTHER_STRING})`}
@@ -941,27 +939,27 @@ const EditCampaign = (props: any) => {
                 !(
                   attrConfig.options &&
                   attrConfig.options.custom &&
-                  attrConfig.options.custom.split(",").includes(values[key])
+                  attrConfig.options.custom.split(',').includes(values[key])
                 ) &&
                 !(
                   attrConfig.options &&
                   attrConfig.options.customFixed &&
                   attrConfig.options.customFixed
-                    .split(",")
+                    .split(',')
                     .includes(values[key])
                 )
                   ? values[key] === OTHER_STRING
-                    ? ""
+                    ? ''
                     : values[key]
-                  : ""
+                  : ''
               }
               onChange={(event) => handleChangeOtherValueList(event, key)}
-              autoComplete="off"
-              className="textFieldStyle"
+              autoComplete='off'
+              className='textFieldStyle'
             />
           </Fragment>
         );
-      case "list-no-others":
+      case 'list-no-others':
         return (
           <FormControl className={classes.formControl}>
             <InputLabel id={`label_${key}`} required={attrConfig.mandatory}>
@@ -975,25 +973,25 @@ const EditCampaign = (props: any) => {
                     ? attrConfig.options
                       ? attrConfig.options.custom
                         ? attrConfig.options.custom
-                            .split(",")
+                            .split(',')
                             .includes(values[key])
                           ? values[key]
-                          : ""
+                          : ''
                         : attrConfig.options.customFixed
                         ? attrConfig.options.customFixed
-                            .split(",")
+                            .split(',')
                             .includes(values[key])
                           ? values[key]
-                          : ""
-                        : ""
-                      : ""
-                    : ""
-                  : ""
+                          : ''
+                        : ''
+                      : ''
+                    : ''
+                  : ''
               }
               onChange={(event) => handleChangeValue(event, key)}
             >
               {attrConfig.options && attrConfig.options.custom ? (
-                attrConfig.options.custom.split(",").map((opt: string) => {
+                attrConfig.options.custom.split(',').map((opt: string) => {
                   return (
                     <MenuItem key={opt} value={opt}>
                       {opt}
@@ -1001,7 +999,7 @@ const EditCampaign = (props: any) => {
                   );
                 })
               ) : attrConfig.options && attrConfig.options.customFixed ? (
-                attrConfig.options.customFixed.split(",").map((opt: string) => {
+                attrConfig.options.customFixed.split(',').map((opt: string) => {
                   return (
                     <MenuItem key={opt} value={opt}>
                       {opt}
@@ -1014,7 +1012,7 @@ const EditCampaign = (props: any) => {
             </Select>
           </FormControl>
         );
-      case "multi-list":
+      case 'multi-list':
         return (
           <Fragment>
             <FormControl className={classes.formControl}>
@@ -1035,7 +1033,7 @@ const EditCampaign = (props: any) => {
                     : []
                 }
                 onChange={(event) => handleChangeMultiValue(event, key)}
-                input={<Input id="select-multiple-chip" />}
+                input={<Input id='select-multiple-chip' />}
                 renderValue={renderChips}
                 MenuProps={MenuProps}
               >
@@ -1060,18 +1058,18 @@ const EditCampaign = (props: any) => {
   const renderProductsTable = (campaign: ICampaignInfo) => {
     return (
       <Fragment>
-        <Container component="div">
-          <div style={{ width: "100%" }}>
+        <Container component='div'>
+          <div style={{ width: '100%' }}>
             <Grid container spacing={3}>
               <Grid item sm={5}>
                 <Button
                   className={classes.button}
-                  variant="outlined"
+                  variant='outlined'
                   onClick={() => {
                     addProduct();
                   }}
                 >
-                  <AddIcon fontSize="large" /> <Text tid="addProduct" />
+                  <AddIcon fontSize='large' /> <Text tid='addProduct' />
                 </Button>
               </Grid>
               <Grid item sm={5}>
@@ -1088,43 +1086,43 @@ const EditCampaign = (props: any) => {
               </Grid>
             </Grid>
           </div>
-          <Paper className="tableArea">
-            <Table className="table">
-              <TableHead className="tableHead">
+          <Paper className='tableArea'>
+            <Table className='table'>
+              <TableHead className='tableHead'>
                 <TableRow>
-                  <TableCell className="tableHeadCell">
-                    <Typography className="tableHeadText">
-                      <Text tid="manageProducts2" />
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='manageProducts2' />
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" className="tableHeadCell">
-                    <Typography className="tableHeadText">
-                      <Text tid="managePlatforms2" />
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='managePlatforms2' />
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" className="tableHeadCell">
-                    <Typography className="tableHeadText">
-                      <Text tid="manageDevices2" />
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='manageDevices2' />
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" className="tableHeadCell">
-                    <Typography className="tableHeadText">
-                      <Text tid="software" />
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='software' />
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" className="tableHeadCell">
-                    <Typography className="tableHeadText">
-                      <Text tid="manageTestSuits2" />
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='manageTestSuits2' />
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" className="tableHeadCell">
-                    <Typography className="tableHeadText">
-                      <Text tid="testers" />
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='testers' />
                     </Typography>
                   </TableCell>
-                  <TableCell align="center" className="tableHeadCell">
-                    <Typography className="tableHeadText">
-                      <Text tid="delete" />
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='delete' />
                     </Typography>
                   </TableCell>
                 </TableRow>
@@ -1138,34 +1136,34 @@ const EditCampaign = (props: any) => {
                           key={index}
                           style={
                             index % 2
-                              ? { background: "#EFEFEF" }
-                              : { background: "white" }
+                              ? { background: '#EFEFEF' }
+                              : { background: 'white' }
                           }
                         >
                           <TableCell
-                            component="th"
-                            scope="row"
-                            className="tableCell"
+                            component='th'
+                            scope='row'
+                            className='tableCell'
                           >
                             <TextField
                               required={true}
-                              type="string"
+                              type='string'
                               id={`productName_${index}`}
                               name={`productName_${index}`}
-                              value={product.name ? product.name : ""}
+                              value={product.name ? product.name : ''}
                               onChange={(event) =>
                                 handleChangeProductName(event, index)
                               }
                               fullWidth
-                              autoComplete="off"
-                              className="textFieldStyle"
+                              autoComplete='off'
+                              className='textFieldStyle'
                             />
                           </TableCell>
                           <TableCell
-                            component="th"
-                            scope="row"
-                            align="center"
-                            className="tableCell"
+                            component='th'
+                            scope='row'
+                            align='center'
+                            className='tableCell'
                           >
                             <FormControl className={classes.formControl}>
                               <Select
@@ -1194,10 +1192,10 @@ const EditCampaign = (props: any) => {
                             </FormControl>
                           </TableCell>
                           <TableCell
-                            component="th"
-                            scope="row"
-                            align="center"
-                            className="tableCell"
+                            component='th'
+                            scope='row'
+                            align='center'
+                            className='tableCell'
                           >
                             <FormControl className={classes.formControl}>
                               <Select
@@ -1208,7 +1206,7 @@ const EditCampaign = (props: any) => {
                                 onChange={(event) =>
                                   handleChangeProductDevices(event, index)
                                 }
-                                input={<Input id="select-multiple-chip" />}
+                                input={<Input id='select-multiple-chip' />}
                                 renderValue={renderChips}
                                 MenuProps={MenuProps}
                               >
@@ -1224,10 +1222,10 @@ const EditCampaign = (props: any) => {
                             </FormControl>
                           </TableCell>
                           <TableCell
-                            component="th"
-                            scope="row"
-                            align="center"
-                            className="tableCell"
+                            component='th'
+                            scope='row'
+                            align='center'
+                            className='tableCell'
                           >
                             {/* {product.software ? product.software : ""} */}
                             {campaign.products[index].software ? (
@@ -1235,21 +1233,21 @@ const EditCampaign = (props: any) => {
                                 <Link href={product.software}>
                                   <TextField
                                     required={true}
-                                    type="string"
+                                    type='string'
                                     id={`productSoftware_${index}`}
                                     name={`productSoftware_${index}`}
                                     value={
-                                      product.software ? product.software : ""
+                                      product.software ? product.software : ''
                                     }
                                     // onChange={(event) =>
                                     //   handleChangeProductName(event, index)
                                     // }
                                     fullWidth
-                                    autoComplete="off"
-                                    className="textFieldStyle"
+                                    autoComplete='off'
+                                    className='textFieldStyle'
                                   />
                                 </Link>
-                                <Typography style={{ padding: "0 6px" }}>
+                                <Typography style={{ padding: '0 6px' }}>
                                   <ClearIcon
                                     onClick={() => {
                                       deleteSoftware(index);
@@ -1267,10 +1265,10 @@ const EditCampaign = (props: any) => {
                             )}
                           </TableCell>
                           <TableCell
-                            component="th"
-                            scope="row"
-                            align="center"
-                            className="tableCell"
+                            component='th'
+                            scope='row'
+                            align='center'
+                            className='tableCell'
                           >
                             <FormControl className={classes.formControl}>
                               <Select
@@ -1283,7 +1281,7 @@ const EditCampaign = (props: any) => {
                                 onChange={(event) =>
                                   handleChangeProductTestSuite(event, index)
                                 }
-                                input={<Input id="select-multiple-chip" />}
+                                input={<Input id='select-multiple-chip' />}
                                 renderValue={renderChips}
                                 MenuProps={MenuProps}
                               >
@@ -1301,35 +1299,35 @@ const EditCampaign = (props: any) => {
                             </FormControl>
                           </TableCell>
                           <TableCell
-                            component="th"
-                            scope="row"
-                            align="center"
-                            className="tableCell"
+                            component='th'
+                            scope='row'
+                            align='center'
+                            className='tableCell'
                           >
-                            <Typography className="tableBodyText">
-                              {product.testers ? product.testers : ""}
+                            <Typography className='tableBodyText'>
+                              {product.testers ? product.testers : ''}
                             </Typography>
                           </TableCell>
                           <TableCell
-                            component="th"
-                            scope="row"
-                            align="center"
-                            className="tableCell"
+                            component='th'
+                            scope='row'
+                            align='center'
+                            className='tableCell'
                           >
                             <MuiThemeProvider theme={tooltipTheme}>
                               <Tooltip
                                 title={
                                   <Typography
                                     style={{
-                                      fontSize: "12px",
-                                      textAlign: "center",
+                                      fontSize: '12px',
+                                      textAlign: 'center',
                                     }}
                                   >
-                                    <Text tid="delete" />
+                                    <Text tid='delete' />
                                   </Typography>
                                 }
                               >
-                                <Typography style={{ padding: "0 6px" }}>
+                                <Typography style={{ padding: '0 6px' }}>
                                   <ClearIcon
                                     onClick={() => {
                                       deleteProduct(index);
@@ -1356,15 +1354,15 @@ const EditCampaign = (props: any) => {
       return (
         <Fragment>
           <Success message={msgSuccess} />
-          <div className="bottomButtonsContainer">
+          <div className='bottomButtonsContainer'>
             <Button
               className={classes.button}
-              variant="outlined"
+              variant='outlined'
               onClick={() => {
                 props.goBack(MANAGE_CAMPAIGNS);
               }}
             >
-              <Text tid="goBack" />
+              <Text tid='goBack' />
             </Button>
           </div>
         </Fragment>
@@ -1391,15 +1389,15 @@ const EditCampaign = (props: any) => {
           {campaignState!.campaigns &&
             renderProductsTable(campaignState!.campaigns[0])}
         </Grid>
-        <div className="bottomButtonsContainer">
+        <div className='bottomButtonsContainer'>
           <Button
             className={classes.button}
-            variant="outlined"
+            variant='outlined'
             onClick={() => {
               props.goBack(MANAGE_CAMPAIGNS);
             }}
           >
-            <Text tid="goBack" />
+            <Text tid='goBack' />
           </Button>
           {mandatoryFieldsCheck() ? (
             <Button
@@ -1407,24 +1405,24 @@ const EditCampaign = (props: any) => {
                 handleSave();
               }}
               className={classes.button}
-              variant="outlined"
+              variant='outlined'
             >
-              <Text tid="save" />
+              <Text tid='save' />
             </Button>
           ) : (
-            <Button className={classes.button} disabled variant="outlined">
-              <Text tid="save" />
+            <Button className={classes.button} disabled variant='outlined'>
+              <Text tid='save' />
             </Button>
           )}
           <Snackbar
-            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             open={failure}
             onClose={handleClose}
             autoHideDuration={9000}
           >
             <SnackbarContent
               style={{
-                backgroundColor: "#dd0000",
+                backgroundColor: '#dd0000',
               }}
               message={msgFailure}
             />
@@ -1441,7 +1439,7 @@ const EditCampaign = (props: any) => {
       ) : campaignDataFetched ? (
         renderFormData()
       ) : (
-        <Container className="loaderStyle">
+        <Container className='loaderStyle'>
           <Loader />
         </Container>
       )}

@@ -1,8 +1,7 @@
 import { CategoriesMap, Questionnaire } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger } from '@utils/index';
+import { appLogger, getQuestionnaireId } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { getQuestionnaireId } from './getQuestionnaire';
 import { get, scan } from './sdk';
 
 //Fetch all Categories
@@ -37,7 +36,6 @@ export const getCategoryListFromQuestionnaire = async (
 ): Promise<any> => {
   const questionnaire: Questionnaire = await getQuestionnaireId(
     quesType,
-    version
   );
   let { categoriesMap, questions } = questionnaire;
   const numberOfQuestions = Object.keys(questions).length;
@@ -72,10 +70,9 @@ export const getDescription = async (
 ): Promise<string> => {
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
     Key: {
-      questionnaireId: quesType,
-      version,
+      id: quesType,
     },
-    TableName: TableNames.getQuestionnairesTableName(),
+    TableName: TableNames.getTestSuitesTableName(),
   });
   appLogger.info({ getDescription_get_params: params });
   return get<Questionnaire>(params).then((item) =>
