@@ -46,6 +46,7 @@ export enum HttpHeaders {
 
 export const RequestModeCors: RequestMode = 'cors';
 
+/*
 export const PlrTransactionIdType = {
     0: 'DASHBOARD_SELECT_CIDN_PAGE',
     1: 'SUPPORT_FEEDBACK_PAGE',
@@ -66,6 +67,7 @@ export const PLRPathList = [
 
 // tslint:disable-next-line: max-line-length
 export const StaffRequestAccessURL = 'https://teamtelstra.sharepoint.com/sites/B2BDigitalTransformationHub/SitePages/Staff-Access-to-Telstra-Connect.aspx?web=1';
+*/
 
 export const SuperUser = {
     userName : "darshan.hn@pinimbus.com",

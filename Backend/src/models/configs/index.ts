@@ -13,6 +13,8 @@ export interface SystemConfigDetails {
     appClientURL: string;
     logLevel: string;
     userpoolId: string;
+    systemUser: string;
+    systemPassword: string;
 }
 
 /*

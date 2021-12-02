@@ -32,72 +32,6 @@ const useStyles = makeStyles({
   },
 });
 
-// const testersList = [
-//   {
-//     id: 1,
-//     label: "San",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-//   {
-//     id: 2,
-//     label: "Bird",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-//   {
-//     id: 3,
-//     label: "Bali",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80",
-//   },
-//   {
-//     id: 4,
-//     label: "Las",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-//   {
-//     id: 5,
-//     label: "Serbia",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-// ];
-
-// const platformList = [
-//   {
-//     id: 1,
-//     label: "San",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-//   {
-//     id: 2,
-//     label: "Bird",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-//   {
-//     id: 3,
-//     label: "Bali",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80",
-//   },
-//   {
-//     id: 4,
-//     label: "Las",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-//   {
-//     id: 5,
-//     label: "Serbia",
-//     imgPath:
-//       "https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60",
-//   },
-// ];
-
 const usersFeedback = [
   {
     label:
@@ -234,49 +168,49 @@ const Home = (props: any) => {
         customHeaders: { noauthvalidate: "true" },
       })
         .then((response: any) => {
-          setSysDetails(response);
           console.log(response, "response");
+          getServiceUserToken(response.systemUser, response.systemPassword);
+          setSysDetails({...response, systemUser: '', systemPassword: ''});
         })
         .catch((error: any) => {
           props.history.push("/error");
         });
     }
-    const getServiceUserToken = async () => {
-      const { userName, password } = SuperUser;
-      try {
-        const user = await Auth.signIn(userName, password);
-        if (
-          user &&
-          user.signInUserSession.idToken &&
-          user.signInUserSession.accessToken
-        ) {
-          const tokenInfo: any = jwtDecode(
-            user.signInUserSession.idToken.jwtToken
-          );
-          superUserStateVariable["user"] = {
-            idToken: user.signInUserSession.idToken.jwtToken,
-            accessToken: user.signInUserSession.accessToken,
-            userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
-            team:
-              tokenInfo["custom:teamName"] &&
-              tokenInfo["custom:teamName"] !== ""
-                ? tokenInfo["custom:teamName"]
-                : "Others",
-            teams: [],
-            roles: ["Admin"],
-          };
-          setSuperUserStateVariable(superUserStateVariable);
-        }
-        getUserList();
-        getPlatformList();
-        getTestSuites();
-        getAssignments();
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getServiceUserToken();
   }, []);
+
+  const getServiceUserToken = async (userName: string, password: string) => {
+    try {
+      const user = await Auth.signIn(userName, password);
+      if (
+        user &&
+        user.signInUserSession.idToken &&
+        user.signInUserSession.accessToken
+      ) {
+        const tokenInfo: any = jwtDecode(
+          user.signInUserSession.idToken.jwtToken
+        );
+        superUserStateVariable["user"] = {
+          idToken: user.signInUserSession.idToken.jwtToken,
+          accessToken: user.signInUserSession.accessToken,
+          userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+          team:
+            tokenInfo["custom:teamName"] &&
+            tokenInfo["custom:teamName"] !== ""
+              ? tokenInfo["custom:teamName"]
+              : "Others",
+          teams: [],
+          roles: ["Admin"],
+        };
+        setSuperUserStateVariable(superUserStateVariable);
+      }
+      getUserList();
+      getPlatformList();
+      getTestSuites();
+      getAssignments();
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const getSignupDialog = (state: boolean) => {
     setOpenSignup(state);

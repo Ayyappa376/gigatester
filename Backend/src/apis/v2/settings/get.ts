@@ -43,6 +43,8 @@ async function handler(request: GetSettings, response: Response) {
         appClientId: config.cognito.appClientId,
         appClientURL: config.cognito.appClientURL,
         userpoolId: config.cognito.userPoolId,
+        systemUser: config.cognito.systemUser,
+        systemPassword: config.cognito.systemPassword,  
       };
       break;
     }

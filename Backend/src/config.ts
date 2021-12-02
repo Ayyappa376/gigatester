@@ -5,6 +5,8 @@ export interface Config {
     appClientId: string;
     appClientURL: string;
     userPoolId: string;
+    systemUser: string;
+    systemPassword: string;
   };
   cors: CorsOptions;
   defaults: {
@@ -45,6 +47,8 @@ export const config: Config = {
     appClientId: '',
     appClientURL: '',
     userPoolId: '',
+    systemUser: '',
+    systemPassword: '',  
   },
   cors: {
     origin: true,
