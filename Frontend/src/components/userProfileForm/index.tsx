@@ -345,7 +345,7 @@ export default function ProfileForm(props: any) {
       <Grid container style={{ height: "200px" }}>
         <Grid item xs={5} sm={5} className={classes.topBar}>
           <Grid container style={{ padding: "8px" }}>
-            <Grid item xs={1} sm={1}>
+            <Grid item xs={1} sm={1} style={{ marginRight: "8px" }}>
               <HomeOutlinedIcon
                 style={{ backgroundColor: "white", borderRadius: "50%" }}
               />
@@ -353,7 +353,7 @@ export default function ProfileForm(props: any) {
             <Grid item xs={8} sm={8}>
               <strong> Address </strong>
             </Grid>
-            <Grid item xs={3} sm={3}>
+            <Grid item xs={2} sm={2}>
               <Button
                 variant="outlined"
                 color="primary"
