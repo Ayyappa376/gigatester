@@ -51,6 +51,10 @@ import { api as addTeamsV2 } from './v2/teams/post';
 import { api as getTestSuiteV2 } from './v2/testSuite/get';
 import { api as postTestSuiteV2 } from './v2/testSuite/post';
 import { api as putTestSuiteV2 } from './v2/testSuite/put';
+import { api as deleteUsers2V2 } from './v2/user/delete';
+import { api as getUsers2V2 } from './v2/user/get';
+import { api as postUsers2V2 } from './v2/user/post';
+import { api as putUsers2V2 } from './v2/user/put';
 import { api as deleteUsersV2 } from './v2/userManagement/delete';
 import { api as getUserstV2 } from './v2/userManagement/get';
 import { api as createUsersV2 } from './v2/userManagement/post';
@@ -129,6 +133,10 @@ const apis: API[] = [
   getTestSuiteV2,
   putTestSuiteV2,
   postTestSuiteV2,
+  deleteUsers2V2,
+  getUsers2V2,
+  postUsers2V2,
+  putUsers2V2,
 ];
 
 const metricsApis: API[] = [

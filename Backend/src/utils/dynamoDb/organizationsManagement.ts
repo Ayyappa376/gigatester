@@ -113,7 +113,7 @@ export const getOrganizationsList = async (queryStatus?: string): Promise<Organi
   const status = queryStatus ? queryStatus : STATUS_VERIFY_ORG_APPROVED;
 
   let params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
-    TableName: TableNames.getCampaignsTableName(),
+    TableName: TableNames.getOrganizationsTableName(),
   });
 
   if (status !== STATUS_VERIFY_ORG_ALL) {
@@ -121,7 +121,7 @@ export const getOrganizationsList = async (queryStatus?: string): Promise<Organi
       ExpressionAttributeNames: {'#status': 'status'},
       ExpressionAttributeValues: {':status': status},
       FilterExpression: '#status = :status',
-      TableName: TableNames.getCampaignsTableName(),
+      TableName: TableNames.getOrganizationsTableName(),
     });
   }
 

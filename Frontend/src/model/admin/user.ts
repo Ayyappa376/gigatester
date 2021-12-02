@@ -1,4 +1,4 @@
-export interface IUser {
+export interface IUserInfo {
     active: boolean;
     createdOn: number;
     detailsOrgUser?: IOrgUserProfile;

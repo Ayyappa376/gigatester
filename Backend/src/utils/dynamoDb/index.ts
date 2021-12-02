@@ -29,3 +29,4 @@ export * from './groupsManagement';
 export * from './organizationsManagement';
 export * from './getTestSuites';
 export * from './testSuiteManagement';
+export * from './usersManagement';
