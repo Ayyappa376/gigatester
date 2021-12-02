@@ -19,7 +19,7 @@ export default function Profile(props: any) {
                 <Grid container spacing={2} data-testid="profileForm">
                     <Grid item xs={12} sm={4}>
                         {" "}
-                        <UserProfileStatus />
+                        <UserProfileStatus user={userState.values.emailId} />
                     </Grid>
                     <Grid item xs={12} sm={8}>
                         <ProfileForm

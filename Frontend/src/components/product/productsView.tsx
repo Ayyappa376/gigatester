@@ -4,8 +4,9 @@ import { IRootState } from '../../reducers';
 import { Http } from '../../utils';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
+import InfoIcon from "@material-ui/icons/Info";
 import { Button, Container, FormControl, Grid, InputLabel, Paper, Select, Typography } from '@material-ui/core';
-import { IPlatformInfo, IProductInfo, IDeviceInfo, STATUS_CAMPAIGN_ACTIVE } from '../../model';
+import { IPlatformInfo, IProductInfo, IUserParams, IDeviceInfo, STATUS_CAMPAIGN_ACTIVE } from '../../model';
 import Loader from '../loader';
 import SearchControl from '../common/searchControl';
 
@@ -40,29 +41,34 @@ const ProductsView = (props: any) => {
     const [listedProducts, setListedProducts] = useState<IProductInfo[]>([]);
     const [allPlatforms, setAllPlatforms] = useState<IPlatformInfo[]>([]);
     const [allDevices, setAllDevices] = useState<IDeviceInfo[]>([]);
+    const [userState, setUserState] = useState<IUserParams | undefined>();
     const [selectedDevice, setSelectedDevice] = useState<any>('');
     const [selectedPlatform, setSelectedPlatform] = useState<any>('');
     const [productsFetched, setProductsFetched] = useState<boolean>(false);
-
+    const [filteredByPlatforms, setFilteredByPlatforms] = useState<any[]>([]);
+    // const [filteredByDevices, setFilteredByDevices] = useState<any[]>([]);
     const history = useHistory();
 
     useEffect(() => {
         fetchAllPlatforms();
         fetchAllDevices();
         fetchCampaignDetails();
+        fetchUserDetails();
     }, []);
 
-    useEffect(() => {
-        let filteredProductList: any[] = [];
-        // setSelectedPlatform('')
-        allProducts.length && selectedDevice ? allProducts.forEach((item: any) => {
-            item.devices.forEach((id: string) => id === selectedDevice &&
-                filteredProductList.push(item)
-            )
-            setListedProducts(filteredProductList)
-        }) : setListedProducts(allProducts)
-    }, [selectedDevice])
-
+    const fetchUserDetails = () => {
+        Http.get({
+            url: `/api/v2/admin/users/getusers?email=${stateVariable.user.userDetails.email}`,
+            state: stateVariable,
+        })
+            .then((response: any) => {
+                setUserState(response);
+            })
+            .catch((error) => {
+                console.log(error);
+                props.history.push("/relogin");
+            });
+    };
 
     useEffect(() => {
         let filteredProductList: any[] = [];
@@ -72,15 +78,37 @@ const ProductsView = (props: any) => {
                 filteredProductList.push(item)
             )
             setListedProducts(filteredProductList)
+            setFilteredByPlatforms(filteredProductList)
         }) : setListedProducts(allProducts)
+        !selectedPlatform && setSelectedDevice('')
     }, [selectedPlatform])
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        // setSelectedPlatform('')
+        filteredByPlatforms.length || selectedPlatform && selectedDevice ? filteredByPlatforms.forEach((item: any) => {
+            item.devices.forEach((id: string) => id === selectedDevice &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+            // setFilteredByDevices(filteredProductList)
+        }) : selectedDevice && allProducts.forEach((item: any) => {
+            item.devices.forEach((id: string) => id === selectedDevice &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+            // setFilteredByDevices(filteredProductList)
+        })
+        !selectedDevice && setSelectedPlatform('')
+        !selectedPlatform && !selectedDevice && !filteredByPlatforms.length && setListedProducts(allProducts)
+    }, [selectedDevice])
 
     useEffect(() => {
         let filteredProductList: any[] = [];
         setSelectedDevice('')
         setSelectedPlatform('')
         allProducts.length && searchString ? allProducts.forEach((item: any) => {
-            item.name.includes(searchString) && filteredProductList.push(item)
+            item.name.toLowerCase().includes(searchString.toLowerCase()) && filteredProductList.push(item)
             setListedProducts(filteredProductList)
         }) : setListedProducts(allProducts)
     }, [searchString])
@@ -229,10 +257,19 @@ const ProductsView = (props: any) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                     </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <InfoIcon fontSize='small' style={{ marginBottom: '-4px' }} /> <InputLabel style={{ fontSize: '13px', display: 'inline-block' }}>User can request to test only products that match the platforms and devices selected on the profile page.</InputLabel>
+                    </Grid>
                     {
                         listedProducts.length ? listedProducts.map((item: any, index: number) => {
                             let platforms = allPlatforms.filter(p1 => item.platforms.some((p2: any) => p1.id === p2));
                             let devices = allDevices.filter(d1 => item.devices.some((d2: any) => d1.id === d2));
+
+                            let usersPlatforms = userState && userState.values.platform;
+                            let usersDevices = userState && userState.values.devices;
+
+                            let enableRequestTestbyPlatforms = usersPlatforms && usersPlatforms.length ? platforms.some(o1 => usersPlatforms.includes(o1.id)) : false;
+                            let enableRequestTestbyDevices = usersDevices && usersDevices.length ? devices.some(o1 => usersDevices.includes(o1.id)) : false;
 
                             return (
                                 <Grid item xs={12} sm={6} key={index} >
@@ -254,8 +291,8 @@ const ProductsView = (props: any) => {
                                                 {devices.length && devices.map((item) => item.name)}
                                             </Grid>
                                             <Grid item xs={12} sm={12} md={12} style={{ textAlign: 'center', margin: '5px 0px' }} >
-                                                <Button variant="outlined" color="primary" size='small' className='button' data-testid="showInterest" disabled={props.userProfileStatusProgress < 100} onClick={requestInterest}>
-                                                    Request Interest
+                                                <Button variant="outlined" color="primary" size='small' className='button' data-testid="showInterest" disabled={props.userProfileStatusProgress < 100 || (!enableRequestTestbyPlatforms || !enableRequestTestbyDevices)} onClick={requestInterest}>
+                                                    Request to Test
                                                 </Button>
                                             </Grid>
                                         </Grid>
@@ -264,7 +301,7 @@ const ProductsView = (props: any) => {
                             )
                         }) :
                             <Paper className={classes.block} style={{ width: '100%', textAlign: 'center' }} >
-                                There is no Records Found
+                                There is no products found
                             </Paper>
 
                     }
