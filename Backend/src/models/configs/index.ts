@@ -12,9 +12,9 @@ export interface SystemConfigDetails {
     appClientId: string;
     appClientURL: string;
     logLevel: string;
-    userpoolId: string;
-    systemUser: string;
     systemPassword: string;
+    systemUser: string;
+    userpoolId: string;
 }
 
 /*

@@ -1,11 +1,9 @@
 import { API, Handler } from '@apis/index';
-import {
-  createTestSuite
-} from '@root/utils/dynamoDb/testSuiteManagement';
 import { TestSuite } from '@models/index';
 import {
   appLogger,
   checktestSuiteNameExist,
+  createTestSuite,
   getNewTestSuiteId,
   responseBuilder,
 } from '@utils/index';
@@ -13,8 +11,8 @@ import { Response } from 'express';
 
 interface PostTestSuite {
   body: {
-    type: string;
     testSuite?: TestSuite;
+    type: string;
   };
   headers: {
     user: {

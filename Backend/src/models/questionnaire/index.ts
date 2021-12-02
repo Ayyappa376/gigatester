@@ -1,10 +1,13 @@
 export interface Questionnaire {
   active?: boolean;
+  benchmarkScore?: number;
   categories?: string[];
   categoriesMap: CategoriesMap;
   createdBy?: string;
   createdOn: number;
   description?: string;
+  hideResult?: boolean;
+  lastVersion?: string;
   modifiedBy?: string;
   modifiedOn?: number;
   name: string;
@@ -13,9 +16,6 @@ export interface Questionnaire {
   questionnaireId: string;
   questions: string[];
   randomize?: boolean;
-  benchmarkScore?: number;
-  hideResult?: boolean;
-  lastVersion?: string;
   showRecommendations?: boolean;
   timeOut?: boolean;
   timeOutTime?: number;

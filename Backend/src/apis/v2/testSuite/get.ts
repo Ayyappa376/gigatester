@@ -18,8 +18,8 @@ interface GetTestSuites {
     };
   };
   query: {
-    latest: boolean;
     id: string;
+    latest: boolean;
     // questionnaireVersion: string;
     status: string;
   };
@@ -103,8 +103,7 @@ async function handler(request: GetTestSuites, response: Response) {
 
     // appLogger.info({ questionnaireList });
     // return responseBuilder.ok(questionnaireList, response);
-  }
-   catch (err) {
+  } catch (err) {
     appLogger.error(err, 'Internal Server Error');
     responseBuilder.internalServerError(err, response);
   }
