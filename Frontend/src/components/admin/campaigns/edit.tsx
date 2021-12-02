@@ -242,7 +242,7 @@ const EditCampaign = (props: any) => {
       type: "info",
     });
     Http.post({
-      url: `/api/v2/software/upload/`,
+      url: `/api/v2/software/upload/medium`,
       state: stateVariable,
       body: {
         fileName: fileName,
@@ -488,8 +488,39 @@ const EditCampaign = (props: any) => {
       let values: ICampaignInfo[] | undefined = temp.campaigns;
 
       if (values) {
-        values[0].products[index].software = "";
-        setCampaignState(temp);
+        if (values[0].products[index].softwareType === "url") {
+          values[0].products[index].software = "";
+          setCampaignState(temp);
+        } else {
+          setNotify({
+            isOpen: true,
+            message: "Deleting... ",
+            type: "info",
+          });
+
+          Http.deleteReq({
+            url: `/api/v2/software/delete/${values[0].products[index].software}`,
+            state: stateVariable,
+          })
+            .then((response: any) => {
+              console.log(response);
+              setFailureMessage(<Text tid="File Deleted Successfully" />);
+              setFailure(true);
+              // setNotify({
+              //   isOpen: true,
+              //   message: "File Deleted Successfully",
+              //   type: "info",
+              // });
+
+              if (values) {
+                /* tslint:disable-next-line */
+                values[0].products[index].software = "";
+              }
+            })
+            .catch((error: any) => {
+              console.log(error);
+            });
+        }
       }
     }
   };
@@ -736,10 +767,12 @@ const EditCampaign = (props: any) => {
         console.log(userParamState, "userParamState");
         if (userParamState) {
           values[0].products[softwareIndex].software = userParamState;
+          values[0].products[softwareIndex].softwareType = "url";
           setCampaignState(temp);
           closeDialog();
         } else if (fileName) {
           values[0].products[softwareIndex].software = fileName;
+          values[0].products[softwareIndex].softwareType = fileContentType;
           setCampaignState(temp);
           setTimeout(() => {
             setUserParamState("");

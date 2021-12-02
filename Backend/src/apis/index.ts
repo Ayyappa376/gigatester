@@ -24,6 +24,7 @@ import { api as postFeedbackV2 } from './v2/feedback/post';
 import { api as getAssessmentHistoryV2 } from './v2/history/get';
 import { api as getUploadSoftwareV2 } from './v2/manageSoftware/get';
 import { api as postUploadSoftwareV2 } from './v2/manageSoftware/post';
+import { api as deleteSoftwareV2 } from './v2/manageSoftware/delete';
 import { api as deletePlatformsV2 } from './v2/platform/delete';
 import { api as getPlatformsV2 } from './v2/platform/get';
 import { api as postPlatformsV2 } from './v2/platform/post';
@@ -47,7 +48,8 @@ import { api as updateUsersV2 } from './v2/userManagement/put';
 import { api as getTestSuiteV2 } from './v2/testSuite/get';
 import { api as putTestSuiteV2 } from './v2/testSuite/put';
 import { api as postTestSuiteV2 } from './v2/testSuite/post';
-
+import { api as getFileV2 } from './v2/fileUpload/get';
+import { api as postFileV2 } from './v2/fileUpload/post';
 
 import { api as buildMetrics } from './metrics/builds/get';
 import { api as doraMetrics } from './metrics/dora/get';
@@ -111,9 +113,12 @@ const apis: API[] = [
   dowloadReportsV2,
   getUploadSoftwareV2,
   postUploadSoftwareV2,
+  deleteSoftwareV2,
   getTestSuiteV2,
   putTestSuiteV2,
   postTestSuiteV2,
+  getFileV2,
+  postFileV2
 ];
 
 const metricsApis: API[] = [

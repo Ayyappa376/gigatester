@@ -183,44 +183,6 @@ const Home = (props: any) => {
       });
   };
 
-  const getUserList = () => {
-    Http.get({
-      url: "/api/v2/admin/users/allUsers",
-      state: superUserStateVariable,
-    })
-      .then((response: any) => {
-        setTesterCount(response.userCount);
-        setTesterList(response.users);
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  };
-
-  const getTestSuites = () => {
-    Http.get({
-      url: "/api/v2/testSuite?status=all&latest=true",
-      state: superUserStateVariable,
-    })
-      .then((response: any) => {
-        console.log(response, "Test Suites");
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  };
-  const getAssignments = () => {
-    Http.get({
-      url: "/api/v2/assignment?teamId='Others'",
-      state: superUserStateVariable,
-    })
-      .then((response: any) => {
-        console.log(response, "Test Suites");
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  };
   useEffect(() => {
     setCurrentPageValue("");
     if (
@@ -267,10 +229,7 @@ const Home = (props: any) => {
           };
           setSuperUserStateVariable(superUserStateVariable);
         }
-        getUserList();
         getPlatformList();
-        getTestSuites();
-        getAssignments();
       } catch (error) {
         console.log(error);
       }
