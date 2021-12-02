@@ -4,6 +4,7 @@ import { IRootState } from '../../reducers';
 import { Http } from '../../utils';
 import { useHistory } from "react-router-dom";
 import { makeStyles } from '@material-ui/core/styles';
+import InfoIcon from "@material-ui/icons/Info";
 import { Button, Container, FormControl, Grid, InputLabel, Paper, Select, Typography } from '@material-ui/core';
 import { IPlatformInfo, IProductInfo, IUserParams, IDeviceInfo, STATUS_CAMPAIGN_ACTIVE } from '../../model';
 import Loader from '../loader';
@@ -44,6 +45,8 @@ const ProductsView = (props: any) => {
     const [selectedDevice, setSelectedDevice] = useState<any>('');
     const [selectedPlatform, setSelectedPlatform] = useState<any>('');
     const [productsFetched, setProductsFetched] = useState<boolean>(false);
+    const [filteredByPlatforms, setFilteredByPlatforms] = useState<any[]>([]);
+    // const [filteredByDevices, setFilteredByDevices] = useState<any[]>([]);
     const history = useHistory();
 
     useEffect(() => {
@@ -69,26 +72,36 @@ const ProductsView = (props: any) => {
 
     useEffect(() => {
         let filteredProductList: any[] = [];
-        // setSelectedPlatform('')
-        allProducts.length && selectedDevice ? allProducts.forEach((item: any) => {
-            item.devices.forEach((id: string) => id === selectedDevice &&
-                filteredProductList.push(item)
-            )
-            setListedProducts(filteredProductList)
-        }) : setListedProducts(allProducts)
-    }, [selectedDevice])
-
-
-    useEffect(() => {
-        let filteredProductList: any[] = [];
         // setSelectedDevice('')
         allProducts.length && selectedPlatform ? allProducts.forEach((item: any) => {
             item.platforms.forEach((id: string) => id === selectedPlatform &&
                 filteredProductList.push(item)
             )
             setListedProducts(filteredProductList)
+            setFilteredByPlatforms(filteredProductList)
         }) : setListedProducts(allProducts)
+        !selectedPlatform && setSelectedDevice('')
     }, [selectedPlatform])
+
+    useEffect(() => {
+        let filteredProductList: any[] = [];
+        // setSelectedPlatform('')
+        filteredByPlatforms.length || selectedPlatform && selectedDevice ? filteredByPlatforms.forEach((item: any) => {
+            item.devices.forEach((id: string) => id === selectedDevice &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+            // setFilteredByDevices(filteredProductList)
+        }) : selectedDevice && allProducts.forEach((item: any) => {
+            item.devices.forEach((id: string) => id === selectedDevice &&
+                filteredProductList.push(item)
+            )
+            setListedProducts(filteredProductList)
+            // setFilteredByDevices(filteredProductList)
+        })
+        !selectedDevice && setSelectedPlatform('')
+        !selectedPlatform && !selectedDevice && !filteredByPlatforms.length && setListedProducts(allProducts)
+    }, [selectedDevice])
 
     useEffect(() => {
         let filteredProductList: any[] = [];
@@ -244,6 +257,9 @@ const ProductsView = (props: any) => {
                     </Grid>
                     <Grid item xs={12} sm={6}>
                     </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <InfoIcon fontSize='small' style={{ marginBottom: '-4px' }} /> <InputLabel style={{ fontSize: '13px', display: 'inline-block' }}>User can request to test only products that match the platforms and devices selected on the profile page.</InputLabel>
+                    </Grid>
                     {
                         listedProducts.length ? listedProducts.map((item: any, index: number) => {
                             let platforms = allPlatforms.filter(p1 => item.platforms.some((p2: any) => p1.id === p2));
@@ -285,7 +301,7 @@ const ProductsView = (props: any) => {
                             )
                         }) :
                             <Paper className={classes.block} style={{ width: '100%', textAlign: 'center' }} >
-                                There is no Products Found
+                                There is no products found
                             </Paper>
 
                     }
