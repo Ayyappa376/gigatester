@@ -20,8 +20,8 @@ type Middleware = (
 export function registerInitialMiddlewares(application: Application): void {
   const middlewares: Middleware[] = [
     cors(config.cors),
-    bodyParser.json(),
-    bodyParser.urlencoded({ extended: true }),
+    bodyParser.json({limit: '10mb'}),
+    bodyParser.urlencoded({limit: '10mb', extended: true }),
     commonResponseHeaders,
     logRequest,
     logResponse,

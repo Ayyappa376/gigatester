@@ -21,11 +21,14 @@ import { api as putDevicesV2 } from './v2/device/put';
 import { api as dowloadReportsV2 } from './v2/downloadReports/get';
 import { api as getFeedbackV2 } from './v2/feedback/get';
 import { api as postFeedbackV2 } from './v2/feedback/post';
+import { api as getFileV2 } from './v2/fileUpload/get';
+import { api as postFileV2 } from './v2/fileUpload/post';
 import { api as deleteGroupsV2 } from './v2/group/delete';
 import { api as getGroupsV2 } from './v2/group/get';
 import { api as postGroupsV2 } from './v2/group/post';
 import { api as putGroupsV2 } from './v2/group/put';
 import { api as getAssessmentHistoryV2 } from './v2/history/get';
+import { api as deleteSoftwareV2 } from './v2/manageSoftware/delete';
 import { api as getUploadSoftwareV2 } from './v2/manageSoftware/get';
 import { api as postUploadSoftwareV2 } from './v2/manageSoftware/post';
 import { api as deleteOrganizationsV2 } from './v2/organization/delete';
@@ -59,7 +62,6 @@ import { api as deleteUsersV2 } from './v2/userManagement/delete';
 import { api as getUserstV2 } from './v2/userManagement/get';
 import { api as createUsersV2 } from './v2/userManagement/post';
 import { api as updateUsersV2 } from './v2/userManagement/put';
-
 import { api as buildMetrics } from './metrics/builds/get';
 import { api as doraMetrics } from './metrics/dora/get';
 import { api as qualityMetrics } from './metrics/quality/get';
@@ -130,9 +132,12 @@ const apis: API[] = [
   dowloadReportsV2,
   getUploadSoftwareV2,
   postUploadSoftwareV2,
+  deleteSoftwareV2,
   getTestSuiteV2,
   putTestSuiteV2,
   postTestSuiteV2,
+  getFileV2,
+  postFileV2,
   deleteUsers2V2,
   getUsers2V2,
   postUsers2V2,

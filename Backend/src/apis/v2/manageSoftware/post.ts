@@ -6,25 +6,26 @@ import {
 } from '@utils/index';
 import { Response } from 'express';
 const AWS = require('aws-sdk');
-const fs = require('fs');
-const path = require('path');
 
 interface UploadSoftware {
-    body: {
-        file: any;
-    };
     headers: {
         user: {
             email: string;
         };
     };
+    body: {
+        file: any,
+        fileName: string,
+    };
+    params: {
+        type : string
+    };
 }
 
 async function handler(request: UploadSoftware, response: Response) {
     appLogger.info({ UploadSoftware: request }, 'Inside Handler');
-    const { headers, body } = request;
-    const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
-
+    const { headers, params, body } = request;
+       
     if (
         headers.user['cognito:groups'][0] !== 'Manager' &&
         headers.user['cognito:groups'][0] !== 'Admin'
@@ -34,33 +35,40 @@ async function handler(request: UploadSoftware, response: Response) {
         return responseBuilder.forbidden(err, response);
     }
 
-    const fileStream = fs.createReadStream(body.file);
+    const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
+    const s3 = new AWS.S3();
 
-    try {
-        const s3 = new AWS.S3();
+    if(params.type === 'profilePic'){
+        const fileBody = body;
+        const base64String = fileBody.file;
+        const fileName = fileBody.fileName;
+        const buff = Buffer.from (base64String, 'base64')
 
-        const params = {
-            Body: fileStream,
-            Bucket: BUCKET_NAME,
-            Key: path.basename(body.file),
-        };
-
-        appLogger.info({ uploadSoftwareFile_params: params });
-
-        s3.upload(params, (error: Error, data: any) => {
-            if (error) {
-                appLogger.error(error, 's3UploadError');
-            }
-            appLogger.info({ s3UploadData: data });
-            return responseBuilder.ok({ message: 'Uploaded' }, response);
-        });
-    } catch (err) {
-        appLogger.error(err, 'Internal Server Error');
+        try {
+            const params = {
+                Body: buff,
+                Bucket: BUCKET_NAME,
+                Key: fileName,
+            };
+            appLogger.info({ uploadSoftwareFile_params: params });
+            s3.putObject(params, (error: Error, data: any) => {
+                if (error) {
+                    appLogger.error(error, 's3UploadError');
+                }
+                appLogger.info({ s3UploadData: data });
+                return responseBuilder.ok({ message: 'Uploaded' }, response);
+            });
+        } catch (err) {
+            appLogger.error(err, 'Internal Server Error');
+        }
     }
+   
 }
+
+
 
 export const api: API = {
     handler: <Handler>(<unknown>handler),
     method: 'post',
-    route: '/api/v2/software',
+    route: '/api/v2/software/upload/:type?',
 };

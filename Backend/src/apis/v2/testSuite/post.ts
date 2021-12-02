@@ -53,8 +53,9 @@ async function handler(request: PostTestSuite, response: Response) {
     appLogger.error(err, 'Bad Request');
     return responseBuilder.internalServerError(err, response);
   } catch (err) {
+    const error = new Error('Internal Server error')
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    responseBuilder.internalServerError(error, response);
   }
 }
 

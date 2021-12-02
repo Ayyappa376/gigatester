@@ -145,8 +145,9 @@ async function handler(request: AssessmentResultRequest, response: Response) {
     }
     return responseBuilder.ok(acknowledgement, response);
   } catch (err) {
+    const error = new Error('Internal Server Error');
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    responseBuilder.internalServerError(error, response);
   }
 }
 

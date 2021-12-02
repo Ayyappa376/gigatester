@@ -1,6 +1,5 @@
-/*tslint:disable*/
+
 import { API, Handler } from '@apis/index';
-// import { getQuestionnaire, getQuestionnairesAssigned, getUserDocument } from '@root/utils/index';
 import {
   responseBuilder,
   appLogger,
@@ -124,8 +123,9 @@ async function handler(request: PostTestSuite, response: Response) {
       return responseBuilder.internalServerError(err, response);
     }
   } catch (err) {
-    appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    const error = new Error('Internal error.');
+    appLogger.error(error, 'Internal Server Error');
+    responseBuilder.internalServerError(error, response);
   }
 }
 
@@ -134,4 +134,4 @@ export const api: API = {
   method: 'put',
   route: '/api/v2/testSuite',
 };
-/*tslint:enable*/
+
