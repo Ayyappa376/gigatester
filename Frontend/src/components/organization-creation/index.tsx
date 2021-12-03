@@ -65,9 +65,6 @@ export default function CreateOrganization(props: any) {
     const [dialogOpen, setDialogOpen] = useState(props.openOrgCreation);
     // const saveUserData = useActions(saveUserDetails);
     const [errorMessage, setErrorMessage] = useState("");
-    const [validationMsg, setValidationMsg] = useState(
-        "Please fill out email field to sign up"
-    );
     const [openSignin, setOpenSignin] = useState(false);
     const [loading, setLoading] = useState(false);
     const [superUserStateVariable, setSuperUserStateVariable] = useState(
@@ -108,10 +105,6 @@ export default function CreateOrganization(props: any) {
         }
     };
 
-    const getSignInPage = () => {
-        setOpenSignin(true);
-    };
-
     const closeAlert = () => {
         setSnackbarOpen(false);
     };
@@ -122,60 +115,11 @@ export default function CreateOrganization(props: any) {
         // props.getSignInState(false);
     };
 
-    const getSignInState = (state: boolean) => {
-        setOpenSignin(state);
-    };
-
     // const handleSubmit = () => {
-    //     setLoading(true);
-    //     const { emailId } = userParamState;
-    //     console.log(superUserStateVariable);
-    //     if (validateEmail(emailId)) {
-    //         if (checkBox) {
-    //             const postData = userParamState;
-    //             postData["roles"] = ["Member"];
-    //             try {
-    //                 Http.post({
-    //                     url: `/api/v2/admin/users`,
-    //                     body: {
-    //                         ...postData,
-    //                     },
-    //                     state: superUserStateVariable,
-    //                 })
-    //                     .then((response: any) => {
-    //                         setVerifyEmail(true);
-    //                         setLoading(false);
-    //                         // setNewUserPosted(true);
-    //                     })
-    //                     .catch((error) => {
-    //                         // console.log(error);
-    //                         setLoading(false);
-    //                         setErrorMessage(
-    //                             "An account with the given email already exists."
-    //                         );
-    //                         setSnackbarOpen(true);
-    //                     });
-    //             } catch (error) {
-    //                 let errResponse: any = error;
-    //                 setLoading(false);
-    //                 setErrorMessage(errResponse.message);
-    //                 setSnackbarOpen(true);
-    //             }
-    //         } else {
-    //             setErrorMessage(
-    //                 "Please agree to Privacy and Terms and Conditions of this site to sign up"
-    //             );
-    //             setLoading(false);
-    //             setSnackbarOpen(true);
-    //         }
-    //     } else {
-    //         setSnackbarOpen(true);
-    //         setLoading(false);
-    //         setValidationMsg("Please enter a valid email");
-    //     }
+
     // };
 
-    const signUpForm = () => {
+    const orgCreationForm = () => {
         return (
             <React.Fragment>
                 {/* <Typography variant="h6">
@@ -215,53 +159,8 @@ export default function CreateOrganization(props: any) {
                             onChange={handleChangeValue}
                         />
                     </Grid>
+                    <br />
 
-                    {/* <Grid item xs={12} sm={12}>
-            <FormControl required style={{ width: "100%" }}>
-              <InputLabel id="country">Country</InputLabel>
-              <Select
-                id="country"
-                name="country"
-                fullWidth
-                value={userParamState.country || ""}
-                onChange={handleChangeValue}
-              >
-                <div className={classes.chips}>
-                  <MenuItem value={"unitedStates"}>United States</MenuItem>
-                  <Chip
-                    key={"unitedStates"}
-                    label={"unitedStates"}
-                    className={classes.chip}
-                  />
-                </div>
-              </Select>
-            </FormControl>
-          </Grid> */}
-                    {/* <Grid item xs={12} sm={12}>
-                        <FormControlLabel
-                            value="end"
-                            control={
-                                <Checkbox
-                                    color="primary"
-                                    checked={checkBox}
-                                    onChange={(e) => {
-                                        setcheckBox(e.target.checked);
-                                    }}
-                                />
-                            }
-                            label={"I agree to Privacy and Terms and Conditions of this site"}
-                            labelPlacement="end"
-                        />                      
-                    </Grid> */}
-                    <br />
-                    <br />
-                    <br />
-                    <Grid item xs={8} sm={8}>
-                        {/* {"Already have an account"} <br />
-                        <Link onClick={getSignInPage} component="button" variant="body2">
-                            {"Login here"}
-                        </Link> */}
-                    </Grid>
                     <Grid item xs={1} sm={1}></Grid>
                     <Grid item xs={3} sm={3}>
                         {/* <Button
@@ -284,31 +183,15 @@ export default function CreateOrganization(props: any) {
         );
     };
 
-    const signUpAcknowledgement = () => {
+    const orgCreationAcknowledgement = () => {
         return (
             <React.Fragment>
-                <Typography variant="h6" gutterBottom>
-                    Thank you for the Signup.
-                </Typography>
-                <Typography variant="subtitle1">
-                    We have sent a temporary password to email address given in the form.{" "}
-                    <br />
-                    Please check your email, get the temporary password for setting up new
-                    password <br />
-                    and then click the button below to continue set up new password and
-                    Signin.
-                </Typography>
-                <Box style={{ textAlign: "center", margin: "30px 0" }}>
-                    <Button variant="contained" onClick={getSignInPage}>
-                        Continue
-                    </Button>
-                    <br />
-                </Box>
+
             </React.Fragment>
         );
     };
 
-    const signUpDialog = () => {
+    const orgCreationDialog = () => {
         return (
             <React.Fragment>
                 <Dialog
@@ -328,27 +211,25 @@ export default function CreateOrganization(props: any) {
                     </DialogTitle>
                     <DialogContent style={{ marginBottom: "20px" }}>
                         <CssBaseline />
-                        {verifyEmail ? signUpAcknowledgement() : signUpForm()}
+                        {verifyEmail ? orgCreationAcknowledgement() : orgCreationForm()}
                     </DialogContent>
                 </Dialog>
             </React.Fragment>
         );
     };
 
-    return openSignin ? (
-        <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
-    ) : (
+    return (
         <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
-            {signUpDialog()}
-            <Snackbar
+            {orgCreationDialog()}
+            {/* <Snackbar
                 open={snackbarOpen}
                 anchorOrigin={{ vertical: "top", horizontal: "center" }}
                 onClose={closeAlert}
             >
                 <Alert onClose={closeAlert} severity="error">
-                    {errorMessage ? errorMessage : validationMsg}
+                    {errorMessage && errorMessage}
                 </Alert>
-            </Snackbar>
+            </Snackbar> */}
         </Container>
     );
 }
