@@ -12,7 +12,7 @@ import AssessmentView from './assessment-view';
 import SpiderWeb from './spider-web'
 import CreateUser from './admin/create-user';
 import CreateTeam from './admin/create-team';
-import OrganizationSelection from './organization-selection';
+import CreateOrganization from './organization-creation';
 
 export * from './dropdown';
 
@@ -29,7 +29,7 @@ export {
     Loader,
     AssessmentView,
     SpiderWeb,
-    OrganizationSelection,
+    CreateOrganization,
     CreateUser,
     CreateTeam
 };
