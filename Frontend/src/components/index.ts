@@ -12,6 +12,8 @@ import AssessmentView from './assessment-view';
 import SpiderWeb from './spider-web'
 import CreateUser from './admin/create-user';
 import CreateTeam from './admin/create-team';
+import OrganizationSelection from './organization-selection';
+
 export * from './dropdown';
 
 export {
@@ -27,6 +29,7 @@ export {
     Loader,
     AssessmentView,
     SpiderWeb,
+    OrganizationSelection,
     CreateUser,
     CreateTeam
 };

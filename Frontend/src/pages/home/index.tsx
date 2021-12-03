@@ -17,6 +17,7 @@ import {
 import TopPane from "../../components/home/topPane";
 import { LatestNews } from "../../components/home/rightPane";
 import SignupForm from "../../components/signUpForm";
+import { CreateOrganization } from "../../components"
 
 const useStyles = makeStyles({
   root: {
@@ -156,6 +157,7 @@ const Home = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => state);
   const setCurrentPageValue = useActions(setCurrentPage);
   const [openSignup, setOpenSignup] = useState(false);
+  const [openOrgCreation, setOpenOrgSelection] = useState(false);
   const [platformList, setPlatformList] = useState([]);
   const [testerList, setTesterList] = useState([]);
   const [testerCount, setTesterCount] = useState(0);
@@ -259,7 +261,7 @@ const Home = (props: any) => {
             userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
             team:
               tokenInfo["custom:teamName"] &&
-              tokenInfo["custom:teamName"] !== ""
+                tokenInfo["custom:teamName"] !== ""
                 ? tokenInfo["custom:teamName"]
                 : "Others",
             teams: [],
@@ -286,6 +288,14 @@ const Home = (props: any) => {
     setOpenSignup(state);
   };
 
+  const getOrganizationSelectionDialog = (state: boolean) => {
+    setOpenOrgSelection(state);
+  };
+
+  const handleCloseOrganizationCreation = (state: boolean) => {
+    setOpenOrgSelection(state);
+  };
+
   return (
     <Container
       maxWidth="xl"
@@ -294,7 +304,7 @@ const Home = (props: any) => {
       }}
     >
       <Grid container spacing={2}>
-        <TopPane getSignupDialog={getSignupDialog} />
+        <TopPane getSignupDialog={getSignupDialog} getOrganizationSelectionDialog={getOrganizationSelectionDialog} />
         <Grid item xs={12} sm={1} />
         <Grid item xs={12} sm={7}>
           <Grid item xs={12} sm={12} className={classes.marginTopTen}>
@@ -321,6 +331,14 @@ const Home = (props: any) => {
           superUserStateVariable={superUserStateVariable}
         />
       )}
+      {openOrgCreation && (
+        <CreateOrganization
+          openOrgCreation={openOrgCreation}
+          handleCloseOrganizationCreation={handleCloseOrganizationCreation}
+          superUserStateVariable={superUserStateVariable}
+        />
+      )}
+
     </Container>
   );
 };

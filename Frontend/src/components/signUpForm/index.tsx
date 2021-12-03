@@ -73,7 +73,7 @@ export default function SignupForm(props: any) {
   const [superUserStateVariable, setSuperUserStateVariable] = useState(
     props.superUserStateVariable
   );
-  console.log(props.superUserStateVariable);
+  // console.log(props.superUserStateVariable);
 
   const validateEmail = (email: string) => {
     const re =
@@ -129,7 +129,7 @@ export default function SignupForm(props: any) {
   const handleSubmit = () => {
     setLoading(true);
     const { emailId } = userParamState;
-    console.log(superUserStateVariable);
+    // console.log(superUserStateVariable);
     if (validateEmail(emailId)) {
       if (checkBox) {
         const postData = userParamState;

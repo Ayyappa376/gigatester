@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import { Button, Grid, InputLabel, Paper, Typography } from "@material-ui/core";
-import SignupForm from "../../signUpForm";
 import "../style.css";
 
 const useStyles = makeStyles(() => ({
@@ -27,6 +26,11 @@ const TesterEvents = (props: any) => {
   //   const [openSignup, setOpenSignup] = useState(false);
   const handleSignup = () => {
     props.getSignupDialog(true);
+    // setOpenSignup(true);
+  };
+
+  const handleOrganizationSelection = () => {
+    props.getOrganizationSelectionDialog(true);
     // setOpenSignup(true);
   };
 
@@ -61,6 +65,7 @@ const TesterEvents = (props: any) => {
             </InputLabel>
             <Button
               variant="outlined"
+              onClick={handleOrganizationSelection}
               color="primary"
               size="small"
               className="button buttonMarginTopPane"
