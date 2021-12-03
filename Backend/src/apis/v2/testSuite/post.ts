@@ -1,11 +1,9 @@
 import { API, Handler } from '@apis/index';
-import {
-  createTestSuite
-} from '@root/utils/dynamoDb/testSuiteManagement';
 import { TestSuite } from '@models/index';
 import {
   appLogger,
   checktestSuiteNameExist,
+  createTestSuite,
   getNewTestSuiteId,
   responseBuilder,
 } from '@utils/index';
@@ -13,8 +11,8 @@ import { Response } from 'express';
 
 interface PostTestSuite {
   body: {
-    type: string;
     testSuite?: TestSuite;
+    type: string;
   };
   headers: {
     user: {
@@ -55,8 +53,9 @@ async function handler(request: PostTestSuite, response: Response) {
     appLogger.error(err, 'Bad Request');
     return responseBuilder.internalServerError(err, response);
   } catch (err) {
+    const error = new Error('Internal Server error')
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    responseBuilder.internalServerError(error, response);
   }
 }
 

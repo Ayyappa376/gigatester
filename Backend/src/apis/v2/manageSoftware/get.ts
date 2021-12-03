@@ -14,6 +14,8 @@ interface GetTeam {
     };
     params: {
         fileKey: string;
+        uploadKey: string;
+        contentType: string;
     };
 }
 
@@ -21,7 +23,7 @@ async function handler(request: GetTeam, response: Response) {
     appLogger.info({ GetTeamConfig: request }, 'Inside Handler');
     const { headers } = request;
     const { params } = request;
-
+    
     const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
 
     const cognitoUserId = headers.user['cognito:username'];
@@ -36,10 +38,23 @@ async function handler(request: GetTeam, response: Response) {
     const bucketParams = {
         Bucket: BUCKET_NAME,
     };
-
     const s3 = new AWS.S3();
 
-    if (params.fileKey) {
+    if (params.fileKey) 
+    {
+        if (params.fileKey === 'all') 
+        {
+            // Call S3 to obtain a list of the objects in the bucket
+            s3.listObjects(bucketParams, function (err: any, data: any) {
+                if (err) {
+                    appLogger.error(err, 'fileListError');
+                } else {
+                    appLogger.info({ fileList: data });
+                    return responseBuilder.ok(data, response);
+                }
+            });
+        }
+    else {
         try {
             const url = await s3.getSignedUrlPromise('getObject', {
                 Bucket: BUCKET_NAME,
@@ -51,18 +66,10 @@ async function handler(request: GetTeam, response: Response) {
         } catch (err) {
             appLogger.error(err, 'downloadFileError');
         }
-    } else {
-        // Call S3 to obtain a list of the objects in the bucket
-        s3.listObjects(bucketParams, function (err: any, data: any) {
-            if (err) {
-                appLogger.error(err, 'fileListError');
-            } else {
-                appLogger.info({ fileList: data });
-                return responseBuilder.ok(data, response);
-            }
-        });
-    }
+    } 
 }
+}
+
 
 export const api: API = {
     handler: <Handler>(<unknown>handler),

@@ -12,6 +12,8 @@ export interface SystemConfigDetails {
     appClientId: string;
     appClientURL: string;
     logLevel: string;
+    systemPassword: string;
+    systemUser: string;
     userpoolId: string;
 }
 

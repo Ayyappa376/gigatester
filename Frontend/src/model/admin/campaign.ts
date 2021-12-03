@@ -20,6 +20,7 @@ export interface IProductInfo {
   instructions?: string;
   devices?: string[];
   software?: string;
+  softwareType?:string;
   platforms: string[];
   testSuite?: string[];
   testers?: ITesterStatus[];

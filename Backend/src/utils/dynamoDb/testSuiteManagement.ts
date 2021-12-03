@@ -17,8 +17,8 @@ export const createTestSuite = async (
       createdBy: data.createdBy,
       createdOn: Date.now(),
       description: data.description || 'default',
-      name: data.name,
       id: `testsuite_${uuidv1()}`,
+      name: data.name,
       questions: data.questions || [],
       randomize: data.randomize
     //   hideResult: data.hideResult,
@@ -34,7 +34,7 @@ export const createTestSuite = async (
       Item: newTestSuite,
       TableName: TableNames.getTestSuitesTableName(),
     });
-  
+
     appLogger.info({ createTestSuites_put_params: params });
     return put<TestSuite>(params);
   };
@@ -51,53 +51,53 @@ export const createTestSuite = async (
 //     return get<TestSuite>(params);
 //   };
 
-  export const updateTestSuite = async (
-    data: TestSuite
-  ): Promise<any> => {
-    let SET = 'SET ';
-    const EAN: any = {};
-    const EAV: any = {};
-    Object.keys(data).forEach((val: any, i: number) => {
-      if (
-        val !== 'id' &&
-        val !== 'modifiedOn'
-      ) {
-        EAN[`#${val}`] = val;
-        EAV[`:${val}`] = data[val];
-        SET =
-          SET.length === 4
-            ? SET + `#${val} = :${val}`
-            : SET + `, #${val} = :${val}`;
-      }
-    });
-    EAN[`#modifiedOn`] = 'modifiedOn';
-    EAV[`:modifiedOn`] = Date.now();
-    SET = SET + `, #modifiedOn = :modifiedOn`;
-  
-    const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
-      ExpressionAttributeNames: EAN,
-      ExpressionAttributeValues: EAV,
-      Key: {
-        id: data.id,
-      },
-      TableName: TableNames.getTestSuitesTableName(),
-      UpdateExpression: SET,
-    });
-    appLogger.info({ updateTestSuite_update_params: params });
-    return update(params);
-  };
-  
-  export const archiveTestSuite = async (data: any): Promise<any> => {
-    const item: any = data;
-    item.archiveId = item.id;
-    item.id = `arch_${uuidv1()}`;
-    item.archiveCreatedOn = Date.now();
-    const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
-      Item: item,
-      TableName: TableNames.getTestSuitesTableName(),
-    });
-  
-    appLogger.info({ archiveTestSuite_put_params: params });
-    await put<DynamoDB.PutItemOutput>(params);
-    return item.id;
-  };
+export const updateTestSuite = async (
+  data: TestSuite
+): Promise<any> => {
+  let SET = 'SET ';
+  const EAN: any = {};
+  const EAV: any = {};
+  Object.keys(data).forEach((val: any, i: number) => {
+    if (
+      val !== 'id' &&
+      val !== 'modifiedOn'
+    ) {
+      EAN[`#${val}`] = val;
+      EAV[`:${val}`] = data[val];
+      SET =
+        SET.length === 4
+          ? SET + `#${val} = :${val}`
+          : SET + `, #${val} = :${val}`;
+    }
+  });
+  EAN[`#modifiedOn`] = 'modifiedOn';
+  EAV[`:modifiedOn`] = Date.now();
+  SET = SET + `, #modifiedOn = :modifiedOn`;
+
+  const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
+    ExpressionAttributeNames: EAN,
+    ExpressionAttributeValues: EAV,
+    Key: {
+      id: data.id,
+    },
+    TableName: TableNames.getTestSuitesTableName(),
+    UpdateExpression: SET,
+  });
+  appLogger.info({ updateTestSuite_update_params: params });
+  return update(params);
+};
+
+export const archiveTestSuite = async (data: any): Promise<any> => {
+  const item: any = data;
+  item.archiveId = item.id;
+  item.id = `arch_${uuidv1()}`;
+  item.archiveCreatedOn = Date.now();
+  const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
+    Item: item,
+    TableName: TableNames.getTestSuitesTableName(),
+  });
+
+  appLogger.info({ archiveTestSuite_put_params: params });
+  await put<DynamoDB.PutItemOutput>(params);
+  return item.id;
+};

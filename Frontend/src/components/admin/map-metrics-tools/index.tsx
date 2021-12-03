@@ -57,7 +57,7 @@ import {
   IObjectConfigDetails,
   IServices,
 } from '../../../model';
-import { MANAGE_TEAMS } from '../../../pages/admin';
+import { MANAGE_GROUPS } from '../../../pages/admin';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Success from '../../success-page';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -594,7 +594,7 @@ const MapMetricsTools = (props: any) => {
   };
 
   const handleBackButton = () => {
-    props.goBack(MANAGE_TEAMS);
+    props.goBack(MANAGE_GROUPS);
   };
 
   const modalNoClicked = () => {
@@ -1301,7 +1301,7 @@ const MapMetricsTools = (props: any) => {
               className={classes.backButton}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_TEAMS);
+                props.goBack(MANAGE_GROUPS);
               }}
             >
               <Text tid='goBack' />

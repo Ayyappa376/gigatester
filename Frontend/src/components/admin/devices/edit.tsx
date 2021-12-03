@@ -145,7 +145,7 @@ const EditDevice = (props: any) => {
       setFailureMessage(<Text tid='somethingWentWrong' />);
       setFailure(true);
     }
-}
+  }
 
   const fixMultiSelectValuesAndSave = (response: any) => {
     if (response.devices) {

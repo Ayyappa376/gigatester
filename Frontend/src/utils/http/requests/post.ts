@@ -14,6 +14,7 @@ export interface IPostProps<T> {
 export interface IUploadProps {
     url: string;
     body: FormData;
+    state?: any;
 }
 
 export const post = <TResult, TBody>(props: IPostProps<TBody>) =>

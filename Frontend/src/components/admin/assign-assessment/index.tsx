@@ -20,7 +20,7 @@ import { Http } from '../../../utils';
 import Loader from '../../loader';
 import { withRouter } from 'react-router-dom';
 import Success from '../../success-page';
-import { MANAGE_TEAMS } from '../../../pages/admin';
+import { MANAGE_GROUPS } from '../../../pages/admin';
 import { buttonStyle } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
@@ -149,7 +149,7 @@ const AssignAssessment = (props: any) => {
               className={classes.backButton}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_TEAMS);
+                props.goBack(MANAGE_GROUPS);
               }}
             >
               <Text tid='goBack' />
@@ -217,7 +217,7 @@ const AssignAssessment = (props: any) => {
               className={classes.backButton}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_TEAMS);
+                props.goBack(MANAGE_GROUPS);
               }}
             >
               <Text tid='goBack' />

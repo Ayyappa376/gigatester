@@ -38,6 +38,7 @@ import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import { ICampaignInfo, STATUS_CAMPAIGN_DRAFT, STATUS_CAMPAIGN_ACTIVE, STATUS_CAMPAIGN_ENDED, ICampaignParams, IProductInfo } from '../../../model';
+import { numberOfOptionsArray } from '../create-question';
 
 const DELETE_ACTION: string = 'DELETE';
 const PUBLISH_ACTION: string = 'PUBLISH';
@@ -578,6 +579,7 @@ const ManageCampaigns = (props: any) => {
                                   </Typography>
                                 </Tooltip>
                               </MuiThemeProvider>
+                              {row.status === STATUS_CAMPAIGN_ACTIVE ? (
                               <MuiThemeProvider theme={tooltipTheme}>
                                 <Tooltip
                                   title={
@@ -591,6 +593,7 @@ const ManageCampaigns = (props: any) => {
                                   </Typography>
                                 </Tooltip>
                               </MuiThemeProvider>
+                              ) : ( '' )}
                             </Fragment>
                           )}
                         </div>

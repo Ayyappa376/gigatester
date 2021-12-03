@@ -3,8 +3,6 @@ import { TestSuite } from '@models/index';
 import {
   getTestSuites,
   getTestSuitesId,
-//   getQuestionnairesAssigned,
-//   getUserDocument,
 } from '@root/utils/index';
 import { appLogger, responseBuilder } from '@utils/index';
 import { Response } from 'express';
@@ -26,14 +24,14 @@ interface GetTestSuites {
 }
 
 /*
-  Fetches questionnaires from the questionaires table
+  Fetches testSuites from the testSuites table
   - If requestUrl is /api/v2/questionnaire, then
-    - If the query has questionnaireId and questionnaireVersion, send the questionnaire with that particular Id and version.
-    - If the query has latest=true, send only the latest version of the questionnaire.
+    - If the query has questionnaireId and questionnaireVersion, send the test suites with that particular Id and version.
+    - If the query has latest=true, send only the latest version of the test suites.
     - If the user is Admin, then
-      - If query is 'status=all', fetch all questionnaires from the questionaires table
-      - If no query or query is 'status=active', fetch only active questionnaires from the questionaires table
-    - If the user not Admin, then fetch only the questionnaires assigned to the team the user belongs to.
+      - If query is 'status=all', fetch all testSuites from the testSuites table
+      - If no query or query is 'status=active', fetch only active testSuites from the questionaires table
+    - If the user not Admin, then fetch only the testSuites assigned to the team the user belongs to.
 */
 async function handler(request: GetTestSuites, response: Response) {
   appLogger.info({ GetTestSuites: request }, 'Inside Handler');
@@ -85,28 +83,10 @@ async function handler(request: GetTestSuites, response: Response) {
     if (user['cognito:groups'][0] === 'Admin') {
       return responseBuilder.ok(getTestSuitesList, response);
     }
-
-    // const questionnaireList: any = [];
-
-    // const teams = (await getUserDocument({ cognitoUserId: user['cognito:username'] })).teams;
-    // appLogger.info({ getUserDocument_first_teams: teams });
-    // const getList: string[] = await getQuestionnairesAssigned(
-    //   teams ? teams[0].name : 'Others'
-    // );
-    // appLogger.info({ getQuestionnairesAssigned: getList });
-
-    // for (const ques of getQuestionnaireList) {
-    //   if (getList.includes(ques.id)) {
-    //     questionnaireList.push(ques);
-    //   }
-    // }
-
-    // appLogger.info({ questionnaireList });
-    // return responseBuilder.ok(questionnaireList, response);
-  }
-   catch (err) {
+  } catch (err) {
+    const error = new Error("Internal Server Error")
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    responseBuilder.internalServerError(error, response);
   }
 }
 

@@ -37,6 +37,17 @@ export function getTeamTableName(): string {
 }
 
 export function getConfigsTableName(): string {
-  //    return config.tables.configs;
   return `${config.defaults.orgId}_${config.tables.configs}`;
+}
+
+export function getGroupsTableName(): string {
+  return `${config.defaults.orgId}_${config.tables.groups}`;
+}
+
+export function getOrganizationsTableName(): string {
+  return `${config.defaults.orgId}_${config.tables.groups}`;
+}
+
+export function getUsersTableName(): string {
+  return `${config.defaults.orgId}_${config.tables.groups}`;
 }

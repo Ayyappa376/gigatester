@@ -28,7 +28,7 @@ import { Http } from '../../../utils';
 import Success from '../../success-page';
 //import MapMetricsTools from '../map-metrics-tools';
 import { withRouter } from 'react-router-dom';
-import { MANAGE_TEAMS } from '../../../pages/admin';
+import { MANAGE_GROUPS } from '../../../pages/admin';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
@@ -430,7 +430,7 @@ const EditTeam = (props: any) => {
 
   // const handleMapMetricsBackButton = () => {
   //   if (props.isMapCollectors) {
-  //     props.goBack(MANAGE_TEAMS);
+  //     props.goBack(MANAGE_GROUPS);
   //   } else {
   //     setMapCollectors(false);
   //   }
@@ -787,7 +787,7 @@ const EditTeam = (props: any) => {
               className={classes.button}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_TEAMS);
+                props.goBack(MANAGE_GROUPS);
               }}
             >
               <Text tid='goBack' />
@@ -849,7 +849,7 @@ const EditTeam = (props: any) => {
             className={classes.button}
             variant='outlined'
             onClick={() => {
-              props.goBack(MANAGE_TEAMS);
+              props.goBack(MANAGE_GROUPS);
             }}
           >
             <Text tid='goBack' />

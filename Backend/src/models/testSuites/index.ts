@@ -5,12 +5,12 @@ export interface TestSuite {
     createdBy?: string;
     createdOn: number;
     description?: string;
+    id: string;
     modifiedBy?: string;
     modifiedOn?: number;
     name: string;
     publishedBy?: string;
     publishedOn?: number;
-    id: string;
     questions: string[];
     randomize?: boolean;
     // benchmarkScore?: number;
@@ -22,8 +22,7 @@ export interface TestSuite {
     // version: string;
     // warningTimePercentage?: number;
   }
-  
+
   export interface CategoriesMap {
     [questionId: string]: string;
   }
-  

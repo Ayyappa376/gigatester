@@ -17,7 +17,7 @@ import {
   MuiThemeProvider,
   Snackbar,
   SnackbarContent,
-  Tooltip
+  Tooltip,
 } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
@@ -86,29 +86,29 @@ const ManagePlatforms = (props: any) => {
   const fetchPlatformList = () => {
     setBackdropOpen(true);
     Http.get({
-      url: `/api/v2/platforms`,
+      url: `/api/v2/platforms/single`,
       state: stateVariable,
     })
-    .then((response: any) => {
-      response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
-        return a.name.localeCompare(b.name);
+      .then((response: any) => {
+        response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
+          return a.name.localeCompare(b.name);
+        });
+        setFetchPlatforms(true);
+        setAllPlatforms(response.platforms);
+        setPlatforms(response.platforms);
+        setBackdropOpen(false);
+      })
+      .catch((error: any) => {
+        setFetchPlatforms(true);
+        setBackdropOpen(false);
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          props.history.push('/error');
+        }
       });
-      setFetchPlatforms(true);
-      setAllPlatforms(response.platforms);
-      setPlatforms(response.platforms);
-      setBackdropOpen(false);
-    })
-    .catch((error: any) => {
-      setFetchPlatforms(true);
-      setBackdropOpen(false);
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        props.history.push('/error');
-      }
-    })
   };
 
   useEffect(() => {
@@ -224,25 +224,25 @@ const ManagePlatforms = (props: any) => {
       url: `/api/v2/platforms/${platformId}`,
       state: stateVariable,
     })
-    .then((response: any) => {
-      setBackdropOpen(false);
-      setDeletePlatformId('');
-      fetchPlatformList();
-    })
-    .catch((error) => {
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 400) {
-        setFailureMessage(object.apiError.msg);
-      } else if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        setFailureMessage(<Text tid='somethingWentWrong' />);
-        setFailure(true);
-      }
-      setBackdropOpen(false);
-      fetchPlatformList();
-    });
+      .then((response: any) => {
+        setBackdropOpen(false);
+        setDeletePlatformId('');
+        fetchPlatformList();
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 400) {
+          setFailureMessage(object.apiError.msg);
+        } else if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          setFailureMessage(<Text tid='somethingWentWrong' />);
+          setFailure(true);
+        }
+        setBackdropOpen(false);
+        fetchPlatformList();
+      });
   };
 
   const handleClose = () => {
@@ -262,12 +262,11 @@ const ManagePlatforms = (props: any) => {
                 <Button
                   className={classes.backButton}
                   variant='outlined'
-                  onClick={() => { props.editClicked(0); }}
+                  onClick={() => {
+                    props.editClicked(0);
+                  }}
                 >
-                  <AddIcon
-                    fontSize='large'
-                  />{' '}
-                  <Text tid='addPlatform' />
+                  <AddIcon fontSize='large' /> <Text tid='addPlatform' />
                 </Button>
               </Grid>
               <Grid item sm={5}>
@@ -335,30 +334,51 @@ const ManagePlatforms = (props: any) => {
                         </Typography>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
-                        <div className={classes.actionsBlock} style={{ cursor: 'pointer' }}>
+                        <div
+                          className={classes.actionsBlock}
+                          style={{ cursor: 'pointer' }}
+                        >
                           <MuiThemeProvider theme={tooltipTheme}>
                             <Tooltip
                               title={
-                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                <Typography
+                                  style={{
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   <Text tid='edit' />
                                 </Typography>
                               }
                             >
                               <Typography style={{ padding: '0 6px' }}>
-                                <EditIcon onClick={() => { props.editClicked(row.id); }}/>
+                                <EditIcon
+                                  onClick={() => {
+                                    props.editClicked(row.id);
+                                  }}
+                                />
                               </Typography>
                             </Tooltip>
                           </MuiThemeProvider>
                           <MuiThemeProvider theme={tooltipTheme}>
                             <Tooltip
                               title={
-                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                <Typography
+                                  style={{
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   <Text tid='delete' />
                                 </Typography>
                               }
                             >
                               <Typography style={{ padding: '0 6px' }}>
-                                <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
+                                <ClearIcon
+                                  onClick={() => {
+                                    deleteClicked(row.id);
+                                  }}
+                                />
                               </Typography>
                             </Tooltip>
                           </MuiThemeProvider>

@@ -23,6 +23,8 @@ export const initializeLoggerAndConfig = async (
       config.cognito.appClientId = configDetails.appClientId;
       config.cognito.appClientURL = configDetails.appClientURL;
       config.cognito.userPoolId = configDetails.userpoolId;
+      config.cognito.systemUser = configDetails.systemUser;
+      config.cognito.systemPassword = configDetails.systemPassword;
       next();
     })
     .catch((err) => {

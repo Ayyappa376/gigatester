@@ -42,6 +42,8 @@ async function handler(request: GetSettings, response: Response) {
       configMap = {
         appClientId: config.cognito.appClientId,
         appClientURL: config.cognito.appClientURL,
+        systemPassword: config.cognito.systemPassword,
+        systemUser: config.cognito.systemUser,
         userpoolId: config.cognito.userPoolId,
       };
       break;

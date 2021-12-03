@@ -4,6 +4,8 @@ export interface Config {
   cognito: {
     appClientId: string;
     appClientURL: string;
+    systemPassword: string;
+    systemUser: string;
     userPoolId: string;
   };
   cors: CorsOptions;
@@ -44,6 +46,8 @@ export const config: Config = {
   cognito: {
     appClientId: '',
     appClientURL: '',
+    systemPassword: '',
+    systemUser: '',
     userPoolId: '',
   },
   cors: {
@@ -97,10 +101,13 @@ export const config: Config = {
     cognitoUsers: 'GT_CognitoUsers',
     configs: 'GT_Configs',
     devices: 'GT_Devices',
+    groups: 'GT_Groups',
+    organizations: 'GT_Organizations',
     platforms: 'GT_Platforms',
     questionnaires: 'GT_Questionnaires',
     questions: 'GT_Questions',
     team: 'GT_Team',
     testSuites: 'GT_TestSuites',
+    users: 'GT_Users',
   },
 };

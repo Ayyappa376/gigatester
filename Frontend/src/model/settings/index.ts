@@ -3,6 +3,8 @@ export interface ISystemDetails {
   appClientURL: string;
   mode: string; // regular or trial
   userpoolId: string;
+  systemUser: string;
+  systemPassword: string;
 }
 
 export interface IConfigItem {

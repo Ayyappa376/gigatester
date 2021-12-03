@@ -76,6 +76,8 @@ export const initialState: IRootState = {
         appClientId: '',
         appClientURL: '',
         mode: constantvalues.NORMAL_MODE,
-        userpoolId:''
+        userpoolId:'',
+        systemUser: '',
+        systemPassword: ''
     }
 }
