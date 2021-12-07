@@ -7,7 +7,6 @@ import { IRootState } from "../../reducers";
 import { Http } from "../../utils";
 import { Auth } from "aws-amplify";
 import jwtDecode from "jwt-decode";
-import { SuperUser } from "../../utils/http/constants";
 import {
   PlatformsView,
   RecordsCount,
@@ -17,7 +16,7 @@ import {
 import TopPane from "../../components/home/topPane";
 import { LatestNews } from "../../components/home/rightPane";
 import SignupForm from "../../components/signUpForm";
-import { CreateOrganization } from "../../components"
+import { CreateOrganization } from "../../components";
 
 const useStyles = makeStyles({
   root: {
@@ -121,7 +120,7 @@ const Home = (props: any) => {
 
   const getUserList = () => {
     Http.get({
-      url: "/api/v2/admin/users/allUsers",
+      url: "/api/v2/users",
       state: superUserStateVariable,
     })
       .then((response: any) => {
@@ -132,7 +131,7 @@ const Home = (props: any) => {
         console.log(error);
       });
   };
-
+/*
   const getTestSuites = () => {
     Http.get({
       url: "/api/v2/testSuite?status=all&latest=true",
@@ -157,6 +156,7 @@ const Home = (props: any) => {
         console.log(error);
       });
   };
+*/
   useEffect(() => {
     setCurrentPageValue("");
     if (
@@ -207,8 +207,8 @@ const Home = (props: any) => {
       }
       getUserList();
       getPlatformList();
-      getTestSuites();
-      getAssignments();
+//      getTestSuites();
+//      getAssignments();
     } catch (error) {
       console.log(error);
     }

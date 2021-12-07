@@ -16,8 +16,8 @@ interface GetTestSuites {
     };
   };
   query: {
-    latest: boolean;
     id: string;
+    latest: boolean;
     // questionnaireVersion: string;
     status: string;
   };
@@ -84,7 +84,7 @@ async function handler(request: GetTestSuites, response: Response) {
       return responseBuilder.ok(getTestSuitesList, response);
     }
   } catch (err) {
-    const error = new Error("Internal Server Error")
+    const error = new Error('Internal Server Error');
     appLogger.error(err, 'Internal Server Error');
     responseBuilder.internalServerError(error, response);
   }

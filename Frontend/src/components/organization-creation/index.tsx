@@ -28,7 +28,6 @@ import MuiAlert from "@material-ui/lab/Alert";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../reducers";
 import { Text } from "../../common/Language";
-import { SuperUser } from "../../utils/http/constants";
 import SignInForm from "../signInForm";
 
 const useStyles = makeStyles((theme) => ({

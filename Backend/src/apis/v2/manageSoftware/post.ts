@@ -1,31 +1,27 @@
 import { API, Handler } from '@apis/index';
-import { config } from '@root/config';
-import {
-    appLogger,
-    responseBuilder
-} from '@utils/index';
+import { appLogger, getSoftwaresBucketName, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 const AWS = require('aws-sdk');
 
 interface UploadSoftware {
+    body: {
+        file: any;
+        fileName: string;
+    };
     headers: {
         user: {
             email: string;
         };
     };
-    body: {
-        file: any,
-        fileName: string,
-    };
     params: {
-        type : string
+        type: string;
     };
 }
 
 async function handler(request: UploadSoftware, response: Response) {
     appLogger.info({ UploadSoftware: request }, 'Inside Handler');
     const { headers, params, body } = request;
-       
+
     if (
         headers.user['cognito:groups'][0] !== 'Manager' &&
         headers.user['cognito:groups'][0] !== 'Admin'
@@ -35,23 +31,22 @@ async function handler(request: UploadSoftware, response: Response) {
         return responseBuilder.forbidden(err, response);
     }
 
-    const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
     const s3 = new AWS.S3();
 
-    if(params.type === 'profilePic'){
+    if(params.type === 'profilePic') {
         const fileBody = body;
         const base64String = fileBody.file;
         const fileName = fileBody.fileName;
-        const buff = Buffer.from (base64String, 'base64')
+        const buff = Buffer.from (base64String, 'base64');
 
         try {
-            const params = {
+            const params1 = {
                 Body: buff,
-                Bucket: BUCKET_NAME,
+                Bucket: getSoftwaresBucketName(),
                 Key: fileName,
             };
-            appLogger.info({ uploadSoftwareFile_params: params });
-            s3.putObject(params, (error: Error, data: any) => {
+            appLogger.info({ uploadSoftwareFile_params: params1 });
+            s3.putObject(params1, (error: Error, data: any) => {
                 if (error) {
                     appLogger.error(error, 's3UploadError');
                 }
@@ -62,10 +57,7 @@ async function handler(request: UploadSoftware, response: Response) {
             appLogger.error(err, 'Internal Server Error');
         }
     }
-   
 }
-
-
 
 export const api: API = {
     handler: <Handler>(<unknown>handler),

@@ -1,4 +1,4 @@
-import { /*ConfigItem, */ROLE_USER_ADMIN, ROLE_USER_EXECUTIVE, ROLE_USER_MANAGER, ROLE_USER_TESTER, UserInfo } from '@models/index';
+import { /*ConfigItem, */ROLE_USER_ADMIN, ROLE_USER_ALL, ROLE_USER_EXECUTIVE, ROLE_USER_MANAGER, ROLE_USER_ORGUSER, ROLE_USER_TESTER, UserInfo } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, /*getUserConfig */} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
@@ -139,11 +139,35 @@ export const updateUser = async (updateInfo: UserInfo) => {
   return update<DynamoDB.UpdateItemInput>(params);
 };
 
-export const getUsersList = async (): Promise<UserInfo[]> => {
+export const getUsersList = async (queryRole?: string): Promise<UserInfo[]> => {
+  const role = queryRole ? queryRole : ROLE_USER_TESTER;
+
+  const EAN: any = {};
+  const EAV: any = {};
+  let EXPR = '';
+
+  EAN['#active'] = 'active';
+  EAV[':active'] = true;
+  EXPR = '#active = :active';
+
+  if(role !== ROLE_USER_ALL) {
+     EAN['#roles'] = 'roles';
+
+    if(role === ROLE_USER_ORGUSER) {
+      EAV[':admin'] = ROLE_USER_ADMIN;
+      EAV[':manager'] = ROLE_USER_MANAGER;
+      EAV[':exec'] = ROLE_USER_EXECUTIVE;
+      EXPR = `(${EXPR}) AND ((#roles CONTAINS :admin) || (#roles CONTAINS :manager) || (#roles CONTAINS :exec))`;
+    } else {
+      EAV[':role'] = role;
+      EXPR = `(${EXPR}) AND (#roles CONTAINS :role)`;
+    }
+  }
+
   const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
-    ExpressionAttributeNames: {'#active': 'active'},
-    ExpressionAttributeValues: {':active': true},
-    FilterExpression: '#active = :active',
+    ExpressionAttributeNames: EAN,
+    ExpressionAttributeValues: EAV,
+    FilterExpression: EXPR,
     TableName: TableNames.getUsersTableName(),
   });
 

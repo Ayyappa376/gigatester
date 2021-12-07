@@ -31,7 +31,7 @@ export interface Config {
     [key: string]: number;
   };
   region: string;
-  s3: {
+  s3Bucket: {
     [key: string]: string;
   };
   statusCodes: {
@@ -66,9 +66,9 @@ export const config: Config = {
     teamName: 'Others',
   },
   elasticsearch: {
-    password: 'pinimbus', //change based on where to deploy
+    password: 'gigatester', //change based on where to deploy
     url: 'http://18.206.35.232:9200', //nomiso - dev env //change based on where to deploy
-    username: 'doitright-user', //change based on where to deploy
+    username: 'gigatester-user', //change based on where to deploy
   },
   metricsTables: {
     buildTable: 'build-data',
@@ -84,8 +84,10 @@ export const config: Config = {
     Member: 3,
   },
   region: 'us-east-1', //nomiso - dev env //change based on where to deploy
-  s3: {
-    gigaTesterSoftwareBucket: 'gigatester-manage-software'
+  s3Bucket: {
+    productPhotos: 'gigatester-product-photos',
+    profilePhotos: 'gigatester-profile-photos',
+    softwares: 'gigatester-manage-software',
   },
   statusCodes: {
     badRequest: 400,

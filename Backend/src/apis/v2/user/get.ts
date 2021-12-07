@@ -15,15 +15,15 @@ interface GetUsers {
   params: {
     id: string;
   };
-//  query: {
-//    status?: string;
-//  };
+  query: {
+    role?: string;
+  };
 }
 
 async function handler(request: GetUsers, response: Response) {
   appLogger.info({ GetUsers: request }, 'Inside Handler');
 
-  const { headers, params/*, query*/ } = request;
+  const { headers, params, query } = request;
   const cognitoUserId = headers.user['cognito:username'];
 
   if (!cognitoUserId) {
@@ -53,7 +53,7 @@ async function handler(request: GetUsers, response: Response) {
       };
 //    }
   } else {
-    const userDetailsList: UserInfo[] = await getUsersList(/*query.status*/);
+    const userDetailsList: UserInfo[] = await getUsersList(query.role);
     appLogger.info({ getUsersList: userDetailsList });
     result = {
       users: userDetailsList,

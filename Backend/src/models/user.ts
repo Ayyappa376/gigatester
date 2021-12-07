@@ -39,3 +39,5 @@ export const ROLE_USER_ADMIN = 'Admin';
 export const ROLE_USER_EXECUTIVE = 'Executive';
 export const ROLE_USER_MANAGER = 'Manager';
 export const ROLE_USER_TESTER = 'Tester';
+export const ROLE_USER_ORGUSER = 'OrgUsers';
+export const ROLE_USER_ALL = 'All';

@@ -1,29 +1,20 @@
 
 import { API, Handler } from '@apis/index';
-import {
-  responseBuilder,
-  appLogger,
-//   getTheLatestQuestionnaireVersion,
-  // getTestSuitesId,
-  publishQuestion
-} from '@utils/index';
 import { TestSuite } from '@models/index';
+import { appLogger, publishQuestion, responseBuilder, updateTestSuite } from '@utils/index';
 import { Response } from 'express';
-import {
-  updateTestSuite
-} from '@root/utils/dynamoDb/testSuiteManagement';
 
 interface PostTestSuite {
+  body: {
+    testSuite?: TestSuite;
+    type: string;
+  };
   headers: {
     user: {
       'cognito:groups': string[];
       'cognito:username': string;
       email: string;
     };
-  };
-  body: {
-    type: string;
-    testSuite?: TestSuite;
   };
 }
 
@@ -72,7 +63,8 @@ async function handler(request: PostTestSuite, response: Response) {
         return responseBuilder.internalServerError(err, response);
       }
       return responseBuilder.ok({ message: 'created' }, response);
-    } else if (body.type === 'create' && body.testSuite) {
+    }
+    if (body.type === 'create' && body.testSuite) {
       const create: TestSuite = body.testSuite;
       create.createdBy = headers.user.email;
       create.modifiedBy = headers.user.email;
@@ -86,7 +78,8 @@ async function handler(request: PostTestSuite, response: Response) {
         return responseBuilder.internalServerError(err, response);
       }
       return responseBuilder.ok({ message: 'created' }, response);
-    } else if (body.type === 'publish' && body.testSuite) {
+    }
+    if (body.type === 'publish' && body.testSuite) {
       const create: TestSuite = body.testSuite;
       if (
         body.testSuite &&
@@ -112,16 +105,15 @@ async function handler(request: PostTestSuite, response: Response) {
       }
       //also publish all the questions
       if (create.active && create.questions) {
-        create.questions.forEach((questionId: string) =>
-          publishQuestion(questionId)
-        );
+        create.questions.forEach(publishQuestion);
       }
       return responseBuilder.ok({ message: 'published' }, response);
-    } else {
-      const err = new Error('Internal error.');
-      appLogger.error(err, 'Internal error.');
-      return responseBuilder.internalServerError(err, response);
     }
+
+    const error = new Error('Internal error.');
+    appLogger.error(error, 'Internal error.');
+    return responseBuilder.internalServerError(error, response);
+
   } catch (err) {
     const error = new Error('Internal error.');
     appLogger.error(error, 'Internal Server Error');
@@ -134,4 +126,3 @@ export const api: API = {
   method: 'put',
   route: '/api/v2/testSuite',
 };
-

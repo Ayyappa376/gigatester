@@ -1,28 +1,26 @@
 import { API, Handler } from '@apis/index';
-import { config } from '@root/config';
-import {
-    appLogger,
-    responseBuilder
-} from '@utils/index';
+import { appLogger, getSoftwaresBucketName, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 const AWS = require('aws-sdk');
 
 interface UploadSoftware {
+    body: any;
     headers: {
         user: {
             email: string;
         };
     };
-    body: any;
     params: {
-        type : string
+        type: string;
     };
 }
+
+const s3 = new AWS.S3();
 
 async function handler(request: UploadSoftware, response: Response) {
     appLogger.info({ UploadSoftware: request }, 'Inside Handler');
     const { headers, params, body } = request;
-       
+
     if (
         headers.user['cognito:groups'][0] !== 'Manager' &&
         headers.user['cognito:groups'][0] !== 'Admin'
@@ -32,108 +30,105 @@ async function handler(request: UploadSoftware, response: Response) {
         return responseBuilder.forbidden(err, response);
     }
 
-    const BUCKET_NAME = `${config.defaults.orgId}-${config.s3.gigaTesterSoftwareBucket}`;
-    const s3 = new AWS.S3();
+    switch(params.type) {
+        case 'medium' : {
+            try {
+                const url = await s3.getSignedUrlPromise('putObject', {
+                    Bucket: getSoftwaresBucketName(),
+                    ContentType: body.fileType,
+                    Expires: 60,
+                    Key: body.fileName,
+                });
+                appLogger.info({ downloadUrl: url });
+                return responseBuilder.ok({
+                    filePath: url,
+                    headers: {
+                        'Access-Control-Allow-Credentials': true,
+                        'Access-Control-Allow-Origin': '*'
+                    }
+                }, response);
+            } catch (err) {
+                appLogger.error(err, 'UploadFileError');
+            }
+            break;
+        }
+        case 'large': {
+            if(body.fileType) {
+                const bucketParams = {
+                    Bucket: getSoftwaresBucketName(),
+                    ContentType: body.fileType,
+                    Key: body.fileName,
+                };
 
-    if(params.type === 'small'){
-        const fileBody = request.body;
-        const base64String = fileBody.file;
-        const fileName = fileBody.fileName;
-        const buff = Buffer.from (base64String, 'base64')
+                s3.createMultipartUpload(bucketParams,  function (err: any, uploadId: any) {
+                    if (err) {
+                        appLogger.error(err, 'fileListError');
+                    } else {
+                        appLogger.info({ uploadId });
+                        return responseBuilder.ok({ data: uploadId }, response);
+                    }
+                });
+            } else if(body.partNumber) {
+                const bucketParams = {
+                    Bucket: getSoftwaresBucketName(),
+                    Key: body.fileName,
+                    PartNumber: body.partNumber,
+                    UploadId: body.uploadId
+                };
 
-        try {
-            const params = {
-                Body: buff,
-                Bucket: BUCKET_NAME,
-                Key: fileName,
-            };
-            appLogger.info({ uploadSoftwareFile_params: params });
-            s3.putObject(params, (error: Error, data: any) => {
-                if (error) {
-                    appLogger.error(error, 's3UploadError');
-                }
-                appLogger.info({ s3UploadData: data });
-                return responseBuilder.ok({ message: 'Uploaded' }, response);
-            });
-        } catch (err) {
-            appLogger.error(err, 'Internal Server Error');
+                s3.getSignedUrl('uploadPart',bucketParams,  function (err: any, preSignedUrl: any) {
+                    if (err) {
+                        appLogger.error(err, 'fileListError');
+                    } else {
+                        appLogger.info({ preSignedUrl });
+                        return responseBuilder.ok({ data: preSignedUrl }, response);
+                    }
+                });
+            } else if(body.parts) {
+                const bucketParams = {
+                    Bucket: getSoftwaresBucketName(),
+                    Key: body.fileName,
+                    MultipartUpload: {
+                        Parts: body.parts
+                    },
+                    UploadId: body.uploadId,
+                };
+                appLogger.info({fileUpload_large_completeMultipartUpload_params: bucketParams});
+                s3.completeMultipartUpload(bucketParams,  function (err: any, data: any) {
+                    if (err) {
+                        appLogger.error(err, 'fileUploadError');
+                    } else {
+                        appLogger.info({ CompletedUpload: data });
+                        return responseBuilder.ok({data}, response);
+                    }
+                });
+            }
+            break;
         }
-    }
-    else if(params.type === 'medium'){
-        try {
-            const url = await s3.getSignedUrlPromise('putObject', {
-                Bucket: BUCKET_NAME,
-                Expires: 60,
-                Key: body.fileName,
-                ContentType: body.fileType,
-            });
-            appLogger.info({ downloadUrl: url });
-            console.log(url, "presigned url")
-            return responseBuilder.ok({headers: {
-                'Access-Control-Allow-Origin': '*',
-                'Access-Control-Allow-Credentials': true
-            },
-            filePath: url }, response);
-        } catch (err) {
-            appLogger.error(err, 'UploadFileError');
-        }
-    }
-    else if(params.type === 'large'){
-        if(body.fileType){
-            let bucketParams = {
-                Bucket: BUCKET_NAME,
-                Key: body.fileName,
-                ContentType: body.fileType,
-            };
-        
-            s3.createMultipartUpload(bucketParams,  function (err: any, uploadId: any) {
-                if (err) {
-                    appLogger.error(err, 'fileListError');
-                } else {
-                    appLogger.info({ uploadId: uploadId });
-                    return responseBuilder.ok({ data: uploadId }, response);
-                }
-            })
-        
-        }
-        else if(body.partNumber){
-            let bucketParams = {
-                Bucket: BUCKET_NAME,
-                Key: body.fileName,
-                PartNumber: body.partNumber,
-                UploadId:body.uploadId
-            };
-        
-            s3.getSignedUrl('uploadPart',bucketParams,  function (err: any, preSignedUrl: any) {
-                if (err) {
-                    appLogger.error(err, 'fileListError');
-                } else {
-                    appLogger.info({ preSignedUrl: preSignedUrl });
-                    return responseBuilder.ok({ data: preSignedUrl }, response);
-                }
-            })
-        }
-        else if(body.parts){
-            console.log(body.parts);
-            let bucketParams = {
-                Bucket: BUCKET_NAME,
-                Key: body.fileName,
-                UploadId: body.uploadId,
-                MultipartUpload: {
-                    Parts: body.parts
-                }
-                
-            };
-            console.log(bucketParams,"bucketParams");
-            s3.completeMultipartUpload(bucketParams,  function (err: any, data: any) {
-                if (err) {
-                    appLogger.error(err, 'fileUploadError');
-                } else {
-                    appLogger.info({ CompletedUpload: data });
-                    
-                    return responseBuilder.ok( {data: data }, response);
-                }
-            })
+        case 'small':
+        default: {
+                const fileBody = request.body;
+            const base64String = fileBody.file;
+            const fileName = fileBody.fileName;
+            const buff = Buffer.from (base64String, 'base64');
+
+            try {
+                const params1 = {
+                    Body: buff,
+                    Bucket: getSoftwaresBucketName(),
+                    Key: fileName,
+                };
+                appLogger.info({ uploadSoftwareFile_params: params1 });
+                s3.putObject(params1, (error: Error, data: any) => {
+                    if (error) {
+                        appLogger.error(error, 's3UploadError');
+                    }
+                    appLogger.info({ s3UploadData: data });
+                    return responseBuilder.ok({ message: 'Uploaded' }, response);
+                });
+            } catch (err) {
+                appLogger.error(err, 'Internal Server Error');
+            }
         }
     }
 }
