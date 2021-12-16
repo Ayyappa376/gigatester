@@ -10,6 +10,8 @@ import { api as setMetricsTools } from './metrics/teamMetricsTool/post';
 import { api as testConnection } from './metrics/toolsConnect/post';
 
 import { api as postAssessmentAnswerV2 } from './v2/answer/post';
+import { api as getAppFeedbackV2 } from './v2/appFeedback/get';
+import { api as postAppFeedbackV2 } from './v2/appFeedback/post';
 import { api as getAssignmentV2 } from './v2/assignments/get';
 import { api as postAssignmentV2 } from './v2/assignments/post';
 import { api as deleteCampaignsV2 } from './v2/campaign/delete';
@@ -49,6 +51,8 @@ import { api as deletePlatformsV2 } from './v2/platform/delete';
 import { api as getPlatformsV2 } from './v2/platform/get';
 import { api as postPlatformsV2 } from './v2/platform/post';
 import { api as putPlatformsV2 } from './v2/platform/put';
+import { api as deleteProductApiKeyV2 } from './v2/productApiKey/delete';
+import { api as postProductApiKeyV2 } from './v2/productApiKey/post';
 import { api as getAssessmentQuestionV2 } from './v2/question/get';
 import { api as getQuestionnaireV2 } from './v2/questionnaire/get';
 import { api as postQuestionnaireV2 } from './v2/questionnaire/post';
@@ -88,6 +92,8 @@ const apis: API[] = [
   getSystemSettingsV2,
   postSystemSettingsV2,
   createTeamsConfigV2,
+  getAppFeedbackV2,
+  postAppFeedbackV2,
   getAssessmentSummaryV2,
   getAssessmentQuestionV2,
   postAssessmentAnswerV2,
@@ -100,6 +106,8 @@ const apis: API[] = [
   getPlatformsV2,
   postPlatformsV2,
   putPlatformsV2,
+  deleteProductApiKeyV2,
+  postProductApiKeyV2,
   deleteDevicesV2,
   getDevicesV2,
   postDevicesV2,

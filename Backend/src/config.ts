@@ -13,6 +13,7 @@ export interface Config {
     groups: string[];
     orgId: string;
     quesType: string;
+    restApiId: string;
     scoreCoeff: number;
     subDomain: {
       [key: string]: string;
@@ -57,6 +58,7 @@ export const config: Config = {
     groups: ['Member'],
     orgId: 'www', // default should be 'www' //nomiso - dev env
     quesType: '1234',
+    restApiId: 'sbep37jiz5',
     scoreCoeff: 10,
     subDomain: {
       development: 'dev',
@@ -98,6 +100,7 @@ export const config: Config = {
     unauthorized: 401,
   },
   tables: {
+    appFeedback: 'GT_feedback',
     assessments: 'GT_UserAssessments',
     campaigns: 'GT_Campaigns',
     cognitoUsers: 'GT_CognitoUsers',

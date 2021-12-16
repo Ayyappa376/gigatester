@@ -431,6 +431,35 @@ const EditCampaign = (props: any) => {
     }
   };
 
+  const handleGeneralApiKeyButton = (index: any) => {
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+      if (values) {
+        let productId: any = values[0].products[index].id;
+        Http.post({
+          url: `/api/v2/productApiKey/`,
+          state: stateVariable,
+          body: {
+            productId,
+          },
+        })
+          .then((response: any) => {
+            console.log('app key', response);
+            if (values) {
+              values[0].products[index].apiKey = response.data.value;
+              values[0].products[index].apiId = response.data.id;
+              console.log(values, 'values');
+              setCampaignState(temp);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
+  };
+
   const uploadSoftware = (event: any) => {
     event.preventDefault();
     let uploadedFile = event.target.files[0];
@@ -480,6 +509,41 @@ const EditCampaign = (props: any) => {
 
     // handleChangeProductSoftware(event, softwareIndex);
     // console.log(userParamState);
+  };
+
+  const deleteApiKey = (index: number) => {
+    console.log(campaignState);
+    if (campaignState) {
+      const temp: ICampaignParams = { ...campaignState };
+      let values: ICampaignInfo[] | undefined = temp.campaigns;
+
+      if (values) {
+        setNotify({
+          isOpen: true,
+          message: 'Deleting... ',
+          type: 'info',
+        });
+
+        Http.deleteReq({
+          url: `/api/v2/productApiKey/${values[0].products[index].apiId}`,
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            console.log(response);
+            setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
+            setFailure(true);
+
+            if (values) {
+              /* tslint:disable-next-line */
+              values[0].products[index].apiKey = '';
+              values[0].products[index].apiId = '';
+            }
+          })
+          .catch((error: any) => {
+            console.log(error);
+          });
+      }
+    }
   };
 
   const deleteSoftware = (index: number) => {
@@ -1118,7 +1182,7 @@ const EditCampaign = (props: any) => {
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='testers' />
+                      <Text tid='apiKey' />
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
@@ -1306,7 +1370,36 @@ const EditCampaign = (props: any) => {
                             className='tableCell'
                           >
                             <Typography className='tableBodyText'>
-                              {product.testers ? product.testers : ''}
+                              {/* {product.testers ? product.testers : 'testers'} */}
+                              {campaign.products[index].apiKey ? (
+                                <>
+                                  <TextField
+                                    required={true}
+                                    type='string'
+                                    id={`productApiKey_${index}`}
+                                    name={`productApiKey_${index}`}
+                                    value={product.apiKey ? product.apiKey : ''}
+                                    fullWidth
+                                    autoComplete='off'
+                                    className='textFieldStyle'
+                                  />
+                                  <Typography style={{ padding: '0 6px' }}>
+                                    <ClearIcon
+                                      onClick={() => {
+                                        deleteApiKey(index);
+                                      }}
+                                    />
+                                  </Typography>
+                                </>
+                              ) : (
+                                <button
+                                  onClick={() =>
+                                    handleGeneralApiKeyButton(index)
+                                  }
+                                >
+                                  <Typography>Generate Api Key</Typography>
+                                </button>
+                              )}
                             </Typography>
                           </TableCell>
                           <TableCell

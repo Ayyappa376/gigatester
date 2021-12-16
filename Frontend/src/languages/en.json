@@ -443,6 +443,6 @@
   "publishCampaignMsg": "End users will see the campaign's products and apply for testing it after you publish this campaign. You won't be able to edit it any more. Publish the campaign now?",
   "endCampaignMsg": "Users won't be able to provide feedback on this campaign's products any more after you end the campaign. End this campaign now?",
   "cloneCampaignMsg": "New campaign in draft state with all other data identical to this campaign will be created. Confirm you want to the campaign?",
-  "addTestSuite": "Add Test Suite"
-
+  "addTestSuite": "Add Test Suite",
+  "apiKey": "Api Key"
 }

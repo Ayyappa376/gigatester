@@ -15,6 +15,8 @@ export interface ICampaignInfo {
 }
 
 export interface IProductInfo {
+  apiKey?:string;
+  apiId?:string;
   id: string;
   name: string;
   instructions?: string;

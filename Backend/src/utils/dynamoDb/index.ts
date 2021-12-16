@@ -24,6 +24,7 @@ export * from './configTableFunctions';
 export * from './getTableNames';
 export * from './campaignsManagement';
 export * from './platformsManagement';
+export * from './appFeedback';
 export * from './devicesManagement';
 export * from './groupsManagement';
 export * from './organizationsManagement';

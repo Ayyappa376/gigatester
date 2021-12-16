@@ -4,6 +4,10 @@ export function getAssessmentsTableName(): string {
   return `${config.defaults.orgId}_${config.tables.assessments}`;
 }
 
+export function getAppFeedbackTableName(): string {
+  return `${config.defaults.orgId}_${config.tables.appFeedback}`;
+}
+
 export function getCampaignsTableName(): string {
   return `${config.defaults.orgId}_${config.tables.campaigns}`;
 }
