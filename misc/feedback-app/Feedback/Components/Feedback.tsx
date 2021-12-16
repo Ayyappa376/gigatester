@@ -2,7 +2,21 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Modal, Text, TextInput, Button } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import {Entypo} from '@expo/vector-icons';
+import axios from 'axios';
 
+const httpRequest = axios.create({
+    baseURL: 'https://wznjlettbb.execute-api.us-east-1.amazonaws.com/qa/GT_AppFeedback/',
+    timeout: 1000,
+    proxy:{
+        host: 'https://localhost',
+        port: 8080
+    }, 
+    headers: {
+        'origin': 'https://localhost:19006',
+        'referer': 'https://localhost:19006/',
+        'content-type': 'application/json'
+    }  
+});
 interface IProps  {
     show: boolean,
     closeModal: Function,
@@ -11,6 +25,23 @@ interface IProps  {
 const feedbackTemplates = ["There was something wrong with the interface.", "The screen went blank in the middle", "The app went non-responsive for sometime.", "The app is laggy."]
 
 const MINIMUM_POSITIVE_RATING = 3;
+
+const postData = async() => {
+    const body = {
+        "body": {
+            "data": {
+                "id": "1632",
+                "userId": "1236",
+                "feedbackScore": 5,
+                "productVersion": "1",
+                "feedbackComments": ["abn", "fgh"],
+                "productId": "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
+                "productName": "sling"
+            }
+        }
+    }
+    httpRequest.post('', JSON.stringify(body)).then((response) => {console.log({response})}).catch((e) => {console.log({e})})
+}
 
 const Feedback = (props: IProps) => {
 
@@ -90,6 +121,7 @@ const Feedback = (props: IProps) => {
                     </View>
                     <View style={{padding: 10, minWidth: '50%'}}>
                         <Button onPress={() => {updateFeedbackText(additionalComments);
+                                                postData();
                                                 props.closeModal()}}
                             title="Submit"
                             color="#007ACC"
