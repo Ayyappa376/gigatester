@@ -3,7 +3,6 @@ import { StyleSheet, View, Modal, Text, TextInput, Button } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import {Entypo} from '@expo/vector-icons';
 import axios from 'axios';
-//import renderTextInput, { textAdditionalComments } from './renderTextInput';
 
 interface IProps  {
     show: boolean,
@@ -23,10 +22,6 @@ interface IRequestBody {
 const feedbackTemplates = ["There was something wrong with the interface.", "The screen went blank in the middle", "The app went non-responsive for sometime.", "The app is laggy."]
 
 const MINIMUM_POSITIVE_RATING = 3;
-let textAdditionalComments = ''
-
-
-
 
 const httpRequest = axios.create({
     baseURL: 'https://wznjlettbb.execute-api.us-east-1.amazonaws.com/qa/GT_AppFeedback/',
@@ -43,10 +38,6 @@ const httpRequest = axios.create({
 });
 
 const postData = async(rating: number, comments: string[]) => {
-    /* console.log(textAdditionalComments)
-    if(textAdditionalComments !== '' && (comments.includes(textAdditionalComments))) {
-        comments.push(textAdditionalComments);
-    } */
    
     const body: IRequestBody = {
         "id": (Math.floor(Math.random()*90000) + 10000).toString(),
@@ -80,12 +71,7 @@ const Feedback = (props: IProps) => {
         props.closeModal();
     }
 
-
     const renderTextInput = () => {
-        //const [additionalComments, setAdditionalComments] = useState("");
-      /*  useEffect(() => {
-           textAdditionalComments = additionalComments;
-       }, [additionalComments])  */
        return (
            <View>
            <TextInput 
@@ -135,20 +121,6 @@ const Feedback = (props: IProps) => {
         }
     }
 
-    const handleInputSubmit = useCallback((ev) => {
-        const input =  ev.nativeEvent.text;
-        console.log(input)
-        if(feedbackText.includes(input)) {
-            return;
-        }
-        let feedbackTextCopy = [...feedbackText];
-        console.log({feedbackTextCopy})
-        console.log({feedbackText})
-        feedbackTextCopy.push(input);
-        setFeedbackText(feedbackTextCopy)
-        setAdditionalComments(input)
-    }, [setAdditionalComments]);
-
     const StarRow = () => {
         return(
             <View style={{display: 'flex', flexDirection: 'row'}}>
@@ -163,53 +135,6 @@ const Feedback = (props: IProps) => {
                         </View>
                     )
                 })}
-            </View>
-        )
-    }
-
-    const DetailedFeedback = () => {
-        return(
-            <View style={styles.modalStyle}>
-                <Text style={styles.headerText}>What went wrong?</Text>
-                <View style={{...styles.alignItemsLeftProp, marginTop: 15}}>
-                {feedbackTemplates.map((val, i) => {
-                    return(
-                        <View key={i} style={styles.checkboxText}>
-                            <CheckBox
-                                key={val}
-                                disabled={false}
-                                textStyle={{backgroundColor: '#252525', color:"#fff", fontWeight: "normal"}}
-                                containerStyle={{backgroundColor: '#252525', borderColor: 'transparent'}}
-                                title={val}
-                                checked={feedbackText.length > 0 && feedbackText.includes(val)}
-                                onPress={() => {updateFeedbackText(val)}}
-                            />
-                        </View>
-                    )
-                })}
-                {/* <TextInput
-                    style={styles.textInput}
-                    placeholder="Additional Comments"
-                    onEndEditing={handleInputSubmit}
-                    defaultValue={additionalComments}
-                />  */}
-                </View>
-                <View style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
-                    <View style={{padding: 10, minWidth: '50%'}}>
-                        <Button onPress={() => {props.closeModal(); resetState()}}
-                            title="Skip"
-                            color="#007ACC"
-                            accessibilityLabel="Skip"
-                        />
-                    </View>
-                    <View style={{padding: 10, minWidth: '50%'}}>
-                        <Button onPress={() => {submitButtonHandler()}}
-                            title="Submit"
-                            color="#007ACC"
-                            accessibilityLabel="Submit"
-                        />
-                    </View>
-                </View>
             </View>
         )
     }
@@ -231,8 +156,45 @@ const Feedback = (props: IProps) => {
             <Modal visible={props.show}
                 animationType="slide"
                 transparent={true}>
-                {renderTextInput()}
-                {askDetailedFeedback ? <DetailedFeedback/> : <StarFeedback/>}
+                {askDetailedFeedback ? 
+                    <View style={styles.modalStyle}>
+                    <Text style={styles.headerText}>What went wrong?</Text>
+                    <View style={{...styles.alignItemsLeftProp, marginTop: 15}}>
+                    {feedbackTemplates.map((val, i) => {
+                        return(
+                            <View key={i} style={styles.checkboxText}>
+                                <CheckBox
+                                    key={val}
+                                    disabled={false}
+                                    textStyle={{backgroundColor: '#252525', color:"#fff", fontWeight: "normal"}}
+                                    containerStyle={{backgroundColor: '#252525', borderColor: 'transparent'}}
+                                    title={val}
+                                    checked={feedbackText.length > 0 && feedbackText.includes(val)}
+                                    onPress={() => {updateFeedbackText(val)}}
+                                />
+                            </View>
+                        )
+                    })}
+                    {renderTextInput()}
+                    </View>
+                    <View style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
+                        <View style={{padding: 10, minWidth: '50%'}}>
+                            <Button onPress={() => {props.closeModal(); resetState()}}
+                                title="Skip"
+                                color="#007ACC"
+                                accessibilityLabel="Skip"
+                            />
+                        </View>
+                        <View style={{padding: 10, minWidth: '50%'}}>
+                            <Button onPress={() => {submitButtonHandler()}}
+                                title="Submit"
+                                color="#007ACC"
+                                accessibilityLabel="Submit"
+                            />
+                        </View>
+                    </View>
+                </View>
+                : <StarFeedback/>}
             </Modal>
         </View>
     )
