@@ -5,15 +5,16 @@ provider:
   name: aws
   runtime: nodejs14.x
   stage: ${opt:stage, 'development'}
-  region: us-east-1  #change based on where to deploy
+  region: us-east-1 #change based on where to deploy
   memorySize: 2048 # In MB, Max is 10240 MB.
   timeout: 60 # Note: API Gateway current maximum is 30 seconds
   logRetentionInDays: 30 # Set the default RetentionInDays for a CloudWatch LogGroup
+  lambdaHashingVersion: 20201221
   environment:
     DB_ENV: ${env:NODE_ENV, self:provider.stage}
     logLevel: ${self:custom.loglevel.${self:provider.stage}}
   iamRoleStatements:
-    - Effect: 'Allow' 
+    - Effect: 'Allow'
       Action:
         - 'apigateway:*'
       Resource:
@@ -30,6 +31,12 @@ package:
     - src/**/!(*.spec).js
 
 functions:
+  feedback:
+    handler: src/functions/index.handler
+    events:
+      - http:
+          path: feedback
+          method: ANY
   app:
     handler: src/app.handler
     events:
@@ -42,7 +49,7 @@ custom:
   loglevel:
     development: 'info' # error/warn/info/debug
     qa: 'info' # error/warn/info/debug
-    production: 'info'  # error/warn/info/debug
+    production: 'info' # error/warn/info/debug
 
 # ------- Restructuring changes - not yet used --------
 #  app:

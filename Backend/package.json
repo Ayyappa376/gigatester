@@ -50,7 +50,7 @@
     "moment": "^2.23.0",
     "nodemailer": "^4.7.0",
     "otp-generator": "^1.1.0",
-    "serverless": "^2.15.0",
+    "serverless": "^2.69.1",
     "serverless-http": "^1.8.0",
     "simple-excel-to-json": "^2.2.1",
     "sinon": "^7.1.1",
