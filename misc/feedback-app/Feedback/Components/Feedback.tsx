@@ -83,6 +83,7 @@ const Feedback = (props: IProps) => {
     const [rating, setRating] = useState(0);
     const [feedbackText, setFeedbackText] = useState<Array<string>>([]);
     const [askDetailedFeedback, setAskDetailedFeedback] = useState(false);
+    const [showThanks, setShowThanks] = useState(false);
     const [additionalComments, setAdditionalComments] = useState("");
 
     const resetState = () => {
@@ -91,6 +92,7 @@ const Feedback = (props: IProps) => {
         setFeedbackText([""]);
         setAskDetailedFeedback(false);
         setAdditionalComments("")
+        setShowThanks(false)
     }
 
     const closeModal = () => {
@@ -116,7 +118,9 @@ const Feedback = (props: IProps) => {
                 setAskDetailedFeedback(true);
             }, 800)
         } else {
+            setShowThanks(true)
             setTimeout(() => {
+                resetState();
                 closeModal()
             }, 2000)
         }
@@ -129,7 +133,6 @@ const Feedback = (props: IProps) => {
     }, [rating])
 
     const submitButtonHandler= () => {
-        closeModal();
         const feedbackTextCopy = [...feedbackText];
         if(feedbackTextCopy.indexOf("") === -1) {
             feedbackTextCopy.push(additionalComments);
@@ -137,6 +140,8 @@ const Feedback = (props: IProps) => {
             feedbackTextCopy[feedbackTextCopy.indexOf("")] = additionalComments;
         }
         postData(rating, feedbackTextCopy);
+        setShowThanks(true)
+        setTimeout(() => {closeModal();resetState()}, 2000);
     }
 
     const updateFeedbackText = (val: string) => {
@@ -187,8 +192,7 @@ const Feedback = (props: IProps) => {
 
     const StarFeedback = () => {
         return (
-            <View style={{...styles.modalStyle , backgroundColor: props.backgroundColor ?
-                props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}>
+            <View style={styles.alignItemsCenterProp}>
                 <Text style={styles.headerText}>Please tell us how much do you love the app!</Text>
                 <View style={{minHeight: 20}}></View>
                 <StarRow/>
@@ -201,9 +205,11 @@ const Feedback = (props: IProps) => {
             <Modal visible={props.show}
                 animationType="slide"
                 transparent={true}>
+                {showThanks ? <ThankScreen/> : 
+                <View style={{...styles.modalStyle , backgroundColor: props.backgroundColor ?
+                    props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}>
                 {askDetailedFeedback ? 
-                    <View style={{...styles.modalStyle , backgroundColor: props.backgroundColor ?
-                        props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}>
+                    <View >
                     <Text style={styles.headerText}>Please tell us how can we improve?</Text>
                     <View style={{...styles.alignItemsLeftProp, marginTop: 15}}>
                     {feedbackTemplates.map((val, i) => {
@@ -244,6 +250,7 @@ const Feedback = (props: IProps) => {
                     </View>
                 </View>
                 : <StarFeedback/>}
+                </View> }
             </Modal>
         </View>
     )
