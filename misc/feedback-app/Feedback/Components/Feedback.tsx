@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { StyleSheet, View, Modal, Text, TextInput, Button } from 'react-native';
 import { CheckBox } from 'react-native-elements'
 import {MaterialCommunityIcons} from '@expo/vector-icons';
@@ -7,6 +7,9 @@ import axios from 'axios';
 interface IProps  {
     show: boolean,
     closeModal: Function,
+    backgroundColor?: string,
+    buttonColor?: string,
+    
 }
 
 interface IRequestBody {
@@ -44,8 +47,12 @@ const EMOJI_RANKING = [
 
 const MINIMUM_POSITIVE_RATING = 3;
 
+const DEFAULT_PRIMARY_COLOR = "#007ACC";
+const DEFAULT_BACKGROUND_COLOR = "#252525";
+
+
 const httpRequest = axios.create({
-    baseURL: 'https://wznjlettbb.execute-api.us-east-1.amazonaws.com/qa/GT_AppFeedback/',
+    baseURL: 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedback',
     timeout: 1000,
     proxy:{
         host: 'https://localhost',
@@ -61,14 +68,14 @@ const httpRequest = axios.create({
 const postData = async(rating: number, comments: string[]) => {
    
     const body: IRequestBody = {
-        "userId": "1236",
+        "userId": "rachit",
         "productRating": rating.toString(),
         "productVersion": "1",
         "feedbackComments": comments,
         "productId": "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
     }
     console.log(body);
-  //  httpRequest.post('', JSON.stringify(body)).then((response) => {console.log({response})}).catch((e) => {console.log({e})})
+    //httpRequest.post('', JSON.stringify(body)).then((response) => {console.log({response})}).catch((e) => {console.error({e})})
 }
 
 const Feedback = (props: IProps) => {
@@ -92,13 +99,13 @@ const Feedback = (props: IProps) => {
 
     const renderTextInput = () => {
        return (
-           <TextInput 
-               style={styles.textInput}
-               placeholder="Additional Comments"
-               onChangeText={text => setAdditionalComments(text)}
-               multiline
-               value={additionalComments}
-           />
+            <TextInput 
+                style={styles.textInput}
+                placeholder="Additional Comments"
+                onChangeText={text => setAdditionalComments(text)}
+                multiline
+                value={additionalComments}
+            />
        )
    }
 
@@ -122,15 +129,20 @@ const Feedback = (props: IProps) => {
     }, [rating])
 
     const submitButtonHandler= () => {
-        updateFeedbackText(additionalComments);
-        closeModal()
-        postData(rating, feedbackText)
+        closeModal();
+        const feedbackTextCopy = [...feedbackText];
+        if(feedbackTextCopy.indexOf("") === -1) {
+            feedbackTextCopy.push(additionalComments);
+        } else {
+            feedbackTextCopy[feedbackTextCopy.indexOf("")] = additionalComments;
+        }
+        postData(rating, feedbackTextCopy);
     }
 
     const updateFeedbackText = (val: string) => {
         if(feedbackText.includes(val)) {
             const feedbackTextCopy = [...feedbackText];
-            feedbackTextCopy.splice(feedbackTextCopy.indexOf(val));
+            feedbackTextCopy.splice(feedbackTextCopy.indexOf(val), 1);
             setFeedbackText(feedbackTextCopy);
         } else {
             const feedbackTextCopy = [...feedbackText];
@@ -164,10 +176,19 @@ const Feedback = (props: IProps) => {
         )
     }
 
-    const StarFeedback = () => {
-        
+    const ThankScreen = () => {
         return (
-            <View style={styles.modalStyle}>
+            <View style={{...styles.modalStyle , backgroundColor: props.backgroundColor ?
+                props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}>
+                    <Text style={styles.headerText}>Thank you for the feedback!</Text>
+            </View>
+        )
+    }
+
+    const StarFeedback = () => {
+        return (
+            <View style={{...styles.modalStyle , backgroundColor: props.backgroundColor ?
+                props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}>
                 <Text style={styles.headerText}>Please tell us how much do you love the app!</Text>
                 <View style={{minHeight: 20}}></View>
                 <StarRow/>
@@ -181,7 +202,8 @@ const Feedback = (props: IProps) => {
                 animationType="slide"
                 transparent={true}>
                 {askDetailedFeedback ? 
-                    <View style={styles.modalStyle}>
+                    <View style={{...styles.modalStyle , backgroundColor: props.backgroundColor ?
+                        props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}>
                     <Text style={styles.headerText}>Please tell us how can we improve?</Text>
                     <View style={{...styles.alignItemsLeftProp, marginTop: 15}}>
                     {feedbackTemplates.map((val, i) => {
@@ -190,8 +212,11 @@ const Feedback = (props: IProps) => {
                                 <CheckBox
                                     key={val}
                                     disabled={false}
-                                    textStyle={{backgroundColor: '#252525', color:"#fff", fontWeight: "normal"}}
-                                    containerStyle={{backgroundColor: '#252525', borderColor: 'transparent'}}
+                                    checkedColor={ props.buttonColor ? props.buttonColor : DEFAULT_PRIMARY_COLOR}
+                                    textStyle={{...styles.optionText, backgroundColor: props.backgroundColor ?
+                                        props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}
+                                    containerStyle={{...styles.optionContainer, backgroundColor: props.backgroundColor ?
+                                        props.backgroundColor : DEFAULT_BACKGROUND_COLOR}}
                                     title={val}
                                     checked={feedbackText.length > 0 && feedbackText.includes(val)}
                                     onPress={() => {updateFeedbackText(val)}}
@@ -201,18 +226,18 @@ const Feedback = (props: IProps) => {
                     })}
                     {renderTextInput()}
                     </View>
-                    <View style={{display: 'flex', flexDirection: 'row', marginTop: 15}}>
-                        <View style={{padding: 10, minWidth: '50%'}}>
+                    <View style={styles.buttonsSection}>
+                        <View style={styles.buttons}>
                             <Button onPress={() => {props.closeModal(); resetState()}}
                                 title="Skip"
-                                color="#007ACC"
+                                color={props.buttonColor ? props.buttonColor : DEFAULT_PRIMARY_COLOR}
                                 accessibilityLabel="Skip"
                             />
                         </View>
-                        <View style={{padding: 10, minWidth: '50%'}}>
+                        <View style={styles.buttons}>
                             <Button onPress={() => {submitButtonHandler()}}
                                 title="Submit"
-                                color="#007ACC"
+                                color={props.buttonColor ? props.buttonColor : DEFAULT_PRIMARY_COLOR}
                                 accessibilityLabel="Submit"
                             />
                         </View>
@@ -229,8 +254,7 @@ const styles = StyleSheet.create({
     modalStyle: {
         margin: 11,
         marginTop: 'auto',
-        color: 'white',
-        backgroundColor: '#252525',
+        color: '#fff',
         borderRadius: 20,
         padding: 35,
         alignItems: "center",
@@ -269,6 +293,24 @@ const styles = StyleSheet.create({
     },
     checkboxText: {
         textAlign: "left"
+    },
+    buttons: {
+        padding: 10,
+        minWidth: '50%'
+    },
+    optionText: {
+        //backgroundColor: '#252525',
+        color:"#fff",
+        fontWeight: "normal"
+    },
+    optionContainer: {
+        //backgroundColor: '#252525',
+        borderColor: 'transparent'
+    },
+    buttonsSection: {
+        display: 'flex',
+        flexDirection: 'row',
+        marginTop: 15
     }
 })
 
