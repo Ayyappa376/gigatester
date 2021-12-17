@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { StyleSheet, View, Modal, Text, TextInput, Button } from 'react-native';
 import { CheckBox } from 'react-native-elements'
-import {Entypo} from '@expo/vector-icons';
+import {MaterialCommunityIcons} from '@expo/vector-icons';
 import axios from 'axios';
 
 interface IProps  {
@@ -10,16 +10,37 @@ interface IProps  {
 }
 
 interface IRequestBody {
-    "id": string,
     "userId"?: string,
     "productRating": string,
     "productVersion": string,
     "feedbackComments": string[],
-    "productId"?: string,
-    "productName"?: string
+    "productId"?: string
 }
 
 const feedbackTemplates = ["There was something wrong with the interface.", "The screen went blank in the middle", "The app went non-responsive for sometime.", "The app is laggy."]
+
+const EMOJI_RANKING = [
+    {
+        labelOutline: "emoticon-frown-outline",
+        labelFilled: "emoticon-frown",
+    },
+    {
+        labelOutline: "emoticon-sad-outline",
+        labelFilled: "emoticon-sad",
+    },
+    {
+        labelOutline: "emoticon-neutral-outline",
+        labelFilled: "emoticon-neutral",
+    },
+    {
+        labelOutline: "emoticon-happy-outline",
+        labelFilled: "emoticon-happy",
+    },
+    {
+        labelOutline: "emoticon-excited-outline",
+        labelFilled: "emoticon-excited",
+    }
+]
 
 const MINIMUM_POSITIVE_RATING = 3;
 
@@ -40,13 +61,11 @@ const httpRequest = axios.create({
 const postData = async(rating: number, comments: string[]) => {
    
     const body: IRequestBody = {
-        "id": (Math.floor(Math.random()*90000) + 10000).toString(),
         "userId": "1236",
         "productRating": rating.toString(),
         "productVersion": "1",
         "feedbackComments": comments,
         "productId": "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
-        "productName": "sling"
     }
     console.log(body);
   //  httpRequest.post('', JSON.stringify(body)).then((response) => {console.log({response})}).catch((e) => {console.log({e})})
@@ -73,14 +92,13 @@ const Feedback = (props: IProps) => {
 
     const renderTextInput = () => {
        return (
-           <View>
            <TextInput 
                style={styles.textInput}
                placeholder="Additional Comments"
                onChangeText={text => setAdditionalComments(text)}
+               multiline
                value={additionalComments}
            />
-           </View>
        )
    }
 
@@ -121,17 +139,24 @@ const Feedback = (props: IProps) => {
         }
     }
 
+    const renderRatingIcons = (i: number) => {
+        const instance = EMOJI_RANKING[i];
+        return (
+            <MaterialCommunityIcons name= {rating < (i + 1) ? instance.labelOutline : instance.labelFilled} 
+            size={28}
+            style={{marginHorizontal: 10}}
+            color="#fff" 
+            onPress={() => {starRatingHandler(i+1)}}/>
+        )
+    }
+
     const StarRow = () => {
         return(
             <View style={{display: 'flex', flexDirection: 'row'}}>
-                {[1,2,3,4,5].map((el, i) => {
+                {EMOJI_RANKING.map((el, i) => {
                     return (
                         <View key={i}>
-                            <Entypo 
-                                name= {rating < (i + 1) ? "star-outlined" : "star"} 
-                                size={24} 
-                                color="#fff" 
-                                onPress={() => {starRatingHandler(i+1)}}/>
+                            {renderRatingIcons(i)}
                         </View>
                     )
                 })}
@@ -143,8 +168,7 @@ const Feedback = (props: IProps) => {
         
         return (
             <View style={styles.modalStyle}>
-                
-                <Text style={styles.headerText}>Please Rate Your Experience!</Text>
+                <Text style={styles.headerText}>Please tell us how much do you love the app!</Text>
                 <View style={{minHeight: 20}}></View>
                 <StarRow/>
             </View>
@@ -158,7 +182,7 @@ const Feedback = (props: IProps) => {
                 transparent={true}>
                 {askDetailedFeedback ? 
                     <View style={styles.modalStyle}>
-                    <Text style={styles.headerText}>What went wrong?</Text>
+                    <Text style={styles.headerText}>Please tell us how can we improve?</Text>
                     <View style={{...styles.alignItemsLeftProp, marginTop: 15}}>
                     {feedbackTemplates.map((val, i) => {
                         return(
@@ -230,14 +254,16 @@ const styles = StyleSheet.create({
         color: "#fff",
         fontSize: 23,
         fontWeight: "bold",
+        textAlign: 'center'
     },
     textInput: {
         marginTop: 10,
-        height: 40,
+        marginLeft: 3,
+        height: 80,
         borderWidth: 1,
         borderColor: "#444444",
         borderRadius: 5,
-        minWidth: "95%",
+        minWidth: "100%",
         padding: 10,
         color: '#fff'
     },
