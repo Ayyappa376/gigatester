@@ -1,7 +1,7 @@
 //import { config } from '@root/config';
-import { CampaignInfo, ConfigItem, ProductInfo, STATUS_CAMPAIGN_DRAFT } from '@models/index';
+import { CampaignInfo, ConfigItem, STATUS_CAMPAIGN_DRAFT } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, fetchAdmins, fetchManagers, getCampaignConfig } from '@utils/index';
+import { appLogger, fetchAdmins, fetchManagers,  getCampaignConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
 //import { getUserDocumentFromEmail } from './getUserDocument';
@@ -51,7 +51,7 @@ export const createCampaign = async (campaignData: CampaignInfo, userId: string)
     id: `campaign_${uuidv1()}`,
     managers: campaignData.managers,
     name: campaignData.name,
-    products: processProducts(campaignData.products), //add product id for newly added products
+    products:campaignData.products, //add product id for newly added products
     startDate: campaignData.startDate,
     status: campaignData.status
   };
@@ -83,7 +83,6 @@ export const createCampaign = async (campaignData: CampaignInfo, userId: string)
       }
     }
   });
-
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
     ConditionExpression: 'attribute_not_exists(id)',
     Item: item,
@@ -95,12 +94,12 @@ export const createCampaign = async (campaignData: CampaignInfo, userId: string)
 };
 
 //add id to products which do not have id
-const processProducts = (products: ProductInfo[]): ProductInfo[] => products.map((product: ProductInfo) => {
-  if(! product.id || product.id === '') {
-    product.id = `prod_${uuidv1()}`;
-  }
-  return product;
-});
+// const processProducts = (products: ProductInfo[]): ProductInfo[] => products.map((product: ProductInfo) => {
+//   if(! product.id || product.id === '') {
+//     product.id = `prod_${uuidv1()}`;
+//   }
+//   return product;
+// });
 
 //fetch campaign Config from dynamoDb and fill in the options
 export const getCreateCampaignConfig = async (
@@ -186,7 +185,7 @@ export const updateCampaign = async (updateInfo: CampaignInfo, userId: string): 
   }
 */
   EAN['#products'] = 'products';
-  EAV[':products'] = processProducts(updateInfo.products); //add product id for newly added products
+  EAV[':products'] = updateInfo.products; //add product id for newly added products
   SET += `#products = :products`;
 
   Object.keys(updateInfo).forEach((val, i) => {

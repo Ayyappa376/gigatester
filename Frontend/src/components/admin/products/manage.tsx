@@ -34,7 +34,7 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IDeviceInfo } from '../../../model';
+import { IProductInfo } from '../../../model';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -55,22 +55,22 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ManageDevices = (props: any) => {
+const ManageProducts = (props: any) => {
   const classes = useStyles();
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [fetchDevices, setFetchDevices] = React.useState(false);
-  const [allDevices, setAllDevices] = React.useState<IDeviceInfo[]>([]);
+  const [fetchProducts, setFetchProducts] = React.useState(false);
+  const [allProducts, setAllProducts] = React.useState<IProductInfo[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [deleteDeviceId, setDeleteDeviceId] = useState('');
+  const [deleteProductId, setDeleteProductId] = useState('');
   const [searchString, setSearchString] = useState('');
-  const [devices, setDevices] = useState<IDeviceInfo[]>([]);
+  const [products, setProducts] = useState<IProductInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
-  const [numberOfDevices, setNumberOfDevices] = useState(0);
+  const [numberOfProducts, setNumberOfProducts] = useState(0);
   const [itemLimit, setItemLimit] = useState({
     lowerLimit: 0,
     upperLimit: 9,
@@ -83,24 +83,25 @@ const ManageDevices = (props: any) => {
   );
   let msgFailure = failureMessage;
 
-  const fetchDeviceList = () => {
+  const fetchProductList = () => {
     setBackdropOpen(true);
     Http.get({
-      url: `/api/v2/devices`,
+      url: `/api/v2/products/prod_b888c0d1-4bd5-11ec-a922-276699a9200b/version/0`,
       state: stateVariable,
     })
       .then((response: any) => {
-        console.log(response);
-        response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
+        console.log(response, 'product response');
+        response.products.sort((a: IProductInfo, b: IProductInfo) => {
           return a.name.localeCompare(b.name);
         });
-        setFetchDevices(true);
-        setAllDevices(response.devices);
-        setDevices(response.devices);
+        setFetchProducts(true);
+        setAllProducts(response.products);
+        setProducts(response.products);
         setBackdropOpen(false);
       })
       .catch((error: any) => {
-        setFetchDevices(true);
+        console.log(error);
+        setFetchProducts(true);
         setBackdropOpen(false);
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
@@ -113,11 +114,11 @@ const ManageDevices = (props: any) => {
   };
 
   useEffect(() => {
-    setNumberOfDevices(devices.length);
-  }, [devices]);
+    setNumberOfProducts(products.length);
+  }, [products]);
 
   useEffect(() => {
-    fetchDeviceList();
+    fetchProductList();
     setSearchString('');
     setCurrentPage(1);
   }, []);
@@ -127,14 +128,14 @@ const ManageDevices = (props: any) => {
       setSearchButtonPressed(false);
       const searchedItems: any = [];
       if (searchString === '') {
-        setDevices([]);
+        setProducts([]);
       }
-      allDevices.forEach((el: any) => {
+      allProducts.forEach((el: any) => {
         if (el.name.toLowerCase().includes(searchString.toLowerCase())) {
           searchedItems.push(el);
         }
       });
-      setDevices(searchedItems);
+      setProducts(searchedItems);
       setCurrentPage(1);
     }
   }, [searchButtonPressed]);
@@ -149,26 +150,26 @@ const ManageDevices = (props: any) => {
   }, [itemsPerPage]);
 
   useEffect(() => {
-    if (devices !== []) {
-      const tempSortedDevices = [...devices];
+    if (products !== []) {
+      const tempSortedProducts = [...products];
       if (order === 'asc') {
-        if (orderBy === 'device') {
-          setDevices(tempSortedDevices.sort(compareDevice));
+        if (orderBy === 'product') {
+          setProducts(tempSortedProducts.sort(compareProduct));
         }
       }
       if (order === 'desc') {
-        if (orderBy === 'device') {
-          setDevices(tempSortedDevices.sort(compareDeviceD));
+        if (orderBy === 'product') {
+          setProducts(tempSortedProducts.sort(compareProductD));
         }
       }
     }
   }, [order, orderBy]);
 
-  function compareDevice(a: IDeviceInfo, b: IDeviceInfo) {
+  function compareProduct(a: IProductInfo, b: IProductInfo) {
     return a.name.localeCompare(b.name);
   }
 
-  function compareDeviceD(a: IDeviceInfo, b: IDeviceInfo) {
+  function compareProductD(a: IProductInfo, b: IProductInfo) {
     return b.name.localeCompare(a.name);
   }
 
@@ -203,8 +204,8 @@ const ManageDevices = (props: any) => {
     setCurrentPage(event);
   };
 
-  const deleteClicked = (deviceId: string) => {
-    setDeleteDeviceId(deviceId);
+  const deleteClicked = (productId: string) => {
+    setDeleteProductId(productId);
     setOpenModal(true);
   };
 
@@ -213,22 +214,22 @@ const ManageDevices = (props: any) => {
   };
 
   const modalYesClicked = () => {
-    if (deleteDeviceId !== '') {
-      deleteDevice(deleteDeviceId);
+    if (deleteProductId !== '') {
+      deleteProduct(deleteProductId);
       setOpenModal(false);
     }
   };
 
-  const deleteDevice = (deviceId: string) => {
+  const deleteProduct = (productId: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/devices/${deviceId}`,
+      url: `/api/v2/products/${productId}`,
       state: stateVariable,
     })
       .then((response: any) => {
         setBackdropOpen(false);
-        setDeleteDeviceId('');
-        fetchDeviceList();
+        setDeleteProductId('');
+        fetchProductList();
       })
       .catch((error) => {
         const perror = JSON.stringify(error);
@@ -242,7 +243,7 @@ const ManageDevices = (props: any) => {
           setFailure(true);
         }
         setBackdropOpen(false);
-        fetchDeviceList();
+        fetchProductList();
       });
   };
 
@@ -250,7 +251,7 @@ const ManageDevices = (props: any) => {
     setFailure(false);
   };
 
-  const renderDevicesTable = () => {
+  const renderProductsTable = () => {
     return (
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
@@ -267,7 +268,7 @@ const ManageDevices = (props: any) => {
                     props.editClicked(0);
                   }}
                 >
-                  <AddIcon fontSize='large' /> <Text tid='addDevice' />
+                  <AddIcon fontSize='large' /> <Text tid='addProduct' />
                 </Button>
               </Grid>
               <Grid item sm={5}>
@@ -290,16 +291,21 @@ const ManageDevices = (props: any) => {
                 <TableRow>
                   <TableCell className='tableHeadCell'>
                     <TableSortLabel
-                      active={orderBy === 'device'}
-                      direction={orderBy === 'device' ? order : 'asc'}
+                      active={orderBy === 'product'}
+                      direction={orderBy === 'product' ? order : 'asc'}
                       onClick={() => {
-                        handleRequestSort('device');
+                        handleRequestSort('product');
                       }}
                     >
                       <Typography className='tableHeadText'>
-                        <Text tid='manageDevices2' />
+                        <Text tid='manageProducts2' />
                       </Typography>
                     </TableSortLabel>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='version' />
+                    </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
@@ -309,7 +315,7 @@ const ManageDevices = (props: any) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {devices.map((row: any, index: number) => {
+                {products.map((row: any, index: number) => {
                   if (index < itemLimit.lowerLimit) {
                     return;
                   }
@@ -334,6 +340,15 @@ const ManageDevices = (props: any) => {
                           {row.name}
                         </Typography>
                       </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        className='tableCell'
+                      >
+                        <Typography className='tableBodyText'>
+                          {row.version}
+                        </Typography>
+                      </TableCell>
                       <TableCell align='center' className='tableCell'>
                         <div className={classes.actionsBlock}>
                           <MuiThemeProvider theme={tooltipTheme}>
@@ -352,6 +367,7 @@ const ManageDevices = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 <EditIcon
                                   onClick={() => {
+                                    console.log(row.id, 'row.id');
                                     props.editClicked(row.id);
                                   }}
                                 />
@@ -393,7 +409,7 @@ const ManageDevices = (props: any) => {
               pageRangeDisplayed={10}
               activePage={currentPage}
               itemsCountPerPage={itemsPerPage}
-              totalItemsCount={numberOfDevices}
+              totalItemsCount={numberOfProducts}
               handleChange={handlePaginationClick}
             />
           </Fragment>
@@ -407,7 +423,7 @@ const ManageDevices = (props: any) => {
             </Button>
           </div>
           <ModalComponent
-            message={'deleteDeviceConfirmMessage'}
+            message={'deleteProductConfirmMessage'}
             openModal={openModal}
             handleModalYesClicked={modalYesClicked}
             handleModalNoClicked={modalNoClicked}
@@ -432,8 +448,8 @@ const ManageDevices = (props: any) => {
 
   return (
     <Fragment>
-      {fetchDevices ? (
-        renderDevicesTable()
+      {fetchProducts ? (
+        renderProductsTable()
       ) : (
         <Container className='loaderStyle'>
           <Loader />
@@ -443,4 +459,4 @@ const ManageDevices = (props: any) => {
   );
 };
 
-export default withRouter(ManageDevices);
+export default withRouter(ManageProducts);

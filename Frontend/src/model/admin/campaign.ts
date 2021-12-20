@@ -13,19 +13,19 @@ export interface ICampaignInfo {
   endDate?: number;
   [keyName: string]: any;
 }
-
 export interface IProductInfo {
   apiKey?:string;
   apiId?:string;
   id: string;
   name: string;
-  instructions?: string;
+  description?: string;
   devices?: string[];
   software?: string;
   softwareType?:string;
   platforms: string[];
   testSuite?: string[];
   testers?: ITesterStatus[];
+  [keyName: string]: any;
 }
 
 export interface ITesterStatus {
@@ -36,6 +36,11 @@ export interface ITesterStatus {
 export interface ICampaignParams {
   campaignConfig: IObjectConfigDetails;
   campaigns?: ICampaignInfo[];
+}
+
+export interface IProductParams {
+  productConfig: IObjectConfigDetails;
+  products?: IProductInfo[];
 }
 
 export const STATUS_CAMPAIGN_DRAFT = 'draft';

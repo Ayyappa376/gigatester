@@ -24,6 +24,10 @@ export function getPlatformsTableName(): string {
   return `${config.defaults.orgId}_${config.tables.platforms}`;
 }
 
+export function getProductsTableName(): string {
+  return `${config.defaults.orgId}_${config.tables.products}`;
+}
+
 export function getQuestionnairesTableName(): string {
   return `${config.defaults.orgId}_${config.tables.questionnaires}`;
 }

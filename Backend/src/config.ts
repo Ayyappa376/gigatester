@@ -109,6 +109,7 @@ export const config: Config = {
     groups: 'GT_Groups',
     organizations: 'GT_Organizations',
     platforms: 'GT_Platforms',
+    products: 'GT_Products',
     questionnaires: 'GT_Questionnaires',
     questions: 'GT_Questions',
     team: 'GT_Team',

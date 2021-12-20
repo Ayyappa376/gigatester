@@ -22,14 +22,14 @@ import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import {
   IFieldConfigAttributes,
-  IDeviceParams,
+  IProductParams,
   IObjectConfigDetails,
-  IDeviceInfo,
+  IProductInfo,
 } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
-import { MANAGE_DEVICES } from '../../../pages/admin';
+import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
@@ -77,28 +77,26 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditDevice = (props: any) => {
+const EditProduct = (props: any) => {
   const classes = useStyles();
-  const [devicePosted, setDevicePosted] = useState(false);
+  const [productPosted, setProductPosted] = useState(false);
   const [failure, setFailure] = useState(false);
-  const [deviceDataFetched, setDeviceDataFetched] = useState(false);
+  const [productDataFetched, setProductDataFetched] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [deviceState, setDeviceState] = React.useState<
-    IDeviceParams | undefined
+  const [productState, setProductState] = React.useState<
+    IProductParams | undefined
   >();
   let msgFailure = failureMessage;
   let msgSuccess = <Text tid='deviceDetailsSavedSuccessfully' />;
-
+  console.log(props, 'props');
   useEffect(() => {
-    console.log(props);
-    console.log(props.deviceId);
     Http.get({
-      url: `/api/v2/devices/${props.deviceId} `,
+      url: `/api/v2/products/prod_b888c0d1-4bd5-11ec-a922-276699a9200b/version/0`,
       state: stateVariable,
     })
       .then((response: any) => {
@@ -117,32 +115,32 @@ const EditDevice = (props: any) => {
   }, []);
 
   const handleSave = () => {
-    const postData = deviceState;
-    if (postData && postData.devices) {
-      if (postData.devices[0].id) {
+    const postData = productState;
+    if (postData && postData.products) {
+      if (postData.products[0].id) {
         Http.put({
-          url: `/api/v2/devices`,
+          url: `/api/v2/products`,
           body: {
             ...postData,
           },
           state: stateVariable,
         })
           .then((response: any) => {
-            setDevicePosted(true);
+            setProductPosted(true);
           })
           .catch((error: any) => {
             handleSaveError(error);
           });
       } else {
         Http.post({
-          url: `/api/v2/devices`,
+          url: `/api/v2/products`,
           body: {
             ...postData,
           },
           state: stateVariable,
         })
           .then((response: any) => {
-            setDevicePosted(true);
+            setProductPosted(true);
           })
           .catch((error: any) => {
             handleSaveError(error);
@@ -165,18 +163,18 @@ const EditDevice = (props: any) => {
   };
 
   const fixMultiSelectValuesAndSave = (response: any) => {
-    if (response.devices) {
-      fixOtherValuesMultiSelect(response.deviceConfig, response.devices[0]);
+    if (response.products) {
+      fixOtherValuesMultiSelect(response.productConfig, response.products[0]);
     } else {
-      response.devices = [{}];
+      response.products = [{}];
     }
-    setDeviceState(response);
-    setDeviceDataFetched(true);
+    setProductState(response);
+    setProductDataFetched(true);
   };
 
   const fixOtherValuesMultiSelect = (
     config: IObjectConfigDetails,
-    values: IDeviceInfo
+    values: IProductInfo
   ) => {
     Object.keys(config).forEach((el) => {
       if (config[el].type === 'multi-list' && values && values[el]) {
@@ -210,21 +208,21 @@ const EditDevice = (props: any) => {
   function mandatoryFieldsCheck(): boolean {
     let check: boolean = true;
     // tslint:disable-next-line: ter-arrow-parens
-    if (!deviceState) {
+    if (!productState) {
       return false;
     }
-    Object.keys(deviceState.deviceConfig).forEach((el) => {
-      if (deviceState.deviceConfig[el].mandatory) {
+    Object.keys(productState.productConfig).forEach((el) => {
+      if (productState.productConfig[el].mandatory) {
         if (
-          !deviceState.devices ||
-          deviceState.devices.length === 0 ||
-          !deviceState.devices[0] ||
-          !deviceState.devices[0][el]
+          !productState.products ||
+          productState.products.length === 0 ||
+          !productState.products[0] ||
+          !productState.products[0][el]
         ) {
           check = false;
         } else if (
-          deviceState.deviceConfig[el].type === 'multi-list' &&
-          deviceState.devices[0][el].length === 0
+          productState.productConfig[el].type === 'multi-list' &&
+          productState.products[0][el].length === 0
         ) {
           check = false;
         }
@@ -235,21 +233,21 @@ const EditDevice = (props: any) => {
   }
 
   const handleChangeValue = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
 
       if (values) {
         values[0][key] = event.target.value;
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
 
   const handleChangeOtherValueList = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
 
       if (values) {
         if (event.target.value === '') {
@@ -257,7 +255,7 @@ const EditDevice = (props: any) => {
         } else {
           values[0][key] = event.target.value;
         }
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
@@ -273,9 +271,9 @@ const EditDevice = (props: any) => {
   };
 
   const handleChangeOtherMultilist = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
 
       if (values) {
         const updatedString = `${OTHER_STRING}: ${event.target.value}`;
@@ -283,21 +281,21 @@ const EditDevice = (props: any) => {
         const indexOfOther = returnIndexOfOther(valueArray);
         valueArray[indexOfOther] = updatedString;
         values[0][key] = valueArray;
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
 
   const handleChangeMultiValue = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
 
       if (values) {
         let valueArray = values[0][key] || [];
         valueArray = [...event.target.value];
         values[0][key] = valueArray;
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
@@ -332,7 +330,7 @@ const EditDevice = (props: any) => {
   const renderElements = (
     key: string,
     config: IObjectConfigDetails,
-    values: IDeviceInfo
+    values: IProductInfo
   ) => {
     const attrConfig: IFieldConfigAttributes = config[key];
     switch (attrConfig.type) {
@@ -572,7 +570,7 @@ const EditDevice = (props: any) => {
   };
 
   const renderFormData = () => {
-    if (devicePosted) {
+    if (productPosted) {
       return (
         <Fragment>
           <Success message={msgSuccess} />
@@ -581,7 +579,7 @@ const EditDevice = (props: any) => {
               className={classes.button}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_DEVICES);
+                props.goBack(MANAGE_PRODUCTS);
               }}
             >
               <Text tid='goBack' />
@@ -594,14 +592,14 @@ const EditDevice = (props: any) => {
     return (
       <Fragment>
         <Grid container spacing={3} className={classes.grid}>
-          {Object.keys(deviceState!.deviceConfig).map((el) => {
+          {Object.keys(productState!.productConfig).map((el) => {
             return (
               <Grid key={el} item xs={12}>
-                {deviceState!.devices &&
+                {productState!.products &&
                   renderElements(
                     el,
-                    deviceState!.deviceConfig,
-                    deviceState!.devices[0]
+                    productState!.productConfig,
+                    productState!.products[0]
                   )}
               </Grid>
             );
@@ -612,7 +610,7 @@ const EditDevice = (props: any) => {
             className={classes.button}
             variant='outlined'
             onClick={() => {
-              props.goBack(MANAGE_DEVICES);
+              props.goBack(MANAGE_PRODUCTS);
             }}
           >
             <Text tid='goBack' />
@@ -652,7 +650,7 @@ const EditDevice = (props: any) => {
 
   return (
     <Fragment>
-      {deviceDataFetched ? (
+      {productDataFetched ? (
         renderFormData()
       ) : (
         <Container className='loaderStyle'>
@@ -663,4 +661,4 @@ const EditDevice = (props: any) => {
   );
 };
 
-export default withRouter(EditDevice);
+export default withRouter(EditProduct);

@@ -1,6 +1,6 @@
 import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, getCampaignsList, getDevicesList, getPlatformConfig } from '@utils/index';
+import { appLogger, getCampaignsList, getDevicesList, getPlatformConfig, getProductsList } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
 import { deleteItem, get, put, scan, update } from './sdk';
@@ -75,10 +75,11 @@ export const getPlatformDetails = async (id: string): Promise<PlatformInfo> => {
 
 // delete a platform, if it is not used anywhere
 export const deletePlatform = async (id: string, userId: string): Promise<PlatformInfo | undefined> => {
+  const products: ProductInfo[] = await getProductsList();
   const campaigns: CampaignInfo[] = await getCampaignsList(userId);
   const devices: DeviceInfo[] = await getDevicesList();
   const platformUsed: boolean = campaigns.some((campaign: CampaignInfo) =>
-    campaign.products.some((product: ProductInfo) =>
+    products.some((product: ProductInfo) =>
       product.platforms.some((platformId: string) =>
         (platformId === id) ? true : false
       )
