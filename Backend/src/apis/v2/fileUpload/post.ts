@@ -33,13 +33,15 @@ async function handler(request: UploadSoftware, response: Response) {
     switch(params.type) {
         case 'medium' : {
             try {
+                console.log(body, "body");
                 const url = await s3.getSignedUrlPromise('putObject', {
-                    Bucket: getSoftwaresBucketName(),
+                    Bucket: 'dev-gigatester-manage-software',
                     ContentType: body.fileType,
                     Expires: 60,
                     Key: body.fileName,
                 });
                 appLogger.info({ downloadUrl: url });
+                console.log(url, "url");
                 return responseBuilder.ok({
                     filePath: url,
                     headers: {
@@ -49,6 +51,7 @@ async function handler(request: UploadSoftware, response: Response) {
                 }, response);
             } catch (err) {
                 appLogger.error(err, 'UploadFileError');
+                console.log(err, 'err');
             }
             break;
         }

@@ -58,7 +58,7 @@ export const config: Config = {
     groups: ['Member'],
     orgId: 'www', // default should be 'www' //nomiso - dev env
     quesType: '1234',
-    restApiId: 'sbep37jiz5',
+    restApiId: 'qe1lgcnkwh',
     scoreCoeff: 10,
     subDomain: {
       development: 'dev',

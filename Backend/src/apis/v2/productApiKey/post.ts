@@ -24,10 +24,10 @@ async function handler(request: PostProductApiKey, response: Response) {
     appLogger.error(err, 'Only Admin can create platforms');
     return responseBuilder.forbidden(err, response);
   }
-
+console.log(body, "body.productApiKey");
   const apiKeyParams = {
     enabled: true,
-    name: body.productApiKey,
+    name: body.productId,
     stageKeys: [ {
       restApiId: config.defaults.restApiId,
       stageName: config.defaults.orgId

@@ -42,6 +42,7 @@ import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import { IProductInfo, IProductParams } from '../../../model';
+import { AnyARecord } from 'dns';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -90,7 +91,7 @@ const ManageProducts = (props: any) => {
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [softwareIndex, setSoftwareIndex] = useState(-1);
+  const [softwareIndex, setSoftwareIndex] = useState({});
   const [userParamState, setUserParamState] = React.useState<any>('');
   const [softwareOption, setSoftwareOption] = useState(false);
   const [fileContentType, setFileContentType] = useState('');
@@ -245,101 +246,6 @@ const ManageProducts = (props: any) => {
     setOpenModal(false);
   };
 
-  const modalYesClicked = () => {
-    if (deleteProductId !== '') {
-      deleteProduct(deleteProductId, deleteProductVersion);
-      setOpenModal(false);
-    }
-  };
-
-  const closeDialog = () => {
-    setDialogOpen(false);
-    setSoftwareOption(false);
-  };
-
-  const getUploadPreSignedUrl = (event: any) => {
-    event.preventDefault();
-    console.log(event.target.files[0], 'file');
-    setFileSelected(event.target.files[0]);
-    setFileName(event.target.files[0].name);
-    setFileContentType(event.target.files[0].type);
-  };
-
-  const handleGeneralApiKeyButton = (row: any, index: any) => {
-    console.log(row);
-    if (row) {
-      const temp: IProductInfo = { ...row };
-      let values: IProductInfo | undefined = temp;
-      let productId: any = values.id;
-      Http.post({
-        url: `/api/v2/productApiKey/`,
-        state: stateVariable,
-        body: {
-          productId,
-        },
-      })
-        .then((response: any) => {
-          console.log('app key', response);
-          if (values) {
-            values.apiKey = response.data.value;
-            values.apiId = response.data.id;
-            console.log(values, 'values');
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    }
-  };
-
-  const deleteApiKey = (row: any, index: number) => {
-    console.log(row);
-    if (row) {
-      const temp: IProductParams = { ...row };
-      let values: IProductInfo[] | undefined = temp.products;
-
-      if (values) {
-        setNotify({
-          isOpen: true,
-          message: 'Deleting... ',
-          type: 'info',
-        });
-
-        Http.deleteReq({
-          url: `/api/v2/productApiKey/${values[0].products[index].apiId}`,
-          state: stateVariable,
-        })
-          .then((response: any) => {
-            console.log(response);
-            setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
-            setFailure(true);
-
-            if (values) {
-              /* tslint:disable-next-line */
-              values[0].products[index].apiKey = '';
-              values[0].products[index].apiId = '';
-            }
-          })
-          .catch((error: any) => {
-            console.log(error);
-          });
-      }
-    }
-  };
-
-  const handleChangedValue = (event: any) => {
-    if (event.target.value) {
-      setUserParamState(event.target.value);
-
-      setSoftwareOption(true);
-    } else {
-      setSoftwareOption(false);
-    }
-
-    // handleChangeProductSoftware(event, softwareIndex);
-    console.log(userParamState, 'userparamstate');
-  };
-
   const deleteProduct = (productId: string, version: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
@@ -366,6 +272,260 @@ const ManageProducts = (props: any) => {
         setBackdropOpen(false);
         fetchProductList();
       });
+  };
+
+  const modalYesClicked = () => {
+    if (deleteProductId !== '') {
+      deleteProduct(deleteProductId, deleteProductVersion);
+      setOpenModal(false);
+    }
+  };
+
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setSoftwareOption(false);
+  };
+
+  const deleteSoftware = (row: any) => {
+    console.log(row, 'del row');
+    if (row) {
+      if (row.softwareType === 'url') {
+        row.software = '';
+        row.softwareType = '';
+        handleSave(row);
+        setNotify({
+          isOpen: false,
+          message: 'Deleting... ',
+          type: 'info',
+        });
+      } else {
+        setNotify({
+          isOpen: true,
+          message: 'Deleting... ',
+          type: 'info',
+        });
+
+        Http.deleteReq({
+          url: `/api/v2/software/delete/${row.software}`,
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            console.log(response);
+            setFailureMessage(<Text tid='File Deleted Successfully' />);
+            setFailure(true);
+            // setNotify({
+            //   isOpen: true,
+            //   message: "File Deleted Successfully",
+            //   type: "info",
+            // });
+
+            if (row.software) {
+              /* tslint:disable-next-line */
+              row.software = '';
+              row.softwareType = '';
+              handleSave(row);
+            }
+          })
+          .catch((error: any) => {
+            console.log(error);
+          });
+      }
+    }
+  };
+
+  const handleSave = (row: any) => {
+    const postData = { products: [].concat({ ...row }) };
+    if (postData) {
+      if (postData.products[0]) {
+        Http.put({
+          url: `/api/v2/products`,
+          body: {
+            ...postData,
+          },
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            setSearchString('');
+            setSearchButtonPressed(true);
+            // setDialogOpen(false);
+            // setProductPosted(true);
+          })
+          .catch((error: any) => {
+            // handleSaveError(error);
+          });
+      } else {
+        Http.post({
+          url: `/api/v2/products`,
+          body: {
+            ...postData,
+          },
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            console.log(response, 'response');
+            // setProductPosted(true);
+          })
+          .catch((error: any) => {
+            // handleSaveError(error);
+          });
+      }
+    }
+  };
+
+  const handleChangeProductSoftware = (row: any) => {
+    if (row) {
+      console.log(softwareIndex, 'softwareIndex');
+      console.log(userParamState, 'userParamState');
+      if (userParamState) {
+        row.software = userParamState;
+        row.softwareType = 'url';
+        handleSave(row);
+      } else if (fileName) {
+        row.software = fileName;
+        row.softwareType = fileContentType;
+        handleSave(row);
+        setTimeout(() => {
+          setUserParamState('');
+          closeDialog();
+        }, 2000);
+      }
+    }
+    setTimeout(() => {
+      setUserParamState('');
+      closeDialog();
+    }, 2000);
+  };
+
+  const getUploadPreSignedUrl = (event: any) => {
+    event.preventDefault();
+    console.log(event.target.files[0], 'file');
+    setFileSelected(event.target.files[0]);
+    setFileName(event.target.files[0].name);
+    setFileContentType(event.target.files[0].type);
+  };
+
+  const uploadPreSignedUrlSoftware = () => {
+    setNotify({
+      isOpen: true,
+      message: 'Uploading...',
+      type: 'info',
+    });
+    Http.post({
+      url: `/api/v2/file/medium`,
+      state: stateVariable,
+      body: {
+        fileName: fileName,
+        fileType: fileContentType,
+      },
+    })
+      .then((response: any) => {
+        console.log(response, 'reponse');
+        console.log(response.filePath, 'preSigned Url');
+        console.log(fileSelected, 'file');
+        fetch(response.filePath, {
+          method: 'PUT',
+          body: fileSelected,
+        })
+          .then((response) => {
+            console.log(response);
+            setNotify({
+              isOpen: true,
+              message: `The ${fileName} has been uploaded successfully.`,
+              type: 'info',
+            });
+            setFileName('');
+            handleChangeProductSoftware(softwareIndex);
+            // response.json();
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      })
+      .catch((error: any) => {
+        console.log(error);
+      });
+  };
+
+  const handleGeneralApiKeyButton = (row: any, index: any) => {
+    console.log(row);
+    if (row) {
+      let productId: any = row.id;
+      Http.post({
+        url: `/api/v2/productApiKey/`,
+        state: stateVariable,
+        body: {
+          productId,
+        },
+      })
+        .then((response: any) => {
+          console.log('app key', response);
+          if (row) {
+            row.apiKey = response.data.value;
+            row.apiId = response.data.id;
+            console.log(row, 'values');
+            handleSave(row);
+            closeDialog();
+            setNotify({
+              isOpen: false,
+              message: 'Uploading...',
+              type: 'info',
+            });
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  const deleteApiKey = (row: any, index: number) => {
+    console.log(row);
+    if (row) {
+      setNotify({
+        isOpen: true,
+        message: 'Deleting... ',
+        type: 'info',
+      });
+
+      Http.deleteReq({
+        url: `/api/v2/productApiKey/${row.apiId}`,
+        state: stateVariable,
+      })
+        .then((response: any) => {
+          console.log(response);
+          setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
+          setFailure(true);
+
+          if (row) {
+            /* tslint:disable-next-line */
+            row.apiKey = '';
+            row.apiId = '';
+            handleSave(row);
+            closeDialog();
+            setNotify({
+              isOpen: false,
+              message: 'Deleting... ',
+              type: 'info',
+            });
+          }
+        })
+        .catch((error: any) => {
+          console.log(error);
+        });
+    }
+  };
+
+  const handleChangedValue = (event: any) => {
+    if (event.target.value) {
+      setUserParamState(event.target.value);
+
+      setSoftwareOption(true);
+    } else {
+      setSoftwareOption(false);
+    }
+
+    // handleChangeProductSoftware(event, softwareIndex);
+    console.log(userParamState, 'userparamstate');
   };
 
   const handleClose = () => {
@@ -414,7 +574,9 @@ const ManageProducts = (props: any) => {
             variant='outlined'
             disabled={softwareOption}
             className={classes.button}
-            onClick={uploadPreSignedUrlSoftware}
+            onClick={() => {
+              uploadPreSignedUrlSoftware();
+            }}
           >
             Upload
           </Button>
@@ -426,7 +588,9 @@ const ManageProducts = (props: any) => {
           <Button
             component='span'
             variant='outlined'
-            onClick={handleChangeProductSoftware}
+            onClick={() => {
+              handleChangeProductSoftware(softwareIndex);
+            }}
             disabled={!softwareOption}
           >
             ok
@@ -476,9 +640,9 @@ const ManageProducts = (props: any) => {
     );
   };
 
-  const handleUploadButton = (index: any) => {
+  const handleUploadButton = (row: any) => {
     setDialogOpen(true);
-    setSoftwareIndex(index);
+    setSoftwareIndex(row);
   };
 
   const renderProductsTable = () => {
@@ -544,7 +708,7 @@ const ManageProducts = (props: any) => {
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='api key' />
+                      <Text tid='Api key' />
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
@@ -616,7 +780,7 @@ const ManageProducts = (props: any) => {
                             <Typography style={{ padding: '0 6px' }}>
                               <ClearIcon
                                 onClick={() => {
-                                  deleteSoftware(index);
+                                  deleteSoftware(row);
                                 }}
                               />
                             </Typography>
@@ -624,7 +788,7 @@ const ManageProducts = (props: any) => {
                         ) : (
                           <button
                             // onClick={handleUploadButton(index)}
-                            onClick={() => handleUploadButton(index)}
+                            onClick={() => handleUploadButton(row)}
                           >
                             <Typography>Upload</Typography>
                           </button>
@@ -780,5 +944,4 @@ const ManageProducts = (props: any) => {
     </Fragment>
   );
 };
-
 export default withRouter(ManageProducts);
