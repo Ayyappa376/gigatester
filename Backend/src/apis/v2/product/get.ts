@@ -1,6 +1,7 @@
 import { API, Handler } from '@apis/index';
-import { ProductInfo } from '@models/index';
-import { appLogger, getProductDetails,getProductsList, responseBuilder } from '@utils/index';
+import { ProductInfo, ConfigItem } from '@models/index';
+import { config } from '@root/config';
+import { appLogger, getProductDetails,getProductsList,getCreateProductConfig, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface GetProducts {
@@ -31,14 +32,25 @@ async function handler(request: GetProducts, response: Response) {
   }
   //returns the platforms details and config details of a platform if the platform id is sent - edit platform
   //returns the config details of a platform if the platform id sent as 0 - create platform
-  //returns the list of all platforms, if the platform id is not sent - list platforms
+  //returns the list of all products, if the product id is not sent - list products
   let result: any;
   if (params.id) {
+    if(params.id === '0') {
+      const productConfig: ConfigItem = await getCreateProductConfig(config.defaults.orgId);
+      appLogger.info({ getCreateProductConfig: productConfig });
+      result = {
+        productConfig: productConfig.config,
+      };
+    } else {
       const productDetails: ProductInfo = await getProductDetails(params.id,params.version);
       appLogger.info({ getProductDetails: productDetails });
+      const productConfig: ConfigItem = await getCreateProductConfig(config.defaults.orgId);
+      appLogger.info({ getCreateProductConfig: productConfig });
       result = {
-        product: [productDetails],
+        productConfig: productConfig.config,
+        products: [productDetails],
       };
+    };
     }
    else {
     const productDetailsList: ProductInfo[] = await getProductsList();
@@ -46,7 +58,7 @@ async function handler(request: GetProducts, response: Response) {
     result = {
       products: productDetailsList,
     };
-    console.log(result, "resulllllllllllt")
+    console.log(result, "result")
   }
   return responseBuilder.ok(result, response);
 }
@@ -54,5 +66,5 @@ async function handler(request: GetProducts, response: Response) {
 export const api: API = {
   handler: <Handler>(<unknown>handler),
   method: 'get',
-  route: '/api/v2/products/:id?/version/:version?',
+  route: '/api/v2/products/:id?/:version?',
 };

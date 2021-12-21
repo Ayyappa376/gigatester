@@ -1,9 +1,10 @@
 //import { config } from '@root/config';
-import { CampaignInfo, ConfigItem, STATUS_CAMPAIGN_DRAFT } from '@models/index';
+import { CampaignInfo, ConfigItem, ProductInfo, STATUS_CAMPAIGN_DRAFT } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, fetchAdmins, fetchManagers,  getCampaignConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
+import { getProductsList } from '.';
 //import { getUserDocumentFromEmail } from './getUserDocument';
 import { deleteItem, get, put, scan, update } from './sdk';
 
@@ -111,9 +112,15 @@ export const getCreateCampaignConfig = async (
   const managers = await fetchManagers();
   const admins = await fetchAdmins();
   const key = 'managers';
+  const products: ProductInfo[]= await getProductsList();
+  const product_key = 'products';
   campaignConfig.config[key].options = {};
+  campaignConfig.config[product_key].options = {};
   managers.forEach((val: string) => campaignConfig.config[key].options[val] = val);
   admins.forEach((val: string) => campaignConfig.config[key].options[val] = val);
+  products.forEach((val: ProductInfo) => campaignConfig.config[product_key].options[val.id] = val.name);
+
+
   return campaignConfig;
 };
 

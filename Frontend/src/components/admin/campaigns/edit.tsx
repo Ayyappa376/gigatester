@@ -214,7 +214,7 @@ const EditCampaign = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        console.log(response.campaigns[0].products[0]);
+        console.log(response);
         fixMultiSelectValuesAndSave(response);
         console.log(response);
       })
@@ -282,56 +282,35 @@ const EditCampaign = (props: any) => {
   const handleSave = () => {
     const postData = campaignState;
     if (postData && postData.campaigns) {
-      const productData = postData.campaigns[0].products[0];
-      console.log(productData, 'productData');
-      Http.post({
-        url: `/api/v2/products`,
-        body: {
-          products: productData,
-        },
-        state: stateVariable,
-      })
-        .then((response: any) => {
-          console.log(response.productId);
-          if (postData) {
-            if (postData.campaigns) {
-              postData.campaigns[0].products[0] = response.productId;
-              // setCampaignPosted(true);
-              if (postData.campaigns[0].id) {
-                Http.put({
-                  url: `/api/v2/campaigns`,
-                  body: {
-                    ...postData,
-                  },
-                  state: stateVariable,
-                })
-                  .then((response: any) => {
-                    setCampaignPosted(true);
-                  })
-                  .catch((error: any) => {
-                    handleSaveError(error);
-                  });
-              } else {
-                Http.post({
-                  url: `/api/v2/campaigns`,
-                  body: {
-                    ...postData,
-                  },
-                  state: stateVariable,
-                })
-                  .then((response: any) => {
-                    setCampaignPosted(true);
-                  })
-                  .catch((error: any) => {
-                    handleSaveError(error);
-                  });
-              }
-            }
-          }
+      if (postData.campaigns[0].id) {
+        Http.put({
+          url: `/api/v2/campaigns`,
+          body: {
+            ...postData,
+          },
+          state: stateVariable,
         })
-        .catch((error: any) => {
-          handleSaveError(error);
-        });
+          .then((response: any) => {
+            setCampaignPosted(true);
+          })
+          .catch((error: any) => {
+            handleSaveError(error);
+          });
+      } else {
+        Http.post({
+          url: `/api/v2/campaigns`,
+          body: {
+            ...postData,
+          },
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            setCampaignPosted(true);
+          })
+          .catch((error: any) => {
+            handleSaveError(error);
+          });
+      }
     }
   };
 
@@ -1502,10 +1481,10 @@ const EditCampaign = (props: any) => {
             );
           })}
         </Grid>
-        <Grid container spacing={3} className={classes.grid}>
+        {/* <Grid container spacing={3} className={classes.grid}>
           {campaignState!.campaigns &&
             renderProductsTable(campaignState!.campaigns[0])}
-        </Grid>
+        </Grid> */}
         <div className='bottomButtonsContainer'>
           <Button
             className={classes.button}

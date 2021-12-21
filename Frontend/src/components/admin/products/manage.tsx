@@ -18,8 +18,15 @@ import {
   Snackbar,
   SnackbarContent,
   Tooltip,
+  TextField,
+  Link,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  CssBaseline,
 } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
+import Notification from '../../../common/notification';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
@@ -34,7 +41,7 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IProductInfo } from '../../../model';
+import { IProductInfo, IProductParams } from '../../../model';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -53,6 +60,17 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
   },
+  dialogPaper: {
+    minHeight: '80vh',
+    maxHeight: '80vh',
+  },
+  button: {
+    marginTop: '36px',
+    position: 'relative',
+    minWidth: '10%',
+    marginRight: '20px',
+    ...buttonStyle,
+  },
 }));
 
 const ManageProducts = (props: any) => {
@@ -65,11 +83,19 @@ const ManageProducts = (props: any) => {
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [deleteProductId, setDeleteProductId] = useState('');
+  const [deleteProductVersion, setDeleteProductVersion] = useState('');
   const [searchString, setSearchString] = useState('');
   const [products, setProducts] = useState<IProductInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [softwareIndex, setSoftwareIndex] = useState(-1);
+  const [userParamState, setUserParamState] = React.useState<any>('');
+  const [softwareOption, setSoftwareOption] = useState(false);
+  const [fileContentType, setFileContentType] = useState('');
+  const [fileSelected, setFileSelected] = useState('');
+  const [fileName, setFileName] = useState('');
   const [numberOfProducts, setNumberOfProducts] = useState(0);
   const [itemLimit, setItemLimit] = useState({
     lowerLimit: 0,
@@ -77,6 +103,11 @@ const ManageProducts = (props: any) => {
   });
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
@@ -86,7 +117,7 @@ const ManageProducts = (props: any) => {
   const fetchProductList = () => {
     setBackdropOpen(true);
     Http.get({
-      url: `/api/v2/products/prod_b888c0d1-4bd5-11ec-a922-276699a9200b/version/0`,
+      url: `/api/v2/products/`,
       state: stateVariable,
     })
       .then((response: any) => {
@@ -204,8 +235,9 @@ const ManageProducts = (props: any) => {
     setCurrentPage(event);
   };
 
-  const deleteClicked = (productId: string) => {
+  const deleteClicked = (productId: string, version: string) => {
     setDeleteProductId(productId);
+    setDeleteProductVersion(version);
     setOpenModal(true);
   };
 
@@ -215,20 +247,109 @@ const ManageProducts = (props: any) => {
 
   const modalYesClicked = () => {
     if (deleteProductId !== '') {
-      deleteProduct(deleteProductId);
+      deleteProduct(deleteProductId, deleteProductVersion);
       setOpenModal(false);
     }
   };
 
-  const deleteProduct = (productId: string) => {
+  const closeDialog = () => {
+    setDialogOpen(false);
+    setSoftwareOption(false);
+  };
+
+  const getUploadPreSignedUrl = (event: any) => {
+    event.preventDefault();
+    console.log(event.target.files[0], 'file');
+    setFileSelected(event.target.files[0]);
+    setFileName(event.target.files[0].name);
+    setFileContentType(event.target.files[0].type);
+  };
+
+  const handleGeneralApiKeyButton = (row: any, index: any) => {
+    console.log(row);
+    if (row) {
+      const temp: IProductInfo = { ...row };
+      let values: IProductInfo | undefined = temp;
+      let productId: any = values.id;
+      Http.post({
+        url: `/api/v2/productApiKey/`,
+        state: stateVariable,
+        body: {
+          productId,
+        },
+      })
+        .then((response: any) => {
+          console.log('app key', response);
+          if (values) {
+            values.apiKey = response.data.value;
+            values.apiId = response.data.id;
+            console.log(values, 'values');
+          }
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    }
+  };
+
+  const deleteApiKey = (row: any, index: number) => {
+    console.log(row);
+    if (row) {
+      const temp: IProductParams = { ...row };
+      let values: IProductInfo[] | undefined = temp.products;
+
+      if (values) {
+        setNotify({
+          isOpen: true,
+          message: 'Deleting... ',
+          type: 'info',
+        });
+
+        Http.deleteReq({
+          url: `/api/v2/productApiKey/${values[0].products[index].apiId}`,
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            console.log(response);
+            setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
+            setFailure(true);
+
+            if (values) {
+              /* tslint:disable-next-line */
+              values[0].products[index].apiKey = '';
+              values[0].products[index].apiId = '';
+            }
+          })
+          .catch((error: any) => {
+            console.log(error);
+          });
+      }
+    }
+  };
+
+  const handleChangedValue = (event: any) => {
+    if (event.target.value) {
+      setUserParamState(event.target.value);
+
+      setSoftwareOption(true);
+    } else {
+      setSoftwareOption(false);
+    }
+
+    // handleChangeProductSoftware(event, softwareIndex);
+    console.log(userParamState, 'userparamstate');
+  };
+
+  const deleteProduct = (productId: string, version: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/products/${productId}`,
+      url: `/api/v2/products/${productId}/${version}`,
       state: stateVariable,
     })
       .then((response: any) => {
         setBackdropOpen(false);
         setDeleteProductId('');
+        setDeleteProductVersion('');
         fetchProductList();
       })
       .catch((error) => {
@@ -249,6 +370,115 @@ const ManageProducts = (props: any) => {
 
   const handleClose = () => {
     setFailure(false);
+  };
+
+  const uploadForm = () => {
+    return (
+      <React.Fragment>
+        <Grid container spacing={1}>
+          <Grid item xs={12} sm={12}>
+            <TextField
+              id='uploadFile'
+              name='uploadFile'
+              label='External File URL'
+              fullWidth
+              onChange={(event) => handleChangedValue(event)}
+            />
+          </Grid>
+          <Grid item xs={12} sm={12} />
+          <br />
+          <Grid item xs={6} sm={6} />
+          <Typography style={{ fontSize: '16px' }}> OR</Typography>
+          <Grid item xs={12} sm={12} />
+          <br />
+          <Grid item xs={3} sm={3} />
+          <input
+            style={{ display: 'none' }}
+            id='upload-software-file'
+            multiple
+            type='file'
+            onChange={(e) => getUploadPreSignedUrl(e)}
+          />
+          <Link style={{ fontSize: '14px' }}>
+            <label
+              htmlFor='upload-software-file'
+              style={{ fontSize: '14px', color: '#0645AD' }}
+            >
+              {fileName ? fileName : 'Click here to upload local software'}
+            </label>
+          </Link>
+          <Grid item xs={4} sm={4} />
+          <Grid item xs={4} sm={4} />
+          <Button
+            component='span'
+            variant='outlined'
+            disabled={softwareOption}
+            className={classes.button}
+            onClick={uploadPreSignedUrlSoftware}
+          >
+            Upload
+          </Button>
+          <Grid item xs={12} sm={12} />
+          <br />
+          <br />
+          <Grid item xs={12} sm={12} />
+          <Grid item xs={3} sm={3} />
+          <Button
+            component='span'
+            variant='outlined'
+            onClick={handleChangeProductSoftware}
+            disabled={!softwareOption}
+          >
+            ok
+          </Button>
+          <Grid item xs={2} sm={2} />
+          <Button
+            component='span'
+            variant='outlined'
+            onClick={() => {
+              setDialogOpen(false);
+            }}
+          >
+            Cancel
+          </Button>
+          <Grid item xs={4} sm={4} />
+        </Grid>
+      </React.Fragment>
+    );
+  };
+
+  const handleDialogUpload = () => {
+    return (
+      <React.Fragment>
+        <Dialog
+          className={classes.dialogPaper}
+          open={dialogOpen}
+          aria-labelledby='form-dialog-title'
+          onClose={closeDialog}
+          fullWidth={true}
+        >
+          <DialogTitle
+            id='form-dialog-title'
+            style={{ textAlign: 'center', padding: '30px 0px' }}
+          >
+            <Typography style={{ fontSize: '14px' }}>
+              <Text tid={'Upload Software'} />
+            </Typography>
+          </DialogTitle>
+          <DialogContent style={{ marginBottom: '20px' }}>
+            <CssBaseline />
+            {uploadForm()}
+            {/* {verifyEmail ? signUpAcknowledgement() : signUpForm()} */}
+          </DialogContent>
+        </Dialog>
+        <Notification notify={notify} setNotify={setNotify} />
+      </React.Fragment>
+    );
+  };
+
+  const handleUploadButton = (index: any) => {
+    setDialogOpen(true);
+    setSoftwareIndex(index);
   };
 
   const renderProductsTable = () => {
@@ -309,6 +539,16 @@ const ManageProducts = (props: any) => {
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
+                      <Text tid='software' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='api key' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
                       <Text tid='actions' />
                     </Typography>
                   </TableCell>
@@ -349,6 +589,86 @@ const ManageProducts = (props: any) => {
                           {row.version}
                         </Typography>
                       </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        {/* {product.software ? product.software : ""} */}
+                        {row.software ? (
+                          <>
+                            <Link href={row.software}>
+                              <TextField
+                                required={true}
+                                type='string'
+                                id={`productSoftware_${index}`}
+                                name={`productSoftware_${index}`}
+                                value={row.software ? row.software : ''}
+                                // onChange={(event) =>
+                                //   handleChangeProductName(event, index)
+                                // }
+                                fullWidth
+                                autoComplete='off'
+                                className='textFieldStyle'
+                              />
+                            </Link>
+                            <Typography style={{ padding: '0 6px' }}>
+                              <ClearIcon
+                                onClick={() => {
+                                  deleteSoftware(index);
+                                }}
+                              />
+                            </Typography>
+                          </>
+                        ) : (
+                          <button
+                            // onClick={handleUploadButton(index)}
+                            onClick={() => handleUploadButton(index)}
+                          >
+                            <Typography>Upload</Typography>
+                          </button>
+                        )}
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <Typography className='tableBodyText'>
+                          {/* {product.testers ? product.testers : 'testers'} */}
+                          {row.apiKey ? (
+                            <>
+                              <TextField
+                                required={true}
+                                type='string'
+                                id={`productApiKey_${index}`}
+                                name={`productApiKey_${index}`}
+                                value={row.apiKey ? row.apiKey : ''}
+                                fullWidth
+                                autoComplete='off'
+                                className='textFieldStyle'
+                              />
+                              <Typography style={{ padding: '0 6px' }}>
+                                <ClearIcon
+                                  onClick={() => {
+                                    deleteApiKey(row, index);
+                                  }}
+                                />
+                              </Typography>
+                            </>
+                          ) : (
+                            <button
+                              onClick={() =>
+                                handleGeneralApiKeyButton(row, index)
+                              }
+                            >
+                              <Typography>Generate Api Key</Typography>
+                            </button>
+                          )}
+                        </Typography>
+                      </TableCell>
                       <TableCell align='center' className='tableCell'>
                         <div className={classes.actionsBlock}>
                           <MuiThemeProvider theme={tooltipTheme}>
@@ -368,7 +688,7 @@ const ManageProducts = (props: any) => {
                                 <EditIcon
                                   onClick={() => {
                                     console.log(row.id, 'row.id');
-                                    props.editClicked(row.id);
+                                    props.editClicked(row.id, row.version);
                                   }}
                                 />
                               </Typography>
@@ -390,7 +710,7 @@ const ManageProducts = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 <ClearIcon
                                   onClick={() => {
-                                    deleteClicked(row.id);
+                                    deleteClicked(row.id, row.version);
                                   }}
                                 />
                               </Typography>
@@ -448,7 +768,9 @@ const ManageProducts = (props: any) => {
 
   return (
     <Fragment>
-      {fetchProducts ? (
+      {dialogOpen ? (
+        handleDialogUpload()
+      ) : fetchProducts ? (
         renderProductsTable()
       ) : (
         <Container className='loaderStyle'>

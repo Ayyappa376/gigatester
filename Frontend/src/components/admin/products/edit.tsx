@@ -17,6 +17,7 @@ import {
   SnackbarContent,
   Tooltip,
 } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
@@ -82,6 +83,11 @@ const EditProduct = (props: any) => {
   const [productPosted, setProductPosted] = useState(false);
   const [failure, setFailure] = useState(false);
   const [productDataFetched, setProductDataFetched] = useState(false);
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
@@ -92,14 +98,15 @@ const EditProduct = (props: any) => {
     IProductParams | undefined
   >();
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='deviceDetailsSavedSuccessfully' />;
+  let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
   console.log(props, 'props');
   useEffect(() => {
     Http.get({
-      url: `/api/v2/products/prod_b888c0d1-4bd5-11ec-a922-276699a9200b/version/0`,
+      url: `/api/v2/products/${props.productId}/${props.version}`,
       state: stateVariable,
     })
       .then((response: any) => {
+        console.log(response, 'multifix');
         fixMultiSelectValuesAndSave(response);
       })
       .catch((error: any) => {
@@ -116,6 +123,7 @@ const EditProduct = (props: any) => {
 
   const handleSave = () => {
     const postData = productState;
+    console.log(postData, 'postData');
     if (postData && postData.products) {
       if (postData.products[0].id) {
         Http.put({
@@ -140,6 +148,7 @@ const EditProduct = (props: any) => {
           state: stateVariable,
         })
           .then((response: any) => {
+            console.log(response, 'response');
             setProductPosted(true);
           })
           .catch((error: any) => {
@@ -159,6 +168,70 @@ const EditProduct = (props: any) => {
     } else {
       setFailureMessage(<Text tid='somethingWentWrong' />);
       setFailure(true);
+    }
+  };
+
+  const handleGeneralApiKeyButton = () => {
+    if (productState) {
+      const temp: IProductParams = { ...productState };
+      let values: IProductInfo[] | undefined = temp.products;
+      if (values) {
+        let productId: any = values[0].products[0].id;
+        Http.post({
+          url: `/api/v2/productApiKey/`,
+          state: stateVariable,
+          body: {
+            productId,
+          },
+        })
+          .then((response: any) => {
+            console.log('app key', response);
+            if (values) {
+              values[0].products[0].apiKey = response.data.value;
+              values[0].products[0].apiId = response.data.id;
+              console.log(values, 'values');
+              setProductState(temp);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
+    }
+  };
+
+  const deleteApiKey = () => {
+    console.log(productState);
+    if (productState) {
+      const temp: IProductParams = { ...productState };
+      let values: IProductInfo[] | undefined = temp.products;
+
+      if (values) {
+        setNotify({
+          isOpen: true,
+          message: 'Deleting... ',
+          type: 'info',
+        });
+
+        Http.deleteReq({
+          url: `/api/v2/productApiKey/${values[0].products[0].apiId}`,
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            console.log(response);
+            setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
+            setFailure(true);
+
+            if (values) {
+              /* tslint:disable-next-line */
+              values[0].products[0].apiKey = '';
+              values[0].products[0].apiId = '';
+            }
+          })
+          .catch((error: any) => {
+            console.log(error);
+          });
+      }
     }
   };
 
@@ -207,6 +280,7 @@ const EditProduct = (props: any) => {
 
   function mandatoryFieldsCheck(): boolean {
     let check: boolean = true;
+    console.log(productState, 'productState');
     // tslint:disable-next-line: ter-arrow-parens
     if (!productState) {
       return false;
@@ -236,7 +310,7 @@ const EditProduct = (props: any) => {
     if (productState) {
       const temp: IProductParams | null | undefined = { ...productState };
       let values: any = temp.products;
-
+      console.log(values, 'values');
       if (values) {
         values[0][key] = event.target.value;
         setProductState(temp);
@@ -290,7 +364,8 @@ const EditProduct = (props: any) => {
     if (productState) {
       const temp: IProductParams | null | undefined = { ...productState };
       let values: any = temp.products;
-
+      console.log(values, 'values');
+      console.log(event.target, 'event');
       if (values) {
         let valueArray = values[0][key] || [];
         valueArray = [...event.target.value];
@@ -311,6 +386,7 @@ const EditProduct = (props: any) => {
   };
 
   const renderChips = (selected: any) => {
+    console.log(selected, 'selected');
     return (
       <div className={classes.chips}>
         {(selected as string[]).map((value) => {
@@ -471,56 +547,34 @@ const EditProduct = (props: any) => {
         );
       case 'list-no-others':
         return (
-          <FormControl className={classes.formControl}>
-            <InputLabel id={`label_${key}`} required={attrConfig.mandatory}>
-              {attrConfig.displayName}
-            </InputLabel>
-            <Select
-              name={`select_${key}`}
-              value={
-                values
-                  ? values[key]
-                    ? attrConfig.options
-                      ? attrConfig.options.custom
-                        ? attrConfig.options.custom
-                            .split(',')
-                            .includes(values[key])
-                          ? values[key]
-                          : ''
-                        : attrConfig.options.customFixed
-                        ? attrConfig.options.customFixed
-                            .split(',')
-                            .includes(values[key])
-                          ? values[key]
-                          : ''
-                        : ''
-                      : ''
-                    : ''
-                  : ''
-              }
-              onChange={(event) => handleChangeValue(event, key)}
-            >
-              {attrConfig.options && attrConfig.options.custom ? (
-                attrConfig.options.custom.split(',').map((opt: string) => {
-                  return (
-                    <MenuItem key={opt} value={opt}>
-                      {opt}
-                    </MenuItem>
-                  );
-                })
-              ) : attrConfig.options && attrConfig.options.customFixed ? (
-                attrConfig.options.customFixed.split(',').map((opt: string) => {
-                  return (
-                    <MenuItem key={opt} value={opt}>
-                      {opt}
-                    </MenuItem>
-                  );
-                })
-              ) : (
-                <div />
-              )}
-            </Select>
-          </FormControl>
+          <Fragment>
+            <FormControl className={classes.formControl}>
+              <InputLabel id={`label_${key}`} required={attrConfig.mandatory}>
+                {attrConfig.displayName}
+              </InputLabel>
+              <Select
+                id={`select_${key}`}
+                name={`select${key}`}
+                value={values[key] ? values[key] : ''}
+                onChange={(event) => handleChangeValue(event, key)}
+                // input={<Input id='demo-simple-select' />}
+                // renderValue={renderChips}
+                MenuProps={MenuProps}
+              >
+                {attrConfig.options ? (
+                  Object.keys(attrConfig.options).map((opt: string) => {
+                    return (
+                      <MenuItem key={opt} value={opt}>
+                        {attrConfig.options[opt]}
+                      </MenuItem>
+                    );
+                  })
+                ) : (
+                  <div />
+                )}
+              </Select>
+            </FormControl>
+          </Fragment>
         );
       case 'multi-list':
         return (
@@ -569,6 +623,45 @@ const EditProduct = (props: any) => {
     setFailure(false);
   };
 
+  const renderProductsTable = (product: IProductInfo) => {
+    if (product[0]) {
+      return (
+        <Fragment>
+          {product.name}
+          <TextField
+            required={true}
+            type='string'
+            id={`productApiKey`}
+            name={`productApiKey`}
+            value={product.apiKey ? product.apiKey : ''}
+            fullWidth
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+          <Typography style={{ padding: '0 6px' }}>
+            <ClearIcon
+              onClick={() => {
+                deleteApiKey();
+              }}
+            />
+          </Typography>
+          Product
+        </Fragment>
+      );
+    } else {
+      return (
+        <Fragment>
+          Product
+          <Typography className='tableBodyText'>
+            <button onClick={() => handleGeneralApiKeyButton()}>
+              <Typography>Generate Api Key</Typography>
+            </button>
+          </Typography>
+        </Fragment>
+      );
+    }
+  };
+
   const renderFormData = () => {
     if (productPosted) {
       return (
@@ -605,6 +698,10 @@ const EditProduct = (props: any) => {
             );
           })}
         </Grid>
+        {/* <Grid container spacing={3} className={classes.grid}>
+          {productState!.products &&
+            renderProductsTable(productState!.products[0])}
+        </Grid> */}
         <div className='bottomButtonsContainer'>
           <Button
             className={classes.button}

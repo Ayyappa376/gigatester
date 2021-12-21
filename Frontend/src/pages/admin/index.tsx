@@ -236,6 +236,7 @@ export default function Admin() {
   const [focusPlatformId, setFocusPlatformId] = useState('');
   const [focusDeviceId, setFocusDeviceId] = useState('');
   const [focusProductId, setFocusProductId] = useState('');
+  const [focusVersion, setFocusVersion] = useState('');
   const [focusQuestionData, setFocusQuestionData] =
     useState<IQuestionDetails>();
   const [focusUserName, setFocusUserName] = useState('');
@@ -359,9 +360,10 @@ export default function Admin() {
     setTitle('manageProducts');
   };
 
-  const editProductClickHandler = (productId: string) => {
+  const editProductClickHandler = (productId: string, version: string) => {
     setButtonValue(EDIT_PRODUCT);
     setFocusProductId(productId);
+    setFocusVersion(version);
     setTitle('editProduct');
   };
 
@@ -555,7 +557,13 @@ export default function Admin() {
           />
         );
       case EDIT_PRODUCT:
-        return <EditProduct productId={focusProductId} goBack={switchPage} />;
+        return (
+          <EditProduct
+            productId={focusProductId}
+            version={focusVersion}
+            goBack={switchPage}
+          />
+        );
       case CREATE_QUESTIONNAIRE:
         return (
           <CreateQuestionnaire

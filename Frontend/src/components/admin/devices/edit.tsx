@@ -118,6 +118,7 @@ const EditDevice = (props: any) => {
 
   const handleSave = () => {
     const postData = deviceState;
+    console.log(postData, 'postData');
     if (postData && postData.devices) {
       if (postData.devices[0].id) {
         Http.put({
@@ -238,7 +239,7 @@ const EditDevice = (props: any) => {
     if (deviceState) {
       const temp: IDeviceParams | null | undefined = { ...deviceState };
       let values: any = temp.devices;
-
+      console.log(values);
       if (values) {
         values[0][key] = event.target.value;
         setDeviceState(temp);
@@ -594,6 +595,7 @@ const EditDevice = (props: any) => {
     return (
       <Fragment>
         <Grid container spacing={3} className={classes.grid}>
+          {console.log(deviceState)}
           {Object.keys(deviceState!.deviceConfig).map((el) => {
             return (
               <Grid key={el} item xs={12}>

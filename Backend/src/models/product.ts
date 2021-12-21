@@ -1,7 +1,7 @@
 export interface ProductInfo {
     devices?: string[];
     id: string;
-    description?: string; //description
+    description?: string;
     name: string;
     platforms: string[];
     software?: string;
