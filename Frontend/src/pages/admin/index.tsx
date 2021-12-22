@@ -36,6 +36,7 @@ import AssignmentOutlinedIcon from "@material-ui/icons/AssignmentOutlined";
 import BallotIcon from "@material-ui/icons/Ballot";
 import BallotOutlinedIcon from "@material-ui/icons/BallotOutlined";
 import FeedbackIcon from "@material-ui/icons/Feedback";
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import SettingsIcon from "@material-ui/icons/Settings";
 import {
   useActions,
@@ -72,6 +73,7 @@ import EditSettingsGeneralConfig from "../../components/admin/manage-settings/co
 import EditSettingsCollectorConfig from "../../components/admin/manage-settings/configure-collector";
 import { Text } from "../../common/Language";
 import "./style.css";
+import FeedbackComments from "../../components/admin/feedbackComments";
 
 export const ADMIN_HOME = "admin-home";
 export const DASHBOARD = "dashboard";
@@ -102,6 +104,7 @@ export const EDIT_SETTINGS_TEAM_CONFIG = "TeamConfig";
 export const EDIT_SETTINGS_SERVICE_CONFIG = "ServiceConfig";
 export const EDIT_SETTINGS_GENERAL_CONFIG = "GeneralConfig";
 export const EDIT_SETTINGS_COLLECTOR_CONFIG = "CollectorConfig";
+export const FEEDBACK_COMMENTS = "FeedbackComments";
 const drawerWidth = 220;
 
 const useStyles = makeStyles((theme) => ({
@@ -403,6 +406,11 @@ export default function Admin() {
     setTitle("editSettings");
   };
 
+  const feedbackCommentsClickHandler = () => {
+    setButtonValue(FEEDBACK_COMMENTS);
+    setTitle("feedbackComments");
+  };
+
   // const handleDrawerClose = () => {
   //   setOpen(false);
   // };
@@ -576,6 +584,8 @@ export default function Admin() {
         );
       case FEEDBACK:
         return <AdminFeedback goBack={switchToAdminHome} />;
+      case FEEDBACK_COMMENTS:
+        return <FeedbackComments goBack={switchToAdminHome} />;
       case MANAGE_SETTINGS:
         return (
           <ManageSettings
@@ -874,6 +884,26 @@ export default function Admin() {
               </ListItemIcon>
             </Tooltip>
             <ListItemText primary={<Text tid="viewFeedback" />} />
+          </ListItem>
+        </List>
+        <Divider />
+        <List disablePadding={true}>
+          <ListItem
+            button
+            onClick={feedbackCommentsClickHandler}
+            disabled={false}
+          >
+            <Tooltip
+              title={<Typography>{<Text tid="viewFeedbackComments" />}</Typography>}
+              disableHoverListener={open ? true : false}
+              placement="right"
+              arrow={true}
+            >
+              <ListItemIcon className={classes.iconWidth}>
+                <AssignmentLateIcon />
+              </ListItemIcon>
+            </Tooltip>
+            <ListItemText primary={<Text tid="viewFeedbackComments" />} />
           </ListItem>
         </List>
         <Divider />
