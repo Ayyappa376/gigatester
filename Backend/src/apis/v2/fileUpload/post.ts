@@ -34,7 +34,7 @@ async function handler(request: UploadSoftware, response: Response) {
         case 'medium' : {
             try {
                 const url = await s3.getSignedUrlPromise('putObject', {
-                    Bucket: 'dev-gigatester-manage-software',
+                    Bucket: getSoftwaresBucketName(),
                     ContentType: body.fileType,
                     Expires: 60,
                     Key: body.fileName,

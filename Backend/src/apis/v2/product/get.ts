@@ -29,8 +29,8 @@ async function handler(request: GetProducts, response: Response) {
     appLogger.error(err, 'Unauthorized');
     return responseBuilder.unauthorized(err, response);
   }
-  //returns the platforms details and config details of a platform if the platform id is sent - edit platform
-  //returns the config details of a platform if the platform id sent as 0 - create platform
+  //returns the products details and config details of a product if the product id is sent - edit product
+  //returns the config details of a product if the product id sent as 0 - create product
   //returns the list of all products, if the product id is not sent - list products
   let result: any;
   if (params.id) {

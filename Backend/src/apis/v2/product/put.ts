@@ -38,7 +38,7 @@ async function handler(request: PutProducts, response: Response) {
       return { error: e.message ? e.message : 'Invalid or Illegal inputs' };
     }
   );
-  appLogger.info({ updatePlatform: ok });
+  appLogger.info({ updateProduct: ok });
   if (ok) {
     const err = new Error(ok.error);
     appLogger.error(err, 'Bad Request');
