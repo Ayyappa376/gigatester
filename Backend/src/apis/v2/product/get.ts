@@ -1,7 +1,7 @@
 import { API, Handler } from '@apis/index';
-import { ProductInfo, ConfigItem } from '@models/index';
+import {ConfigItem, ProductInfo  } from '@models/index';
 import { config } from '@root/config';
-import { appLogger, getProductDetails,getProductsList,getCreateProductConfig, responseBuilder } from '@utils/index';
+import { appLogger, getCreateProductConfig, getProductDetails, getProductsList, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface GetProducts {
@@ -13,7 +13,7 @@ interface GetProducts {
     };
   };
   params: {
-    id: string; 
+    id: string;
     version: string;
   };
 }
@@ -24,7 +24,6 @@ async function handler(request: GetProducts, response: Response) {
   const { headers } = request;
   const { params } = request;
   const cognitoUserId = headers.user['cognito:username'];
-    console.log(params, "paramsss");
   if (!cognitoUserId) {
     const err = new Error('InvalidUser');
     appLogger.error(err, 'Unauthorized');
@@ -50,15 +49,13 @@ async function handler(request: GetProducts, response: Response) {
         productConfig: productConfig.config,
         products: [productDetails],
       };
-    };
     }
-   else {
+    } else {
     const productDetailsList: ProductInfo[] = await getProductsList();
     appLogger.info({ getProductsList: productDetailsList });
     result = {
       products: productDetailsList,
     };
-    console.log(result, "result")
   }
   return responseBuilder.ok(result, response);
 }

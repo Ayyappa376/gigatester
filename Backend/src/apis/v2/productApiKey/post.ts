@@ -24,7 +24,6 @@ async function handler(request: PostProductApiKey, response: Response) {
     appLogger.error(err, 'Only Admin can create platforms');
     return responseBuilder.forbidden(err, response);
   }
-console.log(body, "body.productApiKey");
   const apiKeyParams = {
     enabled: true,
     name: body.productId,
@@ -37,8 +36,7 @@ console.log(body, "body.productApiKey");
 
     apigateway.createApiKey(apiKeyParams, function (err: any, appKeyData: any) {
     if(err) {
-      appLogger.error({ err }, 'createApiKey');
-        console.log(err, err.stack); // an error occurred
+      appLogger.error({ err }, 'createApiKey'); // an error occurred
     } else {
         const usagePlanParams = {
         keyId: appKeyData.id, /* required */

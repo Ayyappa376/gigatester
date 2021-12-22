@@ -1,11 +1,11 @@
 export interface ProductInfo {
+    description?: string;
     devices?: string[];
     id: string;
-    description?: string;
     name: string;
     platforms: string[];
     software?: string;
-    testers?: TesterStatus[]; 
+    testers?: TesterStatus[];
     testSuite?: string;
     version: string[];
     [keyName: string]: any;

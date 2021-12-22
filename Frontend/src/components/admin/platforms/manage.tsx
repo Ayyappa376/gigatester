@@ -86,7 +86,7 @@ const ManagePlatforms = (props: any) => {
   const fetchPlatformList = () => {
     setBackdropOpen(true);
     Http.get({
-      url: `/api/v2/platforms/single`,
+      url: `/api/v2/platforms/`,
       state: stateVariable,
     })
       .then((response: any) => {

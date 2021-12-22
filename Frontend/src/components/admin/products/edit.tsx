@@ -99,14 +99,12 @@ const EditProduct = (props: any) => {
   >();
   let msgFailure = failureMessage;
   let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
-  console.log(props, 'props');
   useEffect(() => {
     Http.get({
       url: `/api/v2/products/${props.productId}/${props.version}`,
       state: stateVariable,
     })
       .then((response: any) => {
-        console.log(response, 'multifix');
         fixMultiSelectValuesAndSave(response);
       })
       .catch((error: any) => {
@@ -123,7 +121,6 @@ const EditProduct = (props: any) => {
 
   const handleSave = () => {
     const postData = productState;
-    console.log(postData, 'postData');
     if (postData && postData.products) {
       if (postData.products[0].id) {
         Http.put({
@@ -148,7 +145,6 @@ const EditProduct = (props: any) => {
           state: stateVariable,
         })
           .then((response: any) => {
-            console.log(response, 'response');
             setProductPosted(true);
           })
           .catch((error: any) => {
@@ -185,11 +181,9 @@ const EditProduct = (props: any) => {
           },
         })
           .then((response: any) => {
-            console.log('app key', response);
             if (values) {
               values[0].products[0].apiKey = response.data.value;
               values[0].products[0].apiId = response.data.id;
-              console.log(values, 'values');
               setProductState(temp);
             }
           })
@@ -201,7 +195,6 @@ const EditProduct = (props: any) => {
   };
 
   const deleteApiKey = () => {
-    console.log(productState);
     if (productState) {
       const temp: IProductParams = { ...productState };
       let values: IProductInfo[] | undefined = temp.products;
@@ -218,7 +211,6 @@ const EditProduct = (props: any) => {
           state: stateVariable,
         })
           .then((response: any) => {
-            console.log(response);
             setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
             setFailure(true);
 
@@ -280,7 +272,6 @@ const EditProduct = (props: any) => {
 
   function mandatoryFieldsCheck(): boolean {
     let check: boolean = true;
-    console.log(productState, 'productState');
     // tslint:disable-next-line: ter-arrow-parens
     if (!productState) {
       return false;
@@ -310,7 +301,6 @@ const EditProduct = (props: any) => {
     if (productState) {
       const temp: IProductParams | null | undefined = { ...productState };
       let values: any = temp.products;
-      console.log(values, 'values');
       if (values) {
         values[0][key] = event.target.value;
         setProductState(temp);
@@ -364,8 +354,6 @@ const EditProduct = (props: any) => {
     if (productState) {
       const temp: IProductParams | null | undefined = { ...productState };
       let values: any = temp.products;
-      console.log(values, 'values');
-      console.log(event.target, 'event');
       if (values) {
         let valueArray = values[0][key] || [];
         valueArray = [...event.target.value];
@@ -386,7 +374,6 @@ const EditProduct = (props: any) => {
   };
 
   const renderChips = (selected: any) => {
-    console.log(selected, 'selected');
     return (
       <div className={classes.chips}>
         {(selected as string[]).map((value) => {

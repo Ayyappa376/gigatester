@@ -19,9 +19,7 @@ interface PostProducts {
 
 async function handler(request: PostProducts, response: Response) {
   appLogger.info({ PostProducts: request }, 'Inside Handler');
-
   const { headers, body } = request;
-  console.log(body, "body");
   if (
     headers.user['cognito:groups'][0] !== 'Manager' &&
     headers.user['cognito:groups'][0] !== 'Admin'
@@ -30,10 +28,8 @@ async function handler(request: PostProducts, response: Response) {
     appLogger.error(err, 'Only Admins and Managers can create campaigns');
     return responseBuilder.forbidden(err, response);
   }
-  
-  body.products[0].id = `product_${uuidv1()}`
+  body.products[0].id = `product_${uuidv1()}`;
   const createData: ProductInfo = body.products[0];
-  console.log(createData, "createData")
   const ok: any = await createProduct(createData, headers.user.email).catch(
     (e) => {
       appLogger.error({ err: e }, 'createProduct');

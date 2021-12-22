@@ -20,7 +20,6 @@ async function handler(request: PutProducts, response: Response) {
   appLogger.info({ PutProducts: request }, 'Inside Handler');
 
   const { headers, body } = request;
-  console.log(body, "body")
   if (headers.user['cognito:groups'][0] !== 'Admin') {
     const err = new Error('Forbidden Access: Unauthorized user');
     appLogger.error(err, 'Only Admin can update products');

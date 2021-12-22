@@ -211,13 +211,17 @@ const ProductsView = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        response.campaigns.forEach((item: any, index: number) => {
-          item.products.forEach((item: any, index: number) => {
-            products.push(item);
-          });
-        });
-        setAllProducts(products);
-        setListedProducts(products);
+        // response.campaigns.forEach((item: any, index: number) => {
+        //   item.products.forEach((item: any, index: number) => {
+        //     Http.get({
+        //       url: `/api/v2/products/${item}/0`,
+        //       state: stateVariable,
+        //     });
+        //     products.push(item);
+        //   });
+        // });
+        // setAllProducts(products);
+        // setListedProducts(products);
         setProductsFetched(true);
       })
       .catch((error: any) => {

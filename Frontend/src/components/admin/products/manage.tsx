@@ -122,7 +122,6 @@ const ManageProducts = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        console.log(response, 'product response');
         response.products.sort((a: IProductInfo, b: IProductInfo) => {
           return a.name.localeCompare(b.name);
         });
@@ -132,7 +131,6 @@ const ManageProducts = (props: any) => {
         setBackdropOpen(false);
       })
       .catch((error: any) => {
-        console.log(error);
         setFetchProducts(true);
         setBackdropOpen(false);
         const perror = JSON.stringify(error);
@@ -287,7 +285,6 @@ const ManageProducts = (props: any) => {
   };
 
   const deleteSoftware = (row: any) => {
-    console.log(row, 'del row');
     if (row) {
       if (row.softwareType === 'url') {
         row.software = '';
@@ -310,15 +307,8 @@ const ManageProducts = (props: any) => {
           state: stateVariable,
         })
           .then((response: any) => {
-            console.log(response);
             setFailureMessage(<Text tid='File Deleted Successfully' />);
             setFailure(true);
-            // setNotify({
-            //   isOpen: true,
-            //   message: "File Deleted Successfully",
-            //   type: "info",
-            // });
-
             if (row.software) {
               /* tslint:disable-next-line */
               row.software = '';
@@ -362,7 +352,6 @@ const ManageProducts = (props: any) => {
           state: stateVariable,
         })
           .then((response: any) => {
-            console.log(response, 'response');
             // setProductPosted(true);
           })
           .catch((error: any) => {
@@ -374,8 +363,6 @@ const ManageProducts = (props: any) => {
 
   const handleChangeProductSoftware = (row: any) => {
     if (row) {
-      console.log(softwareIndex, 'softwareIndex');
-      console.log(userParamState, 'userParamState');
       if (userParamState) {
         row.software = userParamState;
         row.softwareType = 'url';
@@ -398,7 +385,6 @@ const ManageProducts = (props: any) => {
 
   const getUploadPreSignedUrl = (event: any) => {
     event.preventDefault();
-    console.log(event.target.files[0], 'file');
     setFileSelected(event.target.files[0]);
     setFileName(event.target.files[0].name);
     setFileContentType(event.target.files[0].type);
@@ -419,15 +405,11 @@ const ManageProducts = (props: any) => {
       },
     })
       .then((response: any) => {
-        console.log(response, 'reponse');
-        console.log(response.filePath, 'preSigned Url');
-        console.log(fileSelected, 'file');
         fetch(response.filePath, {
           method: 'PUT',
           body: fileSelected,
         })
           .then((response) => {
-            console.log(response);
             setNotify({
               isOpen: true,
               message: `The ${fileName} has been uploaded successfully.`,
@@ -447,7 +429,6 @@ const ManageProducts = (props: any) => {
   };
 
   const handleGeneralApiKeyButton = (row: any, index: any) => {
-    console.log(row);
     if (row) {
       let productId: any = row.id;
       Http.post({
@@ -458,11 +439,9 @@ const ManageProducts = (props: any) => {
         },
       })
         .then((response: any) => {
-          console.log('app key', response);
           if (row) {
             row.apiKey = response.data.value;
             row.apiId = response.data.id;
-            console.log(row, 'values');
             handleSave(row);
             closeDialog();
             setNotify({
@@ -479,7 +458,6 @@ const ManageProducts = (props: any) => {
   };
 
   const deleteApiKey = (row: any, index: number) => {
-    console.log(row);
     if (row) {
       setNotify({
         isOpen: true,
@@ -492,10 +470,8 @@ const ManageProducts = (props: any) => {
         state: stateVariable,
       })
         .then((response: any) => {
-          console.log(response);
           setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
           setFailure(true);
-
           if (row) {
             /* tslint:disable-next-line */
             row.apiKey = '';
@@ -523,9 +499,6 @@ const ManageProducts = (props: any) => {
     } else {
       setSoftwareOption(false);
     }
-
-    // handleChangeProductSoftware(event, softwareIndex);
-    console.log(userParamState, 'userparamstate');
   };
 
   const handleClose = () => {
@@ -851,7 +824,6 @@ const ManageProducts = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 <EditIcon
                                   onClick={() => {
-                                    console.log(row.id, 'row.id');
                                     props.editClicked(row.id, row.version);
                                   }}
                                 />

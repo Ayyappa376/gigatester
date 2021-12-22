@@ -79,7 +79,7 @@ const ManageSoftwareFiles = (props: any) => {
 
   const getUploadedSoftwares = () => {
     Http.get({
-      url: `/api/v2/software/all/upload`,
+      url: `/api/v2/software/all`,
       state: stateVariable,
     })
       .then((response: any) => {
@@ -92,7 +92,6 @@ const ManageSoftwareFiles = (props: any) => {
 
   const getUploadPreSignedUrl = (event: any) => {
     event.preventDefault();
-    console.log(event.target.files[0], 'file');
     setFileSelected(event.target.files[0]);
     setFileName(event.target.files[0].name);
     setFileContentType(event.target.files[0].type);
@@ -102,7 +101,7 @@ const ManageSoftwareFiles = (props: any) => {
   const multiArrayUploadCompleted = () => {
     if (multiUploadArray.length) {
       Http.post({
-        url: `/api/v2/software/upload/large`,
+        url: `/api/v2/file/large`,
         body: {
           fileName: fileName,
           parts: multiUploadArray,
@@ -122,18 +121,12 @@ const ManageSoftwareFiles = (props: any) => {
   };
 
   const uploadPreSignedUrlSoftware = () => {
-    // event.preventDefault();
-    // console.log(event.target.files[0], "file");
-    // setFileSelected(event.target.files[0]);
-    // setFileName(event.target.files[0].name);
-    // setFileContentType(event.target.files[0].type);
-    // setFileSize(event.target.files[0].size);
     const chunkSize: number = 10 * 1024 * 1024; // 10MiB
     const chunkCount: number = Math.floor(fileSize / chunkSize) + 1;
-    console.log(`chunkCount: ${chunkCount}`);
+    // console.log(`chunkCount: ${chunkCount}`);
 
     Http.post({
-      url: `/api/v2/software/upload/large`,
+      url: `/api/v2/file/large`,
       state: stateVariable,
       body: {
         fileName: fileName,
@@ -141,9 +134,7 @@ const ManageSoftwareFiles = (props: any) => {
       },
     })
       .then((response: any) => {
-        console.log(response, 'reponse');
-        console.log(fileSelected, 'file');
-        console.log(response.data.UploadId, 'uploadId');
+        // console.log(response.data.UploadId, 'uploadId');
         let uploadId = response.data.UploadId;
         let uploadArray: any = [];
         setUploadArrayId(uploadId);
@@ -155,7 +146,7 @@ const ManageSoftwareFiles = (props: any) => {
               ? fileSelected.slice(start, end)
               : fileSelected.slice(start);
           Http.post({
-            url: `/api/v2/software/upload/large`,
+            url: `/api/v2/file/large`,
             state: stateVariable,
             body: {
               fileName: fileName,
@@ -165,16 +156,13 @@ const ManageSoftwareFiles = (props: any) => {
           })
             .then((response: any) => {
               let preSignedUrl = response.data;
-              console.log(`preSignedUrl ${uploadCount} : ${preSignedUrl}`);
-              console.log(fileBlob);
+              // console.log(`preSignedUrl ${uploadCount} : ${preSignedUrl}`);
               fetch(preSignedUrl, {
                 method: 'PUT',
                 body: fileBlob,
               })
                 .then((response: any) => {
-                  console.log(response);
                   let EtagHeader = response.headers.get('ETag');
-                  console.log(EtagHeader);
                   let uploadPartDetails = {
                     ETag: EtagHeader,
                     PartNumber: uploadCount,
@@ -182,17 +170,13 @@ const ManageSoftwareFiles = (props: any) => {
 
                   uploadArray.push(uploadPartDetails);
                   setMultiUploadArray(uploadArray);
-                  console.log(uploadArray, 'ae');
-                  console.log(chunkCount, 'a3e');
-
                   if (uploadArray.length == chunkCount) {
                     const uploadedArray = uploadArray.sort(
                       (uploadArrayA: any, uploadArrayB: any) =>
                         uploadArrayA.PartNumber - uploadArrayB.PartNumber
                     );
-                    console.log(uploadedArray);
                     Http.post({
-                      url: `/api/v2/software/upload/large`,
+                      url: `/api/v2/file/large`,
                       body: {
                         fileName: fileName,
                         parts: uploadedArray,
@@ -255,7 +239,6 @@ const ManageSoftwareFiles = (props: any) => {
     let formUpload = new FormData();
     formUpload.append('file', uploadedFile);
     formUpload.append('fileName', uploadedFile.name);
-    console.log(uploadedFile.name);
     setNotify({
       isOpen: true,
       message: 'Uploading...',
@@ -264,21 +247,18 @@ const ManageSoftwareFiles = (props: any) => {
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = String(reader.result).split('base64,')[1];
-      console.log(base64String);
       const dataInfo = {
         file: base64String,
         fileName: uploadedFile.name,
       };
       uploadedFile &&
         Http.post({
-          url: `/api/v2/software/upload/small`,
+          url: `/api/v2/file/small`,
           body: dataInfo,
           state: stateVariable,
         })
           .then((response: any) => {
-            console.log(formUpload);
             getUploadedSoftwares();
-            console.log(response);
             setNotify({
               isOpen: true,
               message: `The ${uploadedFile.name} file has been uploaded successfully.`,

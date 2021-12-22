@@ -1,6 +1,6 @@
-import { ProductInfo, ConfigItem, PlatformInfo, TestSuite, DeviceInfo } from '@models/index';
+import { ConfigItem, DeviceInfo, PlatformInfo, ProductInfo, TestSuite } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, getProductConfig, getPlatformsList, getTestSuites, getDevicesList} from '@utils/index';
+import { appLogger, getDevicesList, getPlatformsList, getProductConfig,  getTestSuites} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 //import { getUserDocumentFromEmail } from './getUserDocument';
 import { deleteItem, get, put, scan, update } from './sdk';
@@ -13,8 +13,6 @@ export const createProduct = async (productData: ProductInfo, userId: string): P
       appLogger.error(err);
       throw err;
     }
-    console.log(productData, "productData");
-    console.log(productData.devices, "productData.devices");
     const item: ProductInfo = {
         devices: productData.devices,
         id: productData.id,
@@ -57,7 +55,7 @@ export const createProduct = async (productData: ProductInfo, userId: string): P
       });
     appLogger.info({ createCampaign_put_params: params });
     return put<ProductInfo>(params);
-}
+};
 export const getCreateProductConfig = async (
   orgId: string
 ): Promise<ConfigItem> => {
@@ -65,17 +63,17 @@ export const getCreateProductConfig = async (
   appLogger.info({ getProductConfig: productConfig });
 
   const platforms: PlatformInfo[] = await getPlatformsList();
-  const platforms_key = 'platforms';
-  productConfig.config[platforms_key].options = {};
-  platforms.forEach((val: PlatformInfo) => productConfig.config[platforms_key].options[val.id] = val.name);
+  const platformsKey = 'platforms';
+  productConfig.config[platformsKey].options = {};
+  platforms.forEach((val: PlatformInfo) => productConfig.config[platformsKey].options[val.id] = val.name);
   const testSuite: TestSuite[] = await getTestSuites();
-  const testSuite_key = 'testSuite';
-  productConfig.config[testSuite_key].options = {};
-  testSuite.forEach((val: PlatformInfo) => productConfig.config[testSuite_key].options[val.id] = val.name);
+  const testSuiteKey = 'testSuite';
+  productConfig.config[testSuiteKey].options = {};
+  testSuite.forEach((val: PlatformInfo) => productConfig.config[testSuiteKey].options[val.id] = val.name);
   const devices: DeviceInfo[] = await getDevicesList();
-  const devices_key = 'devices';
-  productConfig.config[devices_key].options = {};
-  devices.forEach((val: DeviceInfo) => productConfig.config[devices_key].options[val.id] = val.name);
+  const devicesKey = 'devices';
+  productConfig.config[devicesKey].options = {};
+  devices.forEach((val: DeviceInfo) => productConfig.config[devicesKey].options[val.id] = val.name);
 
   return productConfig;
 };
@@ -123,12 +121,10 @@ export const updateProduct = async (updateInfo: ProductInfo, userId: string) => 
       appLogger.error(err);
       throw err;
     }
-  
     const EAN: any = {};
     const EAV: any = {};
     let SET = 'SET ';
     let sep = '';
-  
     Object.keys(updateInfo).forEach((val, i) => {
       if (
         !(
@@ -159,7 +155,6 @@ export const updateProduct = async (updateInfo: ProductInfo, userId: string) => 
         }
       }
     });
-  
     const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
       ExpressionAttributeNames: EAN,
       ExpressionAttributeValues: EAV,
@@ -170,9 +165,6 @@ export const updateProduct = async (updateInfo: ProductInfo, userId: string) => 
       TableName: TableNames.getProductsTableName(),
       UpdateExpression: SET,
     });
-  
     appLogger.info({ updateProduct_update_params: params });
     return update<DynamoDB.UpdateItemInput>(params);
   };
-  
-

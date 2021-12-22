@@ -113,14 +113,12 @@ export const getCreateCampaignConfig = async (
   const admins = await fetchAdmins();
   const key = 'managers';
   const products: ProductInfo[]= await getProductsList();
-  const product_key = 'products';
+  const productKey = 'products';
   campaignConfig.config[key].options = {};
-  campaignConfig.config[product_key].options = {};
+  campaignConfig.config[productKey].options = {};
   managers.forEach((val: string) => campaignConfig.config[key].options[val] = val);
   admins.forEach((val: string) => campaignConfig.config[key].options[val] = val);
-  products.forEach((val: ProductInfo) => campaignConfig.config[product_key].options[val.id] = val.name);
-
-
+  products.forEach((val: ProductInfo) => campaignConfig.config[productKey].options[val.id] = val.name);
   return campaignConfig;
 };
 
