@@ -17,19 +17,20 @@ import {
   SnackbarContent,
   Tooltip,
 } from '@material-ui/core';
+import ClearIcon from '@material-ui/icons/Clear';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import {
   IFieldConfigAttributes,
-  IDeviceParams,
+  IProductParams,
   IObjectConfigDetails,
-  IDeviceInfo,
+  IProductInfo,
 } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
 import { withRouter } from 'react-router-dom';
-import { MANAGE_DEVICES } from '../../../pages/admin';
+import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
@@ -77,26 +78,30 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditDevice = (props: any) => {
+const EditProduct = (props: any) => {
   const classes = useStyles();
-  const [devicePosted, setDevicePosted] = useState(false);
+  const [productPosted, setProductPosted] = useState(false);
   const [failure, setFailure] = useState(false);
-  const [deviceDataFetched, setDeviceDataFetched] = useState(false);
+  const [productDataFetched, setProductDataFetched] = useState(false);
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [deviceState, setDeviceState] = React.useState<
-    IDeviceParams | undefined
+  const [productState, setProductState] = React.useState<
+    IProductParams | undefined
   >();
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='deviceDetailsSavedSuccessfully' />;
-
+  let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
   useEffect(() => {
     Http.get({
-      url: `/api/v2/devices/${props.deviceId} `,
+      url: `/api/v2/products/${props.productId}/${props.version}`,
       state: stateVariable,
     })
       .then((response: any) => {
@@ -115,32 +120,32 @@ const EditDevice = (props: any) => {
   }, []);
 
   const handleSave = () => {
-    const postData = deviceState;
-    if (postData && postData.devices) {
-      if (postData.devices[0].id) {
+    const postData = productState;
+    if (postData && postData.products) {
+      if (postData.products[0].id) {
         Http.put({
-          url: `/api/v2/devices`,
+          url: `/api/v2/products`,
           body: {
             ...postData,
           },
           state: stateVariable,
         })
           .then((response: any) => {
-            setDevicePosted(true);
+            setProductPosted(true);
           })
           .catch((error: any) => {
             handleSaveError(error);
           });
       } else {
         Http.post({
-          url: `/api/v2/devices`,
+          url: `/api/v2/products`,
           body: {
             ...postData,
           },
           state: stateVariable,
         })
           .then((response: any) => {
-            setDevicePosted(true);
+            setProductPosted(true);
           })
           .catch((error: any) => {
             handleSaveError(error);
@@ -162,19 +167,79 @@ const EditDevice = (props: any) => {
     }
   };
 
-  const fixMultiSelectValuesAndSave = (response: any) => {
-    if (response.devices) {
-      fixOtherValuesMultiSelect(response.deviceConfig, response.devices[0]);
-    } else {
-      response.devices = [{}];
+  const handleGeneralApiKeyButton = () => {
+    if (productState) {
+      const temp: IProductParams = { ...productState };
+      let values: IProductInfo[] | undefined = temp.products;
+      if (values) {
+        let productId: any = values[0].products[0].id;
+        Http.post({
+          url: `/api/v2/productApiKey/`,
+          state: stateVariable,
+          body: {
+            productId,
+          },
+        })
+          .then((response: any) => {
+            if (values) {
+              values[0].products[0].apiKey = response.data.value;
+              values[0].products[0].apiId = response.data.id;
+              setProductState(temp);
+            }
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }
     }
-    setDeviceState(response);
-    setDeviceDataFetched(true);
+  };
+
+  const deleteApiKey = () => {
+    if (productState) {
+      const temp: IProductParams = { ...productState };
+      let values: IProductInfo[] | undefined = temp.products;
+
+      if (values) {
+        setNotify({
+          isOpen: true,
+          message: 'Deleting... ',
+          type: 'info',
+        });
+
+        Http.deleteReq({
+          url: `/api/v2/productApiKey/${values[0].products[0].apiId}`,
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
+            setFailure(true);
+
+            if (values) {
+              /* tslint:disable-next-line */
+              values[0].products[0].apiKey = '';
+              values[0].products[0].apiId = '';
+            }
+          })
+          .catch((error: any) => {
+            console.log(error);
+          });
+      }
+    }
+  };
+
+  const fixMultiSelectValuesAndSave = (response: any) => {
+    if (response.products) {
+      fixOtherValuesMultiSelect(response.productConfig, response.products[0]);
+    } else {
+      response.products = [{}];
+    }
+    setProductState(response);
+    setProductDataFetched(true);
   };
 
   const fixOtherValuesMultiSelect = (
     config: IObjectConfigDetails,
-    values: IDeviceInfo
+    values: IProductInfo
   ) => {
     Object.keys(config).forEach((el) => {
       if (config[el].type === 'multi-list' && values && values[el]) {
@@ -208,21 +273,21 @@ const EditDevice = (props: any) => {
   function mandatoryFieldsCheck(): boolean {
     let check: boolean = true;
     // tslint:disable-next-line: ter-arrow-parens
-    if (!deviceState) {
+    if (!productState) {
       return false;
     }
-    Object.keys(deviceState.deviceConfig).forEach((el) => {
-      if (deviceState.deviceConfig[el].mandatory) {
+    Object.keys(productState.productConfig).forEach((el) => {
+      if (productState.productConfig[el].mandatory) {
         if (
-          !deviceState.devices ||
-          deviceState.devices.length === 0 ||
-          !deviceState.devices[0] ||
-          !deviceState.devices[0][el]
+          !productState.products ||
+          productState.products.length === 0 ||
+          !productState.products[0] ||
+          !productState.products[0][el]
         ) {
           check = false;
         } else if (
-          deviceState.deviceConfig[el].type === 'multi-list' &&
-          deviceState.devices[0][el].length === 0
+          productState.productConfig[el].type === 'multi-list' &&
+          productState.products[0][el].length === 0
         ) {
           check = false;
         }
@@ -233,20 +298,20 @@ const EditDevice = (props: any) => {
   }
 
   const handleChangeValue = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
       if (values) {
         values[0][key] = event.target.value;
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
 
   const handleChangeOtherValueList = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
 
       if (values) {
         if (event.target.value === '') {
@@ -254,7 +319,7 @@ const EditDevice = (props: any) => {
         } else {
           values[0][key] = event.target.value;
         }
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
@@ -270,9 +335,9 @@ const EditDevice = (props: any) => {
   };
 
   const handleChangeOtherMultilist = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
 
       if (values) {
         const updatedString = `${OTHER_STRING}: ${event.target.value}`;
@@ -280,21 +345,20 @@ const EditDevice = (props: any) => {
         const indexOfOther = returnIndexOfOther(valueArray);
         valueArray[indexOfOther] = updatedString;
         values[0][key] = valueArray;
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
 
   const handleChangeMultiValue = (event: any, key: string) => {
-    if (deviceState) {
-      const temp: IDeviceParams | null | undefined = { ...deviceState };
-      let values: any = temp.devices;
-
+    if (productState) {
+      const temp: IProductParams | null | undefined = { ...productState };
+      let values: any = temp.products;
       if (values) {
         let valueArray = values[0][key] || [];
         valueArray = [...event.target.value];
         values[0][key] = valueArray;
-        setDeviceState(temp);
+        setProductState(temp);
       }
     }
   };
@@ -329,7 +393,7 @@ const EditDevice = (props: any) => {
   const renderElements = (
     key: string,
     config: IObjectConfigDetails,
-    values: IDeviceInfo
+    values: IProductInfo
   ) => {
     const attrConfig: IFieldConfigAttributes = config[key];
     switch (attrConfig.type) {
@@ -470,56 +534,34 @@ const EditDevice = (props: any) => {
         );
       case 'list-no-others':
         return (
-          <FormControl className={classes.formControl}>
-            <InputLabel id={`label_${key}`} required={attrConfig.mandatory}>
-              {attrConfig.displayName}
-            </InputLabel>
-            <Select
-              name={`select_${key}`}
-              value={
-                values
-                  ? values[key]
-                    ? attrConfig.options
-                      ? attrConfig.options.custom
-                        ? attrConfig.options.custom
-                            .split(',')
-                            .includes(values[key])
-                          ? values[key]
-                          : ''
-                        : attrConfig.options.customFixed
-                        ? attrConfig.options.customFixed
-                            .split(',')
-                            .includes(values[key])
-                          ? values[key]
-                          : ''
-                        : ''
-                      : ''
-                    : ''
-                  : ''
-              }
-              onChange={(event) => handleChangeValue(event, key)}
-            >
-              {attrConfig.options && attrConfig.options.custom ? (
-                attrConfig.options.custom.split(',').map((opt: string) => {
-                  return (
-                    <MenuItem key={opt} value={opt}>
-                      {opt}
-                    </MenuItem>
-                  );
-                })
-              ) : attrConfig.options && attrConfig.options.customFixed ? (
-                attrConfig.options.customFixed.split(',').map((opt: string) => {
-                  return (
-                    <MenuItem key={opt} value={opt}>
-                      {opt}
-                    </MenuItem>
-                  );
-                })
-              ) : (
-                <div />
-              )}
-            </Select>
-          </FormControl>
+          <Fragment>
+            <FormControl className={classes.formControl}>
+              <InputLabel id={`label_${key}`} required={attrConfig.mandatory}>
+                {attrConfig.displayName}
+              </InputLabel>
+              <Select
+                id={`select_${key}`}
+                name={`select${key}`}
+                value={values[key] ? values[key] : ''}
+                onChange={(event) => handleChangeValue(event, key)}
+                // input={<Input id='demo-simple-select' />}
+                // renderValue={renderChips}
+                MenuProps={MenuProps}
+              >
+                {attrConfig.options ? (
+                  Object.keys(attrConfig.options).map((opt: string) => {
+                    return (
+                      <MenuItem key={opt} value={opt}>
+                        {attrConfig.options[opt]}
+                      </MenuItem>
+                    );
+                  })
+                ) : (
+                  <div />
+                )}
+              </Select>
+            </FormControl>
+          </Fragment>
         );
       case 'multi-list':
         return (
@@ -568,8 +610,47 @@ const EditDevice = (props: any) => {
     setFailure(false);
   };
 
+  const renderProductsTable = (product: IProductInfo) => {
+    if (product[0]) {
+      return (
+        <Fragment>
+          {product.name}
+          <TextField
+            required={true}
+            type='string'
+            id={`productApiKey`}
+            name={`productApiKey`}
+            value={product.apiKey ? product.apiKey : ''}
+            fullWidth
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+          <Typography style={{ padding: '0 6px' }}>
+            <ClearIcon
+              onClick={() => {
+                deleteApiKey();
+              }}
+            />
+          </Typography>
+          Product
+        </Fragment>
+      );
+    } else {
+      return (
+        <Fragment>
+          Product
+          <Typography className='tableBodyText'>
+            <button onClick={() => handleGeneralApiKeyButton()}>
+              <Typography>Generate Api Key</Typography>
+            </button>
+          </Typography>
+        </Fragment>
+      );
+    }
+  };
+
   const renderFormData = () => {
-    if (devicePosted) {
+    if (productPosted) {
       return (
         <Fragment>
           <Success message={msgSuccess} />
@@ -578,7 +659,7 @@ const EditDevice = (props: any) => {
               className={classes.button}
               variant='outlined'
               onClick={() => {
-                props.goBack(MANAGE_DEVICES);
+                props.goBack(MANAGE_PRODUCTS);
               }}
             >
               <Text tid='goBack' />
@@ -591,25 +672,29 @@ const EditDevice = (props: any) => {
     return (
       <Fragment>
         <Grid container spacing={3} className={classes.grid}>
-          {Object.keys(deviceState!.deviceConfig).map((el) => {
+          {Object.keys(productState!.productConfig).map((el) => {
             return (
               <Grid key={el} item xs={12}>
-                {deviceState!.devices &&
+                {productState!.products &&
                   renderElements(
                     el,
-                    deviceState!.deviceConfig,
-                    deviceState!.devices[0]
+                    productState!.productConfig,
+                    productState!.products[0]
                   )}
               </Grid>
             );
           })}
         </Grid>
+        {/* <Grid container spacing={3} className={classes.grid}>
+          {productState!.products &&
+            renderProductsTable(productState!.products[0])}
+        </Grid> */}
         <div className='bottomButtonsContainer'>
           <Button
             className={classes.button}
             variant='outlined'
             onClick={() => {
-              props.goBack(MANAGE_DEVICES);
+              props.goBack(MANAGE_PRODUCTS);
             }}
           >
             <Text tid='goBack' />
@@ -649,7 +734,7 @@ const EditDevice = (props: any) => {
 
   return (
     <Fragment>
-      {deviceDataFetched ? (
+      {productDataFetched ? (
         renderFormData()
       ) : (
         <Container className='loaderStyle'>
@@ -660,4 +745,4 @@ const EditDevice = (props: any) => {
   );
 };
 
-export default withRouter(EditDevice);
+export default withRouter(EditProduct);

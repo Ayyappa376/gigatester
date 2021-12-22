@@ -1,6 +1,7 @@
 const aws = require('aws-sdk');
 const dynamo = new aws.DynamoDB.DocumentClient();
 const cors = require('cors');
+import uuidv1 from 'uuid/v1';
 
 cors({
     origin: true,
@@ -27,7 +28,7 @@ exports.handler = async (event: any) => {
                             Item: {
                                 createdOn: Date.now(),
                                 feedbackComments: jsonBody.feedbackComments,
-                                id: jsonBody.id,
+                                id: `feedback_${uuidv1()}`,
                                 productId: jsonBody.productId,
                                 productRating: jsonBody.productRating,
                                 productVersion: jsonBody.productVersion,

@@ -4,6 +4,7 @@ export * from './configs';
 export * from './campaign';
 export * from './device';
 export * from './group';
+export * from './product';
 export * from './productApiKey';
 export * from './metrics';
 export * from './organization';

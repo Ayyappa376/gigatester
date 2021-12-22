@@ -17,7 +17,7 @@ import {
   MuiThemeProvider,
   Snackbar,
   SnackbarContent,
-  Tooltip
+  Tooltip,
 } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
@@ -89,26 +89,27 @@ const ManageDevices = (props: any) => {
       url: `/api/v2/devices`,
       state: stateVariable,
     })
-    .then((response: any) => {
-      response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
+      .then((response: any) => {
+        console.log(response);
+        response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
           return a.name.localeCompare(b.name);
+        });
+        setFetchDevices(true);
+        setAllDevices(response.devices);
+        setDevices(response.devices);
+        setBackdropOpen(false);
+      })
+      .catch((error: any) => {
+        setFetchDevices(true);
+        setBackdropOpen(false);
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          props.history.push('/error');
+        }
       });
-      setFetchDevices(true);
-      setAllDevices(response.devices);
-      setDevices(response.devices);
-      setBackdropOpen(false);
-    })
-    .catch((error: any) => {
-      setFetchDevices(true);
-      setBackdropOpen(false);
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        props.history.push('/error');
-      }
-    })
   };
 
   useEffect(() => {
@@ -224,25 +225,25 @@ const ManageDevices = (props: any) => {
       url: `/api/v2/devices/${deviceId}`,
       state: stateVariable,
     })
-    .then((response: any) => {
-      setBackdropOpen(false);
-      setDeleteDeviceId('');
-      fetchDeviceList();
-    })
-    .catch((error) => {
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 400) {
-        setFailureMessage(object.apiError.msg);
-      } else if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        setFailureMessage(<Text tid='somethingWentWrong' />);
-        setFailure(true);
-      }
-      setBackdropOpen(false);
-      fetchDeviceList();
-    });
+      .then((response: any) => {
+        setBackdropOpen(false);
+        setDeleteDeviceId('');
+        fetchDeviceList();
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 400) {
+          setFailureMessage(object.apiError.msg);
+        } else if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          setFailureMessage(<Text tid='somethingWentWrong' />);
+          setFailure(true);
+        }
+        setBackdropOpen(false);
+        fetchDeviceList();
+      });
   };
 
   const handleClose = () => {
@@ -262,12 +263,11 @@ const ManageDevices = (props: any) => {
                 <Button
                   className={classes.backButton}
                   variant='outlined'
-                  onClick={() => { props.editClicked(0); }}
+                  onClick={() => {
+                    props.editClicked(0);
+                  }}
                 >
-                  <AddIcon
-                    fontSize='large'
-                  />{' '}
-                  <Text tid='addDevice' />
+                  <AddIcon fontSize='large' /> <Text tid='addDevice' />
                 </Button>
               </Grid>
               <Grid item sm={5}>
@@ -335,30 +335,48 @@ const ManageDevices = (props: any) => {
                         </Typography>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
-                      <div className={classes.actionsBlock}>
+                        <div className={classes.actionsBlock}>
                           <MuiThemeProvider theme={tooltipTheme}>
                             <Tooltip
                               title={
-                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                <Typography
+                                  style={{
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   <Text tid='edit' />
                                 </Typography>
                               }
                             >
                               <Typography style={{ padding: '0 6px' }}>
-                                <EditIcon onClick={() => { props.editClicked(row.id); }}/>
+                                <EditIcon
+                                  onClick={() => {
+                                    props.editClicked(row.id);
+                                  }}
+                                />
                               </Typography>
                             </Tooltip>
                           </MuiThemeProvider>
                           <MuiThemeProvider theme={tooltipTheme}>
                             <Tooltip
                               title={
-                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                <Typography
+                                  style={{
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                  }}
+                                >
                                   <Text tid='delete' />
                                 </Typography>
                               }
                             >
                               <Typography style={{ padding: '0 6px' }}>
-                                <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
+                                <ClearIcon
+                                  onClick={() => {
+                                    deleteClicked(row.id);
+                                  }}
+                                />
                               </Typography>
                             </Tooltip>
                           </MuiThemeProvider>
