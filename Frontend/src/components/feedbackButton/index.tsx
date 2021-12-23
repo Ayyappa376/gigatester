@@ -1,5 +1,5 @@
 import React, {useState, createRef} from 'react';
-import { Button, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, Link, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -33,12 +33,16 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const [feedbackPage, setFeedbackPage] = useState(false);
   const [rating, setRating] = useState(0);
   const [image, setImage] = useState('');
-  const [saveableCanvas, setSaveableCanvas] = useState<any>('')
+  const [saveableCanvas, setSaveableCanvas] = useState<any>('');
+  const [fileName, setFileName] = useState('');
   const[bugReportPage, setBugReportPage] = useState(false);
   const closeDialog = () => {
     setDialogOpen(false);
     setFeedbackPage(false);
+    setBugReportPage(false);
     setRating(0);
+    setImage('');
+    setFileName('');
   }
   const handleUploadButton = () => {
     setDialogOpen(true);
@@ -79,6 +83,11 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     setTimeout(()=> {
       takeScreenshot();
     }, 1000)
+  }
+
+  const fileUpload = (event: any) => {
+    setFileName(event.target.files[0].name);
+    console.log(fileName);
   }
   const ScreenshotImage = () => {
 
@@ -137,11 +146,24 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
            </Grid>
            <Grid item xs={1} sm={1} />
            <Grid item xs={2} sm={2} >
+           <input
+                style={{ display: 'none' }}
+                id='upload-file'
+                multiple
+                type='file'
+                onChange={(event) => fileUpload(event)}
+              />
+            <label
+              htmlFor='upload-file'
+              style={{ fontSize: '14px', color: 'black' }}
+            >
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Attach File</Typography>}>
-           <AttachFileIcon />
+           <AttachFileIcon/>
            </Tooltip>
+           </label>
            </Grid>
+           {fileName}
            <Grid item xs={12} sm={12} style={{width: '100%'}}>
            {image ? <img width={300} src={image} alt={"ScreenShot"} /> : ''}
            </Grid>
@@ -203,10 +225,10 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
         <Grid container spacing={1}>
           <Grid item xs={12} sm={12} style={{padding: '0px', marginBottom: '20px', justifyContent: 'center'}}>
               <div style={{display: 'flex', justifyContent: 'center', padding: '0px', margin: '0px'}}>
-              <button style={{height: '90px', width: '300px',}} >
+              <button style={{height: '90px', width: '300px'}} onClick={() => {setBugReportPage(true)}} >
             <Grid container>
               <Grid item xs={3} sm={3}>
-              <BugReportIcon style={{fontSize: '38px'}} onClick={() => {setBugReportPage(true)}} />
+              <BugReportIcon style={{fontSize: '38px'}} />
               </Grid>
               <Grid item xs={8} sm={8}>
               <Typography style={{fontSize: '25px'}}>
@@ -258,7 +280,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
           <DialogContent style={{ marginBottom: '20px' }}>
             <CssBaseline />
             <CancelIcon  style={{position: 'absolute', top: '0px', right: '0px' }}onClick={() => {closeDialog()}}/>
-            {feedbackPage ? feedbackRating() : bugReportPage ? <BugReportForm /> : feedbackMenu()}
+            {feedbackPage ? feedbackRating() : bugReportPage ? <BugReportForm /> : feedbackMenu() }
             {/* {verifyEmail ? signUpAcknowledgement() : signUpForm()} */}
           </DialogContent>
         </Dialog>
