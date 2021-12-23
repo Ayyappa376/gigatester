@@ -4,14 +4,15 @@ import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import VideocamIcon from '@material-ui/icons/Videocam';
+import { useReactMediaRecorder } from "react-media-recorder";
 import html2canvas from 'html2canvas';
+import CanvasDraw from "react-canvas-draw";
 import './styles.css';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Rating from '@material-ui/lab/Rating';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 import { ReactMediaRecorder } from "react-media-recorder";
-// import { useScreenshot } from 'use-react-screenshot';
 interface IButtonProps {
   label: string;
 }
@@ -26,11 +27,14 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 const FeedbackButtonComponent = (props: IButtonProps) => {
+  let saveCanvas: any;
   const classes = useStyles();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [feedbackPage, setFeedbackPage] = useState(false);
   const [rating, setRating] = useState(0);
   const [image, setImage] = useState('');
+  const [saveableCanvas, setSaveableCanvas] = useState<any>('')
+  const[bugReportPage, setBugReportPage] = useState(false);
   const closeDialog = () => {
     setDialogOpen(false);
     setFeedbackPage(false);
@@ -70,25 +74,65 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
           return base64Image
         })
   }
-  const bugReportForm = () => {
+
+  const captureScreenshot = () => {
+    setTimeout(()=> {
+      takeScreenshot();
+    }, 1000)
+  }
+  const ScreenshotImage = () => {
+
+    console.log(saveCanvas,"saveCanvas")
+    return(
+      <div style={{display: 'flex', zIndex: 1,  position: 'fixed', height: '80vh', width: '100vw'}}>
+      <Grid container>
+      <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+      <CanvasDraw  ref={canvasDraw => (saveCanvas = (canvasDraw))}  brushColor='red' enablePanAndZoom={true} brushRadius={3} hideGrid={true} imgSrc={image} style={{display: 'flex', width: '65rem', height: '35rem', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}}/>
+      {/* <img style={{width: '90vw', height: '80vh', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}} src={image} alt={"ScreenShot"} /> */}
+      
+      <div style={{position: 'fixed', borderStyle: 'solid', borderWidth: '2px',borderColor: 'red', backgroundColor: 'white', bottom: '20px', left: '40vw'}}>
+      <Button variant='outlined'  style={{margin: '10px', backgroundColor: 'white'}} onClick={() => {
+              saveCanvas.undo();
+            }}>Undo</Button>
+      <Button variant='outlined' style={{margin: '10px', backgroundColor: 'white'}}  onClick={() => {
+              saveCanvas.clear();
+            }} >Clear</Button>
+      <Button variant='outlined' style={{margin: '10px', backgroundColor: 'white'}}   onClick={() => {
+              closeDialog();
+            }} >Close</Button>
+      </div>
+      </Grid>
+      </Grid>
+      </div>
+    )
+  }
+  const BugReportForm = () => {
+    const {
+      status,
+      startRecording,
+      stopRecording,
+      mediaBlobUrl,
+    } = useReactMediaRecorder({ screen: true });
       return (
           <>
-          <TextField style={{padding:'10px'}}   multiline
+          <Grid container>
+          <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+          <TextField style={{padding:'10px', width: '100%'}}   multiline
            id="outlined-multiline-static" rows={4} label="Provide your Comments" variant="outlined" />
            <br />
-           <Grid container>
+           </Grid>
            <Grid item xs={1} sm={1} />
            <Grid item xs={3} sm={3}>
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Capture Screenshot</Typography>}>
-           <AspectRatioIcon onClick={() => {takeScreenshot()}}/>
+           <AspectRatioIcon onClick={() => {captureScreenshot()}}/>
            </Tooltip>
            </Grid>
            <Grid item xs={1} sm={1} />
            <Grid item xs={3} sm={3}>
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Start Screen Record</Typography>}>
-           <VideocamIcon />
+           <VideocamIcon onClick={startRecording}/>
            </Tooltip>
            </Grid>
            <Grid item xs={1} sm={1} />
@@ -98,9 +142,13 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
            <AttachFileIcon />
            </Tooltip>
            </Grid>
+           <Grid item xs={12} sm={12} style={{width: '100%'}}>
+           {image ? <img width={300} src={image} alt={"ScreenShot"} /> : ''}
            </Grid>
-           <img width={300} src={image} alt={"ScreenShot"} />
-           <ReactMediaRecorder
+           <Grid item xs={12} sm={12} >
+           {mediaBlobUrl ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay loop /> : ''}
+           </Grid>
+           {/* <ReactMediaRecorder
             screen
             render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
                 <div style={{maxWidth: '300px'}}>
@@ -109,22 +157,30 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
                 <button onClick={stopRecording}>Stop Recording</button>
                 <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay loop />
                 </div>
-            )} />
+            )} /> */}
+            <Grid item xs={12} sm={12} >
            <Button variant="outlined" >Send Feedback</Button>
+           </Grid>
+           </Grid>
           </>
       )
+  }
+  const bugReportHandler = () => {
+    setBugReportPage(true);
   }
   const feedbackRating = () => {
     return (
         <>
         <Grid container>
         <div style={{minHeight: '100px', minWidth: '200px', fontSize: '30px', paddingTop: '20px', justifyContent: 'center'}}>
-        <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'center'}}>
             <Typography>Tell us about your experience</Typography>
+         </Grid>
+         <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'center'}}>
         <Rating
         name='size-large'
         value={rating}
-        style={{marginLeft: '20px'}}
+        style={{marginLeft: '2px'}}
         onChange={(event, newValue) => {
           if(newValue){ 
           setRating(newValue);
@@ -134,10 +190,9 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
       />
       </Grid>
       <Grid item xs={12} sm={12}>
-      { (rating > 0 && rating < 3) ? bugReportForm() : ''}
+      { (rating > 0 && rating < 3) ? <BugReportForm /> : ''}
       </Grid>
       </div>
-
       </Grid>
         </>
     )
@@ -146,12 +201,12 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     return (
       <>
         <Grid container spacing={1}>
-          <Grid item xs={12} sm={12} style={{padding: '0px', marginBottom: '20px'}}>
+          <Grid item xs={12} sm={12} style={{padding: '0px', marginBottom: '20px', justifyContent: 'center'}}>
               <div style={{display: 'flex', justifyContent: 'center', padding: '0px', margin: '0px'}}>
               <button style={{height: '90px', width: '300px',}} >
             <Grid container>
               <Grid item xs={3} sm={3}>
-              <BugReportIcon style={{fontSize: '38px'}}/>
+              <BugReportIcon style={{fontSize: '38px'}} onClick={() => {setBugReportPage(true)}} />
               </Grid>
               <Grid item xs={8} sm={8}>
               <Typography style={{fontSize: '25px'}}>
@@ -182,6 +237,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
           </>
     )}
   const handleDialogUpload = () => {
+    // image ? <ScreenshotImage /> :
     return (
       <React.Fragment>
         <Dialog
@@ -202,7 +258,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
           <DialogContent style={{ marginBottom: '20px' }}>
             <CssBaseline />
             <CancelIcon  style={{position: 'absolute', top: '0px', right: '0px' }}onClick={() => {closeDialog()}}/>
-            {feedbackPage ? feedbackRating() : feedbackMenu()}
+            {feedbackPage ? feedbackRating() : bugReportPage ? <BugReportForm /> : feedbackMenu()}
             {/* {verifyEmail ? signUpAcknowledgement() : signUpForm()} */}
           </DialogContent>
         </Dialog>
@@ -211,7 +267,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   };
   return (
       <>
-    {dialogOpen ? (
+    { dialogOpen ? (
         handleDialogUpload()
       ) : (
       <div style={{ display: 'flex', zIndex: 1, transform: 'rotate(270deg)',  position: 'fixed', bottom: '50vh', right: '-50px'}}>

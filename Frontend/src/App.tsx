@@ -64,8 +64,8 @@ const DoItRight = (props: IDoitrightProps) => {
   return (
     <LanguageProvider>
       <Router history={history}>
+      <FeedbackButtonComponent label={'Feedback'} />
         <PageHeader getMetricsType={(type: any) => getMetricsType(type)} />
-        <FeedbackButtonComponent label={'Feedback'} />
         <Switch>
           <Route exact path='/' component={Home} />
           <Route render={(props) => <Layout {...props} metricType={metricType} metricSelection={metricSelection} />} />
