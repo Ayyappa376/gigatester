@@ -51,6 +51,10 @@ import { api as deletePlatformsV2 } from './v2/platform/delete';
 import { api as getPlatformsV2 } from './v2/platform/get';
 import { api as postPlatformsV2 } from './v2/platform/post';
 import { api as putPlatformsV2 } from './v2/platform/put';
+import { api as deleteProductV2 } from './v2/product/delete';
+import { api as getProductV2 } from './v2/product/get';
+import { api as postProductV2 } from './v2/product/post';
+import { api as putProductV2 } from './v2/product/put';
 import { api as deleteProductApiKeyV2 } from './v2/productApiKey/delete';
 import { api as postProductApiKeyV2 } from './v2/productApiKey/post';
 import { api as getAssessmentQuestionV2 } from './v2/question/get';
@@ -106,6 +110,10 @@ const apis: API[] = [
   getPlatformsV2,
   postPlatformsV2,
   putPlatformsV2,
+  deleteProductV2,
+  getProductV2,
+  postProductV2,
+  putProductV2,
   deleteProductApiKeyV2,
   postProductApiKeyV2,
   deleteDevicesV2,

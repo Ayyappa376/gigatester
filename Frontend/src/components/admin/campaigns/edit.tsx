@@ -214,7 +214,9 @@ const EditCampaign = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
+        console.log(response);
         fixMultiSelectValuesAndSave(response);
+        console.log(response);
       })
       .catch((error: any) => {
         const perror = JSON.stringify(error);
@@ -1479,10 +1481,10 @@ const EditCampaign = (props: any) => {
             );
           })}
         </Grid>
-        <Grid container spacing={3} className={classes.grid}>
+        {/* <Grid container spacing={3} className={classes.grid}>
           {campaignState!.campaigns &&
             renderProductsTable(campaignState!.campaigns[0])}
-        </Grid>
+        </Grid> */}
         <div className='bottomButtonsContainer'>
           <Button
             className={classes.button}

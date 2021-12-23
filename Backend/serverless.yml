@@ -32,7 +32,7 @@ package:
 
 functions:
   feedback:
-    handler: src/functions/index.handler
+    handler: src/functions/feedback/api/index.handler
     events:
       - http:
           path: feedback
