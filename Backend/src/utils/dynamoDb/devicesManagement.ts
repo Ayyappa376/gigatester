@@ -3,6 +3,7 @@ import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, getCampaignsList, getDeviceConfig, getPlatformsList } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
+import { getProductsList } from '.';
 import { deleteItem, get, put, scan, update } from './sdk';
 
 const regex = /Other:[a-zA-Z0-9!-*]/g;
@@ -82,8 +83,9 @@ export const getDeviceDetails = async (id: string): Promise<DeviceInfo> => {
 // delete a device, if it is not used anywhere
 export const deleteDevice = async (id: string, userId: string): Promise<DeviceInfo | undefined> => {
   const campaigns: CampaignInfo[] = await getCampaignsList(userId);
+  const products: ProductInfo[] = await getProductsList();
   const deviceUsed: boolean = campaigns.some((campaign: CampaignInfo) =>
-    campaign.products.some((product: ProductInfo) =>
+    products.some((product: ProductInfo) =>
       product.devices ? product.devices.some((deviceId: string) =>
         (deviceId === id) ? true : false
       ) : false
