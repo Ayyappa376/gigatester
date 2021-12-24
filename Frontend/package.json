@@ -17,6 +17,7 @@
     "@types/react-js-pagination": "^3.0.3",
     "@types/react-scroll": "^1.5.5",
     "@types/redux-persist": "^4.3.1",
+    "@types/uuid": "^8.3.3",
     "@wojtekmaj/react-daterange-picker": "^3.0.0",
     "apexcharts": "^3.22.0",
     "aws-amplify": "^3.0.24",
@@ -60,7 +61,8 @@
     "redux-persist": "^5.10.0",
     "redux-thunk": "2.3.0",
     "typescript": "3.5.1",
-    "use-react-screenshot": "^3.0.0"
+    "use-react-screenshot": "^3.0.0",
+    "uuid": "^8.3.2"
   },
   "scripts": {
     "start": "HTTPS=true react-scripts start",

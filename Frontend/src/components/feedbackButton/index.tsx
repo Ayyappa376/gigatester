@@ -1,4 +1,4 @@
-import React, {useState, createRef} from 'react';
+import React, {useState, createRef, useEffect} from 'react';
 import { Button, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, Link, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
@@ -6,13 +6,17 @@ import AttachFileIcon from '@material-ui/icons/AttachFile';
 import VideocamIcon from '@material-ui/icons/Videocam';
 import { useReactMediaRecorder } from "react-media-recorder";
 import html2canvas from 'html2canvas';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../reducers';
 import CanvasDraw from "react-canvas-draw";
 import './styles.css';
+import { v1 as uuidv1 } from 'uuid';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Rating from '@material-ui/lab/Rating';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import { ReactMediaRecorder } from "react-media-recorder";
+
+import { Http } from '../../utils';
 interface IButtonProps {
   label: string;
 }
@@ -29,13 +33,30 @@ const useStyles = makeStyles((theme) => ({
 const FeedbackButtonComponent = (props: IButtonProps) => {
   let saveCanvas: any;
   const classes = useStyles();
+  const stateVariable = useSelector((state: IRootState) => {
+    return state;
+  });
+  const userStatus = useSelector((state: IRootState) => {
+    return state.user;
+  });
   const [dialogOpen, setDialogOpen] = useState(false);
   const [feedbackPage, setFeedbackPage] = useState(false);
   const [rating, setRating] = useState(0);
   const [image, setImage] = useState('');
-  const [saveableCanvas, setSaveableCanvas] = useState<any>('');
+  const [dialogHidden, setDialogHidden] = useState(false);
+  const [fileContentType, setFileContentType] = useState('');
+  const [fileSelected, setFileSelected] = useState<any>('');
   const [fileName, setFileName] = useState('');
+  const [uploadScreenshot, setUploadScreenshot] = useState('');
+  const [saveableCanvas, setSaveableCanvas] = useState<any>('');
+  const [images, setImages] = useState(false);
   const[bugReportPage, setBugReportPage] = useState(false);
+  const {
+    status,
+    startRecording,
+    stopRecording,
+    mediaBlobUrl,
+  } = useReactMediaRecorder({ screen: true,blobPropertyBag:{ type: "video/mp4" }});
   const closeDialog = () => {
     setDialogOpen(false);
     setFeedbackPage(false);
@@ -75,19 +96,119 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
           }
           const base64Image = croppedCanvas.toDataURL()
           setImage(base64Image)
+          setImages(true)
           return base64Image
         })
   }
 
+  const uploadFile = () => {
+    let formUpload = new FormData();
+    formUpload.append('file', fileSelected);
+    formUpload.append('fileName', fileSelected.name);
+    console.log(fileSelected, 'file');
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64String = String(reader.result).split('base64,')[1];
+      const dataInfo = {
+        file: base64String,
+        fileName: fileSelected.name,
+      };
+      fileSelected &&
+        Http.post({
+          url: `/api/v2/file/small`,
+          body: dataInfo,
+          state: stateVariable,
+        })
+          .then((response: any) => {
+            console.log(response);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+    };
+    reader.readAsDataURL(fileSelected);
+  }
+  const finalScreenshot = () => {
+    let node: any = document.getElementById('canvasScreenshot');
+    console.log(document.getElementById('canvasScreenshot'), 'ref')
+    if (!node) {
+        throw new Error('You should provide correct html node.')
+      }
+      return html2canvas(node)
+        .then((canvas) => {
+          const croppedCanvas = document.createElement('canvas')
+          const croppedCanvasContext = croppedCanvas.getContext('2d')
+          console.log(croppedCanvasContext);
+          // init data
+          const cropPositionTop = 0
+          const cropPositionLeft = 0
+          const cropWidth = canvas.width
+          const cropHeight = canvas.height
+  
+          croppedCanvas.width = cropWidth
+          croppedCanvas.height = cropHeight
+          if(croppedCanvasContext){
+          croppedCanvasContext.drawImage(
+            canvas,
+            cropPositionLeft,
+            cropPositionTop,
+          )
+          }
+          const base64Image = croppedCanvas.toDataURL()
+          setImage(base64Image)
+          setUploadScreenshot(base64Image)
+          return base64Image
+        })
+  }
+useEffect(() => {
+  if(fileSelected){
+  uploadFile();
+  }
+}, [fileSelected])
+ useEffect(() => {
+  console.log(mediaBlobUrl, 'mediabloburl')
+  const videoPlay = async () => {
+  if(mediaBlobUrl){
+    let myFile = await fetch(mediaBlobUrl)
+    .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_video_${uuidv1()}`, { type: 'video/mp4' }));
+    console.log(myFile, 'videofile');
+    // const myFile = new File([mediaBlobUrl], "demo.mp4", { type: 'video/mp4' });
+    setFileSelected(myFile);
+  }
+  }
+  videoPlay();
+ }, [mediaBlobUrl])
+ useEffect(() => {
+  console.log(uploadScreenshot, 'mediabloburl')
+  const uploadScreenshotImg = async () => {
+  if(uploadScreenshot){
+    let myFile = await fetch(uploadScreenshot)
+    .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_img_${uuidv1()}`, { type: 'image/png' }));
+    console.log(myFile, 'videofile');
+    // const myFile = new File([mediaBlobUrl], "demo.mp4", { type: 'video/mp4' });
+    setFileSelected(myFile);
+  }
+  }
+  uploadScreenshotImg();
+ }, [uploadScreenshot])
+
+
   const captureScreenshot = () => {
+    setDialogHidden(true);
     setTimeout(()=> {
       takeScreenshot();
     }, 1000)
   }
 
   const fileUpload = (event: any) => {
+    event.preventDefault();
+    setFileSelected(event.target.files[0]);
     setFileName(event.target.files[0].name);
-    console.log(fileName);
+    setFileContentType(event.target.files[0].type);
+  }
+
+  const renderHome = () => {
+    return(<BugReportForm />)
   }
   const ScreenshotImage = () => {
 
@@ -96,9 +217,10 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
       <div style={{display: 'flex', zIndex: 1,  position: 'fixed', height: '80vh', width: '100vw'}}>
       <Grid container>
       <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+      <div id="canvasScreenshot">
       <CanvasDraw  ref={canvasDraw => (saveCanvas = (canvasDraw))}  brushColor='red' enablePanAndZoom={true} brushRadius={3} hideGrid={true} imgSrc={image} style={{display: 'flex', width: '65rem', height: '35rem', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}}/>
+      </div>
       {/* <img style={{width: '90vw', height: '80vh', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}} src={image} alt={"ScreenShot"} /> */}
-      
       <div style={{position: 'fixed', borderStyle: 'solid', borderWidth: '2px',borderColor: 'red', backgroundColor: 'white', bottom: '20px', left: '40vw'}}>
       <Button variant='outlined'  style={{margin: '10px', backgroundColor: 'white'}} onClick={() => {
               saveCanvas.undo();
@@ -107,7 +229,14 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
               saveCanvas.clear();
             }} >Clear</Button>
       <Button variant='outlined' style={{margin: '10px', backgroundColor: 'white'}}   onClick={() => {
-              closeDialog();
+              finalScreenshot();
+              setImages(false);
+              setDialogHidden(false);             
+            }} >Next</Button>
+      <Button variant='outlined' style={{margin: '10px', backgroundColor: 'white'}}   onClick={() => {
+              setImage('');
+              setImages(false);
+              setDialogHidden(false);             
             }} >Close</Button>
       </div>
       </Grid>
@@ -116,12 +245,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     )
   }
   const BugReportForm = () => {
-    const {
-      status,
-      startRecording,
-      stopRecording,
-      mediaBlobUrl,
-    } = useReactMediaRecorder({ screen: true });
+   
       return (
           <>
           <Grid container>
@@ -212,7 +336,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
       />
       </Grid>
       <Grid item xs={12} sm={12}>
-      { (rating > 0 && rating < 3) ? <BugReportForm /> : ''}
+      { (rating > 0 && rating < 3) ? <BugReportForm /> :(rating> 2 && rating < 5) ? '' : ''}
       </Grid>
       </div>
       </Grid>
@@ -259,12 +383,12 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
           </>
     )}
   const handleDialogUpload = () => {
-    // image ? <ScreenshotImage /> :
     return (
       <React.Fragment>
         <Dialog
           className={classes.dialogPaper}
           open={dialogOpen}
+          hidden={dialogHidden}
           aria-labelledby='form-dialog-title'
           onClose={closeDialog}
         //   maxWidth='xs'
@@ -289,7 +413,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   };
   return (
       <>
-    { dialogOpen ? (
+    {  images ? <ScreenshotImage /> : dialogOpen ? (
         handleDialogUpload()
       ) : (
       <div style={{ display: 'flex', zIndex: 1, transform: 'rotate(270deg)',  position: 'fixed', bottom: '50vh', right: '-50px'}}>

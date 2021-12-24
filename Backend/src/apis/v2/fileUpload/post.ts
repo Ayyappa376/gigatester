@@ -107,7 +107,7 @@ async function handler(request: UploadSoftware, response: Response) {
         }
         case 'small':
         default: {
-                const fileBody = request.body;
+            const fileBody = request.body;
             const base64String = fileBody.file;
             const fileName = fileBody.fileName;
             const buff = Buffer.from (base64String, 'base64');
@@ -115,11 +115,11 @@ async function handler(request: UploadSoftware, response: Response) {
             try {
                 const params1 = {
                     Body: buff,
-                    Bucket: getSoftwaresBucketName(),
+                    Bucket: 'dev-gigatester-manage-feedback',
                     Key: fileName,
                 };
                 appLogger.info({ uploadSoftwareFile_params: params1 });
-                s3.putObject(params1, (error: Error, data: any) => {
+                s3.upload(params1, (error: Error, data: any) => {
                     if (error) {
                         appLogger.error(error, 's3UploadError');
                     }
