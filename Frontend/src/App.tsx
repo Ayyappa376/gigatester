@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Route, Router, Switch } from 'react-router-dom';
 import { history } from './configureStore';
 import { Home } from './pages';
-import { PageHeader, PageFooter } from './components';
+import { PageHeader, PageFooter, ButtonComponent } from './components';
 import { useSelector } from 'react-redux';
 import { useActions, removeUserDetails } from './actions';
 import { IRootState } from './reducers';
@@ -10,6 +10,7 @@ import ReactGA from 'react-ga';
 import Amplify from "aws-amplify";
 import { LanguageProvider } from './common/Language';
 import Layout from './Layout';
+import FeedbackButtonComponent from './components/feedbackButton';
 
 interface IDoitrightProps { }
 
@@ -63,6 +64,7 @@ const DoItRight = (props: IDoitrightProps) => {
   return (
     <LanguageProvider>
       <Router history={history}>
+      <FeedbackButtonComponent label={'Feedback'} />
         <PageHeader getMetricsType={(type: any) => getMetricsType(type)} />
         <Switch>
           <Route exact path='/' component={Home} />
