@@ -88,19 +88,19 @@ const ProductsView = (props: any) => {
 
   const fetchAllfeedback = () => {
     Http.post({
-      url: `/api/v2/productApiKey/`,
+      url: `/api/v2/productApiKey`,
       state: stateVariable,
       body: {
         productApikey: 'none',
       },
     })
-      .then((response: any) => {
-        console.log('app feedback', response);
-      })
-      .catch((error) => {
-        console.log(error);
-        props.history.push('/relogin');
-      });
+    .then((response: any) => {
+      console.log('app feedback', response);
+    })
+    .catch((error) => {
+      console.log(error);
+      props.history.push('/relogin');
+    });
   };
 
   useEffect(() => {
@@ -325,21 +325,23 @@ const ProductsView = (props: any) => {
           {listedProducts.length ? (
             listedProducts.map((item: any, index: number) => {
               let platforms = allPlatforms.filter((p1) =>
-                item.platforms.some((p2: any) => p1.id === p2)
+                item && item.platforms && item.platforms.includes(p1.id)
+                //item.platforms.some((p2: any) => p1.id === p2)
               );
               let devices = allDevices.filter((d1) =>
-                item.devices.some((d2: any) => d1.id === d2)
+                item && item.devices && item.devices.includes(d1.id)
+                //item.devices.some((d2: any) => d1.id === d2)
               );
 
               let usersPlatforms = userState && userState.values.platform;
               let usersDevices = userState && userState.values.devices;
 
               let enableRequestTestbyPlatforms =
-                usersPlatforms && usersPlatforms.length
+                usersPlatforms && usersPlatforms.length && platforms
                   ? platforms.some((o1) => usersPlatforms.includes(o1.id))
                   : false;
               let enableRequestTestbyDevices =
-                usersDevices && usersDevices.length
+                usersDevices && usersDevices.length && devices
                   ? devices.some((o1) => usersDevices.includes(o1.id))
                   : false;
 
