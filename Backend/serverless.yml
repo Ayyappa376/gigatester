@@ -32,10 +32,16 @@ package:
 
 functions:
   feedback:
-    handler: src/functions/feedback/api/index.handler
+    handler: src/functions/feedback/api/db/index.handler
     events:
       - http:
           path: feedback
+          method: ANY
+  feedbackMedia:
+    handler: src/functions/feedback/api/media/index.handler
+    events:
+      - http:
+          path: feedbackMedia
           method: ANY
   app:
     handler: src/app.handler
