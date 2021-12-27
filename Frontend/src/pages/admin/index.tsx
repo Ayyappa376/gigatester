@@ -614,6 +614,8 @@ export default function Admin() {
         );
       case FEEDBACK:
         return <AdminFeedback goBack={switchToAdminHome} />;
+      case FEEDBACK_COMMENTS:
+        return <FeedbackComments goBack={switchToAdminHome} />;
       case MANAGE_SETTINGS:
         return (
           <ManageSettings
