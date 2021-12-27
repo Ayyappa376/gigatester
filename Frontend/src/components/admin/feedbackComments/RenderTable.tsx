@@ -11,21 +11,41 @@ interface IProps {
     viewAttachmentClicked: Function
 }
 
+export const RenderStars = (props: any) => {
+  const arr = [1,2,3,4,5];
+  return (
+      <div style={{alignItems: "center"}}>
+      <div>
+          {arr.map((el, i) => {
+              return (i <= props.rating ? <FavoriteIcon/> : <FavoriteBorderIcon/>)
+          })}
+      </div>
+      </div>
+  )
+}
+
+export const renderComments = (comments: string[] | undefined) => {
+  return (
+    <div>
+      {comments?
+        <div>
+            { comments.length > 0 ? comments.map((comment) => {
+                return (
+                    <div>
+                            <Typography color="textPrimary" style={{fontWeight: 500}}>{comment}</Typography>
+                    </div>
+                )
+            }) : <Typography color="textPrimary" style={{fontWeight: 500}}>-</Typography>}
+        </div>: <div>-</div>
+    }
+    </div>
+  )
+}
+
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
 
-    const RenderStars = (props: any) => {
-        const arr = [1,2,3,4,5];
-        return (
-            <div style={{alignItems: "center"}}>
-            <div>
-                {arr.map((el, i) => {
-                    return (i <= props.rating ? <FavoriteIcon/> : <FavoriteBorderIcon/>)
-                })}
-            </div>
-            </div>
-        )
-    }
+    
 
     return (
         <Container>
@@ -85,33 +105,36 @@ const RenderTable = (props: IProps) => {
                       </TableCell>
                       <TableCell component='th' scope='row' align='center'>
                         <Typography className='tableBodyText'>
-                            {console.log(row.feedbackComments )}
-                            {row.feedbackComments ?
-                            <div>
-                            <div>
-                                { row.feedbackComments.length > 0 ? row.feedbackComments.map((comment) => {
-                                    return (
-                                        <div>
-                                                <Typography>{comment}</Typography>
-                                        </div>
-                                    )
-                                }) : <Typography>-</Typography>}
-                            </div>
+                            {renderComments(row.feedbackComments)}
                             <div>
                               {
                                 row.feedbackMedia? row.feedbackMedia.image ? <Link
                                 component="button"
                                 variant="body2"
+                                style={{fontSize: 11}}
                                 onClick={() => {
-                                  props.viewAttachmentClicked(row.feedbackMedia.image);
+                                  props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
                                 }}
                               >
                                 View attachment
                               </Link> : <div/> : <div/>
                               }
                             </div>
+                            <div>
+                              {
+                                row.feedbackMedia? row.feedbackMedia.video ? <Link
+                                component="button"
+                                variant="body2"
+                                style={{fontSize: 11}}
+                                onClick={() => {
+                                  props.viewAttachmentClicked(row.feedbackMedia.video, row.id, 'video');
+                                }}
+                              >
+                                Watch video
+                              </Link> : <div/> : <div/>
+                              
+                              }
                             </div>
-                            : <div>-</div>}
                         </Typography>
                       </TableCell>
                       
