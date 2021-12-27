@@ -11,6 +11,12 @@ label{
     align-items: center !important;
     width: 100% !important;
   }
+.MuiPaper-rounded{
+    border-radius: 15px;
+}
+.MuiButton-root:hover{
+    background-color: #bdbdbd;
+}
 /* .MuiDialogContent-root {
     height: 300px;
     width: 300px;
