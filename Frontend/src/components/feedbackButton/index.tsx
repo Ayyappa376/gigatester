@@ -1,5 +1,5 @@
-import React, {useState, createRef, useEffect} from 'react';
-import { Button, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, Link, TextField, Tooltip, Typography } from '@material-ui/core';
+import React, {useState, createRef, useEffect, useRef} from 'react';
+import { Button, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, Link, TextField, Tooltip, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
@@ -14,6 +14,7 @@ import { v1 as uuidv1 } from 'uuid';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import CancelIcon from '@material-ui/icons/Cancel';
 import Rating from '@material-ui/lab/Rating';
+import CircularProgress from '@material-ui/core/CircularProgress';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 import { Http } from '../../utils';
@@ -32,6 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const FeedbackButtonComponent = (props: IButtonProps) => {
   let saveCanvas: any;
+  let temp: any;
   const classes = useStyles();
   const stateVariable = useSelector((state: IRootState) => {
     return state;
@@ -49,8 +51,14 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const [fileName, setFileName] = useState('');
   const [uploadScreenshot, setUploadScreenshot] = useState('');
   const [saveableCanvas, setSaveableCanvas] = useState<any>('');
+  const [feedbackComments, setFeedbackComments] = useState('');
+  const [imgMedia, setImgMedia] = useState('');
+  const [videoMedia, setVideoMedia] = useState('');
+  const [fileMedia, setFileMedia] = useState('');
   const [images, setImages] = useState(false);
+  const [loading, setLoading] = useState(false);
   const[bugReportPage, setBugReportPage] = useState(false);
+  const inputRef = useRef<HTMLInputElement>(null); 
   const {
     status,
     startRecording,
@@ -102,6 +110,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   }
 
   const uploadFile = () => {
+    setLoading(true);
     let formUpload = new FormData();
     formUpload.append('file', fileSelected);
     formUpload.append('fileName', fileSelected.name);
@@ -113,18 +122,41 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
         file: base64String,
         fileName: fileSelected.name,
       };
+      console.log(JSON.stringify(dataInfo),'datainfo');
       fileSelected &&
-        Http.post({
-          url: `/api/v2/file/small`,
-          body: dataInfo,
-          state: stateVariable,
+      fetch('http://localhost:3000/feedbackMedia/', {
+        method: 'POST',
+        body:  JSON.stringify(dataInfo),
+        headers: { 'Content-Type': 'application/json' },
+      })
+        .then(res => res.json())
+        .then(data => {
+          setLoading(false);
+          console.log('Success:', data);
+          if(data.Key.slice(0,6) === 'gt_img'){
+            console.log(data.Key, "img");
+            setImgMedia( data.Location)
+          }
+          else if(data.Key.slice(0,8) === 'gt_video'){
+            console.log(data.Key, "vid");
+            setVideoMedia(data.Location)
+          }
+          else{
+            console.log(data.Key, "file");
+            setFileMedia(data.Location)
+          }
         })
-          .then((response: any) => {
-            console.log(response);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
+        // Http.post({
+        //   url: `/api/v2/file/small`,
+        //   body: dataInfo,
+        //   state: stateVariable,
+        // })
+        //   .then((response: any) => {
+        //     console.log(response);
+        //   })
+        //   .catch((error) => {
+        //     console.log(error);
+        //   });
     };
     reader.readAsDataURL(fileSelected);
   }
@@ -170,7 +202,7 @@ useEffect(() => {
   const videoPlay = async () => {
   if(mediaBlobUrl){
     let myFile = await fetch(mediaBlobUrl)
-    .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_video_${uuidv1()}`, { type: 'video/mp4' }));
+    .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_video_${uuidv1()}.mp4`, { type: 'video/mp4' }));
     console.log(myFile, 'videofile');
     // const myFile = new File([mediaBlobUrl], "demo.mp4", { type: 'video/mp4' });
     setFileSelected(myFile);
@@ -179,12 +211,11 @@ useEffect(() => {
   videoPlay();
  }, [mediaBlobUrl])
  useEffect(() => {
-  console.log(uploadScreenshot, 'mediabloburl')
+
   const uploadScreenshotImg = async () => {
   if(uploadScreenshot){
     let myFile = await fetch(uploadScreenshot)
-    .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_img_${uuidv1()}`, { type: 'image/png' }));
-    console.log(myFile, 'videofile');
+    .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_img_${uuidv1()}.png`, { type: 'image/png' }));
     // const myFile = new File([mediaBlobUrl], "demo.mp4", { type: 'video/mp4' });
     setFileSelected(myFile);
   }
@@ -207,8 +238,41 @@ useEffect(() => {
     setFileContentType(event.target.files[0].type);
   }
 
+  const handleComments = (event: any) => {
+      let temp: any = feedbackComments;
+      temp = event.target.value;
+      setFeedbackComments( event.target.value);
+      console.log(event.target.value, 'val')
+      console.log(event.target.name, 'name')
+      console.log(temp,'temp');
+      console.log(feedbackComments, 'feedbackCOmments')
+      // setFeedbackComments(event.target.value)
+  }
   const renderHome = () => {
     return(<BugReportForm />)
+  }
+
+  const submitFeedback = () => {
+    const postData = {
+      productRating: 1,
+      userId: "108",
+      productVersion: "2",
+      feedbackMedia: {
+        image: imgMedia,
+        video: videoMedia,
+        file: fileMedia,
+        audio: ""
+      },
+        feedbackComments: [feedbackComments],
+        productId: "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
+    }
+    fetch('http://localhost:3000/feedback/', {
+      method: 'POST',
+      body:  JSON.stringify(postData),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then(res => res.json())
+      .then(data => console.log(data))
   }
   const ScreenshotImage = () => {
 
@@ -250,8 +314,9 @@ useEffect(() => {
           <>
           <Grid container>
           <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
-          <TextField style={{padding:'10px', width: '100%'}}   multiline
-           id="outlined-multiline-static" rows={4} label="Provide your Comments" variant="outlined" />
+
+          <TextField  style={{padding:'10px', width: '100%'}}   multiline ref={inputRef} autoFocus={inputRef.current === document.activeElement}
+           id="outlined-multiline-static" key="1"  rows={4} label="Provide your Comments" variant="outlined" />
            <br />
            </Grid>
            <Grid item xs={1} sm={1} />
@@ -287,12 +352,12 @@ useEffect(() => {
            </Tooltip>
            </label>
            </Grid>
-           {fileName}
+           {fileMedia ? fileName : fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''}
            <Grid item xs={12} sm={12} style={{width: '100%'}}>
-           {image ? <img width={300} src={image} alt={"ScreenShot"} /> : ''}
+           { imgMedia? <img width={300} src={image} alt={"ScreenShot"} /> : image ? loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''}
            </Grid>
            <Grid item xs={12} sm={12} >
-           {mediaBlobUrl ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay loop /> : ''}
+           {videoMedia ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : mediaBlobUrl ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''}
            </Grid>
            {/* <ReactMediaRecorder
             screen
@@ -305,7 +370,7 @@ useEffect(() => {
                 </div>
             )} /> */}
             <Grid item xs={12} sm={12} >
-           <Button variant="outlined" >Send Feedback</Button>
+           <Button disabled={loading} variant="outlined" onClick={submitFeedback}>Send Feedback</Button>
            </Grid>
            </Grid>
           </>
@@ -413,7 +478,7 @@ useEffect(() => {
   };
   return (
       <>
-    {  images ? <ScreenshotImage /> : dialogOpen ? (
+    { images ? <ScreenshotImage /> : dialogOpen ? (
         handleDialogUpload()
       ) : (
       <div style={{ display: 'flex', zIndex: 1, transform: 'rotate(270deg)',  position: 'fixed', bottom: '50vh', right: '-50px'}}>
