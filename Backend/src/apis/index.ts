@@ -80,6 +80,7 @@ import { api as deleteUsersV2 } from './v2/userManagement/delete';
 import { api as getUserstV2 } from './v2/userManagement/get';
 import { api as createUsersV2 } from './v2/userManagement/post';
 import { api as updateUsersV2 } from './v2/userManagement/put';
+import { api as getSignedUrlV2 } from './v2/signedUrl/get';
 
 export type Handler = (request: Request, response: Response) => void;
 export interface API {
@@ -160,6 +161,7 @@ const apis: API[] = [
   getUsers2V2,
   postUsers2V2,
   putUsers2V2,
+  getSignedUrlV2
 ];
 
 const metricsApis: API[] = [
