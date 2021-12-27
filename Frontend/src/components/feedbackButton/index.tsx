@@ -83,7 +83,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 
   const takeScreenshot = () => {
     let node: any = document.body;
-    console.log(document.body, 'ref')
+    // console.log(document.body, 'ref')
     if (!node) {
         throw new Error('You should provide correct html node.')
       }
@@ -91,8 +91,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
         .then((canvas) => {
           const croppedCanvas = document.createElement('canvas')
           const croppedCanvasContext = croppedCanvas.getContext('2d')
-          console.log(croppedCanvasContext);
-          // init data
+          // console.log(croppedCanvasContext);
           const cropPositionTop = 0
           const cropPositionLeft = 0
           const cropWidth = canvas.width
@@ -120,7 +119,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     let formUpload = new FormData();
     formUpload.append('file', fileSelected);
     formUpload.append('fileName', fileSelected.name);
-    console.log(fileSelected, 'file');
+    // console.log(fileSelected, 'file');
     const reader = new FileReader();
     reader.onload = () => {
       const base64String = String(reader.result).split('base64,')[1];
@@ -128,7 +127,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
         file: base64String,
         fileName: fileSelected.name,
       };
-      console.log(JSON.stringify(dataInfo),'datainfo');
+      // console.log(JSON.stringify(dataInfo),'datainfo');
       fileSelected &&
       fetch('http://localhost:3000/feedbackMedia/', {
         method: 'POST',
@@ -138,17 +137,17 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
         .then(res => res.json())
         .then(data => {
           setLoading(false);
-          console.log('Success:', data);
+          // console.log('Success:', data);
           if(data.Key.slice(0,6) === 'gt_img'){
-            console.log(data.Key, "img");
+            // console.log(data.Key, "img");
             setImgMedia(data.Location)
           }
           else if(data.Key.slice(0,8) === 'gt_video'){
-            console.log(data.Key, "vid");
+            // console.log(data.Key, "vid");
             setVideoMedia(data.Location)
           }
           else{
-            console.log(data.Key, "file");
+            // console.log(data.Key, "file");
             setFileMedia(data.Location)
           }
         })
@@ -179,7 +178,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 
   const finalScreenshot = () => {
     let node: any = document.getElementById('canvasScreenshot');
-    console.log(document.getElementById('canvasScreenshot'), 'ref')
+    // console.log(document.getElementById('canvasScreenshot'), 'ref')
     if (!node) {
         throw new Error('You should provide correct html node.')
       }
@@ -230,12 +229,12 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 
 
  useEffect(() => {
-  console.log(mediaBlobUrl, 'mediabloburl')
+  // console.log(mediaBlobUrl, 'mediabloburl')
   const videoPlay = async () => {
   if(mediaBlobUrl){
     let myFile = await fetch(mediaBlobUrl)
     .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_video_${uuidv1()}.mp4`, { type: 'video/mp4' }));
-    console.log(myFile, 'videofile');
+    // console.log(myFile, 'videofile');
     // const myFile = new File([mediaBlobUrl], "demo.mp4", { type: 'video/mp4' });
     setFileSelected(myFile);
   }
@@ -300,19 +299,19 @@ useEffect(() => {
       headers: { 'Content-Type': 'application/json' },
     })
       .then(res => res.json())
-      .then(data => {setDataSubmitted(true); setRating(0); setLoading(false); console.log(data);setFileSubmitted(false);
+      .then(data => {setDataSubmitted(true); setFinalRating(0); setLoading(false); console.log(data);setFileSubmitted(false);
           setTimeout(()=> {closeDialog();}, 3000) })
       }
 }, [fileSubmitted])
   const SuccessPage = () => {
-    console.log(finalRating)
+    // console.log(finalRating)
     if(finalRating > 0 && finalRating < 6){
       setFileSubmitted(true)
     }
     return(
       <>
       <div style={{justifyContent: 'center', display: 'flex', padding: '20px'}}>
-      {<Typography>Thanks for Submitting Feedback</Typography> }
+      {dataSubmitted ?  <Typography>Thanks for Submitting Feedback</Typography> : '' }
       </div>
       </>
     )
@@ -327,7 +326,7 @@ useEffect(() => {
   }
   const ScreenshotImage = () => {
 
-    console.log(saveCanvas,"saveCanvas")
+    // console.log(saveCanvas,"saveCanvas")
     return(
       <div style={{display: 'flex', zIndex: 1,  position: 'fixed', height: '80vh', width: '100vw'}}>
       <Grid container>
@@ -452,13 +451,13 @@ useEffect(() => {
           if(newValue){ 
           setRating(newValue);
           setFinalRating(newValue)
-          console.log(newValue);
+          // console.log(newValue);
           }
         }}
       />
       </Grid>
       <Grid item xs={12} sm={12}>
-      { (rating > 0 && rating < 3) ?  bugReportForm() : (rating> 2 && rating < 6) ? <SuccessPage /> : ''}
+      { (finalRating > 0 && finalRating < 3) ?  bugReportForm() : (finalRating> 2 && finalRating < 6) ? <SuccessPage /> : ''}
       </Grid>
       </div>
       </Grid>
