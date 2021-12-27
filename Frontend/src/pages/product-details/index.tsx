@@ -22,30 +22,35 @@ const useStyles = makeStyles({
 const productList = [
   {
     id: 1,
+    name: 'San',
     label: 'San',
     imgPath:
       'https://images.unsplash.com/photo-1537944434965-cf4679d1a598?auto=format&fit=crop&w=400&h=250&q=60',
   },
   {
     id: 2,
+    name: 'Bird',
     label: 'Bird',
     imgPath:
       'https://images.unsplash.com/photo-1538032746644-0212e812a9e7?auto=format&fit=crop&w=400&h=250&q=60',
   },
   {
     id: 3,
+    name: 'Bali',
     label: 'Bali',
     imgPath:
       'https://images.unsplash.com/photo-1537996194471-e657df975ab4?auto=format&fit=crop&w=400&h=250&q=80',
   },
   {
     id: 4,
+    name: 'Las',
     label: 'Las',
     imgPath:
       'https://images.unsplash.com/photo-1518732714860-b62714ce0c59?auto=format&fit=crop&w=400&h=250&q=60',
   },
   {
     id: 5,
+    name: 'Serbia',
     label: 'Serbia',
     imgPath:
       'https://images.unsplash.com/photo-1512341689857-198e7e2f3ca8?auto=format&fit=crop&w=400&h=250&q=60',

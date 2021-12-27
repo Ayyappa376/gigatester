@@ -115,7 +115,7 @@ async function handler(request: UploadSoftware, response: Response) {
             try {
                 const params1 = {
                     Body: buff,
-                    Bucket: 'dev-gigatester-manage-feedback',
+                    Bucket: getSoftwaresBucketName(),
                     Key: fileName,
                 };
                 appLogger.info({ uploadSoftwareFile_params: params1 });
