@@ -486,8 +486,8 @@ const BuildTable = (props: any) => {
           rowsPerPage={rowsPerPage}
           page={page}
           labelDisplayedRows={({ to, count }) => `${to} of ${count}`}
-          onChangePage={handleChangePage}
-          onChangeRowsPerPage={handleChangeRowsPerPage}
+          onPageChange={handleChangePage}
+          onRowsPerPageChange={handleChangeRowsPerPage}
           ActionsComponent={TablePaginationActions}
         />
       </Paper>
