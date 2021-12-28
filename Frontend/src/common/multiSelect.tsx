@@ -47,7 +47,9 @@ export default function MultipleSelect(props: any) {
             >
                 {props.list.map((item: any, index: number) => (
                     <MenuItem key={index} value={item.id}>
-                        <Checkbox checked={props.values[props.label.toLowerCase()].indexOf(item.id) > -1} />
+                        <Checkbox checked={props.values && 
+                                            props.values[props.label.toLowerCase()] &&
+                                            props.values[props.label.toLowerCase()].indexOf(item.id) > -1} />
                         <ListItemText primary={item.name} />
                     </MenuItem>
                 ))}

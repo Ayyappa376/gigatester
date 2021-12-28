@@ -28,6 +28,12 @@ exports.handler = async (event: any) => {
                             Item: {
                                 createdOn: Date.now(),
                                 feedbackComments: jsonBody.feedbackComments,
+                                feedbackMedia: {
+                                    audio: '',
+                                    file: jsonBody.feedbackMedia.file,
+                                    image: jsonBody.feedbackMedia.image,
+                                    video: jsonBody.feedbackMedia.video,
+                                },
                                 id: `feedback_${uuidv1()}`,
                                 productId: jsonBody.productId,
                                 productRating: jsonBody.productRating,
