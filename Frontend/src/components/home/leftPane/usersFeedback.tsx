@@ -81,8 +81,7 @@ const UsersFeedback = (props: any) => {
                             {<KeyboardArrowLeft />}
                         </Button>
                     }
-                >
-                </MobileStepper>
+                />
             </Paper >
         </div>
     );

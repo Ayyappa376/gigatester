@@ -15,7 +15,6 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Rating from '@material-ui/lab/Rating';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
-import { contextType } from 'react-autocomplete';
 
 interface IButtonProps {
   label: string;
@@ -59,7 +58,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const[bugReportPage, setBugReportPage] = useState(false);
   const[dataSubmitted, setDataSubmitted] = useState(false);
 
-  let {
+  const {
     status,
     startRecording,
     stopRecording,
@@ -87,41 +86,6 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const handleUploadButton = () => {
     setDialogOpen(true);
   };
-
-  // const takeScreenshot = () => {
-  //   let node: any = document.body;
-  //   // console.log(document.body, 'ref')
-  //   if (!node) {
-  //       throw new Error('You should provide correct html node.')
-  //     }
-  //     return html2canvas(node)
-  //       .then((canvas) => {
-  //         const croppedCanvas = document.createElement('canvas')
-  //         const croppedCanvasContext = croppedCanvas.getContext('2d')
-  //         // console.log(croppedCanvasContext);
-  //         const cropPositionTop = 0
-  //         const cropPositionLeft = 0
-  //         const cropWidth: number = canvas.width;
-  //         const cropHeight: number = canvas.height;
-  //         console.log(croppedCanvasContext, '2ds');
-  //         console.log(cropWidth);
-  //         console.log(cropHeight);
-  //         croppedCanvas.width = cropWidth
-  //         croppedCanvas.height = cropHeight
-  //         if(croppedCanvasContext){
-  //         croppedCanvasContext.drawImage(
-  //           canvas,
-  //           cropPositionLeft,
-  //           cropPositionTop,
-  //         )
-  //         }
-  //         const base64Image = croppedCanvas.toDataURL()
-  //         setImage(base64Image)
-  //         setImages(true)
-  //         console.log(base64Image)
-  //         return base64Image
-  //       })
-  // }
 
   const uploadFile = () => {
     if(fileSelected){
@@ -319,6 +283,41 @@ useEffect(() => {
   }
   // const renderHome = () => {
   //   return(<BugReportForm />)
+  // }
+
+    // const takeScreenshot = () => {
+  //   let node: any = document.body;
+  //   // console.log(document.body, 'ref')
+  //   if (!node) {
+  //       throw new Error('You should provide correct html node.')
+  //     }
+  //     return html2canvas(node)
+  //       .then((canvas) => {
+  //         const croppedCanvas = document.createElement('canvas')
+  //         const croppedCanvasContext = croppedCanvas.getContext('2d')
+  //         // console.log(croppedCanvasContext);
+  //         const cropPositionTop = 0
+  //         const cropPositionLeft = 0
+  //         const cropWidth: number = canvas.width;
+  //         const cropHeight: number = canvas.height;
+  //         console.log(croppedCanvasContext, '2ds');
+  //         console.log(cropWidth);
+  //         console.log(cropHeight);
+  //         croppedCanvas.width = cropWidth
+  //         croppedCanvas.height = cropHeight
+  //         if(croppedCanvasContext){
+  //         croppedCanvasContext.drawImage(
+  //           canvas,
+  //           cropPositionLeft,
+  //           cropPositionTop,
+  //         )
+  //         }
+  //         const base64Image = croppedCanvas.toDataURL()
+  //         setImage(base64Image)
+  //         setImages(true)
+  //         console.log(base64Image)
+  //         return base64Image
+  //       })
   // }
 
   const screenshotVideo = () => {
