@@ -5,7 +5,7 @@ cors({
   });
 
   exports.handler = async (event: any) => {
-    // console.log('Received event:', JSON.stringify(event, null, 2));
+    console.log('feedback-api-media-handler: Received event:', JSON.stringify(event, undefined, 2));
     let body;
     let statusCode = '200';
     const headers = {

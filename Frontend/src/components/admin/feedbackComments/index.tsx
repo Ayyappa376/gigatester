@@ -74,7 +74,7 @@ const FeedbackComments = (props: any) => {
     useEffect(() => {
       setBackdropOpen(true);
       Http.get({
-          url: '/feedback',
+          url: '/api/v2/userFeedback',
           state: stateVariable,
         }).then((response: any) => {
           console.log(response);
