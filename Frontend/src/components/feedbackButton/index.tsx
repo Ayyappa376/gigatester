@@ -15,6 +15,7 @@ import CancelIcon from '@material-ui/icons/Cancel';
 import Rating from '@material-ui/lab/Rating';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
+import { contextType } from 'react-autocomplete';
 
 interface IButtonProps {
   label: string;
@@ -22,6 +23,7 @@ interface IButtonProps {
 const useStyles = makeStyles((theme) => ({
   button: {
     margin: theme.spacing(2),
+    "&:hover": {background: "#366afb"},
   },
   dialogPaper: {
     minHeight: '80vh',
@@ -50,21 +52,23 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const [videoMedia, setVideoMedia] = useState('');
   const [fileMedia, setFileMedia] = useState('');
   const [images, setImages] = useState(false);
+  const [video, setVideo] = useState<any>('');
+  const [imageRecording, setImageRecording] = useState(false)
   const [loading, setLoading] = useState(false);
   const [finalRating, setFinalRating] = useState(0);
   const[bugReportPage, setBugReportPage] = useState(false);
   const[dataSubmitted, setDataSubmitted] = useState(false);
-  const[successButton, setSuccessButton] = useState(false);
-  const inputRef = useRef<HTMLInputElement>(null); 
 
-  const {
+  let {
     status,
     startRecording,
     stopRecording,
     mediaBlobUrl,
+    clearBlobUrl,
   } = useReactMediaRecorder({ screen: true,blobPropertyBag:{ type: "video/mp4" }});
 
   const closeDialog = () => {
+    setVideo('');
     setDialogOpen(false);
     setFeedbackPage(false);
     setBugReportPage(false);
@@ -75,46 +79,53 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     setDataSubmitted(false);
     setFeedbackComments('');
     setFinalRating(0);
+    setImgMedia('');
+    setVideoMedia('');
+    setFileMedia('');
   }
 
   const handleUploadButton = () => {
     setDialogOpen(true);
   };
 
-  const takeScreenshot = () => {
-    let node: any = document.body;
-    // console.log(document.body, 'ref')
-    if (!node) {
-        throw new Error('You should provide correct html node.')
-      }
-      return html2canvas(node)
-        .then((canvas) => {
-          const croppedCanvas = document.createElement('canvas')
-          const croppedCanvasContext = croppedCanvas.getContext('2d')
-          // console.log(croppedCanvasContext);
-          const cropPositionTop = 0
-          const cropPositionLeft = 0
-          const cropWidth = canvas.width
-          const cropHeight = canvas.height
-  
-          croppedCanvas.width = cropWidth
-          croppedCanvas.height = cropHeight
-          if(croppedCanvasContext){
-          croppedCanvasContext.drawImage(
-            canvas,
-            cropPositionLeft,
-            cropPositionTop,
-          )
-          }
-          const base64Image = croppedCanvas.toDataURL()
-          setImage(base64Image)
-          setImages(true)
-          return base64Image
-        })
-  }
+  // const takeScreenshot = () => {
+  //   let node: any = document.body;
+  //   // console.log(document.body, 'ref')
+  //   if (!node) {
+  //       throw new Error('You should provide correct html node.')
+  //     }
+  //     return html2canvas(node)
+  //       .then((canvas) => {
+  //         const croppedCanvas = document.createElement('canvas')
+  //         const croppedCanvasContext = croppedCanvas.getContext('2d')
+  //         // console.log(croppedCanvasContext);
+  //         const cropPositionTop = 0
+  //         const cropPositionLeft = 0
+  //         const cropWidth: number = canvas.width;
+  //         const cropHeight: number = canvas.height;
+  //         console.log(croppedCanvasContext, '2ds');
+  //         console.log(cropWidth);
+  //         console.log(cropHeight);
+  //         croppedCanvas.width = cropWidth
+  //         croppedCanvas.height = cropHeight
+  //         if(croppedCanvasContext){
+  //         croppedCanvasContext.drawImage(
+  //           canvas,
+  //           cropPositionLeft,
+  //           cropPositionTop,
+  //         )
+  //         }
+  //         const base64Image = croppedCanvas.toDataURL()
+  //         setImage(base64Image)
+  //         setImages(true)
+  //         console.log(base64Image)
+  //         return base64Image
+  //       })
+  // }
 
   const uploadFile = () => {
     if(fileSelected){
+      console.log('upload file triggered')
     setLoading(true);
     let formUpload = new FormData();
     formUpload.append('file', fileSelected);
@@ -176,22 +187,34 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     }
   }, [imgMedia, videoMedia, fileMedia])
 
+  useEffect(() => {
+    if(mediaBlobUrl){
+    setVideo(mediaBlobUrl);
+    if(!imageRecording){
+    setDialogHidden(false);
+    }
+    }
+  }, [mediaBlobUrl])
+
   const finalScreenshot = () => {
+    clearBlobUrl();
+    setVideo('');
     let node: any = document.getElementById('canvasScreenshot');
     // console.log(document.getElementById('canvasScreenshot'), 'ref')
     if (!node) {
         throw new Error('You should provide correct html node.')
       }
-      return html2canvas(node)
+      return html2canvas(node, {scrollX: 0,
+        scrollY: 0})
         .then((canvas) => {
           const croppedCanvas = document.createElement('canvas')
           const croppedCanvasContext = croppedCanvas.getContext('2d')
-          console.log(croppedCanvasContext);
+          console.log(croppedCanvasContext, '2d');
           // init data
           const cropPositionTop = 0
           const cropPositionLeft = 0
-          const cropWidth = canvas.width
-          const cropHeight = canvas.height
+          const cropWidth = window.innerWidth
+          const cropHeight = window.innerHeight
   
           croppedCanvas.width = cropWidth
           croppedCanvas.height = cropHeight
@@ -202,7 +225,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
             cropPositionTop,
           )
           }
-          const base64Image = croppedCanvas.toDataURL()
+          const base64Image = canvas.toDataURL()
           setImage(base64Image)
           setUploadScreenshot(base64Image)
           return base64Image
@@ -258,9 +281,29 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const captureScreenshot = () => {
     setDialogHidden(true);
     setTimeout(()=> {
-      takeScreenshot();
-    }, 1000)
+      startRecording();
+    }, 500)
+    setImageRecording(true)
+    console.log('recording started')
+    console.log(status, 'started')
   }
+
+  const captureScreenRecord = () => {
+    setDialogHidden(true);
+     setTimeout(()=> {
+      startRecording();
+    }, 500)
+  }
+
+useEffect(() => {
+  if(status === 'recording' && imageRecording){
+    setTimeout(()=> {
+      stopRecording();    
+      setTimeout(()=> {
+        screenshotVideo();
+      }, 1000)},500)
+  }
+}, [status])
 
   const fileUpload = (event: any) => {
     event.preventDefault();
@@ -278,8 +321,23 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   //   return(<BugReportForm />)
   // }
 
+  const screenshotVideo = () => {
+    const video: any = document.getElementById('videoRecord')
+    const canvas = document.createElement("canvas");
+    const context = canvas.getContext("2d");
+    canvas.width= window.screen.width;
+    canvas.height = window.screen.height;
+    if(video && context){
+      context.drawImage(video, 0, 0);
+      const frame = canvas.toDataURL("image/png");
+      setImage(frame);
+    }
+    setImages(true)
+  }
+
 useEffect(() => {
     if(fileSubmitted){
+      console.log('file Submitted')
     const postData = {
       productRating: finalRating,
       userId: "1",
@@ -328,14 +386,13 @@ useEffect(() => {
 
     // console.log(saveCanvas,"saveCanvas")
     return(
-      <div style={{display: 'flex', zIndex: 1,  position: 'fixed', height: '80vh', width: '100vw'}}>
+      <div style={{display: 'flex', zIndex: 1,  position: 'fixed', height: '100vh', width: '100vw'}}>
       <Grid container>
-      <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
-      <div id="canvasScreenshot">
-      <CanvasDraw  ref={canvasDraw => (saveCanvas = (canvasDraw))}  brushColor='red' enablePanAndZoom={true} brushRadius={3} hideGrid={true} imgSrc={image} style={{display: 'flex', width: '65rem', height: '35rem', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}}/>
+      <Grid item xs={12} sm={12}>
+      <div id="canvasScreenshot" >
+      <CanvasDraw  ref={canvasDraw => (saveCanvas = (canvasDraw))} brushColor='red' brushRadius={3} hideGrid={true} imgSrc={image}  canvasHeight={window.screen.height} canvasWidth={window.screen.width} />
       </div>
-      {/* <img style={{width: '90vw', height: '80vh', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}} src={image} alt={"ScreenShot"} /> */}
-      <div style={{position: 'fixed', borderStyle: 'solid', borderWidth: '2px',borderColor: 'red', backgroundColor: 'white', bottom: '20px', left: '40vw'}}>
+            <div style={{position: 'fixed', borderStyle: 'solid', borderWidth: '2px',borderColor: 'red', backgroundColor: 'white', bottom: '20px', left: '40vw'}}>
       <Button variant='outlined'  style={{margin: '10px', backgroundColor: 'white'}} onClick={() => {
               saveCanvas.undo();
             }}>Undo</Button>
@@ -375,20 +432,20 @@ useEffect(() => {
            <Grid item xs={3} sm={3}>
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Capture Screenshot</Typography>}>
-           <AspectRatioIcon onClick={() => {captureScreenshot()}} style={{pointerEvents: (mediaBlobUrl) ? 'none' : 'all', opacity: (mediaBlobUrl) ? '0.5' : '1'}}/>
+           <AspectRatioIcon onClick={() => {captureScreenshot()}} style={{pointerEvents: (video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1'}}/>
            </Tooltip>
            </Grid>
            <Grid item xs={1} sm={1} />
            <Grid item xs={3} sm={3}>
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Start Screen Record</Typography>}>
-           <VideocamIcon onClick={startRecording}  style={{pointerEvents: (image!='') ? 'none' : 'all', opacity: (image) ? '0.5' : '1'}} />
+           <VideocamIcon onClick={() => {captureScreenRecord()}}  style={{pointerEvents: (image!='' || fileName) ? 'none' : 'all', opacity: (image || fileName) ? '0.5' : '1'}} />
            </Tooltip>
            </Grid>
            <Grid item xs={1} sm={1} />
            <Grid item xs={2} sm={2} >
            <input
-                style={{ display: 'none' }}
+                style={{ display: 'none', pointerEvents: (image!='' || video) ? 'none' : 'all', opacity: (image || video) ? '0.5' : '1' }}
                 id='upload-file'
                 multiple
                 type='file'
@@ -400,19 +457,24 @@ useEffect(() => {
             >
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Attach File</Typography>}>
-           <AttachFileIcon/>
+           <AttachFileIcon style={{ pointerEvents: (image!='' || video) ? 'none' : 'all', opacity: (image!='' || video) ? '0.5' : '1'}}/>
            </Tooltip>
            </label>
            </Grid>
+           {/* <img style={{width: '100vw', height: '100vh', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}} src={image} alt={"ScreenShot"} /> */}
+
            {/* {fileMedia ? fileName : fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
            {fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : fileName : '' }
            <Grid item xs={12} sm={12} style={{width: '100%'}}>
            {/* { imgMedia? <img width={300} src={image} alt={"ScreenShot"} /> : image ? loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
-           {  image ?  loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : mediaBlobUrl ? '' : <img width={300} src={image} alt={"ScreenShot"} />  : ''}
+           {  image ?  loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>)  :  video ? '' : <img width={300} src={image} alt={"ScreenShot"} />  : ''}
+           {/*  */}
            </Grid>
            <Grid item xs={12} sm={12} >
+           <video id='videoRecord' style={{maxHeight: '0px', maxWidth: '0px'}} src={mediaBlobUrl} controls autoPlay muted loop /> 
            {/* {videoMedia ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : mediaBlobUrl ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
-           {mediaBlobUrl  ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : image ? '' : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : ''}
+           {video  ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>): image ? ''  : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : ''}
+           {/*  */}
            </Grid>
            {/* <ReactMediaRecorder
             screen
@@ -468,7 +530,7 @@ useEffect(() => {
     return (
       <>
             <div style={{display: 'flex', justifyContent: 'center', padding: '0px', margin: '0px'}}>
-              <Button style={{ margin: '10px 0px 10px 0px'}} onClick={() => {setBugReportPage(true)}} >
+              <Button style={{ margin: '10px 0px 10px 0px'  }} onClick={() => {setBugReportPage(true)}} >
             <Grid container>
               <Grid item xs={3} sm={3}>
               <BugReportIcon style={{fontSize: '38px'}} />
