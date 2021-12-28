@@ -10,6 +10,7 @@ import RenderTable, { renderComments, RenderStars } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
+import { url } from 'inspector';
 
 const RATING_ONE = "1";
 const RATING_TWO = "2";
@@ -49,6 +50,29 @@ interface IRatingMapping {
   [key : string] : IRatingMapData;
 };
 
+export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
+  if(!url) {
+    return;
+  }
+  return new Promise((resolve, reject) => {
+    const urlSplit = url.split('/')
+    let name = urlSplit[urlSplit.length - 1]
+
+    Http.get({
+      url: `/api/v2/signedurl/${name}`,
+      state: stateVariable
+    }).then((response: any) => {
+      console.log(response)
+      if(response.filePath) {
+        return resolve(response.filePath);
+      }
+    }).catch((error : any) => {
+        console.error(error);
+        return reject(error)
+    })
+  })
+} 
+
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [data, setData] = useState([]);
@@ -59,6 +83,7 @@ const FeedbackComments = (props: any) => {
     const [attachmentType, setAttachmentType] = useState('')
     const [focusAttachmentUid, setFocusAttachmentUid] = useState("");
     const [ratingMapping, setRatingMapping] = useState<IRatingMapping>({})
+    const [urlArray, setUrlArray] = useState<string[]>([]);
     const [barChartSeries, setBarChartSeries] = useState([{
       name: 'rating',
       data: [0, 0, 0, 0, 0]
@@ -91,6 +116,7 @@ const FeedbackComments = (props: any) => {
 
     useEffect(() => {
       const rateMap: IRatingMapping = {};
+      const urls: string[] = [];
       
       data.forEach((item: IAppFeedback) => {
         console.log(item)
@@ -101,8 +127,20 @@ const FeedbackComments = (props: any) => {
           productId: item.productId,
           productVersion: item.productVersion
         }
+        if(item.feedbackMedia ) {
+          //const links = Object.values(item.feedbackMedia).filter((key: string) => key !== '');
+          const links: any = Object.values(item.feedbackMedia);
+          const linksFiltered = links.filter((key: string) => key !== '')
+          console.log(linksFiltered)
+          urls.push(...linksFiltered);
+        }
       });
       setRatingMapping(rateMap);
+      const urlArrayCopy = [...urlArray];
+      urlArrayCopy.push(...urls);
+      setUrlArray(urlArrayCopy)
+      //console.log(urls)
+      //fetchSignedUrls(urls);
     }, [data])
 
     useEffect(() => {
@@ -216,39 +254,47 @@ const FeedbackComments = (props: any) => {
             <Close style={{display: 'block',
                 marginLeft: 'auto',
               }} onClick={()=> {setShowImageModal(false); setFocusAttachmentUid('')}}/>
-            {attachmentType == 'image' ?
-            <Image aspectRatio={16/9} width='90%' style={{display: 'block',
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                          marginTop: 20,
-                          objectFit: 'cover',
-                          objectPosition: 'center top'
-                          }} src={signedImageUrl} /> :
-            <video width="90%" controls style={{display: 'block',
-                          marginTop: 20,
-                          marginLeft: 'auto',
-                          marginRight: 'auto',
-                          }}>
-              <source src={signedImageUrl} type="video/mp4" />
-            </video>
-            }
-            <Divider/>
-            <Grid container style={{marginTop: '20px'}}>
-            <Grid item sm={5}>
-              <div style={{display: 'flex'}}>
-              <Typography color="textSecondary" >Date: &nbsp;</Typography>
-              <Typography color="textPrimary" style={{fontWeight: 500}}>{getDateString(focusAttachmentUid)}</Typography>
-              </div>
-              <div style={{display: 'flex'}}>
-              <Typography color="textSecondary">Product Version: &nbsp;</Typography>
-              <Typography color="textPrimary" style={{fontWeight: 500}}>{getProductVersion(focusAttachmentUid)}</Typography>
-              </div>
-            </Grid>
-            <Grid item sm={7}>
-              <RenderStars rating={getRating(focusAttachmentUid)}/>
-              <div style={{fontWeight: 500}}>{renderComments(getComments(focusAttachmentUid))}</div>
-            </Grid>
-            </Grid>
+              <Grid container>
+                <Grid item sm={7}>
+                  {attachmentType == 'image' ?
+                    <Image aspectRatio={4/3} width='90%' style={{display: 'block',
+                                  marginLeft: 'auto',
+                                  marginRight: 'auto',
+                                  marginTop: 20,
+                                  objectFit: 'cover',
+                                  objectPosition: 'center top'
+                                  }} src={signedImageUrl} /> :
+                    <video width="90%" controls style={{display: 'block',
+                                  marginTop: 20,
+                                  marginLeft: 'auto',
+                                  marginRight: 'auto',
+                                  }}>
+                      <source src={signedImageUrl} type="video/mp4" />
+                    </video>
+                  }
+                </Grid>
+                <Grid style={{padding: 15, paddingTop: 0}} item sm={5}>
+                  <Grid container style={{marginTop: '20px'}}>
+                    <Grid item sm={5}>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary" >Date: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getDateString(focusAttachmentUid)}</Typography>
+                      </div>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary">Product Version: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getProductVersion(focusAttachmentUid)}</Typography>
+                      </div>
+                    </Grid>
+                    <Grid item sm={7}>
+                      <RenderStars rating={getRating(focusAttachmentUid)}/>
+                      
+                    </Grid>
+                    </Grid>
+                    <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>{renderComments(getComments(focusAttachmentUid))}</div>
+                  </Grid>
+              </Grid>
+            
+            
 
           </div>
         </Modal>
@@ -268,7 +314,7 @@ const FeedbackComments = (props: any) => {
               <ReactApexChart options={options2} series={pieChartSeries} type="pie" width={500} height={320} />
             </Grid>
           </Grid>
-          <RenderTable tableData={data} viewAttachmentClicked={(url: string, id: string, type: string) => {
+          <RenderTable tableData={data} urls={urlArray} viewAttachmentClicked={(url: string, id: string, type: string) => {
             console.log("calling fetchSignedUrl", id)
             setShowImageModal(true);
             setFocusAttachmentUid(id);
