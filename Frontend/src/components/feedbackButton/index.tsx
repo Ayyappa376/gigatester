@@ -81,6 +81,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     setImgMedia('');
     setVideoMedia('');
     setFileMedia('');
+    setImageRecording(false);
   }
 
   const handleUploadButton = () => {
@@ -368,7 +369,7 @@ useEffect(() => {
     return(
       <>
       <div style={{justifyContent: 'center', display: 'flex', padding: '20px'}}>
-      {dataSubmitted ?  <Typography>Thanks for Submitting Feedback</Typography> : '' }
+      {dataSubmitted ?  <Typography>Thanks for Submitting Feedback</Typography> : (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) }
       </div>
       </>
     )
