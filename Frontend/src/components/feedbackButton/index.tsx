@@ -5,7 +5,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import VideocamIcon from '@material-ui/icons/Videocam';
-import { useReactMediaRecorder } from "react-media-recorder";
+import { ReactMediaRecorderRenderProps, useReactMediaRecorder } from "react-media-recorder";
 import html2canvas from 'html2canvas';
 import CanvasDraw from "react-canvas-draw";
 import './styles.css';
@@ -75,7 +75,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     stopRecording,
     mediaBlobUrl,
     clearBlobUrl,
-  } = useReactMediaRecorder({ screen: true,blobPropertyBag:{ type: "video/mp4" }});
+  }: ReactMediaRecorderRenderProps = useReactMediaRecorder({ screen: true,blobPropertyBag:{ type: "video/mp4" }});
 
   const closeDialog = () => {
     setVideo('');
@@ -479,9 +479,9 @@ useEffect(() => {
            {/*  */}
            </Grid>
            <Grid item xs={12} sm={12} >
-           <video id='videoRecord' style={{maxHeight: '0px', maxWidth: '0px'}} src={mediaBlobUrl} controls autoPlay muted loop /> 
+           <video id='videoRecord' style={{maxHeight: '0px', maxWidth: '0px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> 
            {/* {videoMedia ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : mediaBlobUrl ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
-           {video  ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>): image ? ''  : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : ''}
+           {video  ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>): image ? ''  : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> : ''}
            {/*  */}
            </Grid>
            {/* <ReactMediaRecorder
