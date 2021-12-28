@@ -1,5 +1,5 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, getSoftwaresBucketName, responseBuilder } from '@utils/index';
+import { appLogger, getFeedbackBucketName, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 const AWS = require('aws-sdk');
 
@@ -36,7 +36,7 @@ async function handler(request: GetTeam, response: Response) {
     if (params.fileKey) {
             try {
                 const url = await s3.getSignedUrlPromise('getObject', {
-                    Bucket: 'dev-gigatester-manage-feedback',
+                    Bucket: getFeedbackBucketName(),
                     Expires: 60,
                     Key: params.fileKey,
                 });

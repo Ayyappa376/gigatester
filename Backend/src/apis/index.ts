@@ -65,6 +65,7 @@ import { api as reportsV2 } from './v2/reports/get';
 import { api as getAssementResultV2 } from './v2/result/get';
 import { api as getSystemSettingsV2 } from './v2/settings/get';
 import { api as postSystemSettingsV2 } from './v2/settings/post';
+import { api as getSignedUrlV2 } from './v2/signedUrl/get';
 import { api as getAssessmentSummaryV2 } from './v2/summary/get';
 import { api as getAssessmentAndTeamDetailsV2 } from './v2/teamAndAssessmentList/get';
 import { api as getTeamsV2 } from './v2/teams/get';
@@ -80,7 +81,6 @@ import { api as deleteUsersV2 } from './v2/userManagement/delete';
 import { api as getUserstV2 } from './v2/userManagement/get';
 import { api as createUsersV2 } from './v2/userManagement/post';
 import { api as updateUsersV2 } from './v2/userManagement/put';
-import { api as getSignedUrlV2 } from './v2/signedUrl/get';
 
 export type Handler = (request: Request, response: Response) => void;
 export interface API {

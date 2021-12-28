@@ -87,6 +87,7 @@ export const config: Config = {
   },
   region: 'us-east-1', //nomiso - dev env //change based on where to deploy
   s3Bucket: {
+    feedbacks: 'gigatester-manage-feedback',
     productPhotos: 'gigatester-product-photos',
     profilePhotos: 'gigatester-profile-photos',
     softwares: 'gigatester-manage-software',
