@@ -7,7 +7,7 @@ cors({
     origin: true,
   });
 exports.handler = async (event: any) => {
-    // console.log('Received event:', JSON.stringify(event, null, 2));
+    console.log('feedback-api-db-handler: Received event:', JSON.stringify(event, undefined, 2));
     let body;
     let statusCode = '200';
     const headers = {
@@ -19,9 +19,9 @@ exports.handler = async (event: any) => {
             case 'DELETE':
                 body = await dynamo.delete(JSON.parse(event.body)).promise();
                 break;
-            case 'GET':
-                body = await dynamo.scan({ TableName: 'dev_GT_feedback' }).promise();
-                break;
+//            case 'GET':
+//                body = await dynamo.scan({ TableName: 'dev_GT_feedback' }).promise();
+//                break;
             case 'POST':
                 const jsonBody = JSON.parse(event.body);
                 const tableparams = {
@@ -48,7 +48,7 @@ exports.handler = async (event: any) => {
                 body = await dynamo.update(JSON.parse(event.body)).promise();
                 break;
             case 'OPTIONS':
-                statusCode = '204';
+                statusCode = '200';
                 headers['Access-Control-Allow-Headers'] = '*';
                 headers['Access-Control-Allow-Origin'] = '*';
                 headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';

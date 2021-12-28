@@ -101,6 +101,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 
   const uploadFile = () => {
     if(fileSelected){
+      console.log('upload file triggered')
     setLoading(true);
     let formUpload = new FormData();
     formUpload.append('file', fileSelected);
@@ -345,6 +346,7 @@ useEffect(() => {
 
 useEffect(() => {
     if(fileSubmitted){
+      console.log('file Submitted')
     const postData = {
       productRating: finalRating,
       userId: "1",
