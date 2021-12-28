@@ -1,4 +1,4 @@
-import React, {useState, createRef, useEffect, useRef} from 'react';
+import React, {useState, useEffect} from 'react';
 import { Button, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, Link, TextField, Tooltip, Typography } from '@material-ui/core';
 import { StylesProvider } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
@@ -33,7 +33,7 @@ const useStyles = makeStyles((theme) => ({
 
 const FeedbackButtonComponent = (props: IButtonProps) => {
   let saveCanvas: any;
-  let temp: any;
+  let apiHostUrl: string;
   const classes = useStyles();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [feedbackPage, setFeedbackPage] = useState(false);
@@ -57,7 +57,18 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const [finalRating, setFinalRating] = useState(0);
   const[bugReportPage, setBugReportPage] = useState(false);
   const[dataSubmitted, setDataSubmitted] = useState(false);
-
+  const env = process.env.REACT_APP_STAGE
+  if (env === 'Dev') {
+    apiHostUrl = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
+} else if (env === 'Beta') {
+    apiHostUrl = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
+} else if (env === 'qa') {
+    apiHostUrl = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
+} else if (env === 'Prod') {
+    apiHostUrl = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
+} else {
+    apiHostUrl = 'http://localhost:3000';
+}
   const {
     status,
     startRecording,
@@ -90,7 +101,6 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 
   const uploadFile = () => {
     if(fileSelected){
-      console.log('upload file triggered')
     setLoading(true);
     let formUpload = new FormData();
     formUpload.append('file', fileSelected);
@@ -105,7 +115,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
       };
       // console.log(JSON.stringify(dataInfo),'datainfo');
       fileSelected &&
-      fetch('http://localhost:3000/feedbackMedia/', {
+      fetch(`${apiHostUrl}/feedbackMedia/`, {
         method: 'POST',
         body:  JSON.stringify(dataInfo),
         headers: { 'Content-Type': 'application/json' },
@@ -248,9 +258,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     setTimeout(()=> {
       startRecording();
     }, 500)
-    setImageRecording(true)
-    console.log('recording started')
-    console.log(status, 'started')
+    setImageRecording(true);
   }
 
   const captureScreenRecord = () => {
@@ -337,7 +345,6 @@ useEffect(() => {
 
 useEffect(() => {
     if(fileSubmitted){
-      console.log('file Submitted')
     const postData = {
       productRating: finalRating,
       userId: "1",
@@ -351,7 +358,7 @@ useEffect(() => {
         feedbackComments: [feedbackComments],
         productId: "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
     }
-    fetch('http://localhost:3000/feedback/', {
+    fetch(`${apiHostUrl}/feedback/`, {
       method: 'POST',
       body:  JSON.stringify(postData),
       headers: { 'Content-Type': 'application/json' },
@@ -462,7 +469,6 @@ useEffect(() => {
            </label>
            </Grid>
            {/* <img style={{width: '100vw', height: '100vh', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}} src={image} alt={"ScreenShot"} /> */}
-
            {/* {fileMedia ? fileName : fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
            {fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : fileName : '' }
            <Grid item xs={12} sm={12} style={{width: '100%'}}>
