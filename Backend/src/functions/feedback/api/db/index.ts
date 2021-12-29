@@ -52,7 +52,6 @@ exports.handler = async (event: any) => {
                 headers['Access-Control-Allow-Headers'] = '*';
                 headers['Access-Control-Allow-Origin'] = '*';
                 headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
-                body= {};
                 break;
             default:
                 throw new Error(`Unsupported method "${event.httpMethod}"`);
