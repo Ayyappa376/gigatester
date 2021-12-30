@@ -20,7 +20,7 @@ export const RenderStars = (props: any) => {
       <div style={{alignItems: "center"}}>
       <div>
           {arr.map((el, i) => {
-              return (i <= props.rating ? <FavoriteIcon/> : <FavoriteBorderIcon/>)
+              return (i < props.rating ? <FavoriteIcon/> : <FavoriteBorderIcon/>)
           })}
       </div>
       </div>
