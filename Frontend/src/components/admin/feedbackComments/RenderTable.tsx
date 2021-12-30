@@ -1,54 +1,112 @@
-import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link } from '@material-ui/core';
-import React from 'react';
-import { IAppFeedback } from '.';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress } from '@material-ui/core';
+import React, { useEffect, useState } from 'react';
+import { getSignedUrl, IAppFeedback } from '.';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { getDate } from '../../../utils/data';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../../reducers';
 
 interface IProps {
     tableData: IAppFeedback[],
-    viewAttachmentClicked: Function
+    viewAttachmentClicked: Function,
+    urls: string[]
+}
+
+export const RenderStars = (props: any) => {
+  const arr = [1,2,3,4,5];
+  return (
+      <div style={{alignItems: "center"}}>
+      <div>
+          {arr.map((el, i) => {
+              return (i <= props.rating ? <FavoriteIcon/> : <FavoriteBorderIcon/>)
+          })}
+      </div>
+      </div>
+  )
+}
+
+export const renderComments = (comments: string[] | undefined) => {
+  if(comments && comments.length > 0) {
+    let commentText = '';
+    comments.forEach((comment: string) => {commentText = commentText + '\n' + comment});
+    return(
+      <div>
+        {/* <TextField value={commentText} multiline fullWidth/> */}
+        <Box
+          aria-label="rating comments"
+          style={{ width: "100%" }}
+        >{commentText}</Box>
+      </div>
+    )
+  } else {
+    return <div>-</div>
+  }
 }
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
+    const [signedUrlMapping, setsignedUrlMapping] = useState<any>({})
+    const [fetchAllUrls, setFecthAllUrls] = useState(false);
+    const stateVariable = useSelector((state: IRootState) => {
+      return state;
+    });
+    console.log("signedUrlMapping:", signedUrlMapping)
 
-    const RenderStars = (props: any) => {
-        const arr = [1,2,3,4,5];
-        return (
-            <div style={{alignItems: "center"}}>
-            <div>
-                {arr.map((el, i) => {
-                    return (i <= props.rating ? <FavoriteIcon/> : <FavoriteBorderIcon/>)
-                })}
-            </div>
-            </div>
-        )
+    const fetchSignedUrls = (urls: string[]) => {
+      if(urls.length === 0) {
+        return;
+      }
+      const signedUrlMappingCopy: any = {}
+      return Promise.all(
+        urls.map((url: string) => {
+          return new Promise(async(resolve, reject) => {
+            const signedUrl: any = await getSignedUrl(url, stateVariable);
+            if (signedUrl) {
+              console.log("signedUrlMappingCopy:", signedUrlMappingCopy)
+              signedUrlMappingCopy[url] = signedUrl;
+              return resolve({});
+            } else {
+              return reject({})
+            }
+          })
+        })
+      ).then(() => {setFecthAllUrls(true);
+        console.log("all executed.");
+        setsignedUrlMapping(signedUrlMappingCopy)});
+        
+
     }
+
+    useEffect(() => {
+      console.log("calling fetchSignedUrls")
+      fetchSignedUrls(props.urls)
+    }, [])
 
     return (
         <Container>
+          {true ?
             <Paper className='tableArea'>
           <Table className='table'>
-            <TableHead className='tableHead'>
+            <TableHead component='th' className='tableHead'>
               <TableRow>
-                <TableCell className='tableHeadCell'>
+                <TableCell component='th' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
                     User
                   </Typography>
                 </TableCell>
-                <TableCell align='center' className='tableHeadCell'>
+                <TableCell component='th' align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
                         Date
                     </Typography>
                 </TableCell>
-                <TableCell align='center' className='tableHeadCell'>
+                <TableCell component='th' align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
                     Rating
                   </Typography>
                 </TableCell>
-                <TableCell align='center' className='tableHeadCell'>
+                <TableCell component='th' align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
                     Comments
                   </Typography>
@@ -61,7 +119,6 @@ const RenderTable = (props: IProps) => {
                   return (
                     <TableRow key={index}>
                       <TableCell
-                        component='th'
                         scope='row'
                         className={classes.firstColumn}
                       >
@@ -75,44 +132,47 @@ const RenderTable = (props: IProps) => {
                           </Tooltip>
                         </MuiThemeProvider>
                       </TableCell>
-                      <TableCell component='th' scope='row' align='center'>
+                      <TableCell scope='row' align='center'>
                         <Typography className='tableBodyText'>
                           {row.createdOn ? getDate(row.createdOn) : '-'}
                         </Typography>
                       </TableCell>
-                      <TableCell component='th' scope='row' align='center'>
+                      <TableCell scope='row' align='center'>
                              <RenderStars rating={row.productRating}/>
                       </TableCell>
-                      <TableCell component='th' scope='row' align='center'>
-                        <Typography className='tableBodyText'>
-                            {console.log(row.feedbackComments )}
-                            {row.feedbackComments ?
-                            <div>
-                            <div>
-                                { row.feedbackComments.length > 0 ? row.feedbackComments.map((comment) => {
-                                    return (
-                                        <div>
-                                                <Typography>{comment}</Typography>
-                                        </div>
-                                    )
-                                }) : <Typography>-</Typography>}
+                      <TableCell scope='row' align='center'>
+                        <div style={{overflow: 'auto', maxHeight: 150, maxWidth: 400, marginLeft: 'auto', marginRight: 'auto'}}>
+                            {renderComments(row.feedbackComments)}
+                        </div>
+                        <div>
+                          {
+                            row.feedbackMedia? row.feedbackMedia.image ? <Link
+                            component="button"
+                            variant="body2"
+                            style={{fontSize: 11}}
+                            onClick={() => {
+                              props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
+                            }}
+                          >
+                            View attachment
+                          </Link> : <div/> : <div/>
+                          }
+                        </div>
+                        <div>
+                          {
+                            row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
+                            <div style={{maxWidth: 700}}>
+                            <video width="30%" controls style={{display: 'block',
+                                          marginTop: 20,
+                                          marginLeft: 'auto',
+                                          marginRight: 'auto',
+                                          }}>
+                              <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" />
+                            </video>
                             </div>
-                            <div>
-                              {
-                                row.feedbackMedia? row.feedbackMedia.image ? <Link
-                                component="button"
-                                variant="body2"
-                                onClick={() => {
-                                  props.viewAttachmentClicked(row.feedbackMedia.image);
-                                }}
-                              >
-                                View attachment
-                              </Link> : <div/> : <div/>
-                              }
-                            </div>
-                            </div>
-                            : <div>-</div>}
-                        </Typography>
+                            : <div/> : <div/> : <div/>
+                          }
+                        </div>
                       </TableCell>
                       
                     </TableRow>
@@ -121,7 +181,9 @@ const RenderTable = (props: IProps) => {
               ): <div/>}
             </TableBody>
           </Table>
-        </Paper>
+        </Paper> : <Backdrop className={classes.backdrop} open={fetchAllUrls}>
+                  <CircularProgress color='inherit' />
+              </Backdrop> }
         </Container>
     )
 }
@@ -158,3 +220,4 @@ const useStyles = makeStyles((theme) => ({
   }));
 
 export default RenderTable;
+

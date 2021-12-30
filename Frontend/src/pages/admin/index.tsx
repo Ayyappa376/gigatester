@@ -917,7 +917,7 @@ export default function Admin() {
           </ListItem>
         </List>
         <Divider />
-        <List disablePadding={true}>
+        {/*<List disablePadding={true}>
           <ListItem
             button
             onClick={handleFeedbackClick}
@@ -936,7 +936,7 @@ export default function Admin() {
             <ListItemText primary={<Text tid="viewFeedback" />} />
           </ListItem>
         </List>
-        <Divider />
+      <Divider />*/}
         <List disablePadding={true}>
           <ListItem
             button
@@ -944,7 +944,7 @@ export default function Admin() {
             disabled={false}
           >
             <Tooltip
-              title={<Typography>{<Text tid="viewFeedbackComments" />}</Typography>}
+              title={<Typography>{<Text tid="viewFeedback" />}</Typography>}
               disableHoverListener={open ? true : false}
               placement="right"
               arrow={true}
@@ -953,7 +953,7 @@ export default function Admin() {
                 <AssignmentLateIcon />
               </ListItemIcon>
             </Tooltip>
-            <ListItemText primary={<Text tid="viewFeedbackComments" />} />
+            <ListItemText primary={<Text tid="viewFeedback" />} />
           </ListItem>
         </List>
         <Divider />
