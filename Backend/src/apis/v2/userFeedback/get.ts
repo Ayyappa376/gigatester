@@ -14,6 +14,10 @@ interface UserFeedbackRequest {
       email: string;
     };
   };
+  query: {
+    prodId?: string;
+    prodVersion?: string;
+  };
 }
 
 async function handler(
@@ -21,7 +25,7 @@ async function handler(
   response: Response
 ): Promise<any> {
   appLogger.info({ UserFeedbackRequest: request }, 'Inside Handler');
-  const { headers } = request;
+  const { headers, query } = request;
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
     const err = new Error('InvalidUser');
@@ -38,7 +42,7 @@ async function handler(
   }
 
   try {
-    const feedback: any[] = await getUserFeedbackList();
+    const feedback: any[] = await getUserFeedbackList(query.prodId, query.prodVersion);
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
