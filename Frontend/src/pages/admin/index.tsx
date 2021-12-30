@@ -371,6 +371,10 @@ export default function Admin() {
     setTitle('editProduct');
   };
 
+  const feedbackClickHandler = () => {
+    setButtonValue(FEEDBACK_COMMENTS);
+    setTitle("feedbackComments");
+  }
   const handleCreateQuestionnaire = () => {
     setButtonValue(CREATE_QUESTIONNAIRE);
     setTitle('addTestSuit');
@@ -562,6 +566,7 @@ export default function Admin() {
         return (
           <ManageProducts
             editClicked={editProductClickHandler}
+            feedbackClicked={feedbackClickHandler}
             goBack={switchToAdminHome}
           />
         );

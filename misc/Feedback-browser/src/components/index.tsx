@@ -1,5 +1,5 @@
-import React, {useState, createRef, useEffect, useRef} from 'react';
-import { Button, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, Link, TextField, Tooltip, Typography } from '@material-ui/core';
+import React, {useState, useEffect} from 'react';
+import { Button, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
 import { StylesProvider } from "@material-ui/core/styles";
 import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
@@ -8,7 +8,6 @@ import VideocamIcon from '@material-ui/icons/Videocam';
 import { ReactMediaRecorderRenderProps, useReactMediaRecorder } from "react-media-recorder";
 import html2canvas from 'html2canvas';
 import CanvasDraw from "react-canvas-draw";
-import './styles.css';
 import { v1 as uuidv1 } from 'uuid';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -40,11 +39,9 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const [rating, setRating] = useState(0);
   const [image, setImage] = useState('');
   const [dialogHidden, setDialogHidden] = useState(false);
-  const [fileContentType, setFileContentType] = useState('');
   const [fileSelected, setFileSelected] = useState<any>('');
   const [fileName, setFileName] = useState('');
   const [uploadScreenshot, setUploadScreenshot] = useState('');
-  const [saveableCanvas, setSaveableCanvas] = useState<any>('');
   const [fileSubmitted, setFileSubmitted] = useState(false)
   const [feedbackComments, setFeedbackComments] = useState('');
   const [imgMedia, setImgMedia] = useState('');
@@ -283,12 +280,10 @@ useEffect(() => {
     event.preventDefault();
     setFileSelected(event.target.files[0]);
     setFileName(event.target.files[0].name);
-    setFileContentType(event.target.files[0].type);
+    // setFileContentType(event.target.files[0].type);
   }
 
   const handleComments = (event: any) => {
-      let temp: any = feedbackComments;
-      temp = event.target.value;
       setFeedbackComments( event.target.value);
   }
   // const renderHome = () => {
@@ -399,7 +394,7 @@ useEffect(() => {
       <Grid container>
       <Grid item xs={12} sm={12}>
       <div id="canvasScreenshot" >
-      <CanvasDraw  ref={canvasDraw => (saveCanvas = (canvasDraw))} brushColor='red' brushRadius={3} hideGrid={true} imgSrc={image}  canvasHeight={window.screen.height} canvasWidth={window.screen.width} />
+      <CanvasDraw  ref={(canvasDraw: any) => (saveCanvas = (canvasDraw))} brushColor='red' brushRadius={3} hideGrid={true} imgSrc={image}  canvasHeight={window.screen.height} canvasWidth={window.screen.width} />
       </div>
             <div style={{position: 'fixed', borderStyle: 'solid', borderWidth: '2px',borderColor: 'red', backgroundColor: 'white', bottom: '20px', left: '40vw'}}>
       <Button variant='outlined'  style={{margin: '10px', backgroundColor: 'white'}} onClick={() => {
@@ -501,9 +496,6 @@ useEffect(() => {
           </>
       )
   }
-  const bugReportHandler = () => {
-    setBugReportPage(true);
-  }
   const feedbackRating = () => {
     return (
         <>
@@ -521,6 +513,7 @@ useEffect(() => {
           if(newValue){ 
           setRating(newValue);
           setFinalRating(newValue)
+          console.log(event);
           // console.log(newValue);
           }
         }}
@@ -561,7 +554,7 @@ useEffect(() => {
             </Button>
               </div>
           <div style={{display: 'flex', justifyContent: 'center',  border: 'none', backgroundColor: 'white', padding: '0px', margin: '0px'}}>
-              <Button onClick={(event) => { setFeedbackPage(true)}}>
+              <Button onClick={() => { setFeedbackPage(true)}}>
             <Grid container>
               <Grid item xs={3} sm={3}>
               <FormatListBulletedIcon style={{fontSize: '38px'}}/>
