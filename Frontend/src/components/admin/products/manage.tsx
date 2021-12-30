@@ -24,11 +24,13 @@ import {
   DialogTitle,
   DialogContent,
   CssBaseline,
+  ListItemIcon,
 } from '@material-ui/core';
 import ClearIcon from '@material-ui/icons/Clear';
 import Notification from '../../../common/notification';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
@@ -847,6 +849,28 @@ const ManageProducts = (props: any) => {
                                 <ClearIcon
                                   onClick={() => {
                                     deleteClicked(row.id, row.version);
+                                  }}
+                                />
+                              </Typography>
+                            </Tooltip>
+                          </MuiThemeProvider>
+                          <MuiThemeProvider theme={tooltipTheme}>
+                            <Tooltip
+                              title={
+                                <Typography
+                                  style={{
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  <Text tid='viewFeedbackComments' />
+                                </Typography>
+                              }
+                            >
+                              <Typography style={{ padding: '0 6px' }}>
+                                < AssignmentLateIcon
+                                  onClick={() => {
+                                    props.feedbackClicked();
                                   }}
                                 />
                               </Typography>
