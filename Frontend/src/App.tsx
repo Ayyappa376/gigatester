@@ -64,7 +64,7 @@ const DoItRight = (props: IDoitrightProps) => {
   return (
     <LanguageProvider>
       <Router history={history}>
-      <FeedbackButtonComponent label={'Feedback'} />
+      <FeedbackButtonComponent label='Feedback' userName='doitright' productVersion='2' productKey='BxiX1h1RQE9WyP9ewAJhu7RhHVOGkhC469ZrqrD7' />
         <PageHeader getMetricsType={(type: any) => getMetricsType(type)} />
         <Switch>
           <Route exact path='/' component={Home} />

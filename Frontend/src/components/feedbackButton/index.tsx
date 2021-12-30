@@ -18,6 +18,9 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 interface IButtonProps {
   label: string;
+  productVersion: string,
+  productKey: string,
+  userName: string
 }
 // const useStyles = makeStyles((theme) => ({
 //   button: {
@@ -347,19 +350,19 @@ useEffect(() => {
 useEffect(() => {
     if(fileSubmitted){
       console.log('file Submitted')
-    const postData = {
-      productRating: finalRating,
-      userId: "1",
-      productVersion: "2",
-      feedbackMedia: {
-        image: imgMedia,
-        video: videoMedia,
-        file: fileMedia,
-        audio: ""
-      },
-        feedbackComments: [feedbackComments],
-        productId: "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
-    }
+      const postData = {
+        productRating: finalRating,
+        userName: props.userName,
+        productVersion: props.productVersion,
+        feedbackMedia: {
+          image: imgMedia,
+          video: videoMedia,
+          file: fileMedia,
+          audio: ""
+        },
+          feedbackComments: [feedbackComments],
+          productKey: props.productKey,
+      }
     fetch(`${apiHostUrl}/feedback/`, {
       method: 'POST',
       body:  JSON.stringify(postData),
