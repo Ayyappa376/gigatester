@@ -475,16 +475,31 @@ useEffect(() => {
            </Grid>
            {/* <img style={{width: '100vw', height: '100vh', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}} src={image} alt={"ScreenShot"} /> */}
            {/* {fileMedia ? fileName : fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
-           {fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : fileName : '' }
+           {fileName ? loading ? (<>
+           <Container className='loaderStyle'>
+             <Typography>It may take few minutes to upload your file. Thanks for your patience.</Typography>
+             <CircularProgress /> 
+            </Container>
+            </>) : fileName : '' }
            <Grid item xs={12} sm={12} style={{width: '100%'}}>
            {/* { imgMedia? <img width={300} src={image} alt={"ScreenShot"} /> : image ? loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
-           {  image ?  loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>)  :  video ? '' : <img width={300} src={image} alt={"ScreenShot"} />  : ''}
+           {  image ?  loading ?  (<> 
+            <Container className='loaderStyle'>
+             <Typography>It may take about a minute to upload your screenshot. Thanks for your patience.</Typography>
+             <CircularProgress /> 
+            </Container>
+            </>)  :  video ? '' : <img width={300} src={image} alt={"ScreenShot"} />  : ''}
            {/*  */}
            </Grid>
            <Grid item xs={12} sm={12} >
            <video id='videoRecord' style={{maxHeight: '0px', maxWidth: '0px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> 
            {/* {videoMedia ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : mediaBlobUrl ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
-           {video  ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>): image ? ''  : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> : ''}
+           {video  ? loading ? (<> 
+            <Container className='loaderStyle'>
+              <Typography>It may take few minutes to upload your screen recording. Thanks for your patience.</Typography>
+              <CircularProgress />
+            </Container>
+           </>): image ? ''  : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> : ''}
            {/*  */}
            </Grid>
            {/* <ReactMediaRecorder
