@@ -52,6 +52,7 @@ const RenderTable = (props: IProps) => {
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
+    console.log("signedUrlMapping:", signedUrlMapping)
 
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
@@ -63,9 +64,8 @@ const RenderTable = (props: IProps) => {
           return new Promise(async(resolve, reject) => {
             const signedUrl: any = await getSignedUrl(url, stateVariable);
             if (signedUrl) {
-              console.log("signedUrlMapping:", signedUrlMapping)
+              console.log("signedUrlMappingCopy:", signedUrlMappingCopy)
               signedUrlMappingCopy[url] = signedUrl;
-              setsignedUrlMapping(signedUrlMappingCopy)
               return resolve({});
             } else {
               return reject({})
@@ -73,7 +73,10 @@ const RenderTable = (props: IProps) => {
           })
         })
       ).then(() => {setFecthAllUrls(true);
-        console.log("all executed.")})
+        console.log("all executed.");
+        setsignedUrlMapping(signedUrlMappingCopy)});
+        
+
     }
 
     useEffect(() => {
@@ -83,7 +86,7 @@ const RenderTable = (props: IProps) => {
 
     return (
         <Container>
-          {fetchAllUrls ?
+          {true ?
             <Paper className='tableArea'>
           <Table className='table'>
             <TableHead component='th' className='tableHead'>
@@ -157,7 +160,7 @@ const RenderTable = (props: IProps) => {
                         </div>
                         <div>
                           {
-                            row.feedbackMedia? row.feedbackMedia.video ? 
+                            row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
                             <div style={{maxWidth: 700}}>
                             <video width="30%" controls style={{display: 'block',
                                           marginTop: 20,
@@ -167,7 +170,7 @@ const RenderTable = (props: IProps) => {
                               <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" />
                             </video>
                             </div>
-                            : <div/> : <div/>
+                            : <div/> : <div/> : <div/>
                           }
                         </div>
                       </TableCell>
