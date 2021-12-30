@@ -57,7 +57,7 @@ const useStyles = makeStyles((theme) => ({
     height: "50px",
     boxShadow: "0px 2px 8px #00000033",
     opacity: 1,
-    marginTop: "3.5em",
+    marginTop: "0.5em",
     background: "#F0F0F0 0% 0% no-repeat padding-box",
   },
   root: {

@@ -20,7 +20,7 @@ import { CreateOrganization } from '../../components';
 
 const useStyles = makeStyles({
   root: {
-    marginTop: '3.2em',
+    marginTop: '1.2em',
     padding: 0,
     overflow: 'hidden',
   },

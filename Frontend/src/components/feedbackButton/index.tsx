@@ -18,23 +18,26 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 interface IButtonProps {
   label: string;
+  productVersion: string,
+  productKey: string,
+  userName: string
 }
-const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(2),
-    "&:hover": {background: "#366afb"},
-  },
-  dialogPaper: {
-    minHeight: '80vh',
-    maxHeight: '80vh',
+// const useStyles = makeStyles((theme) => ({
+//   button: {
+//     margin: theme.spacing(2),
+//     "&:hover": {background: "#366afb"},
+//   },
+//   dialogPaper: {
+//     minHeight: '80vh',
+//     maxHeight: '80vh',
 
-  },
-}));
+//   },
+// }));
 
 const FeedbackButtonComponent = (props: IButtonProps) => {
   let saveCanvas: any;
   let apiHostUrl: string;
-  const classes = useStyles();
+  // const classes = useStyles();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [feedbackPage, setFeedbackPage] = useState(false);
   const [rating, setRating] = useState(0);
@@ -347,19 +350,19 @@ useEffect(() => {
 useEffect(() => {
     if(fileSubmitted){
       console.log('file Submitted')
-    const postData = {
-      productRating: finalRating,
-      userId: "1",
-      productVersion: "2",
-      feedbackMedia: {
-        image: imgMedia,
-        video: videoMedia,
-        file: fileMedia,
-        audio: ""
-      },
-        feedbackComments: [feedbackComments],
-        productId: "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
-    }
+      const postData = {
+        productRating: finalRating,
+        userName: props.userName,
+        productVersion: props.productVersion,
+        feedbackMedia: {
+          image: imgMedia,
+          video: videoMedia,
+          file: fileMedia,
+          audio: ""
+        },
+          feedbackComments: [feedbackComments],
+          productKey: props.productKey,
+      }
     fetch(`${apiHostUrl}/feedback/`, {
       method: 'POST',
       body:  JSON.stringify(postData),
@@ -589,7 +592,7 @@ useEffect(() => {
     return (
       <React.Fragment>
         <Dialog
-          className={classes.dialogPaper}
+          // className={classes.dialogPaper}
           open={dialogOpen}
           hidden={dialogHidden}
           aria-labelledby='form-dialog-title'
@@ -628,7 +631,7 @@ useEffect(() => {
       variant='contained'
       size='large'
       color='primary'
-      className={classes.button}
+      // className={classes.button}
     >
       {props.label}
     </Button>
