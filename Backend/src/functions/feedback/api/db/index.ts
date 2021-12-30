@@ -29,16 +29,16 @@ exports.handler = async (event: any) => {
                                 createdOn: Date.now(),
                                 feedbackComments: jsonBody.feedbackComments,
                                 feedbackMedia: {
-                                    audio: '',
-                                    file: jsonBody.feedbackMedia.file,
-                                    image: jsonBody.feedbackMedia.image,
-                                    video: jsonBody.feedbackMedia.video,
+                                    audio: jsonBody.feedbackMedia.audio ? jsonBody.feedbackMedia.audio : '',
+                                    file: jsonBody.feedbackMedia.file ? jsonBody.feedbackMedia.file : '',
+                                    image: jsonBody.feedbackMedia.image ? jsonBody.feedbackMedia.image : '',
+                                    video: jsonBody.feedbackMedia.video ? jsonBody.feedbackMedia.video : '',
                                 },
                                 id: `feedback_${uuidv1()}`,
-                                productId: jsonBody.productId,
+                                productId: await getproductIdForKey(jsonBody.productKey),
                                 productRating: jsonBody.productRating,
                                 productVersion: jsonBody.productVersion,
-                                userId: jsonBody.userId,
+                                userId: jsonBody.userName,
                             },
                             TableName: 'dev_GT_feedback'
                         };
@@ -69,3 +69,16 @@ exports.handler = async (event: any) => {
         statusCode,
     };
 };
+
+async function getproductIdForKey(productKey: string): Promise<string> {
+    const params = {
+        ConditionExpression: '#apiKey = :apiKey',
+        ExpressionAttributeNames: {'#apiKey': 'apiKey'},
+        ExpressionAttributeValues: {':apiKey': productKey},
+        TableName: 'dev_GT_Products',
+    };
+    console.log('feedback-api-db-handler: DynamoDBScan params:', params);
+    const products = await dynamo.scan(params).Items;
+    console.log('feedback-api-db-handler: DynamoDBScan result:', products);
+    return (products.length > 0) ? products.map((product: any) => product.id)[0] : '';
+}
