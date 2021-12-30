@@ -6,6 +6,7 @@ import { ContentTypes } from '../constants';
 export interface IGetProps {
     url: string;
     state?: any;
+    body?: any;
     queryString?: IInputQuery;
     customHeaders?: RequestHeaders;
     processResponse?: <R>(response: Response) => Promise<R>;

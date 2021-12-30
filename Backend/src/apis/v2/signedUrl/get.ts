@@ -1,7 +1,6 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, getFeedbackBucketName, responseBuilder } from '@utils/index';
+import { appLogger, getSignedUrl, responseBuilder } from '@utils/index';
 import { Response } from 'express';
-const AWS = require('aws-sdk');
 
 interface GetTeam {
     headers: {
@@ -12,15 +11,14 @@ interface GetTeam {
         };
     };
     params: {
-//        contentType: string;
         fileKey: string;
-//        uploadKey: string;
     };
+    body: any
 }
 
 async function handler(request: GetTeam, response: Response) {
     appLogger.info({ GetTeamConfig: request }, 'Inside Handler');
-    const { headers, params } = request;
+    const { headers, params, body } = request;
 
     const cognitoUserId = headers.user['cognito:username'];
 
@@ -29,22 +27,35 @@ async function handler(request: GetTeam, response: Response) {
         appLogger.error(err, 'Unauthorized');
         return responseBuilder.unauthorized(err, response);
     }
-    //returns the teams details, config details of a team and the organization id if the team id is sent - edit team
-    //returns the config details of a team and the organization id if the team id is not sent - create team
-    const s3 = new AWS.S3();
-
-    if (params.fileKey) {
+    
+    if (params.fileKey && params.fileKey != 'multiple') {
             try {
-                const url = await s3.getSignedUrlPromise('getObject', {
-                    Bucket: getFeedbackBucketName(),
-                    Expires: 60,
-                    Key: params.fileKey,
-                });
+                const url = await getSignedUrl(params.fileKey);
                 appLogger.info({ downloadUrl: url });
                 return responseBuilder.ok({ filePath: url }, response);
             } catch (err) {
                 appLogger.error(err, 'downloadFileError');
             }
+    } else if(params.fileKey === 'multiple'){
+        const responseBody: { [key : string] : string} = {}
+        if(body && body.length > 0) {
+            Promise.all(body.map(async(imgUrl: string) => {
+                const urlSplit = imgUrl.split('/')
+                let name = urlSplit[urlSplit.length - 1]
+                const url = await getSignedUrl(name);
+                responseBody[imgUrl] = url;
+            })).then(() => {
+                return responseBuilder.ok(responseBody, response);
+            }).catch((err: any) => {
+                responseBuilder.internalServerError(err, response);
+            })
+        } else {
+            const err = new Error('BadRequest: Missing body.');
+            responseBuilder.badRequest(err, response)
+        }
+    } else {
+        const err = new Error('BadRequest: Missing params');
+        responseBuilder.badRequest(err, response)
     }
 }
 
