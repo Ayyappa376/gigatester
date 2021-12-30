@@ -72,13 +72,13 @@ exports.handler = async (event: any) => {
 
 async function getproductIdForKey(productKey: string): Promise<string> {
     const params = {
-        ConditionExpression: '#apiKey = :apiKey',
         ExpressionAttributeNames: {'#apiKey': 'apiKey'},
         ExpressionAttributeValues: {':apiKey': productKey},
+        FilterExpression: '#apiKey = :apiKey',
         TableName: 'dev_GT_Products',
     };
     console.log('feedback-api-db-handler: DynamoDBScan params:', params);
-    const products = await dynamo.scan(params).Items;
-    console.log('feedback-api-db-handler: DynamoDBScan result:', products);
-    return (products.length > 0) ? products.map((product: any) => product.id)[0] : '';
+    const result = await dynamo.scan(params).promise();
+    console.log('feedback-api-db-handler: DynamoDBScan result:', result);
+    return (result.Items.length > 0) ? result.Items[0].id : '';
 }
