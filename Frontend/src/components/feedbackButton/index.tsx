@@ -19,22 +19,22 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 interface IButtonProps {
   label: string;
 }
-const useStyles = makeStyles((theme) => ({
-  button: {
-    margin: theme.spacing(2),
-    "&:hover": {background: "#366afb"},
-  },
-  dialogPaper: {
-    minHeight: '80vh',
-    maxHeight: '80vh',
+// const useStyles = makeStyles((theme) => ({
+//   button: {
+//     margin: theme.spacing(2),
+//     "&:hover": {background: "#366afb"},
+//   },
+//   dialogPaper: {
+//     minHeight: '80vh',
+//     maxHeight: '80vh',
 
-  },
-}));
+//   },
+// }));
 
 const FeedbackButtonComponent = (props: IButtonProps) => {
   let saveCanvas: any;
   let apiHostUrl: string;
-  const classes = useStyles();
+  // const classes = useStyles();
   const [dialogOpen, setDialogOpen] = useState(false);
   const [feedbackPage, setFeedbackPage] = useState(false);
   const [rating, setRating] = useState(0);
@@ -589,7 +589,7 @@ useEffect(() => {
     return (
       <React.Fragment>
         <Dialog
-          className={classes.dialogPaper}
+          // className={classes.dialogPaper}
           open={dialogOpen}
           hidden={dialogHidden}
           aria-labelledby='form-dialog-title'
@@ -628,7 +628,7 @@ useEffect(() => {
       variant='contained'
       size='large'
       color='primary'
-      className={classes.button}
+      // className={classes.button}
     >
       {props.label}
     </Button>
