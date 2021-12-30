@@ -3,6 +3,7 @@ import { appLogger, getSignedUrl, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface GetTeam {
+    body: any;
     headers: {
         user: {
             'cognito:groups': string[];
@@ -13,7 +14,6 @@ interface GetTeam {
     params: {
         fileKey: string;
     };
-    body: any
 }
 
 async function handler(request: GetTeam, response: Response) {
@@ -27,8 +27,8 @@ async function handler(request: GetTeam, response: Response) {
         appLogger.error(err, 'Unauthorized');
         return responseBuilder.unauthorized(err, response);
     }
-    
-    if (params.fileKey && params.fileKey != 'multiple') {
+
+    if (params.fileKey && params.fileKey !== 'multiple') {
             try {
                 const url = await getSignedUrl(params.fileKey);
                 appLogger.info({ downloadUrl: url });
@@ -36,26 +36,24 @@ async function handler(request: GetTeam, response: Response) {
             } catch (err) {
                 appLogger.error(err, 'downloadFileError');
             }
-    } else if(params.fileKey === 'multiple'){
-        const responseBody: { [key : string] : string} = {}
+    } else if(params.fileKey === 'multiple') {
+        const responseBody: { [key: string]: string} = {};
         if(body && body.length > 0) {
             Promise.all(body.map(async(imgUrl: string) => {
-                const urlSplit = imgUrl.split('/')
-                let name = urlSplit[urlSplit.length - 1]
+                const urlSplit = imgUrl.split('/');
+                const name = urlSplit[urlSplit.length - 1];
                 const url = await getSignedUrl(name);
                 responseBody[imgUrl] = url;
-            })).then(() => {
-                return responseBuilder.ok(responseBody, response);
-            }).catch((err: any) => {
-                responseBuilder.internalServerError(err, response);
-            })
+            }))
+            .then(() => responseBuilder.ok(responseBody, response))
+            .catch((err: any) => responseBuilder.internalServerError(err, response));
         } else {
             const err = new Error('BadRequest: Missing body.');
-            responseBuilder.badRequest(err, response)
+            responseBuilder.badRequest(err, response);
         }
     } else {
         const err = new Error('BadRequest: Missing params');
-        responseBuilder.badRequest(err, response)
+        responseBuilder.badRequest(err, response);
     }
 }
 

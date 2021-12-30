@@ -1,5 +1,5 @@
-import AWS from "aws-sdk";
-import { getFeedbackBucketName } from ".";
+import AWS from 'aws-sdk';
+import { getFeedbackBucketName } from '.';
 
 const s3 = new AWS.S3();
 
@@ -10,4 +10,4 @@ export const getSignedUrl = async(filename: string) => {
         Key: filename,
     });
     return url;
-}
+};
