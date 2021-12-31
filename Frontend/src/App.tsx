@@ -64,7 +64,7 @@ const DoItRight = (props: IDoitrightProps) => {
   return (
     <LanguageProvider>
       <Router history={history}>
-      <FeedbackButtonComponent label='Feedback' userName='doitright' productVersion='2' productKey='BxiX1h1RQE9WyP9ewAJhu7RhHVOGkhC469ZrqrD7' />
+      <FeedbackButtonComponent label='Feedback' userName='doitright' productVersion='2' productKey='BxiX1h1RQE9WyP9ewAJhu7RhHVOGkhC469ZrqrD7' categories ={['app got crashed', 'error in img loading', 'video error', 'audio error']}/>
         <PageHeader getMetricsType={(type: any) => getMetricsType(type)} />
         <Switch>
           <Route exact path='/' component={Home} />

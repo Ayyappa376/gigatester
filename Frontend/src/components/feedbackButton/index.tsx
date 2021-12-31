@@ -22,7 +22,8 @@ interface IButtonProps {
   label: string;
   productVersion: string,
   productKey: string,
-  userName: string
+  userName: string,
+  categories: string[],
 }
 // const useStyles = makeStyles((theme) => ({
 //   button: {
@@ -80,7 +81,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 } else {
     apiHostUrl = 'http://localhost:3000';
 }
-const categories = ['app got crashed', 'error in img loading', 'video error', 'audio error']
+// const categories = ['app got crashed', 'error in img loading', 'video error', 'audio error']
 const temp_categories: string[] = [];
   const {
     status,
@@ -523,7 +524,7 @@ useEffect(() => {
         </>) : (
           <>
           <Grid container>
-        {categories.map(( category, id: number ) => {
+        {props.categories.map(( category: string, id: number ) => {
           return (
             <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'left', marginLeft: '20px'}}>
 
