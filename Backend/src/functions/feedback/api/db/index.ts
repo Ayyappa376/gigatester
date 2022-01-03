@@ -34,12 +34,12 @@ exports.handler = async (event: any) => {
                                     image: jsonBody.feedbackMedia.image ? jsonBody.feedbackMedia.image : '',
                                     video: jsonBody.feedbackMedia.video ? jsonBody.feedbackMedia.video : '',
                                 },
+                                feedbackType: jsonBody.feedbackType,
                                 id: `feedback_${uuidv1()}`,
                                 productId: await getproductIdForKey(jsonBody.productKey),
                                 productRating: jsonBody.productRating,
                                 productVersion: jsonBody.productVersion,
                                 userId: jsonBody.userName,
-                                feedbackType: jsonBody.feedbackType
                             },
                             TableName: 'dev_GT_feedback'
                         };
