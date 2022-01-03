@@ -18,6 +18,9 @@ import Rating from '@material-ui/lab/Rating';
 import CircularProgress from '@material-ui/core/CircularProgress';
 import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
+export const FEEDBACK_TYPE_FEEDBACK = 'FEEDBACK';
+export const FEEDBACK_TYPE_BUG_REPORT = 'BUG_REPORT';
+
 interface IButtonProps {
   label: string;
   productVersion: string,
@@ -412,6 +415,7 @@ useEffect(() => {
         productRating: finalRating,
         userName: props.userName,
         productVersion: props.productVersion,
+        feedbackType: feedbackPage ? FEEDBACK_TYPE_FEEDBACK : FEEDBACK_TYPE_BUG_REPORT,
         feedbackMedia: {
           image: imgMedia,
           video: videoMedia,

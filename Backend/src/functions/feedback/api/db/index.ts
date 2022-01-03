@@ -39,6 +39,7 @@ exports.handler = async (event: any) => {
                                 productRating: jsonBody.productRating,
                                 productVersion: jsonBody.productVersion,
                                 userId: jsonBody.userName,
+                                feedbackType: jsonBody.feedbackType
                             },
                             TableName: 'dev_GT_feedback'
                         };

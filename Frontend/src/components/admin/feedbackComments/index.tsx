@@ -11,6 +11,7 @@ import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import { url } from 'inspector';
+import {FEEDBACK_TYPE_FEEDBACK} from '../../feedbackButton'
 
 const RATING_ONE = "1";
 const RATING_TWO = "2";
@@ -21,6 +22,8 @@ const RATING_FIVE = "5";
 export interface IProcessedData {
   [key: string]: number
 }
+
+
 
 export interface IAppFeedback {
   createdOn: number;
@@ -35,7 +38,8 @@ export interface IAppFeedback {
     video?: string,
     file?: string,
     audio?: string
-  }
+  },
+  feedbackType: string
 }
 
 interface IRatingMapData {
@@ -76,6 +80,7 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [data, setData] = useState([]);
+    const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [processedData, setProcessedData] = useState < IProcessedData > ({});
     const [showImageModal, setShowImageModal] = useState(false);
@@ -308,20 +313,36 @@ const FeedbackComments = (props: any) => {
     const RenderData = () => {
       return (
         <Container>
-          <Typography variant='h5'>
-            {props.productId} : Version {props.productVersion}
-          </Typography>
-          <ImageModal/>
           <Grid container>
-            <Grid item md={5}>
-              <ReactApexChart options={options} series={barChartSeries} type="bar" width={500} height={320} />
+            <Grid item md={6}>
+              <Typography variant='h5'>
+                {props.productId ? <div>{props.productId} : Version {props.productVersion}</div> : <div/>}
+              </Typography>
             </Grid>
-            <Grid item md={2}></Grid>
-            <Grid item md={5}>
-              <ReactApexChart options={options2} series={pieChartSeries} type="pie" width={500} height={320} />
+            <Grid item md={6}>
+              <div style={{display:'flex', justifyContent: 'right'}}>
+                <Typography variant='h6' style={{padding: 10}}>Choose what do you want to see:</Typography>
+                <Button style={{padding: 10}} variant={isBugReport ? "outlined" : "contained"} color='primary' onClick={() => {setIsBugReport(false)}}>Feedback</Button>
+                <Button style={{padding: 10, marginLeft: 10}}variant={isBugReport ? "contained" : "outlined"} color='primary' onClick={() => {setIsBugReport(true)}}>Bugs</Button>
+              </div>
             </Grid>
           </Grid>
-          <RenderTable tableData={data} urls={urlArray} viewAttachmentClicked={(url: string, id: string, type: string) => {
+          <ImageModal/>
+          <div style={{marginTop: 50}}>
+            {
+              isBugReport ? <div/> :
+                <Grid container>
+                  <Grid item md={5}>
+                    <ReactApexChart options={options} series={barChartSeries} type="bar" width={500} height={320} />
+                  </Grid>
+                  <Grid item md={2}></Grid>
+                  <Grid item md={5}>
+                    <ReactApexChart options={options2} series={pieChartSeries} type="pie" width={500} height={320} />
+                  </Grid>
+                </Grid>
+            }
+          </div>
+          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={(url: string, id: string, type: string) => {
             console.log("calling fetchSignedUrl", id)
             setShowImageModal(true);
             setFocusAttachmentUid(id);

@@ -11,7 +11,8 @@ import { IRootState } from '../../../reducers';
 interface IProps {
     tableData: IAppFeedback[],
     viewAttachmentClicked: Function,
-    urls: string[]
+    urls: string[],
+    isBugReport: Boolean
 }
 
 export const RenderStars = (props: any) => {
@@ -47,6 +48,7 @@ export const renderComments = (comments: string[] | undefined) => {
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
+    const {isBugReport} = props;
     const [signedUrlMapping, setsignedUrlMapping] = useState<any>({})
     const [fetchAllUrls, setFecthAllUrls] = useState(false);
     const stateVariable = useSelector((state: IRootState) => {
@@ -101,11 +103,19 @@ const RenderTable = (props: IProps) => {
                         Date
                     </Typography>
                 </TableCell>
-                <TableCell component='th' align='center' className='tableHeadCell'>
-                  <Typography className='tableHeadText'>
-                    Rating
-                  </Typography>
-                </TableCell>
+                {
+                  isBugReport ? 
+                  <TableCell component='th' align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      Category
+                    </Typography>
+                  </TableCell> :
+                  <TableCell component='th' align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      Rating
+                    </Typography>
+                  </TableCell>
+                }
                 <TableCell component='th' align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
                     Comments
@@ -116,6 +126,12 @@ const RenderTable = (props: IProps) => {
             <TableBody>
               {props.tableData.length > 0 ? props.tableData.map(
                 (row: IAppFeedback, index: number) => {
+                  if(isBugReport && row.productRating > 0) {
+                    return <div/>
+                  }
+                  if(!isBugReport && row.productRating === 0) {
+                    return <div/>
+                  }
                   return (
                     <TableRow key={index}>
                       <TableCell
@@ -137,9 +153,17 @@ const RenderTable = (props: IProps) => {
                           {row.createdOn ? getDate(row.createdOn) : '-'}
                         </Typography>
                       </TableCell>
-                      <TableCell scope='row' align='center'>
-                             <RenderStars rating={row.productRating}/>
-                      </TableCell>
+                      {
+                        isBugReport ? 
+                        <TableCell scope='row' align='center'>
+                          <Typography className='tableBodyText'>
+                            Moderate
+                          </Typography>
+                        </TableCell> :
+                        <TableCell scope='row' align='center'>
+                          <RenderStars rating={row.productRating}/>
+                        </TableCell>
+                      }
                       <TableCell scope='row' align='center'>
                         <div style={{overflow: 'auto', maxHeight: 150, maxWidth: 400, marginLeft: 'auto', marginRight: 'auto'}}>
                             {renderComments(row.feedbackComments)}
