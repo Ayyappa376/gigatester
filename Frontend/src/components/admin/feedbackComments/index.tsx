@@ -315,16 +315,16 @@ const FeedbackComments = (props: any) => {
         <Container>
           <Grid container>
             <Grid item md={6}>
-              <Typography variant='h5'>
-                {props.productId ? <div>{props.productId} : Version {props.productVersion}</div> : <div/>}
-              </Typography>
-            </Grid>
-            <Grid item md={6}>
-              <div style={{display:'flex', justifyContent: 'right'}}>
+              <div style={{display:'flex', justifyContent: 'left'}}>
                 <Typography variant='h6' style={{padding: 10}}>Choose what do you want to see:</Typography>
                 <Button style={{padding: 10}} variant={isBugReport ? "outlined" : "contained"} color='primary' onClick={() => {setIsBugReport(false)}}>Feedback</Button>
                 <Button style={{padding: 10, marginLeft: 10}}variant={isBugReport ? "contained" : "outlined"} color='primary' onClick={() => {setIsBugReport(true)}}>Bugs</Button>
               </div>
+            </Grid>
+            <Grid item md={6}>
+              <Typography variant='h5'>
+                {props.productId ? <div>{props.productId} : Version {props.productVersion}</div> : <div/>}
+              </Typography>
             </Grid>
           </Grid>
           <ImageModal/>

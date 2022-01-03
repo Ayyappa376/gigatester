@@ -7,6 +7,7 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
+import AudioPlayer from './audioPlayer';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -194,7 +195,20 @@ const RenderTable = (props: IProps) => {
                               <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" />
                             </video>
                             </div>
-                            : <div/> : <div/> : <div/>
+                            : <div style={{maxWidth: 700}}>
+                            <video width="30%" controls style={{display: 'block',
+                                          marginTop: 20,
+                                          marginLeft: 'auto',
+                                          marginRight: 'auto',
+                                          }}>
+                              {/* <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" /> */}
+                            </video>
+                            </div> : <div/> : <div/>
+                          }
+                        </div>
+                        <div>
+                          {
+                            row.feedbackMedia? row.feedbackMedia.audio ? <AudioPlayer url={row.feedbackMedia.audio}/> : <div/> : <div/>
                           }
                         </div>
                       </TableCell>
