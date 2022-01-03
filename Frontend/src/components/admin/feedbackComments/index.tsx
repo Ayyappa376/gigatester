@@ -145,8 +145,15 @@ const FeedbackComments = (props: any) => {
 
     useEffect(() => {
       setBackdropOpen(true);
+      let url = '/api/v2/userFeedback';
+      if(props.productId) {
+        url += `?prodId=${props.productId}`;
+        if(props.productVersion) {
+          url += `&prodVersion=${props.productVersion}`;
+        }
+      }
       Http.get({
-          url: '/api/v2/userFeedback',
+          url,
           state: stateVariable,
         }).then((response: any) => {
           console.log(response);
@@ -293,9 +300,6 @@ const FeedbackComments = (props: any) => {
                     <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>{renderComments(getComments(focusAttachmentUid))}</div>
                   </Grid>
               </Grid>
-            
-            
-
           </div>
         </Modal>
       )
@@ -304,6 +308,9 @@ const FeedbackComments = (props: any) => {
     const RenderData = () => {
       return (
         <Container>
+          <Typography variant='h5'>
+            {props.productId} : Version {props.productVersion}
+          </Typography>
           <ImageModal/>
           <Grid container>
             <Grid item md={5}>
