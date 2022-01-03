@@ -34,16 +34,28 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+var __spreadArray = (this && this.__spreadArray) || function (to, from, pack) {
+    if (pack || arguments.length === 2) for (var i = 0, l = from.length, ar; i < l; i++) {
+        if (ar || !(i in from)) {
+            if (!ar) ar = Array.prototype.slice.call(from, 0, i);
+            ar[i] = from[i];
+        }
+    }
+    return to.concat(ar || Array.prototype.slice.call(from));
+};
 import React, { useState, useEffect } from 'react';
-import { Button, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button, Checkbox, Container, CssBaseline, Dialog, DialogContent, DialogTitle, FormControlLabel, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
 import { StylesProvider } from "@material-ui/core/styles";
+import MicIcon from '@material-ui/icons/Mic';
 import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import VideocamIcon from '@material-ui/icons/Videocam';
+import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import { useReactMediaRecorder } from "react-media-recorder";
 import html2canvas from 'html2canvas';
 import CanvasDraw from "react-canvas-draw";
+import './styles.css';
 import { v1 as uuidv1 } from 'uuid';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -69,21 +81,29 @@ var FeedbackButtonComponent = function (props) {
     var _c = useState(0), rating = _c[0], setRating = _c[1];
     var _d = useState(''), image = _d[0], setImage = _d[1];
     var _e = useState(false), dialogHidden = _e[0], setDialogHidden = _e[1];
-    var _f = useState(''), fileSelected = _f[0], setFileSelected = _f[1];
-    var _g = useState(''), fileName = _g[0], setFileName = _g[1];
-    var _h = useState(''), uploadScreenshot = _h[0], setUploadScreenshot = _h[1];
-    var _j = useState(false), fileSubmitted = _j[0], setFileSubmitted = _j[1];
-    var _k = useState(''), feedbackComments = _k[0], setFeedbackComments = _k[1];
-    var _l = useState(''), imgMedia = _l[0], setImgMedia = _l[1];
-    var _m = useState(''), videoMedia = _m[0], setVideoMedia = _m[1];
-    var _o = useState(''), fileMedia = _o[0], setFileMedia = _o[1];
-    var _p = useState(false), images = _p[0], setImages = _p[1];
-    var _q = useState(''), video = _q[0], setVideo = _q[1];
-    var _r = useState(false), imageRecording = _r[0], setImageRecording = _r[1];
-    var _s = useState(false), loading = _s[0], setLoading = _s[1];
-    var _t = useState(0), finalRating = _t[0], setFinalRating = _t[1];
-    var _u = useState(false), bugReportPage = _u[0], setBugReportPage = _u[1];
-    var _v = useState(false), dataSubmitted = _v[0], setDataSubmitted = _v[1];
+    var _f = useState(''), fileContentType = _f[0], setFileContentType = _f[1];
+    var _g = useState(''), fileSelected = _g[0], setFileSelected = _g[1];
+    var _h = useState(''), fileName = _h[0], setFileName = _h[1];
+    var _j = useState(''), uploadScreenshot = _j[0], setUploadScreenshot = _j[1];
+    // const [saveableCanvas, setSaveableCanvas] = useState<any>('');
+    var _k = useState(false), fileSubmitted = _k[0], setFileSubmitted = _k[1];
+    var _l = useState(''), feedbackComments = _l[0], setFeedbackComments = _l[1];
+    var _m = useState(''), imgMedia = _m[0], setImgMedia = _m[1];
+    var _o = useState(''), videoMedia = _o[0], setVideoMedia = _o[1];
+    var _p = useState(''), fileMedia = _p[0], setFileMedia = _p[1];
+    var _q = useState(''), audioMedia = _q[0], setAudioMedia = _q[1];
+    var _r = useState(false), images = _r[0], setImages = _r[1];
+    var _s = useState(''), video = _s[0], setVideo = _s[1];
+    var _t = useState(''), audio = _t[0], setAudio = _t[1];
+    var _u = useState({}), mediaRecordMode = _u[0], setMediaRecordMode = _u[1];
+    var _v = useState(false), imageRecording = _v[0], setImageRecording = _v[1];
+    var _w = useState(false), audioRecording = _w[0], setAudioRecording = _w[1];
+    var _x = useState(false), loading = _x[0], setLoading = _x[1];
+    var _y = useState(false), micAnimation = _y[0], setMicAnimation = _y[1];
+    var _z = useState(0), finalRating = _z[0], setFinalRating = _z[1];
+    var _0 = useState(false), bugReportPage = _0[0], setBugReportPage = _0[1];
+    var _1 = useState(false), dataSubmitted = _1[0], setDataSubmitted = _1[1];
+    var _2 = useState([]), feedbackCategories = _2[0], setFeedbackCategories = _2[1];
     var env = process.env.REACT_APP_STAGE;
     if (env === 'Dev') {
         apiHostUrl = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
@@ -100,14 +120,17 @@ var FeedbackButtonComponent = function (props) {
     else {
         apiHostUrl = 'http://localhost:3000';
     }
-    var _w = useReactMediaRecorder({ screen: true, blobPropertyBag: { type: "video/mp4" } }), status = _w.status, startRecording = _w.startRecording, stopRecording = _w.stopRecording, mediaBlobUrl = _w.mediaBlobUrl, clearBlobUrl = _w.clearBlobUrl;
+    // const categories = ['app got crashed', 'error in img loading', 'video error', 'audio error']
+    var temp_categories = [];
+    var _3 = useReactMediaRecorder(mediaRecordMode), status = _3.status, startRecording = _3.startRecording, stopRecording = _3.stopRecording, mediaBlobUrl = _3.mediaBlobUrl, clearBlobUrl = _3.clearBlobUrl;
     var closeDialog = function () {
-        setVideo('');
         setDialogOpen(false);
         setFeedbackPage(false);
         setBugReportPage(false);
         setRating(0);
         setImage('');
+        setVideo('');
+        setAudio('');
         setFileName('');
         setFileSelected('');
         setDataSubmitted(false);
@@ -117,6 +140,8 @@ var FeedbackButtonComponent = function (props) {
         setVideoMedia('');
         setFileMedia('');
         setImageRecording(false);
+        stopRecording();
+        setFeedbackCategories('');
     };
     var handleUploadButton = function () {
         setDialogOpen(true);
@@ -155,6 +180,10 @@ var FeedbackButtonComponent = function (props) {
                             // console.log(data.Key, "vid");
                             setVideoMedia(data.Location);
                         }
+                        else if (data.Key.slice(0, 8) === 'gt_audio') {
+                            // console.log(data.Key, "vid");
+                            setAudioMedia(data.Location);
+                        }
                         else {
                             // console.log(data.Key, "file");
                             setFileMedia(data.Location);
@@ -179,13 +208,20 @@ var FeedbackButtonComponent = function (props) {
         }
     };
     useEffect(function () {
-        if (imgMedia || videoMedia || fileMedia) {
+        if (imgMedia || videoMedia || audioMedia || fileMedia) {
             setFileSubmitted(true);
         }
-    }, [imgMedia, videoMedia, fileMedia]);
+    }, [imgMedia, videoMedia, fileMedia, audioMedia]);
     useEffect(function () {
         if (mediaBlobUrl) {
-            setVideo(mediaBlobUrl);
+            if (audioRecording) {
+                setAudioRecording(false);
+                setAudio(mediaBlobUrl);
+                console.log(mediaBlobUrl, 'audioblob');
+            }
+            else {
+                setVideo(mediaBlobUrl);
+            }
             if (!imageRecording) {
                 setDialogHidden(false);
             }
@@ -258,7 +294,31 @@ var FeedbackButtonComponent = function (props) {
                 }
             });
         }); };
-        videoPlay();
+        var audioPlay = function () { return __awaiter(void 0, void 0, void 0, function () {
+            var myFile;
+            return __generator(this, function (_a) {
+                switch (_a.label) {
+                    case 0:
+                        if (!mediaBlobUrl) return [3 /*break*/, 2];
+                        return [4 /*yield*/, fetch(mediaBlobUrl)
+                                .then(function (r) { return r.blob(); }).then(function (blobFile) { return new File([blobFile], "gt_audio_".concat(uuidv1(), ".wav"), { type: 'audio/wav' }); })];
+                    case 1:
+                        myFile = _a.sent();
+                        // console.log(myFile, 'videofile');
+                        // const myFile = new File([mediaBlobUrl], "demo.mp4", { type: 'video/mp4' });
+                        setFileSelected(myFile);
+                        console.log('audio play');
+                        _a.label = 2;
+                    case 2: return [2 /*return*/];
+                }
+            });
+        }); };
+        if (audioRecording) {
+            audioPlay();
+        }
+        else {
+            videoPlay();
+        }
     }, [mediaBlobUrl]);
     useEffect(function () {
         var uploadScreenshotImg = function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -281,6 +341,7 @@ var FeedbackButtonComponent = function (props) {
         uploadScreenshotImg();
     }, [uploadScreenshot]);
     var captureScreenshot = function () {
+        setMediaRecordMode({ screen: true, blobPropertyBag: { type: "video/mp4" } });
         setDialogHidden(true);
         setTimeout(function () {
             startRecording();
@@ -288,7 +349,16 @@ var FeedbackButtonComponent = function (props) {
         setImageRecording(true);
     };
     var captureScreenRecord = function () {
+        setMediaRecordMode({ screen: true, blobPropertyBag: { type: "video/mp4" } });
         setDialogHidden(true);
+        setTimeout(function () {
+            startRecording();
+        }, 500);
+    };
+    var captureAudio = function () {
+        setMediaRecordMode({ audio: true, blobPropertyBag: { type: "audio/wav" } });
+        // setDialogHidden(true);
+        setAudioRecording(true);
         setTimeout(function () {
             startRecording();
         }, 500);
@@ -299,17 +369,26 @@ var FeedbackButtonComponent = function (props) {
                 stopRecording();
                 setTimeout(function () {
                     screenshotVideo();
-                }, 1000);
+                }, 5000);
             }, 500);
         }
+        // if(status === 'recording' && audioRecording){
+        //   setTimeout(()=> {
+        //     stopRecording();
+        //   },5000)
+        // }
+        console.log(status);
     }, [status]);
     var fileUpload = function (event) {
         event.preventDefault();
         setFileSelected(event.target.files[0]);
         setFileName(event.target.files[0].name);
-        // setFileContentType(event.target.files[0].type);
+        setFileContentType(event.target.files[0].type);
+        console.log(fileContentType);
     };
     var handleComments = function (event) {
+        // let temp: any = feedbackComments;
+        // temp = event.target.value;
         setFeedbackComments(event.target.value);
     };
     // const renderHome = () => {
@@ -364,19 +443,20 @@ var FeedbackButtonComponent = function (props) {
     };
     useEffect(function () {
         if (fileSubmitted) {
+            console.log(temp_categories);
             console.log('file Submitted');
             var postData = {
                 productRating: finalRating,
-                userId: "1",
-                productVersion: "2",
+                userName: props.userName,
+                productVersion: props.productVersion,
                 feedbackMedia: {
                     image: imgMedia,
                     video: videoMedia,
                     file: fileMedia,
-                    audio: ""
+                    audio: audioMedia
                 },
-                feedbackComments: [feedbackComments],
-                productId: "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
+                feedbackComments: [__spreadArray([], feedbackCategories, true), feedbackComments],
+                productKey: props.productKey,
             };
             fetch("".concat(apiHostUrl, "/feedback/"), {
                 method: 'POST',
@@ -440,19 +520,111 @@ var FeedbackButtonComponent = function (props) {
                                 setDialogHidden(false);
                             } }, "Close"))))));
     };
+    var handleChecked = function (id, category) { return function (e) {
+        var checked = e.target.checked;
+        if (checked) {
+            feedbackCategories[id] = category;
+        }
+        else {
+            feedbackCategories[id] = '';
+        }
+        console.log(feedbackCategories, 'categories');
+        // setFeedbackComments((values) => (feedbackComments[]));
+    }; };
     var textComment = function () {
         return (React.createElement(TextField, { style: { padding: '10px', width: '100%' }, multiline: true, id: "outlined-multiline-static", value: feedbackComments || '', onChange: function (event) { handleComments(event); }, rows: 4, label: "Provide your Comments", variant: "outlined" }));
     };
+    if (audioRecording) {
+        setTimeout(function () {
+            setMicAnimation(function (prevmicAnimation) { return (!prevmicAnimation); });
+            console.log('anime');
+        }, 200);
+    }
     var bugReportForm = function () {
-        return (React.createElement(React.Fragment, null,
+        return (audioRecording ? (React.createElement(React.Fragment, null,
+            React.createElement(Grid, { container: true, style: { display: 'flex', justifyContent: 'center', padding: '10px' } },
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
+                    React.createElement(Typography, { color: 'error', variant: 'h6' }, "Recording...")),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
+                    React.createElement(Typography, null, "Click on Mic Icon to Stop Recording")),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
+                    React.createElement(SettingsVoiceIcon, { onClick: stopRecording, style: { fontSize: '60px', margin: '20px', color: (micAnimation) ? 'red' : 'black' } }))))) : (React.createElement(React.Fragment, null,
+            React.createElement(Grid, { container: true },
+                props.categories.map(function (category, id) {
+                    return (React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'left', marginLeft: '20px' } },
+                        React.createElement("div", { key: id },
+                            React.createElement(Typography, { variant: "body1" },
+                                React.createElement(FormControlLabel, { control: React.createElement(Checkbox, { color: "primary", onClick: handleChecked(id, category) }), label: category })))));
+                }),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } }, textComment()),
+                React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
+                React.createElement(Grid, { item: true, xs: 2, sm: 2 },
+                    React.createElement(Tooltip, { title: React.createElement(Typography, { style: { fontSize: '12px', textAlign: 'center' } }, "Capture Screenshot") },
+                        React.createElement(AspectRatioIcon, { onClick: function () { captureScreenshot(); }, style: { pointerEvents: (audio || video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1' } }))),
+                React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
+                React.createElement(Grid, { item: true, xs: 2, sm: 2 },
+                    React.createElement(Tooltip, { title: React.createElement(Typography, { style: { fontSize: '12px', textAlign: 'center' } }, "Record voice input") },
+                        React.createElement(MicIcon, { onClick: function () { captureAudio(); }, style: { pointerEvents: (video || image != '' || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1' } }))),
+                React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
+                React.createElement(Grid, { item: true, xs: 2, sm: 2 },
+                    React.createElement(Tooltip, { title: React.createElement(Typography, { style: { fontSize: '12px', textAlign: 'center' } }, "Start Screen Record") },
+                        React.createElement(VideocamIcon, { onClick: function () { captureScreenRecord(); }, style: { pointerEvents: (audio || image != '' || fileName) ? 'none' : 'all', opacity: (image || fileName) ? '0.5' : '1' } }))),
+                React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
+                React.createElement(Grid, { item: true, xs: 2, sm: 2 },
+                    React.createElement("input", { style: { display: 'none', pointerEvents: (image != '' || video || audio) ? 'none' : 'all', opacity: (image || video) ? '0.5' : '1' }, id: 'upload-file', multiple: true, type: 'file', onChange: function (event) { return fileUpload(event); } }),
+                    React.createElement("label", { htmlFor: 'upload-file', style: { fontSize: '14px', color: 'black' } },
+                        React.createElement(Tooltip, { title: React.createElement(Typography, { style: { fontSize: '12px', textAlign: 'center' } }, "Attach File") },
+                            React.createElement(AttachFileIcon, { style: { pointerEvents: (image != '' || video || audio) ? 'none' : 'all', opacity: (image != '' || video || audio) ? '0.5' : '1' } })))),
+                fileName ? loading ? (React.createElement(React.Fragment, null,
+                    " ",
+                    React.createElement(Container, { className: 'loaderStyle' },
+                        React.createElement(CircularProgress, null),
+                        " "),
+                    " ")) : fileName : '',
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { width: '100%' } }, image ? loading ? (React.createElement(React.Fragment, null,
+                    " ",
+                    React.createElement(Container, { className: 'loaderStyle' },
+                        React.createElement(CircularProgress, null),
+                        " "),
+                    " ")) : video ? '' : React.createElement("img", { width: 300, src: image, alt: "ScreenShot" }) : ''),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { width: '100%' } }, audio ? loading ? (React.createElement(React.Fragment, null,
+                    " ",
+                    React.createElement(Container, { className: 'loaderStyle' },
+                        React.createElement(CircularProgress, null),
+                        " "),
+                    " ")) : fileName ? '' : React.createElement("audio", { src: mediaBlobUrl ? mediaBlobUrl : undefined, controls: true, autoPlay: true, muted: true }) : ''),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12 },
+                    React.createElement("video", { id: 'videoRecord', style: { maxHeight: '0px', maxWidth: '0px' }, src: mediaBlobUrl ? mediaBlobUrl : undefined, controls: true, autoPlay: true, muted: true }),
+                    video ? loading ? (React.createElement(React.Fragment, null,
+                        " ",
+                        React.createElement(Container, { className: 'loaderStyle' },
+                            React.createElement(CircularProgress, null),
+                            " "),
+                        " ")) : image ? '' : React.createElement("video", { style: { maxHeight: '300px', maxWidth: '300px' }, src: mediaBlobUrl ? mediaBlobUrl : undefined, controls: true, autoPlay: true, muted: true, loop: true }) : ''),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12 },
+                    React.createElement(Button, { disabled: loading, variant: "outlined", onClick: handleSendFeedback }, "Send Feedback"))))));
+    };
+    var commentsForm = function () {
+        return (audioRecording ? (React.createElement(React.Fragment, null,
+            React.createElement(Grid, { container: true, style: { display: 'flex', justifyContent: 'center', padding: '10px' } },
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
+                    React.createElement(Typography, { color: 'error', variant: 'h6' }, "Recording...")),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
+                    React.createElement(Typography, null, "Click on Mic Icon to Stop Recording")),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
+                    React.createElement(SettingsVoiceIcon, { onClick: stopRecording, style: { fontSize: '60px', margin: '20px', color: (micAnimation) ? 'red' : 'black' } }))))) : (React.createElement(React.Fragment, null,
             React.createElement(Grid, { container: true },
                 React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } }, textComment()),
                 React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
-                React.createElement(Grid, { item: true, xs: 3, sm: 3 },
+                React.createElement(Grid, { item: true, xs: 2, sm: 2 },
                     React.createElement(Tooltip, { title: React.createElement(Typography, { style: { fontSize: '12px', textAlign: 'center' } }, "Capture Screenshot") },
                         React.createElement(AspectRatioIcon, { onClick: function () { captureScreenshot(); }, style: { pointerEvents: (video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1' } }))),
                 React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
-                React.createElement(Grid, { item: true, xs: 3, sm: 3 },
+                React.createElement(Grid, { item: true, xs: 2, sm: 2 },
+                    React.createElement(Tooltip, { title: React.createElement(Typography, { style: { fontSize: '12px', textAlign: 'center' } }, "Record voice input") },
+                        React.createElement(MicIcon, { onClick: function () { captureAudio(); }, style: { pointerEvents: (video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1' } }))),
+                React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
+                React.createElement(Grid, { item: true, xs: 2, sm: 2 },
                     React.createElement(Tooltip, { title: React.createElement(Typography, { style: { fontSize: '12px', textAlign: 'center' } }, "Start Screen Record") },
                         React.createElement(VideocamIcon, { onClick: function () { captureScreenRecord(); }, style: { pointerEvents: (image != '' || fileName) ? 'none' : 'all', opacity: (image || fileName) ? '0.5' : '1' } }))),
                 React.createElement(Grid, { item: true, xs: 1, sm: 1 }),
@@ -473,8 +645,14 @@ var FeedbackButtonComponent = function (props) {
                         React.createElement(CircularProgress, null),
                         " "),
                     " ")) : video ? '' : React.createElement("img", { width: 300, src: image, alt: "ScreenShot" }) : ''),
+                React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { width: '100%' } }, audio ? loading ? (React.createElement(React.Fragment, null,
+                    " ",
+                    React.createElement(Container, { className: 'loaderStyle' },
+                        React.createElement(CircularProgress, null),
+                        " "),
+                    " ")) : fileName ? '' : React.createElement("audio", { src: mediaBlobUrl ? mediaBlobUrl : undefined, controls: true, autoPlay: true, muted: true }) : ''),
                 React.createElement(Grid, { item: true, xs: 12, sm: 12 },
-                    React.createElement("video", { id: 'videoRecord', style: { maxHeight: '0px', maxWidth: '0px' }, src: mediaBlobUrl ? mediaBlobUrl : undefined, controls: true, autoPlay: true, muted: true, loop: true }),
+                    React.createElement("video", { id: 'videoRecord', style: { maxHeight: '0px', maxWidth: '0px' }, src: mediaBlobUrl ? mediaBlobUrl : undefined, controls: true, autoPlay: true, muted: true }),
                     video ? loading ? (React.createElement(React.Fragment, null,
                         " ",
                         React.createElement(Container, { className: 'loaderStyle' },
@@ -482,7 +660,7 @@ var FeedbackButtonComponent = function (props) {
                             " "),
                         " ")) : image ? '' : React.createElement("video", { style: { maxHeight: '300px', maxWidth: '300px' }, src: mediaBlobUrl ? mediaBlobUrl : undefined, controls: true, autoPlay: true, muted: true, loop: true }) : ''),
                 React.createElement(Grid, { item: true, xs: 12, sm: 12 },
-                    React.createElement(Button, { disabled: loading, variant: "outlined", onClick: handleSendFeedback }, "Send Feedback")))));
+                    React.createElement(Button, { disabled: loading, variant: "outlined", onClick: handleSendFeedback }, "Send Feedback"))))));
     };
     var feedbackRating = function () {
         return (React.createElement(React.Fragment, null,
@@ -491,7 +669,7 @@ var FeedbackButtonComponent = function (props) {
                     React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
                         React.createElement(Typography, null, "Tell us about your experience")),
                     React.createElement(Grid, { item: true, xs: 12, sm: 12, style: { display: 'flex', justifyContent: 'center' } },
-                        React.createElement(Rating, { name: 'size-large', value: rating, style: { marginLeft: '2px' }, onChange: function (event, newValue) {
+                        React.createElement(Rating, { name: 'size-large', value: rating, style: { marginLeft: '2px', fontSize: '20px' }, onChange: function (event, newValue) {
                                 if (newValue) {
                                     setRating(newValue);
                                     setFinalRating(newValue);
@@ -499,7 +677,7 @@ var FeedbackButtonComponent = function (props) {
                                     // console.log(newValue);
                                 }
                             } })),
-                    React.createElement(Grid, { item: true, xs: 12, sm: 12 }, (finalRating > 0 && finalRating < 3) ? bugReportForm() : (finalRating > 2 && finalRating < 6) ? React.createElement(SuccessPage, null) : '')))));
+                    React.createElement(Grid, { item: true, xs: 12, sm: 12 }, (finalRating > 0 && finalRating < 3) ? commentsForm() : (finalRating > 2 && finalRating < 6) ? React.createElement(SuccessPage, null) : '')))));
     };
     var feedbackMenu = function () {
         return (React.createElement(React.Fragment, null,

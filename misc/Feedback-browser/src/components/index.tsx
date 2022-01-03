@@ -1,13 +1,16 @@
 import React, {useState, useEffect} from 'react';
-import { Button, Container, CssBaseline, Dialog, DialogContent, DialogTitle, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
+import { Button,  Checkbox, Container, CssBaseline, Dialog, DialogContent, DialogTitle, FormControlLabel, Grid, TextField, Tooltip, Typography } from '@material-ui/core';
 import { StylesProvider } from "@material-ui/core/styles";
+import MicIcon from '@material-ui/icons/Mic';
 import { makeStyles } from '@material-ui/core/styles';
 import AspectRatioIcon from '@material-ui/icons/AspectRatio';
 import AttachFileIcon from '@material-ui/icons/AttachFile';
 import VideocamIcon from '@material-ui/icons/Videocam';
+import SettingsVoiceIcon from '@material-ui/icons/SettingsVoice';
 import { ReactMediaRecorderRenderProps, useReactMediaRecorder } from "react-media-recorder";
 import html2canvas from 'html2canvas';
 import CanvasDraw from "react-canvas-draw";
+import './styles.css';
 import { v1 as uuidv1 } from 'uuid';
 import BugReportIcon from '@material-ui/icons/BugReport';
 import CancelIcon from '@material-ui/icons/Cancel';
@@ -17,6 +20,10 @@ import FormatListBulletedIcon from '@material-ui/icons/FormatListBulleted';
 
 interface IButtonProps {
   label: string;
+  productVersion: string,
+  productKey: string,
+  userName: string,
+  categories: string[],
 }
 const useStyles = makeStyles((theme) => ({
   button: {
@@ -39,21 +46,29 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   const [rating, setRating] = useState(0);
   const [image, setImage] = useState('');
   const [dialogHidden, setDialogHidden] = useState(false);
+  const [fileContentType, setFileContentType] = useState('');
   const [fileSelected, setFileSelected] = useState<any>('');
   const [fileName, setFileName] = useState('');
   const [uploadScreenshot, setUploadScreenshot] = useState('');
+  // const [saveableCanvas, setSaveableCanvas] = useState<any>('');
   const [fileSubmitted, setFileSubmitted] = useState(false)
   const [feedbackComments, setFeedbackComments] = useState('');
   const [imgMedia, setImgMedia] = useState('');
   const [videoMedia, setVideoMedia] = useState('');
   const [fileMedia, setFileMedia] = useState('');
+  const [audioMedia, setAudioMedia] = useState('');
   const [images, setImages] = useState(false);
   const [video, setVideo] = useState<any>('');
+  const [audio, setAudio] = useState<any>('');
+  const [mediaRecordMode, setMediaRecordMode] = useState({});
   const [imageRecording, setImageRecording] = useState(false)
+  const [audioRecording, setAudioRecording] = useState(false)
   const [loading, setLoading] = useState(false);
+  const [micAnimation, setMicAnimation] = useState(false);
   const [finalRating, setFinalRating] = useState(0);
   const[bugReportPage, setBugReportPage] = useState(false);
   const[dataSubmitted, setDataSubmitted] = useState(false);
+  const [feedbackCategories, setFeedbackCategories] = useState<any>([]);
   const env = process.env.REACT_APP_STAGE
   if (env === 'Dev') {
     apiHostUrl = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
@@ -66,21 +81,24 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 } else {
     apiHostUrl = 'http://localhost:3000';
 }
+// const categories = ['app got crashed', 'error in img loading', 'video error', 'audio error']
+const temp_categories: string[] = [];
   const {
     status,
     startRecording,
     stopRecording,
     mediaBlobUrl,
     clearBlobUrl,
-  }: ReactMediaRecorderRenderProps = useReactMediaRecorder({ screen: true,blobPropertyBag:{ type: "video/mp4" }});
+  }: ReactMediaRecorderRenderProps = useReactMediaRecorder(mediaRecordMode);
 
   const closeDialog = () => {
-    setVideo('');
     setDialogOpen(false);
     setFeedbackPage(false);
     setBugReportPage(false);
     setRating(0);
     setImage('');
+    setVideo('');
+    setAudio('');
     setFileName('');
     setFileSelected('');
     setDataSubmitted(false);
@@ -90,6 +108,8 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     setVideoMedia('');
     setFileMedia('');
     setImageRecording(false);
+    stopRecording();
+    setFeedbackCategories('')
   }
 
   const handleUploadButton = () => {
@@ -130,6 +150,10 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
             // console.log(data.Key, "vid");
             setVideoMedia(data.Location)
           }
+          else if(data.Key.slice(0,8) === 'gt_audio'){
+            // console.log(data.Key, "vid");
+            setAudioMedia(data.Location)
+          }
           else{
             // console.log(data.Key, "file");
             setFileMedia(data.Location)
@@ -155,14 +179,21 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   }
   }
   useEffect(() => {
-    if(imgMedia || videoMedia || fileMedia){
+    if(imgMedia || videoMedia || audioMedia || fileMedia){
     setFileSubmitted(true)
     }
-  }, [imgMedia, videoMedia, fileMedia])
+  }, [imgMedia, videoMedia, fileMedia, audioMedia])
 
   useEffect(() => {
     if(mediaBlobUrl){
-    setVideo(mediaBlobUrl);
+    if(audioRecording){  
+      setAudioRecording(false);
+      setAudio(mediaBlobUrl);
+      console.log(mediaBlobUrl, 'audioblob');
+    }
+    else{
+      setVideo(mediaBlobUrl);
+    }
     if(!imageRecording){
     setDialogHidden(false);
     }
@@ -235,10 +266,25 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
     setFileSelected(myFile);
   }
   }
-  videoPlay();
+  const audioPlay = async () => {
+    if(mediaBlobUrl){
+      let myFile = await fetch(mediaBlobUrl)
+      .then(r => r.blob()).then(blobFile => new File([blobFile], `gt_audio_${uuidv1()}.wav`, { type: 'audio/wav' }));
+      // console.log(myFile, 'videofile');
+      // const myFile = new File([mediaBlobUrl], "demo.mp4", { type: 'video/mp4' });
+      setFileSelected(myFile);
+      console.log('audio play');
+    }
+    }
+  if(audioRecording){
+  audioPlay();
+  }
+  else{
+    videoPlay();
+  }
  }, [mediaBlobUrl])
- useEffect(() => {
 
+ useEffect(() => {
   const uploadScreenshotImg = async () => {
   if(uploadScreenshot){
     let myFile = await fetch(uploadScreenshot)
@@ -252,6 +298,7 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
 
 
   const captureScreenshot = () => {
+    setMediaRecordMode({screen: true, blobPropertyBag:{ type: "video/mp4" }})
     setDialogHidden(true);
     setTimeout(()=> {
       startRecording();
@@ -260,30 +307,50 @@ const FeedbackButtonComponent = (props: IButtonProps) => {
   }
 
   const captureScreenRecord = () => {
+    setMediaRecordMode({screen: true, blobPropertyBag:{ type: "video/mp4" }})
     setDialogHidden(true);
      setTimeout(()=> {
       startRecording();
     }, 500)
   }
 
+  const captureAudio = () => {
+    setMediaRecordMode({audio: true, blobPropertyBag:{ type: "audio/wav" }})
+    // setDialogHidden(true);
+    setAudioRecording(true);
+     setTimeout(()=> {
+      startRecording();
+    }, 500)
+  }
+
+  
 useEffect(() => {
   if(status === 'recording' && imageRecording){
     setTimeout(()=> {
       stopRecording();    
       setTimeout(()=> {
         screenshotVideo();
-      }, 1000)},500)
+      }, 5000)},500)
   }
+  // if(status === 'recording' && audioRecording){
+  //   setTimeout(()=> {
+  //     stopRecording();
+  //   },5000)
+  // }
+  console.log(status)
 }, [status])
 
   const fileUpload = (event: any) => {
     event.preventDefault();
     setFileSelected(event.target.files[0]);
     setFileName(event.target.files[0].name);
-    // setFileContentType(event.target.files[0].type);
+    setFileContentType(event.target.files[0].type);
+    console.log(fileContentType);
   }
 
   const handleComments = (event: any) => {
+      // let temp: any = feedbackComments;
+      // temp = event.target.value;
       setFeedbackComments( event.target.value);
   }
   // const renderHome = () => {
@@ -341,20 +408,21 @@ useEffect(() => {
 
 useEffect(() => {
     if(fileSubmitted){
+      console.log(temp_categories)
       console.log('file Submitted')
-    const postData = {
-      productRating: finalRating,
-      userId: "1",
-      productVersion: "2",
-      feedbackMedia: {
-        image: imgMedia,
-        video: videoMedia,
-        file: fileMedia,
-        audio: ""
-      },
-        feedbackComments: [feedbackComments],
-        productId: "prod_002530f0-4da6-11ec-bda2-8186c737d04e",
-    }
+      const postData = {
+        productRating: finalRating,
+        userName: props.userName,
+        productVersion: props.productVersion,
+        feedbackMedia: {
+          image: imgMedia,
+          video: videoMedia,
+          file: fileMedia,
+          audio: audioMedia
+        },
+          feedbackComments: [[...feedbackCategories],feedbackComments],
+          productKey: props.productKey,
+      }
     fetch(`${apiHostUrl}/feedback/`, {
       method: 'POST',
       body:  JSON.stringify(postData),
@@ -394,7 +462,7 @@ useEffect(() => {
       <Grid container>
       <Grid item xs={12} sm={12}>
       <div id="canvasScreenshot" >
-      <CanvasDraw  ref={(canvasDraw: any) => (saveCanvas = (canvasDraw))} brushColor='red' brushRadius={3} hideGrid={true} imgSrc={image}  canvasHeight={window.screen.height} canvasWidth={window.screen.width} />
+      <CanvasDraw  ref={canvasDraw => (saveCanvas = (canvasDraw))} brushColor='red' brushRadius={3} hideGrid={true} imgSrc={image}  canvasHeight={window.screen.height} canvasWidth={window.screen.width} />
       </div>
             <div style={{position: 'fixed', borderStyle: 'solid', borderWidth: '2px',borderColor: 'red', backgroundColor: 'white', bottom: '20px', left: '40vw'}}>
       <Button variant='outlined'  style={{margin: '10px', backgroundColor: 'white'}} onClick={() => {
@@ -419,37 +487,95 @@ useEffect(() => {
       </div>
     )
   }
+  const handleChecked = (id: number, category: string) => (e: any) => {
+    const { checked } = e.target;
+    if(checked){
+      feedbackCategories[id] = category;  
+    }
+    else{
+      feedbackCategories[id] = '';
+    }
+    console.log(feedbackCategories, 'categories');
+      // setFeedbackComments((values) => (feedbackComments[]));
+  };
+
   const textComment = () => {
     return(
     <TextField  style={{padding:'10px', width: '100%'}}   multiline 
     id="outlined-multiline-static"  value={feedbackComments || ''} onChange={(event) => {handleComments(event)}} rows={4} label="Provide your Comments" variant="outlined" />
     )
   }
+    if(audioRecording){
+      setTimeout(() => {setMicAnimation(prevmicAnimation => (!prevmicAnimation))
+      console.log('anime')},200)
+    }
   const bugReportForm = () => {
       return (
+        audioRecording ? (<>
+        <Grid container style={{display: 'flex', justifyContent: 'center', padding: '10px'}}>
+        <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+        <Typography color='error' variant='h6' >Recording...</Typography>
+        </Grid>
+        <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+        <Typography>Click on Mic Icon to Stop Recording</Typography>
+        </Grid>
+        <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+        <SettingsVoiceIcon onClick={stopRecording} style={{fontSize: '60px', margin: '20px', color: (micAnimation) ?  'red' : 'black' }}/>
+        </Grid>
+        </Grid>
+        </>) : (
           <>
           <Grid container>
+        {props.categories.map(( category: string, id: number ) => {
+          return (
+            <Grid item xs={12} sm={12} style={{ display: 'flex', justifyContent: 'left', marginLeft: '20px'}}>
+
+            <div key={id}>
+              <Typography variant="body1">
+                              <FormControlLabel
+                  control={
+                    <Checkbox
+                      color="primary"
+                      onClick={handleChecked(id, category)}
+                    />
+                  }
+                  label={category}
+                />
+
+              </Typography>
+            </div>
+            </Grid>
+          )
+        })}
+         
           <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
             {textComment()}
            </Grid>
            <Grid item xs={1} sm={1} />
-           <Grid item xs={3} sm={3}>
+           <Grid item xs={2} sm={2}>
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Capture Screenshot</Typography>}>
-           <AspectRatioIcon onClick={() => {captureScreenshot()}} style={{pointerEvents: (video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1'}}/>
+           <AspectRatioIcon onClick={() => {captureScreenshot()}} style={{pointerEvents: (audio || video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1'}}/>
            </Tooltip>
            </Grid>
            <Grid item xs={1} sm={1} />
-           <Grid item xs={3} sm={3}>
+           <Grid item xs={2} sm={2}>
+           <Tooltip
+            title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Record voice input</Typography>}>
+           <MicIcon onClick={() => {captureAudio()}} style={{pointerEvents: (video || image!='' || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1'}}/>
+           </Tooltip>
+           </Grid>
+           <Grid item xs={1} sm={1} />
+           <Grid item xs={2} sm={2}>
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Start Screen Record</Typography>}>
-           <VideocamIcon onClick={() => {captureScreenRecord()}}  style={{pointerEvents: (image!='' || fileName) ? 'none' : 'all', opacity: (image || fileName) ? '0.5' : '1'}} />
+           <VideocamIcon onClick={() => {captureScreenRecord()}}  style={{pointerEvents: (audio || image!='' || fileName) ? 'none' : 'all', opacity: (image || fileName) ? '0.5' : '1'}} />
            </Tooltip>
            </Grid>
            <Grid item xs={1} sm={1} />
            <Grid item xs={2} sm={2} >
            <input
-                style={{ display: 'none', pointerEvents: (image!='' || video) ? 'none' : 'all', opacity: (image || video) ? '0.5' : '1' }}
+                style={{ display: 'none', pointerEvents: (image!='' || video || audio) ? 'none' : 'all', opacity: (image || video) ? '0.5' : '1' }}
                 id='upload-file'
                 multiple
                 type='file'
@@ -461,7 +587,7 @@ useEffect(() => {
             >
            <Tooltip
             title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Attach File</Typography>}>
-           <AttachFileIcon style={{ pointerEvents: (image!='' || video) ? 'none' : 'all', opacity: (image!='' || video) ? '0.5' : '1'}}/>
+           <AttachFileIcon style={{ pointerEvents: (image!='' || video || audio) ? 'none' : 'all', opacity: (image!='' || video || audio) ? '0.5' : '1'}}/>
            </Tooltip>
            </label>
            </Grid>
@@ -473,8 +599,13 @@ useEffect(() => {
            {  image ?  loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>)  :  video ? '' : <img width={300} src={image} alt={"ScreenShot"} />  : ''}
            {/*  */}
            </Grid>
+           <Grid item xs={12} sm={12} style={{width: '100%'}}>
+           {/* { imgMedia? <img width={300} src={image} alt={"ScreenShot"} /> : image ? loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
+           {  audio ?  loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>)  :  fileName ? '' : <audio src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted />  : ''}
+           {/*  */}
+           </Grid>
            <Grid item xs={12} sm={12} >
-           <video id='videoRecord' style={{maxHeight: '0px', maxWidth: '0px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> 
+           <video id='videoRecord' style={{maxHeight: '0px', maxWidth: '0px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted /> 
            {/* {videoMedia ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : mediaBlobUrl ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
            {video  ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>): image ? ''  : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> : ''}
            {/*  */}
@@ -493,9 +624,105 @@ useEffect(() => {
            <Button disabled={loading} variant="outlined" onClick={handleSendFeedback}>Send Feedback</Button>
            </Grid>
            </Grid>
-          </>
+          </>)
       )
   }
+  const commentsForm = () => {
+    return (
+      audioRecording ? (<>
+      <Grid container style={{display: 'flex', justifyContent: 'center', padding: '10px'}}>
+      <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+      <Typography color='error' variant='h6' >Recording...</Typography>
+      </Grid>
+      <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+      <Typography>Click on Mic Icon to Stop Recording</Typography>
+      </Grid>
+      <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+      <SettingsVoiceIcon onClick={stopRecording} style={{fontSize: '60px', margin: '20px', color: (micAnimation) ?  'red' : 'black' }}/>
+      </Grid>
+      </Grid>
+      </>) : (
+        <>
+        <Grid container>
+        <Grid item xs={12} sm={12} style={{display: 'flex', justifyContent: 'center'}}>
+          {textComment()}
+         </Grid>
+         <Grid item xs={1} sm={1} />
+         <Grid item xs={2} sm={2}>
+         <Tooltip
+          title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Capture Screenshot</Typography>}>
+         <AspectRatioIcon onClick={() => {captureScreenshot()}} style={{pointerEvents: (video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1'}}/>
+         </Tooltip>
+         </Grid>
+         <Grid item xs={1} sm={1} />
+         <Grid item xs={2} sm={2}>
+         <Tooltip
+          title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Record voice input</Typography>}>
+         <MicIcon onClick={() => {captureAudio()}} style={{pointerEvents: (video || fileName) ? 'none' : 'all', opacity: (video || fileName) ? '0.5' : '1'}}/>
+         </Tooltip>
+         </Grid>
+         <Grid item xs={1} sm={1} />
+         <Grid item xs={2} sm={2}>
+         <Tooltip
+          title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Start Screen Record</Typography>}>
+         <VideocamIcon onClick={() => {captureScreenRecord()}}  style={{pointerEvents: (image!='' || fileName) ? 'none' : 'all', opacity: (image || fileName) ? '0.5' : '1'}} />
+         </Tooltip>
+         </Grid>
+         <Grid item xs={1} sm={1} />
+         <Grid item xs={2} sm={2} >
+         <input
+              style={{ display: 'none', pointerEvents: (image!='' || video) ? 'none' : 'all', opacity: (image || video) ? '0.5' : '1' }}
+              id='upload-file'
+              multiple
+              type='file'
+              onChange={(event) => fileUpload(event)}
+            />
+          <label
+            htmlFor='upload-file'
+            style={{ fontSize: '14px', color: 'black' }}
+          >
+         <Tooltip
+          title={<Typography style={{fontSize: '12px',textAlign: 'center'}}>Attach File</Typography>}>
+         <AttachFileIcon style={{ pointerEvents: (image!='' || video) ? 'none' : 'all', opacity: (image!='' || video) ? '0.5' : '1'}}/>
+         </Tooltip>
+         </label>
+         </Grid>
+         {/* <img style={{width: '100vw', height: '100vh', margin: '15px', borderStyle: 'solid', borderWidth: '5px', borderColor: 'black'}} src={image} alt={"ScreenShot"} /> */}
+         {/* {fileMedia ? fileName : fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
+         {fileName ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : fileName : '' }
+         <Grid item xs={12} sm={12} style={{width: '100%'}}>
+         {/* { imgMedia? <img width={300} src={image} alt={"ScreenShot"} /> : image ? loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
+         {  image ?  loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>)  :  video ? '' : <img width={300} src={image} alt={"ScreenShot"} />  : ''}
+         {/*  */}
+         </Grid>
+         <Grid item xs={12} sm={12} style={{width: '100%'}}>
+         {/* { imgMedia? <img width={300} src={image} alt={"ScreenShot"} /> : image ? loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
+         {  audio ?  loading ?  (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>)  :  fileName ? '' : <audio src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted />  : ''}
+         {/*  */}
+         </Grid>
+         <Grid item xs={12} sm={12} >
+         <video id='videoRecord' style={{maxHeight: '0px', maxWidth: '0px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted /> 
+         {/* {videoMedia ? <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay muted loop /> : mediaBlobUrl ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>) : '' : ''} */}
+         {video  ? loading ? (<> <Container className='loaderStyle'><CircularProgress /> </Container> </>): image ? ''  : <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl ? mediaBlobUrl : undefined} controls autoPlay muted loop /> : ''}
+         {/*  */}
+         </Grid>
+         {/* <ReactMediaRecorder
+          screen
+          render={({ status, startRecording, stopRecording, mediaBlobUrl }) => (
+              <div style={{maxWidth: '300px'}}>
+              <p>{status}</p>
+              <button onClick={startRecording}>Start Recording</button>
+              <button onClick={stopRecording}>Stop Recording</button>
+              <video style={{maxHeight: '300px', maxWidth: '300px'}} src={mediaBlobUrl} controls autoPlay loop />
+              </div>
+          )} /> */}
+          <Grid item xs={12} sm={12} >
+         <Button disabled={loading} variant="outlined" onClick={handleSendFeedback}>Send Feedback</Button>
+         </Grid>
+         </Grid>
+        </>)
+    )
+}
   const feedbackRating = () => {
     return (
         <>
@@ -508,7 +735,7 @@ useEffect(() => {
         <Rating
         name='size-large'
         value={rating}
-        style={{marginLeft: '2px'}}
+        style={{marginLeft: '2px', fontSize: '20px'}}
         onChange={(event, newValue) => {
           if(newValue){ 
           setRating(newValue);
@@ -520,7 +747,7 @@ useEffect(() => {
       />
       </Grid>
       <Grid item xs={12} sm={12}>
-      { (finalRating > 0 && finalRating < 3) ?  bugReportForm() : (finalRating> 2 && finalRating < 6) ? <SuccessPage /> : ''}
+      { (finalRating > 0 && finalRating < 3) ?  commentsForm() : (finalRating> 2 && finalRating < 6) ? <SuccessPage /> : ''}
       </Grid>
       </div>
       </Grid>
