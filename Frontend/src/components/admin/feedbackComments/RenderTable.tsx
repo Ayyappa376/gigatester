@@ -55,6 +55,7 @@ const RenderTable = (props: IProps) => {
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
+    const [tableData, setTableData] = useState<IAppFeedback[]>([]);
     console.log("signedUrlMapping:", signedUrlMapping)
 
     const fetchSignedUrls = (urls: string[]) => {
@@ -82,14 +83,28 @@ const RenderTable = (props: IProps) => {
 
     }
 
+    const sortTableData = (data: IAppFeedback[]) => {
+      data.sort((aData, bData) => {
+        if (aData.createdOn > bData.createdOn) {
+          return -1;
+        } else if (aData.createdOn < bData.createdOn) {
+          return 1;
+        } else {
+          return 0;
+        }
+      })
+      setTableData(data);
+    }
+
     useEffect(() => {
       console.log("calling fetchSignedUrls")
       fetchSignedUrls(props.urls)
+      sortTableData(props.tableData);
     }, [])
 
     return (
         <Container>
-          {true ?
+          {tableData.length > 0 ?
             <Paper className='tableArea'>
           <Table className='table'>
             <TableHead component='th' className='tableHead'>
@@ -125,7 +140,7 @@ const RenderTable = (props: IProps) => {
               </TableRow>
             </TableHead>
             <TableBody>
-              {props.tableData.length > 0 ? props.tableData.map(
+              {tableData.length > 0 ? tableData.map(
                 (row: IAppFeedback, index: number) => {
                   if(isBugReport && row.productRating > 0) {
                     return <div/>
