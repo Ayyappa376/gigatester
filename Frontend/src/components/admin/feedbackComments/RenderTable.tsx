@@ -1,4 +1,4 @@
-import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { getSignedUrl, IAppFeedback } from '.';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -56,7 +56,9 @@ const RenderTable = (props: IProps) => {
       return state;
     });
     const [tableData, setTableData] = useState<IAppFeedback[]>([]);
-    console.log("signedUrlMapping:", signedUrlMapping)
+    /* Order related changes */
+    const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+    const [orderBy, setOrderBy] = useState('date');
 
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
@@ -83,23 +85,66 @@ const RenderTable = (props: IProps) => {
 
     }
 
-    const sortTableData = (data: IAppFeedback[]) => {
+    const sortTableByDate = (tableData: IAppFeedback[], sortOrder: string) => {
+      const data = [...tableData];
       data.sort((aData, bData) => {
         if (aData.createdOn > bData.createdOn) {
-          return -1;
+          return sortOrder === 'desc' ? -1 : 1;
         } else if (aData.createdOn < bData.createdOn) {
-          return 1;
+          return sortOrder === 'desc' ? 1 : -1;
         } else {
           return 0;
         }
       })
-      setTableData(data);
+      return data;
     }
+
+    const sortTableByRating = (tableData: IAppFeedback[], sortOrder: string) => {
+      const data = [...tableData];
+      data.sort((aData, bData) => {
+        if (aData.productRating > bData.productRating) {
+          return sortOrder === 'desc' ? -1 : 1;
+        } else if (aData.productRating < bData.productRating) {
+          return sortOrder === 'desc' ? 1 : -1;
+        } else {
+          return 0;
+        }
+      })
+      return data;
+    }
+
+    useEffect(() => {
+      if (tableData !== []) {
+        if (order === 'asc') {
+          if(orderBy === 'date') {
+            setTableData(sortTableByDate(tableData, 'asc'))
+          } else if(orderBy === 'rating') {
+            setTableData(sortTableByRating(tableData, 'asc'))
+          }
+        }
+        if (order === 'desc') {
+          if(orderBy === 'date') {
+            setTableData(sortTableByDate(tableData, 'desc'))
+          } else if(orderBy === 'rating') {
+            setTableData(sortTableByRating(tableData, 'desc'))
+          }
+        }
+      }
+    }, [order, orderBy]);
+
+    const handleRequestSort = (property: string) => {
+      if (orderBy === property) {
+        setOrder(order === 'asc' ? 'desc' : 'asc');
+      } else {
+        setOrder('asc');
+        setOrderBy(property);
+      }
+    };
 
     useEffect(() => {
       console.log("calling fetchSignedUrls")
       fetchSignedUrls(props.urls)
-      sortTableData(props.tableData);
+      setTableData(sortTableByDate(props.tableData, 'desc'));
     }, [])
 
     return (
@@ -115,9 +160,17 @@ const RenderTable = (props: IProps) => {
                   </Typography>
                 </TableCell>
                 <TableCell component='th' align='center' className='tableHeadCell'>
+                  <TableSortLabel
+                    active={orderBy === 'date'}
+                    direction={orderBy === 'date' ? order : 'asc'}
+                    onClick={() => {
+                      handleRequestSort('date');
+                    }}
+                  >
                     <Typography className='tableHeadText'>
                         Date
                     </Typography>
+                  </TableSortLabel>
                 </TableCell>
                 {
                   isBugReport ? 
@@ -127,9 +180,17 @@ const RenderTable = (props: IProps) => {
                     </Typography>
                   </TableCell> :
                   <TableCell component='th' align='center' className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      Rating
-                    </Typography>
+                    <TableSortLabel
+                      active={orderBy === 'rating'}
+                      direction={orderBy === 'rating' ? order : 'asc'}
+                      onClick={() => {
+                        handleRequestSort('rating');
+                      }}
+                    >
+                        <Typography className='tableHeadText'>
+                          Rating
+                        </Typography>
+                    </TableSortLabel>
                   </TableCell>
                 }
                 <TableCell component='th' align='center' className='tableHeadCell'>
@@ -165,9 +226,9 @@ const RenderTable = (props: IProps) => {
                         </MuiThemeProvider>
                       </TableCell>
                       <TableCell scope='row' align='center'>
-                        <Typography className='tableBodyText'>
-                          {row.createdOn ? getDate(row.createdOn) : '-'}
-                        </Typography>
+                          <Typography className='tableBodyText'>
+                            {row.createdOn ? getDate(row.createdOn) : '-'}
+                          </Typography>
                       </TableCell>
                       {
                         isBugReport ? 
