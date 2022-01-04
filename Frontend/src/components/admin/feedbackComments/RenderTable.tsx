@@ -1,4 +1,4 @@
-import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { getSignedUrl, IAppFeedback } from '.';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -8,6 +8,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
+import SearchField from './SearchField';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -22,7 +23,7 @@ export const RenderStars = (props: any) => {
       <div style={{alignItems: "center"}}>
       <div>
           {arr.map((el, i) => {
-              return (i < props.rating ? <FavoriteIcon/> : <FavoriteBorderIcon/>)
+              return (i < props.rating ? <FavoriteIcon key={i}/> : <FavoriteBorderIcon key={i}/>)
           })}
       </div>
       </div>
@@ -55,7 +56,10 @@ const RenderTable = (props: IProps) => {
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
+    const [rawTableData, setRawTableData] = useState(props.tableData);
     const [tableData, setTableData] = useState<IAppFeedback[]>([]);
+    const [searchPhrase, setSearchPhrase] = useState("");
+
     /* Order related changes */
     const [order, setOrder] = useState<'asc' | 'desc'>('desc');
     const [orderBy, setOrderBy] = useState('date');
@@ -70,7 +74,6 @@ const RenderTable = (props: IProps) => {
           return new Promise(async(resolve, reject) => {
             const signedUrl: any = await getSignedUrl(url, stateVariable);
             if (signedUrl) {
-              console.log("signedUrlMappingCopy:", signedUrlMappingCopy)
               signedUrlMappingCopy[url] = signedUrl;
               return resolve({});
             } else {
@@ -79,10 +82,26 @@ const RenderTable = (props: IProps) => {
           })
         })
       ).then(() => {setFecthAllUrls(true);
-        console.log("all executed.");
         setsignedUrlMapping(signedUrlMappingCopy)});
-        
+    }
 
+    useEffect(() => {
+      if(searchPhrase) {
+        const filteredTableData = rawTableData.filter((el) => {
+          if(el.feedbackComments){
+            const feedbackCommentsString = el.feedbackComments.join();
+            if(feedbackCommentsString.indexOf(searchPhrase) >= 0) {
+              return true;
+            }
+            return false;
+          }
+        })
+        setTableData(filteredTableData)
+      }
+    }, [searchPhrase])
+
+    const clearSearch = () => {
+      applySort(rawTableData);
     }
 
     const sortTableByDate = (tableData: IAppFeedback[], sortOrder: string) => {
@@ -113,23 +132,26 @@ const RenderTable = (props: IProps) => {
       return data;
     }
 
-    useEffect(() => {
-      if (tableData !== []) {
-        if (order === 'asc') {
-          if(orderBy === 'date') {
-            setTableData(sortTableByDate(tableData, 'asc'))
-          } else if(orderBy === 'rating') {
-            setTableData(sortTableByRating(tableData, 'asc'))
-          }
-        }
-        if (order === 'desc') {
-          if(orderBy === 'date') {
-            setTableData(sortTableByDate(tableData, 'desc'))
-          } else if(orderBy === 'rating') {
-            setTableData(sortTableByRating(tableData, 'desc'))
-          }
+    const applySort = (data?: IAppFeedback[]) => {
+      let sortData = data && data.length > 0 ? data : tableData;
+      if (order === 'asc') {
+        if(orderBy === 'date') {
+          setTableData(sortTableByDate(sortData, 'asc'))
+        } else if(orderBy === 'rating') {
+          setTableData(sortTableByRating(sortData, 'asc'))
         }
       }
+      if (order === 'desc') {
+        if(orderBy === 'date') {
+          setTableData(sortTableByDate(sortData, 'desc'))
+        } else if(orderBy === 'rating') {
+          setTableData(sortTableByRating(sortData, 'desc'))
+        }
+      }
+    }
+
+    useEffect(() => {
+      applySort();
     }, [order, orderBy]);
 
     const handleRequestSort = (property: string) => {
@@ -142,24 +164,30 @@ const RenderTable = (props: IProps) => {
     };
 
     useEffect(() => {
-      console.log("calling fetchSignedUrls")
-      fetchSignedUrls(props.urls)
-      setTableData(sortTableByDate(props.tableData, 'desc'));
+      if(!fetchAllUrls) {
+        fetchSignedUrls(props.urls)
+        setTableData(sortTableByDate(props.tableData, 'desc'));
+      }
     }, [])
+
 
     return (
         <Container>
+          <Divider></Divider>
+          <div style={{minWidth: '100%'}}>
+            <SearchField style={{marginTop: 10, marginLeft: 'auto'}} phrase={searchPhrase} onSearch={(phrase: string) => {setSearchPhrase(phrase)}}
+              clearSearch={()=> {clearSearch()}}/>
+          </div>
           {tableData.length > 0 ?
             <Paper className='tableArea'>
           <Table className='table'>
             <TableHead component='th' className='tableHead'>
-              <TableRow>
-                <TableCell component='th' className='tableHeadCell'>
+                <TableCell className='tableHeadCell'>
                   <Typography className='tableHeadText'>
                     User
                   </Typography>
                 </TableCell>
-                <TableCell component='th' align='center' className='tableHeadCell'>
+                <TableCell align='center' className='tableHeadCell'>
                   <TableSortLabel
                     active={orderBy === 'date'}
                     direction={orderBy === 'date' ? order : 'asc'}
@@ -174,12 +202,12 @@ const RenderTable = (props: IProps) => {
                 </TableCell>
                 {
                   isBugReport ? 
-                  <TableCell component='th' align='center' className='tableHeadCell'>
+                  <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
                       Category
                     </Typography>
                   </TableCell> :
-                  <TableCell component='th' align='center' className='tableHeadCell'>
+                  <TableCell align='center' className='tableHeadCell'>
                     <TableSortLabel
                       active={orderBy === 'rating'}
                       direction={orderBy === 'rating' ? order : 'asc'}
@@ -193,21 +221,20 @@ const RenderTable = (props: IProps) => {
                     </TableSortLabel>
                   </TableCell>
                 }
-                <TableCell component='th' align='center' className='tableHeadCell'>
+                <TableCell align='center' className='tableHeadCell'>
                   <Typography className='tableHeadText'>
                     Comments
                   </Typography>
                 </TableCell>
-              </TableRow>
             </TableHead>
             <TableBody>
               {tableData.length > 0 ? tableData.map(
                 (row: IAppFeedback, index: number) => {
                   if(isBugReport && row.productRating > 0) {
-                    return <div/>
+                    return null
                   }
                   if(!isBugReport && row.productRating === 0) {
-                    return <div/>
+                    return null
                   }
                   return (
                     <TableRow key={index}>
@@ -295,9 +322,7 @@ const RenderTable = (props: IProps) => {
               ): <div/>}
             </TableBody>
           </Table>
-        </Paper> : <Backdrop className={classes.backdrop} open={fetchAllUrls}>
-                  <CircularProgress color='inherit' />
-              </Backdrop> }
+        </Paper> : <div>No data to show.</div> }
         </Container>
     )
 }
