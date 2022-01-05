@@ -20,19 +20,20 @@ const SearchField = (props: IProps) => {
     return (
         <div style={props.style}>
             <Paper
-                    component="form"
-                    style={{ padding: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto' }}
-                >
+                component="form"
+                style={{ padding: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto' }}
+            >
                 <InputBase
                     style={{ marginLeft: 1, flex: 1 }}
                     placeholder="Search"
                     inputProps={{ 'aria-label': 'search' }}
                     onChange={(event: any) => {setKeyword(event.target.value)}}
                     onKeyPress= {(e) => {
-                        if (e.key === 'Enter') {
-                          console.log('Enter key pressed');
-                          // write your functionality here
-                          props.onSearch('')}
+                            if (e.key === 'Enter') {
+                                props.onSearch(keyword)
+                                setSearchInitiated(true);
+                                e.preventDefault()
+                            }
                         }
                     }
                 />
@@ -40,14 +41,12 @@ const SearchField = (props: IProps) => {
                     searchInitiated ? <IconButton type="button" style={{ padding: '10px' }} disableRipple={true} aria-label="cancel" onClick={() => {setKeyword(''); props.clearSearch(); setSearchInitiated(false)}}>
                         <ClearIcon />
                     </IconButton> : <div/>
-
                 }
-                
                 <Divider style={{ height: 28, margin: 0.5 }} orientation="vertical" />
                 <IconButton type="button" style={{ padding: '10px' }} disableRipple={true} aria-label="search" onClick={() => {props.onSearch(keyword); setSearchInitiated(true)}}>
                     <SearchIcon />
                 </IconButton>
-                </Paper>
+            </Paper>
         </div>
     )
 }
