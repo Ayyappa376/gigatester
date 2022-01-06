@@ -1,4 +1,4 @@
-import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { getSignedUrl, IAppFeedback } from '.';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -95,9 +95,11 @@ const RenderTable = (props: IProps) => {
     });
     const [rawTableData, setRawTableData] = useState(props.tableData);
     const [tableData, setTableData] = useState<IAppFeedback[]>([]);
-    const [searchPhrase, setSearchPhrase] = useState("");
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const [keyword, setKeyword] = useState("");
+    const [searchInitiated, setSearchInitiated] = useState(false)
 
     /* Order related changes */
     const [order, setOrder] = useState<Order>('desc');
@@ -125,11 +127,11 @@ const RenderTable = (props: IProps) => {
     }
 
     useEffect(() => {
-      if(searchPhrase) {
+      if(keyword) {
         const filteredTableData = rawTableData.filter((el) => {
           if(el.feedbackComments){
             const feedbackCommentsString = el.feedbackComments.join();
-            if(feedbackCommentsString.indexOf(searchPhrase) >= 0) {
+            if(feedbackCommentsString.indexOf(keyword) >= 0) {
               return true;
             }
             return false;
@@ -137,10 +139,21 @@ const RenderTable = (props: IProps) => {
         })
         setTableData(filteredTableData)
       }
-    }, [searchPhrase])
+    }, [keyword])
 
     const clearSearch = () => {
-      applySort(rawTableData);
+      const tableDataFiltered = rawTableData.filter((data) => {
+        if(!isBugReport && data.productRating > 0) {
+          return true
+        }
+        if(isBugReport && data.productRating === 0) {
+          return true
+        }
+        return false;
+      })
+      applySort(tableDataFiltered);
+      setSearchInitiated(false)
+      setKeyword("")
     }
 
     const sortTableByDate = (tableData: IAppFeedback[], sortOrder: string) => {
@@ -239,10 +252,11 @@ const RenderTable = (props: IProps) => {
           <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
             {isBugReport ? 'Bugs Reported' : 'Feedback'}
           </Typography>
-            <Tooltip title="Filter list">
-            <SearchField style={{marginTop: 10, marginLeft: 'auto'}} phrase={searchPhrase} onSearch={(phrase: string) => {setSearchPhrase(phrase)}}
+            <SearchField style={{marginTop: 10, marginLeft: 'auto'}}
+                  keyword={keyword} 
+                  searchInitiated ={searchInitiated}
+                  onSearch={(keyword: string) => {setKeyword(keyword); setSearchInitiated(true)}}
                   clearSearch={()=> {clearSearch()}}/>
-            </Tooltip>
         </Toolbar>
       );
     };
