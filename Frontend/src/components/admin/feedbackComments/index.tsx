@@ -31,6 +31,7 @@ export interface IAppFeedback {
   productRating: number;
   productVersion ? : string;
   userId ? : string;
+  sourceIP?: string;
   feedbackMedia: {
     image?: string,
     video?: string,

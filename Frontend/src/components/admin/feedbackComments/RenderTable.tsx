@@ -276,7 +276,7 @@ const RenderTable = (props: IProps) => {
                       key={index}
                     >
                       <TableCell >
-                            {row.userId}
+                            {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
                       </TableCell>
                       <TableCell align='center'>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
