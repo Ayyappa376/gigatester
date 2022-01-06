@@ -839,6 +839,7 @@ const PageHeader = (props: any) => {
     }
   };
 
+  /*
   const renderVisionButton = () => {
     if (userStatus.idToken) {
       return;
@@ -854,6 +855,7 @@ const PageHeader = (props: any) => {
       );
     }
   };
+  */
 
   const renderContactUsButton = () => {
     if (userStatus.idToken) {
@@ -861,7 +863,7 @@ const PageHeader = (props: any) => {
     } else {
       return (
         <div className='header-item'>
-          <NavLink to='/'>
+          <NavLink to='/about'>
             <Typography className={classes.headerItem}>
               <Text tid='contactUs' />
             </Typography>
@@ -891,7 +893,7 @@ const PageHeader = (props: any) => {
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
               {renderAboutUsButton()}
-              {renderVisionButton()}
+              {/*renderVisionButton()*/}
               {renderContactUsButton()}
               {renderAdminPage()}
               {renderManageSoftwareFiles()}
