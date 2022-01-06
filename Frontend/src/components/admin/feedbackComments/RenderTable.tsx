@@ -294,6 +294,8 @@ const RenderTable = (props: IProps) => {
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
                             {renderComments(row.feedbackComments)}
                         </div>
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+
                         <div>
                           {
                             row.feedbackMedia? row.feedbackMedia.image ? <Link
@@ -304,7 +306,7 @@ const RenderTable = (props: IProps) => {
                               props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
                             }}
                           >
-                            View attachment
+                            <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img>
                           </Link> : <div/> : <div/>
                           }
                         </div>
@@ -312,24 +314,37 @@ const RenderTable = (props: IProps) => {
                           {
                             row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
                             <div style={{maxWidth: 700}}>
-                            <video width="50%" controls style={{display: 'block',
-                                          marginTop: 20,
-                                          marginLeft: 'auto',
-                                          marginRight: 'auto',
+                            <video width="50%" controls style={row.feedbackMedia.image ?
+                                          {
+                                            display: 'flex',
+                                            marginTop: 20,
+                                            marginLeft: 20
+                                          } : {
+                                            display: 'block',
+                                            marginTop: 20,
+                                            marginLeft: 'auto',
+                                            marginRight: 'auto',
                                           }}>
                               <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" />
                             </video>
                             </div>
                             : <div style={{maxWidth: 700}}>
-                            <video width="50%" controls style={{display: 'block',
-                                          marginTop: 20,
-                                          marginLeft: 'auto',
-                                          marginRight: 'auto',
+                            <video width="50%" controls style={row.feedbackMedia.image ?
+                                          {
+                                            display: 'flex',
+                                            marginTop: 20,
+                                            marginLeft: 20
+                                          } : {
+                                            display: 'block',
+                                            marginTop: 20,
+                                            marginLeft: 'auto',
+                                            marginRight: 'auto',
                                           }}>
                               {/* <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" /> */}
                             </video>
                             </div> : <div/> : <div/>
                           }
+                        </div>
                         </div>
                         <div>
                           {
