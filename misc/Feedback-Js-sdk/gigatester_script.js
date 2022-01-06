@@ -236,6 +236,7 @@
             draw_on_the_screen: "Draw on the screen",
             draw_on_the_screen_help: "Give feedback with a screenshot",
             capture_video: "Capture video",
+            capture_audio: "Capture audio",
             capture_video_help: "Give feedback with a screen recording",
             general_feedback: "General feedback",
             general_feedback_help: "Give general feedback of this page",
@@ -254,7 +255,7 @@
             select_a_priority: "Choose priority",
             assign_to: "Assign to",
             leave_us_your_comment: "Leave us your comment",
-            attach_a_screenshot: "Attach a screenshot",
+            attach_a_screenshot: "Attach screenshot",
             screenshot_attached: "screenshot",
             send: "Send feedback",
             back: "back",
@@ -331,6 +332,10 @@
         canvas_target: false,
         controls_step: 0,
         form_type: "general",
+        audio_file: "",
+        video_file: "",
+        image_file:"",
+        screenshot_file:"",
         session_data: {},
         configs: {
             main_button_text: "FEEDBACK",
@@ -346,6 +351,7 @@
             bug: {
                 allow_session_recording: false,
                 allow_screenshot: true,
+                allow_audio: true,
                 allow_video: true,
                 allow_attachment: true,
                 rating_type: "",
@@ -354,8 +360,8 @@
                 send_button_text: "",
                 name_field: false,
                 name_field_mandatory: false,
-                email_field: true,
-                email_field_mandatory: true,
+                email_field: false,
+                email_field_mandatory: false,
                 title_field: false,
                 title_field_mandatory: false,
                 title_field_placeholder: "",
@@ -412,6 +418,7 @@
             general: {
                 allow_session_recording: false,
                 allow_screenshot: true,
+                allow_audio: true,
                 allow_video: true,
                 allow_attachment: true,
                 rating_type: "star",
@@ -420,8 +427,8 @@
                 send_button_text: "",
                 name_field: false,
                 name_field_mandatory: false,
-                email_field: true,
-                email_field_mandatory: true,
+                email_field: false,
+                email_field_mandatory: false,
                 title_field: false,
                 title_field_mandatory: false,
                 title_field_placeholder: "",
@@ -748,7 +755,6 @@
                     var tools = '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-square" data-type="square" title="' + "highlight" + '">' + Svg_Icons.square + "</btn>" + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-path" data-type="path" title="' + "pencil" + '">' + Svg_Icons.highlighter + "</btn>" + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-line" data-type="line" title="' + "line" + '">' + Svg_Icons.line + "</btn>" + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-arrow" data-type="arrow" title="' + "arrow" + '">' + Svg_Icons.arrow + "</btn>" + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + "blackout" + '">' + Svg_Icons.blackout + "</btn>" + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-text" data-type="text" title="' + "text" + '">' + Svg_Icons.text + "</btn>" + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-colour" data-type="colour">' + tool_colour_indicator + "</btn>" + '<btn class="gigatester-toolbar-tool-done' + (Feedback.canvas_mode ? " gigatester-toolbar-tool-done-active" : "") + '" title="' + "capture_screenshot" + '">' + Svg_Icons.tick + "<span>" + (Lang.get("next") ? Lang.get("next") : Lang.get("save")) + "</span>" + "</btn>" + (Feedback.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "close" + '">' + Svg_Icons.close + "</btn>") + (display_tutorial ? '<btn class="gigatester-toolbar-help">' + Svg_Icons.widget_question + "</btn>" : "");
                     this.toolbar = $("<gttoolbar>").attr("data-html2canvas-ignore", "true").attr("lang", Feedback.configs.language);
                     this.toolbar.html(tools);
-                    console.log(tools, 'tools');
                     this.setToolColour();
                     this.toolbar.appendTo($(document.body));
                     this.toolbar.on("mouseenter", $.proxy(function() {
@@ -777,7 +783,7 @@
                     this.toolbar.find(".gigatester-toolbar-tool-done").on("click", function(e) {
                         e.stopPropagation();
                         e.preventDefault();
-                        if (!Feedback.configs.is_live_checked) {
+                        if (Feedback.configs.is_live_checked) {
                             Feedback.check_live_callback = function() {
                                 Feedback.Tools.submitAnnotation()
                             };
@@ -785,13 +791,14 @@
                             Feedback.Tools.removeTools();
                             Feedback.hideComments();
                             Feedback.setScreenStatus("Taking screenshot...");
+                            console.log('isliveconfigs')
                             return
                         }
                         Feedback.Tools.submitAnnotation();
-                        Session_Recorder.addCustomEvent("widget_open", {
-                            type: "widget_interaction",
-                            name: "Capture Screenshot"
-                        })
+                        // Session_Recorder.addCustomEvent("widget_open", {
+                        //     type: "widget_interaction",
+                        //     name: "Capture Screenshot"
+                        // })
                     }.bind(this));
                     this.toolbar.find(".gigatester-toolbar-close").on("click", function(e) {
                         e.stopPropagation();
@@ -816,6 +823,7 @@
                     Feedback.removeScreenshotData();
                     Feedback.video_blob = video_blob;
                     Feedback.video_url = window.URL.createObjectURL(video_blob);
+                    console.log(Feedback.video_url, 'video url')
                     Feedback.video_annotation = annotations;
                     Feedback.controls_step = 2;
                     Feedback.showControls(true);
@@ -825,6 +833,7 @@
                     this.cancelRoutingOption()
                 },
                 submitAnnotation: function() {
+                    console.log('submit annotation')
                     Feedback.removeVideoData();
                     if (Feedback.Tools.annotation_count === 0) {
                         if (Feedback.ui.overlay) {
@@ -1599,7 +1608,9 @@
                 this.ui.controls.on("change", 'select[name="category"]', this.changeCategory.bind(this));
                 this.ui.controls.on("change", 'select[name="priority"]', this.changePriority.bind(this));
                 // this.ui.controls.on("change", 'select[name="assignee"]', this.changeAssignee.bind(this));
-                this.ui.controls.on("click", ".gigatester-controls-video", this.startVideo.bind(this));
+                // this.ui.controls.on("click", ".gigatester-controls-video", this.startVideo.bind(this));
+                this.ui.controls.on("click", ".gigatester-controls-video", this.recordVideo.bind(this));
+                this.ui.controls.on("click", ".gigatester-controls-audio", this.recordAudio.bind(this));
                 this.ui.controls.on("click", ".gigatester-controls-screenshot", this.attachScreenshot.bind(this));
                 this.ui.controls.on("click", ".gigatester-controls-add-screenshot", this.attachScreenshot.bind(this));
                 this.ui.controls.on("click", ".gigatester-controls-remove-screenshot", this.removeScreenshot.bind(this));
@@ -1697,11 +1708,13 @@
             setFormHTML: function() {
                 var form_settings = this.getFormSettings(this.form_type);
                 var display_screenshot = form_settings.allow_screenshot;
+                var display_audio = form_settings.allow_audio;
                 var display_video = form_settings.allow_video && this.configs.has_video && !Feedback.is_mobile && !this.canvas_mode;
                 var display_attachment = form_settings.allow_attachment  && typeof FileReader !== "undefined";
-                var data_item = 1;
+                var data_item = 0;
                 data_item += display_screenshot ? 1 : 0;
                 data_item += display_video ? 1 : 0;
+                data_item += display_audio ? 1 : 0;
                 data_item += display_attachment ? 1 : 0;
                 var default_name = this.form_data.name || GigaTester.name || Feedback.name || Lib.storage.get("gtw_name");
                 var default_email = this.form_data.email || GigaTester.email || Feedback.email || Lib.storage.get("gtw_email");
@@ -1739,7 +1752,44 @@
                 var html = "";
                 console.log(form_settings.rating_type);
                 console.log(Feedback.form_data.rating, 'render');
-                html += '<form class="gigatester-controls-options">' + (form_settings.rating_help_message ? '<div class="gigatester-controls-help-message">' + Lib.htmlEntities(form_settings.rating_help_message) + "</div>" : "") + (form_settings.rating_type ? "<gtrating>" + rating_icons + "</gtrating>" : "") + '<gtdiv class="gigatester-controls-form"' + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">" + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + Lang.get("your_name") + '"' + (form_settings.name_field_mandatory ? " required" : "") + ">" : "") + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + Lang.get("your_email_address") + '"' + (form_settings.email_field_mandatory ? " required" : "") + ">" : "") + (form_settings.display_category ? '<select name="category"' + (form_settings.category_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "") + (form_settings.display_priority ? '<select name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "") + (form_settings.display_assignee ? '<select name="assignee"' + (form_settings.assignee_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("assign_to") + "</option>" + assignee_options + "</select>" : "") + (form_settings.custom_field_1_type === "short_answer" ? '<input name="custom_field_1" type="text" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">" : "") + (form_settings.custom_field_1_type === "long_answer" ? '<textarea name="custom_field_1" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""' + (form_settings.custom_field_1_mandatory ? " required" : "") + "></textarea>" : "") + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (Lib.htmlEntities(form_settings.title_field_placeholder) || Lang.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "") + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (Lib.htmlEntities(form_settings.comment_field_placeholder) || Lang.get("leave_us_your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "") + (display_screenshot || display_video || display_attachment ? '<gtdiv class="gigatester-controls-attach-actions" data-item="' + data_item + '">' + "<gtdiv>" + (display_screenshot ? '<btn class="gigatester-controls-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>" + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "") + (display_video ? '<btn class="gigatester-controls-video">' + Svg_Icons.feedback_video + "<gtdiv>" + Lang.get("capture_video") + "</gtdiv>" + "<gttooltip>" + Lang.get("capture_video") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "") + (display_attachment ? '<btn class="gigatester-controls-add-attachment">' + Svg_Icons.paperclip + "<gtdiv>" + Lang.get("attach_a_file") + "</gtdiv>" + "<gttooltip>" + Lang.get("attach_a_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "") + "</gtdiv>" + '<input type="file" class="gigatester-controls-attachment">' + "</gtdiv>" : "") + '<gtdiv class="gigatester-controls-screenshot-preview">' + '<btn class="gigatester-controls-remove-screenshot">' + Svg_Icons.trash + "</btn>" + '<gtbadge class="gigatester-controls-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>" + '<gtdiv class="gigatester-controls-video-preview">' + '<btn class="gigatester-controls-remove-video">' + Svg_Icons.trash + "</btn>" + '<gtbadge class="gigatester-controls-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>" + "</gtbadge>" + "</gtdiv>" + '<gtdiv class="gigatester-controls-attachment-name">' + Svg_Icons.paperclip + "<span></span>" + '<btn class="gigatester-controls-remove-attachment">' + Svg_Icons.trash + "</btn>" + "</gtdiv>" + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "") + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">" + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + Svg_Icons.check + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "") + '<button class="gigatester-controls-send gigatester-button-input">' + '<span class="gigatester-controls-send-progress"></span>' + '<span class="gigatester-controls-send-text">' +  Lang.get("send") + "</span>" + "</button>" + "</gtdiv>" + "</form>";
+                html += '<form class="gigatester-controls-options">'
+                 + (form_settings.rating_help_message ? '<div class="gigatester-controls-help-message">' + Lib.htmlEntities(form_settings.rating_help_message) + "</div>" : "")
+                 + (form_settings.rating_type ? "<gtrating>" + rating_icons + "</gtrating>" : "")
+                 + '<gtdiv class="gigatester-controls-form"'
+                 + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
+                 + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + Lang.get("your_name") + '"'
+                 + (form_settings.name_field_mandatory ? " required" : "") + ">" : "")
+                 + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + Lang.get("your_email_address") + '"' + (form_settings.email_field_mandatory ? " required" : "") + ">" : "")
+                 + (form_settings.display_category ? '<select name="category"'
+                 + (form_settings.category_field_mandatory ? " required" : "")
+                 + '><option value="">' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
+                 + (form_settings.display_priority ? '<select name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "")
+                 + (form_settings.display_assignee ? '<select name="assignee"' + (form_settings.assignee_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("assign_to") + "</option>" + assignee_options + "</select>" : "")
+                 + (form_settings.custom_field_1_type === "short_answer" ? '<input name="custom_field_1" type="text" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""'
+                 + (form_settings.custom_field_1_mandatory ? " required" : "") + ">" : "") + (form_settings.custom_field_1_type === "long_answer" ? '<textarea name="custom_field_1" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""' + (form_settings.custom_field_1_mandatory ? " required" : "") + "></textarea>" : "")
+                 + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (Lib.htmlEntities(form_settings.title_field_placeholder) || Lang.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
+                 + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (Lib.htmlEntities(form_settings.comment_field_placeholder) || Lang.get("leave_us_your_comment")) + '"'
+                 + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
+                 + (display_screenshot || display_audio || display_video || display_attachment ? '<gtdiv class="gigatester-controls-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
+                 + (display_screenshot ? '<btn class="gigatester-controls-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>"
+                 + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>"
+                 + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
+                 + (display_audio ? '<btn class="gigatester-controls-audio">' + Svg_Icons.mic + "<gtdiv>" + Lang.get("capture_audio") + "</gtdiv>"
+                 + "<gttooltip>" + Lang.get("capture_audio") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
+                 + (display_video ? '<btn class="gigatester-controls-video">' + Svg_Icons.feedback_video + "<gtdiv>" + Lang.get("capture_video") + "</gtdiv>"
+                 + "<gttooltip>" + Lang.get("capture_video") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
+                 + (display_attachment ? '<btn class="gigatester-controls-add-attachment">' + Svg_Icons.paperclip + "<gtdiv>" + Lang.get("attach_a_file") + "</gtdiv>" + "<gttooltip>" + Lang.get("attach_a_file")
+                 + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "") + "</gtdiv>" + '<input type="file" class="gigatester-controls-attachment">' + "</gtdiv>" : "")
+                 + '<gtdiv class="gigatester-controls-screenshot-preview">' + '<btn class="gigatester-controls-remove-screenshot">' + Svg_Icons.trash + "</btn>"
+                 + '<gtbadge class="gigatester-controls-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
+                 + '<gtdiv class="gigatester-controls-video-preview">' + '<btn class="gigatester-controls-remove-video">' + Svg_Icons.trash + "</btn>"
+                 + '<gtbadge class="gigatester-controls-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>"
+                 + "</gtbadge>" + "</gtdiv>" + '<gtdiv class="gigatester-controls-attachment-name">' + Svg_Icons.paperclip + "<span></span>"
+                 + '<btn class="gigatester-controls-remove-attachment">' + Svg_Icons.trash + "</btn>"
+                 + "</gtdiv>" + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
+                 + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
+                 + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + Svg_Icons.check + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
+                 + '<button class="gigatester-controls-send gigatester-button-input">' + '<span class="gigatester-controls-send-progress"></span>' + '<span class="gigatester-controls-send-text">' +  Lang.get("send") + "</span>" + "</button>" + "</gtdiv>" + "</form>";
                 this.ui.controls.find('.gigatester-controls-step[data-step="2"]').html(html);
                 if (default_rating) {
                     this.ui.controls.find('gtrating gtdiv[data-rating="' + default_rating + '"]').click()
@@ -1805,6 +1855,99 @@
                     console.log('overlay screenhsot')
                     this.addOverlay()
                 }
+            },
+            recordAudio: async function(e){
+                if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+                    console.log("This browser does not support the API yet");
+                  }
+                else{
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                        video: false
+                    });
+                    const recorder = new MediaRecorder(stream);
+                    const chunks = [];
+                    console.log('recording')
+                    recorder.ondataavailable = e => chunks.push(e.data);
+                    recorder.start();
+                    // var video_blob = new Blob(this.recorded_blobs, {
+                    //     type: "video/webm"
+                    // });
+                    setTimeout(()=> (recorder.stop()), 4000);
+                    recorder.onstop = e => {
+                        const completeBlob = new Blob(chunks, { type: "audio/wav" });
+                        var src = URL.createObjectURL(completeBlob);
+                        console.log(src, 'audio blob')
+                        var audio_overlay = $('<div id="gigatester_audio_player"><div></div></div>');
+                        var audio = $('<audio id="gigatester_audio_preview_player" controls loop autoplay preload="auto" src="' + src + '"></audio>');
+                        var audio_close = $('<btn id="gigatester_audio_player_close">').html(Svg_Icons.close);
+                        // video.appendTo(video_overlay.children("div"));
+                        audio_close.appendTo(audio_overlay);
+                        audio.insertAfter($(document.getElementsByClassName('gigatester-controls-attach-actions')));
+                        this.loadAudio(src)
+                       
+                        audio_close.on("click", function() {
+                            audio_overlay.remove()
+                        })
+                      };
+                }
+            },
+            UUIDv4: function() {
+                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
+            },
+            loadAudio: async function(src) {
+                Feedback.audio_file = await fetch(src)
+                .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_audio_' + Feedback.UUIDv4() +'.wav', { type: 'audio/wav' }));
+                console.log(Feedback.audio_file, 'audio file loaded');
+            },
+            recordVideo: async function(e) {
+                console.log(navigator.mediaDevices.getSupportedConstraints())
+                if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+                    console.log("This browser does not support the API yet");
+                  }
+                else{
+                    const stream = await navigator.mediaDevices.getDisplayMedia({
+                        audio: true,
+                        video: true
+                    });
+                    const recorder = new MediaRecorder(stream);
+                    const chunks = [];
+                    recorder.ondataavailable = e => {chunks.push(e.data);console.log(MediaRecorder.state)}
+                    recorder.start();
+                    // var video_blob = new Blob(this.recorded_blobs, {
+                    //     type: "video/webm"
+                    // }); 
+                    recorder.addEventListener('inactive', e => {
+                        console.log('Capture stream inactive - stop recording!');
+                  
+                      });
+                    setTimeout(()=> (recorder.stop()), 10000);
+                    console.log('video recording')
+                    recorder.onstop = e => {
+                        const completeBlob = new Blob(chunks, { type: "video/webm" });
+                        var src = URL.createObjectURL(completeBlob);
+                        console.log(src, 'video blob')
+                        var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                        var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                        var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                        // video.appendTo(video_overlay.children("div"));
+                        video_close.appendTo(video_overlay);
+                        video.insertAfter($(document.getElementsByClassName('gigatester-controls-attach-actions')));
+                        this.loadVideo(src);
+                        video_close.on("click", function() {
+                            video_overlay.remove()
+                        })
+                      };
+                      
+                    }
+            },
+            loadVideo: async function(src) {
+                Feedback.video_file = await fetch(src)
+                .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_video_' + Feedback.UUIDv4() +'.wav', { type: 'audio/wav' }));
+                console.log(Feedback.video_file, 'video file loaded');
             },
             startVideo: function(e) {
                 if (typeof e !== "undefined" && $(e.currentTarget).attr("disabled")) {
@@ -2173,6 +2316,10 @@
             },
             post: function(e){
                 e.preventDefault();
+                var form_settings = this.getFormSettings(this.form_type);
+                var send_button = this.ui.controls.find(".gigatester-controls-send");
+                send_button.addClass("gigatester-controls-send-loading")
+                var outro_icon = Svg_Icons.outro_message_check;;
                 const postData = {
                     productRating: this.form_data.rating,
                     userName: this.ui.controls.find('input[name="email"]').val() ,
@@ -2192,7 +2339,13 @@
                     headers: { 'Content-Type': 'application/json' },
                   })
                     .then(res => res.json())
-                    .then(data => console.log(data))
+                    .then(data => {console.log(data)
+                        var success_icon = $('<gtdiv class="gigatester-controls-send-success">').html("<style>" + ":root {" + "--widget-outro-icon: " + form_settings.outro_icon_colour + " !important;" + "}" + "</style>" + '<gtdiv data-icon="' + form_settings.outro_icon + '">' + outro_icon + "<gtspan>" + Lib.htmlEntities(form_settings.outro_headline) + "</gtspan>" + "<p>" + Lib.htmlEntitiesWithA(form_settings.outro_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
+                        this.ui.controls.append(success_icon);
+                        this.controls_step = 3;
+                        send_button.removeClass("gigatester-controls-send-loading");
+                        // var outro_has_link = this.ui.controls.find(".gigatester-controls-send-success p a").length ? true : false;
+    })
             },
             send: function(e) {
                 e.preventDefault();
@@ -2385,8 +2538,8 @@
                 }
             },
             capture: function(callback) {
-                if (gigatester.screen_capture) {
-                    gigatester.screen_capture(callback.bind(this))
+                if (GigaTester.screen_capture) {
+                    GigaTester.screen_capture(callback.bind(this))
                 } else if (this.configs.is_live) {
                     this.html2imageCapture(callback.bind(this))
                 } else {
@@ -2885,6 +3038,7 @@
                 return
             }
             navigator.mediaDevices.enumerateDevices().then(function(devices) {
+                console.log(devices,'devices')
                 devices.forEach(function(device) {
                     switch (device.kind) {
                         case "audioinput":
@@ -3053,7 +3207,7 @@
             if (this.audio_script_processor && typeof this.audio_script_processor._disconnect !== "undefined") {
                 this.audio_script_processor._disconnect()
             }
-            $("ubmouseclick").remove();
+            $("gtmouseclick").remove();
             $(document).off("mousedown.video");
             $(document).off("keydown.video");
             $(document).off("mousedown.videodrag");
@@ -3432,6 +3586,7 @@
                     type: "video/webm"
                 });
                 this.options.onSubmit(video_blob, this.annotation_timeline)
+                console.log(video_blob,'video blob');
             }
             this.removeControls();
             this.removeOverlay();
@@ -3462,7 +3617,7 @@
             e.stopPropagation()
         });
         this._getHTML = function() {
-            return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<ubcomment class="ubmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></ubcomment>' + '<btn class="gigatester-button-input">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
+            return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
         };
         this.isOpen = function() {
             return element.find(".gigatester-comment-form").is(":visible")

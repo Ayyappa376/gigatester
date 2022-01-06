@@ -4,10 +4,17 @@
   --widget-button-text: #ffffff;
   --widget-outro-icon: #00c878;
 }
-html.gt-noscroll,
-html.gt-noscroll body {
-  scroll-behavior: auto !important;
-}
+
+::-webkit-scrollbar {
+    width: 30px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    padding: 10px;
+    background: #d1d1d1;
+    border-left: 13px white solid;
+    background-clip: padding-box;
+  }
 gtdiv {
   all: unset;
   display: block;
@@ -72,8 +79,8 @@ gtclose {
   border-radius: 0;
   background: none;
   position: absolute;
-  top: -12px;
-  right: 16px;
+  top: 1px;
+  right: 2px;
   z-index: 50;
   bottom: auto;
   left: auto;
@@ -1332,6 +1339,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
     line-height: normal;
     min-width: 0;
     font-size: 22px;
+    font-weight: 800;
     text-align: center;
     min-height: 0;
     max-width: none;
@@ -1883,6 +1891,14 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   .thumb {
   fill: #e1e5eb;
 }
+#gigatester_video_preview_player{
+  height: 160px;
+  width: 300px;
+}
+#gigatester_button_container .gigatester-controls .gigatester-controls-form {
+    height: calc(100vh - 240px);
+    overflow: auto;
+}
 #gigatester_button_container .gigatester-controls .gigatester-controls-options {
   width: auto;
   height: auto;
@@ -1927,6 +1943,12 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   .gigatester-controls-attach-actions {
   height: 52px;
   margin: 0 0 10px 0;
+}
+#gigatester_button_container
+  .gigatester-controls
+  .gigatester-controls-attach-actions[data-item="4"]
+  btn {
+  width: 25%;
 }
 #gigatester_button_container
   .gigatester-controls
@@ -1984,7 +2006,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   btn {
   position: relative;
   float: left;
-  width: 33.3333%;
+  width: 25%;
   height: 52px;
   margin: 0;
   background: #fafbfd;
@@ -4830,4 +4852,4 @@ gtmouseclick {
   100% {
     transform: scale3d(1, 1, 1);
   }
-} /*# sourceMappingURL=widget.css.map */
+}
