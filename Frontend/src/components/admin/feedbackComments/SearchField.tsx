@@ -19,8 +19,7 @@ const SearchField = (props: IProps) => {
     }, [])
     return (
         <div style={props.style}>
-            <Paper
-                component="form"
+            <div
                 style={{ padding: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto' }}
             >
                 <InputBase
@@ -42,11 +41,11 @@ const SearchField = (props: IProps) => {
                         <ClearIcon />
                     </IconButton> : <div/>
                 }
-                <Divider style={{ height: 28, margin: 0.5 }} orientation="vertical" />
+                <Divider style={{ height: 28, marginLeft: 5 }} orientation="vertical" />
                 <IconButton type="button" style={{ padding: '10px' }} disableRipple={true} aria-label="search" onClick={() => {props.onSearch(keyword); setSearchInitiated(true)}}>
                     <SearchIcon />
                 </IconButton>
-            </Paper>
+            </div>
         </div>
     )
 }

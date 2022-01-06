@@ -1,4 +1,4 @@
-import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { getSignedUrl, IAppFeedback } from '.';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -9,13 +9,26 @@ import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
+import EnhancedTableHead from './TableMethods';
 
 interface IProps {
     tableData: IAppFeedback[],
     viewAttachmentClicked: Function,
     urls: string[],
-    isBugReport: Boolean
+    isBugReport: boolean
 }
+
+export type Order = 'asc' | 'desc';
+
+export type IAlign = "right" | "left" | "inherit" | "center" | "justify" | undefined;
+
+const BUG_REPORT = 'bug_report'
+
+const FEEDBACK = 'feedback'
+
+const ALROUND = 'alround'
+
+
 
 export const RenderStars = (props: any) => {
   const arr = [1,2,3,4,5];
@@ -48,6 +61,30 @@ export const renderComments = (comments: string[] | undefined) => {
   }
 }
 
+const useToolbarStyles = makeStyles((theme: Theme) =>
+  createStyles({
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
+    },
+  }),
+);
+
+
+
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
     const {isBugReport} = props;
@@ -59,9 +96,11 @@ const RenderTable = (props: IProps) => {
     const [rawTableData, setRawTableData] = useState(props.tableData);
     const [tableData, setTableData] = useState<IAppFeedback[]>([]);
     const [searchPhrase, setSearchPhrase] = useState("");
+    const [page, setPage] = React.useState(0);
+    const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
     /* Order related changes */
-    const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+    const [order, setOrder] = useState<Order>('desc');
     const [orderBy, setOrderBy] = useState('date');
 
     const fetchSignedUrls = (urls: string[]) => {
@@ -82,7 +121,7 @@ const RenderTable = (props: IProps) => {
           })
         })
       ).then(() => {setFecthAllUrls(true);
-        setsignedUrlMapping(signedUrlMappingCopy)});
+        setsignedUrlMapping(signedUrlMappingCopy)}).catch((error) => {console.log(error)});
     }
 
     useEffect(() => {
@@ -166,110 +205,93 @@ const RenderTable = (props: IProps) => {
     useEffect(() => {
       if(!fetchAllUrls) {
         fetchSignedUrls(props.urls)
-        setTableData(sortTableByDate(props.tableData, 'desc'));
+        const tableDataFiltered = props.tableData.filter((data) => {
+          if(!isBugReport && data.productRating > 0) {
+            return true
+          }
+          if(isBugReport && data.productRating === 0) {
+            return true
+          }
+          return false;
+        })
+        setTableData(sortTableByDate(tableDataFiltered, 'desc'));
       }
     }, [])
 
+    const handleChangePage = (event: unknown, newPage: number) => {
+      setPage(newPage);
+    };
+  
+    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
+      setRowsPerPage(parseInt(event.target.value, 10));
+      setPage(0);
+    };
+
+    const emptyRows = rowsPerPage - Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
+
+    const EnhancedTableToolbar = () => {
+      const classes = useToolbarStyles();
+    
+      return (
+        <Toolbar
+          className={classes.root}
+        >
+          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+            {isBugReport ? 'Bugs Reported' : 'Feedback'}
+          </Typography>
+            <Tooltip title="Filter list">
+            <SearchField style={{marginTop: 10, marginLeft: 'auto'}} phrase={searchPhrase} onSearch={(phrase: string) => {setSearchPhrase(phrase)}}
+                  clearSearch={()=> {clearSearch()}}/>
+            </Tooltip>
+        </Toolbar>
+      );
+    };
 
     return (
         <Container>
-          <Divider></Divider>
-          <div style={{minWidth: '100%'}}>
-            <SearchField style={{marginTop: 10, marginLeft: 'auto'}} phrase={searchPhrase} onSearch={(phrase: string) => {setSearchPhrase(phrase)}}
-              clearSearch={()=> {clearSearch()}}/>
-          </div>
-          {tableData.length > 0 ?
-            <Paper className='tableArea'>
-          <Table className='table'>
-            <TableHead component='th' className='tableHead'>
-                <TableCell className='tableHeadCell'>
-                  <Typography className='tableHeadText'>
-                    User
-                  </Typography>
-                </TableCell>
-                <TableCell align='center' className='tableHeadCell'>
-                  <TableSortLabel
-                    active={orderBy === 'date'}
-                    direction={orderBy === 'date' ? order : 'asc'}
-                    onClick={() => {
-                      handleRequestSort('date');
-                    }}
-                  >
-                    <Typography className='tableHeadText'>
-                        Date
-                    </Typography>
-                  </TableSortLabel>
-                </TableCell>
-                {
-                  isBugReport ? 
-                  <TableCell align='center' className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      Category
-                    </Typography>
-                  </TableCell> :
-                  <TableCell align='center' className='tableHeadCell'>
-                    <TableSortLabel
-                      active={orderBy === 'rating'}
-                      direction={orderBy === 'rating' ? order : 'asc'}
-                      onClick={() => {
-                        handleRequestSort('rating');
-                      }}
-                    >
-                        <Typography className='tableHeadText'>
-                          Rating
-                        </Typography>
-                    </TableSortLabel>
-                  </TableCell>
-                }
-                <TableCell align='center' className='tableHeadCell'>
-                  <Typography className='tableHeadText'>
-                    Comments
-                  </Typography>
-                </TableCell>
-            </TableHead>
+          <Paper className={classes.paper}>
+          <EnhancedTableToolbar/>
+          <TableContainer>
+          <Table
+            className={classes.table}
+            aria-labelledby="tableTitle"
+            size={'medium'}
+            aria-label="enhanced table"
+          >
+            <EnhancedTableHead
+              classes={classes}
+              order={order}
+              orderBy={orderBy}
+              onRequestSort={handleRequestSort}
+              rowCount={tableData.length}
+              isBugReport={isBugReport}
+            />
             <TableBody>
-              {tableData.length > 0 ? tableData.map(
+              {tableData.length > 0 ? tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
                 (row: IAppFeedback, index: number) => {
-                  if(isBugReport && row.productRating > 0) {
-                    return null
-                  }
-                  if(!isBugReport && row.productRating === 0) {
-                    return null
-                  }
+                  const labelId = `enhanced-table-checkbox-${index}`;
                   return (
-                    <TableRow key={index}>
-                      <TableCell
-                        scope='row'
-                        className={classes.firstColumn}
-                      >
-                        <MuiThemeProvider theme={tooltipTheme}>
-                          <Tooltip
-                            title={<Typography>{row.userId}</Typography>}
-                          >
-                            <Typography style={{fontWeight: 700}} className='tableBodyText'>
-                              {row.userId}
-                            </Typography>
-                          </Tooltip>
-                        </MuiThemeProvider>
+                    <TableRow
+                      hover role="checkbox" tabIndex={-1} 
+                      key={index}
+                    >
+                      <TableCell size="small" style={{maxWidth: 200}}>
+                            {row.userId}
                       </TableCell>
-                      <TableCell scope='row' align='center'>
-                          <Typography className='tableBodyText'>
+                      <TableCell size="small" align='center'>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
-                          </Typography>
                       </TableCell>
                       {
                         isBugReport ? 
-                        <TableCell scope='row' align='center'>
-                          <Typography className='tableBodyText'>
-                            Moderate
-                          </Typography>
+                        <TableCell size="small" align='center'>
+                            NA
                         </TableCell> :
-                        <TableCell scope='row' align='center'>
+                        <TableCell size="small" align='center'>
                           <RenderStars rating={row.productRating}/>
                         </TableCell>
                       }
-                      <TableCell scope='row' align='center'>
-                        <div style={{overflow: 'auto', maxHeight: 150, maxWidth: 400, marginLeft: 'auto', marginRight: 'auto'}}>
+                      <TableCell size="medium" align='center'>
+                        <div style={{overflow: 'auto'}}>
                             {renderComments(row.feedbackComments)}
                         </div>
                         <div>
@@ -290,7 +312,7 @@ const RenderTable = (props: IProps) => {
                           {
                             row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
                             <div style={{maxWidth: 700}}>
-                            <video width="30%" controls style={{display: 'block',
+                            <video width="50%" controls style={{display: 'block',
                                           marginTop: 20,
                                           marginLeft: 'auto',
                                           marginRight: 'auto',
@@ -299,7 +321,7 @@ const RenderTable = (props: IProps) => {
                             </video>
                             </div>
                             : <div style={{maxWidth: 700}}>
-                            <video width="30%" controls style={{display: 'block',
+                            <video width="50%" controls style={{display: 'block',
                                           marginTop: 20,
                                           marginLeft: 'auto',
                                           marginRight: 'auto',
@@ -320,14 +342,30 @@ const RenderTable = (props: IProps) => {
                   );
                 }
               ): <div/>}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
             </TableBody>
-          </Table>
-        </Paper> : <div>No data to show.</div> }
+            {/* <TablePagination
+              rowsPerPageOptions={[5, 10, 15]}
+              component="div"
+              style={{minWidth: '50%', marginLeft: 'auto'}}
+              count={tableData.length}
+              rowsPerPage={rowsPerPage}
+              page={page}
+              onPageChange={handleChangePage}
+              onRowsPerPageChange={handleChangeRowsPerPage}
+            /> */}
+            </Table>
+          </TableContainer>
+        </Paper>
         </Container>
     )
 }
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
     button: {
       marginTop: '36px',
       position: 'relative',
@@ -355,6 +393,25 @@ const useStyles = makeStyles((theme) => ({
     },
     commentsColumn: {
       maxWidth: '250px',
+    },
+    paper: {
+      width: '100%',
+      marginTop: theme.spacing(2),
+      marginBottom: theme.spacing(2),
+    },
+    visuallyHidden: {
+      border: 0,
+      clip: 'rect(0 0 0 0)',
+      height: 1,
+      margin: -1,
+      overflow: 'hidden',
+      padding: 0,
+      position: 'absolute',
+      top: 20,
+      width: 1,
+    },
+    table: {
+      minWidth: 750,
     },
   }));
 
