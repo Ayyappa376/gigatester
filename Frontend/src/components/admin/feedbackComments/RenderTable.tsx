@@ -129,6 +129,12 @@ const RenderTable = (props: IProps) => {
     useEffect(() => {
       if(keyword) {
         const filteredTableData = rawTableData.filter((el) => {
+          if(isBugReport && el.productRating > 0) {
+            return false;
+          }
+          if(!isBugReport && el.productRating === 0) {
+            return false;
+          }
           if(el.feedbackComments){
             const feedbackCommentsString = el.feedbackComments.join();
             if(feedbackCommentsString.indexOf(keyword) >= 0) {
@@ -136,6 +142,7 @@ const RenderTable = (props: IProps) => {
             }
             return false;
           }
+          return false;
         })
         setTableData(filteredTableData)
       }
@@ -242,29 +249,22 @@ const RenderTable = (props: IProps) => {
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
 
-    const EnhancedTableToolbar = () => {
-      const classes = useToolbarStyles();
-    
-      return (
-        <Toolbar
-          className={classes.root}
-        >
-          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-            {isBugReport ? 'Bugs Reported' : 'Feedback'}
-          </Typography>
-            <SearchField style={{marginTop: 10, marginLeft: 'auto'}}
-                  keyword={keyword} 
-                  searchInitiated ={searchInitiated}
-                  onSearch={(keyword: string) => {setKeyword(keyword); setSearchInitiated(true)}}
-                  clearSearch={()=> {clearSearch()}}/>
-        </Toolbar>
-      );
-    };
 
     return (
         <Container>
           <Paper className={classes.paper}>
-          <EnhancedTableToolbar/>
+          <Toolbar
+            className={classes.root}
+          >
+            <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+              {isBugReport ? 'Bugs Reported' : 'Feedback'}
+            </Typography>
+              <SearchField style={{marginTop: 10, marginLeft: 'auto'}}
+                    keyword={keyword} 
+                    searchInitiated ={searchInitiated}
+                    onSearch={(keyword: string) => {setKeyword(keyword); setSearchInitiated(true)}}
+                    clearSearch={()=> {clearSearch()}}/>
+          </Toolbar>
           <TableContainer>
           <Table
             className={classes.table}
@@ -442,6 +442,23 @@ export const useStyles = makeStyles((theme) => ({
     },
     table: {
       minWidth: 750,
+    },
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
     },
   }));
 
