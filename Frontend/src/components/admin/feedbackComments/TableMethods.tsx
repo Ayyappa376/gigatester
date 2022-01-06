@@ -27,6 +27,14 @@ interface HeadCell {
   headType: HeadType;
 }
 
+const useStylesLabel = makeStyles({
+  icon: {
+    textAlign: 'center',
+    color: '#000 !important',
+    opacity: 1
+  }
+}, { name: 'MuiTableSortLabel' });
+
 const headCells: HeadCell[] = [
     { id: 'userName', label: 'User Name', align: 'left', headType: ALROUND },
     { id: 'date', label: 'Date Submitted', sortLabel: 'date', align: 'center', headType: ALROUND },
@@ -36,6 +44,7 @@ const headCells: HeadCell[] = [
   ];
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
+    const sortClass = useStylesLabel()
     const { classes, order, orderBy, onRequestSort, isBugReport } = props;
     const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(property);
@@ -54,10 +63,8 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             console.log({orderBy, headCell})
             return(
             <TableCell
-            style={{maxWidth: 200}}
               key={headCell.id}
               align={headCell.align}
-              padding={'normal'}
               sortDirection={orderBy === headCell.id ? order : false}
             >
               {
@@ -68,12 +75,10 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
                     direction={orderBy === headCell.sortLabel ? order : 'asc'}
                     onClick={createSortHandler(headCell.sortLabel)}
                   >
+                    <div >
                     {headCell.label}
-                    {/* {orderBy === headCell.id ? (
-                      <span className={classes.visuallyHidden}>
-                        {order === 'desc' ? 'sorted descending' : 'sorted ascending'}
-                      </span>
-                    ) : null} */}
+
+                    </div>
                   </TableSortLabel> : 
                   <div>
                     {headCell.label}

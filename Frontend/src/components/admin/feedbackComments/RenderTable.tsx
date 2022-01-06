@@ -275,23 +275,23 @@ const RenderTable = (props: IProps) => {
                       hover role="checkbox" tabIndex={-1} 
                       key={index}
                     >
-                      <TableCell size="small" style={{maxWidth: 200}}>
+                      <TableCell >
                             {row.userId}
                       </TableCell>
-                      <TableCell size="small" align='center'>
+                      <TableCell align='center'>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
                       </TableCell>
                       {
                         isBugReport ? 
-                        <TableCell size="small" align='center'>
+                        <TableCell  align='center'>
                             NA
                         </TableCell> :
-                        <TableCell size="small" align='center'>
+                        <TableCell  align='center' style={{minWidth: '150px'}}>
                           <RenderStars rating={row.productRating}/>
                         </TableCell>
                       }
-                      <TableCell size="medium" align='center'>
-                        <div style={{overflow: 'auto'}}>
+                      <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw'}}>
+                        <div style={{overflow: 'auto', maxHeight: '20vh'}}>
                             {renderComments(row.feedbackComments)}
                         </div>
                         <div>
@@ -348,7 +348,10 @@ const RenderTable = (props: IProps) => {
                 </TableRow>
               )}
             </TableBody>
-            {/* <TablePagination
+            
+            </Table>
+          </TableContainer>
+          <TablePagination
               rowsPerPageOptions={[5, 10, 15]}
               component="div"
               style={{minWidth: '50%', marginLeft: 'auto'}}
@@ -357,9 +360,7 @@ const RenderTable = (props: IProps) => {
               page={page}
               onPageChange={handleChangePage}
               onRowsPerPageChange={handleChangeRowsPerPage}
-            /> */}
-            </Table>
-          </TableContainer>
+            />
         </Paper>
         </Container>
     )
