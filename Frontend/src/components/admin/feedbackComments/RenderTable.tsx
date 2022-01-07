@@ -1,4 +1,4 @@
-import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { getSignedUrl, IAppFeedback } from '.';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -95,9 +95,11 @@ const RenderTable = (props: IProps) => {
     });
     const [rawTableData, setRawTableData] = useState(props.tableData);
     const [tableData, setTableData] = useState<IAppFeedback[]>([]);
-    const [searchPhrase, setSearchPhrase] = useState("");
     const [page, setPage] = React.useState(0);
     const [rowsPerPage, setRowsPerPage] = React.useState(5);
+
+    const [keyword, setKeyword] = useState("");
+    const [searchInitiated, setSearchInitiated] = useState(false)
 
     /* Order related changes */
     const [order, setOrder] = useState<Order>('desc');
@@ -125,22 +127,40 @@ const RenderTable = (props: IProps) => {
     }
 
     useEffect(() => {
-      if(searchPhrase) {
+      if(keyword) {
         const filteredTableData = rawTableData.filter((el) => {
+          if(isBugReport && el.productRating > 0) {
+            return false;
+          }
+          if(!isBugReport && el.productRating === 0) {
+            return false;
+          }
           if(el.feedbackComments){
             const feedbackCommentsString = el.feedbackComments.join();
-            if(feedbackCommentsString.indexOf(searchPhrase) >= 0) {
+            if(feedbackCommentsString.indexOf(keyword) >= 0) {
               return true;
             }
             return false;
           }
+          return false;
         })
         setTableData(filteredTableData)
       }
-    }, [searchPhrase])
+    }, [keyword])
 
     const clearSearch = () => {
-      applySort(rawTableData);
+      const tableDataFiltered = rawTableData.filter((data) => {
+        if(!isBugReport && data.productRating > 0) {
+          return true
+        }
+        if(isBugReport && data.productRating === 0) {
+          return true
+        }
+        return false;
+      })
+      applySort(tableDataFiltered);
+      setSearchInitiated(false)
+      setKeyword("")
     }
 
     const sortTableByDate = (tableData: IAppFeedback[], sortOrder: string) => {
@@ -229,28 +249,22 @@ const RenderTable = (props: IProps) => {
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
 
-    const EnhancedTableToolbar = () => {
-      const classes = useToolbarStyles();
-    
-      return (
-        <Toolbar
-          className={classes.root}
-        >
-          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-            {isBugReport ? 'Bugs Reported' : 'Feedback'}
-          </Typography>
-            <Tooltip title="Filter list">
-            <SearchField style={{marginTop: 10, marginLeft: 'auto'}} phrase={searchPhrase} onSearch={(phrase: string) => {setSearchPhrase(phrase)}}
-                  clearSearch={()=> {clearSearch()}}/>
-            </Tooltip>
-        </Toolbar>
-      );
-    };
 
     return (
         <Container>
           <Paper className={classes.paper}>
-          <EnhancedTableToolbar/>
+          <Toolbar
+            className={classes.root}
+          >
+            <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+              {isBugReport ? 'Bugs Reported' : 'Feedback'}
+            </Typography>
+              <SearchField style={{marginTop: 10, marginLeft: 'auto'}}
+                    keyword={keyword} 
+                    searchInitiated ={searchInitiated}
+                    onSearch={(keyword: string) => {setKeyword(keyword); setSearchInitiated(true)}}
+                    clearSearch={()=> {clearSearch()}}/>
+          </Toolbar>
           <TableContainer>
           <Table
             className={classes.table}
@@ -276,7 +290,7 @@ const RenderTable = (props: IProps) => {
                       key={index}
                     >
                       <TableCell >
-                            {row.userId}
+                            {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
                       </TableCell>
                       <TableCell align='center'>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
@@ -294,6 +308,8 @@ const RenderTable = (props: IProps) => {
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
                             {renderComments(row.feedbackComments)}
                         </div>
+                        <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+
                         <div>
                           {
                             row.feedbackMedia? row.feedbackMedia.image ? <Link
@@ -304,7 +320,7 @@ const RenderTable = (props: IProps) => {
                               props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
                             }}
                           >
-                            View attachment
+                            <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img>
                           </Link> : <div/> : <div/>
                           }
                         </div>
@@ -312,24 +328,37 @@ const RenderTable = (props: IProps) => {
                           {
                             row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
                             <div style={{maxWidth: 700}}>
-                            <video width="50%" controls style={{display: 'block',
-                                          marginTop: 20,
-                                          marginLeft: 'auto',
-                                          marginRight: 'auto',
+                            <video width="50%" controls style={row.feedbackMedia.image ?
+                                          {
+                                            display: 'flex',
+                                            marginTop: 20,
+                                            marginLeft: 20
+                                          } : {
+                                            display: 'block',
+                                            marginTop: 20,
+                                            marginLeft: 'auto',
+                                            marginRight: 'auto',
                                           }}>
                               <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" />
                             </video>
                             </div>
                             : <div style={{maxWidth: 700}}>
-                            <video width="50%" controls style={{display: 'block',
-                                          marginTop: 20,
-                                          marginLeft: 'auto',
-                                          marginRight: 'auto',
+                            <video width="50%" controls style={row.feedbackMedia.image ?
+                                          {
+                                            display: 'flex',
+                                            marginTop: 20,
+                                            marginLeft: 20
+                                          } : {
+                                            display: 'block',
+                                            marginTop: 20,
+                                            marginLeft: 'auto',
+                                            marginRight: 'auto',
                                           }}>
                               {/* <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" /> */}
                             </video>
                             </div> : <div/> : <div/>
                           }
+                        </div>
                         </div>
                         <div>
                           {
@@ -413,6 +442,23 @@ export const useStyles = makeStyles((theme) => ({
     },
     table: {
       minWidth: 750,
+    },
+    root: {
+      paddingLeft: theme.spacing(2),
+      paddingRight: theme.spacing(1),
+    },
+    highlight:
+      theme.palette.type === 'light'
+        ? {
+            color: theme.palette.secondary.main,
+            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
+          }
+        : {
+            color: theme.palette.text.primary,
+            backgroundColor: theme.palette.secondary.dark,
+          },
+    title: {
+      flex: '1 1 100%',
     },
   }));
 
