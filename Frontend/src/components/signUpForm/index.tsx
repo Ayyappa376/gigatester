@@ -16,19 +16,21 @@ import {
   CircularProgress,
   CssBaseline,
   DialogTitle,
+  IconButton,
   FormControl,
   InputLabel,
   MenuItem,
   Select,
   Chip,
 } from "@material-ui/core";
-
+import CloseIcon from '@material-ui/icons/Close';
 import { Http } from "../../utils";
 import MuiAlert from "@material-ui/lab/Alert";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../reducers";
 import { Text } from "../../common/Language";
 import SignInForm from "../signInForm";
+//import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 
 const useStyles = makeStyles((theme) => ({
   bigLogo: {
@@ -46,6 +48,18 @@ const useStyles = makeStyles((theme) => ({
   chip: {
     margin: 2,
   },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
+  signUpBtn: {
+    textAlign: "center",
+    position: 'absolute',
+    right: theme.spacing(1),
+    bottom: theme.spacing(1),
+  }
 }));
 
 function Alert(props: any) {
@@ -80,25 +94,6 @@ export default function SignupForm(props: any) {
     return re.test(String(email).toLowerCase());
   };
 
-  // const platformValues = () => {
-  //   if (signUpStateVariable) {
-  //     console.log(signUpStateVariable);
-  //     Http.get({
-  //       url: "/api/v2/platforms/",
-  //       state: signUpStateVariable,
-  //     })
-  //       .then((response: any) => {
-  //         console.log(signUpStateVariable);
-  //         console.log(response.platforms);
-  //       })
-  //       .catch((error: any) => {
-  //         console.log(error);
-  //       });
-  //   }
-  // };
-  // setTimeout(() => {
-  //   platformValues();
-  // }, 500);
   const handleChangeValue = (event: any) => {
     if (userParamState) {
       const temp: any = { ...userParamState };
@@ -248,30 +243,29 @@ export default function SignupForm(props: any) {
                   }}
                 />
               }
-              label={"I agree to Privacy and Terms and Conditions of this site"}
+              label={""}
               labelPlacement="end"
             />
-            {/* <Link >{"Privacy and Terms and Conditions"} </Link>
-{"of this site."}<br /> */}
+            {"I agree to the"} <Link >{"Privacy and Terms and Conditions"} </Link>
+{"of this site."}<br />
           </Grid>
           <br />
           <br />
           <br />
           <Grid item xs={8} sm={8}>
-            {"Already have an account"} <br />
+            {"Already have an account. "} 
             <Link onClick={getSignInPage} component="button" variant="body2">
-              {"Login here"}
+              {" Login here."}
             </Link>
           </Grid>
-          <Grid item xs={1} sm={1}></Grid>
-          <Grid item xs={3} sm={3}>
+          <Grid item xs={4} sm={4} style={{display: 'flex', justifyContent: 'flex-end'}}>
             <Button
               variant="contained"
               color="primary"
               size="medium"
               type="submit"
               // disabled={loading}
-              style={{ textAlign: "center" }}
+              className="signUpBtn"
               onClick={handleSubmit}
             >
               {loading && (
@@ -289,19 +283,18 @@ export default function SignupForm(props: any) {
     return (
       <React.Fragment>
         <Typography variant="h6" gutterBottom>
-          Thank you for the Signup.
+          Thank you for registering with us.
         </Typography>
         <Typography variant="subtitle1">
-          We have sent a temporary password to email address given in the form.{" "}
+          We have sent you a temporary password at the email address you provided in the form.{" "}
           <br />
-          Please check your email, get the temporary password for setting up new
-          password <br />
-          and then click the button below to continue set up new password and
-          Signin.
+          Please get the temporary password from your email and click the button below to
+          <br />
+          continue to create a new password and sign in.
         </Typography>
         <Box style={{ textAlign: "center", margin: "30px 0" }}>
           <Button variant="contained" onClick={getSignInPage}>
-            Continue
+            Continue to SignIn
           </Button>
           <br />
         </Box>
@@ -326,6 +319,9 @@ export default function SignupForm(props: any) {
             <Typography variant="h4">
               <Text tid={"gigaTester"} />
             </Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
+              <CloseIcon />
+            </IconButton>
           </DialogTitle>
           <DialogContent style={{ marginBottom: "20px" }}>
             <CssBaseline />

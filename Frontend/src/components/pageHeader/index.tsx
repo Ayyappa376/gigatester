@@ -839,15 +839,15 @@ const PageHeader = (props: any) => {
     }
   };
 
-  const renderVisionButton = () => {
+  const renderFeedbackButton = () => {
     if (userStatus.idToken) {
       return;
     } else {
       return (
         <div className='header-item'>
-          <NavLink to='/'>
+          <NavLink to='/feedback'>
             <Typography className={classes.headerItem}>
-              <Text tid='vision' />
+              Feedback
             </Typography>
           </NavLink>
         </div>
@@ -861,7 +861,7 @@ const PageHeader = (props: any) => {
     } else {
       return (
         <div className='header-item'>
-          <NavLink to='/'>
+          <NavLink to='/about'>
             <Typography className={classes.headerItem}>
               <Text tid='contactUs' />
             </Typography>
@@ -891,7 +891,7 @@ const PageHeader = (props: any) => {
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
               {renderAboutUsButton()}
-              {renderVisionButton()}
+              {renderFeedbackButton()}
               {renderContactUsButton()}
               {renderAdminPage()}
               {renderManageSoftwareFiles()}

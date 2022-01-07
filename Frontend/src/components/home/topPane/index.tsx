@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
-import { Button, Grid, InputLabel, Paper, Typography } from "@material-ui/core";
+import { Button, Grid, Paper, Typography } from "@material-ui/core";
 import "../style.css";
 
 const useStyles = makeStyles(() => ({
   root: {
     background: "#F0F0F0",
-    paddingTop: "10px",
+    paddingTop: "50px",
     fontFamily: "Montserrat",
     width: "100%",
-    height: '10em'
+    height: '16em'
   },
   title: {
-    padding: "10px 0px",
-    fontWeight: 600,
+    padding: "10px 15px",
   },
-  subTitle: {
+  text: {
+    padding: "5px 15px",
     fontSize: "14px",
     lineHeight: "20px",
+    colour: '#999999',
   },
 }));
 
@@ -39,12 +40,13 @@ const TesterEvents = (props: any) => {
       <Paper className={classes.root} data-testid="testerEvents">
         <Grid container spacing={1}>
           <Grid item xs={12} sm={1} />
-          <Grid item xs={12} sm={4} style={{ textAlign: "right" }}>
-            <Typography className={classes.title}>Become a Tester?</Typography>
-            <InputLabel className={classes.subTitle}>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry.Lorem Ipsum has been the industry standard dummy text
-            </InputLabel>
+          <Grid item xs={12} sm={5} style={{ textAlign: "right" }}>
+            <Typography variant="h6" className={classes.title}>Become a Tester?</Typography>
+            <Typography className={classes.text}>
+              Register as tester, search with the name of devices that you will test on,
+              choose from a wide range of products and provide valuable early feedback.
+              Earn for each successful tests completed.
+            </Typography>
             <Button
               variant="outlined"
               onClick={handleSignup}
@@ -53,16 +55,16 @@ const TesterEvents = (props: any) => {
               className="button buttonMarginTopPane"
               data-testid="signUp"
             >
-              Click Here
+              Register as Tester
             </Button>
           </Grid>
-          <Grid item xs={12} sm={2} />
-          <Grid item xs={12} sm={4} style={{ textAlign: "left" }}>
-            <Typography className={classes.title}>Test my Product?</Typography>
-            <InputLabel className={classes.subTitle}>
-              Lorem Ipsum is simply dummy text of the printing and typesetting
-              industry.Lorem Ipsum has been the industry standard dummy text
-            </InputLabel>
+          <Grid item xs={12} sm={5} style={{ textAlign: "left" }}>
+            <Typography variant="h6" className={classes.title}>Test my Product?</Typography>
+            <Typography className={classes.text}>
+              Register your company to get your products crowd tested by professional testers
+              and end users. Receive valuable feedback, bugs, recomendations; communicate with 
+              them and derive valuable insights.
+            </Typography>
             <Button
               variant="outlined"
               onClick={handleOrganizationSelection}
@@ -71,7 +73,7 @@ const TesterEvents = (props: any) => {
               className="button buttonMarginTopPane"
               data-testid="signIn"
             >
-              Click Here
+              Register your Company
             </Button>
           </Grid>
           <Grid item xs={12} sm={1} />
