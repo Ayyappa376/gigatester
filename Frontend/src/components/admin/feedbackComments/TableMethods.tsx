@@ -66,6 +66,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
               key={headCell.id}
               align={headCell.align}
               sortDirection={orderBy === headCell.id ? order : false}
+              style={{fontSize: '1rem'}}
             >
               {
                 headCell.sortLabel ? 

@@ -10,6 +10,7 @@ import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
 import EnhancedTableHead from './TableMethods';
+import RenderRatingFilter from './RenderFilters';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -60,30 +61,6 @@ export const renderComments = (comments: string[] | undefined) => {
     return <div>-</div>
   }
 }
-
-const useToolbarStyles = makeStyles((theme: Theme) =>
-  createStyles({
-    root: {
-      paddingLeft: theme.spacing(2),
-      paddingRight: theme.spacing(1),
-    },
-    highlight:
-      theme.palette.type === 'light'
-        ? {
-            color: theme.palette.secondary.main,
-            backgroundColor: lighten(theme.palette.secondary.light, 0.85),
-          }
-        : {
-            color: theme.palette.text.primary,
-            backgroundColor: theme.palette.secondary.dark,
-          },
-    title: {
-      flex: '1 1 100%',
-    },
-  }),
-);
-
-
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
@@ -249,9 +226,30 @@ const RenderTable = (props: IProps) => {
 
     const emptyRows = rowsPerPage - Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
 
+    const filterRating = (val: number) => {
+      let filteredTableData;
+      if(val === -1) {
+        filteredTableData = rawTableData.filter((data) => {
+          if(!isBugReport && data.productRating > 0) {
+            return true
+          }
+          if(isBugReport && data.productRating === 0) {
+            return true
+          }
+          return false;
+        })
+      }
+      filteredTableData = rawTableData.filter((el) => el.productRating === val ? true : false)
+      applySort(filteredTableData);
+    }
+
 
     return (
         <Container>
+          {
+            isBugReport ? <div/> :
+              <RenderRatingFilter onSelect={(val: number) => {filterRating(val)}}/>
+          }
           <Paper className={classes.paper}>
           <Toolbar
             className={classes.root}
@@ -289,22 +287,22 @@ const RenderTable = (props: IProps) => {
                       hover role="checkbox" tabIndex={-1} 
                       key={index}
                     >
-                      <TableCell >
+                      <TableCell style={{fontSize: '1rem'}}>
                             {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
                       </TableCell>
-                      <TableCell align='center'>
+                      <TableCell align='center' style={{fontSize: '1rem'}}>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
                       </TableCell>
                       {
                         isBugReport ? 
-                        <TableCell  align='center'>
+                        <TableCell  align='center' style={{fontSize: '1rem'}}>
                             NA
                         </TableCell> :
-                        <TableCell  align='center' style={{minWidth: '150px'}}>
+                        <TableCell  align='center' style={{minWidth: '150px', fontSize: '1rem'}}>
                           <RenderStars rating={row.productRating}/>
                         </TableCell>
                       }
-                      <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw'}}>
+                      <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw', fontSize: '1rem'}}>
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
                             {renderComments(row.feedbackComments)}
                         </div>
@@ -428,17 +426,6 @@ export const useStyles = makeStyles((theme) => ({
       width: '100%',
       marginTop: theme.spacing(2),
       marginBottom: theme.spacing(2),
-    },
-    visuallyHidden: {
-      border: 0,
-      clip: 'rect(0 0 0 0)',
-      height: 1,
-      margin: -1,
-      overflow: 'hidden',
-      padding: 0,
-      position: 'absolute',
-      top: 20,
-      width: 1,
     },
     table: {
       minWidth: 750,
