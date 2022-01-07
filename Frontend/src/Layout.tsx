@@ -84,6 +84,9 @@ const Layout = (props: any) => {
           exact path='/admin'
           render={() => <Admin {...props} />} />
         <Route
+          exact path='/feedback'
+          render={() => <Admin {...props} />} />
+        <Route
           exact
           path='/metricSelect'
           render={() => <MetricSelect metricType={props.metricType} metricSelection={props.metricSelection} {...props} />}

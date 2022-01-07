@@ -839,23 +839,21 @@ const PageHeader = (props: any) => {
     }
   };
 
-  /*
-  const renderVisionButton = () => {
+  const renderFeedbackButton = () => {
     if (userStatus.idToken) {
       return;
     } else {
       return (
         <div className='header-item'>
-          <NavLink to='/'>
+          <NavLink to='/feedback'>
             <Typography className={classes.headerItem}>
-              <Text tid='vision' />
+              Feedback
             </Typography>
           </NavLink>
         </div>
       );
     }
   };
-  */
 
   const renderContactUsButton = () => {
     if (userStatus.idToken) {
@@ -893,7 +891,7 @@ const PageHeader = (props: any) => {
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
               {renderAboutUsButton()}
-              {/*renderVisionButton()*/}
+              {renderFeedbackButton()}
               {renderContactUsButton()}
               {renderAdminPage()}
               {renderManageSoftwareFiles()}
