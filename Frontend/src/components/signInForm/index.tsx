@@ -14,7 +14,9 @@ import {
   TextField,
   createMuiTheme,
   Typography,
+  IconButton,
 } from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 import { useActions, saveUserDetails } from "../../actions";
 import { Auth } from "aws-amplify";
 import jwtDecode from "jwt-decode";
@@ -34,6 +36,12 @@ export default function SignInForm(props: any) {
     dialogPaper: {
       minHeight: "90vh",
       maxHeight: "90vh",
+    },
+    closeButton: {
+      position: 'absolute',
+      right: theme.spacing(1),
+      top: theme.spacing(1),
+      color: theme.palette.grey[500],
     },
   }));
 
@@ -285,6 +293,9 @@ export default function SignInForm(props: any) {
           <Typography variant="h4">
             <Text tid={"gigaTester"} />
           </Typography>
+          <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
+            <CloseIcon />
+          </IconButton>
         </DialogTitle>
         <DialogContent>
           {dialogPage === "login" ? (
