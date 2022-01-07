@@ -10,8 +10,6 @@ import RenderTable, { renderComments, RenderStars } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
-import { url } from 'inspector';
-import {FEEDBACK_TYPE_FEEDBACK} from '../../feedbackButton'
 
 const RATING_ONE = "1";
 const RATING_TWO = "2";
@@ -33,6 +31,7 @@ export interface IAppFeedback {
   productRating: number;
   productVersion ? : string;
   userId ? : string;
+  sourceIP?: string;
   feedbackMedia: {
     image?: string,
     video?: string,
@@ -66,7 +65,6 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
       url: `/api/v2/signedurl/${name}`,
       state: stateVariable
     }).then((response: any) => {
-      console.log(response)
       if(response.filePath) {
         return resolve(response.filePath);
       }
@@ -124,7 +122,6 @@ const FeedbackComments = (props: any) => {
       const urls: string[] = [];
       
       data.forEach((item: IAppFeedback) => {
-        console.log(item)
         rateMap[item.id] = {
           rating : item.productRating,
           date : item.createdOn,
@@ -136,7 +133,6 @@ const FeedbackComments = (props: any) => {
           //const links = Object.values(item.feedbackMedia).filter((key: string) => key !== '');
           const links: any = Object.values(item.feedbackMedia);
           const linksFiltered = links.filter((key: string) => key !== '')
-          console.log(linksFiltered)
           urls.push(...linksFiltered);
         }
       });
@@ -332,11 +328,11 @@ const FeedbackComments = (props: any) => {
             {
               isBugReport ? <div/> :
                 <Grid container>
-                  <Grid item md={5}>
+                  <Grid item lg={5}>
                     <ReactApexChart options={options} series={barChartSeries} type="bar" width={500} height={320} />
                   </Grid>
-                  <Grid item md={2}></Grid>
-                  <Grid item md={5}>
+                  <Grid item lg={2}></Grid>
+                  <Grid item lg={5}>
                     <ReactApexChart options={options2} series={pieChartSeries} type="pie" width={500} height={320} />
                   </Grid>
                 </Grid>

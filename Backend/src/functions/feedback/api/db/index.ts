@@ -39,6 +39,7 @@ exports.handler = async (event: any) => {
                                 productId: await getproductIdForKey(jsonBody.productKey),
                                 productRating: jsonBody.productRating,
                                 productVersion: jsonBody.productVersion,
+                                sourceIP: event.requestContext.identity.sourceIp,
                                 userId: jsonBody.userName,
                             },
                             TableName: 'dev_GT_feedback'
