@@ -238,8 +238,9 @@ const RenderTable = (props: IProps) => {
           }
           return false;
         })
+      } else {
+        filteredTableData = rawTableData.filter((el) => el.productRating === val ? true : false)
       }
-      filteredTableData = rawTableData.filter((el) => el.productRating === val ? true : false)
       applySort(filteredTableData);
     }
 
