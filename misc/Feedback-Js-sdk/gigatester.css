@@ -28,6 +28,13 @@ gtspan {
   visibility: hidden !important;
   pointer-events: none !important;
 }
+#gigatester_image_overlay{
+width: 100vw;
+height: 100vh;
+}
+#gigatester-image-overlay .gigatester-image-overlay-hide{
+    display: none;
+}
 .gigatester-button-input {
   position: relative;
   display: block;
@@ -616,7 +623,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
 .gigatester-overlay[extension-capturing="true"] .gigatester-overlay-boundary-right {
   display: none;
 }
-.gigatester-overlay[tooltype="square"] {
+/* .gigatester-overlay[tooltype="square"] {
   cursor: url("https://static.userback.io/image/cursor_square1x.png") 7 22,
     crosshair;
 }
@@ -695,7 +702,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
       )
       8 17,
     crosshair;
-}
+} */
 .gigatester-overlay[lang="en"] .gigatester-overlay-hint-cursor {
   width: auto;
   height: auto;
@@ -1896,7 +1903,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   width: 300px;
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-form {
-    height: calc(100vh - 240px);
+    /* height: calc(100vh - 240px); */
     overflow: auto;
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-options {
@@ -4350,10 +4357,37 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   height: 60px;
   right: 20px;
   top: 20px;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(233, 6, 6, 0.05);
   border-radius: 50%;
   cursor: pointer;
 }
+#gigatester_audio_record_player {
+    position: fixed;
+    z-index: 2147483645;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+#gigatester_audio_record_player #gigatester_audio_record_player_close {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.08);
+    border-radius: 50%;
+    cursor: pointer;
+  }
+  #gigatester_audio_record_player #gigatester_audio_record_player_close > svg {
+    display: block;
+    width: 50px;
+    height: 50px;
+    margin: 20px;
+    fill: rgba(252, 15, 15, 0.7);
+  }
 #gigatester_video_player #gigatester_video_player_close > svg {
   display: block;
   width: 20px;
@@ -4390,6 +4424,13 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   bottom: 0;
   left: 0;
   background-color: rgba(128, 144, 160, 0.3);
+}
+#gigatester_image_preview{
+width: 100vw;
+height: 100vh;
+position: absolute;
+top:0;
+bottom: 0;
 }
 gtvideotoolbar {
   display: block;
@@ -4852,4 +4893,4 @@ gtmouseclick {
   100% {
     transform: scale3d(1, 1, 1);
   }
-}
+} /*# sourceMappingURL=widget.css.map */
