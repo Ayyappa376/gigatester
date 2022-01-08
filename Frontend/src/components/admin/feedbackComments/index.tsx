@@ -21,7 +21,7 @@ export interface IProcessedData {
   [key: string]: number
 }
 
-
+type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
 export interface IAppFeedback {
   createdOn: number;
@@ -38,7 +38,8 @@ export interface IAppFeedback {
     file?: string,
     audio?: string
   },
-  feedbackType: string
+  feedbackType: FeedbackType;
+
 }
 
 interface IRatingMapData {
