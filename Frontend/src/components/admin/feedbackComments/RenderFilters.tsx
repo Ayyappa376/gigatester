@@ -7,7 +7,7 @@ interface IProps {
 }
 
 const buttonValues=[
-    {discription: 'all', value: -1},
+    {discription: 'All', value: -1},
     {discription: "1-Star-Rating", value: 1 },
     {discription: "2-Star-Rating", value: 2 },
     {discription: "3-Star-Rating", value: 3 },
