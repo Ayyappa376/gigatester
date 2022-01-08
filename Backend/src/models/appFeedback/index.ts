@@ -5,6 +5,6 @@ export interface AppFeedback {
     productId?: string;
     productRating?: number;
     productVersion?: number;
+    sourceIP?: string;
     userId?: string;
-    sourceIP?:string
 }
