@@ -20,6 +20,10 @@ const ratingButtonValues=[
     {discription: "5-Star-Rating", value: 5 },
 ]
 
+const keywords = [
+    "Audio", "Video", "Sample", "Screen", "Lag", "Slow", "Software", "Frame-loss", "Error", "Recordings"
+]
+
 const RenderRatingFilter = (props: IProps) => {
     const classes = useStyles();
     const [rating, setRating] =useState(0);
@@ -68,7 +72,7 @@ export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
                 <Typography className={classes.textHeader}>Read comments that mention:</Typography>
             </div>
             <div className={classes.flexContainer}>
-                {props.keywords.map((el) => 
+                {keywords.map((el) => 
                     <Button variant='outlined' onClick={() => {handleKeywordClick(el)}} className={keyword === el ? classes.btnVisited : classes.btn}>{el}</Button>
                 )}
             </div>

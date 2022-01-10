@@ -10,6 +10,7 @@ import RenderTable, { renderComments, RenderStars } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
+import ProductFilter, { ILimitedProductDetails, IProductNameIdMapping, ProductInfo } from './ProductFilter';
 
 const RATING_ONE = "1";
 const RATING_TWO = "2";
@@ -54,6 +55,8 @@ interface IRatingMapping {
   [key : string] : IRatingMapData;
 };
 
+
+
 export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
   if(!url) {
     return;
@@ -74,11 +77,15 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
         return reject(error)
     })
   })
-} 
+}
+
 
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [data, setData] = useState([]);
+    const [rawData, setRawData] = useState([]);
+    const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
+    const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [processedData, setProcessedData] = useState < IProcessedData > ({});
@@ -92,6 +99,7 @@ const FeedbackComments = (props: any) => {
       name: 'rating',
       data: [0, 0, 0, 0, 0]
     }])
+    const [selectedProdId, setSelectedProdId] = useState<string[]>([])
     const [pieChartSeries, setPieChartSeries] = useState([1, 1, 1, 1, 1])
 
     const options: any = {
@@ -141,9 +149,12 @@ const FeedbackComments = (props: any) => {
       const urlArrayCopy = [...urlArray];
       urlArrayCopy.push(...urls);
       setUrlArray(urlArrayCopy)
-      //console.log(urls)
-      //fetchSignedUrls(urls);
     }, [data])
+
+    useEffect(() => {
+      const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0);
+      setData(dataCopy)
+    }, [selectedProdId])
 
     useEffect(() => {
       setBackdropOpen(true);
@@ -160,7 +171,9 @@ const FeedbackComments = (props: any) => {
         }).then((response: any) => {
           console.log(response);
           setData(response.Items);
+          setRawData(response.Items);
           setProcessedData(processBarChartData(response.Items));
+          getProductDetails()
           setBackdropOpen(false);
         })
         .catch((error) => {
@@ -171,6 +184,31 @@ const FeedbackComments = (props: any) => {
           }
         });
     }, [])
+
+    const getProductDetails = () => {
+        Http.get({
+          url: `/api/v2/products`,
+          state: stateVariable
+        }).then((response: any) => {
+          if(response && response.products && Array.isArray(response.products) && response.products.length > 0) {
+              const productInfoCopy = [...productInfo]
+              const prodNameIdMappingCopy: any = {...prodNameIdMapping};
+              response.products.forEach((el: ProductInfo) => {
+                  const prodInfo = {id: "", name: ""};
+                  prodInfo.id = el.id;
+                  prodInfo.name = el.name;
+                  productInfoCopy.push(prodInfo);
+                  prodNameIdMappingCopy[prodInfo.id] = prodInfo.name
+              })
+              setProductInfo(productInfoCopy);
+              setProdNameIdMapping(prodNameIdMappingCopy);
+              setSelectedProdId(Object.keys(prodNameIdMappingCopy))
+          }
+        }).catch((error : any) => {
+            console.error(error);
+        })
+    }
+    
 
     const getRatingLabel = (rate: string) => {
       return "Rating - " + rate
@@ -255,6 +293,11 @@ const FeedbackComments = (props: any) => {
       return ""
     }
 
+    const filterByProduct = (val: string[]) => {
+      if(val.length > 0) {
+        setSelectedProdId(val);
+      }
+    }
 
     const ImageModal = () => {
       return (
@@ -311,24 +354,29 @@ const FeedbackComments = (props: any) => {
       return (
         <Container>
           <Grid container>
-            <Grid item md={6}>
+            <Grid item lg={6}>
               <div style={{display:'flex', justifyContent: 'left'}}>
                 <Typography variant='h6' style={{padding: 10}}>Choose what do you want to see:</Typography>
                 <Button style={{padding: 10}} variant={isBugReport ? "outlined" : "contained"} color='primary' onClick={() => {setIsBugReport(false)}}>Feedback</Button>
                 <Button style={{padding: 10, marginLeft: 10}}variant={isBugReport ? "contained" : "outlined"} color='primary' onClick={() => {setIsBugReport(true)}}>Bugs</Button>
               </div>
             </Grid>
-            <Grid item md={6}>
-              <Typography variant='h5'>
-                {props.productId ? <div>{props.productId} : Version {props.productVersion}</div> : <div/>}
-              </Typography>
+            <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
+            <Grid item lg={5}>
+            <div>
+              <ProductFilter selectedProdId={selectedProdId}
+                setSelectedProdId={filterByProduct}
+                productNameIdMapping={prodNameIdMapping} 
+                productInfo={productInfo}
+              />
+            </div>
             </Grid>
           </Grid>
           <ImageModal/>
           <div style={{marginTop: 50}}>
             {
               isBugReport ? <div/> :
-                <Grid container>
+                <Grid container style={{marginTop: '5rem'}}>
                   <Grid item lg={5}>
                     <ReactApexChart options={options} series={barChartSeries} type="bar" width={500} height={320} />
                   </Grid>
@@ -340,7 +388,6 @@ const FeedbackComments = (props: any) => {
             }
           </div>
           <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={(url: string, id: string, type: string) => {
-            console.log("calling fetchSignedUrl", id)
             setShowImageModal(true);
             setFocusAttachmentUid(id);
             fetchSignedUrl(url)
