@@ -1876,20 +1876,41 @@
                 this.addOverlay();
             },
             recordImage: async function(e){
+                let details = navigator.userAgent;
+  
+                /* Creating a regular expression 
+                containing some mobile devices keywords 
+                to search it in details string*/
+                let regexp = /android|iphone|kindle|ipad/i;
+          
+                /* Using test() method to search regexp in details
+                it returns boolean value*/
+                let isMobileDevice = regexp.test(details);
+          
+                if (isMobileDevice) {
+                    console.log("You are using a Mobile Device");
+                } else {
+                    console.log("You are using Desktop");
+                }
                 // Feedback.removeOverlay();
                 Feedback.Tools.removeTools()
                 if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                     console.log("This browser does not support the API yet");
                   }
                 else{
+                    try{
                     const stream = await navigator.mediaDevices.getDisplayMedia({
-                        audio: false,
+                        audio: true,
                         video: true
                     })
                     
                     stream.onended = () => { // Click on browser UI stop sharing button
                         console.info("Recording has ended");
                         };
+
+                    stream.onerror = () => {
+                        console.log('error');
+                    }
                     
 
                     const recorder = new MediaRecorder(stream);
@@ -1923,6 +1944,12 @@
                         // })
                       };
                     }
+                
+                catch(error){
+                    console.log(error, 'error');
+                }
+                    
+            }
 
             },
             screenshotVideo: function(){
@@ -1932,7 +1959,7 @@
                 canvas.width= window.screen.width;
                 canvas.height = window.screen.height;
                 if(video && context){
-                context.drawImage(video, 0, 0);
+                context.drawImage(video, 0, 0, window.screen.width, window.screen.height);
                 const frame = canvas.toDataURL("image/png");
                 const image_overlay = $('<div id="gigatester_image_overlay"></div>')
                 const image =  $('<image id="gigatester_image_preview" preload="auto" src="' + frame + '"></image>');
@@ -2136,12 +2163,6 @@
                     console.log("This browser does not support the API yet");
                   }
                 else{
-                    this.recording = true;
-                    Feedback.form_data.rating =  Feedback.form_data.rating;
-                    this.setFormHTML();
-                    if(Feedback.form_data.rating){
-                        this.selectedRating();
-                    }
                     this.hideControls();
                     const stream = await navigator.mediaDevices.getDisplayMedia({
                         audio: true,
@@ -2161,6 +2182,12 @@
                     // setTimeout(()=> (recorder.stop()), 10000);
                     console.log('video recording')
                     recorder.onstop = e => {
+                        this.recording = true;
+                        Feedback.form_data.rating =  Feedback.form_data.rating;
+                        this.setFormHTML();
+                        if(Feedback.form_data.rating){
+                            this.selectedRating();
+                        }
                         stream.getTracks() // get all tracks from the MediaStream
                         .forEach( track => track.stop() );
                         this.showControls();
@@ -2627,10 +2654,12 @@
                     .then(res => res.json())
                     .then(data => {
                     send_button.removeClass("gigatester-controls-send-loading")
-                      // console.log('Success:', data);
-                      if(data.Key.slice(0,6) === 'gt_img'){
+                      console.log('Success:', data);
+                      console.log(data.Key, 'key')
+                      if(data.Key.slice(0,8) === 'gt_image'){
                         // console.log(data.Key, "img");
                         Feedback.image_file = data.Location;
+                        console.log(data.Location, 'img data')
                         this.post();
                       }
                       else if(data.Key.slice(0,8) === 'gt_video'){
@@ -2656,19 +2685,20 @@
                 send_button.addClass("gigatester-controls-send-loading")
                 $(document.getElementById('gigatester-loader')).addClass("gigatester-controls-loader")
                 var outro_icon = Svg_Icons.outro_message_check;
-                console.log( this.form_data['category'])
-                console.log( this.form_data['priority'])
+                console.log( this.form_data['category']);
+                console.log( this.form_data['priority']);
+                console.log(Feedback.image_file, 'img file')
                 const postData = {
                     productRating: this.form_data.rating,
                     userName: this.ui.controls.find('input[name="email"]').val() ,
                     productVersion: '2',
                     feedbackMedia: {
-                      image: '',
-                      video: '',
-                      file: '',
-                      audio: '',
+                      image: Feedback.image_file,
+                      video: Feedback.video_file,
+                      file: Feedback.external_file,
+                      audio: Feedback.audio_file,
                     },
-                      feedbackComments: ["sample from js sdk"],
+                      feedbackComments: [this.form_data['description']],
                       productKey: '123',
                   }
                   fetch(`https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedback/`, {
