@@ -10,7 +10,6 @@ import ReactGA from 'react-ga';
 import Amplify from "aws-amplify";
 import { LanguageProvider } from './common/Language';
 import Layout from './Layout';
-import FeedbackButtonComponent from './components/feedbackButton';
 
 interface IDoitrightProps { }
 
