@@ -5,16 +5,6 @@
   --widget-outro-icon: #00c878;
 }
 
-::-webkit-scrollbar {
-    width: 30px;
-  }
-
-  ::-webkit-scrollbar-thumb {
-    padding: 10px;
-    background: #d1d1d1;
-    border-left: 13px white solid;
-    background-clip: padding-box;
-  }
 gtdiv {
   all: unset;
   display: block;
@@ -1211,10 +1201,11 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   bottom: 0;
 }
 #gigatester_button_container .gigatester-button-e {
-  right: -2px;
+  right: -35px;
   top: 50%;
   margin-top: -20px;
   bottom: auto;
+  transform: rotate(270deg);
   animation: feedbackSlideLeft 0.2s linear;
   border-bottom: 2px solid transparent;
 }
@@ -1778,6 +1769,22 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   text-align: center;
   font-size: 14px;
   font-weight: 500;
+}
+.gigatester-controls-loader{
+  border: 16px solid #f3f3f3; /* Light grey */
+  border-top: 16px solid #2878f0; /* Blue */
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  animation: feedbackRotate 0.8s linear infinite;
+}
+.gigatester-controls-loader-toggle{
+display: flex;
+justify-content: center;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 #gigatester_button_container .gigatester-controls gtrating {
   position: relative;
@@ -4377,16 +4384,34 @@ gtmodal > gtdiv .gigatester-modal-info-text {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background: rgba(0, 0, 0, 0.08);
+    background: rgb(255, 255, 255);
     border-radius: 50%;
     cursor: pointer;
+    animation: animate 1.5s linear infinite;
+  }
+  @keyframes animate{
+    0%{
+      opacity: 0.3;
+    }
+    50%{
+      opacity: 1;
+    }
+    100%{
+      opacity: 0.3;
+    }
+  }
+  #gigatester_audio_record_player #gigatester_audio_record_player_text{
+  font-size: 30px;
+  justify-content: center;
+  display: flex;
+  color: white;
   }
   #gigatester_audio_record_player #gigatester_audio_record_player_close > svg {
     display: block;
     width: 50px;
     height: 50px;
-    margin: 20px;
-    fill: rgba(252, 15, 15, 0.7);
+    margin: 15px;
+    fill: #2878F0;
   }
 #gigatester_video_player #gigatester_video_player_close > svg {
   display: block;
@@ -4415,6 +4440,13 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   margin: auto;
   outline: none;
   box-shadow: 0 0 80px rgba(0, 0, 0, 0.4);
+}
+#gigatester_external_file_preview{
+display: inline-block;
+padding: 5px;
+border-radius: 10px;
+border: 2px solid #2878f08c;
+background: #fafbfd;
 }
 #gigatester_video_container {
   position: fixed;

@@ -10,7 +10,6 @@ import ReactGA from 'react-ga';
 import Amplify from "aws-amplify";
 import { LanguageProvider } from './common/Language';
 import Layout from './Layout';
-import FeedbackButtonComponent from './components/feedbackButton';
 
 interface IDoitrightProps { }
 
@@ -64,7 +63,7 @@ const DoItRight = (props: IDoitrightProps) => {
   return (
     <LanguageProvider>
       <Router history={history}>
-      <FeedbackButtonComponent label='Feedback' userName='gigatester' productVersion='0.1' productKey='ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T' />
+      {/* <FeedbackButtonComponent label='Feedback' userName='gigatester' productVersion='0.1' productKey='ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T' /> */}
         <PageHeader getMetricsType={(type: any) => getMetricsType(type)} />
         <Switch>
           <Route exact path='/' component={Home} />
