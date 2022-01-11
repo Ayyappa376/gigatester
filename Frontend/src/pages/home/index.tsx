@@ -131,15 +131,16 @@ const Home = (props: any) => {
         console.log(error);
       });
   };
+
   useEffect(() => {
     setCurrentPageValue('');
-    if (
-      !systemDetails ||
-      systemDetails.appClientId === '' ||
-      systemDetails.appClientURL === '' ||
-      systemDetails.systemUser === '' ||
-      systemDetails.systemPassword === ''
-    ) {
+//    if (
+//      !systemDetails ||
+//      systemDetails.appClientId === '' ||
+//      systemDetails.appClientURL === '' ||
+//      systemDetails.systemUser === '' ||
+//      systemDetails.systemPassword === ''
+//    ) {
       Http.get({
         url: '/api/v2/settings/cognito',
         state: { stateVariable },
@@ -147,8 +148,10 @@ const Home = (props: any) => {
       })
         .then((response: any) => {
           console.log(response, 'response');
-          setSysDetails({ ...response });
-            Auth.signIn(response.systemUser, response.systemPassword)
+          const user = response.systemUser;
+          const pwd = response.systemPassword;
+          setSysDetails({ ...response, systemUser: '', systemPassword: '' });
+            Auth.signIn(user, pwd)
             .then((user: any) => {
               console.log(user, 'user');
               if (
@@ -184,7 +187,7 @@ const Home = (props: any) => {
         .catch((error: any) => {
           props.history.push('/error');
         });
-    }
+//    }
   }, []);
 
   const getSignupDialog = (state: boolean) => {
