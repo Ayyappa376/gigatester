@@ -10,7 +10,7 @@ import RenderTable, { renderComments, RenderStars } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
-import ProductFilter, { ILimitedProductDetails, IProductNameIdMapping, ProductInfo } from './ProductFilter';
+import ProductFilter, { ILimitedProductDetails, IProductNameIdMapping, ProductInfo, VersionFilter } from './ProductFilter';
 
 const RATING_ONE = "1";
 const RATING_TWO = "2";
@@ -86,6 +86,7 @@ const FeedbackComments = (props: any) => {
     const [rawData, setRawData] = useState([]);
     const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
     const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
+    const [productVersion, setProductVersion] = useState("");
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [processedData, setProcessedData] = useState < IProcessedData > ({});
@@ -139,7 +140,6 @@ const FeedbackComments = (props: any) => {
           productVersion: item.productVersion
         }
         if(item.feedbackMedia ) {
-          //const links = Object.values(item.feedbackMedia).filter((key: string) => key !== '');
           const links: any = Object.values(item.feedbackMedia);
           const linksFiltered = links.filter((key: string) => key !== '')
           urls.push(...linksFiltered);
@@ -152,9 +152,18 @@ const FeedbackComments = (props: any) => {
     }, [data])
 
     useEffect(() => {
-      const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0);
-      setData(dataCopy)
-    }, [selectedProdId])
+      if (selectedProdId.length > 1) {
+        setProductVersion('all')
+      }
+      if(productVersion === 'all') {
+        const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0);
+        setData(dataCopy)
+      } else if (selectedProdId.length === 1) {         // Length should be equal to 1 because we want to choose the version if only one product is there
+        const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0 && productVersion === el.productVersion);
+        setData(dataCopy)
+      }
+    }, [selectedProdId, productVersion])
+
 
     useEffect(() => {
       setBackdropOpen(true);
@@ -174,7 +183,6 @@ const FeedbackComments = (props: any) => {
           setRawData(response.Items);
           setProcessedData(processBarChartData(response.Items));
           getProductDetails()
-          setBackdropOpen(false);
         })
         .catch((error) => {
           const perror = JSON.stringify(error);
@@ -198,11 +206,20 @@ const FeedbackComments = (props: any) => {
                   prodInfo.id = el.id;
                   prodInfo.name = el.name;
                   productInfoCopy.push(prodInfo);
-                  prodNameIdMappingCopy[prodInfo.id] = prodInfo.name
+                  if(prodNameIdMappingCopy[prodInfo.id]) {
+                    prodNameIdMappingCopy[prodInfo.id].version.push(el.version);
+                  } else {
+                    prodNameIdMappingCopy[prodInfo.id] = {
+                      name: prodInfo.name,
+                      version: [el.version]
+                    }
+                  }
+                  
               })
               setProductInfo(productInfoCopy);
               setProdNameIdMapping(prodNameIdMappingCopy);
               setSelectedProdId(Object.keys(prodNameIdMappingCopy))
+              setBackdropOpen(false);
           }
         }).catch((error : any) => {
             console.error(error);
@@ -339,7 +356,6 @@ const FeedbackComments = (props: any) => {
                     </Grid>
                     <Grid item sm={7}>
                       <RenderStars rating={getRating(focusAttachmentUid)}/>
-                      
                     </Grid>
                     </Grid>
                     <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>{renderComments(getComments(focusAttachmentUid))}</div>
@@ -361,15 +377,20 @@ const FeedbackComments = (props: any) => {
                 <Button style={{padding: 10, marginLeft: 10}}variant={isBugReport ? "contained" : "outlined"} color='primary' onClick={() => {setIsBugReport(true)}}>Bugs</Button>
               </div>
             </Grid>
-            <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
-            <Grid item lg={5}>
-            <div>
+            <Grid item lg={4} style={{position: 'relative'}}>
+            <div style={{position: 'absolute', bottom: 0, minWidth: '100%'}}>
               <ProductFilter selectedProdId={selectedProdId}
                 setSelectedProdId={filterByProduct}
                 productNameIdMapping={prodNameIdMapping} 
                 productInfo={productInfo}
               />
             </div>
+            </Grid>
+            <Grid item lg={2} style={{position: 'relative'}}>
+              <VersionFilter productVersion={productVersion}
+                setProductVersion={setProductVersion}
+                versionList={selectedProdId.length === 1 ? prodNameIdMapping[selectedProdId[0]].version : []}
+              />
             </Grid>
           </Grid>
           <ImageModal/>
