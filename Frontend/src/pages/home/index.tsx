@@ -147,13 +147,13 @@ const Home = (props: any) => {
         customHeaders: { noauthvalidate: 'true' },
       })
         .then((response: any) => {
-          console.log(response, 'response');
+          //console.log(response, 'response');
           const user = response.systemUser;
           const pwd = response.systemPassword;
           setSysDetails({ ...response, systemUser: '', systemPassword: '' });
             Auth.signIn(user, pwd)
             .then((user: any) => {
-              console.log(user, 'user');
+              //console.log(user, 'user');
               if (
                 user &&
                 user.signInUserSession.idToken &&
