@@ -17,7 +17,7 @@ interface IProps {
     tableData: IAppFeedback[],
     viewAttachmentClicked: Function,
     urls: string[],
-    isBugReport: boolean
+    isBugReport: boolean,
 }
 
 export type Order = 'asc' | 'desc';
@@ -38,7 +38,7 @@ export const RenderStars = (props: any) => {
       <div style={{alignItems: "center"}}>
       <div>
           {arr.map((el, i) => {
-              return (i < props.rating ? <FavoriteIcon key={i}/> : <FavoriteBorderIcon key={i}/>)
+              return (i < props.rating ? <FavoriteIcon key={i} /> : <FavoriteBorderIcon key={i} />)
           })}
       </div>
       </div>
@@ -255,12 +255,14 @@ const RenderTable = (props: IProps) => {
 
     return (
         <Container style={{marginTop: '5rem'}}>
+          <Paper style={{padding: '2rem'}}>
           <Grid container>
-            <Grid item md={7}>
+            <Grid item md={6}>
               {
                 <RenderKeywordFilter keywords={isBugReport? bugReportKeywords : feedbackKeywords} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {clearSearch()}}/>
               }
             </Grid>
+            <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
             <Grid item md={5} >
               {
                 isBugReport ? <div/> :
@@ -268,6 +270,7 @@ const RenderTable = (props: IProps) => {
               }
             </Grid>
           </Grid>
+          </Paper>
           <Paper className={classes.paper}>
           <Toolbar
             className={classes.root}

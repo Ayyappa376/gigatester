@@ -30,9 +30,12 @@ interface HeadCell {
 const useStylesLabel = makeStyles({
   icon: {
     textAlign: 'center',
-    color: '#000 !important',
+    color: 'rgb(0,0,0,.8) !important',
     opacity: 1
-  }
+  },
+  /* active: {
+    color: 'rgb(0,0,0,.9) !important'
+  } */
 }, { name: 'MuiTableSortLabel' });
 
 const headCells: HeadCell[] = [
@@ -49,7 +52,6 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
     const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(property);
     };
-  
     return (
       <TableHead>
         <TableRow>
@@ -60,25 +62,22 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             if(!isBugReport && headCell.headType === BUG_REPORT) {
               return;
             }
-            console.log({orderBy, headCell})
             return(
             <TableCell
               key={headCell.id}
               align={headCell.align}
               sortDirection={orderBy === headCell.id ? order : false}
-              style={{fontSize: '1rem'}}
+              style={{fontSize: '1.05rem', fontWeight: 500}}
             >
               {
                 headCell.sortLabel ? 
-                
                   <TableSortLabel
                     active={orderBy === headCell.sortLabel}
                     direction={orderBy === headCell.sortLabel ? order : 'asc'}
                     onClick={createSortHandler(headCell.sortLabel)}
                   >
                     <div >
-                    {headCell.label}
-
+                      {headCell.label}
                     </div>
                   </TableSortLabel> : 
                   <div>
