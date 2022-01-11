@@ -2,40 +2,39 @@ import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
 
-interface IProps {
-    onSelect: Function
+interface IKeywordFilterProps {
+    onSubmit: Function;
+    onClear: Function;
+    keywords: string[];
 }
 
-const ratingButtonValues=[
-    {discription: "1-Star-Rating", value: 1 },
-    {discription: "2-Star-Rating", value: 2 },
-    {discription: "3-Star-Rating", value: 3 },
-    {discription: "4-Star-Rating", value: 4 },
-    {discription: "5-Star-Rating", value: 5 },
+const keywords = [
+    "Audio", "Video", "Sample", "Screen", "Lag", "Slow", "Software", "Frame-loss", "Error", "Recordings"
 ]
 
-const RenderRatingFilter = (props: IProps) => {
-    const classes = useStyles();
-    const [rating, setRating] =useState(0);
 
-    const handleKeywordClick = (val: number) => {
-        if(rating === val) {
-            props.onSelect(-1);
-            setRating(0)
+export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
+    const classes = useStyles();
+    const [keyword, setKeyword] = useState("");
+
+    const handleKeywordClick = (val: string) => {
+        if(keyword === val) {
+            props.onClear();
+            setKeyword("")
         } else {
-            props.onSelect(val);
-            setRating(val);
+            props.onSubmit(val);
+            setKeyword(val);
         }
     }
 
     return (
-        <div className={classes.ratingBlock}>
+        <div className={classes.keywordBlock}>
             <div className={classes.textContainer}>
-                <Typography className={classes.textHeader}>Choose feedback with rating:</Typography>
+                <Typography className={classes.textHeader}>Read comments that mention:</Typography>
             </div>
-            <div className={classes.flexContainer}>
-                {ratingButtonValues.map((el) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(el.value)}} className={rating === el.value ? classes.btnVisited : classes.btn}>{el.discription}</Button>
+            <div className={classes.flexContainerKeywords}>
+                {keywords.map((el) => 
+                    <Button variant='outlined' onClick={() => {handleKeywordClick(el)}} className={keyword === el ? classes.btnVisited : classes.btn}>{el}</Button>
                 )}
             </div>
         </div>
@@ -43,13 +42,20 @@ const RenderRatingFilter = (props: IProps) => {
 }
 
 const useStyles = makeStyles({
-    ratingBlock: {
-        display: 'block',
-        boxSizing: 'border-box',
+    keywordBlock: {
+        marginLeft: 0,
+        '&:hover':{
+            color: '#000',
+            backgroundColor: '#fff'
+        }
     },
-    flexContainer: {
+    flexContainerKeywords: {
         display: 'flex',
         flexWrap: 'wrap',
+        '&:hover':{
+            color: '#000',
+            backgroundColor: '#fff'
+        }
        // justifyContent: 'space-between'
     },
     btn: {
@@ -87,4 +93,4 @@ const useStyles = makeStyles({
     }
 })
 
-export default RenderRatingFilter;
+export default RenderKeywordFilter;

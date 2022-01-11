@@ -1,5 +1,5 @@
 import React from 'react';
-import { TableHead, TableRow, TableCell, TableSortLabel, makeStyles } from '@material-ui/core';
+import { TableHead, TableRow, TableCell, TableSortLabel, makeStyles, Tooltip } from '@material-ui/core';
 import { IAlign, Order, useStyles } from './RenderTable';
 
 type HeadType = 'bug_report' | 'feedback' | 'alround'
@@ -67,19 +67,23 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
               key={headCell.id}
               align={headCell.align}
               sortDirection={orderBy === headCell.id ? order : false}
-              style={{fontSize: '1.05rem', fontWeight: 500}}
+              style={{fontSize: '1.05rem', fontWeight: 500, color: '#666666'}}
             >
               {
-                headCell.sortLabel ? 
-                  <TableSortLabel
-                    active={orderBy === headCell.sortLabel}
-                    direction={orderBy === headCell.sortLabel ? order : 'asc'}
-                    onClick={createSortHandler(headCell.sortLabel)}
-                  >
-                    <div >
-                      {headCell.label}
-                    </div>
-                  </TableSortLabel> : 
+                headCell.sortLabel ?
+                  <Tooltip title={orderBy === headCell.sortLabel ? "Sorted according to this column" : "Click to apply sorting for this column"}
+                    aria-label="sort-active">
+                    <TableSortLabel
+                      active={orderBy === headCell.sortLabel}
+                      direction={orderBy === headCell.sortLabel ? order : 'asc'}
+                      onClick={createSortHandler(headCell.sortLabel)}
+                      style={{color: orderBy === headCell.sortLabel? 'rgba(0,0,0,1)' : '#666666'}}
+                    >
+                      <div >
+                        {headCell.label}
+                      </div>
+                    </TableSortLabel>
+                  </Tooltip> : 
                   <div>
                     {headCell.label}
                   </div>

@@ -10,8 +10,9 @@ import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
 import EnhancedTableHead from './TableMethods';
-import RenderRatingFilter, { RenderKeywordFilter } from './RenderFilters';
+import RenderRatingFilter from './RenderFilters';
 import { getImportantKeywords } from './methods';
+import RenderKeywordFilter from './RenderKeywordFilter';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -263,7 +264,7 @@ const RenderTable = (props: IProps) => {
               }
             </Grid>
             <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
-            <Grid item md={5} >
+            <Grid item md={5}>
               {
                 isBugReport ? <div/> :
                   <RenderRatingFilter onSelect={(val: number) => {filterRating(val)}}/>
@@ -311,7 +312,7 @@ const RenderTable = (props: IProps) => {
                       <TableCell style={{fontSize: '1rem'}}>
                             {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
                       </TableCell>
-                      <TableCell align='center' style={{fontSize: '1rem'}}>
+                      <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
                       </TableCell>
                       {
