@@ -26,7 +26,9 @@ exports.handler = async (event: any) => {
                 const jsonBody = JSON.parse(event.body);
                 const tableparams = {
                             Item: {
+                                bugPriority: jsonBody.bugPriority,
                                 createdOn: Date.now(),
+                                feedbackCategory: jsonBody.feedbackCategory,
                                 feedbackComments: jsonBody.feedbackComments,
                                 feedbackMedia: {
                                     audio: jsonBody.feedbackMedia.audio ? jsonBody.feedbackMedia.audio : '',

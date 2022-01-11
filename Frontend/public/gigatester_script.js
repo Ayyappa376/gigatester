@@ -361,7 +361,7 @@
                 send_button_text: "",
                 name_field: false,
                 name_field_mandatory: false,
-                email_field: false,
+                email_field: true,
                 email_field_mandatory: false,
                 title_field: false,
                 title_field_mandatory: false,
@@ -428,7 +428,7 @@
                 send_button_text: "",
                 name_field: false,
                 name_field_mandatory: false,
-                email_field: false,
+                email_field: true,
                 email_field_mandatory: false,
                 title_field: false,
                 title_field_mandatory: false,
@@ -1888,9 +1888,9 @@
                 let isMobileDevice = regexp.test(details);
           
                 if (isMobileDevice) {
-                    console.log("You are using a Mobile Device");
+                    console.log("You are using a Mobile Device" + navigator.userAgent);
                 } else {
-                    console.log("You are using Desktop");
+                    console.log("You are using Desktop" +  navigator.userAgent);
                 }
                 // Feedback.removeOverlay();
                 Feedback.Tools.removeTools()
@@ -1930,6 +1930,7 @@
                     console.log('image recording')
                     recorder.onstop = e => {
                         console.log(recorder.state)
+                        this.ui.element.attr("drawing", "false");
                         const completeBlob = new Blob(chunks, { type: "video/mp4" });
                         const src = URL.createObjectURL(completeBlob);
                         console.log(src, 'image blob')
@@ -1938,10 +1939,11 @@
                         const video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
                         video_close.appendTo(image_overlay);
                         video.insertAfter($(document.getElementsByClassName('gigatester-controls-attach-actions')));
-                        setTimeout(()=> (this.screenshotVideo()), 1000);
+                        setTimeout(()=> (this.screenshotVideo()), 700);
                         // video_close.on("click", function() {
                         //     image_overlay.remove()
                         // })
+                        
                       };
                     }
                 
@@ -1970,6 +1972,7 @@
                 Feedback.removeOverlay();
                 Feedback.recording = true;
                 Feedback.form_data.rating =  Feedback.form_data.rating;
+                Feedback.form_data.comment_field =  Feedback.form_data.rating
                 console.log( Feedback.form_data.rating, 'feedback rating')
                 Feedback.setFormHTML();
                 Feedback.showControls();
@@ -2116,6 +2119,7 @@
                     recorder.onstop = e => {
                         $(audio_record_overlay).remove();
                         Feedback.form_data.rating =  Feedback.form_data.rating;
+                        Feedback.form_data.comment_field =  Feedback.form_data.rating
                         this.setFormHTML();
                         if(Feedback.form_data.rating){
                             this.selectedRating();
@@ -2184,6 +2188,7 @@
                     recorder.onstop = e => {
                         this.recording = true;
                         Feedback.form_data.rating =  Feedback.form_data.rating;
+                        Feedback.form_data.comment_field =  Feedback.form_data.rating;
                         this.setFormHTML();
                         if(Feedback.form_data.rating){
                             this.selectedRating();
@@ -2606,6 +2611,10 @@
                 this.video_blob = null;
                 this.video_url = "";
                 this.video_annotation = [];
+                this.audio_file = '';
+                this.video_file='';
+                this.external_file='';
+                this.image_file='';
                 this.form_data = {
                     rating: "",
                     name: "",
@@ -2680,17 +2689,30 @@
                     })    
             },
             post: function(){
-                var form_settings = this.getFormSettings(this.form_type);
-                var send_button = this.ui.controls.find(".gigatester-controls-send");
+                let finalRating = 0;
+                let feedbackType='';
+                let form_settings = this.getFormSettings(this.form_type);
+                let send_button = this.ui.controls.find(".gigatester-controls-send");
                 send_button.addClass("gigatester-controls-send-loading")
                 $(document.getElementById('gigatester-loader')).addClass("gigatester-controls-loader")
                 var outro_icon = Svg_Icons.outro_message_check;
                 console.log( this.form_data['category']);
                 console.log( this.form_data['priority']);
                 console.log(Feedback.image_file, 'img file')
+                if(this.form_data.rating){
+                    finalRating = parseInt(this.form_data.rating)
+                    feedbackType = 'FEEDBACK'
+                }
+                else{
+                    finalRating = 0;
+                    feedbackType = 'BUG_REPORT'
+                }
                 const postData = {
-                    productRating: this.form_data.rating,
+                    productRating: finalRating,
                     userName: this.ui.controls.find('input[name="email"]').val() ,
+                    feedbackType: feedbackType,
+                    feedbackCategory: this.form_data['category'],
+                    bugPriority: this.form_data['priority'],
                     productVersion: '2',
                     feedbackMedia: {
                       image: Feedback.image_file,
@@ -2699,8 +2721,10 @@
                       audio: Feedback.audio_file,
                     },
                       feedbackComments: [this.form_data['description']],
-                      productKey: '123',
+                      productKey: 'BxiX1h1RQE9WyP9ewAJhu7RhHVOGkhC469ZrqrD7',
+                      
                   }
+                  console.log(postData, 'post Data')
                   fetch(`https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedback/`, {
                     method: 'POST',
                     body:  JSON.stringify(postData),
@@ -2719,7 +2743,18 @@
                             $(document.getElementById('gigatester-loader')).removeClass("gigatester-controls-loader")
                             close_icon.trigger("click")}, 3000);
                         // var outro_has_link = this.ui.controls.find(".gigatester-controls-send-success p a").length ? true : false;
-             })
+                    })
+                    .catch(error => {
+                        console.log(error, 'post api error');
+                        if (this.controls_step === 2) {
+                            send_button.removeClass("gigatester-controls-send-loading");
+                            send_button.removeClass("gigatester-controls-send-uploading");
+                            send_button.prop("disabled", false);
+                            $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertAfter(send_button)
+                        } else if (this.controls_step === 3) {
+                            $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("Feedback submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                        }
+                    })
             },
             submitPost: function(e){
                 e.preventDefault();
