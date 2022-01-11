@@ -708,6 +708,7 @@
                 svg_obj_path: false,
                 draw_started: false,
                 dragging_obj: false,
+                image_capture: false,
                 toolbar: null,
                 min_drag_distance: 10,
                 toolbar_is_hidden: false,
@@ -764,7 +765,7 @@
                      + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + "blackout" + '">' + Svg_Icons.blackout + "</btn>"
                     //  + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-text" data-type="text" title="' + "text" + '">' + Svg_Icons.text + "</btn>"
                      + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-colour" data-type="colour">' + tool_colour_indicator + "</btn>"
-                     + '<btn class="gigatester-toolbar-tool-done' + (Feedback.canvas_mode ? " gigatester-toolbar-tool-done-active" : "") + '" title="' + "capture_screenshot" + '">' + Svg_Icons.tick + "<span>" + (Lang.get("next") ? Lang.get("next") : Lang.get("save")) + "</span>" + "</btn>"
+                     + '<btn class="gigatester-toolbar-tool-done' + (Feedback.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + "capture_screenshot" + '">' + Svg_Icons.tick + "<span>" + (Lang.get("next") ? Lang.get("next") : Lang.get("save")) + "</span>" + "</btn>"
                      + (Feedback.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "close" + '">' + Svg_Icons.close + "</btn>") + (display_tutorial ? '<btn class="gigatester-toolbar-help">' + Svg_Icons.widget_question + "</btn>" : "");
                     this.toolbar = $("<gttoolbar>").attr("lang", Feedback.configs.language);
                     //.attr("data-html2canvas-ignore", "true")
@@ -808,6 +809,8 @@
                             console.log('isliveconfigs')
                             return
                         }
+                        Feedback.ui.element.removeAttr("drawing");
+                        Feedback.Tools.image_capture = 'true';
                         Feedback.recordImage();
                         // Session_Recorder.addCustomEvent("widget_open", {
                         //     type: "widget_interaction",
@@ -817,7 +820,8 @@
                     this.toolbar.find(".gigatester-toolbar-close").on("click", function(e) {
                         e.stopPropagation();
                         e.preventDefault();
-                        this.cancelAnnotation()
+                        this.cancelAnnotation();
+                        Feedback.Tools.image_capture = false;
                     }.bind(this));
                     this.toolbar.find(".gigatester-toolbar-tool-colour-indicator-option").on("click", $.proxy(function(e) {
                         var colour = $(e.currentTarget).data("colour");
@@ -987,7 +991,8 @@
                             }
                         }
                     } else {
-                        if (this.draw_started) {
+                        if (this.draw_started || this.image_capture) {
+                            console.log(this.image_capture, 'img capture')
                             return
                         }
                         this.draw_started = true;
@@ -1721,12 +1726,22 @@
                 this.toggleAttachButtons()
             },
             setFormHTML: function() {
-                var form_settings = this.getFormSettings(this.form_type);
-                var display_screenshot = form_settings.allow_screenshot;
-                var display_audio = form_settings.allow_audio;
-                var display_video = form_settings.allow_video && this.configs.has_video && !Feedback.is_mobile && !this.canvas_mode;
-                var display_attachment = form_settings.allow_attachment  && typeof FileReader !== "undefined";
-                var data_item = 0;
+                let form_settings = this.getFormSettings(this.form_type);
+                let display_screenshot = form_settings.allow_screenshot;
+                let display_audio = form_settings.allow_audio;
+                let display_video = form_settings.allow_video && this.configs.has_video && !Feedback.is_mobile && !this.canvas_mode;
+                let display_attachment = form_settings.allow_attachment  && typeof FileReader !== "undefined";
+                let data_item = 0;
+                let details = navigator.userAgent;
+                let regexp = /android|iphone|kindle|ipad/i;
+                let isMobileDevice = regexp.test(details);
+                if (isMobileDevice) {
+                    console.log("You are using a Mobile Device : " + navigator.userAgent);
+                    display_screenshot = false;
+                    display_video = false;
+                } else {
+                    console.log("You are using Desktop : " +  navigator.userAgent);
+                }
                 data_item += display_screenshot ? 1 : 0;
                 data_item += display_video ? 1 : 0;
                 data_item += display_audio ? 1 : 0;
@@ -1876,34 +1891,20 @@
                 this.addOverlay();
             },
             recordImage: async function(e){
-                let details = navigator.userAgent;
-  
-                /* Creating a regular expression 
-                containing some mobile devices keywords 
-                to search it in details string*/
-                let regexp = /android|iphone|kindle|ipad/i;
-          
-                /* Using test() method to search regexp in details
-                it returns boolean value*/
-                let isMobileDevice = regexp.test(details);
-          
-                if (isMobileDevice) {
-                    console.log("You are using a Mobile Device" + navigator.userAgent);
-                } else {
-                    console.log("You are using Desktop" +  navigator.userAgent);
-                }
+                
                 // Feedback.removeOverlay();
-                Feedback.Tools.removeTools()
+                
                 if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                     console.log("This browser does not support the API yet");
+                    callback();
                   }
                 else{
-                    try{
-                    const stream = await navigator.mediaDevices.getDisplayMedia({
+                    
+                    navigator.mediaDevices.getDisplayMedia({
                         audio: true,
                         video: true
-                    })
-                    
+                    }).then(function(stream){
+                        Feedback.Tools.removeTools()
                     stream.onended = () => { // Click on browser UI stop sharing button
                         console.info("Recording has ended");
                         };
@@ -1911,8 +1912,6 @@
                     stream.onerror = () => {
                         console.log('error');
                     }
-                    
-
                     const recorder = new MediaRecorder(stream);
                     const chunks = [];
                     stream.getVideoTracks()[0].addEventListener('ended', () => console.log('screensharing has ended'))
@@ -1921,7 +1920,7 @@
                         console.log(recorder.state)
                     }
                     if(stream){
-                        this.hideControls();
+                        Feedback.hideControls();
                         setTimeout(()=> {recorder.start();
                             setTimeout(()=> {recorder.stop(), stream.getTracks() // get all tracks from the MediaStream
                             .forEach( track => track.stop() );}, 500);
@@ -1930,7 +1929,7 @@
                     console.log('image recording')
                     recorder.onstop = e => {
                         console.log(recorder.state)
-                        this.ui.element.attr("drawing", "false");
+                        Feedback.ui.element.attr("drawing", "false");
                         const completeBlob = new Blob(chunks, { type: "video/mp4" });
                         const src = URL.createObjectURL(completeBlob);
                         console.log(src, 'image blob')
@@ -1939,18 +1938,14 @@
                         const video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
                         video_close.appendTo(image_overlay);
                         video.insertAfter($(document.getElementsByClassName('gigatester-controls-attach-actions')));
-                        setTimeout(()=> (this.screenshotVideo()), 700);
-                        // video_close.on("click", function() {
-                        //     image_overlay.remove()
-                        // })
-                        
+                        setTimeout(()=> (Feedback.screenshotVideo()), 700);
                       };
-                    }
-                
-                catch(error){
-                    console.log(error, 'error');
-                }
-                    
+                 })
+                 .catch(function(err) {
+                    console.log(err , 'err')
+                    /* handle the error */
+                  })
+                 
             }
 
             },
@@ -1968,6 +1963,7 @@
                 image.appendTo(image_overlay)
                 image_overlay.appendTo(document.body)
                 console.log(frame);
+                Feedback.Tools.image_capture = false;
                 $(document.getElementById('gigatester_image_overlay')).remove()
                 Feedback.removeOverlay();
                 Feedback.recording = true;
@@ -2078,7 +2074,16 @@
             }
             catch(error){
                 console.log(error, 'error')
-            }
+                    console.log(error, 'post api error');
+                    if (this.controls_step === 2) {
+                        send_button.removeClass("gigatester-controls-send-loading");
+                        send_button.removeClass("gigatester-controls-send-uploading");
+                        send_button.prop("disabled", false);
+                        $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertAfter(send_button)
+                    } else if (this.controls_step === 3) {
+                        $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("Feedback submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                    }
+                }
             },
             recordAudio: async function(e){
                 if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -2086,21 +2091,22 @@
                   }
                 else{
                     // video_url = video_url || this.video_url;
-                    this.recording = true;
-                    var audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
-                    // var video = $('<video preload="auto" controls src="' + video_url + '"></video>');
-                    var audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
-                    var audio_record_close = $('<btn id="gigatester_audio_record_player_close">').html(Svg_Icons.mic);
+                    
+
+                    // console.log(record_stop_btn, 'rcsb')
+                    navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                        video: false
+                    }).then(function(stream){
+                    Feedback.recording = true;
+                    let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
+                    // let video = $('<video preload="auto" controls src="' + video_url + '"></video>');
+                    let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
+                    let audio_record_close = $('<btn id="gigatester_audio_record_player_close">').html(Svg_Icons.mic);
                     // video.appendTo(video_overlay.children("div"));
                     audio_record_close.appendTo(audio_record_overlay);
                     audio_record_text.appendTo(audio_record_overlay)
                     audio_record_overlay.appendTo($(document.body));  
-
-                    // console.log(record_stop_btn, 'rcsb')
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                        audio: true,
-                        video: false
-                    });
                     const recorder = new MediaRecorder(stream);
                     const chunks = [];
                     console.log('recording')
@@ -2120,9 +2126,9 @@
                         $(audio_record_overlay).remove();
                         Feedback.form_data.rating =  Feedback.form_data.rating;
                         Feedback.form_data.comment_field =  Feedback.form_data.rating
-                        this.setFormHTML();
+                        Feedback.setFormHTML();
                         if(Feedback.form_data.rating){
-                            this.selectedRating();
+                            Feedback.selectedRating();
                         }
                         const completeBlob = new Blob(chunks, { type: "audio/wav" });
                         var src = URL.createObjectURL(completeBlob);
@@ -2133,12 +2139,17 @@
                         // video.appendTo(video_overlay.children("div"));
                         audio_close.appendTo(audio_overlay);
                         audio.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                        this.loadAudio(src)
+                        Feedback.loadAudio(src)
                        
                         audio_close.on("click", function() {
                             audio_overlay.remove()
                         })
                       };
+                    })
+                    .catch(function(err){
+                        console.log(err , 'audio err')
+                    })
+
                 }
             },
             UUIDv4: function() {
@@ -2161,57 +2172,78 @@
                 .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_image_' + Feedback.UUIDv4() +'.png', { type: 'image/png' }));
                 console.log(Feedback.image_file, 'image file loaded');
             },
+            handleVideoError: function(e) {
+                if (typeof e.name !== "undefined" && e.name === "NotAllowedError") {
+                    this.stopCapture()
+                } else {
+                    Feedback.modalConfirm('<div style="margin-bottom: 8px;"><b>Video recording is not supported in your browser</b></div><div class="gigatester-modal-info-text">Please download the latest version of <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/firefox/download/thanks/">Firefox</a> or <a href="http://microsoft.com/en-us/edge">Microsoft Edge</a>.</div>', function() {
+                        Feedback.modalClose()
+                    }, "OK")
+                }
+            },
             recordVideo: async function(e) {
                 console.log(navigator.mediaDevices.getSupportedConstraints())
                 if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-                    console.log("This browser does not support the API yet");
+                    callback();
+                    return
                   }
                 else{
-                    this.hideControls();
-                    const stream = await navigator.mediaDevices.getDisplayMedia({
+                    navigator.mediaDevices.getDisplayMedia({
                         audio: true,
                         video: true
-                    });
-                    const recorder = new MediaRecorder(stream);
-                    const chunks = [];
-                    recorder.ondataavailable = e => {chunks.push(e.data);console.log(MediaRecorder.state)}
-                    recorder.start();
-                    // var video_blob = new Blob(this.recorded_blobs, {
-                    //     type: "video/webm"
-                    // }); 
-                    stream.getVideoTracks()[0].addEventListener('ended', () => 
-                    {console.log('screensharing has ended')
-                    recorder.stop();
-                    })
-                    // setTimeout(()=> (recorder.stop()), 10000);
-                    console.log('video recording')
-                    recorder.onstop = e => {
-                        this.recording = true;
-                        Feedback.form_data.rating =  Feedback.form_data.rating;
-                        Feedback.form_data.comment_field =  Feedback.form_data.rating;
-                        this.setFormHTML();
-                        if(Feedback.form_data.rating){
-                            this.selectedRating();
-                        }
-                        stream.getTracks() // get all tracks from the MediaStream
-                        .forEach( track => track.stop() );
-                        this.showControls();
-                        const completeBlob = new Blob(chunks, { type: "video/webm" });
-                        var src = URL.createObjectURL(completeBlob);
-                        console.log(src, 'video blob')
-                        var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
-                        var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                        var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
-                        // video.appendTo(video_overlay.children("div"));
-                        video_close.appendTo(video_overlay);
-                        video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                        this.loadVideo(src);
-                        video_close.on("click", function() {
-                            video_overlay.remove()
+                    }).then(function(stream){
+                        Feedback.hideControls();
+                        const recorder = new MediaRecorder(stream);
+                        const chunks = [];
+                        recorder.ondataavailable = e => {chunks.push(e.data);console.log(MediaRecorder.state)}
+                        recorder.start();
+                        stream.getVideoTracks()[0].addEventListener('ended', () => 
+                        {console.log('screensharing has ended')
+                        recorder.stop();
                         })
-                      };
-                      
-                    }
+                        console.log('video recording')
+                        recorder.onstop = e => {
+                            stream.getTracks() // get all tracks from the MediaStream
+                            .forEach( track => track.stop() );
+                            const completeBlob = new Blob(chunks, { type: "video/webm" });
+                            var src = URL.createObjectURL(completeBlob);
+                            console.log(src, 'video blob')
+                            setTimeout( function() {Feedback.recording = true;
+                            Feedback.form_data.rating =  Feedback.form_data.rating;
+                            Feedback.setFormHTML();
+                            if(Feedback.form_data.rating){
+                                Feedback.selectedRating();
+                                console.log('selected rating');
+                                var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                            var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                            var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                            // video.appendTo(video_overlay.children("div"));
+                            video_close.appendTo(video_overlay);
+                            video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                            video_close.on("click", function() {
+                                video_overlay.remove()
+                            })
+                            }
+                        else{
+                            var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                            var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                            var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                            // video.appendTo(video_overlay.children("div"));
+                            video_close.appendTo(video_overlay);
+                            video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                            video_close.on("click", function() {
+                                video_overlay.remove()
+                            })
+                        }}, 100);
+                            Feedback.showControls();
+                            Feedback.loadVideo(src);
+                          };
+                    }).catch(function(err) {
+                        console.log(err , 'err')
+                        /* handle the error */
+                      })
+                }
+                    
             },
             loadVideo: async function(src) {
                 Feedback.video_file = await fetch(src)
@@ -2713,7 +2745,7 @@
                     feedbackType: feedbackType,
                     feedbackCategory: this.form_data['category'],
                     bugPriority: this.form_data['priority'],
-                    productVersion: '2',
+                    productVersion: '0.1',
                     feedbackMedia: {
                       image: Feedback.image_file,
                       video: Feedback.video_file,
@@ -2721,7 +2753,7 @@
                       audio: Feedback.audio_file,
                     },
                       feedbackComments: [this.form_data['description']],
-                      productKey: 'BxiX1h1RQE9WyP9ewAJhu7RhHVOGkhC469ZrqrD7',
+                      productKey: 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T',
                       
                   }
                   console.log(postData, 'post Data')

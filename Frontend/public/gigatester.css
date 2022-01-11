@@ -1778,6 +1778,11 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   height: 12px;
   animation: feedbackRotate 0.8s linear infinite;
 }
+.gigatester-svg-hide{
+  width: 100vw;
+  height: 100vw;
+  background-color: #000;
+}
 .gigatester-controls-loader-toggle{
 display: flex;
 justify-content: center;
