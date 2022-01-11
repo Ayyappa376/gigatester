@@ -53,9 +53,9 @@ export function getGroupsTableName(): string {
 }
 
 export function getOrganizationsTableName(): string {
-  return `${config.defaults.orgId}_${config.tables.groups}`;
+  return `${config.defaults.orgId}_${config.tables.organizations}`;
 }
 
 export function getUsersTableName(): string {
-  return `${config.defaults.orgId}_${config.tables.groups}`;
+  return `${config.defaults.orgId}_${config.tables.users}`;
 }

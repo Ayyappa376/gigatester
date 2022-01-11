@@ -26,7 +26,7 @@ async function handler(request: PostOrganizations, response: Response) {
     return responseBuilder.forbidden(err, response);
   }
 
-  if (body.organization) {
+  if (!body.organization) {
     const err = new Error('BadRequest:Missing values');
     appLogger.error(err, 'Organization to create is missing.');
     return responseBuilder.badRequest(err, response);

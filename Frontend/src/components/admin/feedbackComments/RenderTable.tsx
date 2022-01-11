@@ -1,4 +1,4 @@
-import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton } from '@material-ui/core';
+import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton, Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { getSignedUrl, IAppFeedback } from '.';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -10,24 +10,25 @@ import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
 import EnhancedTableHead from './TableMethods';
-import RenderRatingFilter from './RenderFilters';
+import RenderRatingFilter, { RenderKeywordFilter } from './RenderFilters';
+import { getImportantKeywords } from './methods';
 
 interface IProps {
     tableData: IAppFeedback[],
     viewAttachmentClicked: Function,
     urls: string[],
-    isBugReport: boolean
+    isBugReport: boolean,
 }
 
 export type Order = 'asc' | 'desc';
 
 export type IAlign = "right" | "left" | "inherit" | "center" | "justify" | undefined;
 
-const BUG_REPORT = 'bug_report'
+export const BUG_REPORT = 'bug_report'
 
-const FEEDBACK = 'feedback'
+export const FEEDBACK = 'feedback'
 
-const ALROUND = 'alround'
+export const ALROUND = 'alround'
 
 
 
@@ -37,7 +38,7 @@ export const RenderStars = (props: any) => {
       <div style={{alignItems: "center"}}>
       <div>
           {arr.map((el, i) => {
-              return (i < props.rating ? <FavoriteIcon key={i}/> : <FavoriteBorderIcon key={i}/>)
+              return (i < props.rating ? <FavoriteIcon key={i} /> : <FavoriteBorderIcon key={i} />)
           })}
       </div>
       </div>
@@ -82,6 +83,9 @@ const RenderTable = (props: IProps) => {
     const [order, setOrder] = useState<Order>('desc');
     const [orderBy, setOrderBy] = useState('date');
 
+    const [feedbackKeywords, setFeedbackKeywords] = useState<string[]>([])
+    const [bugReportKeywords, setBugReportKeywords] = useState<string[]>([])
+
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
         return;
@@ -113,8 +117,8 @@ const RenderTable = (props: IProps) => {
             return false;
           }
           if(el.feedbackComments){
-            const feedbackCommentsString = el.feedbackComments.join();
-            if(feedbackCommentsString.indexOf(keyword) >= 0) {
+            const feedbackCommentsString = el.feedbackComments.join().toLowerCase();
+            if(feedbackCommentsString.indexOf(keyword.toLowerCase()) >= 0) {
               return true;
             }
             return false;
@@ -213,6 +217,10 @@ const RenderTable = (props: IProps) => {
         })
         setTableData(sortTableByDate(tableDataFiltered, 'desc'));
       }
+      getImportantKeywords(rawTableData).then((result: any) => {
+        setFeedbackKeywords(result.feedbackKeywords);
+        setBugReportKeywords(result.bugKeywords)
+      })
     }, [])
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -246,11 +254,23 @@ const RenderTable = (props: IProps) => {
 
 
     return (
-        <Container>
-          {
-            isBugReport ? <div/> :
-              <RenderRatingFilter onSelect={(val: number) => {filterRating(val)}}/>
-          }
+        <Container style={{marginTop: '5rem'}}>
+          <Paper style={{padding: '2rem'}}>
+          <Grid container>
+            <Grid item md={6}>
+              {
+                <RenderKeywordFilter keywords={isBugReport? bugReportKeywords : feedbackKeywords} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {clearSearch()}}/>
+              }
+            </Grid>
+            <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
+            <Grid item md={5} >
+              {
+                isBugReport ? <div/> :
+                  <RenderRatingFilter onSelect={(val: number) => {filterRating(val)}}/>
+              }
+            </Grid>
+          </Grid>
+          </Paper>
           <Paper className={classes.paper}>
           <Toolbar
             className={classes.root}
