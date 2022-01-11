@@ -136,7 +136,9 @@ const Home = (props: any) => {
     if (
       !systemDetails ||
       systemDetails.appClientId === '' ||
-      systemDetails.appClientURL === ''
+      systemDetails.appClientURL === '' ||
+      systemDetails.systemUser === '' ||
+      systemDetails.systemPassword === ''
     ) {
       Http.get({
         url: '/api/v2/settings/cognito',
@@ -145,47 +147,45 @@ const Home = (props: any) => {
       })
         .then((response: any) => {
           console.log(response, 'response');
-          getServiceUserToken(response.systemUser, response.systemPassword);
-          setSysDetails({ ...response, systemUser: '', systemPassword: '' });
+          setSysDetails({ ...response });
+            Auth.signIn(response.systemUser, response.systemPassword)
+            .then((user: any) => {
+              console.log(user, 'user');
+              if (
+                user &&
+                user.signInUserSession.idToken &&
+                user.signInUserSession.accessToken
+              ) {
+                const tokenInfo: any = jwtDecode(
+                  user.signInUserSession.idToken.jwtToken
+                );
+              superUserStateVariable['user'] = {
+                idToken: user.signInUserSession.idToken.jwtToken,
+                accessToken: user.signInUserSession.accessToken,
+                userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+                team:
+                  tokenInfo['custom:teamName'] && tokenInfo['custom:teamName'] !== ''
+                    ? tokenInfo['custom:teamName']
+                    : 'Others',
+                teams: [],
+                roles: ['Admin'],
+              };
+              setSuperUserStateVariable(superUserStateVariable);
+            }
+            getUserList();
+            getPlatformList();
+            //      getTestSuites();
+            //      getAssignments();
+          })
+          .catch((error) => {
+            console.log(error);
+          })
         })
         .catch((error: any) => {
           props.history.push('/error');
         });
     }
   }, []);
-
-  const getServiceUserToken = async (userName: string, password: string) => {
-    try {
-      const user = await Auth.signIn(userName, password);
-      if (
-        user &&
-        user.signInUserSession.idToken &&
-        user.signInUserSession.accessToken
-      ) {
-        const tokenInfo: any = jwtDecode(
-          user.signInUserSession.idToken.jwtToken
-        );
-        superUserStateVariable['user'] = {
-          idToken: user.signInUserSession.idToken.jwtToken,
-          accessToken: user.signInUserSession.accessToken,
-          userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
-          team:
-            tokenInfo['custom:teamName'] && tokenInfo['custom:teamName'] !== ''
-              ? tokenInfo['custom:teamName']
-              : 'Others',
-          teams: [],
-          roles: ['Admin'],
-        };
-        setSuperUserStateVariable(superUserStateVariable);
-      }
-      getUserList();
-      getPlatformList();
-      //      getTestSuites();
-      //      getAssignments();
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const getSignupDialog = (state: boolean) => {
     setOpenSignup(state);

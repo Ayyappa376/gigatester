@@ -116,12 +116,13 @@ export default function CreateOrganization(props: any) {
         const postData = orgData;
         postData.id = '';
         postData.status = STATUS_VERIFY_ORG_PENDING;
+        console.log(superUserStateVariable, 'superUserStateVariable');
         try {
           Http.post({
             url: `/api/v2/organizations`,
-            body: {
+            body: { organization: {
               ...postData,
-            },
+            } },
             state: superUserStateVariable,
           })
             .then((response: any) => {
@@ -130,7 +131,7 @@ export default function CreateOrganization(props: any) {
               // setNewUserPosted(true);
             })
             .catch((error) => {
-              // console.log(error);
+              console.log(error);
               setLoading(false);
               setErrorMessage(
                 "An account with the given email already exists."
