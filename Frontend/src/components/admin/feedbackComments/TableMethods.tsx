@@ -42,7 +42,8 @@ const headCells: HeadCell[] = [
     { id: 'userName', label: 'User Name', align: 'left', headType: ALROUND },
     { id: 'date', label: 'Date Submitted', sortLabel: 'date', align: 'center', headType: ALROUND },
     { id: 'rating', label: 'Rating', sortLabel: 'rating', align: 'center', headType: FEEDBACK },
-    { id: 'categories', label: 'Categories', align: 'center', headType: BUG_REPORT  },
+    { id: 'severity', label: 'Severity', sortLabel: 'severity', align: 'center', headType: BUG_REPORT  },
+    { id: 'category', label: 'Category', align: 'center', headType: BUG_REPORT  },
     { id: 'comments', label: 'Comments', align: 'center', headType: ALROUND },
   ];
 

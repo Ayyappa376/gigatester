@@ -5,24 +5,24 @@ import { buttonStyle } from '../../../common/common';
 import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
 import ReactApexChart from 'react-apexcharts'
-import { processBarChartData } from './methods';
+import { bugProcessBarChartData, bugProcessPieChartData, processBarChartData, processPieChartData } from './methods';
 import RenderTable, { renderComments, RenderStars } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import ProductFilter, { ILimitedProductDetails, IProductNameIdMapping, ProductInfo, VersionFilter } from './ProductFilter';
+import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE, SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, CATEGORY_VIDEO, CATEGORY_AUDIO, CATEGORY_SCREEN, CATEGORY_IMAGES, CATEGORY_OTHER } from './common';
 
-const RATING_ONE = "1";
-const RATING_TWO = "2";
-const RATING_THREE = "3";
-const RATING_FOUR = "4";
-const RATING_FIVE = "5";
 
 export interface IProcessedData {
   [key: string]: number
 }
 
 type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
+
+export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
+
+type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 
 export interface IAppFeedback {
   createdOn: number;
@@ -33,6 +33,8 @@ export interface IAppFeedback {
   productVersion ? : string;
   userId ? : string;
   sourceIP?: string;
+  feedbackCategory?: FeedbackCategory;
+  bugPriority: BudPriority;
   feedbackMedia: {
     image?: string,
     video?: string,
@@ -100,8 +102,13 @@ const FeedbackComments = (props: any) => {
       name: 'rating',
       data: [0, 0, 0, 0, 0]
     }])
+    const [bugBarChartSeries, setBugBarChartSeries] = useState([{
+      name: 'Severity',
+      data: [0, 0, 0, 0, 0]
+    }])
     const [selectedProdId, setSelectedProdId] = useState<string[]>([])
-    const [pieChartSeries, setPieChartSeries] = useState([1, 1, 1, 1, 1])
+    const [pieChartSeries, setPieChartSeries] = useState<number[]>([])
+    const [bugPieChartSeries, setBugPieChartSeries] = useState<{}>({})
 
     const options: any = {
       chart: {
@@ -112,20 +119,93 @@ const FeedbackComments = (props: any) => {
       }
     };
 
+    const bugBarChartOtions: any = {
+      chart: {
+        id: 'severity-chart'
+      },
+      xaxis: {
+        categories: [SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW],
+      }
+    };
+
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
 
+    
+
     useEffect(() => {
       const series = [{
-        name: 'series-1',
+        name: 'Ratings',
         data: Object.values(processedData)
       }];
       setBarChartSeries(series);
       if (Object.values(processedData).length > 0) {
-        setPieChartSeries(Object.values(processedData))
+        const pieChartSeriesCopy = [];
+        const pieChartProcessedData = processPieChartData(processedData);
+        pieChartSeriesCopy.push(pieChartProcessedData['satisfied']);
+        pieChartSeriesCopy.push(pieChartProcessedData['somewhatSatisfied']);
+        pieChartSeriesCopy.push(pieChartProcessedData['dissatisfied']);
+        setPieChartSeries(pieChartSeriesCopy);
       }
     }, [processedData])
+
+    const options2 = {
+      labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
+      colors: ["#008FFB", "#FACB23", "#FA6123"],
+      chart: {
+        width: 380,
+        type: 'pie',
+      },
+      dataLabels: {
+        enabled: false
+      },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
+          },
+          legend: {
+            show: false
+          }
+        }
+      }],
+      legend: {
+        position: 'right',
+        offsetY: 0,
+        height: 230,
+      }
+    }
+
+    const bugPieChartOptions = {
+      labels: Object.keys(bugPieChartSeries),
+      colors: ["#008FFB", "#58FFC5", "#FEB018", "#FF455F", "#775DD0"],
+      chart: {
+        width: 380,
+        type: 'pie',
+      },
+      dataLabels: {
+        enabled: false
+      },
+      responsive: [{
+        breakpoint: 480,
+        options: {
+          chart: {
+            width: 200
+          },
+          legend: {
+            show: false
+          }
+        }
+      }],
+      legend: {
+        position: 'right',
+        offsetY: 0,
+        height: 230,
+      }
+    }
+
 
     useEffect(() => {
       const rateMap: IRatingMapping = {};
@@ -192,6 +272,17 @@ const FeedbackComments = (props: any) => {
           }
         });
     }, [])
+    useEffect(() => {
+      if(isBugReport) {
+        const severityProcessedData = bugProcessBarChartData(rawData);
+
+        setBugBarChartSeries([{
+          name: 'Severity',
+          data: Object.values(severityProcessedData)
+        }])
+        setBugPieChartSeries(bugProcessPieChartData(rawData))
+      }
+    }, [isBugReport])
 
     const getProductDetails = () => {
         Http.get({
@@ -245,34 +336,6 @@ const FeedbackComments = (props: any) => {
       }).catch((error : any) => {
           console.error(error);
       })
-    }
-
-    const options2 = {
-      labels: [getRatingLabel(RATING_ONE), getRatingLabel(RATING_TWO), getRatingLabel(RATING_THREE), getRatingLabel(RATING_FOUR), getRatingLabel(RATING_FIVE)],
-      colors: ["#008FFB", "#58FFC5", "#FEB018", "#FF455F", "#775DD0"],
-      chart: {
-        width: 380,
-        type: 'pie',
-      },
-      dataLabels: {
-        enabled: false
-      },
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200
-          },
-          legend: {
-            show: false
-          }
-        }
-      }],
-      legend: {
-        position: 'right',
-        offsetY: 0,
-        height: 230,
-      }
     }
 
     const getRating = (id: string) => {
@@ -395,18 +458,15 @@ const FeedbackComments = (props: any) => {
           </Grid>
           <ImageModal/>
           <div style={{marginTop: 50}}>
-            {
-              isBugReport ? <div/> :
-                <Grid container style={{marginTop: '5rem'}}>
-                  <Grid item lg={5}>
-                    <ReactApexChart options={options} series={barChartSeries} type="bar" width={500} height={320} />
-                  </Grid>
-                  <Grid item lg={2}></Grid>
-                  <Grid item lg={5}>
-                    <ReactApexChart options={options2} series={pieChartSeries} type="pie" width={500} height={320} />
-                  </Grid>
-                </Grid>
-            }
+            <Grid container style={{marginTop: '5rem'}}>
+              <Grid item lg={5}>
+                <ReactApexChart options={isBugReport ? bugBarChartOtions : options} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
+              </Grid>
+              <Grid item lg={2}></Grid>
+              <Grid item lg={5}>
+                <ReactApexChart options={isBugReport ? bugPieChartOptions : options2} series={isBugReport? Object.values(bugPieChartSeries) : pieChartSeries} type="pie" width={500} height={320} />
+              </Grid>
+            </Grid>
           </div>
           <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={(url: string, id: string, type: string) => {
             setShowImageModal(true);
