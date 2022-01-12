@@ -385,6 +385,19 @@ const RenderTable = (props: IProps) => {
                             row.feedbackMedia? row.feedbackMedia.audio ? <AudioPlayer url={row.feedbackMedia.audio}/> : <div/> : <div/>
                           }
                         </div>
+                        <div>
+                          {
+                            row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
+                              <a href={signedUrlMapping[row.feedbackMedia.file]} download>
+                                <Link
+                                  component="button"
+                                  variant="body2"
+                                  style={{fontSize: 11}}
+                                  >Download attachment</Link>
+                              </a>
+                             : <div/> : <div/> : <div/>
+                          }
+                        </div>
                       </TableCell>
                       
                     </TableRow>
