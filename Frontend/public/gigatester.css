@@ -1,6 +1,6 @@
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap";
 :root {
-  --widget-button-bg: #2878f0;
+  --widget-button-bg: #2787f0;
   --widget-button-text: #ffffff;
   --widget-outro-icon: #00c878;
 }
@@ -1777,6 +1777,41 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   width: 12px;
   height: 12px;
   animation: feedbackRotate 0.8s linear infinite;
+}
+#gigatester-video-stop-btn-container{
+
+    background-color: #ffffff00;
+    height: 75px;
+    width: 75px;
+
+}
+#gigatester-video-stop-btn{
+    position: fixed;
+    bottom: 30px;
+    left: 50vw;
+    z-index: 214567;
+    border: 5px solid rgb(247, 80, 80);
+    background-color: rgba(255, 255, 255, 0.705);
+    border-radius: 50px;
+    height: 35px;
+    width: 35px;
+}
+.gigatester-video-stop-btn-tooltip{
+    color: white;
+    background: rgba(0, 0, 0, 0.747);
+    position: absolute;
+    border-radius: 5px;
+    border: 1px;
+    text-align: center;
+    width: 155px;
+    top: -24px;
+    left: -60px;
+    word-break: keep-all;
+}
+.gigatester-svg-hide{
+  width: 100vw;
+  height: 100vw;
+  background-color: #000;
 }
 .gigatester-controls-loader-toggle{
 display: flex;
