@@ -342,34 +342,61 @@ gttoolbar .gigatester-toolbar-tool-done span {
   font-size: 14px;
   font-weight: 500;
 }
+
 gttoolbar .gigatester-toolbar-close {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: auto;
-  width: 32px;
-  height: 32px;
-  border-radius: 0 0 0 4px;
+  position: relative;
+  float: left;
+  width: auto;
+  min-width: 80px;
+  height: 34px;
+  padding: 0 10px;
+  margin: 5px 5px 0 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  right: 5px;
   background: #2878f0;
   background: var(--widget-button-bg);
-  opacity: 0;
-  animation: feedbackFadeIn 0.1s linear 0.3s forwards;
+  cursor: default;
+  text-align: center;
+  user-select: none;
+  transition: all 0.1s;
 }
 @media (max-width: 800px) {
   gttoolbar .gigatester-toolbar-close {
-    display: none;
+    float: right;
   }
 }
+gttoolbar .gigatester-toolbar-close.gigatester-toolbar-close-active {
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
 gttoolbar .gigatester-toolbar-close svg {
-  display: block;
-  width: 10px;
-  height: 10px;
-  margin: 11px;
+  display: none !important;
 }
-gttoolbar .gigatester-toolbar-close svg * {
-  fill: #fff;
-  fill: var(--widget-button-text);
+gttoolbar .gigatester-toolbar-close span {
+  width: auto;
+  height: auto;
+  line-height: normal;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: #fff;
+  color: var(--widget-button-text);
+  line-height: 34px;
+  font-size: 14px;
+  font-weight: 500;
 }
+
+
 gttoolbar .gigatester-toolbar-help {
   position: absolute;
   top: 2px;
