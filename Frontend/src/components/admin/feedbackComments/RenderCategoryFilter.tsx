@@ -6,36 +6,31 @@ interface IProps {
     onSelect: Function
 }
 
-const ratingButtonValues=[
-    {discription: "1-Star-Rating", value: 1 },
-    {discription: "2-Star-Rating", value: 2 },
-    {discription: "3-Star-Rating", value: 3 },
-    {discription: "4-Star-Rating", value: 4 },
-    {discription: "5-Star-Rating", value: 5 },
+const categoryList = [
+    "Audio", "Video", "Screen", "Images", "Other"
 ]
-
-const RenderRatingFilter = (props: IProps) => {
+const RenderCategoryFilter = (props: IProps) => {
     const classes = useStyles();
-    const [rating, setRating] =useState(0);
+    const [category, setCategory] =useState("");
 
-    const handleKeywordClick = (val: number) => {
-        if(rating === val) {
-            props.onSelect(-1);
-            setRating(0)
+    const handleKeywordClick = (val: string) => {
+        if(category === val) {
+            props.onSelect("");
+            setCategory("")
         } else {
             props.onSelect(val);
-            setRating(val);
+            setCategory(val);
         }
     }
 
     return (
         <div className={classes.ratingBlock}>
             <div className={classes.textContainer}>
-                <Typography className={classes.textHeader}>Choose feedbacks with rating:</Typography>
+                <Typography className={classes.textHeader}>Choose bugs with category:</Typography>
             </div>
             <div className={classes.flexContainer}>
-                {ratingButtonValues.map((el) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(el.value)}} className={rating === el.value ? classes.btnVisited : classes.btn}>{el.discription}</Button>
+                {categoryList.map((val) => 
+                    <Button variant='outlined' onClick={() => {handleKeywordClick(val)}} className={category === val ? classes.btnVisited : classes.btn}>{val}</Button>
                 )}
             </div>
         </div>
@@ -87,4 +82,4 @@ const useStyles = makeStyles({
     }
 })
 
-export default RenderRatingFilter;
+export default RenderCategoryFilter;

@@ -10,8 +10,11 @@ import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
 import EnhancedTableHead from './TableMethods';
-import RenderRatingFilter, { RenderKeywordFilter } from './RenderFilters';
+import RenderRatingFilter from './RenderFilters';
 import { getImportantKeywords } from './methods';
+import RenderKeywordFilter from './RenderKeywordFilter';
+import RenderSeverityFilter from './RenderSeverityFilter';
+import RenderCategoryFilter from './RenderCategoryFilter';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -172,6 +175,27 @@ const RenderTable = (props: IProps) => {
       return data;
     }
 
+    const sortTableBySeverity = (tableData: IAppFeedback[], sortOrder: string) => {
+      const data = [...tableData];
+      const severityMapping = {
+        'Critical' : 5,
+        'High': 4,
+        'Medium': 3,
+        'Low': 2,
+        'Other': 1
+      }
+      data.sort((aData, bData) => {
+        if (severityMapping[aData.bugPriority ? aData.bugPriority : 'Other'] > severityMapping[bData.bugPriority ? bData.bugPriority : 'Other']) {
+          return sortOrder === 'desc' ? -1 : 1;
+        } else if (severityMapping[aData.bugPriority ? aData.bugPriority : 'Other'] < severityMapping[bData.bugPriority ? bData.bugPriority : 'Other']) {
+          return sortOrder === 'desc' ? 1 : -1;
+        } else {
+          return 0;
+        }
+      })
+      return data;
+    }
+
     const applySort = (data?: IAppFeedback[]) => {
       let sortData = data && data.length > 0 ? data : tableData;
       if (order === 'asc') {
@@ -179,6 +203,8 @@ const RenderTable = (props: IProps) => {
           setTableData(sortTableByDate(sortData, 'asc'))
         } else if(orderBy === 'rating') {
           setTableData(sortTableByRating(sortData, 'asc'))
+        } else if(orderBy === 'severity') {
+          setTableData(sortTableBySeverity(sortData, 'asc'))
         }
       }
       if (order === 'desc') {
@@ -186,6 +212,8 @@ const RenderTable = (props: IProps) => {
           setTableData(sortTableByDate(sortData, 'desc'))
         } else if(orderBy === 'rating') {
           setTableData(sortTableByRating(sortData, 'desc'))
+        } else if(orderBy === 'severity') {
+          setTableData(sortTableBySeverity(sortData, 'desc'))
         }
       }
     }
@@ -198,7 +226,7 @@ const RenderTable = (props: IProps) => {
       if (orderBy === property) {
         setOrder(order === 'asc' ? 'desc' : 'asc');
       } else {
-        setOrder('asc');
+        setOrder('desc');
         setOrderBy(property);
       }
     };
@@ -252,24 +280,78 @@ const RenderTable = (props: IProps) => {
       applySort(filteredTableData);
     }
 
+    const filterSeverity = (val: string) => {
+      let filteredTableData;
+      if(val === "") {
+        filteredTableData = rawTableData.filter((data) => {
+          if(!isBugReport && data.productRating > 0) {
+            return true
+          }
+          if(isBugReport && data.productRating === 0) {
+            return true
+          }
+          return false;
+        })
+      } else {
+        filteredTableData = rawTableData.filter((el) => el.bugPriority ? el.bugPriority.toLowerCase() === val.toLowerCase() ? true : false : false)
+      }
+      applySort(filteredTableData);
+    }
+
+    const filterCategory = (val: string) => {
+      let filteredTableData;
+      if(val === "") {
+        filteredTableData = rawTableData.filter((data) => {
+          if(!isBugReport && data.productRating > 0) {
+            return true
+          }
+          if(isBugReport && data.productRating === 0) {
+            return true
+          }
+          return false;
+        })
+      } else if(val === 'Other') {
+        filteredTableData = rawTableData.filter((el) => (!el.feedbackCategory || (el.feedbackCategory.toLowerCase() === 'other')) && el.feedbackType === "BUG_REPORT" ? true : false )
+      } else {
+        filteredTableData = rawTableData.filter((el) => el.feedbackCategory ? el.feedbackCategory.toLowerCase() === val.toLowerCase() ? true : false : false)
+      }
+      applySort(filteredTableData);
+    }
 
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper style={{padding: '2rem'}}>
-          <Grid container>
-            <Grid item md={6}>
-              {
-                <RenderKeywordFilter keywords={isBugReport? bugReportKeywords : feedbackKeywords} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {clearSearch()}}/>
-              }
-            </Grid>
-            <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
-            <Grid item md={5} >
-              {
-                isBugReport ? <div/> :
-                  <RenderRatingFilter onSelect={(val: number) => {filterRating(val)}}/>
-              }
-            </Grid>
-          </Grid>
+            {isBugReport ? 
+              <Grid container>
+                <Grid item md={5}>
+                  {
+                    <RenderKeywordFilter keywords={bugReportKeywords} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {clearSearch()}}/>
+                  }
+                </Grid>
+                <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
+                <Grid item md={6}>
+                  {
+                    <div>
+                    <RenderSeverityFilter onSelect={(val: string) => {filterSeverity(val)}}/>
+                    <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
+                    <RenderCategoryFilter onSelect={(val: string) => {filterCategory(val)}}/>
+                    </div>
+                  }
+                </Grid>
+              </Grid> : <Grid container>
+                  <Grid item md={6}>
+                    {
+                      <RenderKeywordFilter keywords={feedbackKeywords} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {clearSearch()}}/>
+                    }
+                  </Grid>
+                  <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
+                  <Grid item md={5}>
+                    {
+                        <RenderRatingFilter onSelect={(val: number) => {filterRating(val)}}/>
+                    }
+                  </Grid>
+              </Grid>
+            }
           </Paper>
           <Paper className={classes.paper}>
           <Toolbar
@@ -311,17 +393,24 @@ const RenderTable = (props: IProps) => {
                       <TableCell style={{fontSize: '1rem'}}>
                             {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
                       </TableCell>
-                      <TableCell align='center' style={{fontSize: '1rem'}}>
+                      <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
                             {row.createdOn ? getDate(row.createdOn) : '-'}
                       </TableCell>
                       {
                         isBugReport ? 
                         <TableCell  align='center' style={{fontSize: '1rem'}}>
-                            NA
+                            {row.bugPriority}
                         </TableCell> :
                         <TableCell  align='center' style={{minWidth: '150px', fontSize: '1rem'}}>
                           <RenderStars rating={row.productRating}/>
                         </TableCell>
+                      }
+                      {
+                        isBugReport ? 
+                        <TableCell  align='center' style={{fontSize: '1rem'}}>
+                            {row.feedbackCategory}
+                        </TableCell> :
+                        null
                       }
                       <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw', fontSize: '1rem'}}>
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
@@ -382,6 +471,19 @@ const RenderTable = (props: IProps) => {
                         <div>
                           {
                             row.feedbackMedia? row.feedbackMedia.audio ? <AudioPlayer url={row.feedbackMedia.audio}/> : <div/> : <div/>
+                          }
+                        </div>
+                        <div>
+                          {
+                            row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
+                              <a href={signedUrlMapping[row.feedbackMedia.file]} download>
+                                <Link
+                                  component="button"
+                                  variant="body2"
+                                  style={{fontSize: 11}}
+                                  >Download attachment</Link>
+                              </a>
+                             : <div/> : <div/> : <div/>
                           }
                         </div>
                       </TableCell>

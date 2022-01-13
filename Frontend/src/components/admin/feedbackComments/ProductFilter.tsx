@@ -1,4 +1,4 @@
-import { Chip, createStyles, FormControl, Input, InputLabel, makeStyles, MenuItem, Select, Theme, useTheme } from '@material-ui/core';
+import { Chip, createStyles, FormControl, Input, InputBase, InputLabel, makeStyles, MenuItem, Select, Theme, useTheme, withStyles } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
@@ -28,7 +28,10 @@ export interface ILimitedProductDetails {
 }
 
 export interface IProductNameIdMapping {
-    [key : string] : string
+    [key : string] : {
+        name: string;
+        version: string[];
+    }
 }
 
 interface IProps {
@@ -58,8 +61,6 @@ const MenuProps = {
     },
 };
 
-
-
 const ProductFilter = (props : IProps) => {
     const {selectedProdId, productNameIdMapping, productInfo} = props;
     const classes = useStyles();
@@ -84,38 +85,57 @@ const ProductFilter = (props : IProps) => {
                 renderValue={(selected) => (
                     <div className={classes.chips}>
                     {(selected as string[]).map((value, i) => (
-                        <Chip key={value + i} label={productNameIdMapping[value]} className={classes.chip} />
+                        <Chip key={value + i} label={productNameIdMapping[value].name} className={classes.chip} />
                     ))}
                     </div>
                 )}
                 MenuProps={MenuProps}
                 >
-                {productInfo.map((prod) => (
-                    <MenuItem key={prod.id} value={prod.id} style={getStyles(prod.id, selectedProdId, theme)}>
-                    {prod.name}
+                {Object.keys(productNameIdMapping).map((id) => (
+                    <MenuItem key={id} value={id} style={getStyles(id, selectedProdId, theme)}>
+                        {productNameIdMapping[id].name}
                     </MenuItem>
                 ))}
                 </Select>
             </FormControl>
         </div>
     )
+}
 
-    return(
-        <div>
-            <FormControl className={classes.formControl}>
-                <InputLabel id="product-select">Choose Product</InputLabel>
+interface IVersionFilterProps {
+    productVersion: string;
+    setProductVersion: Function;
+    versionList: string[];
+}
+
+export const VersionFilter = (props : IVersionFilterProps) => {
+    const {productVersion, versionList} = props;
+    const classes = useStyles();
+    const theme = useTheme();
+
+
+    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+        props.setProductVersion(event.target.value as string);
+    };
+
+    return (
+        <div style={{paddingLeft: '1rem', position: 'absolute', bottom: 0 }}>
+            <FormControl style={{minWidth: '5rem'}}>
+                <InputLabel id="demo-customized-select-label">Version</InputLabel>
                 <Select
-                labelId="product-select-label"
-                id="product-select"
-                value={selectedProdId}
+                labelId="demo-customized-select-label"
+                id="demo-customized-select"
+                value={productVersion}
                 onChange={handleChange}
                 >
-                    {productInfo.map((el) => <MenuItem value={el.id}>{el.name}</MenuItem>)}
+                <MenuItem value="all">
+                    <em>All</em>
+                </MenuItem>
+                {versionList.map((version, i) => <MenuItem value={version}>{version}</MenuItem>)}
                 </Select>
             </FormControl>
         </div>
     )
-
 }
 
 const useStyles = makeStyles((theme: Theme) =>
