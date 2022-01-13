@@ -1,7 +1,6 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, getSoftwaresBucketName, responseBuilder } from '@utils/index';
+import { appLogger, getURLForFileUpload, handleMultipartUpload, responseBuilder, uploadFile } from '@utils/index';
 import { Response } from 'express';
-const AWS = require('aws-sdk');
 
 interface UploadSoftware {
     body: any;
@@ -14,8 +13,6 @@ interface UploadSoftware {
         type: string;
     };
 }
-
-const s3 = new AWS.S3();
 
 async function handler(request: UploadSoftware, response: Response) {
     appLogger.info({ UploadSoftware: request }, 'Inside Handler');
@@ -32,14 +29,9 @@ async function handler(request: UploadSoftware, response: Response) {
 
     switch(params.type) {
         case 'medium' : {
-            try {
-                const url = await s3.getSignedUrlPromise('putObject', {
-                    Bucket: getSoftwaresBucketName(),
-                    ContentType: body.fileType,
-                    Expires: 60,
-                    Key: body.fileName,
-                });
-                appLogger.info({ downloadUrl: url });
+            getURLForFileUpload(body.fileType, body.fileName)
+            .then((url: string) => {
+                appLogger.info({ getURLForFileUpload: url });
                 return responseBuilder.ok({
                     filePath: url,
                     headers: {
@@ -47,88 +39,42 @@ async function handler(request: UploadSoftware, response: Response) {
                         'Access-Control-Allow-Origin': '*'
                     }
                 }, response);
-            } catch (err) {
-                appLogger.error(err, 'UploadFileError');
-            }
+            })
+            .catch((err) => {
+                appLogger.error(err, 'getURLForFileUpload_error');
+                return responseBuilder.internalServerError(new Error('Error Getting File Upload URL'), response);
+            });
             break;
         }
         case 'large': {
-            if(body.fileType) {
-                const bucketParams = {
-                    Bucket: getSoftwaresBucketName(),
-                    ContentType: body.fileType,
-                    Key: body.fileName,
-                };
-
-                s3.createMultipartUpload(bucketParams,  function (err: any, uploadId: any) {
-                    if (err) {
-                        appLogger.error(err, 'fileListError');
-                    } else {
-                        appLogger.info({ uploadId });
-                        return responseBuilder.ok({ data: uploadId }, response);
-                    }
-                });
-            } else if(body.partNumber) {
-                const bucketParams = {
-                    Bucket: getSoftwaresBucketName(),
-                    Key: body.fileName,
-                    PartNumber: body.partNumber,
-                    UploadId: body.uploadId
-                };
-
-                s3.getSignedUrl('uploadPart',bucketParams,  function (err: any, preSignedUrl: any) {
-                    if (err) {
-                        appLogger.error(err, 'fileListError');
-                    } else {
-                        appLogger.info({ preSignedUrl });
-                        return responseBuilder.ok({ data: preSignedUrl }, response);
-                    }
-                });
-            } else if(body.parts) {
-                const bucketParams = {
-                    Bucket: getSoftwaresBucketName(),
-                    Key: body.fileName,
-                    MultipartUpload: {
-                        Parts: body.parts
-                    },
-                    UploadId: body.uploadId,
-                };
-                appLogger.info({fileUpload_large_completeMultipartUpload_params: bucketParams});
-                s3.completeMultipartUpload(bucketParams,  function (err: any, data: any) {
-                    if (err) {
-                        appLogger.error(err, 'fileUploadError');
-                    } else {
-                        appLogger.info({ CompletedUpload: data });
-                        return responseBuilder.ok({data}, response);
-                    }
-                });
-            }
+            handleMultipartUpload({
+                fileKey: body.fileName,
+                fileType: body.fileType,
+                partNumber: body.partNumber,
+                parts: body.parts,
+                uploadId: body.uploadId,
+            })
+            .then((data: any) => {
+                appLogger.info({ handleMultipartUpload: data });
+                return responseBuilder.ok({ data }, response);
+            })
+            .catch((err) => {
+                appLogger.error(err, 'handleMultipartUpload_error');
+                return responseBuilder.internalServerError(new Error('Error Uploading multipart file'), response);
+            });
             break;
         }
         case 'small':
         default: {
-            const fileBody = request.body;
-            const base64String = fileBody.file;
-            const fileName = fileBody.fileName;
-            const buff = Buffer.from (base64String, 'base64');
-
-            try {
-                const params1 = {
-                    Body: buff,
-                    Bucket: getSoftwaresBucketName(),
-                    Key: fileName,
-                };
-                appLogger.info({ uploadSoftwareFile_params: params1 });
-                s3.upload(params1, (error: Error, data: any) => {
-                    if (error) {
-                        appLogger.error(error, 's3UploadError');
-                    }
-                    appLogger.info({ s3UploadData: data });
-                    return responseBuilder.ok({ message: 'Uploaded' }, response);
-                });
-            } catch (err) {
-                appLogger.error(err, 'Internal Server Error');
-            }
+            uploadFile(body.fileName, Buffer.from (body.file, 'base64'))
+            .then((data: any) => {
+                appLogger.info({ uploadFile: data });
+                return responseBuilder.ok({ data }, response);
+            })
+            .catch((err) => {
+                appLogger.error(err, 'uploadFile_error');
+                return responseBuilder.internalServerError(new Error('Error Uploading file'), response);
+            });
         }
     }
 }
