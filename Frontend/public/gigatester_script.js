@@ -17,7 +17,7 @@
     console.log('inside function');
 function gigatester(){
 if(typeof window.jQuery === "undefined" || typeof window.Snap === "undefined"){
-    console.log('inside giga timeout inside')
+    console.log('inside giga timeout')
 }
 else{
     var JQ = jQuery.noConflict(true);
@@ -254,7 +254,7 @@ else{
         const Lang = {
             language: "en",
             en: {
-                draw_on_the_screen: "Draw on the screen",
+                draw_on_the_screen: "Draw on screen",
                 draw_on_the_screen_help: "Give feedback with a screenshot",
                 capture_video: "Capture video",
                 capture_audio: "Capture audio",
@@ -271,12 +271,12 @@ else{
                 view_other_feedback: "View existing feedback",
                 view_other_feedback_help: "See what's already been submitted",
                 your_name: "Your name",
-                your_email_address: "Your email address",
+                your_email_address: "Your email address *",
                 feedback_title: "Add a title",
-                select_a_category: "Select a category",
-                select_a_priority: "Choose priority",
+                select_a_category: "Select a category *",
+                select_a_priority: "Choose priority *",
                 assign_to: "Assign to",
-                leave_us_your_comment: "Leave us your comment",
+                leave_us_your_comment: "Leave us your comment *",
                 attach_a_screenshot: "Screenshot",
                 screenshot_attached: "screenshot",
                 send: "Send feedback",
@@ -284,6 +284,7 @@ else{
                 remove: "Remove",
                 close: "Close",
                 next: "Next",
+                capture: "Capture",
                 send_success: "Thanks for the feedback!",
                 highlight: "Highlight",
                 blackout: "Blackout",
@@ -454,10 +455,10 @@ else{
                     comment_field: true,
                     comment_field_mandatory: true,
                     comment_field_placeholder: "",
-                    display_category: false,
+                    display_category: true,
                     display_priority: false,
                     display_assignee: false,
-                    category_field_mandatory: false,
+                    category_field_mandatory: true,
                     priority_field_mandatory: false,
                     assignee_field_mandatory: false,
                     custom_field_1_type: "",
@@ -545,11 +546,11 @@ else{
                     $("<link>").attr({
                         rel: "stylesheet",
                         class: "gigatester-css",
-                        href: this.widget_css
+                        href: './gigatester.css'
                     }).appendTo($(parent_node));
                     var self = this;
                     var _interval_id = setInterval(function() {
-                        var detector = $("<div>").addClass("userback-load-detector").appendTo($(document.body));
+                        var detector = $("<div>").addClass("gigatester-load-detector").appendTo($(document.body));
                         if (detector.css("z-index") == 1999) {
                             callback.call(self);
                             clearInterval(_interval_id)
@@ -720,7 +721,7 @@ else{
                     })
                 },
                 Tools: {
-                    type: "path",
+                    type: "square",
                     colour: {
                         options: ["#E80000", "#FF7E42", "#FFD042", "#84FF42", "#42FFE6", "#2878F0", "#7828F0", "#FF42F9", "#FFFFFF", "#000000"],
                         value: Lib.storage.get("gigatester_tool_colour") || "#E80000"
@@ -802,8 +803,8 @@ else{
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + "blackout" + '">' + Svg_Icons.blackout + "</btn>"
                         //  + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-text" data-type="text" title="' + "text" + '">' + Svg_Icons.text + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-colour" data-type="colour">' + tool_colour_indicator + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool-done' + (Feedback.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + "capture_screenshot" + '">' + Svg_Icons.tick + "<span>" + (Lang.get("next") ? Lang.get("next") : Lang.get("save")) + "</span>" + "</btn>"
-                         + (Feedback.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "close" + '">' + Svg_Icons.close + "</btn>") + (display_tutorial ? '<btn class="gigatester-toolbar-help">' + Svg_Icons.widget_question + "</btn>" : "");
+                         + '<btn class="gigatester-toolbar-tool-done' + (Feedback.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + Lang.get("capture_screenshot") + '">' + Svg_Icons.tick + "<span>" + (Lang.get("next") ? Lang.get("capture") : Lang.get("save")) + "</span>" + "</btn>"
+                         + (Feedback.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "Close" + '">' + "<span>" + Lang.get("close") + "<span>" + "</btn>") + (display_tutorial ? '<btn class="gigatester-toolbar-help">' + Svg_Icons.widget_question + "</btn>" : "");
                         this.toolbar = $("<gttoolbar>").attr("lang", Feedback.configs.language);
                         //.attr("data-html2canvas-ignore", "true")
                         this.toolbar.html(tools);
@@ -843,8 +844,6 @@ else{
                                 console.log('isliveconfigs')
                                 return
                             }
-                            Feedback.ui.element.removeAttr("drawing");
-                            Feedback.Tools.image_capture = 'true';
                             Feedback.recordImage();
                             // Session_Recorder.addCustomEvent("widget_open", {
                             //     type: "widget_interaction",
@@ -892,6 +891,7 @@ else{
                         if (Feedback.controls_step) {
                             Feedback.form_data.rating = Feedback.form_data.rating;
                             Feedback.form_data.comment_field =  Feedback.form_data.comment_field;
+                            Feedback.form_data.category = Feedback.form_data.category
                             Feedback.setFormHTML();
                             console.log('cancel annotation')
                             Feedback.showControls();
@@ -1146,7 +1146,7 @@ else{
                                 }
                                 var icon = this.snap.image(Svg_Icons.delete_icon, icon_x, icon_y, 24, 24).attr({
                                     cursor: "pointer",
-                                    display: "none"
+                                    
                                 }).addClass("_gigatester-blank gigatester-svg-delete");
                                 this.svg_delete_icons.push(icon);
                                 switch (this.type) {
@@ -1697,8 +1697,8 @@ else{
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + Lang.get("your_email_address") + '"' + (form_settings.email_field_mandatory ? " required" : "") + ">" : "")
                      + (form_settings.display_category ? '<select name="category"'
                      + (form_settings.category_field_mandatory ? " required" : "")
-                     + '><option value="">' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
-                     + (form_settings.display_priority ? '<select name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "")
+                     + '><option value="category" selected disabled>' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
+                     + (form_settings.display_priority ? '<select id="priority" name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="priority" selected disabled>' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "")
                      + (form_settings.display_assignee ? '<select name="assignee"' + (form_settings.assignee_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("assign_to") + "</option>" + assignee_options + "</select>" : "")
                      + (form_settings.custom_field_1_type === "short_answer" ? '<input name="custom_field_1" type="text" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""'
                      + (form_settings.custom_field_1_mandatory ? " required" : "") + ">" : "") + (form_settings.custom_field_1_type === "long_answer" ? '<textarea name="custom_field_1" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""' + (form_settings.custom_field_1_mandatory ? " required" : "") + "></textarea>" : "")
@@ -1707,7 +1707,7 @@ else{
                      + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + (display_screenshot || display_audio || display_video || display_attachment ?  Feedback.recording ? '<gtdiv class="gigatester-controls-attach-actions" ">' + "<gtdiv>" : '<gtdiv class="gigatester-controls-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
                      + (display_screenshot ? '<btn class="gigatester-controls-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>"
-                     + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>"
+                     + "<gttooltip>" + Lang.get("draw_on_the_screen") + "</gttooltip>"
                      + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
                      + (display_audio ? '<btn class="gigatester-controls-audio">' + Svg_Icons.mic + "<gtdiv>" + Lang.get("capture_audio") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("capture_audio") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
@@ -1801,11 +1801,11 @@ else{
                         callback();
                       }
                     else{
-                        
                         navigator.mediaDevices.getDisplayMedia({
                             audio: true,
                             video: true
                         }).then(function(stream){
+                            Feedback.Tools.image_capture = 'true';
                             Feedback.Tools.removeTools()
                         stream.onended = () => { // Click on browser UI stop sharing button
                             console.info("Recording has ended");
@@ -1871,6 +1871,7 @@ else{
                     Feedback.recording = true;
                     Feedback.form_data.rating =  Feedback.form_data.rating;
                     Feedback.form_data.comment_field =  Feedback.form_data.comment_field
+                    Feedback.form_data.category = Feedback.form_data.category
                     console.log( Feedback.form_data.rating, 'feedback rating')
                     Feedback.setFormHTML();
                     Feedback.showControls();
@@ -2024,6 +2025,7 @@ else{
                             $(audio_record_overlay).remove();
                             Feedback.form_data.rating =  Feedback.form_data.rating;
                             Feedback.form_data.comment_field =  Feedback.form_data.comment_field
+                            Feedback.form_data.category = Feedback.form_data.category
                             Feedback.setFormHTML();
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
@@ -2572,6 +2574,11 @@ else{
                     this.recording = false;
                     this.removeOverlay();
                     this.removeControls();
+                    this.form_data['category'] = "category";
+                    this.form_data['priority'] = "priority";
+                    console.log(this.form_data['priority']);
+                    // $(document.getElementsByTagName('select')).remove();
+                    // $(document.getElementByClassName('gigatester-controls-form'))
                     // this.removeFeedbackView();
                     this.controls_step = 0
                 },
@@ -2650,6 +2657,12 @@ else{
                     else{
                         finalRating = 0;
                         feedbackType = 'BUG_REPORT'
+                    }
+                    if(this.form_data['category'] === "category"){
+                        this.form_data['category'] = ''
+                    }
+                    if(this.form_data['priority'] === "priority"){
+                        this.form_data['priority'] = ''
                     }
                     const postData = {
                         productRating: finalRating,
