@@ -64,7 +64,8 @@ export const initialState: IRootState = {
         createTeamParams: {
             status: 'initial',
             data: null
-        }
+        },
+        signedUrls: {}
     },
     display: {
         topBarTextRight: '',

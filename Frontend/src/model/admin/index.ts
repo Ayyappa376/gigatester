@@ -1,7 +1,9 @@
+import { ISignedUrls } from '..';
 import { ICreateTeamParamsRequest } from './create-team'
 
 export interface IAdmin {
-    createTeamParams: ICreateTeamParamsRequest
+    createTeamParams: ICreateTeamParamsRequest;
+    signedUrls: ISignedUrls
 }
 
 export * from './campaign';
@@ -12,3 +14,4 @@ export * from './group';
 export * from './organization';
 export * from './create-team';
 export * from './create-user';
+export * from './feedbackComments';

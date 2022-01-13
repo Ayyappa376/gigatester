@@ -34,8 +34,14 @@ export const getUserAgnosticHeaders = () => {
 
 // tslint:disable-next-line: no-any
 export const getUserSpecificHeaders = (state: any) => {
-    const token = getToken(state);
-
+    let token;
+    if(!state) {
+        token = localStorage.getItem('authToken');
+    } else {
+        token = getToken(state);
+    }
+        
+    
     if (!token) {
         return null;
     }

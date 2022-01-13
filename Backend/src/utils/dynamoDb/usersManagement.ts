@@ -160,7 +160,7 @@ export const getUsersList = async (queryRole?: string): Promise<UserInfo[]> => {
       EXPR = `(${EXPR}) AND ((#roles CONTAINS :admin) || (#roles CONTAINS :manager) || (#roles CONTAINS :exec))`;
     } else {
       EAV[':role'] = role;
-      EXPR = `(${EXPR}) AND (#roles CONTAINS :role)`;
+      EXPR = `(${EXPR}) AND contains(#roles, :role)`;
     }
   }
 
