@@ -6,7 +6,7 @@ import { Response } from 'express';
 
 type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
 
-export type IFeedbackType = 'FEEDBACK' | 'BUG_REPORT';
+type IFeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
 interface GetAppFeedback {
   headers: {

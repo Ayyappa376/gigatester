@@ -24,6 +24,9 @@ export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other'
 
 type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 
+const CONST_FEEDBACK = 'FEEDBACK';
+const CONST_BUG_REPORT = 'BUG_REPORT';
+
 export interface IAppFeedback {
   createdOn: number;
   feedbackComments ? : string[];
@@ -244,10 +247,10 @@ const FeedbackComments = (props: any) => {
       }
     }, [selectedProdId, productVersion])
 
-
-    useEffect(() => {
+    const fetchData = () => {
       setBackdropOpen(true);
-      let url = '/api/v2/userFeedback';
+      //let url = `/api/v2/userFeedback`;
+      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`;
       if(props.productId) {
         url += `?prodId=${props.productId}`;
         if(props.productVersion) {
@@ -258,7 +261,6 @@ const FeedbackComments = (props: any) => {
           url,
           state: stateVariable,
         }).then((response: any) => {
-          console.log(response);
           setData(response.Items);
           setRawData(response.Items);
           setProcessedData(processBarChartData(response.Items));
@@ -271,7 +273,13 @@ const FeedbackComments = (props: any) => {
             props.history.push('/relogin');
           }
         });
-    }, [])
+    }
+
+
+    useEffect(() => {
+      fetchData()
+    }, [isBugReport])
+
     useEffect(() => {
       if(isBugReport) {
         const severityProcessedData = bugProcessBarChartData(rawData);

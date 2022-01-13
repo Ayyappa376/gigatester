@@ -6,6 +6,10 @@ import {
 } from '@utils/index';
 import { Response } from 'express';
 
+type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
+
+export type IFeedbackType = 'FEEDBACK' | 'BUG_REPORT';
+
 interface UserFeedbackRequest {
   headers: {
     user: {
@@ -14,9 +18,17 @@ interface UserFeedbackRequest {
       email: string;
     };
   };
+  params: {
+    type: IFeedbackType;
+  };
   query: {
     prodId?: string;
     prodVersion?: string;
+    items: number;
+    lastEvalKey: string;
+    search: string;
+    filter: string;
+    filterType: FilterType;
   };
 }
 
@@ -25,7 +37,10 @@ async function handler(
   response: Response
 ): Promise<any> {
   appLogger.info({ UserFeedbackRequest: request }, 'Inside Handler');
-  const { headers, query } = request;
+  const { headers, params, query } = request;
+  const {type} = params;
+  const {items, search, lastEvalKey, filter, filterType, prodId, prodVersion} = query;
+
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
     const err = new Error('InvalidUser');
@@ -42,7 +57,11 @@ async function handler(
   }
 
   try {
-    const feedback: any[] = await getUserFeedbackList(query.prodId, query.prodVersion);
+    if(!type) {
+      const feedback: any[] = await getUserFeedbackList({});
+      return responseBuilder.ok({Items: feedback }, response);  
+    }
+    const feedback: any[] = await getUserFeedbackList({type,items, search, lastEvalKey, filter, filterType, prodId, prodVersion});
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
@@ -53,5 +72,5 @@ async function handler(
 export const api: API = {
   handler: <Handler>(<unknown>handler),
   method: 'get',
-  route: '/api/v2/userFeedback',
+  route: '/api/v2/userFeedback/:type?',
 };

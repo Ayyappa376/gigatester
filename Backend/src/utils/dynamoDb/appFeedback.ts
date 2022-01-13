@@ -1,5 +1,5 @@
 import { AppFeedback } from '@models/index';
-import { IFeedbackType } from '@root/apis/v2/appFeedback/get';
+import { IFeedbackType } from '@root/apis/v2/userFeedback/get';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
