@@ -159,18 +159,6 @@ const temp_categories: string[] = [];
             setFileMedia(data.Location)
           }
         })
-
-        // Http.post({
-        //   url: `/api/v2/file/small`,
-        //   body: dataInfo,
-        //   state: stateVariable,
-        // })
-        //   .then((response: any) => {
-        //     console.log(response);
-        //   })
-        //   .catch((error) => {
-        //     console.log(error);
-        //   });
     };
     if(fileSelected){
     reader.readAsDataURL(fileSelected);

@@ -1,9 +1,8 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, getSoftwaresBucketName, responseBuilder } from '@utils/index';
+import { appLogger, deleteSoftware, responseBuilder } from '@utils/index';
 import { Response } from 'express';
-const AWS = require('aws-sdk');
 
-interface GetFile {
+interface DeleteSoftware {
     headers: {
         user: {
             'cognito:groups': string[];
@@ -16,7 +15,7 @@ interface GetFile {
     };
 }
 
-async function handler(request: GetFile, response: Response) {
+async function handler(request: DeleteSoftware, response: Response) {
     appLogger.info({ GetFileConfig: request }, 'Inside Handler');
     const { headers } = request;
     const { params } = request;
@@ -29,21 +28,17 @@ async function handler(request: GetFile, response: Response) {
         return responseBuilder.unauthorized(err, response);
     }
 
-    const s3 = new AWS.S3();
     if (params.fileName) {
-    const bucketParams = {
-        Bucket: getSoftwaresBucketName(),
-        Key: params.fileName,
-    };
-    s3.deleteObject(bucketParams, function (err: any, data: any) {
-        if (err) {
-            appLogger.error(err, 'DeleteError');
-        } else {
-            appLogger.info({ fileList: data });
+        deleteSoftware(params.fileName)
+        .then((data: any) => {
+            appLogger.info({ deleteSoftware: data });
             return responseBuilder.ok(data, response);
-        }
-    });
-}
+        })
+        .catch((err) => {
+            appLogger.error(err, 'deleteSoftware_error');
+            return responseBuilder.internalServerError(new Error('Error deleting software'), response);
+        });
+    }
 }
 
 export const api: API = {

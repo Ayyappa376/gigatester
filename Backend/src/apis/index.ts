@@ -1,13 +1,13 @@
 import { Application, Request, Response } from 'express';
 
-import { api as buildMetrics } from './metrics/builds/get';
-import { api as doraMetrics } from './metrics/dora/get';
-import { api as qualityMetrics } from './metrics/quality/get';
-import { api as reposMetrics } from './metrics/repos/get';
-import { api as reqsMetrics } from './metrics/reqs/get';
-import { api as getMetricsTools } from './metrics/teamMetricsTool/get';
-import { api as setMetricsTools } from './metrics/teamMetricsTool/post';
-import { api as testConnection } from './metrics/toolsConnect/post';
+// import { api as buildMetrics } from './metrics/builds/get';
+// import { api as doraMetrics } from './metrics/dora/get';
+// import { api as qualityMetrics } from './metrics/quality/get';
+// import { api as reposMetrics } from './metrics/repos/get';
+// import { api as reqsMetrics } from './metrics/reqs/get';
+// import { api as getMetricsTools } from './metrics/teamMetricsTool/get';
+// import { api as setMetricsTools } from './metrics/teamMetricsTool/post';
+// import { api as testConnection } from './metrics/toolsConnect/post';
 
 import { api as postAssessmentAnswerV2 } from './v2/answer/post';
 import { api as getAppFeedbackV2 } from './v2/appFeedback/get';
@@ -33,16 +33,13 @@ import { api as putDevicesV2 } from './v2/device/put';
 import { api as dowloadReportsV2 } from './v2/downloadReports/get';
 import { api as getFeedbackV2 } from './v2/feedback/get';
 import { api as postFeedbackV2 } from './v2/feedback/post';
-import { api as getFileV2 } from './v2/fileUpload/get';
-import { api as postFileV2 } from './v2/fileUpload/post';
+//import { api as getFileV2 } from './v2/fileUpload/get';
+//import { api as postFileV2 } from './v2/fileUpload/post';
 import { api as deleteGroupsV2 } from './v2/group/delete';
 import { api as getGroupsV2 } from './v2/group/get';
 import { api as postGroupsV2 } from './v2/group/post';
 import { api as putGroupsV2 } from './v2/group/put';
 import { api as getAssessmentHistoryV2 } from './v2/history/get';
-import { api as deleteSoftwareV2 } from './v2/manageSoftware/delete';
-import { api as getUploadSoftwareV2 } from './v2/manageSoftware/get';
-import { api as postUploadSoftwareV2 } from './v2/manageSoftware/post';
 import { api as deleteOrganizationsV2 } from './v2/organization/delete';
 import { api as getOrganizationsV2 } from './v2/organization/get';
 import { api as postOrganizationsV2 } from './v2/organization/post';
@@ -66,6 +63,9 @@ import { api as getAssementResultV2 } from './v2/result/get';
 import { api as getSystemSettingsV2 } from './v2/settings/get';
 import { api as postSystemSettingsV2 } from './v2/settings/post';
 import { api as getSignedUrlV2 } from './v2/signedUrl/get';
+import { api as deleteSoftwareV2 } from './v2/software/delete';
+import { api as getUploadSoftwareV2 } from './v2/software/get';
+import { api as postUploadSoftwareV2 } from './v2/software/post';
 import { api as getAssessmentSummaryV2 } from './v2/summary/get';
 import { api as getAssessmentAndTeamDetailsV2 } from './v2/teamAndAssessmentList/get';
 import { api as getTeamsV2 } from './v2/teams/get';
@@ -156,8 +156,8 @@ const apis: API[] = [
   getTestSuiteV2,
   putTestSuiteV2,
   postTestSuiteV2,
-  getFileV2,
-  postFileV2,
+  //getFileV2,
+  //postFileV2,
   deleteUsers2V2,
   getUsers2V2,
   postUsers2V2,
@@ -166,16 +166,16 @@ const apis: API[] = [
   getUserFeedbackV2
 ];
 
-const metricsApis: API[] = [
-  getMetricsTools,
-  setMetricsTools,
-  buildMetrics,
-  reposMetrics,
-  reqsMetrics,
-  qualityMetrics,
-  doraMetrics,
-  testConnection,
-];
+// const metricsApis: API[] = [
+//   getMetricsTools,
+//   setMetricsTools,
+//   buildMetrics,
+//   reposMetrics,
+//   reqsMetrics,
+//   qualityMetrics,
+//   doraMetrics,
+//   testConnection,
+// ];
 
 export function registerApis(application: Application): void {
   apis.forEach((api: API) => {
@@ -184,9 +184,9 @@ export function registerApis(application: Application): void {
   });
 }
 
-export function registerMetricsApis(application: Application): void {
-  metricsApis.forEach((api: API) => {
-    // tslint:disable-next-line: no-unsafe-any
-    application[api.method](api.route, api.handler);
-  });
-}
+// export function registerMetricsApis(application: Application): void {
+//   metricsApis.forEach((api: API) => {
+//     // tslint:disable-next-line: no-unsafe-any
+//     application[api.method](api.route, api.handler);
+//   });
+// }

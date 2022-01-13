@@ -1,18 +1,18 @@
-import { appLogger, getSoftwaresBucketName } from '@utils/index';
-import { completeMultipartUpload, createMultipartUpload, getObject, getSignedUrlPromise, listObjects, upload } from './sdk';
+import { appLogger } from '@utils/index';
+import { completeMultipartUpload, createMultipartUpload, deleteObject, getObject, getSignedUrlPromise, listObjects, upload } from './sdk';
 
-export const getSoftwaresList = async (): Promise<any> => {
+export const getFilesList = async (bucketName: string): Promise<any> => {
   const bucketParams = {
-    Bucket: getSoftwaresBucketName(),
+    Bucket: bucketName,
   };
 
   appLogger.info({ getListOfSoftwares_listObjects_params: bucketParams });
   return listObjects(bucketParams);
 };
 
-export const getSoftware = async (fileKey: string): Promise<any> => {
+export const getFile = async (bucketName: string, fileKey: string): Promise<any> => {
   const bucketParams = {
-    Bucket: getSoftwaresBucketName(),
+    Bucket: bucketName,
     Key: fileKey,
   };
 
@@ -20,26 +20,39 @@ export const getSoftware = async (fileKey: string): Promise<any> => {
   return getObject(bucketParams);
 };
 
-export const getURLForFileUpload = async (fileType: string, fileKey: string): Promise<any> => {
+export const getURLForFileUpload = async (bucketName: string, fileType: string, fileKey: string): Promise<any> => {
   const params = {
-    Bucket: getSoftwaresBucketName(),
+    Bucket: bucketName,
     ContentType: fileType,
     Expires: 60,
     Key: fileKey,
   };
 
-  appLogger.info({ getURLForMediumFileUpload_getSignedUrlPromise_params: params });
+  appLogger.info({ getURLForFileUpload_getSignedUrlPromise_params: params });
   return getSignedUrlPromise('putObject', params);
 };
 
-export const handleMultipartUpload = async (
+export const getURLForFileDownload = async (bucketName: string, fileKey: string): Promise<any> => {
+  const params = {
+    Bucket: bucketName,
+    Expires: 60,
+    Key: fileKey,
+  };
+
+  appLogger.info({ getURLForFileDownload_getSignedUrlPromise_params: params });
+  return getSignedUrlPromise('getObject', params);
+};
+
+export const handleMultipartFileUpload = async (
   {
+    bucketName,
     fileKey,
     fileType,
     partNumber,
     parts,
     uploadId,
   }: {
+    bucketName: string;
     fileKey: string;
     fileType: string | undefined;
     partNumber: any | undefined;
@@ -49,7 +62,7 @@ export const handleMultipartUpload = async (
 ): Promise<any> => {
   if(fileType) {
     const params = {
-        Bucket: getSoftwaresBucketName(),
+        Bucket: bucketName,
         ContentType: fileType,
         Key: fileKey,
     };
@@ -60,7 +73,7 @@ export const handleMultipartUpload = async (
 
   if(partNumber) {
     const params = {
-        Bucket: getSoftwaresBucketName(),
+        Bucket: bucketName,
         Key: fileKey,
         PartNumber: partNumber,
         UploadId: uploadId
@@ -72,7 +85,7 @@ export const handleMultipartUpload = async (
 
   if(parts) {
     const params = {
-        Bucket: getSoftwaresBucketName(),
+        Bucket: bucketName,
         Key: fileKey,
         MultipartUpload: {
             Parts: parts
@@ -84,12 +97,22 @@ export const handleMultipartUpload = async (
   }
 };
 
-export const uploadFile = async (fileKey: string, buff: any): Promise<any> => {
+export const uploadFile = async (bucketName: string, fileKey: string, buff: any): Promise<any> => {
   const params = {
     Body: buff,
-    Bucket: getSoftwaresBucketName(),
+    Bucket: bucketName,
     Key: fileKey,
   };
   appLogger.info({ uploadFile_upload_params: params });
   return upload(params);
+};
+
+export const deleteFile = async (bucketName: string, fileKey: string): Promise<any> => {
+  const params = {
+    Bucket: bucketName,
+    Key: fileKey,
+  };
+
+  appLogger.info({ deleteFile_deleteObject_params: params });
+  return deleteObject(params);
 };

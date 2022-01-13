@@ -101,7 +101,7 @@ const ManageSoftwareFiles = (props: any) => {
   const multiArrayUploadCompleted = () => {
     if (multiUploadArray.length) {
       Http.post({
-        url: `/api/v2/file/large`,
+        url: `/api/v2/softwares/large`,
         body: {
           fileName: fileName,
           parts: multiUploadArray,
@@ -126,7 +126,7 @@ const ManageSoftwareFiles = (props: any) => {
     // console.log(`chunkCount: ${chunkCount}`);
 
     Http.post({
-      url: `/api/v2/file/large`,
+      url: `/api/v2/softwares/large`,
       state: stateVariable,
       body: {
         fileName: fileName,
@@ -146,7 +146,7 @@ const ManageSoftwareFiles = (props: any) => {
               ? fileSelected.slice(start, end)
               : fileSelected.slice(start);
           Http.post({
-            url: `/api/v2/file/large`,
+            url: `/api/v2/softwares/large`,
             state: stateVariable,
             body: {
               fileName: fileName,
@@ -176,7 +176,7 @@ const ManageSoftwareFiles = (props: any) => {
                         uploadArrayA.PartNumber - uploadArrayB.PartNumber
                     );
                     Http.post({
-                      url: `/api/v2/file/large`,
+                      url: `/api/v2/softwares/large`,
                       body: {
                         fileName: fileName,
                         parts: uploadedArray,
@@ -253,7 +253,7 @@ const ManageSoftwareFiles = (props: any) => {
       };
       uploadedFile &&
         Http.post({
-          url: `/api/v2/file/small`,
+          url: `/api/v2/softwares/small`,
           body: dataInfo,
           state: stateVariable,
         })

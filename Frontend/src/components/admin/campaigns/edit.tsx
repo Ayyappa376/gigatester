@@ -244,7 +244,7 @@ const EditCampaign = (props: any) => {
       type: 'info',
     });
     Http.post({
-      url: `/api/v2/software/upload/medium`,
+      url: `/api/v2/software/medium`,
       state: stateVariable,
       body: {
         fileName: fileName,

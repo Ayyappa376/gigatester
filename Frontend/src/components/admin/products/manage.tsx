@@ -399,7 +399,7 @@ const ManageProducts = (props: any) => {
       type: 'info',
     });
     Http.post({
-      url: `/api/v2/file/medium`,
+      url: `/api/v2/softwares/medium`,
       state: stateVariable,
       body: {
         fileName: fileName,

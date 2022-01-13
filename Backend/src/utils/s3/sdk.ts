@@ -120,3 +120,19 @@ export function upload(params: S3.PutObjectRequest): Promise<any> {
     )
   );
 }
+
+export function deleteObject(params: S3.DeleteObjectRequest): Promise<any> {
+  return new Promise(
+    (resolve: (item: any) => void, reject: (err: Error) => any): any =>
+      s3.deleteObject(
+        params,
+        (err: AWS.AWSError, data: S3.DeleteObjectOutput) => {
+        if (err) {
+          appLogger.error(err);
+          return reject(err);
+        }
+        return resolve(data);
+      }
+    )
+  );
+}
