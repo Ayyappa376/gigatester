@@ -546,11 +546,11 @@ else{
                     $("<link>").attr({
                         rel: "stylesheet",
                         class: "gigatester-css",
-                        href: './gigatester.css'
+                        href: this.widget_css
                     }).appendTo($(parent_node));
                     var self = this;
                     var _interval_id = setInterval(function() {
-                        var detector = $("<div>").addClass("gigatester-load-detector").appendTo($(document.body));
+                        var detector = $("<div>").addClass("userback-load-detector").appendTo($(document.body));
                         if (detector.css("z-index") == 1999) {
                             callback.call(self);
                             clearInterval(_interval_id)

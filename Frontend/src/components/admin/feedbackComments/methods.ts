@@ -1,5 +1,9 @@
 import { IAppFeedback, IProcessedData } from ".";
-import { FEEDBACK } from "./RenderTable";
+import { BUG_REPORT } from "./RenderTable";
+
+const convertFirstLetterToUppercase = (str: string) => {
+    return str.charAt(0).toUpperCase() + str.slice(1);
+}
 
 export const processBarChartData = (items: IAppFeedback[]) => {
     let ratingData : IProcessedData = {"1" : 0, "2" : 0, "3" : 0, "4" : 0, "5" : 0};
@@ -12,6 +16,40 @@ export const processBarChartData = (items: IAppFeedback[]) => {
     }
     console.log(ratingData)
     return ratingData;
+}
+
+export const processPieChartData = (pData: IProcessedData) => {
+    let dissatisfied = 0;
+    let satisfied = 0;
+    let somewhatSatisfied = 0;
+    dissatisfied = pData['1'] + pData['2'];
+    somewhatSatisfied = pData['3'];
+    satisfied = pData['4'] + pData['5'];
+    return {dissatisfied, satisfied, somewhatSatisfied}
+}
+
+export const bugProcessBarChartData = (items: IAppFeedback[]) => {
+    let severityData : IProcessedData = {"Critical" : 0, "High" : 0, "Medium" : 0, "Low" : 0};
+    if(items.length > 0) {
+        items.forEach((item) => {
+            if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0 || typeof item.productRating === undefined )) {
+                severityData[convertFirstLetterToUppercase(item.bugPriority)]++;
+            }  
+        })
+    }
+    return severityData;
+}
+
+export const bugProcessPieChartData = (items: IAppFeedback[]) => {
+    let categoryData : IProcessedData = {"Audio" : 0, "Video" : 0, "Screen" : 0, "Images" : 0, "Other": 0};
+    if(items.length > 0) {
+        items.forEach((item) => {
+            if(item.feedbackCategory && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0 || typeof item.productRating === undefined )) {
+                categoryData[convertFirstLetterToUppercase(item.feedbackCategory)]++;
+            }  
+        })
+    }
+    return categoryData;
 }
 
 export const getImportantKeywords = (rawTableData: IAppFeedback[]) => {
