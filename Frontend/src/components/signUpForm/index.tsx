@@ -136,19 +136,19 @@ export default function SignupForm(props: any) {
             },
             state: superUserStateVariable,
           })
-            .then((response: any) => {
-              setVerifyEmail(true);
-              setLoading(false);
-              // setNewUserPosted(true);
-            })
-            .catch((error) => {
-              // console.log(error);
-              setLoading(false);
-              setErrorMessage(
-                "An account with the given email already exists."
-              );
-              setSnackbarOpen(true);
-            });
+          .then((response: any) => {
+            setVerifyEmail(true);
+            setLoading(false);
+            // setNewUserPosted(true);
+          })
+          .catch((error) => {
+            // console.log(error);
+            setLoading(false);
+            setErrorMessage(
+              "An account with the given email already exists."
+            );
+            setSnackbarOpen(true);
+          });
         } catch (error) {
           let errResponse: any = error;
           setLoading(false);
