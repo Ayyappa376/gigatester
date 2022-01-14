@@ -12,6 +12,7 @@ import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import ProductFilter, { ILimitedProductDetails, IProductNameIdMapping, ProductInfo, VersionFilter } from './ProductFilter';
 import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE, SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, CATEGORY_VIDEO, CATEGORY_AUDIO, CATEGORY_SCREEN, CATEGORY_IMAGES, CATEGORY_OTHER } from './common';
+import { withRouter } from 'react-router-dom';
 
 
 export interface IProcessedData {
@@ -23,6 +24,9 @@ type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
 
 type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
+
+const CONST_FEEDBACK = 'FEEDBACK';
+const CONST_BUG_REPORT = 'BUG_REPORT';
 
 export interface IAppFeedback {
   createdOn: number;
@@ -69,7 +73,6 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
 
     Http.get({
       url: `/api/v2/signedurl/${name}`,
-      state: stateVariable
     }).then((response: any) => {
       if(response.filePath) {
         return resolve(response.filePath);
@@ -128,9 +131,6 @@ const FeedbackComments = (props: any) => {
       }
     };
 
-    const stateVariable = useSelector((state: IRootState) => {
-      return state;
-    });
 
     
 
@@ -244,10 +244,9 @@ const FeedbackComments = (props: any) => {
       }
     }, [selectedProdId, productVersion])
 
-
-    useEffect(() => {
+    const fetchData = () => {
       setBackdropOpen(true);
-      let url = '/api/v2/userFeedback';
+      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`;
       if(props.productId) {
         url += `?prodId=${props.productId}`;
         if(props.productVersion) {
@@ -256,9 +255,7 @@ const FeedbackComments = (props: any) => {
       }
       Http.get({
           url,
-          state: stateVariable,
         }).then((response: any) => {
-          console.log(response);
           setData(response.Items);
           setRawData(response.Items);
           setProcessedData(processBarChartData(response.Items));
@@ -271,7 +268,12 @@ const FeedbackComments = (props: any) => {
             props.history.push('/relogin');
           }
         });
-    }, [])
+    }
+
+    useEffect(() => {
+      fetchData()
+    }, [isBugReport])
+
     useEffect(() => {
       if(isBugReport) {
         const severityProcessedData = bugProcessBarChartData(rawData);
@@ -287,7 +289,6 @@ const FeedbackComments = (props: any) => {
     const getProductDetails = () => {
         Http.get({
           url: `/api/v2/products`,
-          state: stateVariable
         }).then((response: any) => {
           if(response && response.products && Array.isArray(response.products) && response.products.length > 0) {
               const productInfoCopy = [...productInfo]
@@ -316,11 +317,6 @@ const FeedbackComments = (props: any) => {
             console.error(error);
         })
     }
-    
-
-    const getRatingLabel = (rate: string) => {
-      return "Rating - " + rate
-    }
 
     const fetchSignedUrl = (imgUrl: string) => {
       const urlSplit = imgUrl.split('/')
@@ -328,7 +324,6 @@ const FeedbackComments = (props: any) => {
       let name = urlSplit[urlSplit.length - 1]
       Http.get({
           url: `/api/v2/signedurl/${name}`,
-          state: stateVariable
       }).then((response: any) => {
          if(response.filePath) {
            setSignedImageUrl(response.filePath);
@@ -537,8 +532,4 @@ const useStyles = makeStyles((theme) => ({
     },
   }));
 
-export default FeedbackComments;
-
-function getState(): any {
-  throw new Error('Function not implemented.');
-}
+export default withRouter(FeedbackComments);

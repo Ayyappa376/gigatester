@@ -66,6 +66,7 @@ const Auth = (props: any) => {
         }
       }
       if (tokens && tokens.idToken && tokens.accessToken) {
+        localStorage.setItem('authToken', tokens.idToken)
         saveUserData({
           idToken: tokens.idToken,
           accessToken: tokens.accessToken,

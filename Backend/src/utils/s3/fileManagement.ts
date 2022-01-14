@@ -24,7 +24,7 @@ export const getURLForFileUpload = async (bucketName: string, fileType: string, 
   const params = {
     Bucket: bucketName,
     ContentType: fileType,
-    Expires: 60,
+    Expires: 60*24,       // Signed Url will stay signed for 1 day as we are storing these Urls in the frontend.
     Key: fileKey,
   };
 
@@ -35,7 +35,7 @@ export const getURLForFileUpload = async (bucketName: string, fileType: string, 
 export const getURLForFileDownload = async (bucketName: string, fileKey: string): Promise<any> => {
   const params = {
     Bucket: bucketName,
-    Expires: 60,
+    Expires: 60*24,       // Signed Url will stay signed for 1 day as we are storing these Urls in the frontend.
     Key: fileKey,
   };
 

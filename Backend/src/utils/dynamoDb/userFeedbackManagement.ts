@@ -1,32 +1,52 @@
 //import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 //import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger } from '@utils/index';
+import { FeedbackType } from '@root/apis/v2/userFeedback/get';
+import { appLogger, getAppFeedbackTableName } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { scan } from './sdk';
 
-export const getUserFeedbackList = async (prodId: string | undefined, prodVersion: string | undefined): Promise<any[]> => {
+interface Params {
+  filter?: string;
+  filterType?: string;
+  items?: number;
+  lastEvalKey?: string;
+  prodId?: string;
+  prodVersion?: string;
+  search?: string;
+  type?: FeedbackType;
+}
+
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
     let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
-      TableName: 'dev_GT_feedback' //TableNames.getFeedbackTableName(),
+      TableName: getAppFeedbackTableName(),
     };
+    const EAN: any = {};
+    const EAV: any = {};
+    let FE: string = '';
+
+    if(type) {
+      EAN['#type'] = 'feedbackType';
+      EAV[':type'] = type;
+      FE += FE ? ' and #type = :type' : '#type = :type';
+    }
 
     if(prodId) {
-      const EAN: any = {};
       EAN['#prodId'] = 'productId';
-      const EAV: any = {};
       EAV[':prodId'] = prodId;
-      let FE = '#prodId = :prodId';
-
+      FE = '#prodId = :prodId';
       if(prodVersion) {
         EAN['#prodVersion'] = 'productVersion';
         EAV[':prodVersion'] = prodVersion;
-        FE += ' and #prodVersion = :prodVersion';
+        FE += FE ? ' and #prodVersion = :prodVersion' : '#prodVersion = :prodVersion';
       }
+    }
 
+    if(FE) {
       params = {
         ExpressionAttributeNames: EAN,
         ExpressionAttributeValues: EAV,
         FilterExpression: FE,
-        TableName: 'dev_GT_feedback' //TableNames.getFeedbackTableName(),
+        TableName: getAppFeedbackTableName(),
       };
     }
 
