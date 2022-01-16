@@ -79,14 +79,21 @@ const ManageSoftwareFiles = (props: any) => {
 
   const getUploadedSoftwares = () => {
     Http.get({
-      url: `/api/v2/software/all`,
+      url: `/api/v2/softwares`,
       state: stateVariable,
     })
       .then((response: any) => {
         setSoftwareList(response.Contents);
       })
       .catch((error: any) => {
-        console.log(error);
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          props.history.push('/error');
+        }
+//        console.log(error);
       });
   };
 
