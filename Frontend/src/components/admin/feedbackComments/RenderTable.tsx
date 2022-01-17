@@ -3,8 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { getSignedUrl } from '.';
 import { buttonStyle } from '../../../common/common';
 import { getDate } from '../../../utils/data';
-import FavoriteIcon from '@material-ui/icons/Favorite';
-import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import StarIcon from '@material-ui/icons/Star';
 import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { useSelector } from 'react-redux';

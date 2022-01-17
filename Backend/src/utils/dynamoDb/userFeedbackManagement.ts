@@ -43,9 +43,9 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
 
     const populateParams = (filterOn: string) => {
       EAN['#filterOn'] = filterOn;
-      EAV[':filter'] = filterType === 'rating' && filter ? parseInt(filter): filter;
+      EAV[':filter'] = filterType === 'rating' && filter ? parseInt(filter, 10): filter;
       FE += FE ? ' and #filterOn = :filter' : '#filterOn = :filter';
-    }
+    };
 
     if(filterType) {
       switch(filterType) {
@@ -81,7 +81,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     }
 
     if(items) {
-      params.Limit = parseInt(items);
+      params.Limit = parseInt(items, 10);
       return scanNonRecursiveRaw<any>(params);
     }
 
