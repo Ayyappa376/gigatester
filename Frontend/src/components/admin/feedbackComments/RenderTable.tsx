@@ -5,6 +5,8 @@ import { buttonStyle } from '../../../common/common';
 import { getDate } from '../../../utils/data';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
+import StarIcon from '@material-ui/icons/Star';
+import StarBorderIcon from '@material-ui/icons/StarBorder';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
@@ -43,7 +45,7 @@ export const RenderStars = (props: any) => {
       <div style={{alignItems: "center"}}>
       <div>
           {arr.map((el, i) => {
-              return (i < props.rating ? <FavoriteIcon key={i} /> : <FavoriteBorderIcon key={i} />)
+              return (i < props.rating ? <StarIcon htmlColor='#F0A029' key={i} /> : <StarBorderIcon htmlColor='#F0A029' key={i} />)
           })}
       </div>
       </div>
@@ -438,8 +440,10 @@ const RenderTable = (props: IProps) => {
                               props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
                             }}
                           >
-                            <img src={signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] ?
-                              signedUrlMapping[row.feedbackMedia.image] : undefined} style={{width: 150, marginTop: 20}}></img>
+                            {
+                              signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] ?
+                                <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img> : null
+                            }
                           </Link> : <div/> : <div/>
                           }
                         </div>

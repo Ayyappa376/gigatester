@@ -1,14 +1,14 @@
 //import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 //import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { FeedbackType } from '@root/apis/v2/userFeedback/get';
+import { FeedbackType, FilterType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { scan } from './sdk';
+import { scan, scanNonRecursiveRaw } from './sdk';
 
 interface Params {
   filter?: string;
-  filterType?: string;
-  items?: number;
+  filterType?: FilterType;
+  items?: string;
   lastEvalKey?: string;
   prodId?: string;
   prodVersion?: string;
@@ -33,13 +33,43 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     if(prodId) {
       EAN['#prodId'] = 'productId';
       EAV[':prodId'] = prodId;
-      FE = '#prodId = :prodId';
+      FE += FE ? ' and #prodId = :prodId' : '#prodId = :prodId';
       if(prodVersion) {
         EAN['#prodVersion'] = 'productVersion';
         EAV[':prodVersion'] = prodVersion;
         FE += FE ? ' and #prodVersion = :prodVersion' : '#prodVersion = :prodVersion';
       }
     }
+
+    const populateParams = (filterOn: string) => {
+      EAN['#filterOn'] = filterOn;
+      EAV[':filter'] = filterType === 'rating' && filter ? parseInt(filter): filter;
+      FE += FE ? ' and #filterOn = :filter' : '#filterOn = :filter';
+    }
+
+    if(filterType) {
+      switch(filterType) {
+        case 'rating':
+          populateParams('productRating');
+          break;
+        case 'category':
+          populateParams('feedbackCategory');
+          break;
+        case 'keyword':
+          //populateParams('productRating')  // This is equivalent to search
+          break;
+        case 'severity':
+          populateParams('bugPriority');
+          break;
+        default:
+          // generate a 501 error statement
+      }
+    }
+   /*  if(search) {
+      EAN['#comments'] = 'feedbackComments';
+      EAV[':keyWord'] = search;
+      FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
+    } */
 
     if(FE) {
       params = {
@@ -48,6 +78,11 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
         FilterExpression: FE,
         TableName: getAppFeedbackTableName(),
       };
+    }
+
+    if(items) {
+      params.Limit = parseInt(items);
+      return scanNonRecursiveRaw<any>(params);
     }
 
     appLogger.info({ getPlatformList_scan_params: params });

@@ -300,6 +300,13 @@ const FeedbackComments = (props: any) => {
       })
     }
 
+    const handleViewAttachmentClicked = (url: string, id: string, type: string) => {
+      setShowImageModal(true);
+      setFocusAttachmentUid(id);
+      fetchSignedUrl(url)
+      setAttachmentType(type)
+    }
+
     const getRating = (id: string) => {
       if(ratingMapping[id]) {
         return ratingMapping[id].rating
@@ -423,12 +430,7 @@ const FeedbackComments = (props: any) => {
               </Grid>
             </Grid>
           </div>
-          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={(url: string, id: string, type: string) => {
-            setShowImageModal(true);
-            setFocusAttachmentUid(id);
-            fetchSignedUrl(url)
-            setAttachmentType(type)
-          }} />
+          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} />
         </Container>
       )
     }
