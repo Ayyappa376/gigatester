@@ -1,25 +1,24 @@
 //import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 //import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { IFeedbackType } from '@root/apis/v2/userFeedback/get';
-import { appLogger } from '@utils/index';
+import { FeedbackType } from '@root/apis/v2/userFeedback/get';
+import { appLogger, getAppFeedbackTableName } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { scan } from './sdk';
-import * as TableNames from '@utils/dynamoDb/getTableNames';
 
-interface IParams {
-  type?: IFeedbackType;
-  search?: string;
-  items?: number;
+interface Params {
   filter?: string;
   filterType?: string;
+  items?: number;
   lastEvalKey?: string;
   prodId?: string;
   prodVersion?: string;
+  search?: string;
+  type?: FeedbackType;
 }
 
-export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: IParams): Promise<any[]> => {
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
     let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
-      TableName: TableNames.getAppFeedbackTableName(),
+      TableName: getAppFeedbackTableName(),
     };
     const EAN: any = {};
     const EAV: any = {};
@@ -47,7 +46,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
         ExpressionAttributeNames: EAN,
         ExpressionAttributeValues: EAV,
         FilterExpression: FE,
-        TableName: TableNames.getAppFeedbackTableName(),
+        TableName: getAppFeedbackTableName(),
       };
     }
 

@@ -1,18 +1,17 @@
 import { AppFeedback } from '@models/index';
-import { IFeedbackType } from '@root/apis/v2/userFeedback/get';
-import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger } from '@utils/index';
+import { FeedbackType } from '@root/apis/v2/userFeedback/get';
+import { appLogger, getAppFeedbackTableName } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import uuidv1 from 'uuid/v1';
 import { put, scan } from './sdk';
 
-interface IParams {
-  type?: IFeedbackType;
-  search?: string;
-  items?: number;
+interface Params {
   filter?: string;
   filterType?: string;
+  items?: number;
   lastEvalKey?: string;
+  search?: string;
+  type?: FeedbackType;
 }
 
 export const createAppFeedback = async (
@@ -30,27 +29,27 @@ export const createAppFeedback = async (
     console.log(newAppFeedback);
     const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
       Item: newAppFeedback,
-      TableName: TableNames.getAppFeedbackTableName(),
+      TableName: getAppFeedbackTableName(),
     });
 
     appLogger.info({ createAppFeedback_put_params: params });
     return put<AppFeedback>(params);
   };
 
-  export const getappFeedbackList = async ({type, search, items, filter, filterType, lastEvalKey} : IParams): Promise<AppFeedback[]> => {
+  export const getappFeedbackList = async ({type, search, items, filter, filterType, lastEvalKey}: Params): Promise<AppFeedback[]> => {
     let params: DynamoDB.ScanInput;
     if(!type) {
       params = <DynamoDB.ScanInput>{
-        TableName: TableNames.getAppFeedbackTableName(),
+        TableName: getAppFeedbackTableName(),
       };
     } else {
       params = <DynamoDB.ScanInput>{
-        TableName: TableNames.getAppFeedbackTableName(),
         ExpressionAttributeNames: {
           '#type': 'feedbackType',
         },
         ExpressionAttributeValues: { ':type': type },
         FilterExpression: '#type = :type',
+        TableName: getAppFeedbackTableName(),
       };
     }
 

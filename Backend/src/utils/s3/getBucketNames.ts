@@ -12,6 +12,6 @@ export function getProductPhotosBucketName(): string {
   return `${config.defaults.orgId}_${config.s3Bucket.productPhotos}`;
 }
 
-export function getFeedbackBucketName(): string {
-  return `${config.defaults.orgId}-${config.s3Bucket.feedbacks}`;
+export function getFeedbackFilesBucketName(): string {
+  return `${config.defaults.orgId}-${config.s3Bucket.feedbackFiles}`;
 }

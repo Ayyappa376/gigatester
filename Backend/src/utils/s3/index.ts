@@ -1,2 +1,2 @@
-export * from './getBucketNames';
-export * from './getSignedUrl';
+export * from './feedbackFilesManagement';
+export * from './softwaresManagement';

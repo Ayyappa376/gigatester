@@ -8,7 +8,7 @@ import { Response } from 'express';
 
 type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
 
-export type IFeedbackType = 'FEEDBACK' | 'BUG_REPORT';
+export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
 interface UserFeedbackRequest {
   headers: {
@@ -19,16 +19,16 @@ interface UserFeedbackRequest {
     };
   };
   params: {
-    type: IFeedbackType;
+    type: FeedbackType;
   };
   query: {
-    prodId?: string;
-    prodVersion?: string;
-    items: number;
-    lastEvalKey: string;
-    search: string;
     filter: string;
     filterType: FilterType;
+    items: number;
+    lastEvalKey: string;
+    prodId?: string;
+    prodVersion?: string;
+    search: string;
   };
 }
 
@@ -57,11 +57,12 @@ async function handler(
   }
 
   try {
+    let feedback: any[];
     if(!type) {
-      const feedback: any[] = await getUserFeedbackList({});
-      return responseBuilder.ok({Items: feedback }, response);  
+      feedback = await getUserFeedbackList({});
+      return responseBuilder.ok({Items: feedback }, response);
     }
-    const feedback: any[] = await getUserFeedbackList({type,items, search, lastEvalKey, filter, filterType, prodId, prodVersion});
+    feedback = await getUserFeedbackList({type,items, search, lastEvalKey, filter, filterType, prodId, prodVersion});
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
