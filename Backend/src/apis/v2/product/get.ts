@@ -50,7 +50,7 @@ async function handler(request: GetProducts, response: Response) {
         products: [productDetails],
       };
     }
-    } else {
+  } else {
     const productDetailsList: ProductInfo[] = await getProductsList();
     appLogger.info({ getProductsList: productDetailsList });
     result = {

@@ -43,6 +43,7 @@ import {
   IPlatformInfo,
   IDeviceInfo,
   STATUS_CAMPAIGN_DRAFT,
+  STATUS_PRODUCT_ACTIVE,
 } from '../../../model';
 import { Http } from '../../../utils';
 import Success from '../../success-page';
@@ -776,8 +777,10 @@ const EditCampaign = (props: any) => {
         }
         values[0].products.push({
           id: '',
+          version: '',
           name: '',
           platforms: [],
+          status: STATUS_PRODUCT_ACTIVE,
         });
         setCampaignState(temp);
       }
