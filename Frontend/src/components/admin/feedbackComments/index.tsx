@@ -10,7 +10,10 @@ import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
-import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE, SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, CATEGORY_VIDEO, CATEGORY_AUDIO, CATEGORY_SCREEN, CATEGORY_IMAGES, CATEGORY_OTHER, ILimitedProductDetails, IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback } from './common';
+import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE,
+  SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL,
+  SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, ILimitedProductDetails,
+  IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback } from './common';
 import { withRouter } from 'react-router-dom';
 
 
