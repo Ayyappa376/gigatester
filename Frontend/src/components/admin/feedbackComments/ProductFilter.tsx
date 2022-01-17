@@ -3,36 +3,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
-
-export interface ProductInfo {
-    description?: string;
-    devices?: string[];
-    id: string;
-    name: string;
-    platforms: string[];
-    software?: string;
-    testers?: TesterStatus[];
-    testSuite?: string;
-    version: string[];
-    [keyName: string]: any;
-}
-
-export interface TesterStatus {
-    approved: boolean;
-    id: string;
-}
-
-export interface ILimitedProductDetails {
-    id: string;
-    name: string;
-}
-
-export interface IProductNameIdMapping {
-    [key : string] : {
-        name: string;
-        version: string[];
-    }
-}
+import { IProductNameIdMapping, ILimitedProductDetails } from './common';
 
 interface IProps {
     selectedProdId: string[];

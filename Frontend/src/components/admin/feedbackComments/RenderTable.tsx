@@ -1,7 +1,7 @@
 import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton, Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { getSignedUrl, IAppFeedback } from '.';
-import { buttonStyle, tooltipTheme } from '../../../common/common';
+import { getSignedUrl } from '.';
+import { buttonStyle } from '../../../common/common';
 import { getDate } from '../../../utils/data';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
@@ -16,6 +16,7 @@ import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderCategoryFilter from './RenderCategoryFilter';
 import { updateSignedUrls, useActions } from '../../../actions';
+import { IAppFeedback } from './common';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -55,7 +56,6 @@ export const renderComments = (comments: string[] | undefined) => {
     comments.forEach((comment: string) => {commentText = commentText + '\n' + comment});
     return(
       <div>
-        {/* <TextField value={commentText} multiline fullWidth/> */}
         <Box
           aria-label="rating comments"
           style={{ width: "100%" }}
@@ -473,7 +473,6 @@ const RenderTable = (props: IProps) => {
                                             marginLeft: 'auto',
                                             marginRight: 'auto',
                                           }}>
-                              {/* <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" /> */}
                             </video>
                             </div> : <div/> : <div/>
                           }
