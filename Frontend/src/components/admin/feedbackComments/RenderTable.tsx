@@ -438,7 +438,8 @@ const RenderTable = (props: IProps) => {
                               props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
                             }}
                           >
-                            <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img>
+                            <img src={signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] ?
+                              signedUrlMapping[row.feedbackMedia.image] : undefined} style={{width: 150, marginTop: 20}}></img>
                           </Link> : <div/> : <div/>
                           }
                         </div>

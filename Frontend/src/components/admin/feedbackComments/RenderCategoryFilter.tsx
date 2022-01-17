@@ -1,6 +1,7 @@
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
+import './stylesRenderFilters.css'
 
 interface IProps {
     onSelect: Function
@@ -24,13 +25,13 @@ const RenderCategoryFilter = (props: IProps) => {
     }
 
     return (
-        <div className={classes.ratingBlock}>
-            <div className={classes.textContainer}>
-                <Typography className={classes.textHeader}>Choose bugs with category:</Typography>
+        <div id="RenderFilter-Block">
+            <div id="RenderFilter-textContainer">
+                <Typography id="RenderFilter-textHeader">Choose bugs with category:</Typography>
             </div>
-            <div className={classes.flexContainer}>
+            <div id="RenderFilter-flexContainer">
                 {categoryList.map((val) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(val)}} className={category === val ? classes.btnVisited : classes.btn}>{val}</Button>
+                    <Button variant='outlined' onClick={() => {handleKeywordClick(val)}} id={category === val ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
                 )}
             </div>
         </div>

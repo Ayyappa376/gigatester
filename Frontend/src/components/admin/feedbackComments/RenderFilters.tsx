@@ -1,6 +1,7 @@
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
+import './stylesRenderFilters.css'
 
 interface IProps {
     onSelect: Function
@@ -29,13 +30,13 @@ const RenderRatingFilter = (props: IProps) => {
     }
 
     return (
-        <div className={classes.ratingBlock}>
-            <div className={classes.textContainer}>
-                <Typography className={classes.textHeader}>Choose feedbacks with rating:</Typography>
+        <div id="RenderFilter-Block" >
+            <div id="RenderFilter-textContainer">
+                <Typography id="RenderFilter-textHeader">Choose feedbacks with rating:</Typography>
             </div>
-            <div className={classes.flexContainer}>
+            <div id="RenderFilter-flexContainer">
                 {ratingButtonValues.map((el) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(el.value)}} className={rating === el.value ? classes.btnVisited : classes.btn}>{el.discription}</Button>
+                    <Button variant='outlined' onClick={() => {handleKeywordClick(el.value)}} id={rating === el.value ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el.discription}</Button>
                 )}
             </div>
         </div>

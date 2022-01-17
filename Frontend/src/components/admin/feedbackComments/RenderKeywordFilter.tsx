@@ -1,6 +1,7 @@
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
+import './stylesRenderFilters.css'
 
 interface IKeywordFilterProps {
     onSubmit: Function;
@@ -28,13 +29,13 @@ export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
     }
 
     return (
-        <div className={classes.keywordBlock}>
-            <div className={classes.textContainer}>
-                <Typography className={classes.textHeader}>Read comments that mention:</Typography>
+        <div id="RenderFilter-Block">
+            <div id="RenderFilter-textContainer">
+                <Typography id="RenderFilter-textHeader">Read comments that mention:</Typography>
             </div>
-            <div className={classes.flexContainerKeywords}>
+            <div id="RenderFilter-flexContainer">
                 {keywords.map((el) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(el)}} className={keyword === el ? classes.btnVisited : classes.btn}>{el}</Button>
+                    <Button variant='outlined' onClick={() => {handleKeywordClick(el)}} id={keyword === el ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
                 )}
             </div>
         </div>
