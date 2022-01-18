@@ -45,7 +45,7 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IProductInfo, IProductParams, ICategory } from '../../../model';
+import { IProductInfo, IProductParams, ICategory, IFeedbackSettings } from '../../../model';
 import { AnyARecord } from 'dns';
 
 const useStyles = makeStyles((theme) => ({
@@ -84,170 +84,80 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const ManageProducts = (props: any) => {
+const EditProductFeedbackSettings = (props: any) => {
   const classes = useStyles();
+  const [feedbackSettingsPosted, setFeedbackSettingsPosted] = useState(false);
+  const [feedbackSettingsFetched, setFeedbackSettingsFetched] = useState(false);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [fetchProducts, setFetchProducts] = React.useState(false);
-  const [allProducts, setAllProducts] = React.useState<IProductInfo[]>([]);
-  const [backdropOpen, setBackdropOpen] = React.useState(false);
-  const [openModal, setOpenModal] = useState(false);
-//  const [deleteProductId, setDeleteProductId] = useState('');
-//  const [deleteProductVersion, setDeleteProductVersion] = useState('');
-  const [searchString, setSearchString] = useState('');
-  const [products, setProducts] = useState<IProductInfo[]>([]);
-  const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-  const [itemsPerPage, setItemsPerPage] = useState(10);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [dialogOpen, setDialogOpen] = useState(false);
-  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
-  const [selectedProd, setSelectedProd] = useState<IProductInfo | undefined>(undefined);
-  const [userParamState, setUserParamState] = React.useState<any>('');
-  const [softwareOption, setSoftwareOption] = useState(false);
-  const [fileContentType, setFileContentType] = useState('');
-  const [fileSelected, setFileSelected] = useState('');
-  const [fileName, setFileName] = useState('');
-  const [numberOfProducts, setNumberOfProducts] = useState(0);
-  const [itemLimit, setItemLimit] = useState({
-    lowerLimit: 0,
-    upperLimit: 9,
-  });
-  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
-  const [orderBy, setOrderBy] = useState('name');
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: '',
-    type: '',
-  });
+  const [feedbackSettings, setFeedbackSettings] = React.useState<
+    IFeedbackSettings | undefined
+  >();
+  const [prodId, setProdId] = React.useState<string>('');
+  const [prodVersion, setProdVersion] = React.useState<string>('');
+//  const [fetchProducts, setFetchProducts] = React.useState(false);
+//  const [allProducts, setAllProducts] = React.useState<IProductInfo[]>([]);
+//  const [backdropOpen, setBackdropOpen] = React.useState(false);
+//  const [openModal, setOpenModal] = useState(false);
+  // const [searchString, setSearchString] = useState('');
+  // const [products, setProducts] = useState<IProductInfo[]>([]);
+  // const [searchButtonPressed, setSearchButtonPressed] = useState(false);
+  // const [itemsPerPage, setItemsPerPage] = useState(10);
+  // const [currentPage, setCurrentPage] = useState(1);
+  // const [dialogOpen, setDialogOpen] = useState(false);
+  // const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
+  // const [selectedProd, setSelectedProd] = useState<IProductInfo | undefined>(undefined);
+  // const [userParamState, setUserParamState] = React.useState<any>('');
+  // const [softwareOption, setSoftwareOption] = useState(false);
+  // const [fileContentType, setFileContentType] = useState('');
+  // const [fileSelected, setFileSelected] = useState('');
+  // const [fileName, setFileName] = useState('');
+  // const [numberOfProducts, setNumberOfProducts] = useState(0);
+  // const [itemLimit, setItemLimit] = useState({
+  //   lowerLimit: 0,
+  //   upperLimit: 9,
+  // });
+  // const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+  // const [orderBy, setOrderBy] = useState('name');
+  // const [notify, setNotify] = useState({
+  //   isOpen: false,
+  //   message: '',
+  //   type: '',
+  // });
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
   let msgFailure = failureMessage;
+  let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
 
-  const fetchProductList = () => {
-    setBackdropOpen(true);
+  useEffect(() => {
     Http.get({
-      url: `/api/v2/products/`,
+      url: `/api/v2/feedbackSettings/${props.productId}/${props.version}`,
       state: stateVariable,
     })
-      .then((response: any) => {
-        response.products.sort((a: IProductInfo, b: IProductInfo) => {
-          return a.name.localeCompare(b.name);
-        });
-        setFetchProducts(true);
-        setAllProducts(response.products);
-        setProducts(response.products);
-        setBackdropOpen(false);
-      })
-      .catch((error: any) => {
-        setFetchProducts(true);
-        setBackdropOpen(false);
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          props.history.push('/error');
-        }
-      });
-  };
-
-  useEffect(() => {
-    setNumberOfProducts(products.length);
-  }, [products]);
-
-  useEffect(() => {
-    fetchProductList();
-    setSearchString('');
-    setCurrentPage(1);
+    .then((response: any) => {
+//      fixMultiSelectValuesAndSave(response);
+      setFeedbackSettings(response);
+      setProdId(props.productId);
+      setProdVersion(props.version);
+      setFeedbackSettingsFetched(true);
+    })
+    .catch((error: any) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+      setFailure(true);
+    });
   }, []);
 
-  useEffect(() => {
-    if (searchButtonPressed) {
-      setSearchButtonPressed(false);
-      const searchedItems: any = [];
-      if (searchString === '') {
-        setProducts([]);
-      }
-      allProducts.forEach((el: any) => {
-        if (el.name.toLowerCase().includes(searchString.toLowerCase())) {
-          searchedItems.push(el);
-        }
-      });
-      setProducts(searchedItems);
-      setCurrentPage(1);
-    }
-  }, [searchButtonPressed]);
-
-  useEffect(() => {
-    calculateLimits();
-  }, [currentPage]);
-
-  useEffect(() => {
-    setCurrentPage(1);
-    calculateLimits();
-  }, [itemsPerPage]);
-
-  useEffect(() => {
-    if (products !== []) {
-      const tempSortedProducts = [...products];
-      if (order === 'asc') {
-        if (orderBy === 'product') {
-          setProducts(tempSortedProducts.sort(compareProduct));
-        }
-      }
-      if (order === 'desc') {
-        if (orderBy === 'product') {
-          setProducts(tempSortedProducts.sort(compareProductD));
-        }
-      }
-    }
-  }, [order, orderBy]);
-
-  function compareProduct(a: IProductInfo, b: IProductInfo) {
-    return a.name.localeCompare(b.name);
-  }
-
-  function compareProductD(a: IProductInfo, b: IProductInfo) {
-    return b.name.localeCompare(a.name);
-  }
-
-  const handleRequestSort = (property: string) => {
-    if (orderBy === property) {
-      setOrder(order === 'asc' ? 'desc' : 'asc');
-    } else {
-      setOrder('asc');
-      setOrderBy(property);
-    }
-  };
-
-  const calculateLimits = () => {
-    const lowerLimit = (currentPage - 1) * itemsPerPage;
-    const upperLimit = lowerLimit + itemsPerPage - 1;
-    setItemLimit({ lowerLimit, upperLimit });
-  };
-
-  const handleSearch = (str?: string) => {
-    if (typeof str !== 'undefined') {
-      setSearchString(str);
-    }
-    setSearchButtonPressed(true);
-  };
-
-  const handleChangeItemsPerPage = (event: any) => {
-    const value = parseInt(event.target.value, 10);
-    setItemsPerPage(value);
-  };
-
-  const handlePaginationClick = (event: number) => {
-    setCurrentPage(event);
-  };
-
-  const deleteClicked = (row: IProductInfo/* productId: string, version: string*/) => {
-//    setDeleteProductId(productId);
-//    setDeleteProductVersion(version);
+/*
+  const deleteClicked = (row: IProductInfo) => {
     setSelectedProd(row);
     setOpenModal(true);
   };
@@ -256,7 +166,7 @@ const ManageProducts = (props: any) => {
     setOpenModal(false);
   };
 
-  const deleteProduct = (prod: IProductInfo/* productId: string, version: string */) => {
+  const deleteProduct = (prod: IProductInfo) => {
     setBackdropOpen(true);
     Http.deleteReq({
       url: `/api/v2/products/${prod.id}/${prod.version}`,
@@ -288,57 +198,16 @@ const ManageProducts = (props: any) => {
   const modalYesClicked = () => {
     if(selectedProd) {
       deleteProduct(selectedProd);
-//    if (deleteProductId !== '') {
-//      deleteProduct(deleteProductId, deleteProductVersion);
       setOpenModal(false);
     }
   };
-
+*/
   const closeDialog = () => {
     setDialogOpen(false);
     setSoftwareOption(false);
     setSelectedProd(undefined);
   };
-
-  const deleteSoftware = (row: any) => {
-    if (row) {
-      if (row.softwareType === 'url') {
-        row.software = '';
-        row.softwareType = '';
-        handleSave(row);
-        setNotify({
-          isOpen: false,
-          message: 'Deleting... ',
-          type: 'info',
-        });
-      } else {
-        setNotify({
-          isOpen: true,
-          message: 'Deleting... ',
-          type: 'info',
-        });
-
-        Http.deleteReq({
-          url: `/api/v2/software/delete/${row.software}`,
-          state: stateVariable,
-        })
-          .then((response: any) => {
-            setFailureMessage(<Text tid='File Deleted Successfully' />);
-            setFailure(true);
-            if (row.software) {
-              /* tslint:disable-next-line */
-              row.software = '';
-              row.softwareType = '';
-              handleSave(row);
-            }
-          })
-          .catch((error: any) => {
-            console.log(error);
-          });
-      }
-    }
-  };
-
+ 
   const handleSave = (row: any) => {
     const postData = { products: [].concat({ ...row }) };
     if (postData) {
@@ -700,7 +569,7 @@ const ManageProducts = (props: any) => {
       setSelectedProd(temp);
     }
   };
-/*
+
   const renderCategoryDetails = (category: ICategory, catIndex: number) => {
     return (
       <Fragment>
@@ -855,7 +724,7 @@ const ManageProducts = (props: any) => {
     setFeedbackDialogOpen(false);
     setSelectedProd(undefined);
   }
-*/
+
   const renderProductsTable = () => {
     return (
       <Fragment>
@@ -870,7 +739,7 @@ const ManageProducts = (props: any) => {
                   className={classes.backButton}
                   variant='outlined'
                   onClick={() => {
-                    props.editClicked(0, 0);
+                    props.editClicked(0);
                   }}
                 >
                   <AddIcon fontSize='large' /> <Text tid='addProduct' />
@@ -920,6 +789,7 @@ const ManageProducts = (props: any) => {
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
                       Feedback Component
+                      {/* <Text tid='Api key' /> */}
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
@@ -930,7 +800,7 @@ const ManageProducts = (props: any) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {products.map((product: IProductInfo, index: number) => {
+                {products.map((row: any, index: number) => {
                   if (index < itemLimit.lowerLimit) {
                     return;
                   }
@@ -952,7 +822,7 @@ const ManageProducts = (props: any) => {
                         className='tableCell'
                       >
                         <Typography className='tableBodyText'>
-                          {product.name}
+                          {row.name}
                         </Typography>
                       </TableCell>
                       <TableCell
@@ -961,7 +831,7 @@ const ManageProducts = (props: any) => {
                         className='tableCell'
                       >
                         <Typography className='tableBodyText'>
-                          {product.version}
+                          {row.version}
                         </Typography>
                       </TableCell>
                       <TableCell
@@ -970,20 +840,16 @@ const ManageProducts = (props: any) => {
                         align='center'
                         className='tableCell'
                       >
-                        {/*<button
-                          onClick={() => showManageSoftwarePage(product)}
-                        >
-                          <Typography>Manage Software</Typography>
-                        </button>*/}
-                        {product.software ? (
+                        {/* {product.software ? product.software : ""} */}
+                        {row.software ? (
                           <>
-                            <Link href={product.software}>
+                            <Link href={row.software}>
                               <TextField
                                 required={true}
                                 type='string'
                                 id={`productSoftware_${index}`}
                                 name={`productSoftware_${index}`}
-                                value={product.software ? product.software : ''}
+                                value={row.software ? row.software : ''}
                                 // onChange={(event) =>
                                 //   handleChangeProductName(event, index)
                                 // }
@@ -995,7 +861,7 @@ const ManageProducts = (props: any) => {
                             <Typography style={{ padding: '0 6px' }}>
                               <ClearIcon
                                 onClick={() => {
-                                  deleteSoftware(product);
+                                  deleteSoftware(row);
                                 }}
                               />
                             </Typography>
@@ -1003,7 +869,7 @@ const ManageProducts = (props: any) => {
                         ) : (
                           <button
                             // onClick={handleUploadButton(index)}
-                            onClick={() => handleUploadButton(product)}
+                            onClick={() => handleUploadButton(row)}
                           >
                             <Typography>Upload</Typography>
                           </button>
@@ -1015,9 +881,41 @@ const ManageProducts = (props: any) => {
                         align='center'
                         className='tableCell'
                       >
-                        <button onClick={() => props.feedbackSettingsClicked(product, index)} >
-                          <Typography>Configure and Get</Typography>
-                        </button>
+                        <Typography className='tableBodyText'>
+                          {/* {product.testers ? product.testers : 'testers'} */}
+                          {/*row.apiKey ? (
+                            <Fragment>
+                              <TextField
+                                required={true}
+                                type='string'
+                                id={`productApiKey_${index}`}
+                                name={`productApiKey_${index}`}
+                                value={row.apiKey ? row.apiKey : ''}
+                                fullWidth
+                                autoComplete='off'
+                                className='textFieldStyle'
+                              />
+                              <Typography style={{ padding: '0 6px' }}>
+                                <ClearIcon
+                                  onClick={() => {
+                                    deleteApiKey(row, index);
+                                  }}
+                                />
+                              </Typography>
+                            </Fragment>
+                          ) : (
+                            <button
+                              onClick={() =>
+                                handleGeneralApiKeyButton(row, index)
+                              }
+                            >
+                              <Typography>Generate Api Key</Typography>
+                            </button>
+                            )*/}
+                            <button onClick={() => handleFeedbackConfigure(row, index)} >
+                              <Typography>Configure and Get</Typography>
+                            </button>
+                        </Typography>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
                         <div className={classes.actionsBlock}>
@@ -1037,7 +935,7 @@ const ManageProducts = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 <EditIcon
                                   onClick={() => {
-                                    props.editClicked(product.id, product.version);
+                                    props.editClicked(row.id, row.version);
                                   }}
                                 />
                               </Typography>
@@ -1052,14 +950,14 @@ const ManageProducts = (props: any) => {
                                     textAlign: 'center',
                                   }}
                                 >
-                                  Disable
+                                  <Text tid='delete' />
                                 </Typography>
                               }
                             >
                               <Typography style={{ padding: '0 6px' }}>
                                 <ClearIcon
                                   onClick={() => {
-                                    deleteClicked(product);
+                                    deleteClicked(row);
                                   }}
                                 />
                               </Typography>
@@ -1081,7 +979,7 @@ const ManageProducts = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 < AssignmentLateIcon
                                   onClick={() => {
-                                    props.feedbackClicked(product.id, product.version);
+                                    props.feedbackClicked();
                                   }}
                                 />
                               </Typography>
@@ -1139,9 +1037,10 @@ const ManageProducts = (props: any) => {
 
   return (
     <Fragment>
-      {
-      dialogOpen ? (
+      {dialogOpen ? (
         renderSoftwareDialog()
+      ) : feedbackDialogOpen ? (
+        renderFeedbackDialog()
       ) : fetchProducts ? (
         renderProductsTable()
       ) : (
@@ -1152,4 +1051,4 @@ const ManageProducts = (props: any) => {
     </Fragment>
   );
 };
-export default withRouter(ManageProducts);
+export default withRouter(EditProductFeedbackSettings);
