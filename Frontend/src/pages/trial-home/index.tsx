@@ -112,6 +112,7 @@ const TrialHome = (props: any) => {
           const tokenInfo: any = jwtDecode(
             user.signInUserSession.idToken.jwtToken
           );
+          localStorage.setItem('authToken', user.signInUserSession.idToken.jwtToken)
           saveUserData({
             idToken: user.signInUserSession.idToken.jwtToken,
             accessToken: user.signInUserSession.accessToken,

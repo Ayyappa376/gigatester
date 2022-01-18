@@ -1,5 +1,5 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, getSignedUrl, responseBuilder } from '@utils/index';
+import { appLogger, getURLForFeedbackFileDownload, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface GetTeam {
@@ -30,7 +30,7 @@ async function handler(request: GetTeam, response: Response) {
 
     if (params.fileKey && params.fileKey !== 'multiple') {
             try {
-                const url = await getSignedUrl(params.fileKey);
+                const url = await getURLForFeedbackFileDownload(params.fileKey);
                 appLogger.info({ downloadUrl: url });
                 return responseBuilder.ok({ filePath: url }, response);
             } catch (err) {
@@ -42,7 +42,7 @@ async function handler(request: GetTeam, response: Response) {
             Promise.all(body.map(async(imgUrl: string) => {
                 const urlSplit = imgUrl.split('/');
                 const name = urlSplit[urlSplit.length - 1];
-                const url = await getSignedUrl(name);
+                const url = await getURLForFeedbackFileDownload(name);
                 responseBody[imgUrl] = url;
             }))
             .then(() => responseBuilder.ok(responseBody, response))

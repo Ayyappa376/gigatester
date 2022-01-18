@@ -15,6 +15,7 @@ import { getImportantKeywords } from './methods';
 import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderCategoryFilter from './RenderCategoryFilter';
+import { updateSignedUrls, useActions } from '../../../actions';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -69,8 +70,7 @@ export const renderComments = (comments: string[] | undefined) => {
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
     const {isBugReport} = props;
-    const [signedUrlMapping, setsignedUrlMapping] = useState<any>({})
-    const [fetchAllUrls, setFecthAllUrls] = useState(false);
+    const [fetchAllUrls, setFetchAllUrls] = useState(false);
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
@@ -89,6 +89,11 @@ const RenderTable = (props: IProps) => {
     const [feedbackKeywords, setFeedbackKeywords] = useState<string[]>([])
     const [bugReportKeywords, setBugReportKeywords] = useState<string[]>([])
 
+    const updateSignedUrlData = useActions(updateSignedUrls);
+    const signedUrlMapping = useSelector(
+      (state: IRootState) => state.admin.signedUrls
+    );
+
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
         return;
@@ -97,7 +102,12 @@ const RenderTable = (props: IProps) => {
       return Promise.all(
         urls.map((url: string) => {
           return new Promise(async(resolve, reject) => {
-            const signedUrl: any = await getSignedUrl(url, stateVariable);
+            let signedUrl: any;
+            if(signedUrlMapping && signedUrlMapping[url]) {
+              signedUrl = signedUrlMapping[url]
+            } else {
+              signedUrl = await getSignedUrl(url, stateVariable);
+            }
             if (signedUrl) {
               signedUrlMappingCopy[url] = signedUrl;
               return resolve({});
@@ -106,8 +116,8 @@ const RenderTable = (props: IProps) => {
             }
           })
         })
-      ).then(() => {setFecthAllUrls(true);
-        setsignedUrlMapping(signedUrlMappingCopy)}).catch((error) => {console.log(error)});
+      ).then(() => {setFetchAllUrls(true);
+        updateSignedUrlData(signedUrlMappingCopy)}).catch((error) => {console.log(error)});
     }
 
     useEffect(() => {
@@ -428,7 +438,8 @@ const RenderTable = (props: IProps) => {
                               props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
                             }}
                           >
-                            <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img>
+                            <img src={signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] ?
+                              signedUrlMapping[row.feedbackMedia.image] : undefined} style={{width: 150, marginTop: 20}}></img>
                           </Link> : <div/> : <div/>
                           }
                         </div>

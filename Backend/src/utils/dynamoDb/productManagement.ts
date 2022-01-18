@@ -1,9 +1,9 @@
-import { ConfigItem, DeviceInfo, PlatformInfo, ProductInfo, TestSuite } from '@models/index';
+import { ConfigItem, DeviceInfo, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, getDevicesList, getPlatformsList, getProductConfig,  getTestSuites} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 //import { getUserDocumentFromEmail } from './getUserDocument';
-import { deleteItem, get, put, scan, update } from './sdk';
+import { get, put, scan, update } from './sdk';
 
 const regex = /Other:[a-zA-Z0-9!-*]/g;
 
@@ -20,6 +20,7 @@ export const createProduct = async (productData: ProductInfo, userId: string): P
         name: productData.name,
         platforms: productData.platforms,
         software: productData.software,
+        status: STATUS_PRODUCT_ACTIVE,
         // testers: productData.testers,
         testSuite: productData.testSuite,
         version: productData.version
@@ -98,73 +99,71 @@ appLogger.info({ getProductsList_scan_params: params });
 return scan<ProductInfo[]>(params);
 };
 
-export const deleteProduct = async (id: string, version: string, userId: string): Promise<ProductInfo | undefined> => {
+export const deleteProduct = async (id: string, version: string): Promise<ProductInfo> => {
+  const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
+    ExpressionAttributeNames: { '#status': 'status' },
+    ExpressionAttributeValues: { ':val': STATUS_PRODUCT_DELETED },
+    Key: {
+      id,
+      version,
+    },
+    TableName: TableNames.getProductsTableName(),
+    UpdateExpression: 'SET #status = :val',
+  });
+  appLogger.info({ deleteCampaign_update_params: params });
+  return update<ProductInfo>(params);
+};
+
+export const updateProduct = async (updateInfo: ProductInfo, userId: string): Promise<ProductInfo> => {
   if (!userId) {
     const err = new Error('Unauthorized attempt');
     appLogger.error(err);
     throw err;
   }
-  const params: DynamoDB.DeleteItemInput = <DynamoDB.DeleteItemInput>(<unknown>{
-      Key: {
-      id,
-      version,
-      },
-      TableName: TableNames.getProductsTableName(),
-  });
-  appLogger.info({ deleteProduct_delete_params: params });
-  return deleteItem(params);
-};
-
-export const updateProduct = async (updateInfo: ProductInfo, userId: string) => {
-    if (!userId) {
-      const err = new Error('Unauthorized attempt');
-      appLogger.error(err);
-      throw err;
-    }
-    const EAN: any = {};
-    const EAV: any = {};
-    let SET = 'SET ';
-    let sep = '';
-    Object.keys(updateInfo).forEach((val, i) => {
+  const EAN: any = {};
+  const EAV: any = {};
+  let SET = 'SET ';
+  let sep = '';
+  Object.keys(updateInfo).forEach((val, i) => {
+    if (
+      !(
+        val === 'id' || val === 'version'
+      )
+    ) {
       if (
-        !(
-          val === 'id' || val === 'version'
-        )
+        updateInfo[val].length > 0 &&
+        typeof updateInfo[val] === 'object'
       ) {
-        if (
-          updateInfo[val].length > 0 &&
-          typeof updateInfo[val] === 'object'
-        ) {
-          const item = new Array();
-          updateInfo[val].forEach((ele: any, j: number) => {
-            if ((typeof(ele) === 'string') && (ele.match(regex))) {
-              item.push(ele.split('Other:')[1]);
-            } else {
-              item.push(ele);
-            }
-          });
-          EAN[`#${val}`] = val;
-          EAV[`:${val}`] = item;
-          SET = SET + `${sep} #${val} = :${val}`;
-          sep = ',';
-        } else {
-          EAN[`#${val}`] = val;
-          EAV[`:${val}`] = updateInfo[val];
-          SET = SET + `${sep} #${val} = :${val}`;
-          sep = ',';
-        }
+        const item = new Array();
+        updateInfo[val].forEach((ele: any, j: number) => {
+          if ((typeof(ele) === 'string') && (ele.match(regex))) {
+            item.push(ele.split('Other:')[1]);
+          } else {
+            item.push(ele);
+          }
+        });
+        EAN[`#${val}`] = val;
+        EAV[`:${val}`] = item;
+        SET = SET + `${sep} #${val} = :${val}`;
+        sep = ',';
+      } else {
+        EAN[`#${val}`] = val;
+        EAV[`:${val}`] = updateInfo[val];
+        SET = SET + `${sep} #${val} = :${val}`;
+        sep = ',';
       }
-    });
-    const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
-      ExpressionAttributeNames: EAN,
-      ExpressionAttributeValues: EAV,
-      Key: {
-        id: updateInfo.id,
-        version: updateInfo.version,
-      },
-      TableName: TableNames.getProductsTableName(),
-      UpdateExpression: SET,
-    });
-    appLogger.info({ updateProduct_update_params: params });
-    return update<DynamoDB.UpdateItemInput>(params);
-  };
+    }
+  });
+  const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
+    ExpressionAttributeNames: EAN,
+    ExpressionAttributeValues: EAV,
+    Key: {
+      id: updateInfo.id,
+      version: updateInfo.version,
+    },
+    TableName: TableNames.getProductsTableName(),
+    UpdateExpression: SET,
+  });
+  appLogger.info({ updateProduct_update_params: params });
+  return update<ProductInfo>(params);
+};

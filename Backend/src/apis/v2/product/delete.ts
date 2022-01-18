@@ -33,7 +33,7 @@ async function handler(request: DelProducts, response: Response) {
     return responseBuilder.badRequest(err, response);
   }
 
-  const resp: any = await deleteProduct(params.id, params.version, headers.user.email);
+  const resp: any = await deleteProduct(params.id, params.version);
   appLogger.info({ deleteProduct_Resp: resp });
   return responseBuilder.ok(resp, response);
 }

@@ -25,7 +25,9 @@ import {
   DialogContent,
   CssBaseline,
   ListItemIcon,
-} from '@material-ui/core';
+  IconButton,
+} from "@material-ui/core";
+import CloseIcon from '@material-ui/icons/Close';
 import ClearIcon from '@material-ui/icons/Clear';
 import Notification from '../../../common/notification';
 import AddIcon from '@material-ui/icons/Add';
@@ -43,7 +45,7 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IProductInfo, IProductParams } from '../../../model';
+import { IProductInfo, IProductParams, ICategory } from '../../../model';
 import { AnyARecord } from 'dns';
 
 const useStyles = makeStyles((theme) => ({
@@ -74,6 +76,12 @@ const useStyles = makeStyles((theme) => ({
     marginRight: '20px',
     ...buttonStyle,
   },
+  closeButton: {
+    position: 'absolute',
+    right: theme.spacing(1),
+    top: theme.spacing(1),
+    color: theme.palette.grey[500],
+  },
 }));
 
 const ManageProducts = (props: any) => {
@@ -85,15 +93,16 @@ const ManageProducts = (props: any) => {
   const [allProducts, setAllProducts] = React.useState<IProductInfo[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [deleteProductId, setDeleteProductId] = useState('');
-  const [deleteProductVersion, setDeleteProductVersion] = useState('');
+//  const [deleteProductId, setDeleteProductId] = useState('');
+//  const [deleteProductVersion, setDeleteProductVersion] = useState('');
   const [searchString, setSearchString] = useState('');
   const [products, setProducts] = useState<IProductInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [softwareIndex, setSoftwareIndex] = useState({});
+  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
+  const [selectedProd, setSelectedProd] = useState<IProductInfo | undefined>(undefined);
   const [userParamState, setUserParamState] = React.useState<any>('');
   const [softwareOption, setSoftwareOption] = useState(false);
   const [fileContentType, setFileContentType] = useState('');
@@ -236,9 +245,10 @@ const ManageProducts = (props: any) => {
     setCurrentPage(event);
   };
 
-  const deleteClicked = (productId: string, version: string) => {
-    setDeleteProductId(productId);
-    setDeleteProductVersion(version);
+  const deleteClicked = (row: IProductInfo/* productId: string, version: string*/) => {
+//    setDeleteProductId(productId);
+//    setDeleteProductVersion(version);
+    setSelectedProd(row);
     setOpenModal(true);
   };
 
@@ -246,16 +256,17 @@ const ManageProducts = (props: any) => {
     setOpenModal(false);
   };
 
-  const deleteProduct = (productId: string, version: string) => {
+  const deleteProduct = (prod: IProductInfo/* productId: string, version: string */) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/products/${productId}/${version}`,
+      url: `/api/v2/products/${prod.id}/${prod.version}`,
       state: stateVariable,
     })
       .then((response: any) => {
         setBackdropOpen(false);
-        setDeleteProductId('');
-        setDeleteProductVersion('');
+//        setDeleteProductId('');
+//        setDeleteProductVersion('');
+        setSelectedProd(undefined);
         fetchProductList();
       })
       .catch((error) => {
@@ -275,8 +286,10 @@ const ManageProducts = (props: any) => {
   };
 
   const modalYesClicked = () => {
-    if (deleteProductId !== '') {
-      deleteProduct(deleteProductId, deleteProductVersion);
+    if(selectedProd) {
+      deleteProduct(selectedProd);
+//    if (deleteProductId !== '') {
+//      deleteProduct(deleteProductId, deleteProductVersion);
       setOpenModal(false);
     }
   };
@@ -284,6 +297,7 @@ const ManageProducts = (props: any) => {
   const closeDialog = () => {
     setDialogOpen(false);
     setSoftwareOption(false);
+    setSelectedProd(undefined);
   };
 
   const deleteSoftware = (row: any) => {
@@ -363,7 +377,7 @@ const ManageProducts = (props: any) => {
     }
   };
 
-  const handleChangeProductSoftware = (row: any) => {
+  const handleChangeProductSoftware = (row: IProductInfo | undefined) => {
     if (row) {
       if (userParamState) {
         row.software = userParamState;
@@ -399,7 +413,7 @@ const ManageProducts = (props: any) => {
       type: 'info',
     });
     Http.post({
-      url: `/api/v2/file/medium`,
+      url: `/api/v2/softwares/medium`,
       state: stateVariable,
       body: {
         fileName: fileName,
@@ -418,7 +432,7 @@ const ManageProducts = (props: any) => {
               type: 'info',
             });
             setFileName('');
-            handleChangeProductSoftware(softwareIndex);
+            handleChangeProductSoftware(selectedProd);
             // response.json();
           })
           .catch((error) => {
@@ -430,9 +444,9 @@ const ManageProducts = (props: any) => {
       });
   };
 
-  const handleGeneralApiKeyButton = (row: any, index: any) => {
+  const handleGeneralApiKeyButton = (row: IProductInfo, index: any) => {
     if (row) {
-      let productId: any = row.id;
+      let productId: string = row.id;
       Http.post({
         url: `/api/v2/productApiKey/`,
         state: stateVariable,
@@ -440,26 +454,26 @@ const ManageProducts = (props: any) => {
           productId,
         },
       })
-        .then((response: any) => {
-          if (row) {
-            row.apiKey = response.data.value;
-            row.apiId = response.data.id;
-            handleSave(row);
-            closeDialog();
-            setNotify({
-              isOpen: false,
-              message: 'Uploading...',
-              type: 'info',
-            });
-          }
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      .then((response: any) => {
+        if (row) {
+          row.apiKey = response.data.value;
+          row.apiId = response.data.id;
+          handleSave(row);
+          closeDialog();
+          setNotify({
+            isOpen: false,
+            message: 'Uploading...',
+            type: 'info',
+          });
+        }
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     }
   };
 
-  const deleteApiKey = (row: any, index: number) => {
+  const deleteApiKey = (row: IProductInfo, index: number) => {
     if (row) {
       setNotify({
         isOpen: true,
@@ -564,7 +578,7 @@ const ManageProducts = (props: any) => {
             component='span'
             variant='outlined'
             onClick={() => {
-              handleChangeProductSoftware(softwareIndex);
+              handleChangeProductSoftware(selectedProd);
             }}
             disabled={!softwareOption}
           >
@@ -586,7 +600,7 @@ const ManageProducts = (props: any) => {
     );
   };
 
-  const handleDialogUpload = () => {
+  const renderSoftwareDialog = () => {
     return (
       <React.Fragment>
         <Dialog
@@ -603,6 +617,9 @@ const ManageProducts = (props: any) => {
             <Typography style={{ fontSize: '14px' }}>
               <Text tid={'Upload Software'} />
             </Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
+              <CloseIcon />
+            </IconButton>
           </DialogTitle>
           <DialogContent style={{ marginBottom: '20px' }}>
             <CssBaseline />
@@ -615,10 +632,229 @@ const ManageProducts = (props: any) => {
     );
   };
 
-  const handleUploadButton = (row: any) => {
+  const handleUploadButton = (row: IProductInfo) => {
     setDialogOpen(true);
-    setSoftwareIndex(row);
+    setSelectedProd(row);
   };
+
+  const handleChangeCategory = (event: any, catIndex: number) => {
+    const temp: IProductInfo | undefined = selectedProd;
+    if (temp && temp.categories && temp.categories[catIndex] && event.target.value) {
+      temp.categories[catIndex].name = event.target.value;
+      setSelectedProd(temp);
+    }
+  };
+
+  const deleteCategory = (catIndex: number) => {
+    const temp: IProductInfo | undefined = selectedProd;
+    if (temp && temp.categories) {
+      temp.categories = temp.categories.splice(catIndex, 1);
+      setSelectedProd(temp);
+    }
+  };
+
+  const addCategory = () => {
+    const temp: IProductInfo | undefined = selectedProd;
+    if (temp) {
+      if (!temp.categories) {
+        temp.categories = [];
+      }
+      temp.categories.push({
+        name: '',
+        feedbacks: [],
+      });
+      setSelectedProd(temp);
+    }
+  };
+
+  const handleChangeFeedback = (event: any, catIndex: number, index: number) => {
+    const temp: IProductInfo | undefined = selectedProd;
+    if (temp && temp.categories && temp.categories[catIndex]) {
+      const tempCat = temp.categories[catIndex];
+      if(tempCat.feedbacks && tempCat.feedbacks[index] && event.target.value) {
+        tempCat.feedbacks[index] = event.target.value;
+        setSelectedProd(temp);
+      }
+    }
+  };
+
+  const deleteFeedback = (catIndex: number, index: number) => {
+    const temp: IProductInfo | undefined = selectedProd;
+    if (temp && temp.categories && temp.categories[catIndex]) {
+      const tempCat = temp.categories[catIndex];
+      if(tempCat.feedbacks) {
+        tempCat.feedbacks = tempCat.feedbacks.splice(index, 1);
+        setSelectedProd(temp);
+      }
+    }
+  };
+
+  const addFeedback = (catIndex: number) => {
+    const temp: IProductInfo | undefined = selectedProd;
+    if (temp && temp.categories && temp.categories[catIndex]) {
+      const tempCat = temp.categories[catIndex];
+      if (!tempCat.feedbacks) {
+        tempCat.feedbacks = [];
+      }
+      tempCat.feedbacks.push('');
+      setSelectedProd(temp);
+    }
+  };
+
+  const renderCategoryDetails = (category: ICategory, catIndex: number) => {
+    return (
+      <Fragment>
+        <Grid container spacing={1}>
+          <Grid item xs={11} sm={11}>
+            <TextField
+              id='category'
+              name='category'
+              label='Category Name'
+              fullWidth
+              onChange={(event) => handleChangeCategory(event, catIndex)}
+            />
+          </Grid>
+          <Grid item xs={1} sm={1}>
+            <div style={{ marginTop: "15px", cursor: "pointer" }}>
+              <AddIcon
+                fontSize="large"
+                onClick={() => {
+                  deleteCategory(catIndex);
+                }}
+              />
+            </div>
+          </Grid>
+          <Grid item xs={11}>
+            <Typography>Feedbacks:</Typography>
+          </Grid>
+          <Grid item xs={1}>
+            <div style={{ marginTop: "15px", cursor: "pointer" }}>
+              <AddIcon
+                fontSize="large"
+                onClick={() => {
+                  addFeedback(catIndex);
+                }}
+              />
+            </div>
+          </Grid>
+          { category.feedbacks &&
+            category.feedbacks.map((feedback: string, index: number) => {
+              return (
+                <Grid container spacing={1}>
+                  <Grid item xs={11} sm={11}></Grid>
+                  <Grid item xs={10} sm={10}>
+                  <TextField
+                    id='category'
+                    name='category'
+                    label='Category Name'
+                    fullWidth
+                    onChange={(event) => handleChangeFeedback(event, catIndex, index)}
+                  />
+                </Grid>
+                <Grid item xs={1} sm={1}>
+                  <div style={{ marginTop: "15px", cursor: "pointer" }}>
+                    <AddIcon
+                      fontSize="large"
+                      onClick={() => {
+                        deleteFeedback(catIndex, index);
+                      }}
+                    />
+                  </div>
+                </Grid>
+              </Grid>
+            );
+          })}
+        </Grid>
+      </Fragment>
+    );
+  };
+
+  const renderFeedbackDialog = () => {
+    return (
+      <React.Fragment>
+        <Dialog
+          className={classes.dialogPaper}
+          open={feedbackDialogOpen}
+          aria-labelledby='form-dialog-title'
+          onClose={closeFeedbackDialog}
+          fullWidth={true}
+        >
+          <DialogTitle
+            id='form-dialog-title'
+            style={{ textAlign: 'center', padding: '30px 0px' }}
+          >
+            <Typography style={{ fontSize: '14px' }}>
+              Configure Feedback Component
+            </Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={closeFeedbackDialog}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent style={{ marginBottom: '20px' }}>
+            <CssBaseline />
+            <Grid container spacing={1}>
+              <Grid item xs={11}>
+              <Typography>Categories:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <div style={{ marginTop: "15px", cursor: "pointer" }}>
+                  <AddIcon
+                    fontSize="large"
+                    onClick={() => {
+                      addCategory();
+                    }}
+                  />
+                </div>
+              </Grid>
+              { selectedProd && 
+                selectedProd.categories &&
+                selectedProd.categories.map((category: ICategory, index: number) => {
+                  return renderCategoryDetails(category, index);
+              })}
+              <Grid item xs={12} sm={12}>
+                <Button
+                  component='span'
+                  variant='outlined'
+                  disabled={softwareOption}
+                  className={classes.button}
+                  onClick={() => {
+                    storeCategoriesOfProd();
+                  }}
+                >
+                  Done
+                </Button>
+                <Button
+                  component='span'
+                  variant='outlined'
+                  className={classes.button}
+                  onClick={closeFeedbackDialog}
+                >
+                  Discard
+                </Button>
+              </Grid>
+            </Grid>
+          </DialogContent>
+        </Dialog>
+        <Notification notify={notify} setNotify={setNotify} />
+      </React.Fragment>
+    );
+  };
+
+  const handleFeedbackConfigure = (row: IProductInfo, index: number) => {
+    setFeedbackDialogOpen(true);
+    setSelectedProd(row);
+  }
+
+  const closeFeedbackDialog = () => {
+    setFeedbackDialogOpen(false);
+    setSelectedProd(undefined);
+  };
+
+  const storeCategoriesOfProd = () => {
+    //TODO: implement
+    setFeedbackDialogOpen(false);
+    setSelectedProd(undefined);
+  }
 
   const renderProductsTable = () => {
     return (
@@ -683,7 +919,8 @@ const ManageProducts = (props: any) => {
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
-                      <Text tid='Api key' />
+                      Feedback Component
+                      {/* <Text tid='Api key' /> */}
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
@@ -777,8 +1014,8 @@ const ManageProducts = (props: any) => {
                       >
                         <Typography className='tableBodyText'>
                           {/* {product.testers ? product.testers : 'testers'} */}
-                          {row.apiKey ? (
-                            <>
+                          {/*row.apiKey ? (
+                            <Fragment>
                               <TextField
                                 required={true}
                                 type='string'
@@ -796,7 +1033,7 @@ const ManageProducts = (props: any) => {
                                   }}
                                 />
                               </Typography>
-                            </>
+                            </Fragment>
                           ) : (
                             <button
                               onClick={() =>
@@ -805,7 +1042,10 @@ const ManageProducts = (props: any) => {
                             >
                               <Typography>Generate Api Key</Typography>
                             </button>
-                          )}
+                            )*/}
+                            <button onClick={() => handleFeedbackConfigure(row, index)} >
+                              <Typography>Configure and Get</Typography>
+                            </button>
                         </Typography>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
@@ -848,7 +1088,7 @@ const ManageProducts = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 <ClearIcon
                                   onClick={() => {
-                                    deleteClicked(row.id, row.version);
+                                    deleteClicked(row);
                                   }}
                                 />
                               </Typography>
@@ -929,7 +1169,9 @@ const ManageProducts = (props: any) => {
   return (
     <Fragment>
       {dialogOpen ? (
-        handleDialogUpload()
+        renderSoftwareDialog()
+      ) : feedbackDialogOpen ? (
+        renderFeedbackDialog()
       ) : fetchProducts ? (
         renderProductsTable()
       ) : (
