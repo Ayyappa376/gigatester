@@ -2715,13 +2715,13 @@ else{
                 },
                 validateFields: function(e){
                     e.preventDefault();
-                    console.log(this.form_data['category'], 'category')
-                    if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
-                        console.log('category')
-                    }
-                    else{
+                    // console.log(this.form_data['category'], 'category')
+                    // if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
+                    //     console.log('category')
+                    // }
+                    // else{
                         this.submitPost(e);
-                    }
+                    // }
                 },
                 postMediaContent: function(dataInfo){
                     let send_button = this.ui.controls.find(".gigatester-controls-send");
