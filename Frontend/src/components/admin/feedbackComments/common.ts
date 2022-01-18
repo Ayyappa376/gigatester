@@ -26,7 +26,11 @@ export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other'
 export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 
 export const CONST_FEEDBACK = 'FEEDBACK';
+export const CONST_FEEDBACK_CHART = 'FEEDBACK-CHART';
 export const CONST_BUG_REPORT = 'BUG_REPORT';
+export const CONST_BUG_REPORT_CHART = 'BUG-REPORT-CHART';
+
+export const NUMBER_OF_ITEMS_PER_FETCH = 100;
 
 export interface ProductInfo {
     description?: string;
@@ -77,3 +81,18 @@ export interface IAppFeedback {
     },
     feedbackType: FeedbackType;
   }
+
+export interface ILastEvaluatedKey {
+    id: string
+}
+
+export interface IRecusiveFeedbackItem {
+    Items: IAppFeedback[],
+    Count: number,
+    ScannedCount: number,
+    LastEvaluatedKey: ILastEvaluatedKey;
+}
+
+export interface IRecursiveFeedback {
+    Items: IRecusiveFeedbackItem
+}

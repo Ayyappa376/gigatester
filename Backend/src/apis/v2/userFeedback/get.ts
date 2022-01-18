@@ -1,6 +1,7 @@
 import { API, Handler } from '@apis/index';
 import {
   appLogger,
+  getChartData,
   getUserFeedbackList,
   responseBuilder,
 } from '@utils/index';
@@ -8,7 +9,7 @@ import { Response } from 'express';
 
 export type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
 
-export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
+export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT' | 'FEEDBACK-CHART' | 'BUG-REPORT-CHART';
 
 interface UserFeedbackRequest {
   headers: {
@@ -61,6 +62,10 @@ async function handler(
     if(!type) {
       feedback = await getUserFeedbackList({});
       return responseBuilder.ok({Items: feedback }, response);
+    }
+    if(type === 'FEEDBACK-CHART' || type === 'BUG-REPORT-CHART') {
+      const chartData = await getChartData({type})
+      return responseBuilder.ok({Items: chartData }, response);
     }
     feedback = await getUserFeedbackList({type,items, search, lastEvalKey, filter, filterType, prodId, prodVersion});
     return responseBuilder.ok({Items: feedback }, response);

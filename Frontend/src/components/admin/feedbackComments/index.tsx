@@ -4,7 +4,6 @@ import { buttonStyle } from '../../../common/common';
 import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
 import ReactApexChart from 'react-apexcharts'
-import { bugProcessBarChartData, bugProcessPieChartData, processBarChartData, processPieChartData } from './methods';
 import RenderTable, { renderComments, RenderStars } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
@@ -13,11 +12,12 @@ import ProductFilter, { VersionFilter } from './ProductFilter';
 import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE,
   SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL,
   SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, ILimitedProductDetails,
-  IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback } from './common';
+  IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH, IRecursiveFeedback, ILastEvaluatedKey, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, BudPriority, FeedbackCategory } from './common';
 import { withRouter } from 'react-router-dom';
+import { ProductDetails } from '../../../pages';
 
 
-export interface IProcessedData {
+export interface IFeedbackBarChartData {
   [key: string]: number
 }
 
@@ -29,8 +29,21 @@ interface IRatingMapData {
   productVersion?: string
 }
 
+interface IBugMapData {
+  severity?: BudPriority,
+  category?: FeedbackCategory;
+  date: number,
+  comments: string[] | undefined,
+  productId?: string,
+  productVersion?: string
+}
+
 interface IRatingMapping {
   [key : string] : IRatingMapData;
+};
+
+interface IBugDataMapping {
+  [key : string] : IBugMapData;
 };
 
 export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
@@ -54,6 +67,48 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
   })
 }
 
+const getFeedbackData = ({isBugReport, urlAppend}: any) => {
+  return new Promise((resolve, reject) => {
+    let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`+ urlAppend;
+    Http.get({
+      url,
+    }).then((response: any) => {
+      return resolve(response);      
+    })
+    .catch((error) => {
+      return reject(error);
+    });
+  })
+}
+
+const getChartData = async({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries}: any) => {
+    let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT_CHART : CONST_FEEDBACK_CHART}`;
+    Http.get({
+      url,
+    }).then((response: any) => {
+      const processedData = response.Items;
+      console.log(response)
+      if(isBugReport) {
+        setBugBarChartSeries([{
+          name: 'Severity',
+          data: Object.values(processedData.barChartData)
+        }])
+        setBugPieChartSeries(processedData.pieChartData)
+      } else {
+        setFeedbackBarChartData(processedData.barChartData);
+        const feedbackPieChartSeriesCopy = [];
+        const pieChartFeedbackBarChartData = processedData.pieChartData;
+        feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['satisfied']);
+        feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['somewhatSatisfied']);
+        feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['dissatisfied']);
+        setFeedbackPieChartSeries(feedbackPieChartSeriesCopy);
+      }
+    })
+    .catch((error) => {
+      console.error(error)
+    });
+}
+
 
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
@@ -64,12 +119,13 @@ const FeedbackComments = (props: any) => {
     const [productVersion, setProductVersion] = useState("");
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
-    const [processedData, setProcessedData] = useState < IProcessedData > ({});
+    const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
     const [showImageModal, setShowImageModal] = useState(false);
     const [signedImageUrl, setSignedImageUrl] = useState('');
     const [attachmentType, setAttachmentType] = useState('')
     const [focusAttachmentUid, setFocusAttachmentUid] = useState("");
     const [ratingMapping, setRatingMapping] = useState<IRatingMapping>({})
+    const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({})
     const [urlArray, setUrlArray] = useState<string[]>([]);
     const [barChartSeries, setBarChartSeries] = useState([{
       name: 'rating',
@@ -80,8 +136,9 @@ const FeedbackComments = (props: any) => {
       data: [0, 0, 0, 0, 0]
     }])
     const [selectedProdId, setSelectedProdId] = useState<string[]>([])
-    const [pieChartSeries, setPieChartSeries] = useState<number[]>([])
+    const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
     const [bugPieChartSeries, setBugPieChartSeries] = useState<{}>({})
+    const [lastEvaluatedKey, setLastEvaluatedKey] = useState("");
 
     const options: any = {
       chart: {
@@ -102,20 +159,14 @@ const FeedbackComments = (props: any) => {
     };
 
     useEffect(() => {
-      const series = [{
-        name: 'Ratings',
-        data: Object.values(processedData)
-      }];
-      setBarChartSeries(series);
-      if (Object.values(processedData).length > 0) {
-        const pieChartSeriesCopy = [];
-        const pieChartProcessedData = processPieChartData(processedData);
-        pieChartSeriesCopy.push(pieChartProcessedData['satisfied']);
-        pieChartSeriesCopy.push(pieChartProcessedData['somewhatSatisfied']);
-        pieChartSeriesCopy.push(pieChartProcessedData['dissatisfied']);
-        setPieChartSeries(pieChartSeriesCopy);
+      if(feedbackBarChartData) {
+        const series = [{
+          name: 'Ratings',
+          data: Object.values(feedbackBarChartData)
+        }];
+        setBarChartSeries(series);
       }
-    }, [processedData])
+    }, [feedbackBarChartData])
 
     const options2 = {
       labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
@@ -176,23 +227,44 @@ const FeedbackComments = (props: any) => {
 
     useEffect(() => {
       const rateMap: IRatingMapping = {};
+      const bugMap: IBugDataMapping = {};
       const urls: string[] = [];
+
+      if(isBugReport) {
+        data.forEach((item: IAppFeedback) => {
+          bugMap[item.id] = {
+            severity : item.bugPriority,
+            category: item.feedbackCategory,
+            date : item.createdOn,
+            comments: item.feedbackComments,
+            productId: item.productId,
+            productVersion: item.productVersion
+          }
+          if(item.feedbackMedia ) {
+            const links: any = Object.values(item.feedbackMedia);
+            const linksFiltered = links.filter((key: string) => key !== '')
+            urls.push(...linksFiltered);
+          }
+        });
+        setBugDataMapping(bugMap);
+      } else {
+        data.forEach((item: IAppFeedback) => {
+          rateMap[item.id] = {
+            rating : item.productRating,
+            date : item.createdOn,
+            comments: item.feedbackComments,
+            productId: item.productId,
+            productVersion: item.productVersion
+          }
+          if(item.feedbackMedia ) {
+            const links: any = Object.values(item.feedbackMedia);
+            const linksFiltered = links.filter((key: string) => key !== '')
+            urls.push(...linksFiltered);
+          }
+        });
+        setRatingMapping(rateMap);
+      }
       
-      data.forEach((item: IAppFeedback) => {
-        rateMap[item.id] = {
-          rating : item.productRating,
-          date : item.createdOn,
-          comments: item.feedbackComments,
-          productId: item.productId,
-          productVersion: item.productVersion
-        }
-        if(item.feedbackMedia ) {
-          const links: any = Object.values(item.feedbackMedia);
-          const linksFiltered = links.filter((key: string) => key !== '')
-          urls.push(...linksFiltered);
-        }
-      });
-      setRatingMapping(rateMap);
       const urlArrayCopy = [...urlArray];
       urlArrayCopy.push(...urls);
       setUrlArray(urlArrayCopy)
@@ -203,6 +275,7 @@ const FeedbackComments = (props: any) => {
         setProductVersion('all')
       }
       if(productVersion === 'all') {
+        console.log({rawData})
         const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0);
         setData(dataCopy)
       } else if (selectedProdId.length === 1) {         // Length should be equal to 1 because we want to choose the version if only one product is there
@@ -211,47 +284,61 @@ const FeedbackComments = (props: any) => {
       }
     }, [selectedProdId, productVersion])
 
-    const fetchData = () => {
-      setBackdropOpen(true);
-      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`;
+    
+
+    const fetchRecursiveData = async(lastEvalutedKey?: string) => {
+      let urlAppend = `?items=${NUMBER_OF_ITEMS_PER_FETCH}`
       if(props.productId) {
-        url += `?prodId=${props.productId}`;
+        urlAppend += `?prodId=${props.productId}`;
         if(props.productVersion) {
-          url += `&prodVersion=${props.productVersion}`;
+          urlAppend += `&prodVersion=${props.productVersion}`;
         }
       }
-      Http.get({
-          url,
-        }).then((response: any) => {
-          setData(response.Items);
-          setRawData(response.Items);
-          setProcessedData(processBarChartData(response.Items));
-          getProductDetails()
-        })
-        .catch((error) => {
-          const perror = JSON.stringify(error);
-          const object = JSON.parse(perror);
-          if (object.code === 401) {
-            props.history.push('/relogin');
-          }
-        });
+
+      if(lastEvalutedKey) {
+        urlAppend += urlAppend ? `&lastEvalKey=${lastEvalutedKey}` : `?lastEvalKey=${lastEvalutedKey}`
+      }
+
+      const response: any = await getFeedbackData({isBugReport, props, urlAppend}).catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          props.history.push('/relogin');
+        }
+        return;
+      })
+      const dataCopy = [...data].concat(response.Items.Items);
+      const rawDataCopy = [...rawData].concat(response.Items.Items)
+      console.log("data:", dataCopy)
+      console.log("rawData:", rawDataCopy)
+      setData(dataCopy);
+      setRawData(rawDataCopy);
+      //setFeedbackBarChartData(processBarChartData(response.Items.Items));
+      console.log(response.Items.LastEvaluatedKey)
+      if(response.Items.LastEvaluatedKey && response.Items.LastEvaluatedKey.id) {
+        setLastEvaluatedKey(response.Items.LastEvaluatedKey.id);
+      }
     }
 
     useEffect(() => {
-      fetchData()
+      if(lastEvaluatedKey) {
+        fetchRecursiveData(lastEvaluatedKey);
+      }
+    }, [lastEvaluatedKey])
+
+    useEffect(() => {
+      setBackdropOpen(true);
+      fetchRecursiveData();
+      getProductDetails();
+      getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
     }, [isBugReport])
 
     useEffect(() => {
-      if(isBugReport) {
-        const severityProcessedData = bugProcessBarChartData(rawData);
-
-        setBugBarChartSeries([{
-          name: 'Severity',
-          data: Object.values(severityProcessedData)
-        }])
-        setBugPieChartSeries(bugProcessPieChartData(rawData))
+      if(rawData.length > 0 && productInfo.length > 0) {
+        setBackdropOpen(false);
       }
-    }, [isBugReport])
+    }, [productInfo, rawData, feedbackBarChartData, feedbackPieChartSeries, bugBarChartSeries, bugBarChartSeries])
+
 
     const getProductDetails = () => {
         Http.get({
@@ -278,7 +365,6 @@ const FeedbackComments = (props: any) => {
               setProductInfo(productInfoCopy);
               setProdNameIdMapping(prodNameIdMappingCopy);
               setSelectedProdId(Object.keys(prodNameIdMappingCopy))
-              setBackdropOpen(false);
           }
         }).catch((error : any) => {
             console.error(error);
@@ -315,6 +401,9 @@ const FeedbackComments = (props: any) => {
     }
 
     const getDateString = (id: string) => {
+      if(isBugReport && bugDataMapping[id]) {
+        return getDate(bugDataMapping[id].date)
+      }
       if(ratingMapping[id]) {
         return getDate(ratingMapping[id].date)
       }
@@ -322,6 +411,9 @@ const FeedbackComments = (props: any) => {
     }
 
     const getComments = (id: string) => {
+      if(isBugReport && bugDataMapping[id]) {
+        return bugDataMapping[id].comments
+      }
       if(ratingMapping[id]) {
         return ratingMapping[id].comments
       }
@@ -329,8 +421,25 @@ const FeedbackComments = (props: any) => {
     }
 
     const getProductVersion = (id: string) => {
+      if(isBugReport && bugDataMapping[id]) {
+        return bugDataMapping[id].productVersion
+      }
       if(ratingMapping[id]) {
         return ratingMapping[id].productVersion
+      }
+      return ""
+    }
+
+    const getBugSeverity = (id: string) => {
+      if(bugDataMapping[id]) {
+        return bugDataMapping[id].severity
+      }
+      return ""
+    }
+
+    const getBugCategory = (id: string) => {
+      if(bugDataMapping[id]) {
+        return bugDataMapping[id].category
       }
       return ""
     }
@@ -369,7 +478,7 @@ const FeedbackComments = (props: any) => {
                 </Grid>
                 <Grid style={{padding: 15, paddingTop: 0}} item sm={5}>
                   <Grid container style={{marginTop: '20px'}}>
-                    <Grid item sm={5}>
+                    <Grid item sm={6}>
                       <div style={{display: 'flex'}}>
                       <Typography color="textSecondary" >Date: &nbsp;</Typography>
                       <Typography color="textPrimary" style={{fontWeight: 500}}>{getDateString(focusAttachmentUid)}</Typography>
@@ -380,7 +489,11 @@ const FeedbackComments = (props: any) => {
                       </div>
                     </Grid>
                     <Grid item sm={7}>
-                      <RenderStars rating={getRating(focusAttachmentUid)}/>
+                      {isBugReport ? <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary">Bug Severity: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getBugSeverity(focusAttachmentUid)}</Typography>
+                      </div> :
+                      <RenderStars rating={getRating(focusAttachmentUid)}/>}
                     </Grid>
                     </Grid>
                     <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>{renderComments(getComments(focusAttachmentUid))}</div>
@@ -395,14 +508,14 @@ const FeedbackComments = (props: any) => {
       return (
         <Container>
           <Grid container>
-            <Grid item lg={6}>
+            <Grid item xl={6}>
               <div style={{display:'flex', justifyContent: 'left'}}>
                 <Typography variant='h6' style={{padding: 10}}>Choose what do you want to see:</Typography>
                 <Button style={{padding: 10}} variant={isBugReport ? "outlined" : "contained"} color='primary' onClick={() => {setIsBugReport(false)}}>Feedback</Button>
                 <Button style={{padding: 10, marginLeft: 10}}variant={isBugReport ? "contained" : "outlined"} color='primary' onClick={() => {setIsBugReport(true)}}>Bugs</Button>
               </div>
             </Grid>
-            <Grid item lg={4} style={{position: 'relative'}}>
+            <Grid item xl={4} style={{position: 'relative'}}>
             <div style={{position: 'absolute', bottom: 0, minWidth: '100%'}}>
               <ProductFilter selectedProdId={selectedProdId}
                 setSelectedProdId={filterByProduct}
@@ -426,7 +539,7 @@ const FeedbackComments = (props: any) => {
               </Grid>
               <Grid item lg={2}></Grid>
               <Grid item lg={5}>
-                <ReactApexChart options={isBugReport ? bugPieChartOptions : options2} series={isBugReport? Object.values(bugPieChartSeries) : pieChartSeries} type="pie" width={500} height={320} />
+                <ReactApexChart options={isBugReport ? bugPieChartOptions : options2} series={isBugReport? Object.values(bugPieChartSeries) : feedbackPieChartSeries} type="pie" width={500} height={320} />
               </Grid>
             </Grid>
           </div>

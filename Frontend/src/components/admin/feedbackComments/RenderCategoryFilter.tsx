@@ -30,7 +30,7 @@ const RenderCategoryFilter = (props: IProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {categoryList.map((val) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(val)}} id={category === val ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
+                    <Button variant='outlined' key={val} onClick={() => {handleKeywordClick(val)}} id={category === val ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
                 )}
             </div>
         </div>

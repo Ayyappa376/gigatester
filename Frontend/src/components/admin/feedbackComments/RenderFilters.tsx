@@ -15,7 +15,7 @@ const ratingButtonValues=[
     {discription: "5-Star-Rating", value: 5 },
 ]
 
-const RenderRatingFilter = (props: IProps) => {
+const RenderRatingFilter = React.memo((props: IProps) => {
     const [rating, setRating] =useState(0);
 
     const handleKeywordClick = (val: number) => {
@@ -35,11 +35,11 @@ const RenderRatingFilter = (props: IProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {ratingButtonValues.map((el) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(el.value)}} id={rating === el.value ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el.discription}</Button>
+                    <Button variant='outlined' key={el.value} onClick={() => {handleKeywordClick(el.value)}} id={rating === el.value ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el.discription}</Button>
                 )}
             </div>
         </div>
     )
-}
+})
 
 export default RenderRatingFilter;

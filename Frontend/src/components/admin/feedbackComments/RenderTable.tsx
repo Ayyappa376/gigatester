@@ -11,7 +11,6 @@ import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
 import EnhancedTableHead from './TableMethods';
 import RenderRatingFilter from './RenderFilters';
-import { getImportantKeywords } from './methods';
 import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderCategoryFilter from './RenderCategoryFilter';
@@ -255,10 +254,10 @@ const RenderTable = (props: IProps) => {
         })
         setTableData(sortTableByDate(tableDataFiltered, 'desc'));
       }
-      getImportantKeywords(rawTableData).then((result: any) => {
+      /* getImportantKeywords(rawTableData).then((result: any) => {
         setFeedbackKeywords(result.feedbackKeywords);
         setBugReportKeywords(result.bugKeywords)
-      })
+      }) */
     }, [])
 
     const handleChangePage = (event: unknown, newPage: number) => {
@@ -440,7 +439,7 @@ const RenderTable = (props: IProps) => {
                           >
                             {
                               signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] ?
-                                <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img> : null
+                                <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img> : <div/>
                             }
                           </Link> : <div/> : <div/>
                           }
@@ -503,7 +502,7 @@ const RenderTable = (props: IProps) => {
                     </TableRow>
                   );
                 }
-              ): <div/>}
+              ): null}
               {emptyRows > 0 && (
                 <TableRow style={{ height: 53 * emptyRows }}>
                   <TableCell colSpan={6} />

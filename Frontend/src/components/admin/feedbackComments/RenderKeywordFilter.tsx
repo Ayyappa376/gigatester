@@ -34,7 +34,7 @@ export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {keywords.map((el) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(el)}} id={keyword === el ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
+                    <Button variant='outlined' key={el} onClick={() => {handleKeywordClick(el)}} id={keyword === el ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
                 )}
             </div>
         </div>
