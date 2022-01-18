@@ -888,6 +888,7 @@ else{
                             e.stopPropagation();
                             e.preventDefault();
                             this.cancelAnnotation();
+                            Feedback.removeComments();
                             Feedback.Tools.image_capture = false;
                         }.bind(this));
                         this.toolbar.find(".gigatester-toolbar-tool-colour-indicator-option").on("click", $.proxy(function(e) {
@@ -1572,6 +1573,7 @@ else{
                             $.each(this.comments, function(index, comment) {
                                 if (comment.screenshot_num === screenshot_num && comment.counter !== counter) {
                                     comment.hideForm()
+                                    console.log('comment form open')
                                 }
                             })
                         }, this),
@@ -1963,7 +1965,7 @@ else{
                     canvas.height = window.screen.height;
                     if(video && context){
                     context.drawImage(video, 0, 0, window.screen.width, window.screen.height);
-                    const frame = canvas.toDataURL("image/png");
+                    const frame = canvas.toDataURL("image/jpeg");
                     const image_overlay = $('<div id="gigatester_image_overlay"></div>')
                     const image =  $('<image id="gigatester_image_preview" preload="auto" src="' + frame + '"></image>');
                     image.appendTo(image_overlay)
@@ -2034,6 +2036,7 @@ else{
                     const base64Image = canvas.toDataURL()
                     setTimeout( function(){
                     Feedback.removeOverlay();
+                    Feedback.hideComments();
                     Feedback.Tools.removeTools()
                     Feedback.recording = true;
                     Feedback.form_data.rating =  Feedback.form_data.rating;
@@ -2176,7 +2179,7 @@ else{
                 },
                 loadImage: async function(src) {
                     Feedback.image_file = await fetch(src)
-                    .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_image_' + Feedback.UUIDv4() +'.png', { type: 'image/png' }));
+                    .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_image_' + Feedback.UUIDv4() +'.jpeg', { type: 'image/jpeg' }));
                     console.log(Feedback.image_file, 'image file loaded');
                 },
                 handleVideoError: function(e) {
@@ -2681,6 +2684,7 @@ else{
                     this.recording = false;
                     this.removeOverlay();
                     this.removeControls();
+                    this.removeComments();
                     this.form_data['category'] = "category";
                     this.form_data['priority'] = "priority";
                     console.log(this.form_data['priority']);
@@ -2760,6 +2764,11 @@ else{
                     let finalRating = 0;
                     let feedbackType='';
                     let form_settings = this.getFormSettings(this.form_type);
+                    let comments = [];
+                    $.each(this.comments, function(key, comment) {
+                        comments.push(comment.getData())
+                    });
+                    console.log(comments, 'canvas comments')
                     let send_button = this.ui.controls.find(".gigatester-controls-send");
                     send_button.addClass("gigatester-controls-send-loading")
                     $(document.getElementById('gigatester-loader')).addClass("gigatester-controls-loader")
@@ -2794,7 +2803,7 @@ else{
                           file: Feedback.external_file,
                           audio: Feedback.audio_file,
                         },
-                          feedbackComments: [this.form_data['description']],
+                          feedbackComments: { "generalComment" : this.form_data['description'], ...comments },
                           productKey: GigaTester.apiKey || 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T'
                         //   'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T',   
                       }
@@ -3057,7 +3066,7 @@ else{
                 e.stopPropagation()
             });
             this._getHTML = function() {
-                return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="ubmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
+                return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
             };
             this.isOpen = function() {
                 return element.find(".gigatester-comment-form").is(":visible")
@@ -3151,7 +3160,7 @@ else{
                 element.find("gtcomment").on("keydown", function(e) {
                     if (e.which === 13) {
                         if (e.ctrlKey || e.metaKey) {
-                            element.find('button[type="submit"]').click()
+                            element.find('button[type="submit"]').on('click')
                         }
                     }
                 });
@@ -3184,7 +3193,10 @@ else{
                     this.hideForm()
                 }.bind(this));
                 element.appendTo($(document.body));
-                element.find("gtcomment").focus()
+                element.find("gtcomment").on('focus', function(){
+                    console.log(comment_message,'comment focus')
+                })
+                element.find("gtcomment").val('').trigger('focus').val(comment_message);
             };
             this.getData = function() {
                 var screen_x = parseInt(this.x - this.scroll_l - this.offset_x, 10);

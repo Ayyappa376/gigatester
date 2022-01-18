@@ -852,7 +852,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
 .gigatester-comment .gigatester-comment-pin:hover {
   background-color: #0d54be;
 }
-.gigatester-comment .gigatester-comment-pin:before,
+/* .gigatester-comment .gigatester-comment-pin:before,
 .gigatester-comment .gigatester-comment-pin:after {
   z-index: 90;
   content: "";
@@ -866,7 +866,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   opacity: 0.2;
   pointer-events: none;
   animation: feedbackPin 2s ease-in 1s infinite;
-}
+} */
 @media (max-width: 800px) {
   .gigatester-comment .gigatester-comment-pin:before,
   .gigatester-comment .gigatester-comment-pin:after {
