@@ -6,7 +6,7 @@ import {
 } from '@utils/index';
 import { Response } from 'express';
 
-type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
+export type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
 
 export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
@@ -24,7 +24,7 @@ interface UserFeedbackRequest {
   query: {
     filter: string;
     filterType: FilterType;
-    items: number;
+    items: string;
     lastEvalKey: string;
     prodId?: string;
     prodVersion?: string;
@@ -57,7 +57,7 @@ async function handler(
   }
 
   try {
-    let feedback: any[];
+    let feedback: any;
     if(!type) {
       feedback = await getUserFeedbackList({});
       return responseBuilder.ok({Items: feedback }, response);

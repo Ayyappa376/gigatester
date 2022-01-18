@@ -1,4 +1,5 @@
-import { IAppFeedback, IProcessedData } from ".";
+import { IProcessedData } from ".";
+import { IAppFeedback } from "./common";
 import { BUG_REPORT } from "./RenderTable";
 
 const convertFirstLetterToUppercase = (str: string) => {
