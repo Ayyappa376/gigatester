@@ -1,6 +1,6 @@
 @import "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap";
 :root {
-  --widget-button-bg: #2878f0;
+  --widget-button-bg: #2787f0;
   --widget-button-text: #ffffff;
   --widget-outro-icon: #00c878;
 }
@@ -342,34 +342,61 @@ gttoolbar .gigatester-toolbar-tool-done span {
   font-size: 14px;
   font-weight: 500;
 }
+
 gttoolbar .gigatester-toolbar-close {
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: auto;
-  width: 32px;
-  height: 32px;
-  border-radius: 0 0 0 4px;
+  position: relative;
+  float: left;
+  width: auto;
+  min-width: 80px;
+  height: 34px;
+  padding: 0 10px;
+  margin: 5px 5px 0 10px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  right: 5px;
   background: #2878f0;
   background: var(--widget-button-bg);
-  opacity: 0;
-  animation: feedbackFadeIn 0.1s linear 0.3s forwards;
+  cursor: default;
+  text-align: center;
+  user-select: none;
+  transition: all 0.1s;
 }
 @media (max-width: 800px) {
   gttoolbar .gigatester-toolbar-close {
-    display: none;
+    float: right;
   }
 }
+gttoolbar .gigatester-toolbar-close.gigatester-toolbar-close-active {
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+}
 gttoolbar .gigatester-toolbar-close svg {
-  display: block;
-  width: 10px;
-  height: 10px;
-  margin: 11px;
+  display: none !important;
 }
-gttoolbar .gigatester-toolbar-close svg * {
-  fill: #fff;
-  fill: var(--widget-button-text);
+gttoolbar .gigatester-toolbar-close span {
+  width: auto;
+  height: auto;
+  line-height: normal;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  border-radius: 0;
+  background: none;
+  color: #fff;
+  color: var(--widget-button-text);
+  line-height: 34px;
+  font-size: 14px;
+  font-weight: 500;
 }
+
+
 gttoolbar .gigatester-toolbar-help {
   position: absolute;
   top: 2px;
@@ -1777,6 +1804,41 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   width: 12px;
   height: 12px;
   animation: feedbackRotate 0.8s linear infinite;
+}
+#gigatester-video-stop-btn-container{
+
+    background-color: #ffffff00;
+    height: 75px;
+    width: 75px;
+
+}
+#gigatester-video-stop-btn{
+    position: fixed;
+    bottom: 30px;
+    left: 50vw;
+    z-index: 214567;
+    border: 5px solid rgb(247, 80, 80);
+    background-color: rgba(255, 255, 255, 0.705);
+    border-radius: 50px;
+    height: 35px;
+    width: 35px;
+}
+.gigatester-video-stop-btn-tooltip{
+    color: white;
+    background: rgba(0, 0, 0, 0.747);
+    position: absolute;
+    border-radius: 5px;
+    border: 1px;
+    text-align: center;
+    width: 155px;
+    top: -24px;
+    left: -60px;
+    word-break: keep-all;
+}
+.gigatester-svg-hide{
+  width: 100vw;
+  height: 100vw;
+  background-color: #000;
 }
 .gigatester-controls-loader-toggle{
 display: flex;
@@ -4461,6 +4523,7 @@ background: #fafbfd;
 width: 100vw;
 height: 100vh;
 position: absolute;
+z-index: 100;
 top:0;
 bottom: 0;
 }

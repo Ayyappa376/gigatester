@@ -1,6 +1,5 @@
 import { Backdrop, Button, CircularProgress, Container, Divider, Grid, makeStyles, Modal, styled, Typography } from '@material-ui/core';
 import React, {useState, useEffect} from 'react';
-import { useSelector } from 'react-redux';
 import { buttonStyle } from '../../../common/common';
 import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
@@ -10,43 +9,16 @@ import RenderTable, { renderComments, RenderStars } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
-import ProductFilter, { ILimitedProductDetails, IProductNameIdMapping, ProductInfo, VersionFilter } from './ProductFilter';
-import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE, SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, CATEGORY_VIDEO, CATEGORY_AUDIO, CATEGORY_SCREEN, CATEGORY_IMAGES, CATEGORY_OTHER } from './common';
+import ProductFilter, { VersionFilter } from './ProductFilter';
+import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE,
+  SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL,
+  SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, ILimitedProductDetails,
+  IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback } from './common';
 import { withRouter } from 'react-router-dom';
 
 
 export interface IProcessedData {
   [key: string]: number
-}
-
-type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
-
-export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
-
-type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
-
-const CONST_FEEDBACK = 'FEEDBACK';
-const CONST_BUG_REPORT = 'BUG_REPORT';
-
-export interface IAppFeedback {
-  createdOn: number;
-  feedbackComments ? : string[];
-  id: string;
-  productId ? : string;
-  productRating: number;
-  productVersion ? : string;
-  userId ? : string;
-  sourceIP?: string;
-  feedbackCategory?: FeedbackCategory;
-  bugPriority: BudPriority;
-  feedbackMedia: {
-    image?: string,
-    video?: string,
-    file?: string,
-    audio?: string
-  },
-  feedbackType: FeedbackType;
-
 }
 
 interface IRatingMapData {
@@ -60,8 +32,6 @@ interface IRatingMapData {
 interface IRatingMapping {
   [key : string] : IRatingMapData;
 };
-
-
 
 export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
   if(!url) {
@@ -130,9 +100,6 @@ const FeedbackComments = (props: any) => {
         categories: [SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW],
       }
     };
-
-
-    
 
     useEffect(() => {
       const series = [{
@@ -333,6 +300,13 @@ const FeedbackComments = (props: any) => {
       })
     }
 
+    const handleViewAttachmentClicked = (url: string, id: string, type: string) => {
+      setShowImageModal(true);
+      setFocusAttachmentUid(id);
+      fetchSignedUrl(url)
+      setAttachmentType(type)
+    }
+
     const getRating = (id: string) => {
       if(ratingMapping[id]) {
         return ratingMapping[id].rating
@@ -352,13 +326,6 @@ const FeedbackComments = (props: any) => {
         return ratingMapping[id].comments
       }
       return undefined
-    }
-
-    const getProductId = (id: string) => {
-      if(ratingMapping[id]) {
-        return ratingMapping[id].productId
-      }
-      return ""
     }
 
     const getProductVersion = (id: string) => {
@@ -463,12 +430,7 @@ const FeedbackComments = (props: any) => {
               </Grid>
             </Grid>
           </div>
-          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={(url: string, id: string, type: string) => {
-            setShowImageModal(true);
-            setFocusAttachmentUid(id);
-            fetchSignedUrl(url)
-            setAttachmentType(type)
-          }} />
+          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} />
         </Container>
       )
     }

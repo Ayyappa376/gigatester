@@ -131,6 +131,24 @@ export function scanNonRecursive<T>(params: DynamoDB.ScanInput): Promise<T> {
   );
 }
 
+export function scanNonRecursiveRaw<T>(params: DynamoDB.ScanInput): Promise<T> {
+  return new Promise(
+    (resolve: (item: any) => void, reject: (err: AWS.AWSError) => any) => {
+      docClient.scan(
+        params,
+        async (err: AWS.AWSError, data: DynamoDB.ScanOutput) => {
+          if (err) {
+            appLogger.error(err);
+            return reject(err);
+          }
+          const result: any = data;
+          return resolve(result);
+        }
+      );
+    }
+  );
+}
+
 export function putMulti<T>(params: DynamoDB.BatchWriteItemInput): Promise<T> {
   return new Promise(
     (resolve: (item: any) => void, reject: (err: AWS.AWSError) => any) => {
