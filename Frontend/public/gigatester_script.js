@@ -6,6 +6,13 @@
             (d.head || d.body).appendChild(s);
         })(document);
     }
+    if(typeof window.rrweb === "undefined"){
+        (function(d) {
+            var s = d.createElement('script');s.async = true;
+            s.src = 'https://cdn.jsdelivr.net/npm/rrweb@0.7.0/dist/rrweb.min.js';
+            (d.head || d.body).appendChild(s);
+        })(document);
+     }
     if(typeof window.Snap === "undefined"){
         (function(d) {
             var s = d.createElement('script');s.async = true;
@@ -16,7 +23,7 @@
 
     console.log('inside function');
 function gigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
     console.log('inside giga timeout')
 }
 else{
@@ -251,6 +258,30 @@ else{
             outro_hand_clapping: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M383.4 96c5.125 0 10.16-2.453 13.25-7.016l32.56-48c1.854-2.746 2.744-5.865 2.744-8.951c0-8.947-7.273-16.04-15.97-16.04c-5.125 0-10.17 2.465-13.27 7.02l-32.56 48C368.3 73.76 367.4 76.88 367.4 79.97C367.4 88.88 374.7 96 383.4 96zM243.3 88.98C246.4 93.55 251.4 96 256.6 96c8.762 0 15.99-7.117 15.99-16.03c0-3.088-.8906-6.205-2.744-8.951l-32.56-48C234.2 18.46 229.1 15.98 223.1 15.98c-8.664 0-15.98 7.074-15.98 16.05c0 3.086 .8906 6.205 2.744 8.951L243.3 88.98zM320 96c8.844 0 16-7.156 16-16v-64C336 7.156 328.8 0 320 0s-16 7.156-16 16v64C304 88.84 311.2 96 320 96zM437.1 128c-8.65 0-16.73 1.951-24.45 4.691c10.81 12.4 18.81 27.17 22.94 43.61C437 176.3 437.5 176 437.1 176C452.4 176 464 187.6 464 202v136.5c0 40.8-19.67 77.73-50.36 100.8c-16.48 29.42-39.91 54.27-68.04 72.4C437.8 509.1 512 432.5 512 338.5V202.1C512 161.3 478.8 128 437.1 128zM408 338.5V202C408 161.2 374.8 128 333.1 128c-26.01 0-48.94 13.49-62.13 33.85L219.4 109.4C206.6 96.61 189.7 89.59 171.7 89.59c-23.29 0-43.86 11.85-55.1 29.85c-1.166-.0605-2.34-.0898-3.518-.0898c-37.22 0-67.5 30.28-67.5 67.5c0 1.178 .0313 2.352 .0898 3.518C26.73 202.5 14.88 223.1 14.88 246.4c0 9.186 1.824 18.09 5.299 26.31C7.73 284.9 0 301.1 0 320.8c0 18.03 7.021 34.98 19.77 47.73C104.9 453.6 148.2 512 236.8 512C331.2 512 408 434.2 408 338.5zM236.8 464c-65.85 0-97.3-43.72-183-129.5C49.9 330.7 48 325.7 48 320.8c0-10.39 8.361-19.5 19.5-19.5c4.99 0 9.979 1.906 13.79 5.715l51.33 51.33l17.06-17.06L68.59 260.2C64.78 256.3 62.88 251.4 62.88 246.4c0-10.39 8.361-19.5 19.5-19.5c4.99 0 9.979 1.906 13.79 5.715L177.3 313.7l17.06-17.06L98.35 200.6C94.54 196.8 92.64 191.8 92.64 186.8c0-10.39 8.361-19.5 19.5-19.5c4.99 0 9.979 1.906 13.79 5.715l95.97 95.97l17.06-17.06L157.9 170.9C154.1 167.1 152.2 162.1 152.2 157.1c0-10.39 8.361-19.5 19.5-19.5c4.99 0 9.979 1.906 13.79 5.715L308 265.9V202c0-14.36 11.63-26 25.1-26C348.4 176 360 187.6 360 202v136.5C360 406.2 306.4 464 236.8 464z"/></svg>',
             outro_message_check: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M311.3 136.4L232.2 228.7L202.5 199c-9.375-9.375-24.56-9.375-33.94 0s-9.375 24.56 0 33.94l48 48c4.5 4.5 10.62 7.031 16.97 7.031c.3125 0 .625 0 .9062-.0313C241.1 287.7 247.4 284.7 251.7 279.6l96-112c8.625-10.06 7.469-25.22-2.594-33.84C335.1 125.2 319.9 126.3 311.3 136.4zM447.1 0h-384c-35.25 0-64 28.75-64 63.1v287.1c0 35.25 28.75 63.1 64 63.1h96v83.1c0 9.836 11.02 15.55 19.12 9.7l124.9-93.7h144c35.25 0 64-28.75 64-63.1V63.1C511.1 28.75 483.2 0 447.1 0zM464 352c0 8.75-7.25 16-16 16h-160l-80 60v-60H64c-8.75 0-16-7.25-16-16V64c0-8.75 7.25-16 16-16h384c8.75 0 16 7.25 16 16V352z"/></svg>'
         };
+        const Session_Recorder = {
+            recordSession: function(){
+                let events = [];
+
+                rrweb.record({
+                emit(event) {
+                    // push event into the events array
+                    events.push(event);
+                    console.log(events);
+                },
+                });
+                let stopFn = rrweb.record({
+                    emit(event) {
+                      if (events.length > 100) {
+                        // stop after 100 events
+                        console.log(events);
+                        stopFn();
+                      }
+                    },
+                  });
+                
+                // setInterval(this.recordSession(), 10000);
+            },       
+        }
         const Lang = {
             language: "en",
             en: {
@@ -345,7 +376,7 @@ else{
             // request_url: "https://dev.gigatester.io",
             // proxy_url: "https://proxy.gigatester.io",
             static_url: "https://s3.amazonaws.com/dev.gigatester.io",
-            widget_css: "https://s3.amazonaws.com/dev.gigatester.io/gigatester.css",
+            widget_css: "./gigatester.css",
             http_header: [],
             canvas_mode: false,
             canvas_target: false,
@@ -517,6 +548,7 @@ else{
                 loadConfigs: function() {
                     console.log('load configs')
                     var response = {}
+                    Session_Recorder.recordSession();
                     this.loadConfigSuccess.call(this, response);
                 },
                 loadConfigSuccess: function(response) {
@@ -550,7 +582,7 @@ else{
                     }).appendTo($(parent_node));
                     var self = this;
                     var _interval_id = setInterval(function() {
-                        var detector = $("<div>").addClass("userback-load-detector").appendTo($(document.body));
+                        var detector = $("<div>").addClass("gigatester-load-detector").appendTo($(document.body));
                         if (detector.css("z-index") == 1999) {
                             callback.call(self);
                             clearInterval(_interval_id)
@@ -562,6 +594,7 @@ else{
                 },
                 addButton: function() {
                     console.log('add button')
+                    
                     if (this.ui.button) {
                         return
                     }
@@ -604,10 +637,10 @@ else{
                 },
                 setScreenStatus: function(message) {
                     if (!this.ui.screen_status) {
-                        // this.ui.screen_status = $("<gtdiv>").addClass("gigatester-screen-status").attr("data-html2canvas-ignore", "true");
-                        this.ui.screen_status.appendTo($(document.body))
+                        this.ui.screen_status = $("<gtdiv>").addClass("gigatester-screen-status").attr("data-html2canvas-ignore", "true");
+                        this.ui.screen_status.appendTo($(document.body));
                     }
-                    this.ui.screen_status.text(message)
+                    this.ui.screen_status.text(message);
                 },
                 clearScreenStatus: function() {
                     if (this.ui.screen_status) {
@@ -643,7 +676,8 @@ else{
                 },
                 modalClose: function() {
                     $("gtmodal").remove();
-                    $(document.body).removeClass("gigatester-modal-open")
+                    $(document.body).removeClass("gigatester-modal-open");
+                    Session_Recorder.recordSession();
                 },
                 addOverlay: function() {
                     if (this.ui.overlay) {
@@ -652,8 +686,8 @@ else{
                     this.ui.element.attr("drawing", "true");
                     this.hideControls();
                     var dpr = typeof window.devicePixelRatio === "undefined" ? 1 : window.devicePixelRatio;
-                    this.ui.overlay = $("<gtdiv>").addClass("gigatester-overlay").html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("tooltype", this.Tools.type);
-                    // .attr("data-html2canvas-ignore", "true")
+                    this.ui.overlay = $("<gtdiv>").addClass("gigatester-overlay").html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("lang", Feedback.configs.language).attr("tooltype", this.Tools.type);
+                    // .attr("data-html2canvas-ignore", "true");
                     if (this.canvas_mode) {
                         this.ui.overlay.attr("canvas", "true")
                     }
@@ -686,6 +720,7 @@ else{
                     }.bind(this);
                     this.ui.overlay.on("mouseenter", function(e) {
                         if (!this.ui.overlay.attr("screenshot-capturing") && !this.ui.overlay_hint_tooltip && !this.overlay_hint_tooltip_added) {
+                            console.log('overlay hint');
                             this.ui.overlay_hint_tooltip = $("<div>").addClass("gigatester-overlay-hint-cursor");
                             _setTooltipPos(e);
                             this.ui.overlay_hint_tooltip.appendTo(this.ui.overlay)
@@ -801,12 +836,11 @@ else{
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-line" data-type="line" title="' + "line" + '">' + Svg_Icons.line + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-arrow" data-type="arrow" title="' + "arrow" + '">' + Svg_Icons.arrow + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + "blackout" + '">' + Svg_Icons.blackout + "</btn>"
-                        //  + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-text" data-type="text" title="' + "text" + '">' + Svg_Icons.text + "</btn>"
+                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-text" data-type="text" title="' + "text" + '">' + Svg_Icons.text + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-colour" data-type="colour">' + tool_colour_indicator + "</btn>"
                          + '<btn class="gigatester-toolbar-tool-done' + (Feedback.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + Lang.get("capture_screenshot") + '">' + Svg_Icons.tick + "<span>" + (Lang.get("next") ? Lang.get("capture") : Lang.get("save")) + "</span>" + "</btn>"
-                         + (Feedback.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "Close" + '">' + "<span>" + Lang.get("close") + "<span>" + "</btn>") + (display_tutorial ? '<btn class="gigatester-toolbar-help">' + Svg_Icons.widget_question + "</btn>" : "");
-                        this.toolbar = $("<gttoolbar>").attr("lang", Feedback.configs.language);
-                        //.attr("data-html2canvas-ignore", "true")
+                         + (Feedback.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "Cancel" + '">' + "<span>" + Lang.get("cancel") + "<span>" + "</btn>") + (display_tutorial ? '<btn class="gigatester-toolbar-help">' + Svg_Icons.widget_question + "</btn>" : "");
+                        this.toolbar = $("<gttoolbar>").attr("lang", Feedback.configs.language).attr("data-html2canvas-ignore", "true");
                         this.toolbar.html(tools);
                         this.setToolColour();
                         this.toolbar.appendTo($(document.body));
@@ -844,7 +878,7 @@ else{
                                 console.log('isliveconfigs')
                                 return
                             }
-                            Feedback.recordImage();
+                            Feedback.finalScreenshot();
                             // Session_Recorder.addCustomEvent("widget_open", {
                             //     type: "widget_interaction",
                             //     name: "Capture Screenshot"
@@ -982,7 +1016,7 @@ else{
                                 }
                             }
                         } else {
-                            if (this.draw_started || this.image_capture) {
+                            if (this.draw_started) {
                                 console.log(this.image_capture, 'img capture')
                                 return
                             }
@@ -1094,7 +1128,7 @@ else{
                             var movement_x = Math.abs(this.start_x - x);
                             var movement_y = Math.abs(this.start_y - y);
                             if (!$(event.target).hasClass("gigatester-svg-delete") && movement_x <= 2 && movement_y <= 2) {
-                                // Feedback.commentStart.call(Feedback, event)
+                                Feedback.commentStart.call(Feedback, event)
                             }
                             this.dragging_obj = false;
                             this.start_x = 0;
@@ -1135,7 +1169,7 @@ else{
                                     }
                                 }
                                 this.setBasePathSize();
-                                // Feedback.commentStart.call(Feedback, event);
+                                Feedback.commentStart.call(Feedback, event);
                                 Feedback.ui.overlay.trigger("mouseleave")
                             } else {
                                 var icon_x = x - 12;
@@ -1430,6 +1464,7 @@ else{
                     if (!this.ui.overlay) {
                         return
                     }
+                    $(document.getElementById('gigatester_image_overlay')).remove()
                     this.ui.element.removeAttr("drawing");
                     if (this.ui.overlay.overlay_hint_tooltip) {
                         this.ui.overlay.overlay_hint_tooltip.remove();
@@ -1471,6 +1506,7 @@ else{
                     $(window).scrollTop(this._scroll_top)
                 },
                 disableScroll: function() {
+                    console.log('disabled scroll');
                     if (this._scroll_disabled) {
                         return
                     }
@@ -1513,6 +1549,71 @@ else{
                     });
                     $(document).off("keydown", this._scrollKeyDown)
                 },
+                addComment: function(x, y) {
+                    console.log('add comments')
+                    this.closeEmptyComment();
+                    let screenshot_num = this.screenshot_data_uri.length;
+                    let counter = 0;
+                    $.each(this.comments, function(index, comment) {
+                        if (comment.screenshot_num === screenshot_num) {
+                            counter++
+                        }
+                    });
+                    let comment = new Comment({
+                        x: x,
+                        y: y,
+                        scroll_l: this.canvas_mode ? 0 : $(window).scrollLeft(),
+                        scroll_t: this.canvas_mode ? 0 : $(window).scrollTop(),
+                        offset_x: this.canvas_mode ? this.ui.overlay.offset().left : 0,
+                        offset_y: this.canvas_mode ? this.ui.overlay.offset().top : 0,
+                        screenshot_num: screenshot_num,
+                        counter: counter,
+                        onOpen: $.proxy(function(counter) {
+                            $.each(this.comments, function(index, comment) {
+                                if (comment.screenshot_num === screenshot_num && comment.counter !== counter) {
+                                    comment.hideForm()
+                                }
+                            })
+                        }, this),
+                        onDelete: $.proxy(function(counter) {
+                            var index_lookup = false;
+                            $.each(this.comments, function(index, comment) {
+                                if (comment.screenshot_num === screenshot_num && counter === comment.counter) {
+                                    index_lookup = index
+                                }
+                            });
+                            if (index_lookup !== false) {
+                                this.comments.splice(index_lookup, 1)
+                            }
+                            var new_counter = 0;
+                            $.each(this.comments, function(index, comment) {
+                                if (comment.screenshot_num === screenshot_num) {
+                                    comment.setCounter(new_counter);
+                                    new_counter++
+                                }
+                            })
+                        }, this)
+                    });
+                    comment.add();
+                    this.comments.push(comment)
+                },
+                hideComments: function() {
+                    $.each(this.comments, function(index, comment) {
+                        comment.hide()
+                    })
+                },
+                removeComments: function() {
+                    var screenshot_num = this.screenshot_data_uri.length;
+                    var new_comments = [];
+                    $.each(this.comments, function(index, comment) {
+                        if (comment.screenshot_num === screenshot_num) {
+                            comment.destroy()
+                        } else {
+                            new_comments.push(comment)
+                        }
+                    });
+                    this.comments = new_comments
+                },
                 removeFeedbackView: function() {
                     if (!this.ui.feedback_view) {
                         return
@@ -1550,7 +1651,7 @@ else{
                     this.ui.controls.on("mouseenter", "gtrating > gtdiv", this.previewRating.bind(this));
                     this.ui.controls.on("mouseleave", "gtrating > gtdiv", this.unPreviewRating.bind(this));
                     this.ui.controls.on("change", ".gigatester-controls-attachment", this.uploadAttachment.bind(this));
-                    this.ui.controls.on("submit", ".gigatester-controls-options", this.submitPost.bind(this));
+                    this.ui.controls.on("submit", ".gigatester-controls-options", this.validateFields.bind(this));
                     this.ui.controls.on("change", 'select[name="category"]', this.changeCategory.bind(this));
                     this.ui.controls.on("change", 'select[name="priority"]', this.changePriority.bind(this));
                     // this.ui.controls.on("change", 'select[name="assignee"]', this.changeAssignee.bind(this));
@@ -1590,7 +1691,7 @@ else{
                 },
                 setControls: function() {
                     var routing_items = {};
-                    routing_items.screenshot = this.configs.workflow_type.indexOf("capture") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-draw">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_screenshot) || Lang.get("draw_on_the_screen")) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_screenshot_help) || Lang.get("draw_on_the_screen_help")) + "</gtdiv>" + "</gtroutemenu>";
+                    routing_items.screenshot = this.configs.workflow_type.indexOf("capture") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-draw">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_screenshot) || Lang.get("attach_a_screenshot")) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_screenshot_help) || Lang.get("draw_on_the_screen_help")) + "</gtdiv>" + "</gtroutemenu>";
                     routing_items.video = this.configs.workflow_type.indexOf("video") === -1 || !this.configs.has_video || Feedback.is_mobile ? "" : '<gtroutemenu class="gigatester-feedback-type-video">' + Svg_Icons.feedback_video + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_video) || Lang.get("capture_video", true)) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_video_help) || Lang.get("capture_video_help", true)) + "</gtdiv>" + "</gtroutemenu>";
                     routing_items.bug = this.configs.workflow_type.indexOf("bug") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="bug">' + Svg_Icons.feedback_bug + "<gtdiv>" +  Lang.get("report_bug", true) + "</gtdiv>" + "<gtdiv>" +  Lang.get("report_bug_help", true) + "</gtdiv>" + "</gtroutemenu>";
                     routing_items.feature_request = this.configs.workflow_type.indexOf("feature_request") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="feature_request">' + Svg_Icons.feedback_feature_request + "<gtdiv>" +  Lang.get("feature_request", true) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_feature_request_help) || Lang.get("feature_request_help", true)) + "</gtdiv>" + "</gtroutemenu>";
@@ -1658,7 +1759,7 @@ else{
                     var default_category = this.form_data.category || GigaTester.categories || Feedback.categories || "";
                     var default_priority = this.form_data.priority || GigaTester.priority || Feedback.priority || "";
                     // var default_assignee = this.form_data.assignee || "";
-                    var default_rating = this.form_data.rating || "";
+                    var default_rating = this.form_data.rating || 0;
                     var priority_options = '<option value="critical">Critical</option>' + '<option value="high">High</option>' + '<option value="medium">Medium</option>' + '<option value="low">Low</option>';
                     var category_options = "";
                     console.log(form_settings.display_category)
@@ -1707,7 +1808,7 @@ else{
                      + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + (display_screenshot || display_audio || display_video || display_attachment ?  Feedback.recording ? '<gtdiv class="gigatester-controls-attach-actions" ">' + "<gtdiv>" : '<gtdiv class="gigatester-controls-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
                      + (display_screenshot ? '<btn class="gigatester-controls-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>"
-                     + "<gttooltip>" + Lang.get("draw_on_the_screen") + "</gttooltip>"
+                     + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>"
                      + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
                      + (display_audio ? '<btn class="gigatester-controls-audio">' + Svg_Icons.mic + "<gtdiv>" + Lang.get("capture_audio") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("capture_audio") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
@@ -1789,11 +1890,13 @@ else{
                     }
                     else {
                         console.log('overlay screenhsot')
-                        this.addOverlay()
+                        
+                        // this.addOverlay()
                     }
                 },
                 overlayImage: function(){
-                    this.addOverlay();
+                    this.recordImage();
+                    // this.addOverlay();
                 },
                 recordImage: async function(e){
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -1834,6 +1937,7 @@ else{
                             Feedback.ui.element.attr("drawing", "false");
                             const completeBlob = new Blob(chunks, { type: "video/mp4" });
                             const src = URL.createObjectURL(completeBlob);
+                            Feedback.Tools.image_capture = 'false';
                             console.log(src, 'image blob')
                             const image_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                             const video = $('<video width="0" height="0" id="gigatester_image_preview_player" preload="auto" src="' + src + '"></video>');
@@ -1864,90 +1968,93 @@ else{
                     const image =  $('<image id="gigatester_image_preview" preload="auto" src="' + frame + '"></image>');
                     image.appendTo(image_overlay)
                     image_overlay.appendTo(document.body)
+                    this.addOverlay();
+                    Feedback.disableScroll();
                     console.log(frame);
-                    Feedback.Tools.image_capture = false;
-                    $(document.getElementById('gigatester_image_overlay')).remove()
-                    Feedback.removeOverlay();
-                    Feedback.recording = true;
-                    Feedback.form_data.rating =  Feedback.form_data.rating;
-                    Feedback.form_data.comment_field =  Feedback.form_data.comment_field
-                    Feedback.form_data.category = Feedback.form_data.category
-                    console.log( Feedback.form_data.rating, 'feedback rating')
-                    Feedback.setFormHTML();
-                    Feedback.showControls();
-                    if(Feedback.form_data.rating){
-                        this.selectedRating();
-                    }
-                    const images_overlay = $('<div id="gigatester_images_player"><div></div></div>');
-                    const images = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + frame + '"></image>');
-                    const images_close = $('<btn id="gigatester_images_player_close">').html(Svg_Icons.close);
-                    // video.appendTo(video_overlay.children("div"));
-                    images_close.appendTo(images_overlay);
-                    console.log(images, 'imgs')
-                    images.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                    // Feedback.loadImage(base64Image);
-                    Feedback.loadImage(frame);
-                    console.log(frame, 'final screenshot');
+                    // Feedback.Tools.image_capture = false;
+                    // $(document.getElementById('gigatester_image_overlay')).remove()
+                    // Feedback.removeOverlay();
+                    // Feedback.recording = true;
+                    // Feedback.form_data.rating =  Feedback.form_data.rating;
+                    // Feedback.form_data.comment_field =  Feedback.form_data.comment_field
+                    // Feedback.form_data.category = Feedback.form_data.category
+                    // console.log( Feedback.form_data.rating, 'feedback rating')
+                    // Feedback.setFormHTML();
+                    // Feedback.showControls();
+                    // if(Feedback.form_data.rating){
+                    //     this.selectedRating();
+                    // }
+                    // const images_overlay = $('<div id="gigatester_images_player"><div></div></div>');
+                    // const images = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + frame + '"></image>');
+                    // const images_close = $('<btn id="gigatester_images_player_close">').html(Svg_Icons.close);
+                    // // video.appendTo(video_overlay.children("div"));
+                    // images_close.appendTo(images_overlay);
+                    // console.log(images, 'imgs')
+                    // images.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                    // // Feedback.loadImage(base64Image);
+                    // Feedback.loadImage(frame);
+                    // console.log(frame, 'final screenshot');
                     }
                 },
-                // finalScreenshot: async function(){
-                //     const annoted = document.getElementById('gigatester_image_overlay')
-                //     console.log(annoted, 'annoted')
-                //     html2canvas(document.body, {
-                //         width: window.innerWidth,
-                //         height: window.innerHeight,
-                //         windowWidth: window.innerWidth,
-                //         windowHeight: window.innerHeight,
-                //         x:0,
-                //         y:window.pageYOffset
-                //     } ).then(function(canvas) {
+                finalScreenshot: async function(){
+                    Feedback.setScreenStatus("Taking screenshot...");
+                    const annoted = document.getElementById('gigatester_image_overlay')
+                    console.log(annoted, 'annoted')
+                    html2canvas(document.body, {
+                        useCORS: true,
+                        allowTaint : true,
+                        width: window.innerWidth,
+                        height: window.innerHeight,
+                        windowWidth: window.innerWidth,
+                        windowHeight: window.innerHeight,
+                        x:0,
+                        y:window.pageYOffset
+                    } ).then(function(canvas) {
                     
-                //     if(canvas){
-                //     const croppedCanvas = document.createElement('canvas')
-                //     const croppedCanvasContext = croppedCanvas.getContext('2d')
-                //     console.log(canvas, '2d');
-                //     console.log(window.innerHeight, 'inHeight');
-                //     console.log(window.innerWidth, 'inwidth');
-                //     // init data
-                //     const cropPositionTop = 0
-                //     const cropPositionLeft = 0
-                //     const cropWidth = window.innerWidth
-                //     const cropHeight = window.innerHeight
-                //     croppedCanvas.width = cropWidth
-                //     croppedCanvas.height = cropHeight
-                //     if(croppedCanvasContext){
-                //     croppedCanvasContext.drawImage(
-                //         canvas,
-                //         cropPositionLeft,
-                //         cropPositionTop,
-                //     )
-                //     }
-                //     const base64Image = canvas.toDataURL()
-                //     setTimeout( function(){$(document.getElementById('gigatester_image_overlay')).remove()
-                //     Feedback.removeOverlay();
-                //     Feedback.Tools.removeTools()
-                //     Feedback.recording = true;
-                //     Feedback.form_data.rating =  Feedback.form_data.rating;
-                //     Feedback.setFormHTML();
-                //     if(Feedback.form_data.rating){
-                //         this.selectedRating();
-                //     }
-                //     Feedback.showControls();
-                //     const image_overlay = $('<div id="gigatester_images_player"><div></div></div>');
-                //     const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
-                //     const image_close = $('<btn id="gigatester_images_player_close">').html(Svg_Icons.close);
-                //     // video.appendTo(video_overlay.children("div"));
-                //     image_close.appendTo(image_overlay);
-                //     console.log(image, 'imgs')
-                //     image.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                //     Feedback.loadImage(base64Image);
-                //     console.log(base64Image, 'final screenshot');
-                // },1000);
-                    
-                    
-    
-                // }});
-                // },
+                    if(canvas){
+                    const croppedCanvas = document.createElement('canvas')
+                    const croppedCanvasContext = croppedCanvas.getContext('2d')
+                    console.log(canvas, '2d');
+                    console.log(window.innerHeight, 'inHeight');
+                    console.log(window.innerWidth, 'inwidth');
+                    // init data
+                    const cropPositionTop = 0
+                    const cropPositionLeft = 0
+                    const cropWidth = window.innerWidth
+                    const cropHeight = window.innerHeight
+                    croppedCanvas.width = cropWidth
+                    croppedCanvas.height = cropHeight
+                    if(croppedCanvasContext){
+                    croppedCanvasContext.drawImage(
+                        canvas,
+                        cropPositionLeft,
+                        cropPositionTop,
+                    )
+                    }
+                    const base64Image = canvas.toDataURL()
+                    setTimeout( function(){
+                    Feedback.removeOverlay();
+                    Feedback.Tools.removeTools()
+                    Feedback.recording = true;
+                    Feedback.form_data.rating =  Feedback.form_data.rating;
+                    Feedback.setFormHTML();
+                    if(Feedback.form_data.rating){
+                        Feedback.selectedRating();
+                    }
+                    Feedback.showControls();
+                    Feedback.clearScreenStatus();
+                    const image_overlay = $('<div id="gigatester_images_player"><div></div></div>');
+                    const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
+                    const image_close = $('<btn id="gigatester_images_player_close">').html(Svg_Icons.close);
+                    // video.appendTo(video_overlay.children("div"));
+                    image_close.appendTo(image_overlay);
+                    console.log(image, 'imgs')
+                    image.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                    Feedback.loadImage(base64Image);
+                    console.log(base64Image, 'final screenshot');
+                },1000);
+                }});
+                },
                 // screenshotAnnotedCanvas: async function(){
                 //     try{
                 //         this.Tools.removeDeleteIcons();
@@ -2334,7 +2441,7 @@ else{
                 },
                 selectedRating: function(){
                     var form_settings = this.getFormSettings(this.form_type);
-                    var rating = this.form_data.rating || "";
+                    var rating = this.form_data.rating || 0;
                     console.log('ratings', rating)
                     if (form_settings.rating_type) {
                         var selected_icon = this.ui.controls.find("gtrating > gtdiv:not(.inactive):last");
@@ -2602,8 +2709,18 @@ else{
                     }
                     reader.readAsDataURL(fileSelected);            
                 },
+                validateFields: function(e){
+                    e.preventDefault();
+                    console.log(this.form_data['category'], 'category')
+                    if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
+                        console.log('category')
+                    }
+                    else{
+                        this.submitPost(e);
+                    }
+                },
                 postMediaContent: function(dataInfo){
-                    var send_button = this.ui.controls.find(".gigatester-controls-send");
+                    let send_button = this.ui.controls.find(".gigatester-controls-send");
                     send_button.addClass("gigatester-controls-send-loading")
                     console.log(dataInfo, 'dataInfo');
                     fetch('https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedbackMedia/', {
@@ -2650,7 +2767,7 @@ else{
                     console.log( this.form_data['category']);
                     console.log( this.form_data['priority']);
                     console.log(Feedback.image_file, 'img file')
-                    if(this.form_data.rating){
+                    if(parseInt(this.form_data.rating) > 0){
                         finalRating = parseInt(this.form_data.rating)
                         feedbackType = 'FEEDBACK'
                     }
@@ -2887,6 +3004,12 @@ else{
                         }
                     }
                 },
+                closeEmptyComment: function() {
+                    if (this.comments.length && this.comments[this.comments.length - 1].isEmpty()) {
+                        this.comments[this.comments.length - 1].destroy();
+                        this.comments.splice(this.comments.length - 1, 1)
+                    }
+                },
                 submitUnsavedComment: function() {
                     this.comments.forEach(function(comment) {
                         if (comment.isOpen()) {
@@ -2910,10 +3033,176 @@ else{
                             comment.hideForm()
                         });
                         this.addComment(pin_x, pin_y);
-                        Feedback.disableScroll()
+                        Feedback.disableScroll();
                     }
                 }, 
             }
+        let Comment = function(options) {
+            "use strict";
+            this.x = options.x;
+            this.y = options.y;
+            this.scroll_t = options.scroll_t;
+            this.scroll_l = options.scroll_l;
+            this.offset_x = options.offset_x;
+            this.offset_y = options.offset_y;
+            this.counter = options.counter;
+            this.screenshot_num = options.screenshot_num;
+            this.onDelete = options.onDelete;
+            this.onOpen = options.onOpen;
+            this.is_new = true;
+            var element = $("<div>").addClass("gigatester-comment")
+            // .attr("data-html2canvas-ignore", "true");
+            var comment_message = "";
+            element.on("click mouseup mousedown", function(e) {
+                e.stopPropagation()
+            });
+            this._getHTML = function() {
+                return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="ubmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
+            };
+            this.isOpen = function() {
+                return element.find(".gigatester-comment-form").is(":visible")
+            };
+            this.isEmpty = function() {
+                return comment_message ? false : true
+            };
+            this.setCounter = function(counter) {
+                this.counter = counter;
+                element.find(".gigatester-comment-pin > span").text(counter + 1)
+            };
+            this.submit = function() {
+                element.find(".gigatester-button-input").click()
+            }, this.show = function() {
+                element.show()
+            };
+            this.hide = function() {
+                element.hide()
+            };
+            this.showForm = function() {
+                element.find(".gigatester-comment-form").show();
+                element.find("gtcomment").html(Lib.htmlEntities(comment_message, true)).focus()
+            };
+            this.hideForm = function() {
+                element.find(".gigatester-comment-form-delete").show();
+                element.find(".gigatester-comment-form").hide()
+            };
+            this.setPosition = function(x, y) {
+                this.x = x;
+                this.y = y;
+                this.setFormDirection();
+                element.css({
+                    top: this.y,
+                    left: this.x
+                })
+            };
+            this.setFormDirection = function() {
+                var is_mobile = false;
+                // Feedback.isMobile();
+                var form_width = is_mobile ? 210 : 430;
+                var form_height = is_mobile ? 150 : 200;
+                if (is_mobile) {
+                    if (this.x > $(window).width() / 2) {
+                        element.find(".gigatester-comment-form").attr("xdirection", "left")
+                    } else {
+                        element.find(".gigatester-comment-form").attr("xdirection", "right")
+                    }
+                    if (this.y > 140) {
+                        element.find(".gigatester-comment-form").attr("ydirection", "top")
+                    } else {
+                        element.find(".gigatester-comment-form").attr("ydirection", "down")
+                    }
+                } else {
+                    if ($(window).scrollLeft() + $(window).width() - this.x >= form_width) {
+                        element.find(".gigatester-comment-form").attr("xdirection", "right")
+                    } else {
+                        element.find(".gigatester-comment-form").attr("xdirection", "left")
+                    }
+                    if ($(window).scrollTop() + $(window).height() - this.y >= form_height) {
+                        element.find(".gigatester-comment-form").attr("ydirection", "down")
+                    } else {
+                        element.find(".gigatester-comment-form").attr("ydirection", "top")
+                    }
+                }
+            };
+            this.add = function() {
+                element.css({
+                    top: this.y,
+                    left: this.x
+                });
+                element.html(this._getHTML());
+                this.setFormDirection();
+                element.find(".gigatester-comment-pin").on("click", function(e) {
+                    this.showForm();
+                    this.onOpen(this.counter)
+                }.bind(this));
+                element.find(".gigatester-comment-form-close").on("click", function(e) {
+                    e.stopPropagation();
+                    if (this.is_new) {
+                        this.destroy();
+                        this.onDelete(this.counter);
+                        return
+                    }
+                    this.hideForm()
+                }.bind(this));
+                element.find(".gigatester-comment-form-delete").on("click", function(e) {
+                    e.stopPropagation();
+                    this.destroy();
+                    this.onDelete(this.counter)
+                }.bind(this));
+                element.find("gtcomment").on("keydown", function(e) {
+                    if (e.which === 13) {
+                        if (e.ctrlKey || e.metaKey) {
+                            element.find('button[type="submit"]').click()
+                        }
+                    }
+                });
+                element.find("gtcomment").on("keyup", function(e) {
+                    if ($(this).html() === "<br>") {
+                        $(this).html("")
+                    }
+                });
+                element.find("gtcomment").on("paste", function(e) {
+                    e.preventDefault();
+                    try {
+                        var text = (e.originalEvent || e).clipboardData.getData("text/plain");
+                        document.execCommand("insertText", false, text)
+                    } catch (e) {}
+                });
+                element.find(".gigatester-button-input").on("click", function(e) {
+                    comment_message = element.find("gtcomment").html();
+                    comment_message = comment_message.replace(/<br\/?>/gi, "\n");
+                    comment_message = comment_message.replace(/(<([^>]+)>)/gi, "");
+                    comment_message = comment_message.replace(/&nbsp;/gi, " ");
+                    comment_message = comment_message.replace(/&lt;/gi, "<");
+                    comment_message = comment_message.replace(/&gt;/gi, ">");
+                    comment_message = comment_message.replace(/&amp;/gi, "&");
+                    comment_message = comment_message.replace(/&quot;/gi, '"');
+                    comment_message = comment_message.trim();
+                    if (!comment_message) {
+                        return
+                    }
+                    this.is_new = false;
+                    this.hideForm()
+                }.bind(this));
+                element.appendTo($(document.body));
+                element.find("gtcomment").focus()
+            };
+            this.getData = function() {
+                var screen_x = parseInt(this.x - this.scroll_l - this.offset_x, 10);
+                var screen_y = parseInt(this.y - this.scroll_t - this.offset_y, 10);
+                return {
+                    screen_x: screen_x,
+                    screen_y: screen_y,
+                    screen_number: this.counter + 1,
+                    screenshot_num: this.screenshot_num,
+                    message: comment_message
+                }
+            };
+            this.destroy = function() {
+                element.remove();
+                element = undefined;
+                comment_message = ""
+            }
+        };
         let GigaTester_Api = {
             isLoaded: function() {
                 console.log('js api')
