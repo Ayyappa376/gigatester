@@ -45,8 +45,9 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IProductInfo, IProductParams, ICategory, IFeedbackSettings } from '../../../model';
-import { AnyARecord } from 'dns';
+import { IProductInfo, IProductParams, ICategory, IFeedbackSettings, FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, RATING_ICON_TYPE_STAR, SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW } from '../../../model';
+import { MANAGE_PRODUCTS } from '../../../pages/admin';
+import { LightTooltip } from '../../common/tooltip';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -82,6 +83,11 @@ const useStyles = makeStyles((theme) => ({
     top: theme.spacing(1),
     color: theme.palette.grey[500],
   },
+  sections: {
+    width: '100%',
+    marginTop: '20px',
+    padding: '10px',
+  },
 }));
 
 const EditProductFeedbackSettings = (props: any) => {
@@ -91,11 +97,11 @@ const EditProductFeedbackSettings = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [feedbackSettings, setFeedbackSettings] = React.useState<
-    IFeedbackSettings | undefined
+  const [productParams, setProductParams] = React.useState<
+    IProductParams | undefined
   >();
-  const [prodId, setProdId] = React.useState<string>('');
-  const [prodVersion, setProdVersion] = React.useState<string>('');
+//  const [prodId, setProdId] = React.useState<string>('');
+//  const [prodVersion, setProdVersion] = React.useState<string>('');
 //  const [fetchProducts, setFetchProducts] = React.useState(false);
 //  const [allProducts, setAllProducts] = React.useState<IProductInfo[]>([]);
 //  const [backdropOpen, setBackdropOpen] = React.useState(false);
@@ -105,7 +111,7 @@ const EditProductFeedbackSettings = (props: any) => {
   // const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   // const [itemsPerPage, setItemsPerPage] = useState(10);
   // const [currentPage, setCurrentPage] = useState(1);
-  // const [dialogOpen, setDialogOpen] = useState(false);
+//  const [dialogOpen, setDialogOpen] = useState(false);
   // const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   // const [selectedProd, setSelectedProd] = useState<IProductInfo | undefined>(undefined);
   // const [userParamState, setUserParamState] = React.useState<any>('');
@@ -120,28 +126,43 @@ const EditProductFeedbackSettings = (props: any) => {
   // });
   // const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   // const [orderBy, setOrderBy] = useState('name');
-  // const [notify, setNotify] = useState({
-  //   isOpen: false,
-  //   message: '',
-  //   type: '',
-  // });
+  const [notify, setNotify] = useState({
+    isOpen: false,
+    message: '',
+    type: '',
+  });
   const [failure, setFailure] = useState(false);
-  const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
-  );
-  let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
+  const [failureMessage, setFailureMessage] = useState('Something went wrong');
+  const [success, setSuccess] = useState(false);
+  const [successMessage, setSuccessMessage] = useState('Saved successfully');
 
   useEffect(() => {
     Http.get({
-      url: `/api/v2/feedbackSettings/${props.productId}/${props.version}`,
+      url: `/api/v2/products/${props.productId}/${props.version}`,
       state: stateVariable,
     })
     .then((response: any) => {
 //      fixMultiSelectValuesAndSave(response);
-      setFeedbackSettings(response);
-      setProdId(props.productId);
-      setProdVersion(props.version);
+      if(!response.products[0].feedbackSettings) {
+        response.products[0].feedbackSettings = {
+          categories: [],
+          feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
+          ratingIcon: RATING_ICON_TYPE_STAR,
+          severities: [SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW],
+          title: 'GigaTester',
+          uploadFileMaxSize: '3',
+          videoAudioMaxDuration: '3',
+          widgetLookAndFeel: {
+            bgColor: '#2878f0',
+            fgColor: '#ffffff',
+            font: 'inherit',
+            icon: '',
+            position: 'center right',
+            text: 'feedback',
+          }
+        };
+      }
+      setProductParams(response);
       setFeedbackSettingsFetched(true);
     })
     .catch((error: any) => {
@@ -201,51 +222,92 @@ const EditProductFeedbackSettings = (props: any) => {
       setOpenModal(false);
     }
   };
-*/
+
   const closeDialog = () => {
     setDialogOpen(false);
-    setSoftwareOption(false);
-    setSelectedProd(undefined);
+//    setSoftwareOption(false);
+//    setSelectedProd(undefined);
   };
- 
-  const handleSave = (row: any) => {
-    const postData = { products: [].concat({ ...row }) };
-    if (postData) {
-      if (postData.products[0]) {
-        Http.put({
-          url: `/api/v2/products`,
-          body: {
-            ...postData,
-          },
-          state: stateVariable,
-        })
-          .then((response: any) => {
-            setSearchString('');
-            setSearchButtonPressed(true);
-            // setDialogOpen(false);
-            // setProductPosted(true);
-          })
-          .catch((error: any) => {
-            // handleSaveError(error);
-          });
-      } else {
-        Http.post({
-          url: `/api/v2/products`,
-          body: {
-            ...postData,
-          },
-          state: stateVariable,
-        })
-          .then((response: any) => {
-            // setProductPosted(true);
-          })
-          .catch((error: any) => {
-            // handleSaveError(error);
-          });
-      }
+*/
+
+  const handleSave = () => {
+    if(mandatoryFieldsCheck()) {
+      const postData = productParams;
+      Http.put({
+        url: `/api/v2/products/${props.productId}/${props.version}`,
+        body: {
+          ...postData,
+        },
+        state: stateVariable,
+      })
+      .then((response: any) => {
+//          setProdId('');
+//          setProdVersion('');
+        setFeedbackSettingsPosted(true);
+      })
+      .catch((error: any) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 400) {
+          setFailureMessage(object.apiError.msg);
+        } else if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          setFailureMessage('Something went wrong');
+          setFailure(true);
+        }
+      });
     }
   };
 
+  function mandatoryFieldsCheck(): boolean {
+    if(!(productParams && productParams.products && productParams.products[0] &&
+        productParams.products[0].feedbackSettings)) {
+      setFailureMessage('No data found to save');
+      setFailure(true);
+      return false;
+    }
+
+    if(productParams.products[0].feedbackSettings.categories.length < 1) {
+      setFailureMessage('You must specify at least one category');
+      setFailure(true);
+      return false;
+    }
+
+    if(productParams.products[0].feedbackSettings.feedbackTypes.length < 1) {
+      setFailureMessage('You must choose at least one feedback type');
+      setFailure(true);
+      return false;
+    }
+
+    if(productParams.products[0].feedbackSettings.ratingIcon.length < 1) {
+      setFailureMessage('You must select a rathing icon');
+      setFailure(true);
+      return false;
+    }
+
+    if(productParams.products[0].feedbackSettings.title.length < 1) {
+      setFailureMessage('You must specify a title or name to display on the widget dialog');
+      setFailure(true);
+      return false;
+    }
+
+    if(productParams.products[0].feedbackSettings.uploadFileMaxSize.length < 1) {
+      setFailureMessage('You must select the maximum allowed size of uploaded file');
+      setFailure(true);
+      return false;
+    }
+
+    if(productParams.products[0].feedbackSettings.videoAudioMaxDuration.length < 1) {
+      setFailureMessage('You must select the maximum allowed duration of audio and video recordings');
+      setFailure(true);
+      return false;
+    }
+
+    return true;
+  }
+
+/*
   const handleChangeProductSoftware = (row: IProductInfo | undefined) => {
     if (row) {
       if (userParamState) {
@@ -312,38 +374,46 @@ const EditProductFeedbackSettings = (props: any) => {
         console.log(error);
       });
   };
-
-  const handleGeneralApiKeyButton = (row: IProductInfo, index: any) => {
-    if (row) {
-      let productId: string = row.id;
+*/
+  const handleGenerateApiKey = () => {
+    if (productParams && productParams.products && productParams.products[0]) {
+      let productId: string = productParams.products[0].id;
       Http.post({
-        url: `/api/v2/productApiKey/`,
+        url: `/api/v2/productApiKey`,
         state: stateVariable,
         body: {
           productId,
         },
       })
       .then((response: any) => {
-        if (row) {
-          row.apiKey = response.data.value;
-          row.apiId = response.data.id;
-          handleSave(row);
-          closeDialog();
-          setNotify({
-            isOpen: false,
-            message: 'Uploading...',
-            type: 'info',
-          });
+        if(productParams) {
+          const temp: IProductParams | undefined = { ...productParams };
+            if (temp && temp.products && temp.products[0]) {
+            temp.products[0].apiKey = response.data.value;
+            temp.products[0].apiId = response.data.id;
+            setProductParams(temp);
+//          handleSave(); //TODO: should save only apiKey and apiId, not any other data.
+//          closeDialog();
+            setNotify({
+              isOpen: false,
+              message: 'Uploading...',
+              type: 'info',
+            });
+          }
         }
+        setSuccessMessage('Api Key Generated Successfully');
+        setSuccess(true);
       })
       .catch((error) => {
         console.log(error);
+        setFailureMessage('API Key Generation Failed');
+        setFailure(true);
       });
     }
   };
 
-  const deleteApiKey = (row: IProductInfo, index: number) => {
-    if (row) {
+  const deleteApiKey = () => {
+    if (productParams && productParams.products && productParams.products[0]) {
       setNotify({
         isOpen: true,
         message: 'Deleting... ',
@@ -351,31 +421,42 @@ const EditProductFeedbackSettings = (props: any) => {
       });
 
       Http.deleteReq({
-        url: `/api/v2/productApiKey/${row.apiId}`,
+        url: `/api/v2/productApiKey/${productParams.products[0].apiId}`,
         state: stateVariable,
       })
-        .then((response: any) => {
-          setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
-          setFailure(true);
-          if (row) {
-            /* tslint:disable-next-line */
-            row.apiKey = '';
-            row.apiId = '';
-            handleSave(row);
-            closeDialog();
+      .then((response: any) => {
+        if(productParams) {
+          const temp: IProductParams | undefined = { ...productParams };
+          if (temp && temp.products && temp.products[0]) {
+            delete temp.products[0].apiKey;
+            delete temp.products[0].apiId;
+            setProductParams(temp);
+  //          handleSave(); //TODO: should save only apiKey and apiId, not any other data.
+  //          closeDialog();
             setNotify({
               isOpen: false,
               message: 'Deleting... ',
               type: 'info',
             });
           }
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
+        }
+        setSuccessMessage('Api Key Deleted Successfully');
+        setSuccess(true);
+      })
+      .catch((error: any) => {
+        console.log(error);
+        setFailureMessage('Api Key Deletion Failed');
+        setFailure(true);
+      });
     }
   };
 
+  const handleClose = () => {
+    setFailure(false);
+    setSuccess(false);
+  };
+
+/*
   const handleChangedValue = (event: any) => {
     if (event.target.value) {
       setUserParamState(event.target.value);
@@ -384,10 +465,6 @@ const EditProductFeedbackSettings = (props: any) => {
     } else {
       setSoftwareOption(false);
     }
-  };
-
-  const handleClose = () => {
-    setFailure(false);
   };
 
   const uploadForm = () => {
@@ -493,7 +570,6 @@ const EditProductFeedbackSettings = (props: any) => {
           <DialogContent style={{ marginBottom: '20px' }}>
             <CssBaseline />
             {uploadForm()}
-            {/* {verifyEmail ? signUpAcknowledgement() : signUpForm()} */}
           </DialogContent>
         </Dialog>
         <Notification notify={notify} setNotify={setNotify} />
@@ -505,68 +581,80 @@ const EditProductFeedbackSettings = (props: any) => {
     setDialogOpen(true);
     setSelectedProd(row);
   };
-
-  const handleChangeCategory = (event: any, catIndex: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex] && event.target.value) {
-      temp.categories[catIndex].name = event.target.value;
-      setSelectedProd(temp);
+*/
+  const handleChangeCategoryName = (event: any, catIndex: number) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if(temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings && event.target.value) {
+        temp.products[0].feedbackSettings.categories[catIndex].name = event.target.value;
+        setProductParams(temp);
+      }
     }
   };
 
   const deleteCategory = (catIndex: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories) {
-      temp.categories = temp.categories.splice(catIndex, 1);
-      setSelectedProd(temp);
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        temp.products[0].feedbackSettings.categories = temp.products[0].feedbackSettings.categories.splice(catIndex, 1);
+        setProductParams(temp);
+      }
     }
   };
 
   const addCategory = () => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp) {
-      if (!temp.categories) {
-        temp.categories = [];
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        temp.products[0].feedbackSettings.categories.push({
+          name: '',
+          feedbacks: [],
+        });
+        setProductParams(temp);
       }
-      temp.categories.push({
-        name: '',
-        feedbacks: [],
-      });
-      setSelectedProd(temp);
     }
   };
 
   const handleChangeFeedback = (event: any, catIndex: number, index: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex]) {
-      const tempCat = temp.categories[catIndex];
-      if(tempCat.feedbacks && tempCat.feedbacks[index] && event.target.value) {
-        tempCat.feedbacks[index] = event.target.value;
-        setSelectedProd(temp);
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings
+        && temp.products[0].feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
+        if(tempCat.feedbacks && tempCat.feedbacks[index] && event.target.value) {
+          tempCat.feedbacks[index] = event.target.value;
+          setProductParams(temp);
+        }
       }
     }
   };
 
   const deleteFeedback = (catIndex: number, index: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex]) {
-      const tempCat = temp.categories[catIndex];
-      if(tempCat.feedbacks) {
-        tempCat.feedbacks = tempCat.feedbacks.splice(index, 1);
-        setSelectedProd(temp);
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings
+        && temp.products[0].feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
+        if(tempCat.feedbacks) {
+          tempCat.feedbacks = tempCat.feedbacks.splice(index, 1);
+          setProductParams(temp);
+        }
       }
     }
   };
 
   const addFeedback = (catIndex: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex]) {
-      const tempCat = temp.categories[catIndex];
-      if (!tempCat.feedbacks) {
-        tempCat.feedbacks = [];
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings
+        && temp.products[0].feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
+        if (!tempCat.feedbacks) {
+          tempCat.feedbacks = [];
+        }
+        tempCat.feedbacks.push('');
+        setProductParams(temp);
       }
-      tempCat.feedbacks.push('');
-      setSelectedProd(temp);
     }
   };
 
@@ -580,37 +668,38 @@ const EditProductFeedbackSettings = (props: any) => {
               name='category'
               label='Category Name'
               fullWidth
-              onChange={(event) => handleChangeCategory(event, catIndex)}
+              onChange={(event) => handleChangeCategoryName(event, catIndex)}
             />
           </Grid>
           <Grid item xs={1} sm={1}>
-            <div style={{ marginTop: "15px", cursor: "pointer" }}>
-              <AddIcon
-                fontSize="large"
-                onClick={() => {
-                  deleteCategory(catIndex);
-                }}
-              />
-            </div>
+            <LightTooltip
+              title={'Delete this Category'}
+              aria-label='delete this category'
+            >
+              <IconButton size='small' onClick={() => deleteCategory(catIndex)} >
+                <ClearIcon />
+              </IconButton>
+            </LightTooltip>
           </Grid>
-          <Grid item xs={11}>
-            <Typography>Feedbacks:</Typography>
+          <Grid item xs={1}></Grid>
+          <Grid item xs={10}>
+            <Typography>Standard Feedbacks:</Typography>
           </Grid>
           <Grid item xs={1}>
-            <div style={{ marginTop: "15px", cursor: "pointer" }}>
-              <AddIcon
-                fontSize="large"
-                onClick={() => {
-                  addFeedback(catIndex);
-                }}
-              />
-            </div>
+            <LightTooltip
+              title={'Add a standard Feedback text'}
+              aria-label='Add a standard Feedback text'
+            >
+              <IconButton size='small' onClick={() => addFeedback(catIndex)} >
+                <AddIcon />
+              </IconButton>
+            </LightTooltip>
           </Grid>
           { category.feedbacks &&
             category.feedbacks.map((feedback: string, index: number) => {
               return (
                 <Grid container spacing={1}>
-                  <Grid item xs={11} sm={11}></Grid>
+                  <Grid item xs={1} sm={1}></Grid>
                   <Grid item xs={10} sm={10}>
                   <TextField
                     id='category'
@@ -621,14 +710,14 @@ const EditProductFeedbackSettings = (props: any) => {
                   />
                 </Grid>
                 <Grid item xs={1} sm={1}>
-                  <div style={{ marginTop: "15px", cursor: "pointer" }}>
-                    <AddIcon
-                      fontSize="large"
-                      onClick={() => {
-                        deleteFeedback(catIndex, index);
-                      }}
-                    />
-                  </div>
+                  <LightTooltip
+                    title={'Delete this standard Feedback'}
+                    aria-label='Delete this standard Feedback'
+                  >
+                    <IconButton size='small' onClick={() => deleteFeedback(catIndex, index)} >
+                      <ClearIcon />
+                    </IconButton>
+                  </LightTooltip>
                 </Grid>
               </Grid>
             );
@@ -638,385 +727,116 @@ const EditProductFeedbackSettings = (props: any) => {
     );
   };
 
-  const renderFeedbackDialog = () => {
-    return (
-      <React.Fragment>
-        <Dialog
-          className={classes.dialogPaper}
-          open={feedbackDialogOpen}
-          aria-labelledby='form-dialog-title'
-          onClose={closeFeedbackDialog}
-          fullWidth={true}
-        >
-          <DialogTitle
-            id='form-dialog-title'
-            style={{ textAlign: 'center', padding: '30px 0px' }}
-          >
-            <Typography style={{ fontSize: '14px' }}>
-              Configure Feedback Component
-            </Typography>
-            <IconButton aria-label="close" className={classes.closeButton} onClick={closeFeedbackDialog}>
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent style={{ marginBottom: '20px' }}>
-            <CssBaseline />
-            <Grid container spacing={1}>
-              <Grid item xs={11}>
-              <Typography>Categories:</Typography>
-              </Grid>
-              <Grid item xs={1}>
-                <div style={{ marginTop: "15px", cursor: "pointer" }}>
-                  <AddIcon
-                    fontSize="large"
-                    onClick={() => {
-                      addCategory();
-                    }}
-                  />
-                </div>
-              </Grid>
-              { selectedProd && 
-                selectedProd.categories &&
-                selectedProd.categories.map((category: ICategory, index: number) => {
-                  return renderCategoryDetails(category, index);
-              })}
-              <Grid item xs={12} sm={12}>
-                <Button
-                  component='span'
-                  variant='outlined'
-                  disabled={softwareOption}
-                  className={classes.button}
-                  onClick={() => {
-                    storeCategoriesOfProd();
-                  }}
-                >
-                  Done
-                </Button>
-                <Button
-                  component='span'
-                  variant='outlined'
-                  className={classes.button}
-                  onClick={closeFeedbackDialog}
-                >
-                  Discard
-                </Button>
-              </Grid>
-            </Grid>
-          </DialogContent>
-        </Dialog>
-        <Notification notify={notify} setNotify={setNotify} />
-      </React.Fragment>
-    );
-  };
-
-  const handleFeedbackConfigure = (row: IProductInfo, index: number) => {
-    setFeedbackDialogOpen(true);
-    setSelectedProd(row);
-  }
-
-  const closeFeedbackDialog = () => {
-    setFeedbackDialogOpen(false);
-    setSelectedProd(undefined);
-  };
-
-  const storeCategoriesOfProd = () => {
-    //TODO: implement
-    setFeedbackDialogOpen(false);
-    setSelectedProd(undefined);
-  }
-
-  const renderProductsTable = () => {
+  const renderFeedbackSettingsPage = () => {
     return (
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
-          <Backdrop className={classes.backdrop} open={backdropOpen}>
-            <CircularProgress color='inherit' />
-          </Backdrop>
-          <div style={{ width: '100%' }}>
-            <Grid container spacing={3}>
-              <Grid item sm={5}>
-                <Button
-                  className={classes.backButton}
-                  variant='outlined'
-                  onClick={() => {
-                    props.editClicked(0);
-                  }}
+          <Paper className={classes.sections}>
+            <Grid container spacing={1}>
+              <Grid item xs={11}>
+              <Typography variant="h6">Categories:</Typography>
+              </Grid>
+              <Grid item xs={1}>
+                <LightTooltip
+                  title={'Add a category'}
+                  aria-label='Add a category'
                 >
-                  <AddIcon fontSize='large' /> <Text tid='addProduct' />
-                </Button>
+                  <IconButton size='small' onClick={() => addCategory()} >
+                    <AddIcon />
+                  </IconButton>
+                </LightTooltip>
               </Grid>
-              <Grid item sm={5}>
-                <SearchControl
-                  searchString={searchString}
-                  handleSearch={handleSearch}
-                />
+              { productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackSettings &&
+                productParams.products[0].feedbackSettings.categories.map((category: ICategory, index: number) => {
+                  return renderCategoryDetails(category, index);
+              })}
+            </Grid>
+          </Paper>
+          <Paper className={classes.sections}>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Typography variant="h6">API Key:</Typography>
               </Grid>
-              <Grid item sm={2}>
-                <PageSizeDropDown
-                  handleChange={handleChangeItemsPerPage}
-                  itemCount={itemsPerPage}
-                />
+              <Grid item xs={12}>
+                {(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].apiKey) ? (
+                  <Fragment>
+                    <Grid item xs={11}>
+                      <TextField
+                        required={true}
+                        type='string'
+                        id={`productApiKey`}
+                        name={`productApiKey`}
+                        value={(productParams.products[0].apiKey) ? productParams.products[0].apiKey : ''}
+                        fullWidth
+                        autoComplete='off'
+                        className='textFieldStyle'
+                      />
+                    </Grid>
+                    <Grid item xs={1}>
+                      <LightTooltip
+                        title={'Delete API Key'}
+                        aria-label='delete api key'
+                      >
+                        <IconButton size='small' onClick={() => deleteApiKey()} >
+                          <ClearIcon />
+                        </IconButton>
+                      </LightTooltip>
+                    </Grid>
+                  </Fragment>
+                ) : (
+                  <Button
+                    size='small'
+                    onClick={(event: any) => handleGenerateApiKey()}
+                  >
+                    Generate API Key
+                  </Button>
+                )}
               </Grid>
             </Grid>
-          </div>
-          <Paper className='tableArea'>
-            <Table className='table'>
-              <TableHead className='tableHead'>
-                <TableRow>
-                  <TableCell className='tableHeadCell'>
-                    <TableSortLabel
-                      active={orderBy === 'product'}
-                      direction={orderBy === 'product' ? order : 'asc'}
-                      onClick={() => {
-                        handleRequestSort('product');
-                      }}
-                    >
-                      <Typography className='tableHeadText'>
-                        <Text tid='manageProducts2' />
-                      </Typography>
-                    </TableSortLabel>
-                  </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='version' />
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='software' />
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      Feedback Component
-                      {/* <Text tid='Api key' /> */}
-                    </Typography>
-                  </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='actions' />
-                    </Typography>
-                  </TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {products.map((row: any, index: number) => {
-                  if (index < itemLimit.lowerLimit) {
-                    return;
-                  }
-                  if (index > itemLimit.upperLimit) {
-                    return;
-                  }
-                  return (
-                    <TableRow
-                      key={index}
-                      style={
-                        index % 2
-                          ? { background: '#EFEFEF' }
-                          : { background: 'white' }
-                      }
-                    >
-                      <TableCell
-                        component='th'
-                        scope='row'
-                        className='tableCell'
-                      >
-                        <Typography className='tableBodyText'>
-                          {row.name}
-                        </Typography>
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        scope='row'
-                        className='tableCell'
-                      >
-                        <Typography className='tableBodyText'>
-                          {row.version}
-                        </Typography>
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        scope='row'
-                        align='center'
-                        className='tableCell'
-                      >
-                        {/* {product.software ? product.software : ""} */}
-                        {row.software ? (
-                          <>
-                            <Link href={row.software}>
-                              <TextField
-                                required={true}
-                                type='string'
-                                id={`productSoftware_${index}`}
-                                name={`productSoftware_${index}`}
-                                value={row.software ? row.software : ''}
-                                // onChange={(event) =>
-                                //   handleChangeProductName(event, index)
-                                // }
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                              />
-                            </Link>
-                            <Typography style={{ padding: '0 6px' }}>
-                              <ClearIcon
-                                onClick={() => {
-                                  deleteSoftware(row);
-                                }}
-                              />
-                            </Typography>
-                          </>
-                        ) : (
-                          <button
-                            // onClick={handleUploadButton(index)}
-                            onClick={() => handleUploadButton(row)}
-                          >
-                            <Typography>Upload</Typography>
-                          </button>
-                        )}
-                      </TableCell>
-                      <TableCell
-                        component='th'
-                        scope='row'
-                        align='center'
-                        className='tableCell'
-                      >
-                        <Typography className='tableBodyText'>
-                          {/* {product.testers ? product.testers : 'testers'} */}
-                          {/*row.apiKey ? (
-                            <Fragment>
-                              <TextField
-                                required={true}
-                                type='string'
-                                id={`productApiKey_${index}`}
-                                name={`productApiKey_${index}`}
-                                value={row.apiKey ? row.apiKey : ''}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                              />
-                              <Typography style={{ padding: '0 6px' }}>
-                                <ClearIcon
-                                  onClick={() => {
-                                    deleteApiKey(row, index);
-                                  }}
-                                />
-                              </Typography>
-                            </Fragment>
-                          ) : (
-                            <button
-                              onClick={() =>
-                                handleGeneralApiKeyButton(row, index)
-                              }
-                            >
-                              <Typography>Generate Api Key</Typography>
-                            </button>
-                            )*/}
-                            <button onClick={() => handleFeedbackConfigure(row, index)} >
-                              <Typography>Configure and Get</Typography>
-                            </button>
-                        </Typography>
-                      </TableCell>
-                      <TableCell align='center' className='tableCell'>
-                        <div className={classes.actionsBlock}>
-                          <MuiThemeProvider theme={tooltipTheme}>
-                            <Tooltip
-                              title={
-                                <Typography
-                                  style={{
-                                    fontSize: '12px',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  <Text tid='edit' />
-                                </Typography>
-                              }
-                            >
-                              <Typography style={{ padding: '0 6px' }}>
-                                <EditIcon
-                                  onClick={() => {
-                                    props.editClicked(row.id, row.version);
-                                  }}
-                                />
-                              </Typography>
-                            </Tooltip>
-                          </MuiThemeProvider>
-                          <MuiThemeProvider theme={tooltipTheme}>
-                            <Tooltip
-                              title={
-                                <Typography
-                                  style={{
-                                    fontSize: '12px',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  <Text tid='delete' />
-                                </Typography>
-                              }
-                            >
-                              <Typography style={{ padding: '0 6px' }}>
-                                <ClearIcon
-                                  onClick={() => {
-                                    deleteClicked(row);
-                                  }}
-                                />
-                              </Typography>
-                            </Tooltip>
-                          </MuiThemeProvider>
-                          <MuiThemeProvider theme={tooltipTheme}>
-                            <Tooltip
-                              title={
-                                <Typography
-                                  style={{
-                                    fontSize: '12px',
-                                    textAlign: 'center',
-                                  }}
-                                >
-                                  <Text tid='viewFeedbackComments' />
-                                </Typography>
-                              }
-                            >
-                              <Typography style={{ padding: '0 6px' }}>
-                                < AssignmentLateIcon
-                                  onClick={() => {
-                                    props.feedbackClicked();
-                                  }}
-                                />
-                              </Typography>
-                            </Tooltip>
-                          </MuiThemeProvider>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  );
-                })}
-              </TableBody>
-            </Table>
           </Paper>
-          <Fragment>
-            <RenderPagination
-              pageRangeDisplayed={10}
-              activePage={currentPage}
-              itemsCountPerPage={itemsPerPage}
-              totalItemsCount={numberOfProducts}
-              handleChange={handlePaginationClick}
-            />
-          </Fragment>
           <div className='bottomButtonsContainer'>
             <Button
-              className={classes.backButton}
+              className={classes.button}
               variant='outlined'
-              onClick={props.goBack}
+              onClick={() => {
+                props.goBack(MANAGE_PRODUCTS);
+              }}
             >
               <Text tid='goBack' />
             </Button>
+            <Button
+              onClick={() => {
+                handleSave();
+              }}
+              className={classes.button}
+              variant='outlined'
+            >
+              <Text tid='save' />
+            </Button>
           </div>
-          <ModalComponent
-            message={'deleteProductConfirmMessage'}
-            openModal={openModal}
-            handleModalYesClicked={modalYesClicked}
-            handleModalNoClicked={modalNoClicked}
-          />
+          <Paper className={classes.sections}>
+            <Grid container spacing={1}>
+              <Grid item xs={12}>
+                <Typography variant="h6">Widget Script:</Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  multiline
+                  disabled
+                  type='string'
+                  id={`widgetScript`}
+                  name={`widgetScript`}
+                  value={'some script goes here'}
+                  fullWidth
+                  autoComplete='off'
+                  className='textFieldStyle'
+                />
+                <Typography color='secondary'>Copy the above script and paste it close to your opening body tag of your page.</Typography>
+              </Grid>
+            </Grid>
+          </Paper>
         </Container>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
@@ -1028,7 +848,20 @@ const EditProductFeedbackSettings = (props: any) => {
             style={{
               backgroundColor: '#dd0000',
             }}
-            message={msgFailure}
+            message={failureMessage}
+          />
+        </Snackbar>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={success}
+          onClose={handleClose}
+          autoHideDuration={9000}
+        >
+          <SnackbarContent
+            style={{
+              backgroundColor: '#00dd00',
+            }}
+            message={successMessage}
           />
         </Snackbar>
       </Fragment>
@@ -1037,12 +870,8 @@ const EditProductFeedbackSettings = (props: any) => {
 
   return (
     <Fragment>
-      {dialogOpen ? (
-        renderSoftwareDialog()
-      ) : feedbackDialogOpen ? (
-        renderFeedbackDialog()
-      ) : fetchProducts ? (
-        renderProductsTable()
+      {feedbackSettingsFetched && productParams ? (
+        renderFeedbackSettingsPage()
       ) : (
         <Container className='loaderStyle'>
           <Loader />

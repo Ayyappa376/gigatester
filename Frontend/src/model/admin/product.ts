@@ -23,13 +23,14 @@ export interface ITesterStatus {
 }
 
 export interface IFeedbackSettings {
-  categories?: ICategory[];
+  categories: ICategory[];
   feedbackTypes: IFeedbackType[];
   logo?: string;
   ratingIcon: IRatingIconType;
   severities: ISeverityType[];
   title: string;
-  uploadFileMaxSize: string;
+  uploadFileMaxSize: string; //in GB, allowed values 1, 2, 3, 4 or 5
+  videoAudioMaxDuration: string; //in min, allowed values 1, 2, 3, 4 or 5
   widgetLookAndFeel: IWidgetLAF;
 }
 
@@ -43,7 +44,7 @@ export interface IWidgetLAF {
 }
 
 export interface ICategory {
-  feedback?: string[];
+  feedbacks?: string[];
   name: string;
 }
 

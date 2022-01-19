@@ -46,7 +46,6 @@ import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import { IProductInfo, IProductParams, ICategory } from '../../../model';
-import { AnyARecord } from 'dns';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -1015,7 +1014,7 @@ const ManageProducts = (props: any) => {
                         align='center'
                         className='tableCell'
                       >
-                        <button onClick={() => props.feedbackSettingsClicked(product, index)} >
+                        <button onClick={() => props.feedbackSettingsClicked(product.id, product.version)} >
                           <Typography>Configure and Get</Typography>
                         </button>
                       </TableCell>

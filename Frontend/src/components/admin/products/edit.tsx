@@ -611,46 +611,6 @@ const EditProduct = (props: any) => {
     setFailure(false);
   };
 
-  /*
-  const renderProductsTable = (product: IProductInfo) => {
-    if (product[0]) {
-      return (
-        <Fragment>
-          {product.name}
-          <TextField
-            required={true}
-            type='string'
-            id={`productApiKey`}
-            name={`productApiKey`}
-            value={product.apiKey ? product.apiKey : ''}
-            fullWidth
-            autoComplete='off'
-            className='textFieldStyle'
-          />
-          <Typography style={{ padding: '0 6px' }}>
-            <ClearIcon
-              onClick={() => {
-                deleteApiKey();
-              }}
-            />
-          </Typography>
-          Product
-        </Fragment>
-      );
-    } else {
-      return (
-        <Fragment>
-          Product
-          <Typography className='tableBodyText'>
-            <button onClick={() => handleGeneralApiKeyButton()}>
-              <Typography>Generate Api Key</Typography>
-            </button>
-          </Typography>
-        </Fragment>
-      );
-    }
-  };
-*/
   const renderFormData = () => {
     if (productPosted) {
       return (

@@ -22,13 +22,14 @@ export interface TesterStatus {
 }
 
 export interface FeedbackSettings {
-    categories?: Category[];
+    categories: Category[];
     feedbackTypes: FeedbackType[];
     logo?: string;
     ratingIcon: RatingIconType;
     severities: SeverityType[];
     title: string;
-    uploadFileMaxSize: string;
+    uploadFileMaxSize: string; //in GB, allowed values 1, 2, 3, 4 or 5
+    videoAudioMaxDuration: string; //in min, allowed values 1, 2, 3, 4 or 5
     widgetLookAndFeel: WidgetLAF;
 }
 
@@ -42,7 +43,7 @@ export interface WidgetLAF {
  }
 
 export interface Category {
-    feedback?: string[];
+    feedbacks?: string[];
     name: string;
 }
 
