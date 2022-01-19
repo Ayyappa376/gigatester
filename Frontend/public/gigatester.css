@@ -1056,7 +1056,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   .gigatester-comment-form-delete:hover
   svg
   path {
-  fill: #e80000;
+  fill: #2787f0;
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-close {
   position: absolute;
@@ -2421,7 +2421,7 @@ justify-content: center;
   > btn.gigatester-controls-remove-attachment:hover
   svg
   path {
-  fill: #e80000;
+  fill: #2787f0;
 }
 #gigatester_button_container
   .gigatester-controls
@@ -3325,7 +3325,7 @@ justify-content: center;
   display: inline-block;
   line-height: auto;
   margin: 0 0 0 8px;
-  color: #e80000;
+  color: #2787f0;
   vertical-align: middle;
   font-size: 13px;
 }
@@ -3349,7 +3349,7 @@ justify-content: center;
   right: 0;
   bottom: 64px;
   text-align: center;
-  color: #e80000;
+  color: #2787f0;
   font-size: 13px;
 }
 #gigatester_button_container .gigatester-controls-se {
@@ -4533,8 +4533,8 @@ gtvideotoolbar {
   display: block;
   position: fixed;
   z-index: 2147483645;
-  bottom: 12px;
-  left: 12px;
+  top: 22px;
+  left: 40vw;
   margin: auto;
   padding: 0 10px 0 14px;
   background-color: #fff;
@@ -4544,7 +4544,7 @@ gtvideotoolbar {
   font-family: "Poppins", Helvetica, Arial, sans-serif !important;
   cursor: move;
 }
-gtvideotoolbar:before {
+/* gtvideotoolbar:before {
   content: "";
   position: absolute;
   top: 14px;
@@ -4557,6 +4557,9 @@ gtvideotoolbar:before {
     0 16px 0 0 rgba(128, 144, 160, 0.3), 4px 0 0 0 rgba(128, 144, 160, 0.3),
     4px 4px 0 0 rgba(128, 144, 160, 0.3), 4px 8px 0 0 rgba(128, 144, 160, 0.3),
     4px 12px 0 0 rgba(128, 144, 160, 0.3), 4px 16px 0 0 rgba(128, 144, 160, 0.3);
+} */
+.gigatester-powered-by-logo{
+  font-weight: 700;
 }
 gtvideotoolbar btn {
   position: relative;
@@ -4646,7 +4649,7 @@ gtvideotoolbar btn.gigatester-video-controls-mute:before {
   width: 26px;
   margin: auto;
   border-radius: 4px;
-  background-color: #e80000;
+  background-color: #2787f0;
   transform: rotate(45deg);
 }
 gtvideotoolbar btn.gigatester-video-controls-mute svg {
@@ -4679,7 +4682,7 @@ gtvideotoolbar btn.gigatester-video-controls-draw:before {
   width: 26px;
   margin: auto;
   border-radius: 4px;
-  background-color: #e80000;
+  background-color: #2787f0;
   transform: rotate(45deg);
 }
 gtvideotoolbar btn.gigatester-video-controls-draw:after {
@@ -4708,7 +4711,7 @@ gtvideotoolbar
 }
 gtvideotoolbar
   btn.gigatester-video-controls-draw.gigatester-video-controls-active:after {
-  background-color: #e80000;
+  background-color: #2787f0;
 }
 gtvideotoolbar btn.gigatester-video-controls-pause svg {
   width: 28px;
@@ -4743,7 +4746,7 @@ gtvideotoolbar btn.gigatester-video-controls-start btn-record:before {
   height: 10px;
   margin: auto;
   border-radius: 50%;
-  background-color: #e80000;
+  background-color: #2787f0;
   transition: all 0.2s;
 }
 gtvideotoolbar btn.gigatester-video-controls-stop {
@@ -4767,7 +4770,7 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer {
   margin: auto;
   border-radius: 50%;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(90deg, #f37f7f 50%, #e80000 50%);
+  background: linear-gradient(90deg, #08eeee 50%, #2787f0 50%);
   animation: gt-btnTimer 10s steps(360, start) forwards;
   animation-play-state: paused;
 }
@@ -4964,15 +4967,15 @@ gtmouseclick {
 }
 @keyframes gt-btnMask {
   0% {
-    background: #e80000;
+    background: #2787f0;
     transform: rotate(0deg);
   }
   50% {
-    background: #e80000;
+    background: #2787f0;
     transform: rotate(-180deg);
   }
   50.01% {
-    background: #f37f7f;
+    background: #2788f075;
     transform: rotate(0deg);
   }
   100% {
