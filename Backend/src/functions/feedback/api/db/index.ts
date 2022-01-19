@@ -29,7 +29,7 @@ exports.handler = async (event: any) => {
                                 bugPriority: jsonBody.bugPriority,
                                 createdOn: Date.now(),
                                 feedbackCategory: jsonBody.feedbackCategory,
-                                feedbackComments: jsonBody.feedbackComments,
+                                feedbackComments: JSON.stringify(jsonBody.feedbackComments),
                                 feedbackMedia: {
                                     audio: jsonBody.feedbackMedia.audio ? jsonBody.feedbackMedia.audio : '',
                                     file: jsonBody.feedbackMedia.file ? jsonBody.feedbackMedia.file : '',

@@ -64,7 +64,7 @@ export interface IProductNameIdMapping {
 
 export interface IAppFeedback {
     createdOn: number;
-    feedbackComments ? : string[];
+    feedbackComments ? : string;
     id: string;
     productId ? : string;
     productRating: number;
@@ -96,3 +96,64 @@ export interface IRecusiveFeedbackItem {
 export interface IRecursiveFeedback {
     Items: IRecusiveFeedbackItem
 }
+
+export interface ICommentObject {
+    [key: string]: any
+}
+
+export interface IFeedbackBarChartData {
+    [key: string]: number
+}
+
+export interface IRatingMapData {
+    rating: number,
+    date: number,
+    comments: ICommentObject | undefined,
+    productId?: string,
+    productVersion?: string
+}
+  
+export interface IBugMapData {
+    severity?: BudPriority,
+    category?: FeedbackCategory;
+    date: number,
+    comments: ICommentObject | undefined,
+    productId?: string,
+    productVersion?: string
+}
+  
+export interface IRatingMapping {
+    [key : string] : IRatingMapData;
+};
+  
+export interface IBugDataMapping {
+    [key : string] : IBugMapData;
+};
+
+export const options2 = {
+    labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
+    colors: ["#008FFB", "#FACB23", "#FA6123"],
+    chart: {
+      width: 380,
+      type: 'pie',
+    },
+    dataLabels: {
+      enabled: false
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200
+        },
+        legend: {
+          show: false
+        }
+      }
+    }],
+    legend: {
+      position: 'right',
+      offsetY: 0,
+      height: 230,
+    }
+  }

@@ -1,10 +1,8 @@
 import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton, Grid } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import { getSignedUrl } from '.';
 import { buttonStyle } from '../../../common/common';
 import { getDate } from '../../../utils/data';
-import StarIcon from '@material-ui/icons/Star';
-import StarBorderIcon from '@material-ui/icons/StarBorder';
+
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
@@ -15,13 +13,17 @@ import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderCategoryFilter from './RenderCategoryFilter';
 import { updateSignedUrls, useActions } from '../../../actions';
-import { IAppFeedback } from './common';
+import { IAppFeedback, ICommentObject } from './common';
+import RenderStars from './RenderStarts';
+import renderComments from './RenderComments';
+import { getSignedUrl } from './methods';
 
 interface IProps {
     tableData: IAppFeedback[],
     viewAttachmentClicked: Function,
     urls: string[],
     isBugReport: boolean,
+    fetchMore: Function
 }
 
 export type Order = 'asc' | 'desc';
@@ -33,38 +35,6 @@ export const BUG_REPORT = 'bug_report'
 export const FEEDBACK = 'feedback'
 
 export const ALROUND = 'alround'
-
-
-
-export const RenderStars = (props: any) => {
-  const arr = [1,2,3,4,5];
-  return (
-      <div style={{alignItems: "center"}}>
-      <div>
-          {arr.map((el, i) => {
-              return (i < props.rating ? <StarIcon htmlColor='#F0A029' key={i} /> : <StarBorderIcon htmlColor='#F0A029' key={i} />)
-          })}
-      </div>
-      </div>
-  )
-}
-
-export const renderComments = (comments: string[] | undefined) => {
-  if(comments && comments.length > 0) {
-    let commentText = '';
-    comments.forEach((comment: string) => {commentText = commentText + '\n' + comment});
-    return(
-      <div>
-        <Box
-          aria-label="rating comments"
-          style={{ width: "100%" }}
-        >{commentText}</Box>
-      </div>
-    )
-  } else {
-    return <div>-</div>
-  }
-}
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
@@ -128,8 +98,13 @@ const RenderTable = (props: IProps) => {
           if(!isBugReport && el.productRating === 0) {
             return false;
           }
-          if(el.feedbackComments){
-            const feedbackCommentsString = el.feedbackComments.join().toLowerCase();
+          if(el.feedbackComments ){
+            const commentObjectArray = Object.values(JSON.parse(el.feedbackComments));
+            let feedbackCommentsString = '';
+            if(commentObjectArray.length > 0) {
+              commentObjectArray.forEach((el: any) => {if(el.message) feedbackCommentsString += el.message})
+            } 
+            
             if(feedbackCommentsString.indexOf(keyword.toLowerCase()) >= 0) {
               return true;
             }
@@ -423,7 +398,7 @@ const RenderTable = (props: IProps) => {
                       }
                       <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw', fontSize: '1rem'}}>
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
-                            {renderComments(row.feedbackComments)}
+                            {renderComments(row.feedbackComments ? JSON.parse(row.feedbackComments) : undefined)}
                         </div>
                         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
 

@@ -4,7 +4,7 @@ import { buttonStyle } from '../../../common/common';
 import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
 import ReactApexChart from 'react-apexcharts'
-import RenderTable, { renderComments, RenderStars } from './RenderTable';
+import RenderTable from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
@@ -12,103 +12,11 @@ import ProductFilter, { VersionFilter } from './ProductFilter';
 import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE,
   SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL,
   SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, ILimitedProductDetails,
-  IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH, IRecursiveFeedback, ILastEvaluatedKey, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, BudPriority, FeedbackCategory } from './common';
+  IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH, IRecursiveFeedback, ILastEvaluatedKey, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, BudPriority, FeedbackCategory, ICommentObject, options2, IBugDataMapping, IFeedbackBarChartData, IRatingMapping } from './common';
 import { withRouter } from 'react-router-dom';
-import { ProductDetails } from '../../../pages';
-
-
-export interface IFeedbackBarChartData {
-  [key: string]: number
-}
-
-interface IRatingMapData {
-  rating: number,
-  date: number,
-  comments: string[] | undefined,
-  productId?: string,
-  productVersion?: string
-}
-
-interface IBugMapData {
-  severity?: BudPriority,
-  category?: FeedbackCategory;
-  date: number,
-  comments: string[] | undefined,
-  productId?: string,
-  productVersion?: string
-}
-
-interface IRatingMapping {
-  [key : string] : IRatingMapData;
-};
-
-interface IBugDataMapping {
-  [key : string] : IBugMapData;
-};
-
-export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
-  if(!url) {
-    return;
-  }
-  return new Promise((resolve, reject) => {
-    const urlSplit = url.split('/')
-    let name = urlSplit[urlSplit.length - 1]
-
-    Http.get({
-      url: `/api/v2/signedurl/${name}`,
-    }).then((response: any) => {
-      if(response.filePath) {
-        return resolve(response.filePath);
-      }
-    }).catch((error : any) => {
-        console.error(error);
-        return reject(error)
-    })
-  })
-}
-
-const getFeedbackData = ({isBugReport, urlAppend}: any) => {
-  return new Promise((resolve, reject) => {
-    let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`+ urlAppend;
-    Http.get({
-      url,
-    }).then((response: any) => {
-      return resolve(response);      
-    })
-    .catch((error) => {
-      return reject(error);
-    });
-  })
-}
-
-const getChartData = async({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries}: any) => {
-    let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT_CHART : CONST_FEEDBACK_CHART}`;
-    Http.get({
-      url,
-    }).then((response: any) => {
-      const processedData = response.Items;
-      console.log(response)
-      if(isBugReport) {
-        setBugBarChartSeries([{
-          name: 'Severity',
-          data: Object.values(processedData.barChartData)
-        }])
-        setBugPieChartSeries(processedData.pieChartData)
-      } else {
-        setFeedbackBarChartData(processedData.barChartData);
-        const feedbackPieChartSeriesCopy = [];
-        const pieChartFeedbackBarChartData = processedData.pieChartData;
-        feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['satisfied']);
-        feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['somewhatSatisfied']);
-        feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['dissatisfied']);
-        setFeedbackPieChartSeries(feedbackPieChartSeriesCopy);
-      }
-    })
-    .catch((error) => {
-      console.error(error)
-    });
-}
-
+import renderComments from './RenderComments';
+import RenderStars from './RenderStarts';
+import { getChartData, getFeedbackData } from './methods';
 
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
@@ -168,33 +76,7 @@ const FeedbackComments = (props: any) => {
       }
     }, [feedbackBarChartData])
 
-    const options2 = {
-      labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
-      colors: ["#008FFB", "#FACB23", "#FA6123"],
-      chart: {
-        width: 380,
-        type: 'pie',
-      },
-      dataLabels: {
-        enabled: false
-      },
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200
-          },
-          legend: {
-            show: false
-          }
-        }
-      }],
-      legend: {
-        position: 'right',
-        offsetY: 0,
-        height: 230,
-      }
-    }
+    
 
     const bugPieChartOptions = {
       labels: Object.keys(bugPieChartSeries),
@@ -236,7 +118,7 @@ const FeedbackComments = (props: any) => {
             severity : item.bugPriority,
             category: item.feedbackCategory,
             date : item.createdOn,
-            comments: item.feedbackComments,
+            comments: item.feedbackComments ? JSON.parse(item.feedbackComments) : {},
             productId: item.productId,
             productVersion: item.productVersion
           }
@@ -252,7 +134,7 @@ const FeedbackComments = (props: any) => {
           rateMap[item.id] = {
             rating : item.productRating,
             date : item.createdOn,
-            comments: item.feedbackComments,
+            comments: item.feedbackComments ? JSON.parse(item.feedbackComments) : {},
             productId: item.productId,
             productVersion: item.productVersion
           }
@@ -320,11 +202,17 @@ const FeedbackComments = (props: any) => {
       }
     }
 
-    useEffect(() => {
+     useEffect(() => {
       if(lastEvaluatedKey) {
         fetchRecursiveData(lastEvaluatedKey);
       }
-    }, [lastEvaluatedKey])
+    }, [lastEvaluatedKey]) 
+
+    const fetchMore = () => {
+      if(lastEvaluatedKey) {
+        fetchRecursiveData(lastEvaluatedKey);
+      }
+    }
 
     useEffect(() => {
       setBackdropOpen(true);
@@ -543,7 +431,7 @@ const FeedbackComments = (props: any) => {
               </Grid>
             </Grid>
           </div>
-          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} />
+          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}/>
         </Container>
       )
     }

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
-import { getSignedUrl } from ".";
 import { IRootState } from "../../../reducers";
+import { getSignedUrl } from "./methods";
 
 const AudioPlayer = (props: any) => {
   const {url} = props;
