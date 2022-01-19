@@ -4558,6 +4558,9 @@ gtvideotoolbar {
     4px 4px 0 0 rgba(128, 144, 160, 0.3), 4px 8px 0 0 rgba(128, 144, 160, 0.3),
     4px 12px 0 0 rgba(128, 144, 160, 0.3), 4px 16px 0 0 rgba(128, 144, 160, 0.3);
 } */
+.gigatester-powered-by-logo{
+  font-weight: 700;
+}
 gtvideotoolbar btn {
   position: relative;
   float: left;

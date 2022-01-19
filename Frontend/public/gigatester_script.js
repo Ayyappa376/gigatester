@@ -1749,7 +1749,7 @@ else{
                     html += '<gtdiv class="gigatester-controls-step" data-step="1">' + routing_item_options + "</gtdiv>";
                     html += '<gtdiv class="gigatester-controls-step" data-step="2"></gtdiv>';
                     if (this.configs.display_powered_by) {
-                        html += "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>" + "</a>" + "</gtfooter>"
+                        html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-powered-by-logo'>" + " Gigatester" + "</span>" + "</a>" + "</gtfooter>"
                     }
                     this.ui.controls.html(html);
                     this.setFormHTML();
