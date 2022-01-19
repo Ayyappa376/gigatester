@@ -48,6 +48,7 @@ import '../../../css/assessments/style.css';
 import { IProductInfo, IProductParams, ICategory, IFeedbackSettings, FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, RATING_ICON_TYPE_STAR, SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
+import Success from '../../success-page';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -86,7 +87,7 @@ const useStyles = makeStyles((theme) => ({
   sections: {
     width: '100%',
     marginTop: '20px',
-    padding: '10px',
+    padding: '20px',
   },
 }));
 
@@ -135,6 +136,7 @@ const EditProductFeedbackSettings = (props: any) => {
   const [failureMessage, setFailureMessage] = useState('Something went wrong');
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('Saved successfully');
+  let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
 
   useEffect(() => {
     Http.get({
@@ -234,7 +236,7 @@ const EditProductFeedbackSettings = (props: any) => {
     if(mandatoryFieldsCheck()) {
       const postData = productParams;
       Http.put({
-        url: `/api/v2/products/${props.productId}/${props.version}`,
+        url: `/api/v2/products`,
         body: {
           ...postData,
         },
@@ -596,7 +598,7 @@ const EditProductFeedbackSettings = (props: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.categories = temp.products[0].feedbackSettings.categories.splice(catIndex, 1);
+        temp.products[0].feedbackSettings.categories.splice(catIndex, 1);
         setProductParams(temp);
       }
     }
@@ -621,7 +623,7 @@ const EditProductFeedbackSettings = (props: any) => {
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings
         && temp.products[0].feedbackSettings.categories[catIndex]) {
         const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
-        if(tempCat.feedbacks && tempCat.feedbacks[index] && event.target.value) {
+        if(tempCat.feedbacks && event.target.value) {
           tempCat.feedbacks[index] = event.target.value;
           setProductParams(temp);
         }
@@ -636,7 +638,7 @@ const EditProductFeedbackSettings = (props: any) => {
         && temp.products[0].feedbackSettings.categories[catIndex]) {
         const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
         if(tempCat.feedbacks) {
-          tempCat.feedbacks = tempCat.feedbacks.splice(index, 1);
+          tempCat.feedbacks.splice(index, 1);
           setProductParams(temp);
         }
       }
@@ -660,16 +662,21 @@ const EditProductFeedbackSettings = (props: any) => {
 
   const renderCategoryDetails = (category: ICategory, catIndex: number) => {
     return (
-      <Fragment>
+      <Fragment key={catIndex}>
         <Grid container spacing={1}>
           <Grid item xs={11} sm={11}>
             <TextField
-              id='category'
-              name='category'
+              required
+              type='string'
+              id={`category_${catIndex}`}
+              name={`category_${catIndex}`}
               label='Category Name'
+              value={category.name}
               fullWidth
               onChange={(event) => handleChangeCategoryName(event, catIndex)}
-            />
+              autoComplete='off'
+              className='textFieldStyle'
+          />
           </Grid>
           <Grid item xs={1} sm={1}>
             <LightTooltip
@@ -698,36 +705,61 @@ const EditProductFeedbackSettings = (props: any) => {
           { category.feedbacks &&
             category.feedbacks.map((feedback: string, index: number) => {
               return (
-                <Grid container spacing={1}>
+                <Grid key={index} container spacing={1}>
                   <Grid item xs={1} sm={1}></Grid>
                   <Grid item xs={10} sm={10}>
-                  <TextField
-                    id='category'
-                    name='category'
-                    label='Category Name'
-                    fullWidth
-                    onChange={(event) => handleChangeFeedback(event, catIndex, index)}
-                  />
+                    <TextField
+                      required
+                      type='string'
+                      id={`feedback_${catIndex}_${index}`}
+                      name={`feedback_${catIndex}_${index}`}
+                      label='Feedback text'
+                      value={feedback ? feedback : ''}
+                      fullWidth
+                      onChange={(event) => handleChangeFeedback(event, catIndex, index)}
+                      autoComplete='off'
+                      className='textFieldStyle'
+                    />
+                  </Grid>
+                  <Grid item xs={1} sm={1}>
+                    <LightTooltip
+                      title={'Delete this standard Feedback'}
+                      aria-label='Delete this standard Feedback'
+                    >
+                      <IconButton size='small' onClick={() => deleteFeedback(catIndex, index)} >
+                        <ClearIcon />
+                      </IconButton>
+                    </LightTooltip>
+                  </Grid>
                 </Grid>
-                <Grid item xs={1} sm={1}>
-                  <LightTooltip
-                    title={'Delete this standard Feedback'}
-                    aria-label='Delete this standard Feedback'
-                  >
-                    <IconButton size='small' onClick={() => deleteFeedback(catIndex, index)} >
-                      <ClearIcon />
-                    </IconButton>
-                  </LightTooltip>
-                </Grid>
-              </Grid>
-            );
-          })}
+              );
+            })
+          }
         </Grid>
       </Fragment>
     );
   };
 
   const renderFeedbackSettingsPage = () => {
+    if (feedbackSettingsPosted) {
+      return (
+        <Fragment>
+          <Success message={msgSuccess} />
+          <div className='bottomButtonsContainer'>
+            <Button
+              className={classes.button}
+              variant='outlined'
+              onClick={() => {
+                props.goBack(MANAGE_PRODUCTS);
+              }}
+            >
+              <Text tid='goBack' />
+            </Button>
+          </div>
+        </Fragment>
+      );
+    }
+
     return (
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
@@ -765,6 +797,7 @@ const EditProductFeedbackSettings = (props: any) => {
                     <Grid item xs={11}>
                       <TextField
                         required={true}
+                        disabled
                         type='string'
                         id={`productApiKey`}
                         name={`productApiKey`}
