@@ -410,7 +410,7 @@ const EditProduct = (props: any) => {
             fullWidth
             autoComplete='off'
             className='textFieldStyle'
-            disabled={key==='version'&&(!values || !values.id)}
+//            disabled={key==='version' && values!==undefined && values.id!==undefined && values.id.length>0}
           />
         );
       case 'number':
