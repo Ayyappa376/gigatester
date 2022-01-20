@@ -119,7 +119,6 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
         params.ExclusiveStartKey = exKeyStart;
       }
       params.Limit = parseInt(items, 10);
-
       return scanNonRecursiveRaw<any>(params);
     }
     appLogger.info({ getPlatformList_scan_params: params });

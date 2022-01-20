@@ -130,7 +130,7 @@ export interface IBugDataMapping {
     [key : string] : IBugMapData;
 };
 
-export const options2 = {
+export const feedbackPieChartOptions = {
     labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
     colors: ["#008FFB", "#FACB23", "#FA6123"],
     chart: {
@@ -157,3 +157,51 @@ export const options2 = {
       height: 230,
     }
   }
+
+export const feedbackBarChartOptions: any = {
+    chart: {
+      id: 'rating-chart'
+    },
+    xaxis: {
+      categories: [RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE],
+    }
+  };
+
+export const bugBarChartOtions: any = {
+    chart: {
+      id: 'severity-chart'
+    },
+    xaxis: {
+      categories: [SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW],
+    }
+  };
+
+export const getBugPieChartOptions = (bugPieChartSeries: any) => {
+  return {
+    labels: Object.keys(bugPieChartSeries),
+    colors: ["#008FFB", "#58FFC5", "#FEB018", "#FF455F", "#775DD0"],
+    chart: {
+      width: 380,
+      type: 'pie',
+    },
+    dataLabels: {
+      enabled: false
+    },
+    responsive: [{
+      breakpoint: 480,
+      options: {
+        chart: {
+          width: 200
+        },
+        legend: {
+          show: false
+        }
+      }
+    }],
+    legend: {
+      position: 'right',
+      offsetY: 0,
+      height: 230,
+    }
+  }
+}

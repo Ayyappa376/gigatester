@@ -7,7 +7,7 @@ import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
-import EnhancedTableHead from './TableMethods';
+import EnhancedTableHead from './EnhancedTableHead';
 import RenderRatingFilter from './RenderFilters';
 import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
@@ -17,6 +17,7 @@ import { IAppFeedback, ICommentObject } from './common';
 import RenderStars from './RenderStarts';
 import renderComments from './RenderComments';
 import { getSignedUrl } from './methods';
+import { useInView } from 'react-intersection-observer';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -24,6 +25,16 @@ interface IProps {
     urls: string[],
     isBugReport: boolean,
     fetchMore: Function,
+    filterSeverity: Function,
+    filterCategory: Function,
+    filterRating: Function,
+    order: Order,
+    keyword: string,
+    setKeyword: Function,
+    clearSearch: Function,
+    searchInitiated: boolean,
+    setSearchInitiated: Function,
+    handleRequestSort: Function,
 }
 
 export type Order = 'asc' | 'desc';
@@ -38,33 +49,34 @@ export const ALROUND = 'alround'
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
-    const {isBugReport} = props;
+    const {isBugReport, tableData} = props;
     const [fetchAllUrls, setFetchAllUrls] = useState(false);
+    const { ref, inView, entry } = useInView();
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
-    const [rawTableData, setRawTableData] = useState(props.tableData);
-    const [tableData, setTableData] = useState<IAppFeedback[]>([]);
-    const [page, setPage] = React.useState(0);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
 
-    const [keyword, setKeyword] = useState("");
-    const [searchInitiated, setSearchInitiated] = useState(false)
+    useEffect(() => {
+      console.log({inView})
+      if(inView) {
+        props.fetchMore()
+      }
+    }, [inView])
 
-    /* Order related changes */
-    const [order, setOrder] = useState<Order>('desc');
-    const [orderBy, setOrderBy] = useState('date');
-
-    const [feedbackKeywords, setFeedbackKeywords] = useState<string[]>([])
-    const [bugReportKeywords, setBugReportKeywords] = useState<string[]>([])
-
+    useEffect(() => {
+      if(!fetchAllUrls) {
+        fetchSignedUrls(props.urls)
+      }
+    }, [])
     const updateSignedUrlData = useActions(updateSignedUrls);
     const signedUrlMapping = useSelector(
       (state: IRootState) => state.admin.signedUrls
     );
     //https://www.dusanstam.com/posts/material-ui-table-with-infinite-scroll
-    const observer: any = useRef()
-    const lastBookElementRef = useCallback((node: any) => {
+    /* const observer: any = useRef()
+
+    const newIntersectionObserver = new IntersectionObserver(); */
+    /* const lastBookElementRef = useCallback((node: any) => {
       console.log(observer)
       console.log(node)
       if (observer && observer.current) observer.current.disconnect();
@@ -74,7 +86,7 @@ const RenderTable = (props: IProps) => {
         props.fetchMore()
       }})
       if (node) observer.current.observe(node)
-    }, [tableData])
+    }, [tableData]) */
 
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
@@ -102,204 +114,6 @@ const RenderTable = (props: IProps) => {
         updateSignedUrlData(signedUrlMappingCopy)}).catch((error) => {console.log(error)});
     }
 
-    useEffect(() => {
-      if(keyword) {
-        const filteredTableData = rawTableData.filter((el) => {
-          if(isBugReport && el.productRating > 0) {
-            return false;
-          }
-          if(!isBugReport && el.productRating === 0) {
-            return false;
-          }
-          if(el.feedbackComments ){
-            const commentObjectArray = Object.values(JSON.parse(el.feedbackComments));
-            let feedbackCommentsString = '';
-            if(commentObjectArray.length > 0) {
-              commentObjectArray.forEach((el: any) => {if(el.message) feedbackCommentsString += el.message})
-            } 
-            
-            if(feedbackCommentsString.indexOf(keyword.toLowerCase()) >= 0) {
-              return true;
-            }
-            return false;
-          }
-          return false;
-        })
-        setTableData(filteredTableData)
-      }
-    }, [keyword])
-
-    const clearSearch = () => {
-      const tableDataFiltered = rawTableData.filter((data) => {
-        if(!isBugReport && data.productRating > 0) {
-          return true
-        }
-        if(isBugReport && data.productRating === 0) {
-          return true
-        }
-        return false;
-      })
-      applySort(tableDataFiltered);
-      setSearchInitiated(false)
-      setKeyword("")
-    }
-
-    const sortTableByDate = (tableData: IAppFeedback[], sortOrder: string) => {
-      const data = [...tableData];
-      data.sort((aData, bData) => {
-        if (aData.createdOn > bData.createdOn) {
-          return sortOrder === 'desc' ? -1 : 1;
-        } else if (aData.createdOn < bData.createdOn) {
-          return sortOrder === 'desc' ? 1 : -1;
-        } else {
-          return 0;
-        }
-      })
-      return data;
-    }
-
-    const sortTableByRating = (tableData: IAppFeedback[], sortOrder: string) => {
-      const data = [...tableData];
-      data.sort((aData, bData) => {
-        if (aData.productRating > bData.productRating) {
-          return sortOrder === 'desc' ? -1 : 1;
-        } else if (aData.productRating < bData.productRating) {
-          return sortOrder === 'desc' ? 1 : -1;
-        } else {
-          return 0;
-        }
-      })
-      return data;
-    }
-
-    const sortTableBySeverity = (tableData: IAppFeedback[], sortOrder: string) => {
-      const data = [...tableData];
-      const severityMapping = {
-        'Critical' : 5,
-        'High': 4,
-        'Medium': 3,
-        'Low': 2,
-        'Other': 1
-      }
-      data.sort((aData, bData) => {
-        if (severityMapping[aData.bugPriority ? aData.bugPriority : 'Other'] > severityMapping[bData.bugPriority ? bData.bugPriority : 'Other']) {
-          return sortOrder === 'desc' ? -1 : 1;
-        } else if (severityMapping[aData.bugPriority ? aData.bugPriority : 'Other'] < severityMapping[bData.bugPriority ? bData.bugPriority : 'Other']) {
-          return sortOrder === 'desc' ? 1 : -1;
-        } else {
-          return 0;
-        }
-      })
-      return data;
-    }
-
-    const applySort = (data?: IAppFeedback[]) => {
-      let sortData = data && data.length > 0 ? data : tableData;
-      if (order === 'asc') {
-        if(orderBy === 'date') {
-          setTableData(sortTableByDate(sortData, 'asc'))
-        } else if(orderBy === 'rating') {
-          setTableData(sortTableByRating(sortData, 'asc'))
-        } else if(orderBy === 'severity') {
-          setTableData(sortTableBySeverity(sortData, 'asc'))
-        }
-      }
-      if (order === 'desc') {
-        if(orderBy === 'date') {
-          setTableData(sortTableByDate(sortData, 'desc'))
-        } else if(orderBy === 'rating') {
-          setTableData(sortTableByRating(sortData, 'desc'))
-        } else if(orderBy === 'severity') {
-          setTableData(sortTableBySeverity(sortData, 'desc'))
-        }
-      }
-    }
-
-    useEffect(() => {
-      applySort();
-    }, [order, orderBy]);
-
-    const handleRequestSort = (property: string) => {
-      if (orderBy === property) {
-        setOrder(order === 'asc' ? 'desc' : 'asc');
-      } else {
-        setOrder('desc');
-        setOrderBy(property);
-      }
-    };
-
-    useEffect(() => {
-      if(!fetchAllUrls) {
-        fetchSignedUrls(props.urls)
-        const tableDataFiltered = props.tableData.filter((data) => {
-          if(!isBugReport && data.productRating > 0) {
-            return true
-          }
-          if(isBugReport && data.productRating === 0) {
-            return true
-          }
-          return false;
-        })
-        setTableData(sortTableByDate(tableDataFiltered, 'desc'));
-      }
-    }, [])
-
-    const filterRating = (val: number) => {
-      let filteredTableData;
-      if(val === -1) {
-        filteredTableData = rawTableData.filter((data) => {
-          if(!isBugReport && data.productRating > 0) {
-            return true
-          }
-          if(isBugReport && data.productRating === 0) {
-            return true
-          }
-          return false;
-        })
-      } else {
-        filteredTableData = rawTableData.filter((el) => el.productRating === val ? true : false)
-      }
-      applySort(filteredTableData);
-    }
-
-    const filterSeverity = (val: string) => {
-      let filteredTableData;
-      if(val === "") {
-        filteredTableData = rawTableData.filter((data) => {
-          if(!isBugReport && data.productRating > 0) {
-            return true
-          }
-          if(isBugReport && data.productRating === 0) {
-            return true
-          }
-          return false;
-        })
-      } else {
-        filteredTableData = rawTableData.filter((el) => el.bugPriority ? el.bugPriority.toLowerCase() === val.toLowerCase() ? true : false : false)
-      }
-      applySort(filteredTableData);
-    }
-
-    const filterCategory = (val: string) => {
-      let filteredTableData;
-      if(val === "") {
-        filteredTableData = rawTableData.filter((data) => {
-          if(!isBugReport && data.productRating > 0) {
-            return true
-          }
-          if(isBugReport && data.productRating === 0) {
-            return true
-          }
-          return false;
-        })
-      } else if(val === 'Other') {
-        filteredTableData = rawTableData.filter((el) => (!el.feedbackCategory || (el.feedbackCategory.toLowerCase() === 'other')) && el.feedbackType === "BUG_REPORT" ? true : false )
-      } else {
-        filteredTableData = rawTableData.filter((el) => el.feedbackCategory ? el.feedbackCategory.toLowerCase() === val.toLowerCase() ? true : false : false)
-      }
-      applySort(filteredTableData);
-    }
-
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper style={{padding: '2rem'}}>
@@ -307,29 +121,29 @@ const RenderTable = (props: IProps) => {
               <Grid container>
                 <Grid item md={5}>
                   {
-                    <RenderKeywordFilter keywords={bugReportKeywords} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {clearSearch()}}/>
+                    <RenderKeywordFilter onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
                   }
                 </Grid>
                 <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
                 <Grid item md={6}>
                   {
                     <div>
-                    <RenderSeverityFilter onSelect={(val: string) => {filterSeverity(val)}}/>
+                    <RenderSeverityFilter onSelect={(val: string) => {props.filterSeverity(val)}}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter onSelect={(val: string) => {filterCategory(val)}}/>
+                    <RenderCategoryFilter onSelect={(val: string) => {props.filterCategory(val)}}/>
                     </div>
                   }
                 </Grid>
               </Grid> : <Grid container>
                   <Grid item md={6}>
                     {
-                      <RenderKeywordFilter keywords={feedbackKeywords} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {clearSearch()}}/>
+                      <RenderKeywordFilter onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
                     }
                   </Grid>
                   <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
                   <Grid item md={5}>
                     {
-                        <RenderRatingFilter onSelect={(val: number) => {filterRating(val)}}/>
+                        <RenderRatingFilter onSelect={(val: number) => {props.filterRating(val)}}/>
                     }
                   </Grid>
               </Grid>
@@ -343,10 +157,10 @@ const RenderTable = (props: IProps) => {
               {isBugReport ? 'Bugs Reported' : 'Feedback'}
             </Typography>
               <SearchField style={{marginTop: 10, marginLeft: 'auto'}}
-                    keyword={keyword} 
-                    searchInitiated ={searchInitiated}
-                    onSearch={(keyword: string) => {setKeyword(keyword); setSearchInitiated(true)}}
-                    clearSearch={()=> {clearSearch()}}/>
+                    keyword={props.keyword} 
+                    searchInitiated ={props.searchInitiated}
+                    onSearch={(keyword: string) => {props.setKeyword(keyword); props.setSearchInitiated(true)}}
+                    clearSearch={()=> {props.clearSearch()}}/>
           </Toolbar>
           <TableContainer>
           <Table
@@ -357,19 +171,18 @@ const RenderTable = (props: IProps) => {
           >
             <EnhancedTableHead
               classes={classes}
-              order={order}
-              orderBy={orderBy}
-              onRequestSort={handleRequestSort}
+              order={props.order}
+              onRequestSort={(property: string) => props.handleRequestSort}
               rowCount={tableData.length}
               isBugReport={isBugReport}
             />
             <TableBody>
-              {tableData.map(
+              {props.tableData.map(
                 (row: IAppFeedback, index: number) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
-                      innerRef={index === tableData.length - 1 ? lastBookElementRef : null}
+                      innerRef={index === tableData.length - 1 ? ref : null}
                       hover role="checkbox" tabIndex={-1} 
                       key={row.id}
                     >

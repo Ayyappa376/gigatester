@@ -6,7 +6,6 @@ import './stylesRenderFilters.css'
 interface IKeywordFilterProps {
     onSubmit: Function;
     onClear: Function;
-    keywords: string[];
 }
 
 const keywords = [

@@ -1,22 +1,22 @@
-import { Backdrop, Button, CircularProgress, Container, Divider, Grid, makeStyles, Modal, Paper, styled, Typography } from '@material-ui/core';
+import { Backdrop, Button, CircularProgress, Container, Grid, makeStyles, Modal, Typography } from '@material-ui/core';
 import React, {useState, useEffect, useCallback, useRef} from 'react';
 import { buttonStyle } from '../../../common/common';
-import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
 import ReactApexChart from 'react-apexcharts'
-import RenderTable from './RenderTable';
+import RenderTable, { Order } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
-import { RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE,
-  SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED, SEVERITY_CRITICAL,
-  SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW, ILimitedProductDetails,
-  IProductNameIdMapping, ProductInfo, CONST_BUG_REPORT, CONST_FEEDBACK, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH, IRecursiveFeedback, ILastEvaluatedKey, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, BudPriority, FeedbackCategory, ICommentObject, options2, IBugDataMapping, IFeedbackBarChartData, IRatingMapping } from './common';
+import { ILimitedProductDetails,
+  IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions } from './common';
 import { withRouter } from 'react-router-dom';
 import renderComments from './RenderComments';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
+import { IRootState } from '../../../reducers';
+import { useSelector } from 'react-redux';
 
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
@@ -47,25 +47,13 @@ const FeedbackComments = (props: any) => {
     const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
     const [bugPieChartSeries, setBugPieChartSeries] = useState<{}>({})
     const [lastEvaluatedKey, setLastEvaluatedKey] = useState("");
-
-
-    const options: any = {
-      chart: {
-        id: 'rating-chart'
-      },
-      xaxis: {
-        categories: [RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE],
-      }
-    };
-
-    const bugBarChartOtions: any = {
-      chart: {
-        id: 'severity-chart'
-      },
-      xaxis: {
-        categories: [SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW],
-      }
-    };
+   /*  const signedUrlMapping = useSelector(
+      (state: IRootState) => state.admin.signedUrls
+    );
+ */
+    const [order, setOrder] = useState<Order>('desc')
+    const [keyword, setKeyword] = useState('')
+    const [searchInitiated, setSearchInitiated] = useState(false)
 
     useEffect(() => {
       if(feedbackBarChartData) {
@@ -77,36 +65,7 @@ const FeedbackComments = (props: any) => {
       }
     }, [feedbackBarChartData])
 
-    
-
-    const bugPieChartOptions = {
-      labels: Object.keys(bugPieChartSeries),
-      colors: ["#008FFB", "#58FFC5", "#FEB018", "#FF455F", "#775DD0"],
-      chart: {
-        width: 380,
-        type: 'pie',
-      },
-      dataLabels: {
-        enabled: false
-      },
-      responsive: [{
-        breakpoint: 480,
-        options: {
-          chart: {
-            width: 200
-          },
-          legend: {
-            show: false
-          }
-        }
-      }],
-      legend: {
-        position: 'right',
-        offsetY: 0,
-        height: 230,
-      }
-    }
-
+    const bugPieChartOptions = getBugPieChartOptions(bugPieChartSeries)
 
     useEffect(() => {
       const rateMap: IRatingMapping = {};
@@ -206,22 +165,11 @@ const FeedbackComments = (props: any) => {
       }
     }
 
-     /* useEffect(() => {
-      if(lastEvaluatedKey) {
-        fetchRecursiveData(lastEvaluatedKey);
-      }
-    }, [lastEvaluatedKey])  */
-
     const fetchMore = () => {
-      console.log("hell yeah:", lastEvaluatedKey)
       if(lastEvaluatedKey) {
         fetchRecursiveData(lastEvaluatedKey);
       }
     }
-  /*   useEffect(() => {
-      //window.history.scrollRestoration = 'manual'
-      setInterval(() => {fetchMore()}, 20000)
-    }, [lastEvaluatedKey]) */
 
     useEffect(() => {
       setBackdropOpen(true);
@@ -270,7 +218,10 @@ const FeedbackComments = (props: any) => {
 
     const fetchSignedUrl = (imgUrl: string) => {
       const urlSplit = imgUrl.split('/')
-
+      /* if(signedUrlMapping && signedUrlMapping[imgUrl]) {
+        setSignedImageUrl(signedUrlMapping[imgUrl]);
+        return;
+      } */
       let name = urlSplit[urlSplit.length - 1]
       Http.get({
           url: `/api/v2/signedurl/${name}`,
@@ -347,6 +298,26 @@ const FeedbackComments = (props: any) => {
       }
     }
 
+    const handleRequestSort = () => {
+      setOrder((odr) => {
+        return odr === 'desc' ? 'asc' : 'desc';
+      })
+    }
+
+    const handleFilterSeverity = () => {
+
+    }
+    const handleFilterRating = () => {
+      
+    }
+    const handleFilterCategory = () => {
+      
+    }
+
+    const clearSearch = () => {
+      setKeyword('')
+    }
+
     const ImageModal = () => {
       return (
         <Modal aria-describedby='simple-modal-description' open={showImageModal}>
@@ -413,7 +384,7 @@ const FeedbackComments = (props: any) => {
               </div>
             </Grid>
             <Grid item xl={4} style={{position: 'relative'}}>
-            <div style={{position: 'absolute', bottom: 0, minWidth: '100%'}}>
+            <div >
               <ProductFilter selectedProdId={selectedProdId}
                 setSelectedProdId={filterByProduct}
                 productNameIdMapping={prodNameIdMapping} 
@@ -421,7 +392,7 @@ const FeedbackComments = (props: any) => {
               />
             </div>
             </Grid>
-            <Grid item lg={2} style={{position: 'relative'}}>
+            <Grid item xl={2} style={{position: 'relative'}}>
               <VersionFilter productVersion={productVersion}
                 setProductVersion={setProductVersion}
                 versionList={selectedProdId.length === 1 ? prodNameIdMapping[selectedProdId[0]].version : []}
@@ -432,15 +403,19 @@ const FeedbackComments = (props: any) => {
           <div style={{marginTop: 50}}>
             <Grid container style={{marginTop: '5rem'}}>
               <Grid item lg={5}>
-                <ReactApexChart options={isBugReport ? bugBarChartOtions : options} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
+                <ReactApexChart options={isBugReport ? bugBarChartOtions : feedbackBarChartOptions} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
               </Grid>
               <Grid item lg={2}></Grid>
               <Grid item lg={5}>
-                <ReactApexChart options={isBugReport ? bugPieChartOptions : options2} series={isBugReport? Object.values(bugPieChartSeries) : feedbackPieChartSeries} type="pie" width={500} height={320} />
+                <ReactApexChart options={isBugReport ? bugPieChartOptions : feedbackPieChartOptions} series={isBugReport? Object.values(bugPieChartSeries) : feedbackPieChartSeries} type="pie" width={500} height={320} />
               </Grid>
             </Grid>
           </div>
-          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}/>
+          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+          filterSeverity={handleFilterSeverity} order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+          searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch} filterCategory={handleFilterCategory}
+          filterRating={handleFilterRating}
+          />
         </Container>
       )
     }
