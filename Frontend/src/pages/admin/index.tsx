@@ -59,6 +59,7 @@ import ManagePlatforms from '../../components/admin/platforms/manage';
 import EditDevice from '../../components/admin/devices/edit';
 import ManageDevices from '../../components/admin/devices/manage';
 import EditProduct from '../../components/admin/products/edit';
+import EditProductFeedbackSettings from '../../components/admin/products/edit-feedback';
 import ManageProducts from '../../components/admin/products/manage';
 import CreateQuestionnaire from '../../components/admin/questionnaire/create-questionnaire';
 import ManageAssessments from '../../components/admin/questionnaire/manage-questionnaire';
@@ -77,6 +78,7 @@ import { Text } from '../../common/Language';
 import './style.css';
 import FeedbackComments from "../../components/admin/feedbackComments";
 import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
+import { Settings } from 'http2';
 
 
 export const ADMIN_HOME = 'admin-home';
@@ -97,6 +99,7 @@ export const MANAGE_DEVICES = 'manageDevices';
 export const EDIT_DEVICE = 'edit-device';
 export const MANAGE_PRODUCTS = 'manageProducts';
 export const EDIT_PRODUCT = 'edit-product';
+export const EDIT_PRODUCT_FEEDBACK_SETTINGS = 'edit-product-feedback-settings';
 export const CREATE_QUESTIONNAIRE = 'create-questionnaire';
 export const MANAGE_QUESTIONNAIRES = 'manageTestSuits';
 export const EDIT_QUESTIONNAIRE = 'edit-assessment';
@@ -371,8 +374,17 @@ export default function Admin() {
     setTitle('editProduct');
   };
 
-  const feedbackClickHandler = () => {
+  const editProductFeedbackSettingsHandler = (productId: string, version: string) => {
+    setButtonValue(EDIT_PRODUCT_FEEDBACK_SETTINGS);
+    setFocusProductId(productId);
+    setFocusVersion(version);
+    setTitle('editProductFeedbackSettings');
+  }
+
+  const feedbackClickHandler = (productId: string, version: string) => {
     setButtonValue(FEEDBACK_COMMENTS);
+    setFocusProductId(productId);
+    setFocusVersion(version);
     setTitle("feedbackComments");
   }
   const handleCreateQuestionnaire = () => {
@@ -540,8 +552,6 @@ export default function Admin() {
         return (
           <EditCampaign campaignId={focusCampaignId} goBack={switchPage} />
         );
-      //      case CREATE_PLATFORM:
-      //        return <CreatePlatform goBack={switchPage} />;
       case MANAGE_PLATFORMS:
         return (
           <ManagePlatforms
@@ -567,12 +577,21 @@ export default function Admin() {
           <ManageProducts
             editClicked={editProductClickHandler}
             feedbackClicked={feedbackClickHandler}
+            feedbackSettingsClicked={editProductFeedbackSettingsHandler}
             goBack={switchToAdminHome}
           />
         );
       case EDIT_PRODUCT:
         return (
           <EditProduct
+            productId={focusProductId}
+            version={focusVersion}
+            goBack={switchPage}
+          />
+        );
+      case EDIT_PRODUCT_FEEDBACK_SETTINGS:
+        return (
+          <EditProductFeedbackSettings
             productId={focusProductId}
             version={focusVersion}
             goBack={switchPage}
@@ -620,7 +639,11 @@ export default function Admin() {
       case FEEDBACK:
         return <AdminFeedback goBack={switchToAdminHome} />;
       case FEEDBACK_COMMENTS:
-        return <FeedbackComments goBack={switchToAdminHome} />;
+        return <FeedbackComments
+          productId={focusProductId}
+          version={focusVersion}
+          goBack={switchToAdminHome}
+        />;
       case MANAGE_SETTINGS:
         return (
           <ManageSettings

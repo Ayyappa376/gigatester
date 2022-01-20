@@ -46,7 +46,6 @@ import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import { IProductInfo, IProductParams, ICategory } from '../../../model';
-import { AnyARecord } from 'dns';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -700,7 +699,7 @@ const ManageProducts = (props: any) => {
       setSelectedProd(temp);
     }
   };
-
+/*
   const renderCategoryDetails = (category: ICategory, catIndex: number) => {
     return (
       <Fragment>
@@ -855,7 +854,7 @@ const ManageProducts = (props: any) => {
     setFeedbackDialogOpen(false);
     setSelectedProd(undefined);
   }
-
+*/
   const renderProductsTable = () => {
     return (
       <Fragment>
@@ -870,7 +869,7 @@ const ManageProducts = (props: any) => {
                   className={classes.backButton}
                   variant='outlined'
                   onClick={() => {
-                    props.editClicked(0);
+                    props.editClicked(0, 0);
                   }}
                 >
                   <AddIcon fontSize='large' /> <Text tid='addProduct' />
@@ -920,7 +919,6 @@ const ManageProducts = (props: any) => {
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
                       Feedback Component
-                      {/* <Text tid='Api key' /> */}
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
@@ -931,7 +929,7 @@ const ManageProducts = (props: any) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {products.map((row: any, index: number) => {
+                {products.map((product: IProductInfo, index: number) => {
                   if (index < itemLimit.lowerLimit) {
                     return;
                   }
@@ -953,7 +951,7 @@ const ManageProducts = (props: any) => {
                         className='tableCell'
                       >
                         <Typography className='tableBodyText'>
-                          {row.name}
+                          {product.name}
                         </Typography>
                       </TableCell>
                       <TableCell
@@ -962,7 +960,7 @@ const ManageProducts = (props: any) => {
                         className='tableCell'
                       >
                         <Typography className='tableBodyText'>
-                          {row.version}
+                          {product.version}
                         </Typography>
                       </TableCell>
                       <TableCell
@@ -971,16 +969,20 @@ const ManageProducts = (props: any) => {
                         align='center'
                         className='tableCell'
                       >
-                        {/* {product.software ? product.software : ""} */}
-                        {row.software ? (
+                        {/*<button
+                          onClick={() => showManageSoftwarePage(product)}
+                        >
+                          <Typography>Manage Software</Typography>
+                        </button>*/}
+                        {product.software ? (
                           <>
-                            <Link href={row.software}>
+                            <Link href={product.software}>
                               <TextField
                                 required={true}
                                 type='string'
                                 id={`productSoftware_${index}`}
                                 name={`productSoftware_${index}`}
-                                value={row.software ? row.software : ''}
+                                value={product.software ? product.software : ''}
                                 // onChange={(event) =>
                                 //   handleChangeProductName(event, index)
                                 // }
@@ -992,7 +994,7 @@ const ManageProducts = (props: any) => {
                             <Typography style={{ padding: '0 6px' }}>
                               <ClearIcon
                                 onClick={() => {
-                                  deleteSoftware(row);
+                                  deleteSoftware(product);
                                 }}
                               />
                             </Typography>
@@ -1000,7 +1002,7 @@ const ManageProducts = (props: any) => {
                         ) : (
                           <button
                             // onClick={handleUploadButton(index)}
-                            onClick={() => handleUploadButton(row)}
+                            onClick={() => handleUploadButton(product)}
                           >
                             <Typography>Upload</Typography>
                           </button>
@@ -1012,41 +1014,9 @@ const ManageProducts = (props: any) => {
                         align='center'
                         className='tableCell'
                       >
-                        <Typography className='tableBodyText'>
-                          {/* {product.testers ? product.testers : 'testers'} */}
-                          {/*row.apiKey ? (
-                            <Fragment>
-                              <TextField
-                                required={true}
-                                type='string'
-                                id={`productApiKey_${index}`}
-                                name={`productApiKey_${index}`}
-                                value={row.apiKey ? row.apiKey : ''}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                              />
-                              <Typography style={{ padding: '0 6px' }}>
-                                <ClearIcon
-                                  onClick={() => {
-                                    deleteApiKey(row, index);
-                                  }}
-                                />
-                              </Typography>
-                            </Fragment>
-                          ) : (
-                            <button
-                              onClick={() =>
-                                handleGeneralApiKeyButton(row, index)
-                              }
-                            >
-                              <Typography>Generate Api Key</Typography>
-                            </button>
-                            )*/}
-                            <button onClick={() => handleFeedbackConfigure(row, index)} >
-                              <Typography>Configure and Get</Typography>
-                            </button>
-                        </Typography>
+                        <button onClick={() => props.feedbackSettingsClicked(product.id, product.version)} >
+                          <Typography>Configure and Get</Typography>
+                        </button>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
                         <div className={classes.actionsBlock}>
@@ -1066,7 +1036,7 @@ const ManageProducts = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 <EditIcon
                                   onClick={() => {
-                                    props.editClicked(row.id, row.version);
+                                    props.editClicked(product.id, product.version);
                                   }}
                                 />
                               </Typography>
@@ -1081,14 +1051,14 @@ const ManageProducts = (props: any) => {
                                     textAlign: 'center',
                                   }}
                                 >
-                                  <Text tid='delete' />
+                                  Disable
                                 </Typography>
                               }
                             >
                               <Typography style={{ padding: '0 6px' }}>
                                 <ClearIcon
                                   onClick={() => {
-                                    deleteClicked(row);
+                                    deleteClicked(product);
                                   }}
                                 />
                               </Typography>
@@ -1110,7 +1080,7 @@ const ManageProducts = (props: any) => {
                               <Typography style={{ padding: '0 6px' }}>
                                 < AssignmentLateIcon
                                   onClick={() => {
-                                    props.feedbackClicked();
+                                    props.feedbackClicked(product.id, product.version);
                                   }}
                                 />
                               </Typography>
@@ -1168,10 +1138,9 @@ const ManageProducts = (props: any) => {
 
   return (
     <Fragment>
-      {dialogOpen ? (
+      {
+      dialogOpen ? (
         renderSoftwareDialog()
-      ) : feedbackDialogOpen ? (
-        renderFeedbackDialog()
       ) : fetchProducts ? (
         renderProductsTable()
       ) : (

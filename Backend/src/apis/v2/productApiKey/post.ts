@@ -29,16 +29,17 @@ async function handler(request: PostProductApiKey, response: Response) {
     name: body.productId,
     stageKeys: [ {
       restApiId: config.defaults.restApiId,
-      stageName: config.defaults.orgId
+      stageName: process.env.DB_ENV,
     } ]
-};
+  };
     const apigateway = new AWS.APIGateway();
 
     apigateway.createApiKey(apiKeyParams, function (err: any, appKeyData: any) {
-    if(err) {
-      appLogger.error({ err }, 'createApiKey'); // an error occurred
-    } else {
-        const usagePlanParams = {
+      if(err) {
+        appLogger.error({ err }, 'createApiKey'); // an error occurred
+        return responseBuilder.internalServerError(err, response);
+      }
+      const usagePlanParams = {
         keyId: appKeyData.id, /* required */
         keyType: 'API_KEY', /* required */
         usagePlanId: 'v7z5d7' /* required */
@@ -46,11 +47,11 @@ async function handler(request: PostProductApiKey, response: Response) {
       apigateway.createUsagePlanKey(usagePlanParams, function(error: any, data: any) {
         if(error) {
           appLogger.error({ err: error }, 'createUsagePlanKey'); // an error occurred
-        } else {
-            return responseBuilder.ok({ data }, response); // successful response
+          return responseBuilder.internalServerError(error, response);
         }
+        return responseBuilder.ok({ data }, response); // successful response
+      });
     });
-    }});
 }
 
 export const api: API = {
