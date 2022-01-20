@@ -1,5 +1,5 @@
-import { Backdrop, Button, CircularProgress, Container, Divider, Grid, makeStyles, Modal, styled, Typography } from '@material-ui/core';
-import React, {useState, useEffect} from 'react';
+import { Backdrop, Button, CircularProgress, Container, Divider, Grid, makeStyles, Modal, Paper, styled, Typography } from '@material-ui/core';
+import React, {useState, useEffect, useCallback, useRef} from 'react';
 import { buttonStyle } from '../../../common/common';
 import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
@@ -47,6 +47,7 @@ const FeedbackComments = (props: any) => {
     const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
     const [bugPieChartSeries, setBugPieChartSeries] = useState<{}>({})
     const [lastEvaluatedKey, setLastEvaluatedKey] = useState("");
+
 
     const options: any = {
       chart: {
@@ -200,19 +201,27 @@ const FeedbackComments = (props: any) => {
       if(response.Items.LastEvaluatedKey && response.Items.LastEvaluatedKey.id) {
         setLastEvaluatedKey(response.Items.LastEvaluatedKey.id);
       }
+      if(lastEvaluatedKey && !response.Items.LastEvaluatedKey) {
+        setLastEvaluatedKey('')
+      }
     }
 
-     useEffect(() => {
+     /* useEffect(() => {
       if(lastEvaluatedKey) {
         fetchRecursiveData(lastEvaluatedKey);
       }
-    }, [lastEvaluatedKey]) 
+    }, [lastEvaluatedKey])  */
 
     const fetchMore = () => {
+      console.log("hell yeah:", lastEvaluatedKey)
       if(lastEvaluatedKey) {
         fetchRecursiveData(lastEvaluatedKey);
       }
     }
+  /*   useEffect(() => {
+      //window.history.scrollRestoration = 'manual'
+      setInterval(() => {fetchMore()}, 20000)
+    }, [lastEvaluatedKey]) */
 
     useEffect(() => {
       setBackdropOpen(true);

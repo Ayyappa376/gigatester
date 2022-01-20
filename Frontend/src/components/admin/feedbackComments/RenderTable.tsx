@@ -1,5 +1,5 @@
 import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton, Grid } from '@material-ui/core';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { getDate } from '../../../utils/data';
 
@@ -23,7 +23,7 @@ interface IProps {
     viewAttachmentClicked: Function,
     urls: string[],
     isBugReport: boolean,
-    fetchMore: Function
+    fetchMore: Function,
 }
 
 export type Order = 'asc' | 'desc';
@@ -62,6 +62,19 @@ const RenderTable = (props: IProps) => {
     const signedUrlMapping = useSelector(
       (state: IRootState) => state.admin.signedUrls
     );
+    //https://www.dusanstam.com/posts/material-ui-table-with-infinite-scroll
+    const observer: any = useRef()
+    const lastBookElementRef = useCallback((node: any) => {
+      console.log(observer)
+      console.log(node)
+      if (observer && observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver(entries => {
+      if (entries[0].isIntersecting) {
+        console.log(entries[0])
+        props.fetchMore()
+      }})
+      if (node) observer.current.observe(node)
+    }, [tableData])
 
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
@@ -229,22 +242,7 @@ const RenderTable = (props: IProps) => {
         })
         setTableData(sortTableByDate(tableDataFiltered, 'desc'));
       }
-      /* getImportantKeywords(rawTableData).then((result: any) => {
-        setFeedbackKeywords(result.feedbackKeywords);
-        setBugReportKeywords(result.bugKeywords)
-      }) */
     }, [])
-
-    const handleChangePage = (event: unknown, newPage: number) => {
-      setPage(newPage);
-    };
-  
-    const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-      setRowsPerPage(parseInt(event.target.value, 10));
-      setPage(0);
-    };
-
-    const emptyRows = rowsPerPage - Math.min(rowsPerPage, tableData.length - page * rowsPerPage);
 
     const filterRating = (val: number) => {
       let filteredTableData;
@@ -366,13 +364,14 @@ const RenderTable = (props: IProps) => {
               isBugReport={isBugReport}
             />
             <TableBody>
-              {tableData.length > 0 ? tableData.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map(
+              {tableData.map(
                 (row: IAppFeedback, index: number) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
                   return (
                     <TableRow
+                      innerRef={index === tableData.length - 1 ? lastBookElementRef : null}
                       hover role="checkbox" tabIndex={-1} 
-                      key={index}
+                      key={row.id}
                     >
                       <TableCell style={{fontSize: '1rem'}}>
                             {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
@@ -477,26 +476,11 @@ const RenderTable = (props: IProps) => {
                     </TableRow>
                   );
                 }
-              ): null}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
               )}
             </TableBody>
             
             </Table>
           </TableContainer>
-          <TablePagination
-              rowsPerPageOptions={[5, 10, 15]}
-              component="div"
-              style={{minWidth: '50%', marginLeft: 'auto'}}
-              count={tableData.length}
-              rowsPerPage={rowsPerPage}
-              page={page}
-              onPageChange={handleChangePage}
-              onRowsPerPageChange={handleChangeRowsPerPage}
-            />
         </Paper>
         </Container>
     )
