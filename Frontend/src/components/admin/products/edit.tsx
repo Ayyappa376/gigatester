@@ -83,11 +83,11 @@ const EditProduct = (props: any) => {
   const [productPosted, setProductPosted] = useState(false);
   const [failure, setFailure] = useState(false);
   const [productDataFetched, setProductDataFetched] = useState(false);
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: '',
-    type: '',
-  });
+//  const [notify, setNotify] = useState({
+//    isOpen: false,
+//    message: '',
+//    type: '',
+//  });
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
@@ -99,24 +99,25 @@ const EditProduct = (props: any) => {
   >();
   let msgFailure = failureMessage;
   let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
+
   useEffect(() => {
     Http.get({
       url: `/api/v2/products/${props.productId}/${props.version}`,
       state: stateVariable,
     })
-      .then((response: any) => {
-        fixMultiSelectValuesAndSave(response);
-      })
-      .catch((error: any) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          props.history.push('/error');
-        }
-        setFailure(true);
-      });
+    .then((response: any) => {
+      fixMultiSelectValuesAndSave(response);
+    })
+    .catch((error: any) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+      setFailure(true);
+    });
   }, []);
 
   const handleSave = () => {
@@ -130,12 +131,12 @@ const EditProduct = (props: any) => {
           },
           state: stateVariable,
         })
-          .then((response: any) => {
-            setProductPosted(true);
-          })
-          .catch((error: any) => {
-            handleSaveError(error);
-          });
+        .then((response: any) => {
+          setProductPosted(true);
+        })
+        .catch((error: any) => {
+          handleSaveError(error);
+        });
       } else {
         Http.post({
           url: `/api/v2/products`,
@@ -144,12 +145,12 @@ const EditProduct = (props: any) => {
           },
           state: stateVariable,
         })
-          .then((response: any) => {
-            setProductPosted(true);
-          })
-          .catch((error: any) => {
-            handleSaveError(error);
-          });
+        .then((response: any) => {
+          setProductPosted(true);
+        })
+        .catch((error: any) => {
+          handleSaveError(error);
+        });
       }
     }
   };
@@ -166,7 +167,7 @@ const EditProduct = (props: any) => {
       setFailure(true);
     }
   };
-
+/*
   const handleGeneralApiKeyButton = () => {
     if (productState) {
       const temp: IProductParams = { ...productState };
@@ -215,7 +216,6 @@ const EditProduct = (props: any) => {
             setFailure(true);
 
             if (values) {
-              /* tslint:disable-next-line */
               values[0].products[0].apiKey = '';
               values[0].products[0].apiId = '';
             }
@@ -226,7 +226,7 @@ const EditProduct = (props: any) => {
       }
     }
   };
-
+*/
   const fixMultiSelectValuesAndSave = (response: any) => {
     if (response.products) {
       fixOtherValuesMultiSelect(response.productConfig, response.products[0]);
@@ -410,6 +410,7 @@ const EditProduct = (props: any) => {
             fullWidth
             autoComplete='off'
             className='textFieldStyle'
+            disabled={key==='version'&&(!values || !values.id)}
           />
         );
       case 'number':
@@ -608,45 +609,6 @@ const EditProduct = (props: any) => {
 
   const handleClose = () => {
     setFailure(false);
-  };
-
-  const renderProductsTable = (product: IProductInfo) => {
-    if (product[0]) {
-      return (
-        <Fragment>
-          {product.name}
-          <TextField
-            required={true}
-            type='string'
-            id={`productApiKey`}
-            name={`productApiKey`}
-            value={product.apiKey ? product.apiKey : ''}
-            fullWidth
-            autoComplete='off'
-            className='textFieldStyle'
-          />
-          <Typography style={{ padding: '0 6px' }}>
-            <ClearIcon
-              onClick={() => {
-                deleteApiKey();
-              }}
-            />
-          </Typography>
-          Product
-        </Fragment>
-      );
-    } else {
-      return (
-        <Fragment>
-          Product
-          <Typography className='tableBodyText'>
-            <button onClick={() => handleGeneralApiKeyButton()}>
-              <Typography>Generate Api Key</Typography>
-            </button>
-          </Typography>
-        </Fragment>
-      );
-    }
   };
 
   const renderFormData = () => {
