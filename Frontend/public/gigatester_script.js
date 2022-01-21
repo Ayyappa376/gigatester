@@ -2802,7 +2802,7 @@ else{
                           }
                           else{
                             // console.log(data.Key, "file");
-                            Feedback.external_file = data.Location
+                            Feedback.external_file = response.url
                             this.post();
                           }
                         })
