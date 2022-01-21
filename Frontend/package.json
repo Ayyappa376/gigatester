@@ -47,6 +47,7 @@
     "react-dom": "16.8.6",
     "react-ga": "^2.7.0",
     "react-idle-timer": "^4.6.4",
+    "react-intersection-observer": "^8.33.1",
     "react-js-pagination": "^3.0.3",
     "react-media-recorder": "^1.6.3",
     "react-player": "^2.7.2",
