@@ -391,16 +391,9 @@ const EditProductFeedbackSettings = (props: any) => {
         if(productParams) {
           const temp: IProductParams | undefined = { ...productParams };
             if (temp && temp.products && temp.products[0]) {
-            temp.products[0].apiKey = response.data.value;
-            temp.products[0].apiId = response.data.id;
+            temp.products[0].apiKey = response.apiKey;
+            temp.products[0].apiKeyId = response.apiKeyId;
             setProductParams(temp);
-//          handleSave(); //TODO: should save only apiKey and apiId, not any other data.
-//          closeDialog();
-            setNotify({
-              isOpen: false,
-              message: 'Uploading...',
-              type: 'info',
-            });
           }
         }
         setSuccessMessage('Api Key Generated Successfully');
@@ -416,14 +409,8 @@ const EditProductFeedbackSettings = (props: any) => {
 
   const deleteApiKey = () => {
     if (productParams && productParams.products && productParams.products[0]) {
-      setNotify({
-        isOpen: true,
-        message: 'Deleting... ',
-        type: 'info',
-      });
-
       Http.deleteReq({
-        url: `/api/v2/productApiKey/${productParams.products[0].apiId}`,
+        url: `/api/v2/productApiKey/${productParams.products[0].apiKeyId}`,
         state: stateVariable,
       })
       .then((response: any) => {
@@ -431,15 +418,8 @@ const EditProductFeedbackSettings = (props: any) => {
           const temp: IProductParams | undefined = { ...productParams };
           if (temp && temp.products && temp.products[0]) {
             delete temp.products[0].apiKey;
-            delete temp.products[0].apiId;
+            delete temp.products[0].apiKeyId;
             setProductParams(temp);
-  //          handleSave(); //TODO: should save only apiKey and apiId, not any other data.
-  //          closeDialog();
-            setNotify({
-              isOpen: false,
-              message: 'Deleting... ',
-              type: 'info',
-            });
           }
         }
         setSuccessMessage('Api Key Deleted Successfully');
@@ -763,6 +743,10 @@ const EditProductFeedbackSettings = (props: any) => {
     return (
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
+          <Typography variant="h5">
+            Product:
+            {productParams && productParams.products && productParams.products[0] && productParams.products[0].name ? productParams.products[0].name : ''}
+          </Typography>
           <Paper className={classes.sections}>
             <Grid container spacing={1}>
               <Grid item xs={11}>

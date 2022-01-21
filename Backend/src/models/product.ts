@@ -1,6 +1,6 @@
 export interface ProductInfo {
-    apiId?: string;
     apiKey?: string;
+    apiKeyId?: string;
     description?: string;
     devices?: string[];
     feedbackSettings?: FeedbackSettings;

@@ -25,7 +25,7 @@ async function handler(request: PostProducts, response: Response) {
     headers.user['cognito:groups'][0] !== 'Admin'
   ) {
     const err = new Error('Forbidden Access: Unauthorized user');
-    appLogger.error(err, 'Only Admins and Managers can create campaigns');
+    appLogger.error(err, 'Only Admins and Managers can create products');
     return responseBuilder.forbidden(err, response);
   }
   body.products[0].id = `product_${uuidv1()}`;

@@ -13,12 +13,17 @@ export interface Config {
     groups: string[];
     orgId: string;
     quesType: string;
-    restApiId: string;
+    restApiId: {
+      [key: string]: string;
+    };
     scoreCoeff: number;
     subDomain: {
       [key: string]: string;
     };
     teamName: string;
+    usagePlanId: {
+      [key: string]: string;
+    };
   };
   elasticsearch: {
     password: string;
@@ -58,7 +63,11 @@ export const config: Config = {
     groups: ['Member'],
     orgId: 'www', // default should be 'www' //nomiso - dev env
     quesType: '1234',
-    restApiId: 'qe1lgcnkwh',
+    restApiId: {
+      development: 'qe1lgcnkwh',
+      local: 'qe1lgcnkwh',
+      production: '',
+    },
     scoreCoeff: 10,
     subDomain: {
       development: 'dev',
@@ -66,6 +75,11 @@ export const config: Config = {
       production: 'beta', //change to 'beta' for beta-deploy, change based on where to deploy
     },
     teamName: 'Others',
+    usagePlanId: {
+      development: 'v7z5d7',
+      local: 'v7z5d7',
+      production: '',
+    },
   },
   elasticsearch: {
     password: 'gigatester', //change based on where to deploy

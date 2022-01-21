@@ -183,8 +183,8 @@ const EditProduct = (props: any) => {
         })
           .then((response: any) => {
             if (values) {
-              values[0].products[0].apiKey = response.data.value;
-              values[0].products[0].apiId = response.data.id;
+              values[0].products[0].apiKey = response.apiKey;
+              values[0].products[0].apiKeyId = response.apiKeyId;
               setProductState(temp);
             }
           })
@@ -208,7 +208,7 @@ const EditProduct = (props: any) => {
         });
 
         Http.deleteReq({
-          url: `/api/v2/productApiKey/${values[0].products[0].apiId}`,
+          url: `/api/v2/productApiKey/${values[0].products[0].apiKeyId}`,
           state: stateVariable,
         })
           .then((response: any) => {
@@ -217,7 +217,7 @@ const EditProduct = (props: any) => {
 
             if (values) {
               values[0].products[0].apiKey = '';
-              values[0].products[0].apiId = '';
+              values[0].products[0].apiKeyId = '';
             }
           })
           .catch((error: any) => {
@@ -410,7 +410,7 @@ const EditProduct = (props: any) => {
             fullWidth
             autoComplete='off'
             className='textFieldStyle'
-            disabled={key==='version'&&(!values || !values.id)}
+//            disabled={key==='version' && values!==undefined && values.id!==undefined && values.id.length>0}
           />
         );
       case 'number':

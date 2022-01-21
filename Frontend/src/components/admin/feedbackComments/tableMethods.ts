@@ -71,8 +71,8 @@ export const applySort = (sortData: IAppFeedback[], order: Order, orderBy: strin
     }
   }
  */
-
-/* export const clearSearch = () => {
+/*
+export const clearSearch = () => {
     const tableDataFiltered = tableData.filter((data) => {
       if(!isBugReport && data.productRating > 0) {
         return true
@@ -154,4 +154,4 @@ export const applySort = (sortData: IAppFeedback[], order: Order, orderBy: strin
     }
     applySort(filteredTableData);
   }
- */
+*/

@@ -433,7 +433,7 @@ const EditCampaign = (props: any) => {
       }
     }
   };
-
+/*
   const handleGeneralApiKeyButton = (index: any) => {
     if (campaignState) {
       const temp: ICampaignParams = { ...campaignState };
@@ -451,7 +451,7 @@ const EditCampaign = (props: any) => {
             console.log('app key', response);
             if (values) {
               values[0].products[index].apiKey = response.data.value;
-              values[0].products[index].apiId = response.data.id;
+              values[0].products[index].apiKeyId = response.data.id;
               console.log(values, 'values');
               setCampaignState(temp);
             }
@@ -494,6 +494,7 @@ const EditCampaign = (props: any) => {
           console.log(error);
         });
   };
+*/
   const closeDialog = () => {
     setDialogOpen(false);
     setSoftwareOption(false);
@@ -513,7 +514,7 @@ const EditCampaign = (props: any) => {
     // handleChangeProductSoftware(event, softwareIndex);
     // console.log(userParamState);
   };
-
+/*
   const deleteApiKey = (index: number) => {
     console.log(campaignState);
     if (campaignState) {
@@ -528,7 +529,7 @@ const EditCampaign = (props: any) => {
         });
 
         Http.deleteReq({
-          url: `/api/v2/productApiKey/${values[0].products[index].apiId}`,
+          url: `/api/v2/productApiKey/${values[0].products[index].apiKeyId}`,
           state: stateVariable,
         })
           .then((response: any) => {
@@ -537,9 +538,8 @@ const EditCampaign = (props: any) => {
             setFailure(true);
 
             if (values) {
-              /* tslint:disable-next-line */
               values[0].products[index].apiKey = '';
-              values[0].products[index].apiId = '';
+              values[0].products[index].apiKeyId = '';
             }
           })
           .catch((error: any) => {
@@ -580,7 +580,6 @@ const EditCampaign = (props: any) => {
               // });
 
               if (values) {
-                /* tslint:disable-next-line */
                 values[0].products[index].software = '';
               }
             })
@@ -591,6 +590,7 @@ const EditCampaign = (props: any) => {
       }
     }
   };
+*/
   const uploadForm = () => {
     return (
       <React.Fragment>
@@ -1318,11 +1318,12 @@ const EditCampaign = (props: any) => {
                                   />
                                 </Link>
                                 <Typography style={{ padding: '0 6px' }}>
-                                  <ClearIcon
+                                  <ClearIcon/>
+                                  {/*<ClearIcon
                                     onClick={() => {
                                       deleteSoftware(index);
                                     }}
-                                  />
+                                  />*/}
                                 </Typography>
                               </>
                             ) : (
@@ -1389,21 +1390,22 @@ const EditCampaign = (props: any) => {
                                     className='textFieldStyle'
                                   />
                                   <Typography style={{ padding: '0 6px' }}>
-                                    <ClearIcon
+                                    <ClearIcon/>
+                                    {/*<ClearIcon
                                       onClick={() => {
                                         deleteApiKey(index);
                                       }}
-                                    />
+                                    />*/}
                                   </Typography>
                                 </>
-                              ) : (
-                                <button
+                              ) : ( ''
+                                /*<button
                                   onClick={() =>
                                     handleGeneralApiKeyButton(index)
                                   }
                                 >
                                   <Typography>Generate Api Key</Typography>
-                                </button>
+                                </button>*/
                               )}
                             </Typography>
                           </TableCell>
