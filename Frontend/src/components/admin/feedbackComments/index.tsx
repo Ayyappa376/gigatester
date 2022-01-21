@@ -10,17 +10,20 @@ import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { ILimitedProductDetails,
   IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions } from './common';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey } from './common';
 import { withRouter } from 'react-router-dom';
 import renderComments from './RenderComments';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
 import { IRootState } from '../../../reducers';
 import { useSelector } from 'react-redux';
+import Failure from '../../failure-page';
+import { sortTableByDate } from './tableMethods';
 
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
-    const [data, setData] = useState([]);
+    const [error, setError] = useState(false)
+    const [data, setData] = useState<IAppFeedback[]>([]);
     const [rawData, setRawData] = useState([]);
     const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
     const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
@@ -46,11 +49,7 @@ const FeedbackComments = (props: any) => {
     const [selectedProdId, setSelectedProdId] = useState<string[]>([])
     const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
     const [bugPieChartSeries, setBugPieChartSeries] = useState<{}>({})
-    const [lastEvaluatedKey, setLastEvaluatedKey] = useState("");
-   /*  const signedUrlMapping = useSelector(
-      (state: IRootState) => state.admin.signedUrls
-    );
- */
+    const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
     const [order, setOrder] = useState<Order>('desc')
     const [keyword, setKeyword] = useState('')
     const [searchInitiated, setSearchInitiated] = useState(false)
@@ -91,10 +90,10 @@ const FeedbackComments = (props: any) => {
         setBugDataMapping(bugMap);
       } else {
         data.forEach((item: IAppFeedback) => {
-          rateMap[item.id] = {
+        rateMap[item.id] = {
             rating : item.productRating,
             date : item.createdOn,
-            comments: item.feedbackComments ? JSON.parse(item.feedbackComments) : {},
+            comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
             productId: item.productId,
             productVersion: item.productVersion
           }
@@ -126,9 +125,21 @@ const FeedbackComments = (props: any) => {
       }
     }, [selectedProdId, productVersion])
 
-    
+    useEffect(() => {
+      if(rawData.length === 0) {
+        return;
+      }
+      if(Object.keys(lastEvaluatedKey).length > 0) {
+        // fetch the results from backend
+        setData([]);
+        setRawData([])
+        fetchRecursiveData({fetchOrder: order})
+      } else {
+        setData(sortTableByDate(data, order))
+      }
+    }, [order])
 
-    const fetchRecursiveData = async(lastEvalutedKey?: string) => {
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder}: {lastEvalKey?: ILastEvalKey, fetchOrder?: Order}) => {
       let urlAppend = `?items=${NUMBER_OF_ITEMS_PER_FETCH}`
       if(props.productId) {
         urlAppend += `?prodId=${props.productId}`;
@@ -137,43 +148,51 @@ const FeedbackComments = (props: any) => {
         }
       }
 
-      if(lastEvalutedKey) {
-        urlAppend += urlAppend ? `&lastEvalKey=${lastEvalutedKey}` : `?lastEvalKey=${lastEvalutedKey}`
+      if(lastEvalKey && Object.keys(lastEvalKey).length > 0) {
+        urlAppend += urlAppend ? `&lastEvalKey=${JSON.stringify(lastEvalKey)}` : `?lastEvalKey=${JSON.stringify(lastEvalKey)}`
       }
 
+      if(fetchOrder) {
+        urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`
+      }
       const response: any = await getFeedbackData({isBugReport, props, urlAppend}).catch((error) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
         if (object.code === 401) {
           props.history.push('/relogin');
+        } else {
+          setError(true)
         }
         return;
       })
-      const dataCopy = [...data].concat(response.Items.Items);
-      const rawDataCopy = [...rawData].concat(response.Items.Items)
-      console.log("data:", dataCopy)
-      console.log("rawData:", rawDataCopy)
-      setData(dataCopy);
-      setRawData(rawDataCopy);
+      
+      setData((dataObj) => {
+        const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+        return Array.from(dataCopy)
+      });
+      setRawData((rawDataObj) => {
+        const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+        return Array.from(rawDataCopy)
+      });
       //setFeedbackBarChartData(processBarChartData(response.Items.Items));
       console.log(response.Items.LastEvaluatedKey)
-      if(response.Items.LastEvaluatedKey && response.Items.LastEvaluatedKey.id) {
-        setLastEvaluatedKey(response.Items.LastEvaluatedKey.id);
+      if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
+        setLastEvaluatedKey(response.Items.LastEvaluatedKey);
       }
-      if(lastEvaluatedKey && !response.Items.LastEvaluatedKey) {
-        setLastEvaluatedKey('')
+      if(Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
+        setLastEvaluatedKey({})
       }
     }
 
     const fetchMore = () => {
-      if(lastEvaluatedKey) {
-        fetchRecursiveData(lastEvaluatedKey);
+      if(Object.keys(lastEvaluatedKey).length > 0) {
+        fetchRecursiveData({lastEvalKey: lastEvaluatedKey});
       }
     }
 
     useEffect(() => {
       setBackdropOpen(true);
-      fetchRecursiveData();
+      fetchRecursiveData({});
       getProductDetails();
       getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
     }, [isBugReport])
@@ -423,10 +442,11 @@ const FeedbackComments = (props: any) => {
     return (
         <Container maxWidth='lg' component='div' className='containerRoot'>
           {
-            backdropOpen ?
+            !error ? backdropOpen ?
               <Backdrop className={classes.backdrop} open={backdropOpen}>
                   <CircularProgress color='inherit' />
-              </Backdrop> : <RenderData/>
+              </Backdrop> : <RenderData/> :
+              <Failure message={"Oops! Something went wrong."}/>
           }
         </Container>
     )

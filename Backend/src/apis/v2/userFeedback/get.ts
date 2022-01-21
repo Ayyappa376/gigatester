@@ -30,6 +30,7 @@ interface UserFeedbackRequest {
     prodId?: string;
     prodVersion?: string;
     search: string;
+    order?: string;
   };
 }
 
@@ -40,7 +41,7 @@ async function handler(
   appLogger.info({ UserFeedbackRequest: request }, 'Inside Handler');
   const { headers, params, query } = request;
   const {type} = params;
-  const {items, search, lastEvalKey, filter, filterType, prodId, prodVersion} = query;
+  const {items, search, lastEvalKey, filter, filterType, prodId, prodVersion, order} = query;
 
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
@@ -67,11 +68,11 @@ async function handler(
       const chartData = await getChartData({type})
       return responseBuilder.ok({Items: chartData }, response);
     }
-    feedback = await getUserFeedbackList({type,items, search, lastEvalKey, filter, filterType, prodId, prodVersion});
+    feedback = await getUserFeedbackList({type,items, search, lastEvalKey, filter, filterType, prodId, prodVersion, order});
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    responseBuilder.internalServerError(<Error>err, response);
   }
 }
 

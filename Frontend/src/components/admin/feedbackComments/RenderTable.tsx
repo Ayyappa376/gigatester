@@ -18,6 +18,7 @@ import RenderStars from './RenderStarts';
 import renderComments from './RenderComments';
 import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
+import { TailSpin } from  'react-loader-spinner'
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -57,16 +58,22 @@ const RenderTable = (props: IProps) => {
     });
 
     useEffect(() => {
-      console.log({inView})
-      if(inView) {
+      if(inView && tableData.length > 0) {
         props.fetchMore()
+      }
+      return () => {
+        // can't do anything to cancel fetch more.
       }
     }, [inView])
 
-    useEffect(() => {
-      if(!fetchAllUrls) {
+    const initiateFetchAllUrls = useCallback(() => {
+      if(!fetchAllUrls && tableData.length > 0) {
         fetchSignedUrls(props.urls)
       }
+    }, [tableData])
+
+    useEffect(() => {
+      initiateFetchAllUrls();
     }, [])
     const updateSignedUrlData = useActions(updateSignedUrls);
     const signedUrlMapping = useSelector(
@@ -93,6 +100,7 @@ const RenderTable = (props: IProps) => {
         return;
       }
       const signedUrlMappingCopy: any = {}
+      let isUrlMissing = false;
       return Promise.all(
         urls.map((url: string) => {
           return new Promise(async(resolve, reject) => {
@@ -100,6 +108,7 @@ const RenderTable = (props: IProps) => {
             if(signedUrlMapping && signedUrlMapping[url]) {
               signedUrl = signedUrlMapping[url]
             } else {
+              isUrlMissing = true;
               signedUrl = await getSignedUrl(url, stateVariable);
             }
             if (signedUrl) {
@@ -110,8 +119,12 @@ const RenderTable = (props: IProps) => {
             }
           })
         })
-      ).then(() => {setFetchAllUrls(true);
-        updateSignedUrlData(signedUrlMappingCopy)}).catch((error) => {console.log(error)});
+      ).then(() => {
+        setFetchAllUrls(true);
+        if(isUrlMissing) {
+          updateSignedUrlData(signedUrlMappingCopy)}
+        }
+      ).catch((error) => {console.log(error)});
     }
 
     return (
@@ -172,10 +185,10 @@ const RenderTable = (props: IProps) => {
             <EnhancedTableHead
               classes={classes}
               order={props.order}
-              onRequestSort={(property: string) => props.handleRequestSort}
+              onRequestSort={(property: string) => { props.handleRequestSort()}}
               rowCount={tableData.length}
               isBugReport={isBugReport}
-            />
+            />{tableData.length > 0 ? 
             <TableBody>
               {props.tableData.map(
                 (row: IAppFeedback, index: number) => {
@@ -210,7 +223,7 @@ const RenderTable = (props: IProps) => {
                       }
                       <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw', fontSize: '1rem'}}>
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
-                            {renderComments(row.feedbackComments ? JSON.parse(row.feedbackComments) : undefined)}
+                            {renderComments(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)}
                         </div>
                         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
 
@@ -291,7 +304,11 @@ const RenderTable = (props: IProps) => {
                 }
               )}
             </TableBody>
-            
+            : <div style={{width: '400%', padding: '.2rem 0 .2rem 0'}}>
+              <TailSpin wrapperStyle={{marginLeft: "50%", transform: 'translateX: "-50%'}} height="60"
+              width="30"
+              color='black'
+              ariaLabel='loading'/></div>}
             </Table>
           </TableContainer>
         </Paper>

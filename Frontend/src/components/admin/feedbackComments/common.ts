@@ -30,7 +30,7 @@ export const CONST_FEEDBACK_CHART = 'FEEDBACK-CHART';
 export const CONST_BUG_REPORT = 'BUG_REPORT';
 export const CONST_BUG_REPORT_CHART = 'BUG-REPORT-CHART';
 
-export const NUMBER_OF_ITEMS_PER_FETCH = 100;
+export const NUMBER_OF_ITEMS_PER_FETCH = 20;
 
 export interface ProductInfo {
     description?: string;
@@ -129,6 +129,10 @@ export interface IRatingMapping {
 export interface IBugDataMapping {
     [key : string] : IBugMapData;
 };
+
+export interface ILastEvalKey {
+  [key: string]: string
+}
 
 export const feedbackPieChartOptions = {
     labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
