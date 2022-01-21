@@ -27,10 +27,10 @@ interface UserFeedbackRequest {
     filterType: FilterType;
     items: string;
     lastEvalKey: string;
+    order?: string;
     prodId?: string;
     prodVersion?: string;
     search: string;
-    order?: string;
   };
 }
 

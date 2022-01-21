@@ -13,11 +13,11 @@ interface Params {
   filterType?: FilterType;
   items?: string;
   lastEvalKey?: string;
+  order?: string;
   prodId?: string;
   prodVersion?: string;
   search?: string;
   type?: FeedbackType;
-  order?: string
 }
 
 interface GetChartDataProps {
@@ -49,7 +49,7 @@ export interface AppFeedback {
 }
 
 export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion, order}: Params): Promise<any[]> => {
-    let params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
+    const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
     const EAN: any = {};
@@ -102,9 +102,8 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       EAV[':keyWord'] = search;
       FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
     } */
-    const today = new Date()
+    const today = new Date();
     const lastDate = new Date().setDate(today.getDate() - 30);
-    console.log(lastDate)
 
     EAV[':type'] = type;
     EAV[':lastDate'] = lastDate;
@@ -121,20 +120,16 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       params.ExpressionAttributeValues = EAV;
     }
 
-    params.KeyConditionExpression = "feedbackType=:type AND createdOn>:lastDate";
+    params.KeyConditionExpression = 'feedbackType=:type AND createdOn>:lastDate';
     params.ScanIndexForward = order && order === 'asc' ? true : false;
-    params.IndexName = "feedbackType-createdOn-index";
+    params.IndexName = 'feedbackType-createdOn-index';
 
-    if(items) {
-      params.Limit = parseInt(items, 10);
-    } else {
-      params.Limit = 100; // Defaulting to 100 items
-    }
+    params.Limit = items ? parseInt(items, 10) : 100;
+
     if(lastEvalKey) {
-      const exKeyStart: any = JSON.parse(lastEvalKey)
+      const exKeyStart: any = JSON.parse(lastEvalKey);
       params.ExclusiveStartKey = exKeyStart;
     }
-    console.log(params)
     return queryRaw<any>(params);
   };
 
