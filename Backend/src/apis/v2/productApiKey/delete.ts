@@ -39,7 +39,7 @@ async function handler(request: GetApiKey, response: Response) {
 //      })
       } catch(err) {
         appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred
-        return responseBuilder.internalServerError(new Error("Failed to remove API Key"), response);
+        return responseBuilder.internalServerError(new Error('Failed to remove API Key'), response);
       }
     })
     .catch((err) => {

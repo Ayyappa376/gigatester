@@ -37,7 +37,7 @@ async function handler(request: PostProductApiKey, response: Response) {
     .then((data: any) => {
       appLogger.info({ generateAPIKeyForProduct: data });
 
-      try{
+      try {
         saveAPIKeyToProduct(body.productId, data.id, data.value);
 //       .then((ok: any) => {
 //        appLogger.info({ saveAPIKeyToProduct: ok });
