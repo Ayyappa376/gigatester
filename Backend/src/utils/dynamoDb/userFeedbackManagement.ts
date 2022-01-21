@@ -19,32 +19,32 @@ interface Params {
   type?: FeedbackType;
 }
 
-interface IGetChartDataProps {
+interface GetChartDataProps {
   type: FeedbackType;
 }
 
-export interface IProcessedData {
-  [key: string]: number
+export interface ProcessedData {
+  [key: string]: number;
 }
 
-export interface IAppFeedback {
-  createdOn: number;
-  feedbackComments ? : string[];
-  id: string;
-  productId ? : string;
-  productRating: number;
-  productVersion ? : string;
-  userId ? : string;
-  sourceIP?: string;
-  feedbackCategory?: FeedbackCategory;
+export interface AppFeedback {
   bugPriority: BudPriority;
+  createdOn: number;
+  feedbackCategory?: FeedbackCategory;
+  feedbackComments?: string[];
   feedbackMedia: {
-    image?: string,
-    video?: string,
-    file?: string,
-    audio?: string
-  },
+    audio?: string;
+    file?: string;
+    image?: string;
+    video?: string;
+  };
   feedbackType: FeedbackType;
+  id: string;
+  productId?: string;
+  productRating: number;
+  productVersion?: string;
+  sourceIP?: string;
+  userId?: string;
 }
 
 export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
@@ -115,7 +115,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       if(lastEvalKey) {
         const exKeyStart: any = {
           id: lastEvalKey
-        }
+        };
         params.ExclusiveStartKey = exKeyStart;
       }
       params.Limit = parseInt(items, 10);
@@ -125,78 +125,76 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     return scan<any[]>(params);
   };
 
-  const convertFirstLetterToUppercase = (str: string) => {
-    return str.charAt(0).toUpperCase() + str.slice(1);
-}
+const convertFirstLetterToUppercase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
-export const feedbackProcessBarChartData = (items: IAppFeedback[]) => {
-    let ratingData : IProcessedData = {"1" : 0, "2" : 0, "3" : 0, "4" : 0, "5" : 0};
+export const feedbackProcessBarChartData = (items: AppFeedback[]) => {
+    const ratingData: ProcessedData = {1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0};
     if(items.length > 0) {
         items.forEach((item) => {
-            if(item.productRating && typeof item.productRating !== 'string') {
-                ratingData[item.productRating.toString()]++;
-            }  
-        })
+            if(item.productRating /*&& (typeof item.productRating !== 'string')*/) {
+                ratingData[item.productRating.toString()] += 1;
+            }
+        });
     }
-    console.log(ratingData)
+    console.log(ratingData);
     return ratingData;
-}
+};
 
-export const feedbackProcessPieChartData = (pData: IProcessedData) => {
+export const feedbackProcessPieChartData = (pData: ProcessedData) => {
     let dissatisfied = 0;
     let satisfied = 0;
     let somewhatSatisfied = 0;
     dissatisfied = pData['1'] + pData['2'];
     somewhatSatisfied = pData['3'];
     satisfied = pData['4'] + pData['5'];
-    return {dissatisfied, satisfied, somewhatSatisfied}
-}
+    return {dissatisfied, satisfied, somewhatSatisfied};
+};
 
-export const bugProcessBarChartData = (items: IAppFeedback[]) => {
-    let severityData : IProcessedData = {"Critical" : 0, "High" : 0, "Medium" : 0, "Low" : 0};
+export const bugProcessBarChartData = (items: AppFeedback[]) => {
+    const severityData: ProcessedData = {Critical : 0, High : 0, Medium : 0, Low : 0};
     if(items.length > 0) {
         items.forEach((item) => {
-            if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0 || typeof item.productRating === undefined )) {
-                severityData[convertFirstLetterToUppercase(item.bugPriority)]++;
-            }  
-        })
+            if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
+                severityData[convertFirstLetterToUppercase(item.bugPriority)] += 1;
+            }
+        });
     }
     return severityData;
-}
+};
 
-export const bugProcessPieChartData = (items: IAppFeedback[]) => {
-    let categoryData : IProcessedData = {"Audio" : 0, "Video" : 0, "Screen" : 0, "Images" : 0, "Other": 0};
+export const bugProcessPieChartData = (items: AppFeedback[]) => {
+    const categoryData: ProcessedData = {Audio : 0, Video : 0, Screen : 0, Images : 0, Other: 0};
     if(items.length > 0) {
         items.forEach((item) => {
-            if(item.feedbackCategory && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0 || typeof item.productRating === undefined )) {
-                categoryData[convertFirstLetterToUppercase(item.feedbackCategory)]++;
-            }  
-        })
+            if(item.feedbackCategory && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
+                categoryData[convertFirstLetterToUppercase(item.feedbackCategory)] += 1;
+            }
+        });
     }
     return categoryData;
-}
+};
 
-const processFeedbackChartData = (data: IAppFeedback[]) => {
+const processFeedbackChartData = (data: AppFeedback[]) => {
   const barChartData = feedbackProcessBarChartData(data);
   const pieChartData = feedbackProcessPieChartData(barChartData);
   return {
-    pieChartData, barChartData
-  }
-}
+    barChartData, pieChartData
+  };
+};
 
-const processBugReportChartData = (data: IAppFeedback[]) => {
+const processBugReportChartData = (data: AppFeedback[]) => {
   const barChartData = bugProcessBarChartData(data);
   const pieChartData = bugProcessPieChartData(data);
   return {
-    pieChartData, barChartData
-  }
-}
+    barChartData, pieChartData
+  };
+};
 
-export const getChartData = async({type}: IGetChartDataProps) => {
+export const getChartData = async({type}: GetChartDataProps) => {
   let chartType: FeedbackType = 'FEEDBACK';
   if(type !== 'FEEDBACK-CHART') {
-    chartType = 'BUG_REPORT'
+    chartType = 'BUG_REPORT';
   }
   const data = await getUserFeedbackList({type: chartType});
   return type === 'FEEDBACK-CHART' ? processFeedbackChartData(data) : processBugReportChartData(data);
-}
+};
