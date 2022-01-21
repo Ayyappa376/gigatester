@@ -37,15 +37,16 @@ async function handler(request: PostProductApiKey, response: Response) {
     .then((data: any) => {
       appLogger.info({ generateAPIKeyForProduct: data });
 
-      saveAPIKeyToProduct(body.productId, data.id, data.value)
-       .then((ok: any) => {
-        appLogger.info({ saveAPIKeyToProduct: ok });
-        return responseBuilder.ok({ apiKeyId: data.id, apiKey: data.value }, response); // successful response
-      })
-      .catch((err) => {
+      try{
+        saveAPIKeyToProduct(body.productId, data.id, data.value);
+//       .then((ok: any) => {
+//        appLogger.info({ saveAPIKeyToProduct: ok });
+//        return responseBuilder.ok({ apiKeyId: data.id, apiKey: data.value }, response); // successful response
+//      })
+      } catch(err) {
         appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred
-        return responseBuilder.internalServerError(err, response);
-      });
+        return responseBuilder.internalServerError(new Error('Failed to save API Key'), response);
+      }
     })
     .catch((err) => {
       appLogger.error({ err }, 'generateAPIKeyForProduct'); // an error occurred

@@ -31,15 +31,16 @@ async function handler(request: GetApiKey, response: Response) {
     deleteAPIKeyForProduct(params.apiKeyId)
     .then((data: any) => {
       appLogger.info({ deleteAPIKeyForProduct: data });
-      removeAPIKeyFromProduct(params.apiKeyId)
-      .then((ok: any) => {
-        appLogger.info({ saveAPIKeyToProduct: ok });
-        return responseBuilder.ok({ data }, response); // successful response
-      })
-      .catch((err) => {
+      try {
+        removeAPIKeyFromProduct(params.apiKeyId);
+//      .then((ok: any) => {
+//        appLogger.info({ saveAPIKeyToProduct: ok });
+//        return responseBuilder.ok({ data }, response); // successful response
+//      })
+      } catch(err) {
         appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred
-        return responseBuilder.internalServerError(err, response);
-      });
+        return responseBuilder.internalServerError(new Error("Failed to remove API Key"), response);
+      }
     })
     .catch((err) => {
       appLogger.error({ err }, 'deleteAPIKeyForProduct'); // an error occurred
