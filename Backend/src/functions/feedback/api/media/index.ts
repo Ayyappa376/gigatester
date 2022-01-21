@@ -19,16 +19,20 @@ cors({
                 const jsonBody = JSON.parse(event.body);
                 const s3 = new aws.S3();
                 const fileBody = jsonBody;
-                const base64String = fileBody.file;
+                // const base64String = fileBody.file;
                 const fileName = fileBody.fileName;
-                const buff = Buffer.from (base64String, 'base64');
+                const fileType = fileBody.fileType;
+                // const buff = Buffer.from (base64String, 'base64');
                 try {
                     const params = {
-                        Body: buff,
                         Bucket: 'dev-gigatester-manage-feedback',
+                        ContentType: fileType,
+                        Expires: 60*24,
                         Key: fileName,
                     };
-                    body = await s3.upload(params).promise();
+                    body = await  s3.getSignedUrlPromise('putObject', params);
+                    headers['Access-Control-Allow-Credentials']= true;
+                    headers['Access-Control-Allow-Origin']= '*';
                 } catch (err) {
                     console.log(err, 'Internal Server Error');
                 }
