@@ -1,6 +1,7 @@
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
+import './stylesRenderFilters.css'
 
 interface IProps {
     onSelect: Function
@@ -9,8 +10,7 @@ interface IProps {
 const severityList = [
     "Critical", "High", "Medium", "Low"
 ]
-const RenderSeverityFilter = (props: IProps) => {
-    const classes = useStyles();
+const RenderSeverityFilter = React.memo((props: IProps) => {
     const [severity, setSeverity] =useState("");
 
     const handleKeywordClick = (val: string) => {
@@ -24,18 +24,18 @@ const RenderSeverityFilter = (props: IProps) => {
     }
 
     return (
-        <div className={classes.ratingBlock}>
-            <div className={classes.textContainer}>
-                <Typography className={classes.textHeader}>Choose bugs with severity:</Typography>
+        <div id="RenderFilter-Block">
+            <div id="RenderFilter-textContainer">
+                <Typography id="RenderFilter-textHeader">Choose bugs with severity:</Typography>
             </div>
-            <div className={classes.flexContainer}>
+            <div id="RenderFilter-flexContainer">
                 {severityList.map((val) => 
-                    <Button variant='outlined' onClick={() => {handleKeywordClick(val)}} className={severity === val ? classes.btnVisited : classes.btn}>{val}</Button>
+                    <Button variant='outlined' key={val} onClick={() => {handleKeywordClick(val)}} id={severity === val  ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
                 )}
             </div>
         </div>
     )
-}
+})
 
 const useStyles = makeStyles({
     ratingBlock: {

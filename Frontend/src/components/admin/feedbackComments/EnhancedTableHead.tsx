@@ -14,7 +14,6 @@ interface EnhancedTableProps {
   classes: ReturnType<typeof useStyles>;
   onRequestSort: (property: string) => void;
   order: Order;
-  orderBy: string;
   rowCount: number;
   isBugReport: boolean;
 }
@@ -41,15 +40,15 @@ const useStylesLabel = makeStyles({
 const headCells: HeadCell[] = [
     { id: 'userName', label: 'User Name', align: 'left', headType: ALROUND },
     { id: 'date', label: 'Date Submitted', sortLabel: 'date', align: 'center', headType: ALROUND },
-    { id: 'rating', label: 'Rating', sortLabel: 'rating', align: 'center', headType: FEEDBACK },
-    { id: 'severity', label: 'Severity', sortLabel: 'severity', align: 'center', headType: BUG_REPORT  },
+    { id: 'rating', label: 'Rating', align: 'center', headType: FEEDBACK },
+    { id: 'severity', label: 'Severity', align: 'center', headType: BUG_REPORT  },
     { id: 'category', label: 'Category', align: 'center', headType: BUG_REPORT  },
     { id: 'comments', label: 'Comments', align: 'center', headType: ALROUND },
   ];
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
     const sortClass = useStylesLabel()
-    const { classes, order, orderBy, onRequestSort, isBugReport } = props;
+    const { classes, order, onRequestSort, isBugReport } = props;
     const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(property);
     };
@@ -67,18 +66,17 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
             <TableCell
               key={headCell.id}
               align={headCell.align}
-              sortDirection={orderBy === headCell.id ? order : false}
               style={{fontSize: '1.05rem', fontWeight: 500, color: '#666666'}}
             >
               {
                 headCell.sortLabel ?
-                  <Tooltip title={orderBy === headCell.sortLabel ? "Sorted according to this column" : "Click to apply sorting for this column"}
+                  <Tooltip title={"Sorted according to this column"}
                     aria-label="sort-active">
                     <TableSortLabel
-                      active={orderBy === headCell.sortLabel}
-                      direction={orderBy === headCell.sortLabel ? order : 'asc'}
+                      active={true}
+                      direction={order}
                       onClick={createSortHandler(headCell.sortLabel)}
-                      style={{color: orderBy === headCell.sortLabel? 'rgba(0,0,0,1)' : '#666666'}}
+                      style={{color: 'rgba(0,0,0,1)'}}
                     >
                       <div >
                         {headCell.label}

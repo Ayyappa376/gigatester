@@ -2069,13 +2069,14 @@ else{
                     Feedback.removeOverlay();
                     Feedback.hideComments();
                     Feedback.Tools.removeTools()
+                  
+                    Feedback.showControls();
                     Feedback.recording = true;
                     Feedback.form_data.rating =  Feedback.form_data.rating;
                     Feedback.setFormHTML();
                     if(Feedback.form_data.rating){
                         Feedback.selectedRating();
                     }
-                    Feedback.showControls();
                     Feedback.clearScreenStatus();
                     const image_overlay = $('<div id="gigatester_images_player"><div></div></div>');
                     const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
@@ -2742,10 +2743,10 @@ else{
                         console.log('inside reader')
                         const base64String = String(reader.result).split('base64,')[1];
                         const dataInfo = {
-                            file: base64String,
+                            fileType: fileSelected.type,
                             fileName: fileSelected.name,
                         };
-                        this.postMediaContent(dataInfo);
+                        this.postMediaContent(dataInfo, fileSelected);
                     }
                     reader.readAsDataURL(fileSelected);            
                 },
@@ -2759,10 +2760,11 @@ else{
                         this.submitPost(e);
                     // }
                 },
-                postMediaContent: function(dataInfo){
+                postMediaContent: function(dataInfo, fileSelected){
                     if($('gtdiv').hasClass('gigatester-controls-send-error')){
                         $(document.getElementsByClassName('gigatester-controls-send-error')).remove();
                     }
+                    //qe1lgcnkwh.execute-api.us-east-1.amazonaws.com
                     let send_button = this.ui.controls.find(".gigatester-controls-send");
                     send_button.addClass("gigatester-controls-send-loading")
                     console.log(dataInfo, 'dataInfo');
@@ -2773,30 +2775,37 @@ else{
                       })
                         .then(res => res.json())
                         .then(data => {
-                        send_button.removeClass("gigatester-controls-send-loading")
+                        
                           console.log('Success:', data);
-                          console.log(data.Key, 'key')
-                          if(data.Key.slice(0,8) === 'gt_image'){
+                            fetch(data, {
+                              method: 'PUT',
+                              body: fileSelected,
+                            })
+                              .then((response) => {
+                          console.log(response.url.slice(56,64), 'key')
+                          send_button.removeClass("gigatester-controls-send-loading") 
+                          if(response.url.slice(56,64) === 'gt_image'){
                             // console.log(data.Key, "img");
-                            Feedback.image_file = data.Location;
-                            console.log(data.Location, 'img data')
+                            Feedback.image_file = response.url;
+                            console.log(response.url, 'img data')
                             this.post();
                           }
-                          else if(data.Key.slice(0,8) === 'gt_video'){
+                          else if(response.url.slice(56,64) === 'gt_video'){
                             // console.log(data.Key, "vid");
-                            Feedback.video_file = data.Location
+                            Feedback.video_file = response.url
                             this.post();
                           }
-                          else if(data.Key.slice(0,8) === 'gt_audio'){
+                          else if(response.url.slice(56,64) === 'gt_audio'){
                             // console.log(data.Key, "vid");
-                            Feedback.audio_file = data.Location
+                            Feedback.audio_file = response.url
                             this.post();
                           }
                           else{
                             // console.log(data.Key, "file");
-                            Feedback.external_file = data.Location
+                            Feedback.external_file = response.url
                             this.post();
                           }
+                        })
                         })
                         .catch(error => {
                             console.log(error, 'post api error');
