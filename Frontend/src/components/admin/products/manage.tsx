@@ -442,7 +442,7 @@ const ManageProducts = (props: any) => {
         console.log(error);
       });
   };
-
+/*
   const handleGeneralApiKeyButton = (row: IProductInfo, index: any) => {
     if (row) {
       let productId: string = row.id;
@@ -456,7 +456,7 @@ const ManageProducts = (props: any) => {
       .then((response: any) => {
         if (row) {
           row.apiKey = response.data.value;
-          row.apiId = response.data.id;
+          row.apiKeyId = response.data.id;
           handleSave(row);
           closeDialog();
           setNotify({
@@ -481,16 +481,15 @@ const ManageProducts = (props: any) => {
       });
 
       Http.deleteReq({
-        url: `/api/v2/productApiKey/${row.apiId}`,
+        url: `/api/v2/productApiKey/${row.apiKeyId}`,
         state: stateVariable,
       })
         .then((response: any) => {
           setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
           setFailure(true);
           if (row) {
-            /* tslint:disable-next-line */
             row.apiKey = '';
-            row.apiId = '';
+            row.apiKeyId = '';
             handleSave(row);
             closeDialog();
             setNotify({
@@ -505,7 +504,7 @@ const ManageProducts = (props: any) => {
         });
     }
   };
-
+*/
   const handleChangedValue = (event: any) => {
     if (event.target.value) {
       setUserParamState(event.target.value);

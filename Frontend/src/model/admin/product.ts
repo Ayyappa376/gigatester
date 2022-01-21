@@ -1,7 +1,7 @@
 import  { IObjectConfigDetails } from '..';
 export interface IProductInfo {
-  apiId?: string;
   apiKey?: string;
+  apiKeyId?: string;
   id: string;
   version: string;
   name: string;

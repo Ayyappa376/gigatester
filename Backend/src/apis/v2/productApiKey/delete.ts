@@ -1,7 +1,6 @@
 import { API, Handler } from '@apis/index';
-import { appLogger, responseBuilder } from '@utils/index';
+import { appLogger, deleteAPIKeyForProduct, removeAPIKeyFromProduct, responseBuilder } from '@utils/index';
 import { Response } from 'express';
-const AWS = require('aws-sdk');
 
 interface GetApiKey {
     headers: {
@@ -12,38 +11,46 @@ interface GetApiKey {
         };
     };
     params: {
-        apiKey: string;
+        apiKeyId: string;
     };
 }
 
 async function handler(request: GetApiKey, response: Response) {
-    appLogger.info({ GetApiKeyConfig: request }, 'Inside Handler');
-    const { headers } = request;
-    const { params } = request;
-    const cognitoUserId = headers.user['cognito:username'];
-    if (!cognitoUserId) {
-        const err = new Error('InvalidUser');
-        appLogger.error(err, 'Unauthorized');
-        return responseBuilder.unauthorized(err, response);
-    }
-    const apigateway = new AWS.APIGateway();
-    if (params.apiKey) {
-    const apiParams = {
-        apiKey: params.apiKey,
-    };
-    apigateway.deleteApiKey(apiParams, function (err: any, data: any) {
-        if (err) {
-            appLogger.error(err, 'Delete Error');
-        } else {
-            appLogger.info({ apiKey: data });
-            return responseBuilder.ok(data, response);
-        }
+  appLogger.info({ GetApiKeyConfig: request }, 'Inside Handler');
+  const { headers, params } = request;
+  if (
+    headers.user['cognito:groups'][0] !== 'Manager' &&
+    headers.user['cognito:groups'][0] !== 'Admin'
+  ) {
+    const err = new Error('Forbidden Access: Unauthorized user');
+    appLogger.error(err, 'Only Admins and Managers can create API Keys');
+    return responseBuilder.forbidden(err, response);
+  }
+
+  if(params.apiKeyId) {
+    deleteAPIKeyForProduct(params.apiKeyId)
+    .then((data: any) => {
+      appLogger.info({ deleteAPIKeyForProduct: data });
+      removeAPIKeyFromProduct(params.apiKeyId)
+      .then((ok: any) => {
+        appLogger.info({ saveAPIKeyToProduct: ok });
+        return responseBuilder.ok({ data }, response); // successful response
+      })
+      .catch((err) => {
+        appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred
+        return responseBuilder.internalServerError(err, response);
+      });
+    })
+    .catch((err) => {
+      appLogger.error({ err }, 'deleteAPIKeyForProduct'); // an error occurred
+      return responseBuilder.internalServerError(err, response);
     });
-}
+  }
+  return responseBuilder.badRequest(new Error('No APIKey to delete'), response);
 }
 
 export const api: API = {
     handler: <Handler>(<unknown>handler),
     method: 'delete',
-    route: '/api/v2/productApiKey/:apiKey?',
+    route: '/api/v2/productApiKey/:apiKeyId?',
 };

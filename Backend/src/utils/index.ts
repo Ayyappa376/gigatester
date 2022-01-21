@@ -1,3 +1,4 @@
+export * from './apiGateway';
 export * from './cognito';
 export * from './connectors';
 export * from './dynamoDb';

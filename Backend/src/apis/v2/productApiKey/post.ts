@@ -1,8 +1,6 @@
 import { API, Handler } from '@apis/index';
-import { config } from '@root/config';
-import { appLogger, responseBuilder } from '@utils/index';
+ import { appLogger, generateAPIKeyForProduct, getAPIKeyForProduct, responseBuilder, saveAPIKeyToProduct } from '@utils/index';
 import { Response } from 'express';
-const AWS = require('aws-sdk');
 
 interface PostProductApiKey {
   body: any;
@@ -19,39 +17,45 @@ async function handler(request: PostProductApiKey, response: Response) {
   appLogger.info({ PostProductApiKey: request }, 'Inside Handler');
 
   const { headers, body } = request;
-  if (headers.user['cognito:groups'][0] !== 'Admin') {
+  if (
+    headers.user['cognito:groups'][0] !== 'Manager' &&
+    headers.user['cognito:groups'][0] !== 'Admin'
+  ) {
     const err = new Error('Forbidden Access: Unauthorized user');
-    appLogger.error(err, 'Only Admin can create platforms');
+    appLogger.error(err, 'Only Admins and Managers can create API Keys');
     return responseBuilder.forbidden(err, response);
   }
-  const apiKeyParams = {
-    enabled: true,
-    name: body.productId,
-    stageKeys: [ {
-      restApiId: config.defaults.restApiId,
-      stageName: process.env.DB_ENV,
-    } ]
-  };
-    const apigateway = new AWS.APIGateway();
 
-    apigateway.createApiKey(apiKeyParams, function (err: any, appKeyData: any) {
-      if(err) {
-        appLogger.error({ err }, 'createApiKey'); // an error occurred
+  getAPIKeyForProduct(body.productId)
+  .then((products: any) => {
+    appLogger.info({ getAPIKeyForProduct: products });
+    if(products && products.length > 0) {
+      return responseBuilder.ok({ apiKeyId: products[0].apiKeyId, apiKey: products[0].apiKey }, response); // successful response
+    }
+
+    generateAPIKeyForProduct(body.productId)
+    .then((data: any) => {
+      appLogger.info({ generateAPIKeyForProduct: data });
+
+      saveAPIKeyToProduct(body.productId, data.id, data.value)
+       .then((ok: any) => {
+        appLogger.info({ saveAPIKeyToProduct: ok });
+        return responseBuilder.ok({ apiKeyId: data.id, apiKey: data.value }, response); // successful response
+      })
+      .catch((err) => {
+        appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred
         return responseBuilder.internalServerError(err, response);
-      }
-      const usagePlanParams = {
-        keyId: appKeyData.id, /* required */
-        keyType: 'API_KEY', /* required */
-        usagePlanId: 'v7z5d7' /* required */
-      };
-      apigateway.createUsagePlanKey(usagePlanParams, function(error: any, data: any) {
-        if(error) {
-          appLogger.error({ err: error }, 'createUsagePlanKey'); // an error occurred
-          return responseBuilder.internalServerError(error, response);
-        }
-        return responseBuilder.ok({ data }, response); // successful response
       });
+    })
+    .catch((err) => {
+      appLogger.error({ err }, 'generateAPIKeyForProduct'); // an error occurred
+      return responseBuilder.internalServerError(err, response);
     });
+  })
+  .catch((err) => {
+    appLogger.error({ err }, 'getAPIKeyForProduct'); // an error occurred
+    return responseBuilder.internalServerError(err, response);
+  });
 }
 
 export const api: API = {
