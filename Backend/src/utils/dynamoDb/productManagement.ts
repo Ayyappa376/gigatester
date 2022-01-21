@@ -180,7 +180,7 @@ export const getAPIKeyForProduct = async (id: string): Promise<ProductInfo[]> =>
   return query<ProductInfo[]>(params);
 };
 
-export const saveAPIKeyToProduct = async (id: string, apiKeyId: string, apiKey: string) => {
+export const saveAPIKeyToProduct = (id: string, apiKeyId: string, apiKey: string) => {
   const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
     ExpressionAttributeValues: { ':id': id },
     KeyConditionExpression: 'id = :id',
@@ -208,7 +208,7 @@ export const saveAPIKeyToProduct = async (id: string, apiKeyId: string, apiKey: 
   .catch((err) => appLogger.error({ err }, 'saveAPIKeyToProduct_query'));
 };
 
-export const removeAPIKeyFromProduct = async (apiKeyId: string) => {
+export const removeAPIKeyFromProduct = (apiKeyId: string) => {
   const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
     ExpressionAttributeValues: { ':apiKeyId': apiKeyId },
     FilterExpression: 'apiKeyId = :apiKeyId',
