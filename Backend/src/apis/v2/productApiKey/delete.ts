@@ -35,7 +35,7 @@ async function handler(request: GetApiKey, response: Response) {
         removeAPIKeyFromProduct(params.apiKeyId);
 //      .then((ok: any) => {
 //        appLogger.info({ saveAPIKeyToProduct: ok });
-//        return responseBuilder.ok({ data }, response); // successful response
+        return responseBuilder.ok({ data }, response); // successful response
 //      })
       } catch(err) {
         appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred

@@ -29,7 +29,7 @@ async function handler(request: PostProductApiKey, response: Response) {
   getAPIKeyForProduct(body.productId)
   .then((products: any) => {
     appLogger.info({ getAPIKeyForProduct: products });
-    if(products && products.length > 0) {
+    if(products && (products.length > 0) && products[0].apiKeyId && products[0].apiKey) {
       return responseBuilder.ok({ apiKeyId: products[0].apiKeyId, apiKey: products[0].apiKey }, response); // successful response
     }
 
@@ -41,7 +41,7 @@ async function handler(request: PostProductApiKey, response: Response) {
         saveAPIKeyToProduct(body.productId, data.id, data.value);
 //       .then((ok: any) => {
 //        appLogger.info({ saveAPIKeyToProduct: ok });
-//        return responseBuilder.ok({ apiKeyId: data.id, apiKey: data.value }, response); // successful response
+        return responseBuilder.ok({ apiKeyId: data.id, apiKey: data.value }, response); // successful response
 //      })
       } catch(err) {
         appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred

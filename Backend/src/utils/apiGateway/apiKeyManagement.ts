@@ -37,7 +37,7 @@ export const generateAPIKeyForProduct = async(productId: string): Promise<any> =
           appLogger.error({ err: error }, 'createUsagePlanKey'); // an error occurred
           reject(error);
         }
-        resolve(data.data); // successful response
+        resolve(data); // successful response
       });
     });
   }
@@ -52,10 +52,9 @@ export const deleteAPIKeyForProduct = async(apiKeyId: string): Promise<any> => n
       if (err) {
           appLogger.error(err, 'Delete Error');
           reject(err);
-      } else {
-          appLogger.info({ apiKey: data });
-          resolve(data);
       }
+//      appLogger.info({ deleteApiKey: data });
+      resolve(data);
     });
   }
 );
