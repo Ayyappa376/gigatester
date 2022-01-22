@@ -10,6 +10,7 @@ import ReactGA from 'react-ga';
 import Amplify from "aws-amplify";
 import { LanguageProvider } from './common/Language';
 import Layout from './Layout';
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
 interface IDoitrightProps { }
 

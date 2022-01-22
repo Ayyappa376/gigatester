@@ -185,6 +185,24 @@ export function query<T>(params: DynamoDB.QueryInput): Promise<T> {
   );
 }
 
+export function queryRaw<T>(params: DynamoDB.QueryInput): Promise<T> {
+  return new Promise(
+    (resolve: (item: any) => void, reject: (err: AWS.AWSError) => any) => {
+      docClient.query(
+        params,
+        (err: AWS.AWSError, data: DynamoDB.QueryOutput) => {
+          if (err) {
+            appLogger.error(err);
+            return reject(err);
+          }
+
+          return resolve(data);
+        }
+      );
+    }
+  );
+}
+
 export function transactWrite<T>(
   params: DynamoDB.TransactWriteItemsInput
 ): Promise<T> {

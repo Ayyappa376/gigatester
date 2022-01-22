@@ -49,6 +49,7 @@
     "react-idle-timer": "^4.6.4",
     "react-intersection-observer": "^8.33.1",
     "react-js-pagination": "^3.0.3",
+    "react-loader-spinner": "^5.0.10",
     "react-media-recorder": "^1.6.3",
     "react-player": "^2.7.2",
     "react-rating": "^1.7.2",

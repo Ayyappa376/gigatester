@@ -1,7 +1,7 @@
 import { IAppFeedback } from "./common";
 import { Order } from "./RenderTable";
 
-/* export const sortTableByDate = (tableData: IAppFeedback[], sortOrder: string) => {
+ export const sortTableByDate = (tableData: IAppFeedback[], sortOrder: string): IAppFeedback[] => {
     const data = [...tableData];
     data.sort((aData, bData) => {
       if (aData.createdOn > bData.createdOn) {
@@ -14,7 +14,7 @@ import { Order } from "./RenderTable";
     })
     return data;
   }
-
+/*
 export const sortTableByRating = (tableData: IAppFeedback[], sortOrder: string) => {
     const data = [...tableData];
     data.sort((aData, bData) => {
