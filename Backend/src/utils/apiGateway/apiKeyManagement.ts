@@ -7,7 +7,7 @@ const apiGatewayConfig = {
   region: config.region,
 };
 
-const stage: string = process.env.DB_ENV ? process.env.DB_ENV : 'development';
+const stage: string = (process.env.DB_ENV && process.env.DB_ENV !== 'local') ? process.env.DB_ENV : 'development';
 
 const apigateway = new AWS.APIGateway(apiGatewayConfig);
 
@@ -18,7 +18,7 @@ export const generateAPIKeyForProduct = async(productId: string): Promise<any> =
       name: productId,
       stageKeys: [ {
         restApiId: config.defaults.restApiId[stage],
-        stageName: process.env.DB_ENV,
+        stageName: stage,
       } ]
     };
 

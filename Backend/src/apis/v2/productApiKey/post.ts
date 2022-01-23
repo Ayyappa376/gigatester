@@ -2,7 +2,7 @@ import { API, Handler } from '@apis/index';
  import { appLogger, generateAPIKeyForProduct, getAPIKeyForProduct, responseBuilder, saveAPIKeyToProduct } from '@utils/index';
 import { Response } from 'express';
 
-interface PostProductApiKey {
+interface PostApiKey {
   body: any;
   headers: {
     user: {
@@ -13,8 +13,8 @@ interface PostProductApiKey {
   };
 }
 
-async function handler(request: PostProductApiKey, response: Response) {
-  appLogger.info({ PostProductApiKey: request }, 'Inside Handler');
+async function handler(request: PostApiKey, response: Response) {
+  appLogger.info({ PostApiKey: request }, 'Inside Handler');
 
   const { headers, body } = request;
   if (
@@ -37,20 +37,19 @@ async function handler(request: PostProductApiKey, response: Response) {
     .then((data: any) => {
       appLogger.info({ generateAPIKeyForProduct: data });
 
-      try {
-        saveAPIKeyToProduct(body.productId, data.id, data.value);
-//       .then((ok: any) => {
-//        appLogger.info({ saveAPIKeyToProduct: ok });
+      saveAPIKeyToProduct(body.productId, data.id, data.value)
+      .then((ok: any) => {
+        appLogger.info({ saveAPIKeyToProduct: ok });
         return responseBuilder.ok({ apiKeyId: data.id, apiKey: data.value }, response); // successful response
-//      })
-      } catch(err) {
+      })
+      .catch((err) => {
         appLogger.error({ err }, 'saveAPIKeyToProduct'); // an error occurred
         return responseBuilder.internalServerError(new Error('Failed to save API Key'), response);
-      }
+      });
     })
     .catch((err) => {
       appLogger.error({ err }, 'generateAPIKeyForProduct'); // an error occurred
-      return responseBuilder.internalServerError(err, response);
+      return responseBuilder.internalServerError(new Error('Failed to generate API Key'), response);
     });
   })
   .catch((err) => {
