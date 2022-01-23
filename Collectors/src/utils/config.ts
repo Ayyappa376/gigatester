@@ -5,7 +5,7 @@ const DEFAULT_AWS_REGION = 'us-east-1';
 const DEFAULT_ORG_ID = 'dev';
 const DEFAULT_ES_HOST = 'localhost';
 const DEFAULT_ES_PORT = '9200';
-const DEFAULT_ES_USERNAME = 'doitright-user';
+const DEFAULT_ES_USERNAME = 'gigatester-user';
 const DEFAULT_ES_PASSWORD = '';
 const DEFAULT_LOG_DIR = './logs';
 

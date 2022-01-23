@@ -1,4 +1,3 @@
-# ---------------- Start of nomiso env -----------------
 service: gigatester-backend
 
 provider:
@@ -57,28 +56,5 @@ custom:
     qa: 'info' # error/warn/info/debug
     production: 'info' # error/warn/info/debug
 
-# ------- Restructuring changes - not yet used --------
-#  app:
-#    handler: assessment/src/app.handler
-#    package:
-#      include:
-#        - assessment/src/**/!(*.spec).js
-#        - common/src/**/!(*.spec).js
-#    events:
-#      - http: ANY /assess
-#      - http: 'ANY /{proxy+}/assess'
-
-#  metrics:
-#    handler: metrics/src/appMetrics.handler
-#    package:
-#      include:
-#        - metrics/src/**/!(*.spec).js
-#        - common/src/**/!(*.spec).js
-#    events:
-#      - http: ANY /metrics
-#      - http: 'ANY /{proxy+}/metrics'
-
 # https://serverless.readme.io/docs/best-practices
 # https://serverless-stack.com/chapters/organizing-serverless-projects.html
-
-# ------------ End of nomiso env -----------

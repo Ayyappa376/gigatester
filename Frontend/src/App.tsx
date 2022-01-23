@@ -12,13 +12,13 @@ import { LanguageProvider } from './common/Language';
 import Layout from './Layout';
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
 
-interface IDoitrightProps { }
+interface IGigatesterProps { }
 
 const GA_id_prod = 'UA-154108167-2';
 const GA_id_dev = 'UA-154108167-1';
 const GA_id_beta = 'UA-154108167-3';
 
-const DoItRight = (props: IDoitrightProps) => {
+const Gigatester = (props: IGigatesterProps) => {
   const userData = useSelector((state: IRootState) => state.user.userDetails);
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
   const removeUserData = useActions(removeUserDetails);
@@ -75,4 +75,4 @@ const DoItRight = (props: IDoitrightProps) => {
   );
 };
 
-export default DoItRight;
+export default Gigatester;

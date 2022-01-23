@@ -4,13 +4,13 @@ import * as bunyan from 'bunyan';
 
 export const appLogger: bunyan = bunyan.createLogger({
     level: 'info',
-    name: 'doitright-collectors',
+    name: 'gigatester-collectors',
     serializers: bunyan.stdSerializers,
     src: true,
     streams: [
         {
             type: 'rotating-file',
-            path: './logs/doitright-scheduler.log', //TODO: Use log dir set in the settings file
+            path: './logs/gigatester-scheduler.log', //TODO: Use log dir set in the settings file
             period: '1d',   // "ms" (milliseconds), "h" (hours), "d" (days), "w" (weeks), "m" (months), "y" (years)
             count: 5        // keep 15 back copies
         },
@@ -20,13 +20,13 @@ export const appLogger: bunyan = bunyan.createLogger({
 export function getLogger(colName: string) {
     return bunyan.createLogger({
         level: 'info',
-        name: `doitright-collectors-${colName}`,
+        name: `gigatester-collectors-${colName}`,
         serializers: bunyan.stdSerializers,
         src: true,
         streams: [
             {
                 type: 'rotating-file',
-                path: `./logs/doitright-collector-${colName}.log`, //TODO: Use log dir set in the settings file
+                path: `./logs/gigatester-collector-${colName}.log`, //TODO: Use log dir set in the settings file
                 period: '1d',   // "ms" (milliseconds), "h" (hours), "d" (days), "w" (weeks), "m" (months), "y" (years)
                 count: 5        // keep 15 back copies
             },
@@ -45,13 +45,13 @@ export function setLogLevelToDebug() {
 
 export const installLogger: bunyan = bunyan.createLogger({
     level: 'info',
-    name: 'doitright-collectors-install',
+    name: 'gigatester-collectors-install',
     serializers: bunyan.stdSerializers,
     src: true,
     streams: [
         {
             type: 'rotating-file',
-            path: './logs/doitright-collectors-install.log',
+            path: './logs/gigatester-collectors-install.log',
             period: '1d',   // "ms" (milliseconds), "h" (hours), "d" (days), "w" (weeks), "m" (months), "y" (years)
             count: 5        // keep 5 back copies
         }
@@ -83,13 +83,13 @@ export class MyLogger {
     constructor(name: string) {
         this.logger = bunyan.createLogger({
             level: 'info',
-            name: `doitright-${name}`,
+            name: `gigatester-${name}`,
             serializers: bunyan.stdSerializers,
             src: true,
             streams: [
                 {
                     type: 'rotating-file',
-                    path: `./logs/doitright-${name}.log`, //TODO: Use log dir set in the settings file
+                    path: `./logs/gigatester-${name}.log`, //TODO: Use log dir set in the settings file
                     period: '1d',   // "ms" (milliseconds), "h" (hours), "d" (days), "w" (weeks), "m" (months), "y" (years)
                     count: 5        // keep 15 back copies
                 },
