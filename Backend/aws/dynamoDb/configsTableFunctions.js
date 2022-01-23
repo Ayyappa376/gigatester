@@ -1,19 +1,13 @@
-//const mainTableName = 'Configs';
 const CONFIGS_TABLE_NAME = 'Configs';
 
-//const appClientIdValue = '6dr7paonmudqfqsvpnqiuepb8d';
-//const appClientURLValue = 'qadoitright.auth.us-east-1.amazoncognito.com';
-//const userpoolIdValue = 'us-east-1_OGtCgSmi6';
-const appClientIdValue = '5u9hhct8g0narp24g5h5m2su2q';
-const appClientURLValue = 'dishdoitright.auth.us-west-2.amazoncognito.com';
-const userpoolIdValue = 'us-west-2_TIkBZQsxv';
+const appClientIdValue = '31vurh6heakn3u0nct7ur14n1b';
+const appClientURLValue = 'devgigatester.auth.us-east-1.amazoncognito.com';
+const userpoolIdValue = 'us-east-1_2CjQz7NaP';
 
 exports.getConfigsTableNameFor = (tablePrefix) => {
-//	return tablePrefix + '_' + mainTableName;
 	return tablePrefix + '_' + CONFIGS_TABLE_NAME;
 }
 
-//exports.createConfigsTable = (ddb, tableName) => {
 exports.createConfigsTable = (ddb, tablePrefix) => {
 	const tableName = this.getConfigsTableNameFor(tablePrefix);
 	let params = {

@@ -180,16 +180,18 @@ export const getAPIKeyForProduct = async (id: string): Promise<ProductInfo[]> =>
   return query<ProductInfo[]>(params);
 };
 
-export const saveAPIKeyToProduct = (id: string, apiKeyId: string, apiKey: string) => {
+export const saveAPIKeyToProduct = async (id: string, apiKeyId: string, apiKey: string) => {
   const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
     ExpressionAttributeValues: { ':id': id },
     KeyConditionExpression: 'id = :id',
     TableName: TableNames.getProductsTableName(),
   });
   appLogger.info({ saveAPIKeyToProduct_query_params: params });
-  query<ProductInfo[]>(params)
-  .then((products: ProductInfo[]) => {
-    products.forEach((product: ProductInfo) => {
+  try {
+    const products: ProductInfo[] = await query<ProductInfo[]>(params);
+    appLogger.info({ saveAPIKeyToProduct_query_results: products });
+
+    for(const product of products) {
       const uParams: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
         ExpressionAttributeNames: { '#apiKeyId': 'apiKeyId', '#apiKey': 'apiKey' },
         ExpressionAttributeValues: { ':apiKeyId': apiKeyId, ':apiKey': apiKey },
@@ -201,23 +203,30 @@ export const saveAPIKeyToProduct = (id: string, apiKeyId: string, apiKey: string
         UpdateExpression: 'SET #apiKey = :apiKey, #apiKeyId = :apiKeyId',
       });
       appLogger.info({ saveAPIKeyToProduct_update_params: uParams });
-      update<ProductInfo> (uParams)
-      .catch((err) => appLogger.error({ err }, 'saveAPIKeyToProduct_update'));
-    });
-  })
-  .catch((err) => appLogger.error({ err }, 'saveAPIKeyToProduct_query'));
+      try {
+        const data = await update<ProductInfo> (uParams);
+        appLogger.info({ saveAPIKeyToProduct_update_results: data });
+      } catch(err) {
+        appLogger.error({ err }, 'saveAPIKeyToProduct_update');
+      }
+    }
+  } catch(err) {
+    appLogger.error({ err }, 'saveAPIKeyToProduct_query');
+  }
 };
 
-export const removeAPIKeyFromProduct = (apiKeyId: string) => {
+export const removeAPIKeyFromProduct = async (apiKeyId: string) => {
   const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
     ExpressionAttributeValues: { ':apiKeyId': apiKeyId },
     FilterExpression: 'apiKeyId = :apiKeyId',
     TableName: TableNames.getProductsTableName(),
   });
   appLogger.info({ removeAPIKeyFromProduct_scan_params: params });
-  scan<ProductInfo[]>(params)
-  .then((products: ProductInfo[]) => {
-    products.forEach((product: ProductInfo) => {
+  try {
+    const products: ProductInfo[] = await scan<ProductInfo[]>(params);
+    appLogger.info({ removeAPIKeyFromProduct_scan_results: products });
+
+    for(const product of products) {
       const uParams: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
         Key: {
           id: product.id,
@@ -227,9 +236,15 @@ export const removeAPIKeyFromProduct = (apiKeyId: string) => {
         UpdateExpression: 'REMOVE apiKey, apiKeyId',
       });
       appLogger.info({ removeAPIKeyFromProduct_update_params: uParams });
-      update<ProductInfo> (uParams)
-      .catch((err) => appLogger.error({ err }, 'removeAPIKeyFromProduct_update'));
-    });
-  })
-  .catch((err) => appLogger.error({ err }, 'removeAPIKeyFromProduct_query'));
+
+      try {
+        const data = await update<ProductInfo> (uParams);
+        appLogger.info({ removeAPIKeyFromProduct_update_results: data });
+      } catch(err) {
+        appLogger.error({ err }, 'removeAPIKeyFromProduct_update');
+      }
+    }
+  } catch(err) {
+    appLogger.error({ err }, 'removeAPIKeyFromProduct_query');
+  }
 };

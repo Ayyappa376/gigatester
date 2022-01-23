@@ -7,7 +7,7 @@ const apiGatewayConfig = {
   region: config.region,
 };
 
-const stage: string = process.env.DB_ENV ? process.env.DB_ENV : 'development';
+const stage: string = (process.env.DB_ENV && process.env.DB_ENV !== 'local') ? process.env.DB_ENV : 'development';
 
 const apigateway = new AWS.APIGateway(apiGatewayConfig);
 
@@ -18,7 +18,7 @@ export const generateAPIKeyForProduct = async(productId: string): Promise<any> =
       name: productId,
       stageKeys: [ {
         restApiId: config.defaults.restApiId[stage],
-        stageName: process.env.DB_ENV,
+        stageName: stage,
       } ]
     };
 
@@ -37,7 +37,7 @@ export const generateAPIKeyForProduct = async(productId: string): Promise<any> =
           appLogger.error({ err: error }, 'createUsagePlanKey'); // an error occurred
           reject(error);
         }
-        resolve(data.data); // successful response
+        resolve(data); // successful response
       });
     });
   }
@@ -52,10 +52,9 @@ export const deleteAPIKeyForProduct = async(apiKeyId: string): Promise<any> => n
       if (err) {
           appLogger.error(err, 'Delete Error');
           reject(err);
-      } else {
-          appLogger.info({ apiKey: data });
-          resolve(data);
       }
+//      appLogger.info({ deleteApiKey: data });
+      resolve(data);
     });
   }
 );

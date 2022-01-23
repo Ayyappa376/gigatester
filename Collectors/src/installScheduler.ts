@@ -38,7 +38,7 @@ async function install() {
   await createIndex(getTableNameForOrg(config.gitlabCommitIndex), getGitLabCommitIndexProperties());
   installLogger.info('GitlabCommit index created');
 
-  //write(copy and modify) the doitright.service file in the appropriate location
+  //write(copy and modify) the gigatester.service file in the appropriate location
 }
 
 function getCICDIndexProperties() {

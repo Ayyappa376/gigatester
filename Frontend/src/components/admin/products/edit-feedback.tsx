@@ -50,6 +50,17 @@ import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
 import Success from '../../success-page';
 
+const widgetScript: string = '<script>\n\
+window.GigaTester = window.GigaTester || {};\n\
+GigaTester.productKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
+  GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
+(function(d) {\n\
+    var s = d.createElement(\'script\'); s.async = true;\n\
+    s.src = \'https://s3.amazonaws.com/dev.gigatester.io/gigatester_script.js\';\n\
+    (d.head || d.body).appendChild(s);\n\
+})(document);\n\
+</script>';
+
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
     display: 'flex',
@@ -744,8 +755,11 @@ const EditProductFeedbackSettings = (props: any) => {
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
           <Typography variant="h5">
-            Product:
-            {productParams && productParams.products && productParams.products[0] && productParams.products[0].name ? productParams.products[0].name : ''}
+            Product: 
+            &nbsp;{ productParams && productParams.products && productParams.products[0] && productParams.products[0].name ? productParams.products[0].name : '' }
+            &nbsp;[version
+            &nbsp;{ productParams && productParams.products && productParams.products[0] && productParams.products[0].version ? productParams.products[0].version : '' }
+            ]
           </Typography>
           <Paper className={classes.sections}>
             <Grid container spacing={1}>
@@ -841,16 +855,17 @@ const EditProductFeedbackSettings = (props: any) => {
               <Grid item xs={12}>
                 <TextField
                   multiline
+                  rows={8}
                   disabled
+                  variant='outlined'
                   type='string'
                   id={`widgetScript`}
                   name={`widgetScript`}
-                  value={'some script goes here'}
+                  value={widgetScript}
                   fullWidth
-                  autoComplete='off'
-                  className='textFieldStyle'
+                  label='Widget Script'
+                  helperText='Copy the above script and paste it close to your opening body tag of your page.'
                 />
-                <Typography color='secondary'>Copy the above script and paste it close to your opening body tag of your page.</Typography>
               </Grid>
             </Grid>
           </Paper>

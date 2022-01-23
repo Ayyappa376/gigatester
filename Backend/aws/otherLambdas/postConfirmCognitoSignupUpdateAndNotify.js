@@ -37,12 +37,12 @@ exports.handler = (event, context, callback) => {
       },
       Message: {
         Body: {
-          Text: { Data: "New user " + event.request.userAttributes.email + " has registered on dev.doitright.io" },
+          Text: { Data: "New user " + event.request.userAttributes.email + " has registered on dev.gigatester.io" },
         },
   
         Subject: { Data: "New user registered" },
       },
-      Source: "no-reply@dev.doitright.io",
+      Source: "no-reply@dev.gigatester.io",
     };
   
     console.log("Sending mail", mail_params);
