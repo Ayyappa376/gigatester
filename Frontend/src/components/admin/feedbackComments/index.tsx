@@ -15,8 +15,6 @@ import { withRouter } from 'react-router-dom';
 import renderComments from './RenderComments';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
-import { IRootState } from '../../../reducers';
-import { useSelector } from 'react-redux';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 
@@ -53,6 +51,8 @@ const FeedbackComments = (props: any) => {
     const [order, setOrder] = useState<Order>('desc')
     const [keyword, setKeyword] = useState('')
     const [searchInitiated, setSearchInitiated] = useState(false)
+    const [focusRating, setFocusRating] = useState([]);
+    const [focusSeverity, setFocusSeverity] = useState([]);
 
     useEffect(() => {
       if(feedbackBarChartData) {
@@ -77,7 +77,7 @@ const FeedbackComments = (props: any) => {
             severity : item.bugPriority,
             category: item.feedbackCategory,
             date : item.createdOn,
-            comments: item.feedbackComments ? JSON.parse(item.feedbackComments) : {},
+            comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
             productId: item.productId,
             productVersion: item.productVersion
           }
@@ -116,7 +116,6 @@ const FeedbackComments = (props: any) => {
         setProductVersion('all')
       }
       if(productVersion === 'all') {
-        console.log({rawData})
         const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0);
         setData(dataCopy)
       } else if (selectedProdId.length === 1) {         // Length should be equal to 1 because we want to choose the version if only one product is there
@@ -139,13 +138,48 @@ const FeedbackComments = (props: any) => {
       }
     }, [order])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder}: {lastEvalKey?: ILastEvalKey, fetchOrder?: Order}) => {
-      let urlAppend = `?items=${NUMBER_OF_ITEMS_PER_FETCH}`
+    useEffect(() => {
+      if(rawData.length === 0) {
+        return;
+      }
+      console.log(focusRating)
+      if(focusRating.length <= 0) return;
+      // fetch the results from backend
+      setData([]);
+      setRawData([])
+      fetchRecursiveData({filterRating: focusRating})
+    }, [focusRating])
+
+    useEffect(() => {
+      if(rawData.length === 0) {
+        return;
+      }
+      console.log(focusSeverity)
+      if(focusSeverity.length <= 0) return;
+      // fetch the results from backend
+      setData([]);
+      setRawData([])
+      fetchRecursiveData({filterSeverity: focusSeverity})
+    }, [focusSeverity])
+
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity}: 
+        {lastEvalKey?: ILastEvalKey, fetchOrder?: Order, filterRating?: number[], filterSeverity?: string[]}) => {
+      let urlAppend = ``;
+      let numItems = NUMBER_OF_ITEMS_PER_FETCH;
       if(props.productId) {
         urlAppend += `?prodId=${props.productId}`;
         if(props.productVersion) {
           urlAppend += `&prodVersion=${props.productVersion}`;
         }
+      }
+      if(filterRating) {
+        urlAppend += urlAppend ? `&filterRating=${filterRating.join(',')}` : `?filterRating=${filterRating.join(',')}`
+        numItems = 500;
+      }
+
+      if(filterSeverity) {
+        urlAppend += urlAppend ? `&filterSeverity=${filterSeverity.join(',')}` : `?filterSeverity=${filterSeverity.join(',')}`
+        numItems = 500;
       }
 
       if(lastEvalKey && Object.keys(lastEvalKey).length > 0) {
@@ -155,6 +189,9 @@ const FeedbackComments = (props: any) => {
       if(fetchOrder) {
         urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`
       }
+
+      urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
+
       const response: any = await getFeedbackData({isBugReport, props, urlAppend}).catch((error) => {
         const perror = JSON.stringify(error);
         const object = JSON.parse(perror);
@@ -163,19 +200,22 @@ const FeedbackComments = (props: any) => {
         } else {
           setError(true)
         }
+        console.error('getFeedbackData failed to fetch data with Error code:', object.code)
         return;
       })
+      if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items)) {
+        setData((dataObj) => {
+          const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+          return Array.from(dataCopy)
+        });
+        setRawData((rawDataObj) => {
+          const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+          return Array.from(rawDataCopy)
+        });
+      }
       
-      setData((dataObj) => {
-        const dataCopy = new Set([...dataObj].concat(response.Items.Items));
-        return Array.from(dataCopy)
-      });
-      setRawData((rawDataObj) => {
-        const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
-        return Array.from(rawDataCopy)
-      });
       //setFeedbackBarChartData(processBarChartData(response.Items.Items));
-      console.log(response.Items.LastEvaluatedKey)
+      //console.log(response.Items.LastEvaluatedKey)
       if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
         setLastEvaluatedKey(response.Items.LastEvaluatedKey);
       }
@@ -191,6 +231,10 @@ const FeedbackComments = (props: any) => {
     }
 
     useEffect(() => {
+      if(data.length > 0) {
+        setData([]);
+        setRawData([]);
+      }
       setBackdropOpen(true);
       fetchRecursiveData({});
       getProductDetails();
@@ -237,10 +281,6 @@ const FeedbackComments = (props: any) => {
 
     const fetchSignedUrl = (imgUrl: string) => {
       const urlSplit = imgUrl.split('/')
-      /* if(signedUrlMapping && signedUrlMapping[imgUrl]) {
-        setSignedImageUrl(signedUrlMapping[imgUrl]);
-        return;
-      } */
       let name = urlSplit[urlSplit.length - 1]
       Http.get({
           url: `/api/v2/signedurl/${name}`,
@@ -327,6 +367,17 @@ const FeedbackComments = (props: any) => {
 
     }
     const handleFilterRating = () => {
+      if(rawData.length === 0) {
+        return;
+      }
+      if(Object.keys(lastEvaluatedKey).length > 0) {
+        // fetch the results from backend
+        setData([]);
+        setRawData([])
+        fetchRecursiveData({fetchOrder: order})
+      } else {
+        setData(sortTableByDate(data, order))
+      }
       
     }
     const handleFilterCategory = () => {
@@ -433,7 +484,7 @@ const FeedbackComments = (props: any) => {
           <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
           filterSeverity={handleFilterSeverity} order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
           searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch} filterCategory={handleFilterCategory}
-          filterRating={handleFilterRating}
+          focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
           />
         </Container>
       )

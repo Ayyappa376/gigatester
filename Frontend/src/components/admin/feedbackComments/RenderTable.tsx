@@ -28,7 +28,10 @@ interface IProps {
     fetchMore: Function,
     filterSeverity: Function,
     filterCategory: Function,
-    filterRating: Function,
+    focusRating: number[],
+    setFocusRating: Function,
+    focusSeverity: string[],
+    setFocusSeverity: Function;
     order: Order,
     keyword: string,
     setKeyword: Function,
@@ -141,7 +144,7 @@ const RenderTable = (props: IProps) => {
                 <Grid item md={6}>
                   {
                     <div>
-                    <RenderSeverityFilter onSelect={(val: string) => {props.filterSeverity(val)}}/>
+                    <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={tableData.length === 0}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
                     <RenderCategoryFilter onSelect={(val: string) => {props.filterCategory(val)}}/>
                     </div>
@@ -156,7 +159,7 @@ const RenderTable = (props: IProps) => {
                   <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
                   <Grid item md={5}>
                     {
-                        <RenderRatingFilter onSelect={(val: number) => {props.filterRating(val)}}/>
+                        <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0}/>
                     }
                   </Grid>
               </Grid>

@@ -28,15 +28,13 @@
     border-radius: 0px;
     margin: .4rem;
     transition: all .2s;
-    
-}
-
-#RenderFilter-btnVisited:focus, #RenderFilter-btnVisited:active {
     color: #fff;
     background-color: #259ffb;
     transform: translateY(-1px) scale(1);
     box-shadow: 0 5px 10px rgba(0,0,0,0.2)
 }
+
+
 
 #RenderFilter-textContainer {
     text-align: left;

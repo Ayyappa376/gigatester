@@ -10,6 +10,8 @@ export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other'
 
 interface Params {
   filter?: string;
+  filterRating?: string;
+  filterSeverity?: string;
   filterType?: FilterType;
   items?: string;
   lastEvalKey?: string;
@@ -48,7 +50,7 @@ export interface AppFeedback {
   userId?: string;
 }
 
-export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion, order}: Params): Promise<any[]> => {
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, filterRating, filterSeverity, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -73,30 +75,48 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       }
     }
 
-    const populateParams = (filterOn: string) => {
-      EAN['#filterOn'] = filterOn;
-      EAV[':filter'] = filterType === 'rating' && filter ? parseInt(filter, 10): filter;
-      FE += FE ? ' and #filterOn = :filter' : '#filterOn = :filter';
-    };
-
-    if(filterType) {
-      switch(filterType) {
-        case 'rating':
-          populateParams('productRating');
-          break;
-        case 'category':
-          populateParams('feedbackCategory');
-          break;
-        case 'keyword':
-          //populateParams('productRating')  // This is equivalent to search
-          break;
-        case 'severity':
-          populateParams('bugPriority');
-          break;
-        default:
-          // generate a 501 error statement
+    if(filterRating) {
+      const rating = filterRating.split(',');
+      if(rating.length > 0) {
+        rating.forEach((el, i) => {
+          EAN['#rating'] = 'productRating';
+          EAV[`:ratingVal${i}`] = parseInt(el, 10);
+          if(i === 0) {
+            if(rating.length === 1) {
+              FE += FE ? ` and #rating = :ratingVal${i}` : `#rating = :ratingVal${i}`;
+            } else {
+              FE += FE ? ` and (#rating = :ratingVal${i}` : `(#rating = :ratingVal${i}`;
+            }
+          } else if (i === rating.length - 1) {
+            FE += ` or #rating = :ratingVal${i})`;
+          } else {
+            FE += ` or #rating = :ratingVal${i}`;
+          }
+        });
       }
     }
+
+    if(filterSeverity) {
+      const severity = filterSeverity.split(',');
+      if(severity.length > 0) {
+        severity.forEach((el, i) => {
+          EAN['#severity'] = 'bugPriority';
+          EAV[`:severityVal${i}`] = el;
+          if(i === 0) {
+            if(severity.length === 1) {
+              FE += FE ? ` and #severity = :severityVal${i}` : `#severity = :severityVal${i}`;
+            } else {
+              FE += FE ? ` and (#severity = :severityVal${i}` : `(#severity = :severityVal${i}`;
+            }
+          } else if (i === severity.length - 1) {
+            FE += ` or #severity = :severityVal${i})`;
+          } else {
+            FE += ` or #severity = :severityVal${i}`;
+          }
+        });
+      }
+    }
+
    /*  if(search) {
       EAN['#comments'] = 'feedbackComments';
       EAV[':keyWord'] = search;
@@ -130,6 +150,8 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       const exKeyStart: any = JSON.parse(lastEvalKey);
       params.ExclusiveStartKey = exKeyStart;
     }
+
+    console.log('params:', params);
     return queryRaw<any>(params);
   };
 

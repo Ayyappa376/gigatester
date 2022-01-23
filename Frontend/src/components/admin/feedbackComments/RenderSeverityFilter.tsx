@@ -4,22 +4,31 @@ import React, { useState } from 'react';
 import './stylesRenderFilters.css'
 
 interface IProps {
-    onSelect: Function
+    setFocusSeverity: Function;
+    focusSeverity: string[];
+    disableButtons: boolean;
 }
 
 const severityList = [
     "Critical", "High", "Medium", "Low"
 ]
 const RenderSeverityFilter = React.memo((props: IProps) => {
-    const [severity, setSeverity] =useState("");
+    const {focusSeverity, setFocusSeverity} = props;
 
     const handleKeywordClick = (val: string) => {
-        if(severity === val) {
-            props.onSelect("");
-            setSeverity("")
+        if(props.disableButtons) {
+            return;
+        }
+        if(focusSeverity.indexOf(val) > -1) {
+            setFocusSeverity((prevValue: string[]) => {
+                const prevValCopy = [...prevValue]
+                prevValCopy.splice(prevValue.indexOf(val), 1);
+                return prevValCopy;
+            });
         } else {
-            props.onSelect(val);
-            setSeverity(val);
+            setFocusSeverity((prevVal: string[]) => {
+                return [...prevVal, val]
+            });
         }
     }
 
@@ -29,8 +38,10 @@ const RenderSeverityFilter = React.memo((props: IProps) => {
                 <Typography id="RenderFilter-textHeader">Choose bugs with severity:</Typography>
             </div>
             <div id="RenderFilter-flexContainer">
-                {severityList.map((val) => 
-                    <Button variant='outlined' key={val} onClick={() => {handleKeywordClick(val)}} id={severity === val  ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
+                {severityList.map((el) => {
+                    return <Button variant='outlined' disabled={props.disableButtons}
+                    key={el} onClick={() => {handleKeywordClick(el)}} id={focusSeverity.indexOf(el) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
+                }
                 )}
             </div>
         </div>

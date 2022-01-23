@@ -1,10 +1,11 @@
 import { Button, Typography } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
 import React, { useState } from 'react';
 import './stylesRenderFilters.css'
 
 interface IProps {
-    onSelect: Function
+    setFocusRating: Function;
+    focusRating: number[];
+    disableButtons: boolean;
 }
 
 const ratingButtonValues=[
@@ -16,15 +17,24 @@ const ratingButtonValues=[
 ]
 
 const RenderRatingFilter = React.memo((props: IProps) => {
-    const [rating, setRating] =useState(0);
+    const {focusRating, setFocusRating} = props;
 
     const handleKeywordClick = (val: number) => {
-        if(rating === val) {
-            props.onSelect(-1);
-            setRating(0)
+        console.log(val, props.disableButtons);
+        if(props.disableButtons) {
+
+            return;
+        }
+        if(focusRating.indexOf(val) > -1) {
+            setFocusRating((prevValue: number[]) => {
+                const prevValCopy = [...prevValue]
+                prevValCopy.splice(prevValue.indexOf(val), 1);
+                return prevValCopy;
+            });
         } else {
-            props.onSelect(val);
-            setRating(val);
+            setFocusRating((prevVal: number[]) => {
+                return [...prevVal, val]
+            });
         }
     }
 
@@ -34,8 +44,11 @@ const RenderRatingFilter = React.memo((props: IProps) => {
                 <Typography id="RenderFilter-textHeader">Choose feedbacks with rating:</Typography>
             </div>
             <div id="RenderFilter-flexContainer">
-                {ratingButtonValues.map((el) => 
-                    <Button variant='outlined' key={el.value} onClick={() => {handleKeywordClick(el.value)}} id={rating === el.value ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el.discription}</Button>
+                {ratingButtonValues.map((el) => {
+                    console.log()
+                    return <Button variant='outlined' disabled={props.disableButtons}
+                    key={el.value} onClick={() => {handleKeywordClick(el.value)}} id={focusRating.indexOf(el.value) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el.discription}</Button>
+                }
                 )}
             </div>
         </div>
