@@ -107,22 +107,3 @@ export const api: API = {
   method: 'put',
   route: '/api/v2/admin/users',
 };
-
-// async function test(body: any, manager: string) {
-//     const managerDetails: any = await getUserDocument({cognitoUserId: manager})
-//     const userDetails: any = await addCognitoUser(body.email, body.teams);
-//     await addUserToCognitoGroup(userDetails.User.Username, body.roles);
-//     await addDynamoUser(userDetails.User.Username, managerDetails, body);
-//     return userDetails;
-// }
-
-// var x = {
-//     email: 'user@gmail.com',
-//     roles: ['Member']
-// }
-
-// test(x,'d3338487-5ffd-4071-a530-b8f1e6f6d5bf').then(res=>{
-//     console.log(res)
-// }).catch(e=>{
-//     console.log(e)
-// })

@@ -398,11 +398,9 @@ export const getAssessmentHistory = async ({
   const questionnaireDetails: any = await getQuestionnaire(true);
   appLogger.info({ getQuestionnaire: questionnaireDetails });
   const questionnaireMap = {};
-  // console.log(questionnaireDetails);
   questionnaireDetails.forEach((questionnaire: any) => {
     questionnaireMap[questionnaire.questionnaireId] = questionnaire.name;
   });
-  // console.log(questionnaireMap);
   let params: DynamoDB.ScanInput;
   switch (type) {
     case 'user':
@@ -496,11 +494,9 @@ export const getAssessmentByQuestionnaire = async ({
 
   const questionnaireDetails: any = await getQuestionnaire(true);
   const questionnaireMap = {};
-  // console.log(questionnaireDetails);
   questionnaireDetails.forEach((questionnaire: any) => {
     questionnaireMap[questionnaire.questionnaireId] = questionnaire.name;
   });
-  // console.log(questionnaireMap);
   let params: DynamoDB.ScanInput;
   switch (type) {
     case 'byTeam':
