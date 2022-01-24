@@ -65,7 +65,7 @@ async function handler(
     return responseBuilder.ok(acknowledgement, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(new Error("Error encountered while fetching data"), response);
+    responseBuilder.internalServerError(new Error('Error encountered while fetching data'), response);
   }
 }
 

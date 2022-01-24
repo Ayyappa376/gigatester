@@ -1,6 +1,6 @@
 import { API, Handler } from '@apis/index';
 import { Question } from '@models/index';
-import { createQuestion, appLogger, responseBuilder } from '@utils/index';
+import { appLogger, createQuestion, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface CreateQuestion {
@@ -27,7 +27,7 @@ async function handler(request: CreateQuestion, response: Response) {
     return responseBuilder.forbidden(err, response);
   }
 
-  const createData: Question = <Question>body;
+  const createData: Question = body;
   // createData.id = `ques_${uuidv1()}`;
   // createData.questionnaireAttached = '0000';
 

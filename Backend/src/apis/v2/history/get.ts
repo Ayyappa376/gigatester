@@ -203,12 +203,12 @@ export const api: API = {
   route: '/api/v2/assessment/history',
 };
 
-/* tslint:disable */
 export const dataDump = async (uId: any, qId: any) => {
   const questionnaireDetails: Questionnaire = await getQuestionnaireId(qId);
   const myResult: any[] = new Array();
   const questionNAnswers: any = {};
   const userList: any = {};
+  let key: string = '';
   const weightageCoefficient = config.defaults.scoreCoeff;
   for (const questionId of questionnaireDetails.questions) {
     const quesDetails = await getQuestionDetails(questionId);
@@ -225,10 +225,10 @@ export const dataDump = async (uId: any, qId: any) => {
 
   const teamMembersForATeam: string[] = await getTeamMembers('Others');
   const assessmentHistory: AssessmentDocument[] = await getAssessmentHistory({
-    userId: uId,
-    type: 'all_teams',
-    teamMembers: teamMembersForATeam,
     questionnaireId: qId,
+    teamMembers: teamMembersForATeam,
+    type: 'all_teams',
+    userId: uId,
   });
   for (const val of assessmentHistory) {
     if (val.assessmentDetails) {
@@ -254,20 +254,25 @@ export const dataDump = async (uId: any, qId: any) => {
           user: val.userId,
         };
         if (questionNAnswers[quesId]) {
-          data['question'] = questionNAnswers[quesId].question;
-          data['answerSelected'] = questionNAnswers[quesId].answers[selection]
+          key = 'question';
+          data[key] = questionNAnswers[quesId].question;
+          key = 'answerSelected';
+          data[key] = questionNAnswers[quesId].answers[selection]
             ? questionNAnswers[quesId].answers[selection].answer
             : '';
-          data['answer-Weightage'] = questionNAnswers[quesId].answers[selection]
+          key = 'answer-Weightage';
+          data[key] = questionNAnswers[quesId].answers[selection]
             ? questionNAnswers[quesId].answers[selection].weightageFactor *
               weightageCoefficient
             : '';
           Object.keys(questionNAnswers[quesId].answers).forEach(
             (aid: string, i: number) => {
-              data[`Option${i}`] = questionNAnswers[quesId].answers[aid]
+              key = `Option${i}`;
+              data[key] = questionNAnswers[quesId].answers[aid]
                 ? questionNAnswers[quesId].answers[aid].answer
                 : '';
-              data[`Option${i}-Weightage`] = questionNAnswers[quesId].answers[
+                key = `Option${i}-Weightage`;
+                data[key] = questionNAnswers[quesId].answers[
                 aid
               ]
                 ? questionNAnswers[quesId].answers[aid].weightageFactor *
@@ -279,25 +284,32 @@ export const dataDump = async (uId: any, qId: any) => {
             .length;
           if (numberOfAnswers < maxAnswersCount) {
             for (let i = numberOfAnswers; i < maxAnswersCount; i += 1) {
-              data[`Option${i}`] = '';
-              data[`Option${i}-Weightage`] = '';
+              key = `Option${i}`;
+              data[key] = '';
+              key = `Option${i}-Weightage`;
+              data[key] = '';
             }
           }
         } else {
           const quesDetails = await getQuestionDetails(quesId);
-          data['question'] = quesDetails.question;
-          data['answerSelected'] = quesDetails.answers[selection]
+          key = 'question';
+          data[key] = quesDetails.question;
+          key = 'answerSelected';
+          data[key] = quesDetails.answers[selection]
             ? quesDetails.answers[selection].answer
             : '';
-          data['answer-Weightage'] = quesDetails.answers[selection]
+            key = 'answer-Weightage';
+            data[key] = quesDetails.answers[selection]
             ? quesDetails.answers[selection].weightageFactor *
               weightageCoefficient
             : '';
           Object.keys(quesDetails.answers).forEach((aid: string, i: number) => {
-            data[`Option${i}`] = quesDetails.answers[aid]
+            key = `Option${i}`;
+            data[key] = quesDetails.answers[aid]
               ? quesDetails.answers[aid].answer
               : '';
-            data[`Option${i}-Weightage`] = quesDetails.answers[aid]
+            key = `Option${i}-Weightage`;
+            data[key] = quesDetails.answers[aid]
               ? quesDetails.answers[aid].weightageFactor * weightageCoefficient
               : '';
           });
@@ -305,8 +317,10 @@ export const dataDump = async (uId: any, qId: any) => {
             .length;
           if (numberOfAnswers < maxAnswersCount) {
             for (let i = numberOfAnswers; i < maxAnswersCount; i += 1) {
-              data[`Option${i}`] = '';
-              data[`Option${i}-Weightage`] = '';
+              key = `Option${i}`;
+              data[key] = '';
+              key = `Option${i}-Weightage`;
+              data[key] = '';
             }
           }
         }

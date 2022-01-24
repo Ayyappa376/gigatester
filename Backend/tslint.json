@@ -66,6 +66,10 @@
       true,
       "check-format",
       "allow-leading-underscore"
+    ],
+    "cyclomatic-complexity": [
+      true, 
+      25
     ]
   },
   "linterOptions": {

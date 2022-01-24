@@ -1,6 +1,6 @@
 import { API, Handler } from '@apis/index';
 import { Question } from '@models/index';
-import { updateQuestion, appLogger, responseBuilder } from '@utils/index';
+import { appLogger, responseBuilder, updateQuestion } from '@utils/index';
 import { Response } from 'express';
 
 interface UpdateQuestion {
