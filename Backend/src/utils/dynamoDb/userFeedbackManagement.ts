@@ -50,6 +50,8 @@ export interface AppFeedback {
   userId?: string;
 }
 
+const NUMBER_OF_DAYS_OF_FEEDBACK = 30;
+
 export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, filterRating, filterSeverity, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
@@ -123,7 +125,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
     } */
     const today = new Date();
-    const lastDate = new Date().setDate(today.getDate() - 30);
+    const lastDate = new Date().setDate(today.getDate() - NUMBER_OF_DAYS_OF_FEEDBACK);
 
     EAV[':type'] = type;
     EAV[':lastDate'] = lastDate;
@@ -142,7 +144,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
 
     params.KeyConditionExpression = 'feedbackType=:type AND createdOn>:lastDate';
     params.ScanIndexForward = order && order === 'asc' ? true : false;
-    params.IndexName = 'feedbackType-createdOn-index';
+    params.IndexName = 'feedbackType-createdOn-index'; // Need to remove hardcoding, and name should be based on the subdomain.
 
     params.Limit = items ? parseInt(items, 10) : 100;
 
@@ -151,7 +153,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       params.ExclusiveStartKey = exKeyStart;
     }
 
-    console.log('params:', params);
+    appLogger.info('getUserFeedbackList: ', { params });
     return queryRaw<any>(params);
   };
 

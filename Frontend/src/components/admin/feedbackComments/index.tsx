@@ -12,11 +12,12 @@ import { ILimitedProductDetails,
   IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
   IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey } from './common';
 import { withRouter } from 'react-router-dom';
-import renderComments from './RenderComments';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
+import Draggable from 'react-draggable';
+import RenderComments from './RenderComments';
 
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
@@ -53,6 +54,7 @@ const FeedbackComments = (props: any) => {
     const [searchInitiated, setSearchInitiated] = useState(false)
     const [focusRating, setFocusRating] = useState([]);
     const [focusSeverity, setFocusSeverity] = useState([]);
+    const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
 
     useEffect(() => {
       if(feedbackBarChartData) {
@@ -74,6 +76,8 @@ const FeedbackComments = (props: any) => {
       if(isBugReport) {
         data.forEach((item: IAppFeedback) => {
           bugMap[item.id] = {
+            userId: item.userId ? item.userId : 'Anonymous',
+            userIp: item.sourceIP? item.sourceIP : '',
             severity : item.bugPriority,
             category: item.feedbackCategory,
             date : item.createdOn,
@@ -91,6 +95,9 @@ const FeedbackComments = (props: any) => {
       } else {
         data.forEach((item: IAppFeedback) => {
         rateMap[item.id] = {
+            userId: item.userId ? item.userId : 'Anonymous',
+            userIp: item.sourceIP? item.sourceIP : '',
+            category: item.feedbackCategory,
             rating : item.productRating,
             date : item.createdOn,
             comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
@@ -168,8 +175,8 @@ const FeedbackComments = (props: any) => {
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
       if(props.productId) {
         urlAppend += `?prodId=${props.productId}`;
-        if(props.productVersion) {
-          urlAppend += `&prodVersion=${props.productVersion}`;
+        if(props.version) {
+          urlAppend += `&prodVersion=${props.version}`;
         }
       }
       if(filterRating) {
@@ -324,6 +331,26 @@ const FeedbackComments = (props: any) => {
       if(ratingMapping[id]) {
         return ratingMapping[id].comments
       }
+      return {}
+    }
+
+    const getUserId = (id: string) => {
+      if(isBugReport && bugDataMapping[id]) {
+        return bugDataMapping[id].userId
+      }
+      if(ratingMapping[id]) {
+        return ratingMapping[id].userId
+      }
+      return undefined
+    }
+
+    const getUserIp = (id: string) => {
+      if(isBugReport && bugDataMapping[id]) {
+        return bugDataMapping[id].userIp
+      }
+      if(ratingMapping[id]) {
+        return ratingMapping[id].userIp
+      }
       return undefined
     }
 
@@ -345,8 +372,11 @@ const FeedbackComments = (props: any) => {
     }
 
     const getBugCategory = (id: string) => {
-      if(bugDataMapping[id]) {
+      if(isBugReport && bugDataMapping[id]) {
         return bugDataMapping[id].category
+      }
+      if(ratingMapping[id]) {
+        return ratingMapping[id].category
       }
       return ""
     }
@@ -388,22 +418,40 @@ const FeedbackComments = (props: any) => {
       setKeyword('')
     }
 
+    const handleCloseModal = (reason: any) => {
+      console.log("calling handleCloseModal", reason)
+      setShowImageModal(false);
+      setFocusAttachmentUid('');
+      setSignedImageUrl('')
+    }
+
+    const handleImageClicked = () => {
+      if(signedImageUrl) {
+        setSlideShowImageUrl(signedImageUrl)
+      } 
+    }
+
     const ImageModal = () => {
       return (
-        <Modal aria-describedby='simple-modal-description' open={showImageModal}>
-          <div className={classes.modalContainer}>
-            <Close style={{display: 'block',
-                marginLeft: 'auto',
-              }} onClick={()=> {setShowImageModal(false); setFocusAttachmentUid('')}}/>
+        <Draggable handle="#handle">
+        <Modal aria-describedby='simple-modal-description' hideBackdrop={true} open={showImageModal}>
+          <div style={{resize: 'both', overflow: 'auto'}} className={classes.modalContainer}>
+            <div id="handle" style={{backgroundColor: 'rgb(40 120 240)', minWidth: '100%', height: 37, position: 'relative', cursor: 'move'}}>
+              <Close  style={{position: 'absolute', cursor: 'pointer',
+                top: 7, right: 7
+              }} onClick={handleCloseModal}/>
+            </div>
+            <div style={{padding: 30}}>
               <Grid container>
-                <Grid item sm={7}>
+                <Grid item sm={8}>
                   {attachmentType == 'image' ?
-                    <Image aspectRatio={4/3} width='90%' style={{display: 'block',
+                    <Image aspectRatio={4/3} onClick={handleImageClicked} width='90%' style={{display: 'block',
                                   marginLeft: 'auto',
                                   marginRight: 'auto',
                                   marginTop: 20,
-                                  objectFit: 'cover',
-                                  objectPosition: 'center top'
+                                  cursor: 'pointer',
+                                  /* objectFit: 'cover',
+                                  objectPosition: 'center top' */
                                   }} src={signedImageUrl} /> :
                     <video width="90%" controls style={{display: 'block',
                                   marginTop: 20,
@@ -414,37 +462,59 @@ const FeedbackComments = (props: any) => {
                     </video>
                   }
                 </Grid>
-                <Grid style={{padding: 15, paddingTop: 0}} item sm={5}>
+                <Grid style={{padding: 15, paddingTop: 0}} item sm={4}>
                   <Grid container style={{marginTop: '20px'}}>
-                    <Grid item sm={6}>
+                    <Grid item sm={12} >
                       <div style={{display: 'flex'}}>
-                      <Typography color="textSecondary" >Date: &nbsp;</Typography>
-                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getDateString(focusAttachmentUid)}</Typography>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Username: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getUserId(focusAttachmentUid)}</Typography>
                       </div>
                       <div style={{display: 'flex'}}>
-                      <Typography color="textSecondary">Product Version: &nbsp;</Typography>
-                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getProductVersion(focusAttachmentUid)}</Typography>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Source Ip: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getUserIp(focusAttachmentUid)}</Typography>
                       </div>
-                    </Grid>
-                    <Grid item sm={7}>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Date: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getDateString(focusAttachmentUid)}</Typography>
+                      </div>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Product Version: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getProductVersion(focusAttachmentUid)}</Typography>
+                      </div>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Category: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getBugCategory(focusAttachmentUid)}</Typography>
+                      </div>
                       {isBugReport ? <div style={{display: 'flex'}}>
-                      <Typography color="textSecondary">Bug Severity: &nbsp;</Typography>
-                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getBugSeverity(focusAttachmentUid)}</Typography>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Bug Severity: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getBugSeverity(focusAttachmentUid)}</Typography>
                       </div> :
                       <RenderStars rating={getRating(focusAttachmentUid)}/>}
                     </Grid>
                     </Grid>
-                    <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>{renderComments(getComments(focusAttachmentUid))}</div>
+                    <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>
+                      <RenderComments comments={getComments(focusAttachmentUid)} old={true}/></div>
                   </Grid>
               </Grid>
+              </div>
           </div>
         </Modal>
+        </Draggable>
       )
     }
 
     const RenderData = () => {
       return (
         <Container>
+          <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
+          <Close htmlColor='#fff' style={{position: 'absolute', cursor: 'pointer',
+                    top: 10, right: 10, fontSize: '2.5rem'
+                  }} onClick={() => {setSlideShowImageUrl('')}}/>
+            <div style={{ width: '80vw', marginLeft: '10vw',  marginTop: '2vh'}}>
+              <Image aspectRatio={16/9} width='90%' height='90%'   src={slideShowImageUrl} />
+            </div>
+          
+          </div>
           <Grid container>
             <Grid item xl={6}>
               <div style={{display:'flex', justifyContent: 'left'}}>
@@ -538,16 +608,38 @@ const useStyles = makeStyles((theme) => ({
       marginTop: '5%',
       marginLeft: 'auto',
       marginRight: 'auto',
-      minWidth: '50%',
-      maxWidth: '50%',
+      width: '50%',
+      /* minWidth: '50%',
+      maxWidth: '50%', */
       backgroundColor: '#f7f7f7',
       borderRadius: '8px',
       border: '1px solid',
-      borderColor: '#D5D9D9',
+      //borderColor: '#D5D9D9',
       boxShadow: '0 0 14px 0 rgb(15 17 17 / 50%)',
-      padding: 30,
+      padding: 0,
       paddingBottom: 30
     },
+    imageSlideShowHidden: {
+      display: 'none',
+      width: '50px',
+      height: '50px',
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      margin: '-25px 0 0 -25px',
+      transition: 'width 0.5s ease, height 0.5s ease'
+    },
+    imageSlideShowVisible: {
+      display: 'relative',
+      zIndex: 1500,
+      width: '100vw',
+      height: '100vh',
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      backgroundColor: 'rgba(0,0,0,.7)',
+      transition: 'width 0.5s ease, height 0.5s ease'
+    }
   }));
 
 export default withRouter(FeedbackComments);

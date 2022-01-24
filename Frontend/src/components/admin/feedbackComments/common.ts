@@ -106,6 +106,9 @@ export interface IFeedbackBarChartData {
 }
 
 export interface IRatingMapData {
+    userId: string,
+    userIp: string,
+    category?: FeedbackCategory;
     rating: number,
     date: number,
     comments: ICommentObject | undefined,
@@ -114,6 +117,8 @@ export interface IRatingMapData {
 }
   
 export interface IBugMapData {
+    userId: string,
+    userIp: string,
     severity?: BudPriority,
     category?: FeedbackCategory;
     date: number,

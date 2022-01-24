@@ -1,7 +1,7 @@
 import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton, Grid } from '@material-ui/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
-import { getDate } from '../../../utils/data';
+import { getDate, getDateTime } from '../../../utils/data';
 
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
@@ -19,6 +19,7 @@ import renderComments from './RenderComments';
 import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from  'react-loader-spinner'
+import RenderComments from './RenderComments';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -202,11 +203,11 @@ const RenderTable = (props: IProps) => {
                       hover role="checkbox" tabIndex={-1} 
                       key={row.id}
                     >
-                      <TableCell style={{fontSize: '1rem'}}>
+                      <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
                             {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
                       </TableCell>
                       <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
-                            {row.createdOn ? getDate(row.createdOn) : '-'}
+                            {row.createdOn ? getDateTime(row.createdOn) : '-'}
                       </TableCell>
                       {
                         isBugReport ? 
@@ -217,16 +218,12 @@ const RenderTable = (props: IProps) => {
                           <RenderStars rating={row.productRating}/>
                         </TableCell>
                       }
-                      {
-                        isBugReport ? 
                         <TableCell  align='center' style={{fontSize: '1rem'}}>
-                            {row.feedbackCategory}
-                        </TableCell> :
-                        null
-                      }
-                      <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw', fontSize: '1rem'}}>
+                            {row.feedbackCategory ? row.feedbackCategory : '-'}
+                        </TableCell>
+                      <TableCell align='center' style={{maxWidth: '30vw', fontSize: '1rem'}}>
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
-                            {renderComments(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)}
+                            <RenderComments comments={(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)} old={true}/>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
 
@@ -308,7 +305,7 @@ const RenderTable = (props: IProps) => {
               )}
             </TableBody>
             : <div style={{width: '400%', padding: '.2rem 0 .2rem 0'}}>
-              <TailSpin wrapperStyle={{marginLeft: "50%", transform: 'translateX: "-50%'}} height="60"
+              <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"
               width="30"
               color='black'
               ariaLabel='loading'/></div>}
