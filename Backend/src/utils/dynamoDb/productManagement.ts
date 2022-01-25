@@ -249,7 +249,7 @@ export const removeAPIKeyFromProduct = async (apiKeyId: string) => {
   }
 };
 
-export const getProductFeedbackSettings = async (apiKey: string, version: string): Promise<(FeedbackSettings | undefined)[]> => {
+export const getProductFeedbackSettings = async (apiKey: string, version: string): Promise<Array<FeedbackSettings | undefined>> => {
   const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
     ExpressionAttributeValues: {
       ':apiKey': apiKey,

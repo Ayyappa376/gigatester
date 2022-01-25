@@ -1,4 +1,3 @@
-//tslint:disable:strict-comparisons
 import { API, Handler } from '@apis/index';
 // import { UserDocument } from '@models/index';
 import { config } from '@root/config';

@@ -16,7 +16,7 @@ async function handler(request: GetProducts, response: Response) {
   const { params } = request;
 
   if (params.apiKey) {
-    const feedbackSettings: (FeedbackSettings | undefined)[] = await getProductFeedbackSettings(params.apiKey, params.version);
+    const feedbackSettings: Array<FeedbackSettings | undefined> = await getProductFeedbackSettings(params.apiKey, params.version);
     appLogger.info({ getProductFeedbackSettings: feedbackSettings });
     if(feedbackSettings && feedbackSettings.length > 0) {
       return responseBuilder.ok({ feedbackSettings: feedbackSettings[0] }, response);

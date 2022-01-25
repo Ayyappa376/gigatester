@@ -1,4 +1,3 @@
-// tslint:disable:deprecation
 import { config } from '@root/config';
 import { logRequest, logResponse } from '@root/utils';
 import * as bodyParser from 'body-parser';

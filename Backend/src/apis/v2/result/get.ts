@@ -128,7 +128,6 @@ async function handler(request: AssessmentResultRequest, response: Response) {
     assessmentDocument.result = result;
     assessmentDocument.dateSubmit = new Date().getTime();
     // const acknowledgement: AssessmentResultResponse = getResponseBody(assessmentDocument);
-    // tslint:disable-next-line: no-floating-promises
     const acknowledgement: DetailsAcknowledgement = await getResponseBody({
       assessmentDocument,
       questionDetailsArr: questionDetails,

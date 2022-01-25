@@ -64,7 +64,6 @@ export const getNewTestSuiteId = async (data: TestSuite) => {
   allTestSuite.forEach((element) => {
     if (element.name === data.name) {
       const date = Date.now();
-      //tslint:disable-next-line:strict-comparisons
       if (date - element.createdOn < 5000 && element.createdBy === data.createdBy) {
         id = element.id;
       }

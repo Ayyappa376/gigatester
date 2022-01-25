@@ -179,14 +179,12 @@ const apis: API[] = [
 
 export function registerApis(application: Application): void {
   apis.forEach((api: API) => {
-    // tslint:disable-next-line: no-unsafe-any
     application[api.method](api.route, api.handler);
   });
 }
 
 // export function registerMetricsApis(application: Application): void {
 //   metricsApis.forEach((api: API) => {
-//     // tslint:disable-next-line: no-unsafe-any
 //     application[api.method](api.route, api.handler);
 //   });
 // }

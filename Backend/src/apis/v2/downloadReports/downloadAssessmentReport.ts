@@ -71,7 +71,6 @@ function removeLinebreaks(str: string) {
 }
 
 //const prepareData = async (val: AssessmentDocument, questionNAnswers: QuestionNAnswers) => {
-// tslint:disable-next-line: cyclomatic-complexity
 const prepareData = async (val: AssessmentDocument) => {
   const questionNAnswers: QuestionNAnswers = {};
   const myResult: any = new Array();
