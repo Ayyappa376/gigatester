@@ -30,6 +30,8 @@ const FeedbackComments = (props: any) => {
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
+    const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
+    const [bugPieChartSeries, setBugPieChartSeries] = useState({})
     const [showImageModal, setShowImageModal] = useState(false);
     const [signedImageUrl, setSignedImageUrl] = useState('');
     const [attachmentType, setAttachmentType] = useState('')
@@ -46,8 +48,6 @@ const FeedbackComments = (props: any) => {
       data: [0, 0, 0, 0, 0]
     }])
     const [selectedProdId, setSelectedProdId] = useState<string[]>([])
-    const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
-    const [bugPieChartSeries, setBugPieChartSeries] = useState<{}>({})
     const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
     const [order, setOrder] = useState<Order>('desc')
     const [keyword, setKeyword] = useState('')
@@ -249,10 +249,20 @@ const FeedbackComments = (props: any) => {
     }, [isBugReport])
 
     useEffect(() => {
+      console.log({rawData})
       if(rawData.length > 0 && productInfo.length > 0) {
-        setBackdropOpen(false);
+        // console.log(feedbackBarChartData, feedbackPieChartSeries.length)
+        if(isBugReport) {
+          if(Object.keys(bugPieChartSeries).length > 0) {
+            setBackdropOpen(false);
+          }
+        } else {
+          if(Object.keys(feedbackBarChartData).length > 0 && feedbackPieChartSeries.length > 0) {
+            setBackdropOpen(false);
+          }
+        }
       }
-    }, [productInfo, rawData, feedbackBarChartData, feedbackPieChartSeries, bugBarChartSeries, bugBarChartSeries])
+    }, [productInfo, rawData, feedbackBarChartData, feedbackPieChartSeries, bugPieChartSeries])
 
 
     const getProductDetails = () => {
@@ -493,7 +503,7 @@ const FeedbackComments = (props: any) => {
                     </Grid>
                     </Grid>
                     <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>
-                      <RenderComments comments={getComments(focusAttachmentUid)} old={true}/></div>
+                      <RenderComments comments={getComments(focusAttachmentUid)} old={false}/></div>
                   </Grid>
               </Grid>
               </div>

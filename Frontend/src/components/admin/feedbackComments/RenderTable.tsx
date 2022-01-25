@@ -130,7 +130,7 @@ const RenderTable = (props: IProps) => {
         }
       ).catch((error) => {console.log(error)});
     }
-
+console.log({tableData})
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper style={{padding: '2rem'}}>
