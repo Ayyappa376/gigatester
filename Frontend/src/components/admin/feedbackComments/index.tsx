@@ -22,11 +22,11 @@ import RenderComments from './RenderComments';
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [error, setError] = useState(false)
+    const [noDataError, setNoDataError] = useState(false)
     const [data, setData] = useState<IAppFeedback[]>([]);
     const [rawData, setRawData] = useState([]);
     const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
     const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
-    const [productVersion, setProductVersion] = useState("");
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
@@ -47,7 +47,18 @@ const FeedbackComments = (props: any) => {
       name: 'Severity',
       data: [0, 0, 0, 0, 0]
     }])
-    const [selectedProdId, setSelectedProdId] = useState<string[]>([])
+    const [selectedProdId, setSelectedProdId] = useState<string>(() => {
+      if(props.productId) {
+        return props.productId;
+      }
+      return ''
+    })
+    const [productVersion, setProductVersion] = useState(() => {
+      if(props.productVersion) {
+        return props.productVersion;
+      }
+      return ''
+    });
     const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
     const [order, setOrder] = useState<Order>('desc')
     const [keyword, setKeyword] = useState('')
@@ -119,15 +130,9 @@ const FeedbackComments = (props: any) => {
     }, [data])
 
     useEffect(() => {
-      if (selectedProdId.length > 1) {
-        setProductVersion('all')
-      }
-      if(productVersion === 'all') {
-        const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0);
-        setData(dataCopy)
-      } else if (selectedProdId.length === 1) {         // Length should be equal to 1 because we want to choose the version if only one product is there
-        const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0 && productVersion === el.productVersion);
-        setData(dataCopy)
+      if(selectedProdId && productVersion) {
+        fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
+        getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
       }
     }, [selectedProdId, productVersion])
 
@@ -169,14 +174,14 @@ const FeedbackComments = (props: any) => {
       fetchRecursiveData({filterSeverity: focusSeverity})
     }, [focusSeverity])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity}: 
-        {lastEvalKey?: ILastEvalKey, fetchOrder?: Order, filterRating?: number[], filterSeverity?: string[]}) => {
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, prodId, prodVersion, emptyErrorValid}: 
+        {lastEvalKey?: ILastEvalKey, fetchOrder?: Order, filterRating?: number[], filterSeverity?: string[], prodId?: string, prodVersion?: string, emptyErrorValid?: boolean}) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
-      if(props.productId) {
-        urlAppend += `?prodId=${props.productId}`;
-        if(props.version) {
-          urlAppend += `&prodVersion=${props.version}`;
+      if(prodId) {
+        urlAppend += `?prodId=${prodId}`;
+        if(prodVersion) {
+          urlAppend += `&prodVersion=${prodVersion}`;
         }
       }
       if(filterRating) {
@@ -210,7 +215,8 @@ const FeedbackComments = (props: any) => {
         console.error('getFeedbackData failed to fetch data with Error code:', object.code)
         return;
       })
-      if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items)) {
+      console.log("hello:",response)
+      if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
         setData((dataObj) => {
           const dataCopy = new Set([...dataObj].concat(response.Items.Items));
           return Array.from(dataCopy)
@@ -219,15 +225,14 @@ const FeedbackComments = (props: any) => {
           const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
           return Array.from(rawDataCopy)
         });
-      }
-      
-      //setFeedbackBarChartData(processBarChartData(response.Items.Items));
-      //console.log(response.Items.LastEvaluatedKey)
-      if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
-        setLastEvaluatedKey(response.Items.LastEvaluatedKey);
-      }
-      if(Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
-        setLastEvaluatedKey({})
+        if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
+          setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+        }
+        if(Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
+          setLastEvaluatedKey({})
+        }
+      } else {
+        setNoDataError(true)
       }
     }
 
@@ -243,14 +248,17 @@ const FeedbackComments = (props: any) => {
         setRawData([]);
       }
       setBackdropOpen(true);
-      fetchRecursiveData({});
       getProductDetails();
-      getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
+      
     }, [isBugReport])
 
     useEffect(() => {
-      console.log({rawData})
-      if(rawData.length > 0 && productInfo.length > 0) {
+      console.log("In the primary: ",{rawData})
+      if(error || noDataError) {
+        console.log("hello")
+        setBackdropOpen(false);
+      }
+      if(rawData.length > 0 && selectedProdId) {
         // console.log(feedbackBarChartData, feedbackPieChartSeries.length)
         if(isBugReport) {
           if(Object.keys(bugPieChartSeries).length > 0) {
@@ -262,13 +270,14 @@ const FeedbackComments = (props: any) => {
           }
         }
       }
-    }, [productInfo, rawData, feedbackBarChartData, feedbackPieChartSeries, bugPieChartSeries])
+    }, [selectedProdId, rawData, feedbackBarChartData, feedbackPieChartSeries, bugPieChartSeries, error, noDataError])
 
 
     const getProductDetails = () => {
         Http.get({
           url: `/api/v2/products`,
         }).then((response: any) => {
+          console.log(response);
           if(response && response.products && Array.isArray(response.products) && response.products.length > 0) {
               const productInfoCopy = [...productInfo]
               const prodNameIdMappingCopy: any = {...prodNameIdMapping};
@@ -282,14 +291,17 @@ const FeedbackComments = (props: any) => {
                   } else {
                     prodNameIdMappingCopy[prodInfo.id] = {
                       name: prodInfo.name,
-                      version: [el.version]
+                      version: [el.version],
+                      categories: el.feedbackSettings ? el.feedbackSettings.categories ? el.feedbackSettings.categories : [] : []
                     }
                   }
                   
               })
               setProductInfo(productInfoCopy);
               setProdNameIdMapping(prodNameIdMappingCopy);
-              setSelectedProdId(Object.keys(prodNameIdMappingCopy))
+              const defaultProductId = Object.keys(prodNameIdMappingCopy)[0];
+              setSelectedProdId(defaultProductId);
+              setProductVersion(prodNameIdMappingCopy[defaultProductId].version[0]);
           }
         }).catch((error : any) => {
             console.error(error);
@@ -391,9 +403,17 @@ const FeedbackComments = (props: any) => {
       return ""
     }
 
-    const filterByProduct = (val: string[]) => {
-      if(val.length > 0) {
+    const filterByProduct = (val: string) => {
+      if(val) {
         setSelectedProdId(val);
+        setProductVersion(prodNameIdMapping[val].version[0])
+        setNoDataError(false);
+        setBackdropOpen(true);
+        setRawData([])
+        setData([])
+        setFeedbackBarChartData({})
+        setFeedbackPieChartSeries([])
+        setBugPieChartSeries({})
       }
     }
 
@@ -406,7 +426,7 @@ const FeedbackComments = (props: any) => {
     const handleFilterSeverity = () => {
 
     }
-    const handleFilterRating = () => {
+    /* const handleFilterRating = () => {
       if(rawData.length === 0) {
         return;
       }
@@ -419,7 +439,7 @@ const FeedbackComments = (props: any) => {
         setData(sortTableByDate(data, order))
       }
       
-    }
+    } */
     const handleFilterCategory = () => {
       
     }
@@ -545,27 +565,30 @@ const FeedbackComments = (props: any) => {
             <Grid item xl={2} style={{position: 'relative'}}>
               <VersionFilter productVersion={productVersion}
                 setProductVersion={setProductVersion}
-                versionList={selectedProdId.length === 1 ? prodNameIdMapping[selectedProdId[0]].version : []}
+                versionList={selectedProdId ? prodNameIdMapping[selectedProdId].version : []}
               />
             </Grid>
           </Grid>
-          <ImageModal/>
-          <div style={{marginTop: 50}}>
-            <Grid container style={{marginTop: '5rem'}}>
-              <Grid item lg={5}>
-                <ReactApexChart options={isBugReport ? bugBarChartOtions : feedbackBarChartOptions} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
+          {noDataError ? <div style={{marginTop: '3rem'}}><Failure message={"There is no data to show."}/></div>:
+          <div>
+            <ImageModal/>
+            <div style={{marginTop: 50}}>
+              <Grid container style={{marginTop: '5rem'}}>
+                <Grid item lg={5}>
+                  <ReactApexChart options={isBugReport ? bugBarChartOtions : feedbackBarChartOptions} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
+                </Grid>
+                <Grid item lg={2}></Grid>
+                <Grid item lg={5}>
+                  <ReactApexChart options={isBugReport ? bugPieChartOptions : feedbackPieChartOptions} series={isBugReport? Object.values(bugPieChartSeries) : feedbackPieChartSeries} type="pie" width={500} height={320} />
+                </Grid>
               </Grid>
-              <Grid item lg={2}></Grid>
-              <Grid item lg={5}>
-                <ReactApexChart options={isBugReport ? bugPieChartOptions : feedbackPieChartOptions} series={isBugReport? Object.values(bugPieChartSeries) : feedbackPieChartSeries} type="pie" width={500} height={320} />
-              </Grid>
-            </Grid>
-          </div>
-          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
-          filterSeverity={handleFilterSeverity} order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-          searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch} filterCategory={handleFilterCategory}
-          focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-          />
+            </div>
+            <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            filterSeverity={handleFilterSeverity} order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch} filterCategory={handleFilterCategory}
+            focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
+            />
+          </div>}
         </Container>
       )
     }

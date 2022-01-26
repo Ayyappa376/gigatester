@@ -6,64 +6,36 @@ import { Http } from '../../../utils';
 import { IProductNameIdMapping, ILimitedProductDetails } from './common';
 
 interface IProps {
-    selectedProdId: string[];
+    selectedProdId: string;
     setSelectedProdId: Function;
     productNameIdMapping: IProductNameIdMapping;
     productInfo: ILimitedProductDetails[]
 }
 
-function getStyles(id: string, selectedProds: string[], theme: Theme) {
-    return {
-      fontWeight:
-        selectedProds.indexOf(id) === -1
-          ? theme.typography.fontWeightRegular
-          : theme.typography.fontWeightMedium,
-    };
-  }
 
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-    PaperProps: {
-        style: {
-        maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-        width: 250,
-        },
-    },
-};
 
 const ProductFilter = (props : IProps) => {
     const {selectedProdId, productNameIdMapping, productInfo} = props;
     const classes = useStyles();
-    const theme = useTheme();
-
 
     const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
-        props.setSelectedProdId(event.target.value as string[]);
+        props.setSelectedProdId(event.target.value as string);
       };
 
     return (
         <div style={{paddingLeft: '2rem'}}>
             <FormControl className={classes.formControl}>
-                <InputLabel id="product-select-label">Choose Products</InputLabel>
+                <InputLabel id="product-select-label">Choose Product</InputLabel>
                 <Select
-                labelId="product-select-label"
-                id="product-select"
-                multiple
-                value={selectedProdId}
-                onChange={handleChange}
-                input={<Input id="select-multiple-product" />}
-                renderValue={(selected) => (
-                    <div className={classes.chips}>
-                    {(selected as string[]).map((value, i) => (
-                        <Chip key={value + i} label={productNameIdMapping[value].name} className={classes.chip} />
-                    ))}
-                    </div>
-                )}
-                MenuProps={MenuProps}
+                    labelId="product-select-label"
+                    id="product-select"
+                    value={selectedProdId}
+                    onChange={handleChange}
                 >
                 {Object.keys(productNameIdMapping).map((id) => (
-                    <MenuItem key={id} value={id} style={getStyles(id, selectedProdId, theme)}>
+                    <MenuItem key={id} value={id} >
                         {productNameIdMapping[id].name}
                     </MenuItem>
                 ))}
@@ -99,9 +71,6 @@ export const VersionFilter = (props : IVersionFilterProps) => {
                 value={productVersion}
                 onChange={handleChange}
                 >
-                <MenuItem value="all">
-                    <em>All</em>
-                </MenuItem>
                 {versionList.map((version, i) => <MenuItem value={version}>{version}</MenuItem>)}
                 </Select>
             </FormControl>
