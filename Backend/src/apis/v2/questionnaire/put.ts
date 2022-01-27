@@ -43,8 +43,12 @@ async function handler(request: PostQuestionnaire, response: Response) {
 
       if (create.questions && create.active) {
         if (
-          latestQuestionnaire.timeOut !== create.timeOut ||
-          latestQuestionnaire.hideResult !== create.hideResult
+          (latestQuestionnaire.timeOut && !create.timeOut) ||
+          (!latestQuestionnaire.timeOut && create.timeOut) ||
+          (latestQuestionnaire.timeOut && create.timeOut && latestQuestionnaire.timeOut !== create.timeOut) ||
+          (latestQuestionnaire.hideResult && !create.hideResult) ||
+          (!latestQuestionnaire.hideResult && create.hideResult) ||
+          (latestQuestionnaire.hideResult && create.hideResult && latestQuestionnaire.hideResult !== create.hideResult)
         ) {
           doVersionUpdate = true;
         }

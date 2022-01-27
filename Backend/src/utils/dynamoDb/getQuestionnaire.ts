@@ -68,7 +68,7 @@ export const getNewQuestionnaireId = async (data: QuestionnaireCreate) => {
   allQuestionnaire.forEach((element) => {
     if (element.name === data.name) {
       const date = Date.now();
-      if (date - element.createdOn < 5000 && element.createdBy === data.createdBy) {
+      if (date - element.createdOn < 5000 && element.createdBy && data.createdBy && element.createdBy === data.createdBy) {
         questionnaireId = element.questionnaireId;
       }
     }

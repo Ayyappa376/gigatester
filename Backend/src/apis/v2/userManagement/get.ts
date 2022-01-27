@@ -130,13 +130,14 @@ async function handler(request: GetUsers, response: Response) {
   if (params.type) {
     const teamMembersDetails: any = await getTeamMembersDetails(params.type);
     teamMembersDetails.sort((a: TeamMembers, b: TeamMembers) => {
-      if (a.emailId > b.emailId) {
-        return 1;
-      }
-      if (a.emailId < b.emailId) {
-        return -1;
-      }
-      return 0;
+      a.emailId.localeCompare(b.emailId);
+      // if (a.emailId > b.emailId) {
+      //   return 1;
+      // }
+      // if (a.emailId < b.emailId) {
+      //   return -1;
+      // }
+      // return 0;
     });
     appLogger.info({ getTeamMembersDetails: teamMembersDetails });
     const userCount = teamMembersDetails.length;
