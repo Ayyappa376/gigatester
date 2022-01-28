@@ -3,7 +3,7 @@
 import { FeedbackType, FilterType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { queryRaw, scan, scanNonRecursiveRaw } from './sdk';
+import { queryRaw, scan } from './sdk';
 
 export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
@@ -12,6 +12,7 @@ interface Params {
   filter?: string;
   filterRating?: string;
   filterSeverity?: string;
+  filterCategory?: string;
   filterType?: FilterType;
   items?: string;
   lastEvalKey?: string;
@@ -24,6 +25,8 @@ interface Params {
 
 interface GetChartDataProps {
   type: FeedbackType;
+  prodId?: string;
+  prodVersion?: string;
 }
 
 export interface ProcessedData {
@@ -52,7 +55,7 @@ export interface AppFeedback {
 
 const NUMBER_OF_DAYS_OF_FEEDBACK = 30;
 
-export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, filterRating, filterSeverity, prodId, prodVersion, order}: Params): Promise<any[]> => {
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, filterRating, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -119,6 +122,27 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       }
     }
 
+    if(filterCategory) {
+      const categories = filterCategory.split(',');
+      if(categories.length > 0) {
+        categories.forEach((el, i) => {
+          EAN['#category'] = 'feedbackCategory';
+          EAV[`:categoryVal${i}`] = el;
+          if(i === 0) {
+            if(categories.length === 1) {
+              FE += FE ? ` and #category = :categoryVal${i}` : `#category = :categoryVal${i}`;
+            } else {
+              FE += FE ? ` and (#category = :categoryVal${i}` : `(#category = :categoryVal${i}`;
+            }
+          } else if (i === categories.length - 1) {
+            FE += ` or #category = :categoryVal${i})`;
+          } else {
+            FE += ` or #category = :categoryVal${i}`;
+          }
+        });
+      }
+    }
+
    /*  if(search) {
       EAN['#comments'] = 'feedbackComments';
       EAV[':keyWord'] = search;
@@ -157,7 +181,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     return queryRaw<any>(params);
   };
 
-export const getUserFeedbackListReursive = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
+export const getUserFeedbackListForChart = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
     let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -182,36 +206,6 @@ export const getUserFeedbackListReursive = async ({type, items, search, lastEval
       }
     }
 
-    const populateParams = (filterOn: string) => {
-      EAN['#filterOn'] = filterOn;
-      EAV[':filter'] = filterType === 'rating' && filter ? parseInt(filter, 10): filter;
-      FE += FE ? ' and #filterOn = :filter' : '#filterOn = :filter';
-    };
-
-    if(filterType) {
-      switch(filterType) {
-        case 'rating':
-          populateParams('productRating');
-          break;
-        case 'category':
-          populateParams('feedbackCategory');
-          break;
-        case 'keyword':
-          //populateParams('productRating')  // This is equivalent to search
-          break;
-        case 'severity':
-          populateParams('bugPriority');
-          break;
-        default:
-          // generate a 501 error statement
-      }
-    }
-   /*  if(search) {
-      EAN['#comments'] = 'feedbackComments';
-      EAV[':keyWord'] = search;
-      FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
-    } */
-
     if(FE) {
       params = {
         ExpressionAttributeNames: EAN,
@@ -219,17 +213,6 @@ export const getUserFeedbackListReursive = async ({type, items, search, lastEval
         FilterExpression: FE,
         TableName: getAppFeedbackTableName(),
       };
-    }
-
-    if(items) {
-      if(lastEvalKey) {
-        const exKeyStart: any = {
-          id: lastEvalKey
-        };
-        params.ExclusiveStartKey = exKeyStart;
-      }
-      params.Limit = parseInt(items, 10);
-      return scanNonRecursiveRaw<any>(params);
     }
     appLogger.info({ getPlatformList_scan_params: params });
     return scan<any[]>(params);
@@ -300,11 +283,11 @@ const processBugReportChartData = (data: AppFeedback[]) => {
   };
 };
 
-export const getChartData = async({type}: GetChartDataProps) => {
+export const getChartData = async({type, prodId, prodVersion}: GetChartDataProps) => {
   let chartType: FeedbackType = 'FEEDBACK';
   if(type !== 'FEEDBACK-CHART') {
     chartType = 'BUG_REPORT';
   }
-  const data = await getUserFeedbackListReursive({type: chartType});
+  const data = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion});
   return type === 'FEEDBACK-CHART' ? processFeedbackChartData(data) : processBugReportChartData(data);
 };

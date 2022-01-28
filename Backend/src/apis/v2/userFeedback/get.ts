@@ -25,6 +25,7 @@ interface UserFeedbackRequest {
   query: {
     filterRating?: string;
     filterSeverity?: string;
+    filterCategory?: string;
     items?: string;
     lastEvalKey?: string;
     order?: string;
@@ -41,7 +42,7 @@ async function handler(
   appLogger.info({ UserFeedbackRequest: request }, 'Inside Handler');
   const { headers, params, query } = request;
   const {type} = params;
-  const {items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity} = query;
+  const {items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory} = query;
 
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
@@ -65,10 +66,10 @@ async function handler(
       return responseBuilder.ok({Items: feedback }, response);
     }
     if(type === 'FEEDBACK-CHART' || type === 'BUG-REPORT-CHART') {
-      const chartData = await getChartData({type});
+      const chartData = await getChartData({type, prodId, prodVersion});
       return responseBuilder.ok({Items: chartData }, response);
     }
-    feedback = await getUserFeedbackList({type,items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity});
+    feedback = await getUserFeedbackList({type,items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory});
     // put a log here
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {

@@ -1,3 +1,5 @@
+import { Order } from "./RenderTable";
+
 export const SEVERITY_CRITICAL = 'Critical';
 export const SEVERITY_HIGH = 'High';
 export const SEVERITY_MEDIUM = 'Medium';
@@ -55,10 +57,16 @@ export interface ILimitedProductDetails {
     name: string;
 }
 
+export interface ICategories {
+  name: string;
+  feedbacks: string[];
+}
+
 export interface IProductNameIdMapping {
     [key : string] : {
         name: string;
         version: string[];
+        categories: ICategories[];
     }
 }
 
@@ -138,6 +146,17 @@ export interface IBugDataMapping {
 export interface ILastEvalKey {
   [key: string]: string
 }
+
+export interface IFetchRecursiveData {
+  lastEvalKey?: ILastEvalKey,
+  fetchOrder?: Order,
+  filterRating?: number[],
+  filterSeverity?: string[], 
+  filterCategory?: string[], 
+  prodId?: string,
+  prodVersion?: string,
+  emptyErrorValid?: boolean
+} 
 
 export const feedbackPieChartOptions = {
     labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],

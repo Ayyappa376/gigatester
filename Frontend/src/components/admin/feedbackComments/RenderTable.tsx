@@ -27,12 +27,13 @@ interface IProps {
     urls: string[],
     isBugReport: boolean,
     fetchMore: Function,
-    filterSeverity: Function,
-    filterCategory: Function,
     focusRating: number[],
     setFocusRating: Function,
     focusSeverity: string[],
     setFocusSeverity: Function;
+    focusCategory: string[],
+    setFocusCategory: Function;
+    categoryList: string[],
     order: Order,
     keyword: string,
     setKeyword: Function,
@@ -83,21 +84,6 @@ const RenderTable = (props: IProps) => {
     const signedUrlMapping = useSelector(
       (state: IRootState) => state.admin.signedUrls
     );
-    //https://www.dusanstam.com/posts/material-ui-table-with-infinite-scroll
-    /* const observer: any = useRef()
-
-    const newIntersectionObserver = new IntersectionObserver(); */
-    /* const lastBookElementRef = useCallback((node: any) => {
-      console.log(observer)
-      console.log(node)
-      if (observer && observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        console.log(entries[0])
-        props.fetchMore()
-      }})
-      if (node) observer.current.observe(node)
-    }, [tableData]) */
 
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
@@ -147,7 +133,7 @@ console.log({tableData})
                     <div>
                     <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={tableData.length === 0}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter onSelect={(val: string) => {props.filterCategory(val)}}/>
+                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
@@ -160,7 +146,11 @@ console.log({tableData})
                   <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
                   <Grid item md={5}>
                     {
-                        <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0}/>
+                        <div>
+                          <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0}/>
+                          <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
+                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0} categoryList={props.categoryList}/>
+                        </div>
                     }
                   </Grid>
               </Grid>
