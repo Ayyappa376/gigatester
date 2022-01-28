@@ -305,6 +305,7 @@ else{
                 your_email_address: "Your email address *",
                 feedback_title: "Add a title",
                 select_a_category: "Select a category *",
+                select_a_reason: "Select a reason *",
                 select_a_priority: "Choose priority *",
                 assign_to: "Assign to",
                 leave_us_your_comment: "Leave us your comment *",
@@ -396,6 +397,7 @@ else{
                 routing_item_order: "bug,general",
                 has_video: true,
                 categories:  ['Video', 'Screen', 'Audio', 'Images', 'Other'],
+                reasons: ['Video Error', 'Video Not Found'],
                 language: 'en',
                 display_powered_by: true,
             },
@@ -421,9 +423,11 @@ else{
                     comment_field_mandatory: true,
                     comment_field_placeholder: "",
                     display_category: true,
+                    display_reason: true,
                     display_priority: true,
                     display_assignee: false,
                     category_field_mandatory: true,
+                    reason_field_mandatory: true,
                     priority_field_mandatory: true,
                     assignee_field_mandatory: false,
                     custom_field_1_type: "",
@@ -488,9 +492,11 @@ else{
                     comment_field_mandatory: true,
                     comment_field_placeholder: "",
                     display_category: true,
+                    display_reason: true,
                     display_priority: false,
                     display_assignee: false,
                     category_field_mandatory: true,
+                    reason_field_mandatory: true,
                     priority_field_mandatory: false,
                     assignee_field_mandatory: false,
                     custom_field_1_type: "",
@@ -922,13 +928,22 @@ else{
                                 console.log('selected rating');
                                 var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                             var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                            var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                            var video_close = $('<button id="gigatester_video_player_close">').html(Svg_Icons.trash);
                             // video.appendTo(video_overlay.children("div"));
-                            video_close.appendTo(video_overlay);
+                            
                             video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                            video_close.insertAfter(video);
                             video_close.on("click", function() {
                                 video_overlay.remove()
-                            })
+                                video.remove();
+                                Feedback.video_file = '';
+                                Feedback.recording = false;
+                                video_close.remove();
+                                Feedback.setFormHTML();
+                                if(Feedback.form_data.rating){
+                                    Feedback.selectedRating();
+                                }
+                                })
                             }
                         else{
                             var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
@@ -1778,7 +1793,26 @@ else{
                         display_screenshot = false;
                         display_video = false;
                     } else {
-                        console.log("You are using Desktop : " +  navigator.userAgent);
+                        let userAgent = navigator.userAgent;
+                        let browserName;
+                        
+                        if(userAgent.match(/chrome|chromium|crios/i)){
+                            browserName = "chrome";
+                        }else if(userAgent.match(/firefox|fxios/i)){
+                            browserName = "firefox";
+                        }  else if(userAgent.match(/safari/i)){
+                            browserName = "safari";
+                        }else if(userAgent.match(/opr\//i)){
+                            browserName = "opera";
+                        } else if(userAgent.match(/edg/i)){
+                            browserName = "edge";
+                        }else{
+                            browserName="No browser detection";
+                        }
+                        console.log(browserName, platform)
+                        console.log(platform.name);
+                        console.log(platform.version);
+                        console.log(platform.os);
                     }
                     data_item += display_screenshot ? 1 : 0;
                     data_item += display_video ? 1 : 0;
@@ -1794,10 +1828,16 @@ else{
                     var default_rating = this.form_data.rating || 0;
                     var priority_options = '<option value="critical">Critical</option>' + '<option value="high">High</option>' + '<option value="medium">Medium</option>' + '<option value="low">Low</option>';
                     var category_options = "";
+                    let reason_options = "";
                     console.log(form_settings.display_category)
                     if (form_settings.display_category) {
                         this.configs.categories.forEach(function(category) {
                             category_options += "<option>" + category + "</option>"
+                        }.bind(this))
+                    }
+                    if (form_settings.display_reason) {
+                        this.configs.reasons.forEach(function(reason) {
+                            reason_options += "<option>" + reason + "</option>"
                         }.bind(this))
                     }
                     // var assignee_options = "";
@@ -1831,15 +1871,19 @@ else{
                      + (form_settings.display_category ? '<select name="category"'
                      + (form_settings.category_field_mandatory ? " required" : "")
                      + '><option id="category" value="" selected disabled>' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
-
+                    
                      + (form_settings.display_priority ? '<select id="priority" name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="" selected disabled>' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "")
+                    //  + (form_settings.display_reason ? '<select name="category"'
+                    //  + (form_settings.reason_field_mandatory ? " required" : "")
+                    //  + '><option id="reason" value="" selected disabled>' + Lang.get("select_a_reason") + "</option>" + reason_options + "</select>" : "")
+
                      + (form_settings.display_assignee ? '<select name="assignee"' + (form_settings.assignee_field_mandatory ? " required" : "") + '><option value="">' + Lang.get("assign_to") + "</option>" + assignee_options + "</select>" : "")
                      + (form_settings.custom_field_1_type === "short_answer" ? '<input name="custom_field_1" type="text" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""'
                      + (form_settings.custom_field_1_mandatory ? " required" : "") + ">" : "") + (form_settings.custom_field_1_type === "long_answer" ? '<textarea name="custom_field_1" placeholder="' + Lib.htmlEntities(form_settings.custom_field_1_label) + '" name=""' + (form_settings.custom_field_1_mandatory ? " required" : "") + "></textarea>" : "")
                      + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (Lib.htmlEntities(form_settings.title_field_placeholder) || Lang.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
                      + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (Lib.htmlEntities(form_settings.comment_field_placeholder) || Lang.get("leave_us_your_comment")) + '"'
                      + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
-                     + (display_screenshot || display_audio || display_video || display_attachment ?  Feedback.recording ? '<gtdiv class="gigatester-controls-attach-actions" ">' + "<gtdiv>" : '<gtdiv class="gigatester-controls-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
+                     + (display_screenshot || display_audio || display_video || display_attachment ?  Feedback.recording ? '<gtdiv class="gigatester-controls-attach-actions" >' + "<gtdiv>" : '<gtdiv class="gigatester-controls-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
                      + (display_screenshot ? '<btn class="gigatester-controls-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>"
                      + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
@@ -2080,12 +2124,21 @@ else{
                     Feedback.clearScreenStatus();
                     const image_overlay = $('<div id="gigatester_images_player"><div></div></div>');
                     const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
-                    const image_close = $('<btn id="gigatester_images_player_close">').html(Svg_Icons.close);
+                    const image_close = $('<button id="gigatester_images_player_close">').html(Svg_Icons.trash);
                     // video.appendTo(video_overlay.children("div"));
-                    image_close.appendTo(image_overlay);
-                    console.log(image, 'imgs')
                     image.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                    image_close.insertAfter(image);
                     Feedback.loadImage(base64Image);
+                    image_close.on("click", function() {
+                        image.remove();
+                        Feedback.image_file = '';
+                        Feedback.recording = false;
+                        image_close.remove();
+                        Feedback.setFormHTML();
+                        if(Feedback.form_data.rating){
+                            Feedback.selectedRating();
+                        }
+                        })
                     console.log(base64Image, 'final screenshot');
                 },1000);
                 }});
@@ -2177,14 +2230,22 @@ else{
                             console.log(src, 'audio blob')
                             var audio_overlay = $('<div id="gigatester_audio_player"><div></div></div>');
                             var audio = $('<audio id="gigatester_audio_preview_player" controls loop autoplay preload="auto" src="' + src + '"></audio>');
-                            var audio_close = $('<btn id="gigatester_audio_player_close">').html(Svg_Icons.close);
+                            var audio_close = $('<button id="gigatester_audio_player_close">').html(Svg_Icons.trash);
                             // video.appendTo(video_overlay.children("div"));
-                            audio_close.appendTo(audio_overlay);
+                            
                             audio.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                            Feedback.loadAudio(src)
+                            audio_close.insertAfter(audio);
+                            Feedback.loadAudio(src);
                            
                             audio_close.on("click", function() {
-                                audio_overlay.remove()
+                                audio.remove();
+                                Feedback.audio_file = '';
+                                Feedback.recording = false;
+                                audio_close.remove();
+                                Feedback.setFormHTML();
+                                if(Feedback.form_data.rating){
+                                    Feedback.selectedRating();
+                                }
                             })
                           };
                         })
@@ -2280,8 +2341,15 @@ else{
                                 video_close.appendTo(video_overlay);
                                 video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
                                 video_close.on("click", function() {
-                                    video_overlay.remove()
-                                })
+                                    video.remove();
+                                    Feedback.video_file = '';
+                                    Feedback.recording = false;
+                                    video_close.remove();
+                                    Feedback.setFormHTML();
+                                    if(Feedback.form_data.rating){
+                                        Feedback.selectedRating();
+                                    }
+                                    })
                                 }
                             else{
                                 var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
@@ -2563,11 +2631,21 @@ else{
                     Feedback.external_file = e.target.files[0];
                     var external_file_overlay = $('<div id="gigatester_external_file_loader"><div></div></div>');
                     var external_file = $('<div id="gigatester_external_file_preview">' + Feedback.external_file.name + '</div>').html(Feedback.external_file.fileName);
-                    var external_file_close = $('<btn id="gigatester_external_file_close">').html(Svg_Icons.close);
+                    var external_file_close = $('<button id="gigatester_external_file_close">').html(Svg_Icons.trash);
                     // video.appendTo(video_overlay.children("div"));
-                    external_file_close.appendTo(external_file_overlay);
+                    
                     external_file.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                           
+                    external_file_close.insertAfter(external_file);     
+                    external_file_close.on("click", function() {
+                        external_file.remove();
+                        Feedback.external_file = '';
+                        Feedback.recording = false;
+                        external_file_close.remove();
+                        Feedback.setFormHTML();
+                        if(Feedback.form_data.rating){
+                            Feedback.selectedRating();
+                        }
+                        }) 
                     // this.postMedia(e.target.files[0]);
                     // var file = e.target.files[0];
                     // var reader = new FileReader;
@@ -2856,6 +2934,9 @@ else{
                         feedbackCategory: this.form_data['category'],
                         bugPriority: this.form_data['priority'],
                         productVersion: GigaTester.productVersion || '0.1',
+                        platformName: platform.name,
+                        platformVersion: platform.version,
+                        platformOs: platform.os,
                         feedbackMedia: {
                           image: Feedback.image_file,
                           video: Feedback.video_file,
