@@ -10,9 +10,9 @@ export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other'
 
 interface Params {
   filter?: string;
+  filterCategory?: string;
   filterRating?: string;
   filterSeverity?: string;
-  filterCategory?: string;
   filterType?: FilterType;
   items?: string;
   lastEvalKey?: string;
@@ -24,9 +24,9 @@ interface Params {
 }
 
 interface GetChartDataProps {
-  type: FeedbackType;
   prodId?: string;
   prodVersion?: string;
+  type: FeedbackType;
 }
 
 export interface ProcessedData {
@@ -255,28 +255,24 @@ export const bugProcessBarChartData = (items: AppFeedback[]) => {
     return severityData;
 };
 
-export const getCategoriesList = ({prodId, prodVersion}: {prodId: string, prodVersion: string}) : Promise<string[]> => {
-  return new Promise(async(resolve, reject) => {
-    const categoryList: string[] = []
+export const getCategoriesList = ({prodId, prodVersion}: {prodId: string; prodVersion: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
+    const categoryList: string[] = [];
     const productInfo = await getProductDetails(prodId, prodVersion);
-    console.log(productInfo)
     if(productInfo && productInfo.feedbackSettings && productInfo.feedbackSettings.categories.length) {
       productInfo.feedbackSettings.categories.map((el) => {
         categoryList.push(el.name);
       });
     }
-    console.log(categoryList)
     return resolve(categoryList);
-  })
-}
+  });
 
-export const processPieChartData = async({data, prodId, prodVersion}: {data: AppFeedback[], prodId?: string, prodVersion?:  string}) => {
+export const processPieChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
   if(prodId && prodVersion) {
     const categories: string[] = await getCategoriesList({prodId, prodVersion});
     const categoryData: ProcessedData = {};
     categories.forEach((el) => {
       categoryData[el] = 0;
-    })
+    });
     if(data.length > 0) {
       data.forEach((item) => {
             if(item.feedbackCategory && categories.indexOf(item.feedbackCategory) !== -1) {
@@ -289,7 +285,7 @@ export const processPieChartData = async({data, prodId, prodVersion}: {data: App
   return {};
 };
 
-const processFeedbackChartData = async({data, prodId, prodVersion}: {data: AppFeedback[], prodId?: string, prodVersion?:  string})  => {
+const processFeedbackChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string})  => {
   const barChartData = feedbackProcessBarChartData(data);
   const pieChartData = await processPieChartData({data, prodId, prodVersion});
   return {
@@ -297,7 +293,7 @@ const processFeedbackChartData = async({data, prodId, prodVersion}: {data: AppFe
   };
 };
 
-const processBugReportChartData = async({data, prodId, prodVersion}: {data: AppFeedback[], prodId?: string, prodVersion?:  string}) => {
+const processBugReportChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
   const barChartData = bugProcessBarChartData(data);
   const pieChartData = await processPieChartData({data, prodId, prodVersion});
   return {
@@ -311,5 +307,5 @@ export const getChartData = async({type, prodId, prodVersion}: GetChartDataProps
     chartType = 'BUG_REPORT';
   }
   const data = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion});
-  return type === 'FEEDBACK-CHART' ? await processFeedbackChartData({data, prodId, prodVersion}) : await processBugReportChartData({data, prodId, prodVersion});
+  return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion}) : processBugReportChartData({data, prodId, prodVersion});
 };

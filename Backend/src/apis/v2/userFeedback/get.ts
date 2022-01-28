@@ -23,9 +23,9 @@ interface UserFeedbackRequest {
     type: FeedbackType;
   };
   query: {
+    filterCategory?: string;
     filterRating?: string;
     filterSeverity?: string;
-    filterCategory?: string;
     items?: string;
     lastEvalKey?: string;
     order?: string;
