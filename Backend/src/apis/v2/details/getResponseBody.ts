@@ -56,7 +56,6 @@ export async function getResponseBody({
   const questionnaireRecommendationFlag: boolean = resp.showRecommendations
     ? resp.showRecommendations
     : false;
-  // console.log(assessmentDocument.type, resp.showRecommendations, questionnaireRecommendationFlag);
   const acknowledgement: DetailsAcknowledgement = {
     assessmentSummary: [],
     benchmarkScore: resp.benchmarkScore,
@@ -81,28 +80,8 @@ export async function getResponseBody({
   categoriesMap = await sortCategoriesMapByCategories(categoriesMap);
   const assessmentDetailsKeys = Object.keys(assessmentDetails);
 
-  // const quesOrder = assessmentDocument.quesOrder ? assessmentDocument.quesOrder : assessmentDetailsKeys;
-
   const quesOrder = Object.keys(categoriesMap);
 
-  /*    let sortOrder: string[] = Object.keys(assessmentDetails);
-    // console.log({sortOrder});
-    //NOTE: sortOrder has <questionId_version> and quesOrder has only <questionId>
-    if(assessmentDocument.quesOrder) {
-        // console.log(assessmentDocument.quesOrder);
-        const ar = new Set(sortOrder);
-        sortOrder = [];
-        // console.log({ar});
-        assessmentDocument.quesOrder.forEach((val) => {
-            if(ar.has(val)) {
-                sortOrder.push(val);
-            }
-        });
-        // console.log({sortOrder});
-    }
-    for (const questionId of sortOrder) {
-        const item = assessmentDetails[questionId];
-*/
   for (const questionId of quesOrder) {
     let answerKey = '';
     for (const key of assessmentDetailsKeys) {

@@ -65,7 +65,7 @@ async function handler(
     return responseBuilder.ok(acknowledgement, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    responseBuilder.internalServerError(new Error('Error encountered while fetching data'), response);
   }
 }
 
@@ -74,27 +74,3 @@ export const api: API = {
   method: 'get',
   route: '/api/v2/assessment/:assessmentId/details',
 };
-
-// async function test(assessmentId: string, email: string): Promise<any> {
-//     try {
-//         const assessmentDocument: AssessmentDocument = await getUserAssessment({ userId: email, assessmentId });
-//         // console.log(assessmentDocument);
-//         const assessmentDetails = <AssessmentDetails>assessmentDocument.assessmentDetails;
-//         const questionIds: string[] = Object.keys(assessmentDetails);
-//         console.log('questionIds');
-//         const questionDetailsArr: QuestionDetails[] = await getQuestionDetailsMulti({ questionIds });
-//         console.log('doneq')
-//         const recommendations = await getRecommendations(assessmentId, assessmentDocument);
-//         console.log('done')
-//         const acknowledgement: any = getResponseBody({ questionDetailsArr, assessmentDocument, recommendations });
-//         return acknowledgement;
-//     } catch (err) {
-//         console.error(err);
-//         return err;
-//     }
-// }
-// test('2c590ab0-5f65-11ea-af93-67c528d57bb0','anshul.bhatnagar@sling.com').then(res=>{
-//     console.log(res.result);
-// }).catch(e=>{
-// 	console.log(e);
-// })

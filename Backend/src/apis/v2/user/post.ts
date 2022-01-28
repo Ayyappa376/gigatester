@@ -53,23 +53,3 @@ export const api: API = {
   method: 'post',
   route: '/api/v2/users',
 };
-
-// async function x(createData: any){
-//     const ok = await createUser(createData, 'rachitjobs7@gmail.com').catch(e => {
-//         // console.log({e});
-//         return ({error : 'User already exists'});
-//     });
-//     return ok;
-// }
-// var t = {
-//     id: 'TechnoBrad',
-//     name: 'TechnoBrad'
-// }
-// x(t).then(res=>{
-//   console.log(typeof(res),Object.keys(res), {res})
-// //   if(res.Error){
-
-// //   }
-// }).catch(e=>{
-//     console.log(e);
-// })

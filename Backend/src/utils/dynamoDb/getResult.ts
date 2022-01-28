@@ -17,12 +17,11 @@ export const getResult = async ({
   }
 
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
-    TableName: TableNames.getAssessmentsTableName(),
-    // tslint:disable-next-line: object-literal-sort-keys
     Key: {
       assessmentId,
       userId,
     },
+    TableName: TableNames.getAssessmentsTableName(),
   });
 
   appLogger.info({ getResult_get_params: params });

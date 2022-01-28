@@ -117,28 +117,29 @@ export const xlsxToQuestionJSON = async (filename: string) => {
   doc[0].forEach((val: any) => {
     const question: any = {};
     let id = '';
-    /* tslint:disable:no-string-literal */
+    const field1 = 'answers';
     Object.keys(val).forEach((keys: string) => {
       if (keys.match(regex) || keys.match(regAns) || keys.match(regWeight)) {
         if (val[keys]) {
           if (keys.match(regex)) {
-            if (!question['answers']) {
-              question['answers'] = {};
+            if (!question[field1]) {
+              question[field1] = {};
             }
-            question['answers'][val[keys]] = {};
+            question[field1][val[keys]] = {};
             id = val[keys];
           } else if (keys.match(regAns)) {
-            question['answers'][id]['answer'] = val[keys];
+            const field2 = 'answer';
+            question[field1][id][field2] = val[keys];
           } else if (keys.match(regWeight)) {
-            question['answers'][id]['weightage'] = val[keys];
+            const field2 = 'weightage';
+            question[field1][id][field2] = val[keys];
           }
         }
       } else {
         question[keys] = val[keys];
       }
     });
-    /* tslint:enable:no-string-literal */
-    if (question.id.length > 0) {
+     if (question.id.length > 0) {
       result.push(question);
     }
   });

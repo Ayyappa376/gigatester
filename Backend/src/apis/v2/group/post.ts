@@ -53,6 +53,3 @@ export const api: API = {
   method: 'post',
   route: '/api/v2/groups',
 };
-//addUserToCognitoGroup('557fc8d9-6142-44b4-b360-7ad4b98a83b8','Clients').then(ok=>{
-//	console.log(ok);
-//})

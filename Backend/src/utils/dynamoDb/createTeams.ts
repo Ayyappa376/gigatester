@@ -114,11 +114,9 @@ export const createTeam = async (teamData: TeamInfo, userId: string) => {
   });
 
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
-    TableName: TableNames.getTeamTableName(),
-    // tslint:disable-next-line: object-literal-sort-keys
+    ConditionExpression: 'attribute_not_exists(teamId) AND attribute_not_exists(manager)',
     Item: item,
-    ConditionExpression:
-      'attribute_not_exists(teamId) AND attribute_not_exists(manager)',
+    TableName: TableNames.getTeamTableName(),
   });
 
   appLogger.info({ createTeam_put_params: params });
@@ -367,8 +365,10 @@ export const updateTeamMetrics = async (
 
   if(services && teamDetails.services) {
     services.forEach((newService: ServiceInfo) => {
-      // tslint:disable-next-line: no-non-null-assertion
-      const oldService: ServiceInfo | undefined = teamDetails.services!.find((val: ServiceInfo, index: number) => val.id === newService.id);
+      const oldService: ServiceInfo | undefined =
+      teamDetails.services ?
+      teamDetails.services.find((val: ServiceInfo, index: number) => val.id === newService.id)
+      : undefined;
       if(oldService) {
         oldService.metrics = newService.metrics;
         updateServicesMetrics(newService, oldService);
@@ -405,8 +405,10 @@ export const updateTeamMetrics = async (
 export const updateServicesMetrics = (newServiceInfo: ServiceInfo, oldServiceInfo: ServiceInfo) => {
   if(newServiceInfo.services && oldServiceInfo.services) {
     newServiceInfo.services.forEach((newService: ServiceInfo) => {
-      // tslint:disable-next-line: no-non-null-assertion
-      const oldService: ServiceInfo | undefined = oldServiceInfo.services!.find((val: ServiceInfo, index: number) => val.id === newService.id);
+      const oldService: ServiceInfo | undefined =
+      oldServiceInfo.services ?
+      oldServiceInfo.services.find((val: ServiceInfo, index: number) => val.id === newService.id)
+      : undefined;
       if(oldService) {
         oldService.metrics = newService.metrics;
         updateServicesMetrics(newService, oldService);

@@ -109,11 +109,3 @@ export const api: API = {
   method: 'get',
   route: '/api/v2/assessment/reports',
 };
-
-// async function test(x: any,y: any){
-//     const assessmentHistory: AssessmentDocument[] = await getAssessmentHistory({ userId: x, type: y });
-//     const acknowledgement: HistoryAcknowledgement = getResponseBody(assessmentHistory);
-//     console.log(acknowledgement);
-// }
-
-// test('rachitjobs7@gmail.com','user');

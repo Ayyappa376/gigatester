@@ -124,8 +124,7 @@ export const checkForOldAssessment = async ({
   const assessments = await getAssessmentHistory({ userId, type });
   appLogger.info({ getAssessmentHistory: assessments });
   for (const a of assessments) {
-    //tslint:disable-next-line:strict-comparisons
-    if (a.result && Object.keys(a.assessmentDetails).length >= 0 && a.type === quesType && team === a.team) {
+    if (a.result && Object.keys(a.assessmentDetails).length >= 0 && quesType && a.type === quesType && team === a.team) {
       return a;
     }
   }

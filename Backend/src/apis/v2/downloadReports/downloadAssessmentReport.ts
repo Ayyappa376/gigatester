@@ -1,6 +1,7 @@
 import { Question } from '@models/index';
 import { config } from '@root/config';
 import {
+  appLogger,
   AssessmentDocument,
   getAssessmentHistory,
   getQuestionDetails,
@@ -43,7 +44,7 @@ function memorySizeOf(object: any) {
           }
           break;
         default:
-          console.log(0);
+          appLogger.warn('Object is not of type number, string, boolean or object.');
       }
     }
     return bytes;
@@ -70,7 +71,6 @@ function removeLinebreaks(str: string) {
 }
 
 //const prepareData = async (val: AssessmentDocument, questionNAnswers: QuestionNAnswers) => {
-// tslint:disable-next-line: cyclomatic-complexity
 const prepareData = async (val: AssessmentDocument) => {
   const questionNAnswers: QuestionNAnswers = {};
   const myResult: any = new Array();
@@ -269,6 +269,6 @@ export const downloadAssessmentReports = async (
     delete resultCopy.answers;
     newResult.push(resultCopy);
   }
-  console.log('Size of the response:', memorySizeOf(newResult));
+  appLogger.warn({Response_Size: memorySizeOf(newResult)});
   return newResult;
 };

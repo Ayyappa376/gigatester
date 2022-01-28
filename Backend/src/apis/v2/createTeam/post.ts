@@ -61,23 +61,3 @@ export const api: API = {
   method: 'post',
   route: '/api/v2/admin/createteam',
 };
-
-// async function x(createData: any){
-//     const ok = await createTeam(createData, 'rachitjobs7@gmail.com').catch(e => {
-//         // console.log({e});
-//         return ({error : 'Team already exists'});
-//     });
-//     return ok;
-// }
-// var t = {
-//     teamId: 'TechnoBrad',
-//     teamName: 'TechnoBrad'
-// }
-// x(t).then(res=>{
-//   console.log(typeof(res),Object.keys(res), {res})
-// //   if(res.Error){
-
-// //   }
-// }).catch(e=>{
-//     console.log(e);
-// })
