@@ -1,7 +1,7 @@
 //import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 //import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { FeedbackType, FilterType } from '@root/apis/v2/userFeedback/get';
-import { appLogger, getAppFeedbackTableName } from '@utils/index';
+import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { queryRaw, scan } from './sdk';
 
@@ -255,29 +255,51 @@ export const bugProcessBarChartData = (items: AppFeedback[]) => {
     return severityData;
 };
 
-export const bugProcessPieChartData = (items: AppFeedback[]) => {
-    const categoryData: ProcessedData = {Audio : 0, Video : 0, Screen : 0, Images : 0, Other: 0};
-    if(items.length > 0) {
-        items.forEach((item) => {
-            if(item.feedbackCategory && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
-                categoryData[convertFirstLetterToUppercase(item.feedbackCategory)] += 1;
+export const getCategoriesList = ({prodId, prodVersion}: {prodId: string, prodVersion: string}) : Promise<string[]> => {
+  return new Promise(async(resolve, reject) => {
+    const categoryList: string[] = []
+    const productInfo = await getProductDetails(prodId, prodVersion);
+    console.log(productInfo)
+    if(productInfo && productInfo.feedbackSettings && productInfo.feedbackSettings.categories.length) {
+      productInfo.feedbackSettings.categories.map((el) => {
+        categoryList.push(el.name);
+      });
+    }
+    console.log(categoryList)
+    return resolve(categoryList);
+  })
+}
+
+export const processPieChartData = async({data, prodId, prodVersion}: {data: AppFeedback[], prodId?: string, prodVersion?:  string}) => {
+  if(prodId && prodVersion) {
+    const categories: string[] = await getCategoriesList({prodId, prodVersion});
+    const categoryData: ProcessedData = {};
+    categories.forEach((el) => {
+      categoryData[el] = 0;
+    })
+    if(data.length > 0) {
+      data.forEach((item) => {
+            if(item.feedbackCategory && categories.indexOf(item.feedbackCategory) !== -1) {
+                categoryData[item.feedbackCategory] += 1;
             }
         });
     }
     return categoryData;
+  }
+  return {};
 };
 
-const processFeedbackChartData = (data: AppFeedback[]) => {
+const processFeedbackChartData = async({data, prodId, prodVersion}: {data: AppFeedback[], prodId?: string, prodVersion?:  string})  => {
   const barChartData = feedbackProcessBarChartData(data);
-  const pieChartData = feedbackProcessPieChartData(barChartData);
+  const pieChartData = await processPieChartData({data, prodId, prodVersion});
   return {
     barChartData, pieChartData
   };
 };
 
-const processBugReportChartData = (data: AppFeedback[]) => {
+const processBugReportChartData = async({data, prodId, prodVersion}: {data: AppFeedback[], prodId?: string, prodVersion?:  string}) => {
   const barChartData = bugProcessBarChartData(data);
-  const pieChartData = bugProcessPieChartData(data);
+  const pieChartData = await processPieChartData({data, prodId, prodVersion});
   return {
     barChartData, pieChartData
   };
@@ -289,5 +311,5 @@ export const getChartData = async({type, prodId, prodVersion}: GetChartDataProps
     chartType = 'BUG_REPORT';
   }
   const data = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion});
-  return type === 'FEEDBACK-CHART' ? processFeedbackChartData(data) : processBugReportChartData(data);
+  return type === 'FEEDBACK-CHART' ? await processFeedbackChartData({data, prodId, prodVersion}) : await processBugReportChartData({data, prodId, prodVersion});
 };

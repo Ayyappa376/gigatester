@@ -10,7 +10,7 @@ import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { ILimitedProductDetails,
   IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData } from './common';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions } from './common';
 import { withRouter } from 'react-router-dom';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
@@ -30,8 +30,7 @@ const FeedbackComments = (props: any) => {
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
-    const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
-    const [bugPieChartSeries, setBugPieChartSeries] = useState({})
+    const [pieChartSeries, setPieChartSeries] = useState({})
     const [showImageModal, setShowImageModal] = useState(false);
     const [signedImageUrl, setSignedImageUrl] = useState('');
     const [attachmentType, setAttachmentType] = useState('')
@@ -78,7 +77,7 @@ const FeedbackComments = (props: any) => {
       }
     }, [feedbackBarChartData])
 
-    const bugPieChartOptions = getBugPieChartOptions(bugPieChartSeries)
+    const pieChartOptions = getPieChartOptions(pieChartSeries)
 
     useEffect(() => {
       const rateMap: IRatingMapping = {};
@@ -133,7 +132,7 @@ const FeedbackComments = (props: any) => {
     useEffect(() => {
       if(selectedProdId && productVersion) {
         fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
-        getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
+        getChartData({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
       }
     }, [selectedProdId, productVersion])
 
@@ -271,7 +270,7 @@ const FeedbackComments = (props: any) => {
       } else {
         if(selectedProdId && productVersion) {
           fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
-          getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
+          getChartData({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
         }
       }
       
@@ -284,18 +283,17 @@ const FeedbackComments = (props: any) => {
         setBackdropOpen(false);
       }
       if(rawData.length > 0 && selectedProdId) {
-        // console.log(feedbackBarChartData, feedbackPieChartSeries.length)
         if(isBugReport) {
-          if(Object.keys(bugPieChartSeries).length > 0) {
+          //if(Object.keys(pieChartSeries).length > 0) {
             setBackdropOpen(false);
-          }
+          //}
         } else {
-          if(Object.keys(feedbackBarChartData).length > 0 && feedbackPieChartSeries.length > 0) {
+          if(Object.keys(feedbackBarChartData).length > 0) {
             setBackdropOpen(false);
           }
         }
       }
-    }, [selectedProdId, rawData, feedbackBarChartData, feedbackPieChartSeries, bugPieChartSeries, error, noDataError])
+    }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])
 
 
     const getProductDetails = () => {
@@ -437,8 +435,7 @@ const FeedbackComments = (props: any) => {
         setRawData([])
         setData([])
         setFeedbackBarChartData({})
-        setFeedbackPieChartSeries([])
-        setBugPieChartSeries({})
+        setPieChartSeries({})
       }
     }
 
@@ -594,7 +591,7 @@ const FeedbackComments = (props: any) => {
                 </Grid>
                 <Grid item lg={2}></Grid>
                 <Grid item lg={5}>
-                  <ReactApexChart options={isBugReport ? bugPieChartOptions : feedbackPieChartOptions} series={isBugReport? Object.values(bugPieChartSeries) : feedbackPieChartSeries} type="pie" width={500} height={320} />
+                  <ReactApexChart options={pieChartOptions} series={Object.values(pieChartSeries)} type="pie" width={500} height={320} />
                 </Grid>
               </Grid>
             </div>

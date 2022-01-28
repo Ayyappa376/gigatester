@@ -204,9 +204,9 @@ export const bugBarChartOtions: any = {
     }
   };
 
-export const getBugPieChartOptions = (bugPieChartSeries: any) => {
+export const getPieChartOptions = (pieChartSeries: any) => {
   return {
-    labels: Object.keys(bugPieChartSeries),
+    labels: Object.keys(pieChartSeries),
     colors: ["#008FFB", "#58FFC5", "#FEB018", "#FF455F", "#775DD0"],
     chart: {
       width: 380,
