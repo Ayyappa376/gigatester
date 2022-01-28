@@ -1,3 +1,5 @@
+import { Order } from "./RenderTable";
+
 export const SEVERITY_CRITICAL = 'Critical';
 export const SEVERITY_HIGH = 'High';
 export const SEVERITY_MEDIUM = 'Medium';
@@ -55,10 +57,16 @@ export interface ILimitedProductDetails {
     name: string;
 }
 
+export interface ICategories {
+  name: string;
+  feedbacks: string[];
+}
+
 export interface IProductNameIdMapping {
     [key : string] : {
         name: string;
         version: string[];
+        categories: ICategories[];
     }
 }
 
@@ -106,6 +114,9 @@ export interface IFeedbackBarChartData {
 }
 
 export interface IRatingMapData {
+    userId: string,
+    userIp: string,
+    category?: FeedbackCategory;
     rating: number,
     date: number,
     comments: ICommentObject | undefined,
@@ -114,6 +125,8 @@ export interface IRatingMapData {
 }
   
 export interface IBugMapData {
+    userId: string,
+    userIp: string,
     severity?: BudPriority,
     category?: FeedbackCategory;
     date: number,
@@ -133,6 +146,17 @@ export interface IBugDataMapping {
 export interface ILastEvalKey {
   [key: string]: string
 }
+
+export interface IFetchRecursiveData {
+  lastEvalKey?: ILastEvalKey,
+  fetchOrder?: Order,
+  filterRating?: number[],
+  filterSeverity?: string[], 
+  filterCategory?: string[], 
+  prodId?: string,
+  prodVersion?: string,
+  emptyErrorValid?: boolean
+} 
 
 export const feedbackPieChartOptions = {
     labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
@@ -180,9 +204,9 @@ export const bugBarChartOtions: any = {
     }
   };
 
-export const getBugPieChartOptions = (bugPieChartSeries: any) => {
+export const getPieChartOptions = (pieChartSeries: any) => {
   return {
-    labels: Object.keys(bugPieChartSeries),
+    labels: Object.keys(pieChartSeries),
     colors: ["#008FFB", "#58FFC5", "#FEB018", "#FF455F", "#775DD0"],
     chart: {
       width: 380,

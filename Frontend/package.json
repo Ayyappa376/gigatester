@@ -45,6 +45,7 @@
     "react-datetime": "^3.0.4",
     "react-datetime-range-picker": "^3.0.0",
     "react-dom": "16.8.6",
+    "react-draggable": "^4.4.4",
     "react-ga": "^2.7.0",
     "react-idle-timer": "^4.6.4",
     "react-intersection-observer": "^8.33.1",

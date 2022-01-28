@@ -42,7 +42,7 @@ const headCells: HeadCell[] = [
     { id: 'date', label: 'Date Submitted', sortLabel: 'date', align: 'center', headType: ALROUND },
     { id: 'rating', label: 'Rating', align: 'center', headType: FEEDBACK },
     { id: 'severity', label: 'Severity', align: 'center', headType: BUG_REPORT  },
-    { id: 'category', label: 'Category', align: 'center', headType: BUG_REPORT  },
+    { id: 'category', label: 'Category', align: 'center', headType: ALROUND  },
     { id: 'comments', label: 'Comments', align: 'center', headType: ALROUND },
   ];
 

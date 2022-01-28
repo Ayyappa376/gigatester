@@ -1,30 +1,28 @@
-/*tslint:disable*/
 import { API, Handler } from '@apis/index';
-// import { getQuestionnaire, getQuestionnairesAssigned, getUserDocument } from '@root/utils/index';
-import {
-  responseBuilder,
-  appLogger,
-  getTheLatestQuestionnaireVersion,
-  getQuestionnaireId,
-  publishQuestion,
-} from '@utils/index';
-import { Response } from 'express';
 import {
   QuestionnaireUpdate,
   updateQuestionnaire,
 } from '@root/utils/dynamoDb/questionnaireManagement';
+import {
+  appLogger,
+  getQuestionnaireId,
+  getTheLatestQuestionnaireVersion,
+  publishQuestion,
+  responseBuilder,
+} from '@utils/index';
+import { Response } from 'express';
 
 interface PostQuestionnaire {
+  body: {
+    questionnaire?: QuestionnaireUpdate;
+    type: string;
+  };
   headers: {
     user: {
       'cognito:groups': string[];
       'cognito:username': string;
       email: string;
     };
-  };
-  body: {
-    type: string;
-    questionnaire?: QuestionnaireUpdate;
   };
 }
 
@@ -45,8 +43,12 @@ async function handler(request: PostQuestionnaire, response: Response) {
 
       if (create.questions && create.active) {
         if (
-          latestQuestionnaire.timeOut !== create.timeOut ||
-          latestQuestionnaire.hideResult !== create.hideResult
+          (latestQuestionnaire.timeOut && !create.timeOut) ||
+          (!latestQuestionnaire.timeOut && create.timeOut) ||
+          (latestQuestionnaire.timeOut && create.timeOut && latestQuestionnaire.timeOut !== create.timeOut) ||
+          (latestQuestionnaire.hideResult && !create.hideResult) ||
+          (!latestQuestionnaire.hideResult && create.hideResult) ||
+          (latestQuestionnaire.hideResult && create.hideResult && latestQuestionnaire.hideResult !== create.hideResult)
         ) {
           doVersionUpdate = true;
         }
@@ -77,7 +79,9 @@ async function handler(request: PostQuestionnaire, response: Response) {
         return responseBuilder.internalServerError(err, response);
       }
       return responseBuilder.ok({ message: 'created' }, response);
-    } else if (body.type === 'create' && body.questionnaire) {
+    }
+
+    if (body.type === 'create' && body.questionnaire) {
       const create: QuestionnaireUpdate = body.questionnaire;
       create.createdBy = headers.user.email;
       create.modifiedBy = headers.user.email;
@@ -91,7 +95,9 @@ async function handler(request: PostQuestionnaire, response: Response) {
         return responseBuilder.internalServerError(err, response);
       }
       return responseBuilder.ok({ message: 'created' }, response);
-    } else if (body.type === 'publish' && body.questionnaire) {
+    }
+
+    if (body.type === 'publish' && body.questionnaire) {
       const create: QuestionnaireUpdate = body.questionnaire;
       if (
         body.questionnaire &&
@@ -117,19 +123,18 @@ async function handler(request: PostQuestionnaire, response: Response) {
       }
       //also publish all the questions
       if (create.active && create.questions) {
-        create.questions.forEach((questionId: string) =>
-          publishQuestion(questionId)
-        );
+        create.questions.forEach(publishQuestion);
       }
       return responseBuilder.ok({ message: 'published' }, response);
-    } else {
-      const err = new Error('Internal error.');
-      appLogger.error(err, 'Internal error.');
-      return responseBuilder.internalServerError(err, response);
     }
-  } catch (err) {
-    appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+
+    const err1 = new Error('Internal error.');
+    appLogger.error(err1, 'Internal error.');
+    return responseBuilder.internalServerError(err1, response);
+
+  } catch (error) {
+    appLogger.error(error, 'Internal Server Error');
+    responseBuilder.internalServerError(new Error('Error encountered while saving questionnaire'), response);
   }
 }
 
@@ -138,4 +143,3 @@ export const api: API = {
   method: 'put',
   route: '/api/v2/questionnaire',
 };
-/*tslint:enable*/

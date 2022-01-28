@@ -10,8 +10,6 @@ import { Application, Request, Response } from 'express';
 // import { api as testConnection } from './metrics/toolsConnect/post';
 
 import { api as postAssessmentAnswerV2 } from './v2/answer/post';
-import { api as getAppFeedbackV2 } from './v2/appFeedback/get';
-import { api as postAppFeedbackV2 } from './v2/appFeedback/post';
 import { api as getAssignmentV2 } from './v2/assignments/get';
 import { api as postAssignmentV2 } from './v2/assignments/post';
 import { api as deleteCampaignsV2 } from './v2/campaign/delete';
@@ -98,8 +96,6 @@ const apis: API[] = [
   getSystemSettingsV2,
   postSystemSettingsV2,
   createTeamsConfigV2,
-  getAppFeedbackV2,
-  postAppFeedbackV2,
   getAssessmentSummaryV2,
   getAssessmentQuestionV2,
   postAssessmentAnswerV2,
@@ -179,14 +175,12 @@ const apis: API[] = [
 
 export function registerApis(application: Application): void {
   apis.forEach((api: API) => {
-    // tslint:disable-next-line: no-unsafe-any
     application[api.method](api.route, api.handler);
   });
 }
 
 // export function registerMetricsApis(application: Application): void {
 //   metricsApis.forEach((api: API) => {
-//     // tslint:disable-next-line: no-unsafe-any
 //     application[api.method](api.route, api.handler);
 //   });
 // }

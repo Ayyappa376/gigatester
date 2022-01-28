@@ -27,19 +27,16 @@ interface AssesssmentSummaryRequest {
   };
 }
 
-// tslint:disable-next-line: typedef
 async function handler(request: AssesssmentSummaryRequest, response: Response) {
   appLogger.info({ AssesssmentSummaryRequest: request }, 'Inside Handler');
 
   const { user } = request.headers;
-  //const { params } = request.params;
   if (!user) {
     const err = new Error('InvalidUser');
     appLogger.error(err, 'Unauthorized');
     return responseBuilder.unauthorized(err, response);
   }
 
-  //const { email } = user;
   let assessmentId: string = uuidv1();
   let quesType: string = request.params.type;
   let version = request.query.version;
@@ -123,12 +120,10 @@ async function handler(request: AssesssmentSummaryRequest, response: Response) {
       );
     } catch (err) {
       appLogger.error(err, 'Internal Server Error');
-      responseBuilder.internalServerError(err, response);
+      responseBuilder.internalServerError(<Error>err, response);
     }
   } else {
     try {
-      //           quesType = request.params.type ? request.params.type : quesType;
-      //           appLogger.info({quesType});
       const description = questionnaire.description
         ? questionnaire.description
         : 'false';

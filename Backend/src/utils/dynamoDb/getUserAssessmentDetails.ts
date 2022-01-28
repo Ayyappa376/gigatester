@@ -21,12 +21,11 @@ export const getUserAssessmentDetails = async ({
     throw err;
   }
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
-    TableName: TableNames.getAssessmentsTableName(),
-    // tslint:disable-next-line: object-literal-sort-keys
     Key: {
       assessmentId,
       userId,
     },
+    TableName: TableNames.getAssessmentsTableName(),
   });
 
   appLogger.info({ getUserAssessmentDetails_get_params: params });
@@ -48,12 +47,11 @@ export const getUserAssessment = async ({
     throw err;
   }
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
-    TableName: TableNames.getAssessmentsTableName(),
-    // tslint:disable-next-line: object-literal-sort-keys
     Key: {
       assessmentId,
       userId,
     },
+    TableName: TableNames.getAssessmentsTableName(),
   });
 
   appLogger.info({ getUserAssessment_get_params: params });
@@ -68,7 +66,6 @@ export const getUserAssessmentFromIndex = async ({
   const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
     ExpressionAttributeValues: { ':assessmentId': assessmentId },
     IndexName: 'assessmentId-index',
-    // tslint:disable-next-line: object-literal-sort-keys
     KeyConditionExpression: 'assessmentId = :assessmentId',
     TableName: TableNames.getAssessmentsTableName(),
   });
@@ -89,12 +86,11 @@ export const getUserAssessmentType = async (
   }
 
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
-    TableName: TableNames.getAssessmentsTableName(),
-    // tslint:disable-next-line: object-literal-sort-keys
     Key: {
       assessmentId,
       userId,
     },
+    TableName: TableNames.getAssessmentsTableName(),
   });
   appLogger.info({ getUserAssessmentType_get_params: params });
   return get<AssessmentDocument>(params)
@@ -119,7 +115,6 @@ export const getUserAllAssessment = async ({
   });
   const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
     ExpressionAttributeValues: { ':user': userId },
-    // tslint:disable-next-line: object-literal-sort-keys
     KeyConditionExpression: 'userId = :user',
     TableName: TableNames.getAssessmentsTableName(),
   });

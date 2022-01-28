@@ -99,11 +99,9 @@ export const createNewAssessmentDocument = async (
   };
 
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
-    TableName: TableNames.getAssessmentsTableName(),
-    // tslint:disable-next-line: object-literal-sort-keys
+    ConditionExpression: 'attribute_not_exists(userId) AND attribute_not_exists(assessmentId)',
     Item: item,
-    ConditionExpression:
-      'attribute_not_exists(userId) AND attribute_not_exists(assessmentId)',
+    TableName: TableNames.getAssessmentsTableName(),
   });
 
   appLogger.info({ createNewAssessmentDocument_put_params: params });

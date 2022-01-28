@@ -36,9 +36,17 @@ export const getFeedbackData = ({isBugReport, urlAppend}: any) => {
       });
     })
   }
+interface IGetChartData {
+  isBugReport: boolean,
+  setFeedbackBarChartData: Function,
+  setBugBarChartSeries: Function,
+  setPieChartSeries: Function,
+  prodId: string,
+  prodVersion: string
+}
   
-export const getChartData = async({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries}: any) => {
-      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT_CHART : CONST_FEEDBACK_CHART}`;
+export const getChartData = async({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
+      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT_CHART : CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
       Http.get({
         url,
       }).then((response: any) => {
@@ -49,15 +57,10 @@ export const getChartData = async({isBugReport, setFeedbackBarChartData, setFeed
             name: 'Severity',
             data: Object.values(processedData.barChartData)
           }])
-          setBugPieChartSeries(processedData.pieChartData)
+          setPieChartSeries(processedData.pieChartData)
         } else {
           setFeedbackBarChartData(processedData.barChartData);
-          const feedbackPieChartSeriesCopy = [];
-          const pieChartFeedbackBarChartData = processedData.pieChartData;
-          feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['satisfied']);
-          feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['somewhatSatisfied']);
-          feedbackPieChartSeriesCopy.push(pieChartFeedbackBarChartData['dissatisfied']);
-          setFeedbackPieChartSeries(feedbackPieChartSeriesCopy);
+          setPieChartSeries(processedData.pieChartData);
         }
       })
       .catch((error) => {

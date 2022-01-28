@@ -1,4 +1,4 @@
-import { ConfigItem, DeviceInfo, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
+import { ConfigItem, DeviceInfo, FeedbackSettings, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, getDevicesList, getPlatformsList, getProductConfig,  getTestSuites} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
@@ -216,7 +216,7 @@ export const saveAPIKeyToProduct = async (id: string, apiKeyId: string, apiKey: 
 };
 
 export const removeAPIKeyFromProduct = async (apiKeyId: string) => {
-  const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>(<unknown>{
+  const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
     ExpressionAttributeValues: { ':apiKeyId': apiKeyId },
     FilterExpression: 'apiKeyId = :apiKeyId',
     TableName: TableNames.getProductsTableName(),
@@ -247,4 +247,16 @@ export const removeAPIKeyFromProduct = async (apiKeyId: string) => {
   } catch(err) {
     appLogger.error({ err }, 'removeAPIKeyFromProduct_query');
   }
+};
+
+export const getProductFeedbackSettings = async (apiKey: string, version: string): Promise<Array<FeedbackSettings | undefined>> => {
+  const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
+    ExpressionAttributeValues: {
+      ':apiKey': apiKey,
+      ':version': version },
+    FilterExpression: 'apiKey = :apiKey AND version = :version',
+    TableName: TableNames.getProductsTableName(),
+  });
+  appLogger.info({ getProductFeedbackSettings_scan_params: params });
+  return (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackSettings);
 };

@@ -1,12 +1,11 @@
-/*tslint:disable*/
 import { API, Handler } from '@apis/index';
 import { ConfigItem, TeamInfo } from '@models/index';
 import { config } from '@root/config';
 import {
   appLogger,
-  responseBuilder,
-  getTeamDetails,
   getCollectorConfig,
+  getTeamDetails,
+  responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
 
@@ -43,11 +42,11 @@ async function handler(request: GetMetricsTool, response: Response) {
   appLogger.info({ getCollectorConfig: configMap });
   result = {
     config: configMap.config,
+    metrics: teamDetails.metrics ? teamDetails.metrics : [],
     orgId: config.defaults.orgId,
+    services: teamDetails.services,
     teamId: params.teamId,
     teamName: teamDetails.teamName,
-    metrics: teamDetails.metrics ? teamDetails.metrics : [],
-    services: teamDetails.services
   };
   return responseBuilder.ok(result, response);
 }
@@ -57,4 +56,3 @@ export const api: API = {
   method: 'get',
   route: '/api/metrics/team/:teamId',
 };
-/*tslint:enable*/

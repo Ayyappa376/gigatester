@@ -23,8 +23,7 @@ export const sortCategoriesMapByCategories = async (
 ): Promise<CategoriesMap> => {
   const sortedCategoriesMap: CategoriesMap = {};
   const keys = Object.keys(categoriesMap);
-  //tslint:disable-next-line:strict-comparisons
-  keys.sort((a, b) => (categoriesMap[a] > categoriesMap[b] ? 1 : -1));
+  keys.sort((a, b) => categoriesMap[a].localeCompare(categoriesMap[b])); //(categoriesMap[a] > categoriesMap[b] ? 1 : -1));
   keys.forEach((el: string) => (sortedCategoriesMap[el] = categoriesMap[el]));
   return sortedCategoriesMap;
 };

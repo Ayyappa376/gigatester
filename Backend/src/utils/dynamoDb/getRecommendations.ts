@@ -22,7 +22,6 @@ export const calculateAnswerQuality = async (
   recommendations: any,
   questionnaireDetails: Questionnaire
 ): Promise<any> => {
-  // console.log('In calculateAnswerQuality');
   const weightageCoefficient = config.defaults.scoreCoeff;
   for (const question of questionDetails) {
     const qId = `${question.id}_${question.version}`;

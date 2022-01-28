@@ -1,15 +1,16 @@
 //import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 //import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { FeedbackType, FilterType } from '@root/apis/v2/userFeedback/get';
-import { appLogger, getAppFeedbackTableName } from '@utils/index';
+import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { queryRaw, scan, scanNonRecursiveRaw } from './sdk';
+import { queryRaw, scan } from './sdk';
 
 export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
 
 interface Params {
   filter?: string;
+  filterCategory?: string;
   filterRating?: string;
   filterSeverity?: string;
   filterType?: FilterType;
@@ -23,6 +24,8 @@ interface Params {
 }
 
 interface GetChartDataProps {
+  prodId?: string;
+  prodVersion?: string;
   type: FeedbackType;
 }
 
@@ -50,7 +53,9 @@ export interface AppFeedback {
   userId?: string;
 }
 
-export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, filterRating, filterSeverity, prodId, prodVersion, order}: Params): Promise<any[]> => {
+const NUMBER_OF_DAYS_OF_FEEDBACK = 30;
+
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, filterRating, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -117,13 +122,34 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       }
     }
 
+    if(filterCategory) {
+      const categories = filterCategory.split(',');
+      if(categories.length > 0) {
+        categories.forEach((el, i) => {
+          EAN['#category'] = 'feedbackCategory';
+          EAV[`:categoryVal${i}`] = el;
+          if(i === 0) {
+            if(categories.length === 1) {
+              FE += FE ? ` and #category = :categoryVal${i}` : `#category = :categoryVal${i}`;
+            } else {
+              FE += FE ? ` and (#category = :categoryVal${i}` : `(#category = :categoryVal${i}`;
+            }
+          } else if (i === categories.length - 1) {
+            FE += ` or #category = :categoryVal${i})`;
+          } else {
+            FE += ` or #category = :categoryVal${i}`;
+          }
+        });
+      }
+    }
+
    /*  if(search) {
       EAN['#comments'] = 'feedbackComments';
       EAV[':keyWord'] = search;
       FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
     } */
     const today = new Date();
-    const lastDate = new Date().setDate(today.getDate() - 30);
+    const lastDate = new Date().setDate(today.getDate() - NUMBER_OF_DAYS_OF_FEEDBACK);
 
     EAV[':type'] = type;
     EAV[':lastDate'] = lastDate;
@@ -142,7 +168,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
 
     params.KeyConditionExpression = 'feedbackType=:type AND createdOn>:lastDate';
     params.ScanIndexForward = order && order === 'asc' ? true : false;
-    params.IndexName = 'feedbackType-createdOn-index';
+    params.IndexName = 'feedbackType-createdOn-index'; // Need to remove hardcoding, and name should be based on the subdomain.
 
     params.Limit = items ? parseInt(items, 10) : 100;
 
@@ -151,11 +177,11 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       params.ExclusiveStartKey = exKeyStart;
     }
 
-    console.log('params:', params);
+    appLogger.info('getUserFeedbackList: ', { params });
     return queryRaw<any>(params);
   };
 
-export const getUserFeedbackListReursive = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
+export const getUserFeedbackListForChart = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
     let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -180,36 +206,6 @@ export const getUserFeedbackListReursive = async ({type, items, search, lastEval
       }
     }
 
-    const populateParams = (filterOn: string) => {
-      EAN['#filterOn'] = filterOn;
-      EAV[':filter'] = filterType === 'rating' && filter ? parseInt(filter, 10): filter;
-      FE += FE ? ' and #filterOn = :filter' : '#filterOn = :filter';
-    };
-
-    if(filterType) {
-      switch(filterType) {
-        case 'rating':
-          populateParams('productRating');
-          break;
-        case 'category':
-          populateParams('feedbackCategory');
-          break;
-        case 'keyword':
-          //populateParams('productRating')  // This is equivalent to search
-          break;
-        case 'severity':
-          populateParams('bugPriority');
-          break;
-        default:
-          // generate a 501 error statement
-      }
-    }
-   /*  if(search) {
-      EAN['#comments'] = 'feedbackComments';
-      EAV[':keyWord'] = search;
-      FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
-    } */
-
     if(FE) {
       params = {
         ExpressionAttributeNames: EAN,
@@ -217,17 +213,6 @@ export const getUserFeedbackListReursive = async ({type, items, search, lastEval
         FilterExpression: FE,
         TableName: getAppFeedbackTableName(),
       };
-    }
-
-    if(items) {
-      if(lastEvalKey) {
-        const exKeyStart: any = {
-          id: lastEvalKey
-        };
-        params.ExclusiveStartKey = exKeyStart;
-      }
-      params.Limit = parseInt(items, 10);
-      return scanNonRecursiveRaw<any>(params);
     }
     appLogger.info({ getPlatformList_scan_params: params });
     return scan<any[]>(params);
@@ -270,39 +255,57 @@ export const bugProcessBarChartData = (items: AppFeedback[]) => {
     return severityData;
 };
 
-export const bugProcessPieChartData = (items: AppFeedback[]) => {
-    const categoryData: ProcessedData = {Audio : 0, Video : 0, Screen : 0, Images : 0, Other: 0};
-    if(items.length > 0) {
-        items.forEach((item) => {
-            if(item.feedbackCategory && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
-                categoryData[convertFirstLetterToUppercase(item.feedbackCategory)] += 1;
+export const getCategoriesList = ({prodId, prodVersion}: {prodId: string; prodVersion: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
+    const categoryList: string[] = [];
+    const productInfo = await getProductDetails(prodId, prodVersion);
+    if(productInfo && productInfo.feedbackSettings && productInfo.feedbackSettings.categories.length) {
+      productInfo.feedbackSettings.categories.map((el) => {
+        categoryList.push(el.name);
+      });
+    }
+    return resolve(categoryList);
+  });
+
+export const processPieChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
+  if(prodId && prodVersion) {
+    const categories: string[] = await getCategoriesList({prodId, prodVersion});
+    const categoryData: ProcessedData = {};
+    categories.forEach((el) => {
+      categoryData[el] = 0;
+    });
+    if(data.length > 0) {
+      data.forEach((item) => {
+            if(item.feedbackCategory && categories.indexOf(item.feedbackCategory) !== -1) {
+                categoryData[item.feedbackCategory] += 1;
             }
         });
     }
     return categoryData;
+  }
+  return {};
 };
 
-const processFeedbackChartData = (data: AppFeedback[]) => {
+const processFeedbackChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string})  => {
   const barChartData = feedbackProcessBarChartData(data);
-  const pieChartData = feedbackProcessPieChartData(barChartData);
+  const pieChartData = await processPieChartData({data, prodId, prodVersion});
   return {
     barChartData, pieChartData
   };
 };
 
-const processBugReportChartData = (data: AppFeedback[]) => {
+const processBugReportChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
   const barChartData = bugProcessBarChartData(data);
-  const pieChartData = bugProcessPieChartData(data);
+  const pieChartData = await processPieChartData({data, prodId, prodVersion});
   return {
     barChartData, pieChartData
   };
 };
 
-export const getChartData = async({type}: GetChartDataProps) => {
+export const getChartData = async({type, prodId, prodVersion}: GetChartDataProps) => {
   let chartType: FeedbackType = 'FEEDBACK';
   if(type !== 'FEEDBACK-CHART') {
     chartType = 'BUG_REPORT';
   }
-  const data = await getUserFeedbackListReursive({type: chartType});
-  return type === 'FEEDBACK-CHART' ? processFeedbackChartData(data) : processBugReportChartData(data);
+  const data = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion});
+  return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion}) : processBugReportChartData({data, prodId, prodVersion});
 };

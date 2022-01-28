@@ -4,22 +4,32 @@ import React, { useState } from 'react';
 import './stylesRenderFilters.css'
 
 interface IProps {
-    onSelect: Function
+    setFocusCategory: Function;
+    focusCategory: string[];
+    disableButtons: boolean;
+    categoryList: string[];
 }
 
 const categoryList = [
     "Audio", "Video", "Screen", "Images", "Other"
 ]
 const RenderCategoryFilter = (props: IProps) => {
-    const [category, setCategory] =useState("");
+    const {focusCategory, setFocusCategory, categoryList} = props;
 
     const handleKeywordClick = (val: string) => {
-        if(category === val) {
-            props.onSelect("");
-            setCategory("")
+        if(props.disableButtons) {
+            return;
+        }
+        if(focusCategory.indexOf(val) > -1) {
+            setFocusCategory((prevValue: string[]) => {
+                const prevValCopy = [...prevValue]
+                prevValCopy.splice(prevValue.indexOf(val), 1);
+                return prevValCopy;
+            });
         } else {
-            props.onSelect(val);
-            setCategory(val);
+            setFocusCategory((prevVal: string[]) => {
+                return [...prevVal, val]
+            });
         }
     }
 
@@ -30,7 +40,7 @@ const RenderCategoryFilter = (props: IProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {categoryList.map((val) => 
-                    <Button variant='outlined' key={val} onClick={() => {handleKeywordClick(val)}} id={category === val ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
+                    <Button variant='outlined' key={val} onClick={() => {handleKeywordClick(val)}} id={focusCategory.indexOf(val) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
                 )}
             </div>
         </div>

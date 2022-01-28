@@ -1,7 +1,7 @@
 import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, TableBody, MuiThemeProvider, Tooltip, makeStyles, Link, TextField, TextareaAutosize, Box, Backdrop, CircularProgress, TableSortLabel, Divider, TablePagination, TableContainer, Toolbar, lighten, Theme, createStyles, InputBase, IconButton, Grid } from '@material-ui/core';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
-import { getDate } from '../../../utils/data';
+import { getDate, getDateTime } from '../../../utils/data';
 
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
@@ -19,6 +19,7 @@ import renderComments from './RenderComments';
 import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from  'react-loader-spinner'
+import RenderComments from './RenderComments';
 
 interface IProps {
     tableData: IAppFeedback[],
@@ -26,12 +27,13 @@ interface IProps {
     urls: string[],
     isBugReport: boolean,
     fetchMore: Function,
-    filterSeverity: Function,
-    filterCategory: Function,
     focusRating: number[],
     setFocusRating: Function,
     focusSeverity: string[],
     setFocusSeverity: Function;
+    focusCategory: string[],
+    setFocusCategory: Function;
+    categoryList: string[],
     order: Order,
     keyword: string,
     setKeyword: Function,
@@ -82,21 +84,6 @@ const RenderTable = (props: IProps) => {
     const signedUrlMapping = useSelector(
       (state: IRootState) => state.admin.signedUrls
     );
-    //https://www.dusanstam.com/posts/material-ui-table-with-infinite-scroll
-    /* const observer: any = useRef()
-
-    const newIntersectionObserver = new IntersectionObserver(); */
-    /* const lastBookElementRef = useCallback((node: any) => {
-      console.log(observer)
-      console.log(node)
-      if (observer && observer.current) observer.current.disconnect();
-      observer.current = new IntersectionObserver(entries => {
-      if (entries[0].isIntersecting) {
-        console.log(entries[0])
-        props.fetchMore()
-      }})
-      if (node) observer.current.observe(node)
-    }, [tableData]) */
 
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
@@ -129,7 +116,7 @@ const RenderTable = (props: IProps) => {
         }
       ).catch((error) => {console.log(error)});
     }
-
+console.log({tableData})
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper style={{padding: '2rem'}}>
@@ -146,7 +133,7 @@ const RenderTable = (props: IProps) => {
                     <div>
                     <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={tableData.length === 0}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter onSelect={(val: string) => {props.filterCategory(val)}}/>
+                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
@@ -159,7 +146,11 @@ const RenderTable = (props: IProps) => {
                   <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
                   <Grid item md={5}>
                     {
-                        <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0}/>
+                        <div>
+                          <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0}/>
+                          <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
+                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0} categoryList={props.categoryList}/>
+                        </div>
                     }
                   </Grid>
               </Grid>
@@ -202,11 +193,11 @@ const RenderTable = (props: IProps) => {
                       hover role="checkbox" tabIndex={-1} 
                       key={row.id}
                     >
-                      <TableCell style={{fontSize: '1rem'}}>
+                      <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
                             {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
                       </TableCell>
                       <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
-                            {row.createdOn ? getDate(row.createdOn) : '-'}
+                            {row.createdOn ? getDateTime(row.createdOn) : '-'}
                       </TableCell>
                       {
                         isBugReport ? 
@@ -217,16 +208,12 @@ const RenderTable = (props: IProps) => {
                           <RenderStars rating={row.productRating}/>
                         </TableCell>
                       }
-                      {
-                        isBugReport ? 
                         <TableCell  align='center' style={{fontSize: '1rem'}}>
-                            {row.feedbackCategory}
-                        </TableCell> :
-                        null
-                      }
-                      <TableCell align='center' style={{minWidth: '30vw', maxWidth: '30vw', fontSize: '1rem'}}>
+                            {row.feedbackCategory ? row.feedbackCategory : '-'}
+                        </TableCell>
+                      <TableCell align='center' style={{maxWidth: '30vw', fontSize: '1rem'}}>
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
-                            {renderComments(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)}
+                            <RenderComments comments={(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)} old={true}/>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
 
@@ -308,7 +295,7 @@ const RenderTable = (props: IProps) => {
               )}
             </TableBody>
             : <div style={{width: '400%', padding: '.2rem 0 .2rem 0'}}>
-              <TailSpin wrapperStyle={{marginLeft: "50%", transform: 'translateX: "-50%'}} height="60"
+              <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"
               width="30"
               color='black'
               ariaLabel='loading'/></div>}

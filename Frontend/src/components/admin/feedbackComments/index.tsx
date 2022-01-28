@@ -10,25 +10,27 @@ import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { ILimitedProductDetails,
   IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey } from './common';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions } from './common';
 import { withRouter } from 'react-router-dom';
-import renderComments from './RenderComments';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
+import Draggable from 'react-draggable';
+import RenderComments from './RenderComments';
 
 const FeedbackComments = (props: any) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [error, setError] = useState(false)
+    const [noDataError, setNoDataError] = useState(false)
     const [data, setData] = useState<IAppFeedback[]>([]);
     const [rawData, setRawData] = useState([]);
     const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
     const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
-    const [productVersion, setProductVersion] = useState("");
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
+    const [pieChartSeries, setPieChartSeries] = useState({})
     const [showImageModal, setShowImageModal] = useState(false);
     const [signedImageUrl, setSignedImageUrl] = useState('');
     const [attachmentType, setAttachmentType] = useState('')
@@ -44,15 +46,26 @@ const FeedbackComments = (props: any) => {
       name: 'Severity',
       data: [0, 0, 0, 0, 0]
     }])
-    const [selectedProdId, setSelectedProdId] = useState<string[]>([])
-    const [feedbackPieChartSeries, setFeedbackPieChartSeries] = useState<number[]>([])
-    const [bugPieChartSeries, setBugPieChartSeries] = useState<{}>({})
+    const [selectedProdId, setSelectedProdId] = useState<string>(() => {
+      if(props.productId) {
+        return props.productId;
+      }
+      return ''
+    })
+    const [productVersion, setProductVersion] = useState(() => {
+      if(props.productVersion) {
+        return props.productVersion;
+      }
+      return ''
+    });
     const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
     const [order, setOrder] = useState<Order>('desc')
     const [keyword, setKeyword] = useState('')
     const [searchInitiated, setSearchInitiated] = useState(false)
     const [focusRating, setFocusRating] = useState([]);
     const [focusSeverity, setFocusSeverity] = useState([]);
+    const [focusCategory, setFocusCategory] = useState([]);
+    const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
 
     useEffect(() => {
       if(feedbackBarChartData) {
@@ -64,7 +77,7 @@ const FeedbackComments = (props: any) => {
       }
     }, [feedbackBarChartData])
 
-    const bugPieChartOptions = getBugPieChartOptions(bugPieChartSeries)
+    const pieChartOptions = getPieChartOptions(pieChartSeries)
 
     useEffect(() => {
       const rateMap: IRatingMapping = {};
@@ -74,6 +87,8 @@ const FeedbackComments = (props: any) => {
       if(isBugReport) {
         data.forEach((item: IAppFeedback) => {
           bugMap[item.id] = {
+            userId: item.userId ? item.userId : 'Anonymous',
+            userIp: item.sourceIP? item.sourceIP : '',
             severity : item.bugPriority,
             category: item.feedbackCategory,
             date : item.createdOn,
@@ -91,6 +106,9 @@ const FeedbackComments = (props: any) => {
       } else {
         data.forEach((item: IAppFeedback) => {
         rateMap[item.id] = {
+            userId: item.userId ? item.userId : 'Anonymous',
+            userIp: item.sourceIP? item.sourceIP : '',
+            category: item.feedbackCategory,
             rating : item.productRating,
             date : item.createdOn,
             comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
@@ -112,15 +130,9 @@ const FeedbackComments = (props: any) => {
     }, [data])
 
     useEffect(() => {
-      if (selectedProdId.length > 1) {
-        setProductVersion('all')
-      }
-      if(productVersion === 'all') {
-        const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0);
-        setData(dataCopy)
-      } else if (selectedProdId.length === 1) {         // Length should be equal to 1 because we want to choose the version if only one product is there
-        const dataCopy = rawData.filter((el: IAppFeedback) => el.productId && selectedProdId.indexOf(el.productId) >= 0 && productVersion === el.productVersion);
-        setData(dataCopy)
+      if(selectedProdId && productVersion) {
+        fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
+        getChartData({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
       }
     }, [selectedProdId, productVersion])
 
@@ -132,7 +144,7 @@ const FeedbackComments = (props: any) => {
         // fetch the results from backend
         setData([]);
         setRawData([])
-        fetchRecursiveData({fetchOrder: order})
+        fetchRecursiveData({fetchOrder: order, prodId: selectedProdId, prodVersion: productVersion})
       } else {
         setData(sortTableByDate(data, order))
       }
@@ -159,17 +171,29 @@ const FeedbackComments = (props: any) => {
       // fetch the results from backend
       setData([]);
       setRawData([])
-      fetchRecursiveData({filterSeverity: focusSeverity})
+      fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion})
     }, [focusSeverity])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity}: 
-        {lastEvalKey?: ILastEvalKey, fetchOrder?: Order, filterRating?: number[], filterSeverity?: string[]}) => {
+    useEffect(() => {
+      if(rawData.length === 0) {
+        return;
+      }
+      console.log(focusCategory)
+      if(focusCategory.length <= 0) return;
+      // fetch the results from backend
+      setData([]);
+      setRawData([])
+      fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion})
+    }, [focusCategory])
+
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, emptyErrorValid}: 
+        IFetchRecursiveData) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
-      if(props.productId) {
-        urlAppend += `?prodId=${props.productId}`;
-        if(props.productVersion) {
-          urlAppend += `&prodVersion=${props.productVersion}`;
+      if(prodId) {
+        urlAppend += `?prodId=${prodId}`;
+        if(prodVersion) {
+          urlAppend += `&prodVersion=${prodVersion}`;
         }
       }
       if(filterRating) {
@@ -179,6 +203,11 @@ const FeedbackComments = (props: any) => {
 
       if(filterSeverity) {
         urlAppend += urlAppend ? `&filterSeverity=${filterSeverity.join(',')}` : `?filterSeverity=${filterSeverity.join(',')}`
+        numItems = 500;
+      }
+
+      if(filterCategory) {
+        urlAppend += urlAppend ? `&filterCategory=${filterCategory.join(',')}` : `?filterCategory=${filterCategory.join(',')}`
         numItems = 500;
       }
 
@@ -203,7 +232,8 @@ const FeedbackComments = (props: any) => {
         console.error('getFeedbackData failed to fetch data with Error code:', object.code)
         return;
       })
-      if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items)) {
+      console.log("hello:",response)
+      if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
         setData((dataObj) => {
           const dataCopy = new Set([...dataObj].concat(response.Items.Items));
           return Array.from(dataCopy)
@@ -212,21 +242,20 @@ const FeedbackComments = (props: any) => {
           const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
           return Array.from(rawDataCopy)
         });
-      }
-      
-      //setFeedbackBarChartData(processBarChartData(response.Items.Items));
-      //console.log(response.Items.LastEvaluatedKey)
-      if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
-        setLastEvaluatedKey(response.Items.LastEvaluatedKey);
-      }
-      if(Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
-        setLastEvaluatedKey({})
+        if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
+          setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+        }
+        if(Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
+          setLastEvaluatedKey({})
+        }
+      } else {
+        setNoDataError(true)
       }
     }
 
     const fetchMore = () => {
       if(Object.keys(lastEvaluatedKey).length > 0) {
-        fetchRecursiveData({lastEvalKey: lastEvaluatedKey});
+        fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion});
       }
     }
 
@@ -236,22 +265,42 @@ const FeedbackComments = (props: any) => {
         setRawData([]);
       }
       setBackdropOpen(true);
-      fetchRecursiveData({});
-      getProductDetails();
-      getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
+      if(productInfo.length === 0) {
+        getProductDetails();
+      } else {
+        if(selectedProdId && productVersion) {
+          fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
+          getChartData({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
+        }
+      }
+      
     }, [isBugReport])
 
     useEffect(() => {
-      if(rawData.length > 0 && productInfo.length > 0) {
+      console.log("In the primary: ",{rawData})
+      if(error || noDataError) {
+        console.log("hello")
         setBackdropOpen(false);
       }
-    }, [productInfo, rawData, feedbackBarChartData, feedbackPieChartSeries, bugBarChartSeries, bugBarChartSeries])
+      if(rawData.length > 0 && selectedProdId) {
+        if(isBugReport) {
+          //if(Object.keys(pieChartSeries).length > 0) {
+            setBackdropOpen(false);
+          //}
+        } else {
+          if(Object.keys(feedbackBarChartData).length > 0) {
+            setBackdropOpen(false);
+          }
+        }
+      }
+    }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])
 
 
     const getProductDetails = () => {
         Http.get({
           url: `/api/v2/products`,
         }).then((response: any) => {
+          console.log(response);
           if(response && response.products && Array.isArray(response.products) && response.products.length > 0) {
               const productInfoCopy = [...productInfo]
               const prodNameIdMappingCopy: any = {...prodNameIdMapping};
@@ -265,14 +314,17 @@ const FeedbackComments = (props: any) => {
                   } else {
                     prodNameIdMappingCopy[prodInfo.id] = {
                       name: prodInfo.name,
-                      version: [el.version]
+                      version: [el.version],
+                      categories: el.feedbackSettings ? el.feedbackSettings.categories ? el.feedbackSettings.categories : [] : []
                     }
                   }
                   
               })
               setProductInfo(productInfoCopy);
               setProdNameIdMapping(prodNameIdMappingCopy);
-              setSelectedProdId(Object.keys(prodNameIdMappingCopy))
+              const defaultProductId = Object.keys(prodNameIdMappingCopy)[0];
+              setSelectedProdId(defaultProductId);
+              setProductVersion(prodNameIdMappingCopy[defaultProductId].version[0]);
           }
         }).catch((error : any) => {
             console.error(error);
@@ -324,6 +376,26 @@ const FeedbackComments = (props: any) => {
       if(ratingMapping[id]) {
         return ratingMapping[id].comments
       }
+      return {}
+    }
+
+    const getUserId = (id: string) => {
+      if(isBugReport && bugDataMapping[id]) {
+        return bugDataMapping[id].userId
+      }
+      if(ratingMapping[id]) {
+        return ratingMapping[id].userId
+      }
+      return undefined
+    }
+
+    const getUserIp = (id: string) => {
+      if(isBugReport && bugDataMapping[id]) {
+        return bugDataMapping[id].userIp
+      }
+      if(ratingMapping[id]) {
+        return ratingMapping[id].userIp
+      }
       return undefined
     }
 
@@ -345,15 +417,25 @@ const FeedbackComments = (props: any) => {
     }
 
     const getBugCategory = (id: string) => {
-      if(bugDataMapping[id]) {
+      if(isBugReport && bugDataMapping[id]) {
         return bugDataMapping[id].category
+      }
+      if(ratingMapping[id]) {
+        return ratingMapping[id].category
       }
       return ""
     }
 
-    const filterByProduct = (val: string[]) => {
-      if(val.length > 0) {
+    const filterByProduct = (val: string) => {
+      if(val) {
         setSelectedProdId(val);
+        setProductVersion(prodNameIdMapping[val].version[0])
+        setNoDataError(false);
+        setBackdropOpen(true);
+        setRawData([])
+        setData([])
+        setFeedbackBarChartData({})
+        setPieChartSeries({})
       }
     }
 
@@ -363,47 +445,55 @@ const FeedbackComments = (props: any) => {
       })
     }
 
-    const handleFilterSeverity = () => {
-
-    }
-    const handleFilterRating = () => {
-      if(rawData.length === 0) {
-        return;
-      }
-      if(Object.keys(lastEvaluatedKey).length > 0) {
-        // fetch the results from backend
-        setData([]);
-        setRawData([])
-        fetchRecursiveData({fetchOrder: order})
-      } else {
-        setData(sortTableByDate(data, order))
-      }
-      
-    }
-    const handleFilterCategory = () => {
-      
-    }
-
     const clearSearch = () => {
       setKeyword('')
     }
 
+    const handleCloseModal = (reason: any) => {
+      console.log("calling handleCloseModal", reason)
+      setShowImageModal(false);
+      setFocusAttachmentUid('');
+      setSignedImageUrl('')
+    }
+
+    const handleImageClicked = () => {
+      if(signedImageUrl) {
+        setSlideShowImageUrl(signedImageUrl)
+      } 
+    }
+
+    const getCategoryList = () => {
+      const categoryList: string[] = []
+      if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
+        prodNameIdMapping[selectedProdId].categories.map((el) => {
+          categoryList.push(el.name);
+        });
+      }
+      
+      return categoryList;
+    }
+
     const ImageModal = () => {
       return (
-        <Modal aria-describedby='simple-modal-description' open={showImageModal}>
-          <div className={classes.modalContainer}>
-            <Close style={{display: 'block',
-                marginLeft: 'auto',
-              }} onClick={()=> {setShowImageModal(false); setFocusAttachmentUid('')}}/>
+        <Draggable handle="#handle">
+        <Modal aria-describedby='simple-modal-description' hideBackdrop={true} open={showImageModal}>
+          <div style={{resize: 'both', overflow: 'auto'}} className={classes.modalContainer}>
+            <div id="handle" style={{backgroundColor: 'rgb(40 120 240)', minWidth: '100%', height: 37, position: 'relative', cursor: 'move'}}>
+              <Close  style={{position: 'absolute', cursor: 'pointer',
+                top: 7, right: 7
+              }} onClick={handleCloseModal}/>
+            </div>
+            <div style={{padding: 30}}>
               <Grid container>
-                <Grid item sm={7}>
+                <Grid item sm={8}>
                   {attachmentType == 'image' ?
-                    <Image aspectRatio={4/3} width='90%' style={{display: 'block',
+                    <Image aspectRatio={4/3} onClick={handleImageClicked} width='90%' style={{display: 'block',
                                   marginLeft: 'auto',
                                   marginRight: 'auto',
                                   marginTop: 20,
-                                  objectFit: 'cover',
-                                  objectPosition: 'center top'
+                                  cursor: 'pointer',
+                                  /* objectFit: 'cover',
+                                  objectPosition: 'center top' */
                                   }} src={signedImageUrl} /> :
                     <video width="90%" controls style={{display: 'block',
                                   marginTop: 20,
@@ -414,37 +504,59 @@ const FeedbackComments = (props: any) => {
                     </video>
                   }
                 </Grid>
-                <Grid style={{padding: 15, paddingTop: 0}} item sm={5}>
+                <Grid style={{padding: 15, paddingTop: 0}} item sm={4}>
                   <Grid container style={{marginTop: '20px'}}>
-                    <Grid item sm={6}>
+                    <Grid item sm={12} >
                       <div style={{display: 'flex'}}>
-                      <Typography color="textSecondary" >Date: &nbsp;</Typography>
-                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getDateString(focusAttachmentUid)}</Typography>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Username: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getUserId(focusAttachmentUid)}</Typography>
                       </div>
                       <div style={{display: 'flex'}}>
-                      <Typography color="textSecondary">Product Version: &nbsp;</Typography>
-                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getProductVersion(focusAttachmentUid)}</Typography>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Source Ip: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getUserIp(focusAttachmentUid)}</Typography>
                       </div>
-                    </Grid>
-                    <Grid item sm={7}>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Date: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getDateString(focusAttachmentUid)}</Typography>
+                      </div>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Product Version: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getProductVersion(focusAttachmentUid)}</Typography>
+                      </div>
+                      <div style={{display: 'flex'}}>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Category: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getBugCategory(focusAttachmentUid)}</Typography>
+                      </div>
                       {isBugReport ? <div style={{display: 'flex'}}>
-                      <Typography color="textSecondary">Bug Severity: &nbsp;</Typography>
-                      <Typography color="textPrimary" style={{fontWeight: 500}}>{getBugSeverity(focusAttachmentUid)}</Typography>
+                      <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Bug Severity: &nbsp;</Typography>
+                      <Typography color="textPrimary" style={{fontWeight: 500, fontSize: '.85rem'}}>{getBugSeverity(focusAttachmentUid)}</Typography>
                       </div> :
                       <RenderStars rating={getRating(focusAttachmentUid)}/>}
                     </Grid>
                     </Grid>
-                    <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>{renderComments(getComments(focusAttachmentUid))}</div>
+                    <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>
+                      <RenderComments comments={getComments(focusAttachmentUid)} old={false}/></div>
                   </Grid>
               </Grid>
+              </div>
           </div>
         </Modal>
+        </Draggable>
       )
     }
 
     const RenderData = () => {
       return (
         <Container>
+          <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
+          <Close htmlColor='#fff' style={{position: 'absolute', cursor: 'pointer',
+                    top: 10, right: 10, fontSize: '2.5rem'
+                  }} onClick={() => {setSlideShowImageUrl('')}}/>
+            <div style={{ width: '80vw', marginLeft: '10vw',  marginTop: '2vh'}}>
+              <Image aspectRatio={16/9} width='90%' height='90%'   src={slideShowImageUrl} />
+            </div>
+          
+          </div>
           <Grid container>
             <Grid item xl={6}>
               <div style={{display:'flex', justifyContent: 'left'}}>
@@ -465,27 +577,31 @@ const FeedbackComments = (props: any) => {
             <Grid item xl={2} style={{position: 'relative'}}>
               <VersionFilter productVersion={productVersion}
                 setProductVersion={setProductVersion}
-                versionList={selectedProdId.length === 1 ? prodNameIdMapping[selectedProdId[0]].version : []}
+                versionList={selectedProdId ? prodNameIdMapping[selectedProdId].version : []}
               />
             </Grid>
           </Grid>
-          <ImageModal/>
-          <div style={{marginTop: 50}}>
-            <Grid container style={{marginTop: '5rem'}}>
-              <Grid item lg={5}>
-                <ReactApexChart options={isBugReport ? bugBarChartOtions : feedbackBarChartOptions} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
+          {noDataError ? <div style={{marginTop: '3rem'}}><Failure message={"There is no data to show."}/></div>:
+          <div>
+            <ImageModal/>
+            <div style={{marginTop: 50}}>
+              <Grid container style={{marginTop: '5rem'}}>
+                <Grid item lg={5}>
+                  <ReactApexChart options={isBugReport ? bugBarChartOtions : feedbackBarChartOptions} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
+                </Grid>
+                <Grid item lg={2}></Grid>
+                <Grid item lg={5}>
+                  <ReactApexChart options={pieChartOptions} series={Object.values(pieChartSeries)} type="pie" width={500} height={320} />
+                </Grid>
               </Grid>
-              <Grid item lg={2}></Grid>
-              <Grid item lg={5}>
-                <ReactApexChart options={isBugReport ? bugPieChartOptions : feedbackPieChartOptions} series={isBugReport? Object.values(bugPieChartSeries) : feedbackPieChartSeries} type="pie" width={500} height={320} />
-              </Grid>
-            </Grid>
-          </div>
-          <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
-          filterSeverity={handleFilterSeverity} order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-          searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch} filterCategory={handleFilterCategory}
-          focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-          />
+            </div>
+            <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
+            focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
+            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()}
+            />
+          </div>}
         </Container>
       )
     }
@@ -535,19 +651,41 @@ const useStyles = makeStyles((theme) => ({
     },
     modalContainer: {
       alignItems: 'center',
-      marginTop: '5%',
+      marginTop: '5vh',
       marginLeft: 'auto',
       marginRight: 'auto',
-      minWidth: '50%',
-      maxWidth: '50%',
+      width: '70vw',
+      /* minWidth: '50%',
+      maxWidth: '50%', */
       backgroundColor: '#f7f7f7',
       borderRadius: '8px',
       border: '1px solid',
-      borderColor: '#D5D9D9',
+      //borderColor: '#D5D9D9',
       boxShadow: '0 0 14px 0 rgb(15 17 17 / 50%)',
-      padding: 30,
+      padding: 0,
       paddingBottom: 30
     },
+    imageSlideShowHidden: {
+      display: 'none',
+      width: '50px',
+      height: '50px',
+      position: 'fixed',
+      top: '50%',
+      left: '50%',
+      margin: '-25px 0 0 -25px',
+      transition: 'width 0.5s ease, height 0.5s ease'
+    },
+    imageSlideShowVisible: {
+      display: 'relative',
+      zIndex: 1500,
+      width: '100vw',
+      height: '100vh',
+      position: 'fixed',
+      top: '0',
+      left: '0',
+      backgroundColor: 'rgba(0,0,0,.7)',
+      transition: 'width 0.5s ease, height 0.5s ease'
+    }
   }));
 
 export default withRouter(FeedbackComments);

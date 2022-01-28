@@ -21,9 +21,7 @@ export const determineUserLevel = (
 ): string => {
   let level: string = 'Not assigned';
 
-  // tslint:disable-next-line: typedef
   userLevels.forEach((userLevel: LevelAttributes) => {
-    // tslint:disable-next-line: typedef
     if (
       percentage >= userLevel.lowerLimit &&
       percentage <= userLevel.upperLimit

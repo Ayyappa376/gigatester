@@ -1,15 +1,13 @@
-/*tslint:disable*/
 import { API, Handler } from '@apis/index';
 import { Question } from '@models/index';
 import {
   appLogger,
-  responseBuilder,
-  getQuestionsForQuestionnaire,
   getAllQuestions,
+  getQuestionsForQuestionnaire,
   // getSimilarQuestionSearchResults,
+  responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
-// import uuidv1 from 'uuid/v1';
 
 interface GetQuestions {
   headers: {
@@ -20,8 +18,8 @@ interface GetQuestions {
     };
   };
   query: {
-    type: string;
     question: string;
+    type: string;
   };
 }
 
@@ -46,9 +44,7 @@ async function handler(request: GetQuestions, response: Response) {
     ? await getQuestionsForQuestionnaire(query.type)
     : await getAllQuestions();
   appLogger.info({ getQuestions: questionList });
-  questionList.sort((a: Question, b: Question) => {
-    return b.lastModifiedOn - a.lastModifiedOn;
-  });
+  questionList.sort((a: Question, b: Question) => b.lastModifiedOn - a.lastModifiedOn);
   return responseBuilder.ok(questionList, response);
 }
 
@@ -57,4 +53,3 @@ export const api: API = {
   method: 'get',
   route: '/api/v2/admin/createquestion',
 };
-/*tslint:enable*/

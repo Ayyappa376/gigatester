@@ -94,7 +94,7 @@ async function handler(request: AssessmentQuestionRequest, response: Response) {
     return responseBuilder.ok(questionDetails, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
-    responseBuilder.internalServerError(err, response);
+    responseBuilder.internalServerError(new Error('Error encountered while fetching question'), response);
   }
 }
 
@@ -104,22 +104,3 @@ export const api: API = {
   route:
     '/api/v2/assessment/:assessmentId/question/:index/:team/:type/:questionnaireVersion?',
 };
-
-// async function x(email: string, assessmentId: string) {
-//     let quesType;
-//     try {
-//         const assessmentType = await getUserAssessmentType(email, assessmentId);
-//         quesType = assessmentType;
-//       } catch(e) {
-//         console.log('Creating new Doc');
-//         const x = await createNewAssessmentDocument(email, assessmentId, '7778');
-//         console.log('New Created',x);
-//       }
-//       console.log({quesType});
-// }
-
-// x('rachitjobs7@gmail.com', '3a22b9e0-32c2-11ea-8bef-a7d58dd2eb57').then(res => {
-//     console.log({res});
-// }).catch(e=>{
-//     console.log({e});
-// })

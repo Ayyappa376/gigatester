@@ -70,7 +70,6 @@ export const createQuestionnaire = async (
     version: '1',
     warningTimePercentage: data.warningTimePercentage,
   };
-  // console.log(newQuestionnaire);
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
     Item: newQuestionnaire,
     TableName: TableNames.getQuestionnairesTableName(),
