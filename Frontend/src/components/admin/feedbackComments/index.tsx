@@ -10,7 +10,7 @@ import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { ILimitedProductDetails,
   IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey } from './common';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, feedbackPieChartOptions, getBugPieChartOptions, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData } from './common';
 import { withRouter } from 'react-router-dom';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
@@ -65,6 +65,7 @@ const FeedbackComments = (props: any) => {
     const [searchInitiated, setSearchInitiated] = useState(false)
     const [focusRating, setFocusRating] = useState([]);
     const [focusSeverity, setFocusSeverity] = useState([]);
+    const [focusCategory, setFocusCategory] = useState([]);
     const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
 
     useEffect(() => {
@@ -144,7 +145,7 @@ const FeedbackComments = (props: any) => {
         // fetch the results from backend
         setData([]);
         setRawData([])
-        fetchRecursiveData({fetchOrder: order})
+        fetchRecursiveData({fetchOrder: order, prodId: selectedProdId, prodVersion: productVersion})
       } else {
         setData(sortTableByDate(data, order))
       }
@@ -171,11 +172,23 @@ const FeedbackComments = (props: any) => {
       // fetch the results from backend
       setData([]);
       setRawData([])
-      fetchRecursiveData({filterSeverity: focusSeverity})
+      fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion})
     }, [focusSeverity])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, prodId, prodVersion, emptyErrorValid}: 
-        {lastEvalKey?: ILastEvalKey, fetchOrder?: Order, filterRating?: number[], filterSeverity?: string[], prodId?: string, prodVersion?: string, emptyErrorValid?: boolean}) => {
+    useEffect(() => {
+      if(rawData.length === 0) {
+        return;
+      }
+      console.log(focusCategory)
+      if(focusCategory.length <= 0) return;
+      // fetch the results from backend
+      setData([]);
+      setRawData([])
+      fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion})
+    }, [focusCategory])
+
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, emptyErrorValid}: 
+        IFetchRecursiveData) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
       if(prodId) {
@@ -191,6 +204,11 @@ const FeedbackComments = (props: any) => {
 
       if(filterSeverity) {
         urlAppend += urlAppend ? `&filterSeverity=${filterSeverity.join(',')}` : `?filterSeverity=${filterSeverity.join(',')}`
+        numItems = 500;
+      }
+
+      if(filterCategory) {
+        urlAppend += urlAppend ? `&filterCategory=${filterCategory.join(',')}` : `?filterCategory=${filterCategory.join(',')}`
         numItems = 500;
       }
 
@@ -238,7 +256,7 @@ const FeedbackComments = (props: any) => {
 
     const fetchMore = () => {
       if(Object.keys(lastEvaluatedKey).length > 0) {
-        fetchRecursiveData({lastEvalKey: lastEvaluatedKey});
+        fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion});
       }
     }
 
@@ -248,7 +266,14 @@ const FeedbackComments = (props: any) => {
         setRawData([]);
       }
       setBackdropOpen(true);
-      getProductDetails();
+      if(productInfo.length === 0) {
+        getProductDetails();
+      } else {
+        if(selectedProdId && productVersion) {
+          fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
+          getChartData({isBugReport, setFeedbackBarChartData, setFeedbackPieChartSeries, setBugBarChartSeries, setBugPieChartSeries});
+        }
+      }
       
     }, [isBugReport])
 
@@ -423,27 +448,6 @@ const FeedbackComments = (props: any) => {
       })
     }
 
-    const handleFilterSeverity = () => {
-
-    }
-    /* const handleFilterRating = () => {
-      if(rawData.length === 0) {
-        return;
-      }
-      if(Object.keys(lastEvaluatedKey).length > 0) {
-        // fetch the results from backend
-        setData([]);
-        setRawData([])
-        fetchRecursiveData({fetchOrder: order})
-      } else {
-        setData(sortTableByDate(data, order))
-      }
-      
-    } */
-    const handleFilterCategory = () => {
-      
-    }
-
     const clearSearch = () => {
       setKeyword('')
     }
@@ -459,6 +463,17 @@ const FeedbackComments = (props: any) => {
       if(signedImageUrl) {
         setSlideShowImageUrl(signedImageUrl)
       } 
+    }
+
+    const getCategoryList = () => {
+      const categoryList: string[] = []
+      if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
+        prodNameIdMapping[selectedProdId].categories.map((el) => {
+          categoryList.push(el.name);
+        });
+      }
+      
+      return categoryList;
     }
 
     const ImageModal = () => {
@@ -584,9 +599,10 @@ const FeedbackComments = (props: any) => {
               </Grid>
             </div>
             <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
-            filterSeverity={handleFilterSeverity} order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch} filterCategory={handleFilterCategory}
+            order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
+            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()}
             />
           </div>}
         </Container>
@@ -638,10 +654,10 @@ const useStyles = makeStyles((theme) => ({
     },
     modalContainer: {
       alignItems: 'center',
-      marginTop: '5%',
+      marginTop: '5vh',
       marginLeft: 'auto',
       marginRight: 'auto',
-      width: '50%',
+      width: '70vw',
       /* minWidth: '50%',
       maxWidth: '50%', */
       backgroundColor: '#f7f7f7',
