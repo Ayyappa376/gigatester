@@ -1,8 +1,9 @@
 import { API, Handler } from '@apis/index';
-// import { UserDocument } from '@models/index';
+ import { UserDocument } from '@models/index';
 import { config } from '@root/config';
 import {
   appLogger,
+  getAllUsers,
   getCognitoUser,
   getCreateUserConfig,
   getTeamMembersDetails,
@@ -78,7 +79,14 @@ async function handler(request: GetUsers, response: Response) {
     return responseBuilder.ok(userStatus, response);
   }
 
-  // if (params.type === 'allUsers') {
+   if (params.type === 'allUsers') {
+    const users: UserDocument[] = await getAllUsers();
+    appLogger.info({ getAllUsers: users });
+    const userCount = users.length;
+    return responseBuilder.ok(
+      { users, userCount },
+      response
+    );
   //   const teamList: string[] = (
   //     await getTeams2(
   //       headers.user['cognito:groups'][0] === 'Admin'
@@ -126,7 +134,7 @@ async function handler(request: GetUsers, response: Response) {
   //     { users: teamMembersForATeam, userCount },
   //     response
   //   );
-  // }
+   }
   if (params.type) {
     const teamMembersDetails: any = await getTeamMembersDetails(params.type);
     teamMembersDetails.sort((a: TeamMembers, b: TeamMembers) => {

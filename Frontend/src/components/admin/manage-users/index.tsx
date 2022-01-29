@@ -149,8 +149,10 @@ const ManageUsers = (props: any) => {
   const fetchUserList = () => {
     setBackdropOpen(true);
     let url: string = `/api/v2/admin/users/${focusTeamId}`;
+//    let url: string = `/api/v2/users`;
     if (focusTeamId === '0') {
-      url = '/api/v2/admin/users/allUsers';
+      url = `/api/v2/admin/users/allUsers`;
+//      url = '/api/v2/users';
     }
     Http.get({
       url,
@@ -307,9 +309,9 @@ const ManageUsers = (props: any) => {
         if (orderBy === 'date') {
           setUsers(tempSortedUsers.sort(compareDate));
         }
-        if (orderBy === 'team') {
-          setUsers(tempSortedUsers.sort(compareTeam));
-        }
+//        if (orderBy === 'team') {
+//          setUsers(tempSortedUsers.sort(compareTeam));
+//        }
         if (orderBy === 'roles') {
           setUsers(tempSortedUsers.sort(compareRoles));
         }
@@ -321,9 +323,9 @@ const ManageUsers = (props: any) => {
         if (orderBy === 'date') {
           setUsers(tempSortedUsers.sort(compareDateD));
         }
-        if (orderBy === 'team') {
-          setUsers(tempSortedUsers.sort(compareTeamD));
-        }
+//        if (orderBy === 'team') {
+//          setUsers(tempSortedUsers.sort(compareTeamD));
+//        }
         if (orderBy === 'roles') {
           setUsers(tempSortedUsers.sort(compareRolesD));
         }
@@ -536,7 +538,7 @@ const ManageUsers = (props: any) => {
           <div style={{ width: '100%' }}>
             <Grid container spacing={3}>
               <Grid item sm={5}>
-                <FormControl className={classes.formControl}>
+                {/* <FormControl className={classes.formControl}>
                   <InputLabel id='demo-simple-select-label'>
                     <Text tid='choosePlatform' />
                   </InputLabel>
@@ -558,7 +560,7 @@ const ManageUsers = (props: any) => {
                       <div />
                     )}
                   </Select>
-                </FormControl>
+                    </FormControl> */}
               </Grid>
               <Grid item sm={5}>
                 <SearchControl
@@ -617,7 +619,7 @@ const ManageUsers = (props: any) => {
                       </Typography>
                     </TableSortLabel>
                   </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
+                  {/* <TableCell align='center' className='tableHeadCell'>
                     <TableSortLabel
                       active={orderBy === 'team'}
                       direction={orderBy === 'team' ? order : 'asc'}
@@ -629,7 +631,7 @@ const ManageUsers = (props: any) => {
                         <Text tid='platform' />
                       </Typography>
                     </TableSortLabel>
-                  </TableCell>
+                    </TableCell> */}
                   <TableCell align='center' className='tableHeadCell' >
                     <Typography className='tableHeadText'>
                       <Text tid='actions' />
@@ -685,21 +687,21 @@ const ManageUsers = (props: any) => {
                             {row.roles ? row.roles.join(', ')/*commaSeparators(row.roles)*/ : 'Member'}
                           </Typography>
                         </TableCell>
-                        <TableCell
+                        {/* <TableCell
                           component='th'
                           scope='row'
                           align='center'
                           className={classes.teamsColumn}
                         >
                           <Typography className='tableBodyText'>
-                            {/*commaSeparators(row.teams)*/
+                            {
                               row.teams.map((teamId: string) => {
                                 const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
                                 return team ? team.teamName : teamId;
                               }).join(', ')
                             }
                           </Typography>
-                        </TableCell>
+                          </TableCell> */}
                         <TableCell align='center'>
                           <div className={classes.actionsBlock}>
                             <MaterialLink
