@@ -42,6 +42,12 @@ functions:
       - http:
           path: feedbackMedia
           method: ANY
+  feedbackConfig:
+    handler: src/functions/feedback/api/config/index.handler
+    events:
+      - http:
+          path: feedbackConfig
+          method: ANY
   app:
     handler: src/app.handler
     events:

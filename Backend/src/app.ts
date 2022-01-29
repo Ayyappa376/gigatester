@@ -1,5 +1,5 @@
 // tslint:disable-next-line: no-import-side-effect
-import './register-path-alias';
+import './registerPathAlias';
 
 import { registerApis/*, registerMetricsApis*/ } from '@apis/index';
 import { registerInitialMiddlewares, registerTrailerMiddlewares } from '@middlewares/index';

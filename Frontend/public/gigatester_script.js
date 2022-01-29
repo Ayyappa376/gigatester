@@ -3983,11 +3983,15 @@ else{
         let GigaTester_Api = {
             isLoaded: function() {
                 console.log('js api')
-                fetch(`https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/api/v2/products/${GigaTester.apiKey || "ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T"}/${GigaTester.productVersion || 0.1}`, {
+                fetch(`https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedbackConfig?apiKey=${GigaTester.apiKey || "ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T"}&version=${GigaTester.productVersion || 0.1}`, {
                     method: 'GET',
                   })
                     .then(res => res.json())
                     .then(data => {console.log(data)})
+                    .catch(function(err) {
+                        console.log(err , 'err')
+                        /* handle the error */
+                      })
                 return true
                 // Feedback.is_loaded
             },
