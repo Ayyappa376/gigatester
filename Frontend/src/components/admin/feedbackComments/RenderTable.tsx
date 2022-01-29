@@ -303,7 +303,7 @@ const RenderTable = (props: IProps) => {
             </TableBody>
             : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}> 
                 {
-                  props.resultsFetched ? <div style={{marginLeft: "62%", transform: 'translateX: "-50%'}}>{`There is no ${isBugReport? 'bug' : 'feedback'} to show.`}</div> :
+                  props.resultsFetched ? <div style={{marginLeft: "62%", transform: 'translateX: "-50%'}}>{`There are no ${isBugReport? 'bugs' : 'feedbacks'} to show.`}</div> :
                   <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"
                   width="30"
                   color='black'

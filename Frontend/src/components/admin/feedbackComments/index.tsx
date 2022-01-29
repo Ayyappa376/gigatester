@@ -159,6 +159,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       console.log(focusRating)
       if(focusRating.length <= 0) return;
       // fetch the results from backend
+      setResultsFetched(false)
       setData([]);
       setRawData([])
       fetchRecursiveData({filterRating: focusRating})
@@ -171,9 +172,10 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       console.log(focusSeverity)
       if(focusSeverity.length <= 0) return;
       // fetch the results from backend
+      setResultsFetched(false)
       setData([]);
       setRawData([])
-      fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion})
+      fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true})
     }, [focusSeverity])
 
     useEffect(() => {
@@ -183,12 +185,13 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       console.log(focusCategory)
       if(focusCategory.length <= 0) return;
       // fetch the results from backend
+      setResultsFetched(false)
       setData([]);
       setRawData([])
-      fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion})
+      fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true})
     }, [focusCategory])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, emptyErrorValid}: 
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, showNoEmptyError}: 
         IFetchRecursiveData) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
@@ -238,7 +241,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         console.error('getFeedbackData failed to fetch data with Error code:', object.code)
         return;
       })
-      console.log("hello:",response)
       setResultsFetched(true);
       if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
         if(searchInitiated && searchWord) {
@@ -263,13 +265,15 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
           setLastEvaluatedKey({})
         }
       } else {
-        setNoDataError(true);
+        if(!showNoEmptyError) {
+          setNoDataError(true);
+        }
       }
     }
 
     const fetchMore = () => {
       if(Object.keys(lastEvaluatedKey).length > 0) {
-        fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion});
+        fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true});
       }
     }
 
@@ -293,7 +297,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     useEffect(() => {
       console.log("In the primary: ",{rawData})
       if(error || noDataError) {
-        console.log("hello")
         setBackdropOpen(false);
       }
       if(rawData.length > 0 && selectedProdId) {
@@ -456,7 +459,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         setResultsFetched(false);
         setSearchedData([]);
         setKeyword('');
-        setOrder('asc');
+        setOrder('desc');
       }
     }
 
@@ -476,7 +479,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       if(keyword && searchInitiated) {
         setResultsFetched(false)
         setSearchedData([])
-        fetchRecursiveData({prodId:  selectedProdId, prodVersion: productVersion, searchWord: keyword })
+        fetchRecursiveData({prodId:  selectedProdId, prodVersion: productVersion, searchWord: keyword,  showNoEmptyError: true })
       }
     }, [searchInitiated, keyword])
 
@@ -622,7 +625,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
             />
           </div>
           :
-          noDataError ? <div style={{marginTop: '3rem'}}><Failure message={"There is no feedback to show."}/></div>:
+          noDataError ? <div style={{marginTop: '3rem'}}><Failure message={`There are no ${isBugReport? 'bugs' : 'feedbacks'} to show.`}/></div>:
           <div>
             <ImageModal/>
             <div style={{marginTop: 50}}>

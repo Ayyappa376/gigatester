@@ -161,8 +161,8 @@ export interface IFetchRecursiveData {
   filterCategory?: string[], 
   prodId?: string,
   prodVersion?: string,
-  emptyErrorValid?: boolean,
-  searchWord?: string
+  showNoEmptyError?: boolean,
+  searchWord?: string;
 } 
 
 export const feedbackPieChartOptions = {
