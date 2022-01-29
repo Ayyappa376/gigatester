@@ -281,6 +281,9 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       if(data.length > 0) {
         setData([]);
         setRawData([]);
+        setFocusCategory([]);
+        setFocusSeverity([]);
+        setFocusRating([]);
       }
       setBackdropOpen(true);
       if(productInfo.length === 0) {
@@ -460,6 +463,9 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         setSearchedData([]);
         setKeyword('');
         setOrder('desc');
+        setFocusCategory([]);
+        setFocusSeverity([]);
+        setFocusRating([]);
       }
     }
 

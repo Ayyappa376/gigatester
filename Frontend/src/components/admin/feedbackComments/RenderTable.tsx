@@ -56,7 +56,7 @@ export const ALROUND = 'alround'
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
-    const {isBugReport, tableData} = props;
+    const {isBugReport, tableData, resultsFetched} = props;
     const [fetchAllUrls, setFetchAllUrls] = useState(false);
     const { ref, inView, entry } = useInView();
     const stateVariable = useSelector((state: IRootState) => {
@@ -137,9 +137,9 @@ const RenderTable = (props: IProps) => {
                 <Grid item md={6}>
                   {
                     <div>
-                    <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={tableData.length === 0 || props.searchInitiated}/>
+                    <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0 || props.searchInitiated} categoryList={props.categoryList}/>
+                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
@@ -153,9 +153,9 @@ const RenderTable = (props: IProps) => {
                   <Grid item md={5}>
                     {
                         <div>
-                          <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0 || props.searchInitiated}/>
+                          <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                           <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0 || props.searchInitiated} categoryList={props.categoryList}/>
+                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                         </div>
                     }
                   </Grid>
