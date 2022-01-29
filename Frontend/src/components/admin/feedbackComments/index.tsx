@@ -10,8 +10,8 @@ import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { ILimitedProductDetails,
   IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions } from './common';
-import { withRouter } from 'react-router-dom';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
 import Failure from '../../failure-page';
@@ -19,11 +19,12 @@ import { sortTableByDate } from './tableMethods';
 import Draggable from 'react-draggable';
 import RenderComments from './RenderComments';
 
-const FeedbackComments = (props: any) => {
+const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     const [backdropOpen, setBackdropOpen] = useState(false);
     const [error, setError] = useState(false)
     const [noDataError, setNoDataError] = useState(false)
     const [data, setData] = useState<IAppFeedback[]>([]);
+    const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
     const [rawData, setRawData] = useState([]);
     const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
     const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
@@ -53,8 +54,8 @@ const FeedbackComments = (props: any) => {
       return ''
     })
     const [productVersion, setProductVersion] = useState(() => {
-      if(props.productVersion) {
-        return props.productVersion;
+      if(props.prodVersion) {
+        return props.prodVersion;
       }
       return ''
     });
@@ -66,6 +67,7 @@ const FeedbackComments = (props: any) => {
     const [focusSeverity, setFocusSeverity] = useState([]);
     const [focusCategory, setFocusCategory] = useState([]);
     const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
+    const [resultsFetched, setResultsFetched] = useState(false);
 
     useEffect(() => {
       if(feedbackBarChartData) {
@@ -186,7 +188,7 @@ const FeedbackComments = (props: any) => {
       fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion})
     }, [focusCategory])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, emptyErrorValid}: 
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, emptyErrorValid}: 
         IFetchRecursiveData) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
@@ -219,6 +221,10 @@ const FeedbackComments = (props: any) => {
         urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`
       }
 
+      if(searchWord) {
+        urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
+      }
+
       urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
 
       const response: any = await getFeedbackData({isBugReport, props, urlAppend}).catch((error) => {
@@ -233,7 +239,15 @@ const FeedbackComments = (props: any) => {
         return;
       })
       console.log("hello:",response)
+      setResultsFetched(true);
       if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
+        if(searchInitiated && searchWord) {
+          setSearchedData((dataObj) => {
+            const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+            return Array.from(dataCopy)
+          });
+          return;
+        }
         setData((dataObj) => {
           const dataCopy = new Set([...dataObj].concat(response.Items.Items));
           return Array.from(dataCopy)
@@ -249,7 +263,7 @@ const FeedbackComments = (props: any) => {
           setLastEvaluatedKey({})
         }
       } else {
-        setNoDataError(true)
+        setNoDataError(true);
       }
     }
 
@@ -322,6 +336,9 @@ const FeedbackComments = (props: any) => {
               })
               setProductInfo(productInfoCopy);
               setProdNameIdMapping(prodNameIdMappingCopy);
+              if(props.productId && props.prodVersion) {
+                return;
+              }
               const defaultProductId = Object.keys(prodNameIdMappingCopy)[0];
               setSelectedProdId(defaultProductId);
               setProductVersion(prodNameIdMappingCopy[defaultProductId].version[0]);
@@ -432,10 +449,14 @@ const FeedbackComments = (props: any) => {
         setProductVersion(prodNameIdMapping[val].version[0])
         setNoDataError(false);
         setBackdropOpen(true);
-        setRawData([])
-        setData([])
-        setFeedbackBarChartData({})
-        setPieChartSeries({})
+        setRawData([]);
+        setData([]);
+        setFeedbackBarChartData({});
+        setPieChartSeries({});
+        setResultsFetched(false);
+        setSearchedData([]);
+        setKeyword('');
+        setOrder('asc');
       }
     }
 
@@ -446,8 +467,18 @@ const FeedbackComments = (props: any) => {
     }
 
     const clearSearch = () => {
-      setKeyword('')
+      setKeyword('');
+      setSearchedData([])
+      setSearchInitiated(false);
     }
+
+    useEffect(() => {
+      if(keyword && searchInitiated) {
+        setResultsFetched(false)
+        setSearchedData([])
+        fetchRecursiveData({prodId:  selectedProdId, prodVersion: productVersion, searchWord: keyword })
+      }
+    }, [searchInitiated, keyword])
 
     const handleCloseModal = (reason: any) => {
       console.log("calling handleCloseModal", reason)
@@ -485,7 +516,7 @@ const FeedbackComments = (props: any) => {
             </div>
             <div style={{padding: 30}}>
               <Grid container>
-                <Grid item sm={8}>
+                <Grid item sm={9}>
                   {attachmentType == 'image' ?
                     <Image aspectRatio={4/3} onClick={handleImageClicked} width='90%' style={{display: 'block',
                                   marginLeft: 'auto',
@@ -504,7 +535,7 @@ const FeedbackComments = (props: any) => {
                     </video>
                   }
                 </Grid>
-                <Grid style={{padding: 15, paddingTop: 0}} item sm={4}>
+                <Grid style={{padding: 15, paddingTop: 0}} item sm={3}>
                   <Grid container style={{marginTop: '20px'}}>
                     <Grid item sm={12} >
                       <div style={{display: 'flex'}}>
@@ -577,11 +608,21 @@ const FeedbackComments = (props: any) => {
             <Grid item xl={2} style={{position: 'relative'}}>
               <VersionFilter productVersion={productVersion}
                 setProductVersion={setProductVersion}
-                versionList={selectedProdId ? prodNameIdMapping[selectedProdId].version : []}
+                versionList={selectedProdId ? prodNameIdMapping[selectedProdId] ? prodNameIdMapping[selectedProdId].version ?
+                  prodNameIdMapping[selectedProdId].version : [] : [] : []}
               />
             </Grid>
           </Grid>
-          {noDataError ? <div style={{marginTop: '3rem'}}><Failure message={"There is no data to show."}/></div>:
+          {searchInitiated ? <div>
+            <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
+            focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
+            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+            />
+          </div>
+          :
+          noDataError ? <div style={{marginTop: '3rem'}}><Failure message={"There is no feedback to show."}/></div>:
           <div>
             <ImageModal/>
             <div style={{marginTop: 50}}>
@@ -595,11 +636,11 @@ const FeedbackComments = (props: any) => {
                 </Grid>
               </Grid>
             </div>
-            <RenderTable tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            <RenderTable key="renderTable1" tableData={data} urls={urlArray} isBugReport={isBugReport} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()}
+            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
             />
           </div>}
         </Container>

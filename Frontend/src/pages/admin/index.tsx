@@ -641,7 +641,7 @@ export default function Admin() {
       case FEEDBACK_COMMENTS:
         return <FeedbackComments
           productId={focusProductId}
-          version={focusVersion}
+          prodVersion={focusVersion}
           goBack={switchToAdminHome}
         />;
       case MANAGE_SETTINGS:

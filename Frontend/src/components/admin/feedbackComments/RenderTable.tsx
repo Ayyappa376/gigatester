@@ -41,6 +41,7 @@ interface IProps {
     searchInitiated: boolean,
     setSearchInitiated: Function,
     handleRequestSort: Function,
+    resultsFetched: boolean
 }
 
 export type Order = 'asc' | 'desc';
@@ -80,6 +81,7 @@ const RenderTable = (props: IProps) => {
     useEffect(() => {
       initiateFetchAllUrls();
     }, [])
+
     const updateSignedUrlData = useActions(updateSignedUrls);
     const signedUrlMapping = useSelector(
       (state: IRootState) => state.admin.signedUrls
@@ -116,7 +118,11 @@ const RenderTable = (props: IProps) => {
         }
       ).catch((error) => {console.log(error)});
     }
-console.log({tableData})
+
+    const handleOnSearch = (search: any) => { props.setKeyword(search); props.setSearchInitiated(true) };
+    
+    console.log({tableData})
+    
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper style={{padding: '2rem'}}>
@@ -131,9 +137,9 @@ console.log({tableData})
                 <Grid item md={6}>
                   {
                     <div>
-                    <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={tableData.length === 0}/>
+                    <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={tableData.length === 0 || props.searchInitiated}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0} categoryList={props.categoryList}/>
+                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0 || props.searchInitiated} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
@@ -147,9 +153,9 @@ console.log({tableData})
                   <Grid item md={5}>
                     {
                         <div>
-                          <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0}/>
+                          <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={tableData.length === 0 || props.searchInitiated}/>
                           <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0} categoryList={props.categoryList}/>
+                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={tableData.length === 0 || props.searchInitiated} categoryList={props.categoryList}/>
                         </div>
                     }
                   </Grid>
@@ -163,11 +169,11 @@ console.log({tableData})
             <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
               {isBugReport ? 'Bugs Reported' : 'Feedback'}
             </Typography>
-              <SearchField style={{marginTop: 10, marginLeft: 'auto'}}
-                    keyword={props.keyword} 
+              <SearchField style={{marginTop: 10, marginLeft: 'auto'}} key="SearchFieldEl"
+                    default={props.keyword}
                     searchInitiated ={props.searchInitiated}
-                    onSearch={(keyword: string) => {props.setKeyword(keyword); props.setSearchInitiated(true)}}
-                    clearSearch={()=> {props.clearSearch()}}/>
+                    onSearch={handleOnSearch}
+                    clearSearch={props.clearSearch}/>
           </Toolbar>
           <TableContainer>
           <Table
@@ -182,6 +188,7 @@ console.log({tableData})
               onRequestSort={(property: string) => { props.handleRequestSort()}}
               rowCount={tableData.length}
               isBugReport={isBugReport}
+              searchInitiated={props.searchInitiated}
             />{tableData.length > 0 ? 
             <TableBody>
               {props.tableData.map(
@@ -294,11 +301,16 @@ console.log({tableData})
                 }
               )}
             </TableBody>
-            : <div style={{width: '400%', padding: '.2rem 0 .2rem 0'}}>
-              <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"
-              width="30"
-              color='black'
-              ariaLabel='loading'/></div>}
+            : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}> 
+                {
+                  props.resultsFetched ? <div style={{marginLeft: "62%", transform: 'translateX: "-50%'}}>{`There is no ${isBugReport? 'bug' : 'feedback'} to show.`}</div> :
+                  <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"
+                  width="30"
+                  color='black'
+                  ariaLabel='loading'/>
+                }
+                </div>
+          }
             </Table>
           </TableContainer>
         </Paper>
