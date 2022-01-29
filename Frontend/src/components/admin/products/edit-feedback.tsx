@@ -56,7 +56,7 @@ GigaTester.productKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
   GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
 (function(d) {\n\
     var s = d.createElement(\'script\'); s.async = true;\n\
-    s.src = \'https://s3.amazonaws.com/dev.gigatester.io/gigatester_script.js\';\n\
+    s.src = \'https://s3.amazonaws.com/beta.gigatester.io/gigatester_script.js\';\n\
     (d.head || d.body).appendChild(s);\n\
 })(document);\n\
 </script>';

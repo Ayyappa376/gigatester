@@ -20,9 +20,6 @@ exports.handler = async (event: any) => {
       case 'DELETE':
           body = await dynamo.delete(JSON.parse(event.body)).promise();
           break;
-//    case 'GET':
-//      body = await dynamo.scan({ TableName: 'dev_GT_feedback' }).promise();
-//      break;
       case 'POST':
         const jsonBody = JSON.parse(event.body);
         const now = new Date();
@@ -49,7 +46,7 @@ exports.handler = async (event: any) => {
             sourceIP: event.requestContext.identity.sourceIp,
             userId: jsonBody.userName,
           },
-          TableName: 'dev_GT_feedback'
+          TableName: getTableNameFor('GT_feedback')
         };
         body = await dynamo.put(tableparams).promise();
         break;
@@ -67,7 +64,7 @@ exports.handler = async (event: any) => {
     }
   } catch (err) {
     statusCode = '400';
-    console.error('GT_AppFeedback Failed.', err);
+    console.error('feedback-api-db-handler: Failed.', err);
     // body = err.message;
   } finally {
     body = JSON.stringify(body);
@@ -84,10 +81,14 @@ async function getproductIdForKey(productKey: string): Promise<string> {
         ExpressionAttributeNames: {'#apiKey': 'apiKey'},
         ExpressionAttributeValues: {':apiKey': productKey},
         FilterExpression: '#apiKey = :apiKey',
-        TableName: 'dev_GT_Products',
+        TableName: getTableNameFor('GT_Products'),
     };
     console.log('feedback-api-db-handler: DynamoDBScan params:', params);
     const result = await dynamo.scan(params).promise();
     console.log('feedback-api-db-handler: DynamoDBScan result:', result);
     return (result.Items.length > 0) ? result.Items[0].id : '';
+}
+
+function getTableNameFor(baseTableName: string): string {
+  return (process.env.DB_ENV === 'development') ? `dev_${baseTableName}` : `beta_${baseTableName}`;
 }

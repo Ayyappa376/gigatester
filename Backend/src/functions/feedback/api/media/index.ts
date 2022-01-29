@@ -25,7 +25,7 @@ cors({
                 // const buff = Buffer.from (base64String, 'base64');
                 try {
                     const params = {
-                        Bucket: 'dev-gigatester-manage-feedback',
+                        Bucket: getBucketName(),
                         ContentType: fileType,
                         Expires: 60*24,
                         Key: fileName,
@@ -47,7 +47,7 @@ cors({
         }
     } catch (err) {
         statusCode = '400';
-        console.error('GT_AppFeedback Failed.', err);
+        console.error('feedback-api-media-handler: Failed.', err);
         // body = err.message;
     } finally {
         body = JSON.stringify(body);
@@ -58,3 +58,7 @@ cors({
         statusCode,
     };
 };
+
+function getBucketName(): string {
+    return (process.env.DB_ENV === 'development') ? 'dev-gigatester-manage-feedback' : 'beta-gigatester-manage-feedback';
+}
