@@ -4022,13 +4022,16 @@ else{
                     method: 'GET',
                   })
                     .then(res => res.json())
-                    .then(data => {console.log(data);
+                    .then(data => {
+                        // console.log(data);
                         Feedback.configs.categories = []
                         Feedback.configs.config_data = data;
                         let category = data[0].categories;
-                        category.map(item => {console.log(item.name)
+                        category.map(item => {
+                            // console.log(item.name)
                         Feedback.configs.categories.push(item.name)
-                    console.log(item.feedbacks)})
+                    // console.log(item.feedbacks)
+                    })
                     })
                     .catch(function(err) {
                         console.log(err , 'err')
@@ -4196,12 +4199,12 @@ else{
         } 
         window.GigaTester = $.extend(window.GigaTester, GigaTester_Api);
         $(document).ready($.proxy(Feedback.init, Feedback))
-        console.log(Feedback, 'fs');
+        // console.log(Feedback, 'fs');
     })(JQ);    
 }
 }
 function checkgigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
 setTimeout(() => {
     checkgigatester();
     console.log('inside giga timeout')}, 200);
