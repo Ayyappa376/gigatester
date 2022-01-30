@@ -34,6 +34,12 @@ export const CONST_BUG_REPORT_CHART = 'BUG-REPORT-CHART';
 
 export const NUMBER_OF_ITEMS_PER_FETCH = 20;
 
+export interface IFeedbackComments {
+  productId?: string,
+  prodVersion?: string,
+  goBack: Function
+}
+
 export interface ProductInfo {
     description?: string;
     devices?: string[];
@@ -155,7 +161,8 @@ export interface IFetchRecursiveData {
   filterCategory?: string[], 
   prodId?: string,
   prodVersion?: string,
-  emptyErrorValid?: boolean
+  showNoEmptyError?: boolean,
+  searchWord?: string;
 } 
 
 export const feedbackPieChartOptions = {

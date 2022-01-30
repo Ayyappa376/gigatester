@@ -7,40 +7,57 @@ interface IProps {
     onSearch: Function,
     clearSearch: Function,
     style: Object,
-    keyword: string,
     searchInitiated: boolean,
+    default: string
 }
 
 const SearchField = (props: IProps) => {
-    const {keyword, onSearch, searchInitiated} = props;
+    const {searchInitiated} = props;
+    const [keyword, setKeyword] = useState(() => {
+        if(props.default) return props.default;
+        return '';
+    })
+
+    const handleTyping = (e: any) => {
+        //e.preventDefault()
+        setKeyword(e.target.value);
+        
+    }
+
+    const handleKeyPress = (e: any) => {
+        if (e.key === 'Enter') {
+            setKeyword(keyword);
+            props.onSearch(keyword);
+            e.preventDefault();
+        }
+    }
+
+    const handleClear = () => {props.clearSearch(); }
+
+    const handleSearchInit = () => {props.onSearch(keyword);};
 
     return (
-        <div style={props.style}>
-            <div
+        <div key="searchFieldInside" style={props.style}>
+            <div key="searchFieldStyleDiv"
                 style={{ padding: '2px 4px', display: 'flex', alignItems: 'center', width: 400, marginLeft: 'auto' }}
             >
                 <InputBase
+                key="searchFieldInput"
                     style={{ marginLeft: 1, flex: 1 }}
                     placeholder="Search"
                     value={keyword}
                     inputProps={{ 'aria-label': 'search' }}
-                    onChange={(event: any) => {onSearch(event.target.value)}}
-                    onKeyPress= {(e) => {
-                            if (e.key === 'Enter') {
-                                props.onSearch(keyword)
-                                e.preventDefault()
-                            }
-                        }
-                    }
+                    onChange={handleTyping}
+                    onKeyPress= {handleKeyPress}
                 />
                 {
-                    searchInitiated ? <IconButton type="button" style={{ padding: '10px' }} disableRipple={true} aria-label="cancel" onClick={() => {props.clearSearch(); }}>
-                        <ClearIcon /> 
+                    searchInitiated ? <IconButton type="button" key="searchFieldClearIconButton" style={{ padding: '10px' }} disableRipple={true} aria-label="cancel" onClick={handleClear}>
+                        <ClearIcon key="searchFieldClearIcon"/> 
                     </IconButton> : <div/>
                 }
                 <Divider style={{ height: 28, marginLeft: 5 }} orientation="vertical" />
-                <IconButton type="button" style={{ padding: '10px' }} disableRipple={true} aria-label="search" onClick={() => {props.onSearch(keyword); }}>
-                    <SearchIcon />
+                <IconButton type="button" key="searchFieldSearchIconButton" style={{ padding: '10px' }} disableRipple={true} aria-label="search" onClick={handleSearchInit}>
+                    <SearchIcon key="searchFieldSearchIcon"/>
                 </IconButton>
             </div>
         </div>

@@ -1,6 +1,6 @@
 //import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
 //import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { FeedbackType, FilterType } from '@root/apis/v2/userFeedback/get';
+import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { queryRaw, scan } from './sdk';
@@ -9,11 +9,9 @@ export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
 
 interface Params {
-  filter?: string;
   filterCategory?: string;
   filterRating?: string;
   filterSeverity?: string;
-  filterType?: FilterType;
   items?: string;
   lastEvalKey?: string;
   order?: string;
@@ -55,19 +53,13 @@ export interface AppFeedback {
 
 const NUMBER_OF_DAYS_OF_FEEDBACK = 30;
 
-export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filter, filterType, filterRating, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filterRating, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
     const EAN: any = {};
     const EAV: any = {};
     let FE: string = '';
-
-    /* if(type) {
-      EAN['#type'] = 'feedbackType';
-      EAV[':type'] = type;
-      FE += FE ? ' and #type = :type' : '#type = :type';
-    } */
 
     if(prodId) {
       EAN['#prodId'] = 'productId';
@@ -143,11 +135,12 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       }
     }
 
-   /*  if(search) {
+    if(search) {
       EAN['#comments'] = 'feedbackComments';
       EAV[':keyWord'] = search;
       FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
-    } */
+    }
+
     const today = new Date();
     const lastDate = new Date().setDate(today.getDate() - NUMBER_OF_DAYS_OF_FEEDBACK);
 
@@ -181,7 +174,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     return queryRaw<any>(params);
   };
 
-export const getUserFeedbackListForChart = async ({type, items, search, lastEvalKey, filter, filterType, prodId, prodVersion}: Params): Promise<any[]> => {
+export const getUserFeedbackListForChart = async ({type, items, search, lastEvalKey, prodId, prodVersion}: Params): Promise<any[]> => {
     let params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
       TableName: getAppFeedbackTableName(),
     };

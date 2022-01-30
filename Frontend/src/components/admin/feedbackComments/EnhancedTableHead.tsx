@@ -16,6 +16,7 @@ interface EnhancedTableProps {
   order: Order;
   rowCount: number;
   isBugReport: boolean;
+  searchInitiated: boolean;
 }
 
 interface HeadCell {
@@ -39,7 +40,7 @@ const useStylesLabel = makeStyles({
 
 const headCells: HeadCell[] = [
     { id: 'userName', label: 'User Name', align: 'left', headType: ALROUND },
-    { id: 'date', label: 'Date Submitted', sortLabel: 'date', align: 'center', headType: ALROUND },
+    { id: 'date', label: 'Date Submitted(UTC)', sortLabel: 'date', align: 'center', headType: ALROUND },
     { id: 'rating', label: 'Rating', align: 'center', headType: FEEDBACK },
     { id: 'severity', label: 'Severity', align: 'center', headType: BUG_REPORT  },
     { id: 'category', label: 'Category', align: 'center', headType: ALROUND  },
@@ -48,7 +49,7 @@ const headCells: HeadCell[] = [
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
     const sortClass = useStylesLabel()
-    const { classes, order, onRequestSort, isBugReport } = props;
+    const { classes, order, onRequestSort, isBugReport, searchInitiated } = props;
     const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(property);
     };
@@ -69,7 +70,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
               style={{fontSize: '1.05rem', fontWeight: 500, color: '#666666'}}
             >
               {
-                headCell.sortLabel ?
+                !searchInitiated && headCell.sortLabel ?
                   <Tooltip title={"Sorted according to this column"}
                     aria-label="sort-active">
                     <TableSortLabel

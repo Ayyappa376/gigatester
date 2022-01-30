@@ -40,7 +40,8 @@ const RenderCategoryFilter = (props: IProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {categoryList.map((val) => 
-                    <Button variant='outlined' key={val} onClick={() => {handleKeywordClick(val)}} id={focusCategory.indexOf(val) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
+                    <Button variant='outlined' key={val} disabled={props.disableButtons}
+                        onClick={() => {handleKeywordClick(val)}} id={focusCategory.indexOf(val) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
                 )}
             </div>
         </div>
