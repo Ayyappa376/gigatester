@@ -1,9 +1,8 @@
 const aws = require('aws-sdk');
 const dynamo = new aws.DynamoDB.DocumentClient();
 const cors = require('cors');
-import { ProductInfo } from '@root/models/product';
-import { scan } from '@root/utils/dynamoDb/sdk';
 import { DynamoDB } from 'aws-sdk';
+import { ProductInfo } from '../../../../models/product';
 
 cors({
     origin: true,
@@ -16,6 +15,29 @@ exports.handler = async (event: any) => {
         'Access-Control-Allow-Origin':'*',
         'Content-Type': 'application/json'
     };
+    function scan<T>(params: DynamoDB.ScanInput): Promise<T> {
+        return new Promise(
+          (resolve: (item: any) => void, reject: (err: AWS.AWSError) => any) => {
+            dynamo.scan(
+              params,
+              async (err: AWS.AWSError, data: DynamoDB.ScanOutput) => {
+                if (err) {
+                  return reject(err);
+                }
+                let result: any = data.Items;
+                if (data.LastEvaluatedKey) {
+                  const newParams = params;
+                  newParams.ExclusiveStartKey = data.LastEvaluatedKey;
+                  const res: any = await scan(newParams);
+                  result = result.concat(res);
+                  return resolve(result);
+                }
+                return resolve(result);
+              }
+            );
+          }
+        );
+      }
     try {
         switch (event.httpMethod) {
             // case 'DELETE':

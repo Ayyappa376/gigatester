@@ -13,6 +13,13 @@
             (d.head || d.body).appendChild(s);
         })(document);
      }
+     if(typeof window.platform === "undefined"){
+        (function(d) {
+            var s = d.createElement('script');s.async = true;
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/platform/1.3.6/platform.min.js';
+            (d.head || d.body).appendChild(s);
+        })(document);
+     }
     if(typeof window.Snap === "undefined"){
         (function(d) {
             var s = d.createElement('script');s.async = true;
@@ -23,7 +30,7 @@
 
     console.log('inside function');
 function gigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
     console.log('inside giga timeout')
 }
 else{
@@ -266,14 +273,14 @@ else{
                 emit(event) {
                     // push event into the events array
                     events.push(event);
-                    console.log(events);
+                    // console.log(events);
                 },
                 });
                 let stopFn = rrweb.record({
                     emit(event) {
                       if (events.length > 100) {
                         // stop after 100 events
-                        console.log(events);
+                        // console.log(events);
                         stopFn();
                       }
                     },
@@ -401,6 +408,7 @@ else{
                 reasons: ['Video Error', 'Video Not Found'],
                 language: 'en',
                 display_powered_by: true,
+                config_data: [],
             },
             form_settings_default: {
                 bug: {
@@ -633,7 +641,7 @@ else{
                         }
                     }
                     this.ui.button.on("click mouseup mousedown", function(e) {
-                        console.log(e,'mouse event')
+                        // console.log(e,'mouse event')
                         e.stopPropagation()
                     });
                     $(window).on("beforeunload", function(e) {
@@ -1728,7 +1736,27 @@ else{
                     var field_name = $(e.currentTarget).attr("name");
                     if (field_name && typeof this.form_data[field_name] !== "undefined") {
                         this.form_data[field_name] = $(e.currentTarget).val()
-                        console.log( field_name,  $(e.currentTarget).val())
+                        // console.log( field_name,  $(e.currentTarget).val())
+                        if(field_name == 'category'){
+                        if($(document.getElementById('gigatester-reason-checkbox'))){
+                            $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
+                            $(document.getElementsByClassName('gigatester-reason-labels')).next().remove("br");
+                            $(document.getElementsByClassName('gigatester-reason-labels')).remove();
+                        }
+                        Feedback.configs.config_data[0].categories.map(items => {
+                            if(items.name == $(e.currentTarget).val()){
+                                items.feedbacks.forEach( function(value){
+                                let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                                $(feedback_reason).insertAfter($(document.getElementById('category')))
+                                })
+                            }
+                        })
+                    }
+                    var arr = [];
+                    $('.gigatester-reason-checkboxes:checked').each(function () {
+                        arr.push($(this).next("label").text());
+                        console.log(arr)
+                    });
                     }
                 },
                 removeControls: function() {
@@ -1811,10 +1839,10 @@ else{
                         }else{
                             browserName="No browser detection";
                         }
-                        console.log(browserName, platform)
-                        console.log(platform.name);
-                        console.log(platform.version);
-                        console.log(platform.os);
+                        // console.log(browserName, platform)
+                        // console.log(platform.name);
+                        // console.log(platform.version);
+                        // console.log(platform.os);
                     }
                     data_item += display_screenshot ? 1 : 0;
                     data_item += display_video ? 1 : 0;
@@ -1870,11 +1898,11 @@ else{
                      + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + Lang.get("your_name") + '"'
                      + (form_settings.name_field_mandatory ? " required" : "") + ">" : "")
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + Lang.get("your_email_address") + '"' + (form_settings.email_field_mandatory ? " required" : "") + ">" : "")
-                     + (form_settings.display_category ? '<select name="category"'
+                     + (form_settings.display_category ? '<select id="category" name="category"'
                      + (form_settings.category_field_mandatory ? " required" : "")
-                     + '><option id="category" value="" selected disabled>' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
+                     + '><option id="category" value="category" selected disabled>' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
                     
-                     + (form_settings.display_priority ? '<select id="priority" name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="" selected disabled>' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "")
+                     + (form_settings.display_priority ? '<select id="priority" name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="priority" selected disabled>' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "")
                     //  + (form_settings.display_reason ? '<select name="category"'
                     //  + (form_settings.reason_field_mandatory ? " required" : "")
                     //  + '><option id="reason" value="" selected disabled>' + Lang.get("select_a_reason") + "</option>" + reason_options + "</select>" : "")
@@ -2801,8 +2829,8 @@ else{
                     this.removeOverlay();
                     this.removeControls();
                     this.removeComments();
-                    // this.form_data['category'] = "category";
-                    // this.form_data['priority'] = "priority";
+                    this.form_data['category'] = "category";
+                    this.form_data['priority'] = "priority";
 
                     console.log(this.form_data['priority']);
                     // $(document.getElementsByTagName('select')).remove();
@@ -2904,6 +2932,7 @@ else{
                     let feedbackType='';
                     let form_settings = this.getFormSettings(this.form_type);
                     let comments = [];
+                    let standardFeedback = [];
                     $.each(this.comments, function(key, comment) {
                         comments.push(comment.getData())
                     });
@@ -2915,6 +2944,11 @@ else{
                     console.log( this.form_data['category']);
                     console.log( this.form_data['priority']);
                     console.log(Feedback.image_file, 'img file')
+                    // $(document.getElementsByClassName("gigatester-reason-checkboxes"))
+                    $('.gigatester-reason-checkboxes:checked').each(function () {
+                        standardFeedback.push($(this).next("label").text());
+                        console.log(standardFeedback);
+                    });
                     if(parseInt(this.form_data.rating) > 0){
                         finalRating = parseInt(this.form_data.rating)
                         feedbackType = 'FEEDBACK'
@@ -2945,7 +2979,7 @@ else{
                           file: Feedback.external_file,
                           audio: Feedback.audio_file,
                         },
-                          feedbackComments: { "generalComment" : this.form_data['description'], ...comments },
+                          feedbackComments: { "generalComment" : this.form_data['description'], "standardFeedback" : standardFeedback , ...comments },
                           productKey: GigaTester.apiKey || 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T'
                         //   'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T',   
                       }
@@ -3988,7 +4022,14 @@ else{
                     method: 'GET',
                   })
                     .then(res => res.json())
-                    .then(data => {console.log(data)})
+                    .then(data => {console.log(data);
+                        Feedback.configs.categories = []
+                        Feedback.configs.config_data = data;
+                        let category = data[0].categories;
+                        category.map(item => {console.log(item.name)
+                        Feedback.configs.categories.push(item.name)
+                    console.log(item.feedbacks)})
+                    })
                     .catch(function(err) {
                         console.log(err , 'err')
                         /* handle the error */
