@@ -66,7 +66,7 @@ export const config: Config = {
     restApiId: {
       development: 'qe1lgcnkwh',
       local: 'qe1lgcnkwh',
-      production: '',
+      production: 'gm97bmv2v7',
     },
     scoreCoeff: 10,
     subDomain: {
@@ -78,7 +78,7 @@ export const config: Config = {
     usagePlanId: {
       development: 'v7z5d7',
       local: 'v7z5d7',
-      production: '',
+      production: 'v7z5d7',
     },
   },
   elasticsearch: {
