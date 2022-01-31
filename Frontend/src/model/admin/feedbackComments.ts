@@ -1,3 +1,8 @@
+interface ISignedUrlObj {
+    signedUrl: string;
+    date: number;
+}
+
 export interface ISignedUrls {
-    [key: string] : string
+    [key: string] : ISignedUrlObj
 }

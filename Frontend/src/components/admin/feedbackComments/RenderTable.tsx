@@ -97,17 +97,20 @@ const RenderTable = (props: IProps) => {
         urls.map((url: string) => {
           return new Promise(async(resolve, reject) => {
             let signedUrl: any;
-            if(signedUrlMapping && signedUrlMapping[url]) {
-              signedUrl = signedUrlMapping[url]
+            const time24HrsMilli = 24 * 60 * 60 * 1000;
+            const timeNowMilli = new Date().getTime();
+            if(signedUrlMapping && signedUrlMapping[url] && ((timeNowMilli - signedUrlMapping[url].date) < time24HrsMilli)) {
+              signedUrl = signedUrlMapping[url].signedUrl;
             } else {
               isUrlMissing = true;
               signedUrl = await getSignedUrl(url, stateVariable);
-            }
-            if (signedUrl) {
-              signedUrlMappingCopy[url] = signedUrl;
-              return resolve({});
-            } else {
-              return reject({})
+              if (signedUrl) {
+                const now = new Date();
+                signedUrlMappingCopy[url] = {signedUrl, date: now.getTime()};
+                return resolve({});
+              } else {
+                return reject({})
+              }
             }
           })
         })
@@ -236,7 +239,7 @@ const RenderTable = (props: IProps) => {
                           >
                             {
                               signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] ?
-                                <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img> : <div/>
+                                <img src={signedUrlMapping[row.feedbackMedia.image].signedUrl} style={{width: 150, marginTop: 20}}></img> : <div/>
                             }
                           </Link> : <div/> : <div/>
                           }
@@ -256,7 +259,7 @@ const RenderTable = (props: IProps) => {
                                             marginLeft: 'auto',
                                             marginRight: 'auto',
                                           }}>
-                              <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" />
+                              <source src={signedUrlMapping[row.feedbackMedia.video].signedUrl} type="video/mp4" />
                             </video>
                             </div>
                             : <div style={{maxWidth: 700}}>
@@ -284,7 +287,7 @@ const RenderTable = (props: IProps) => {
                         <div>
                           {
                             row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
-                              <a href={signedUrlMapping[row.feedbackMedia.file]} download>
+                              <a href={signedUrlMapping[row.feedbackMedia.file].signedUrl} download>
                                 <Link
                                   component="button"
                                   variant="body2"
