@@ -163,6 +163,7 @@ export interface IFetchRecursiveData {
   prodVersion?: string,
   showNoEmptyError?: boolean,
   searchWord?: string;
+  noRawDataUpdate?: boolean;
 } 
 
 export const feedbackPieChartOptions = {
