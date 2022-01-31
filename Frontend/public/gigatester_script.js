@@ -383,8 +383,7 @@ else{
         let Feedback = {
             // request_url: "https://dev.gigatester.io",
             // proxy_url: "https://proxy.gigatester.io",
-//            static_url: "https://s3.amazonaws.com/dev.gigatester.io",
-            static_url: "https://s3.amazonaws.com/beta.gigatester.io",
+            static_url: "https://s3.amazonaws.com/dist.gigatester.io",
             widget_css: "./gigatester.css",
             http_header: [],
             canvas_mode: false,

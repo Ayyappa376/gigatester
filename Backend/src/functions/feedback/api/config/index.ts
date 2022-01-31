@@ -44,7 +44,6 @@ exports.handler = async (event: any) => {
             //     body = await dynamo.delete(JSON.parse(event.body)).promise();
             //     break;
            case 'GET':
-            //    body = await dynamo.scan({ TableName: 'dev_GT_feedback' }).promise();
                const apiKey = event.queryStringParameters.apiKey;
                const version = event.queryStringParameters.version;
                const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
@@ -52,16 +51,16 @@ exports.handler = async (event: any) => {
                   ':apiKey': apiKey,
                   ':version': version },
                 FilterExpression: 'apiKey = :apiKey AND version = :version',
-                TableName: 'dev_GT_Products',
+                TableName: getTableNameFor('GT_Products'),
               });
                body = (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackSettings);
                break;
-            case 'POST':
-                // body = await dynamo.put(tableparams).promise();
-                break;
-            case 'PUT':
-                body = await dynamo.update(JSON.parse(event.body)).promise();
-                break;
+            // case 'POST':
+            //     body = await dynamo.put(tableparams).promise();
+            //     break;
+            // case 'PUT':
+            //     body = await dynamo.update(JSON.parse(event.body)).promise();
+            //     break;
             case 'OPTIONS':
                 statusCode = '200';
                 headers['Access-Control-Allow-Headers'] = '*';
@@ -73,8 +72,7 @@ exports.handler = async (event: any) => {
         }
     } catch (err) {
         statusCode = '400';
-        console.error('GT_AppFeedback Failed.', err);
-        // body = err.message;
+        console.error('feedback-api-config-handler: Failed.', err);
     } finally {
         body = JSON.stringify(body);
     }
@@ -84,3 +82,7 @@ exports.handler = async (event: any) => {
         statusCode,
     };
 };
+
+function getTableNameFor(baseTableName: string): string {
+  return (process.env.DB_ENV === 'development') ? `dev_${baseTableName}` : `beta_${baseTableName}`;
+}
