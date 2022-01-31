@@ -2987,6 +2987,17 @@ justify-content: center;
   overflow: hidden;
   margin: 16px 0 4px 0;
 }
+#gigatester-reason-checkbox{
+  position: relative;
+  opacity: 100;
+  pointer-events: all;
+  height: 17px;
+  width: 17px;
+}
+#gigatester-reason-label{
+  font-size: 1rem;
+  color: black;
+}
 #gigatester_button_container
   .gigatester-controls
   .gigatester-checkbox-container
@@ -3325,7 +3336,7 @@ justify-content: center;
   display: inline-block;
   line-height: auto;
   margin: 0 0 0 8px;
-  color: #2787f0;
+  color: #f80303;
   vertical-align: middle;
   font-size: 13px;
 }

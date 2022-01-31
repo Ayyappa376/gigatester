@@ -27,17 +27,10 @@
             (d.head || d.body).appendChild(s);
         })(document);
      }
-     if(typeof window.html2canvas === "undefined"){
-        (function(d) {
-            var s = d.createElement('script');s.async = true;
-            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.3/html2canvas.min.js';
-            (d.head || d.body).appendChild(s);
-        })(document);
-     }
 
     console.log('inside function');
 function gigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined"  || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
     console.log('inside giga timeout')
 }
 else{
@@ -390,7 +383,7 @@ else{
         let Feedback = {
             // request_url: "https://dev.gigatester.io",
             // proxy_url: "https://proxy.gigatester.io",
-            static_url: "https://s3.amazonaws.com/dist.gigatester.io",
+            static_url: "https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser",
             widget_css: "./gigatester.css",
             http_header: [],
             canvas_mode: false,
@@ -4282,7 +4275,7 @@ else{
 }
 }
 function checkgigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
 setTimeout(() => {
     checkgigatester();
     console.log('inside giga timeout')}, 200);
