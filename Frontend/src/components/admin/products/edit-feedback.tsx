@@ -49,17 +49,19 @@ import { IProductInfo, IProductParams, ICategory, IFeedbackSettings, FEEDBACK_TY
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
 import Success from '../../success-page';
+import { hostUrl } from '../../../utils/http/constants';
 
-const widgetScript: string = '<script>\n\
+const widgetScript: string = `<script>\n\
 window.GigaTester = window.GigaTester || {};\n\
 GigaTester.productKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
-  GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
+GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
+GigaTester.endpoint = \'${hostUrl}\';\n\
 (function(d) {\n\
     var s = d.createElement(\'script\'); s.async = true;\n\
-    s.src = \'https://s3.amazonaws.com/beta.gigatester.io/gigatester_script.js\';\n\
+    s.src = \'https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester_script.js\';\n\
     (d.head || d.body).appendChild(s);\n\
 })(document);\n\
-</script>';
+</script>`;
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -861,7 +863,18 @@ const EditProductFeedbackSettings = (props: any) => {
                   type='string'
                   id={`widgetScript`}
                   name={`widgetScript`}
-                  value={widgetScript}
+                  value={
+                    (productParams && productParams.products && productParams.products[0] &&
+                      productParams.products[0].apiKey)
+                    ? (widgetScript.replace(
+                        'YOUR_PRODUCT_API_KEY_GOES_HERE',
+                        productParams.products[0].apiKey
+                      ).replace(
+                        'YOUR_PRODUCT_VERSION_GOES_HERE',
+                        productParams.products[0].version
+                      ))
+                    : ''
+                  }
                   fullWidth
                   label='Widget Script'
                   helperText='Copy the above script and paste it close to your opening body tag of your page.'
