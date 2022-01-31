@@ -58,7 +58,7 @@ const RenderComments = (props: IProps) => {
                 <Typography color="textSecondary" style={{fontSize: '.85rem'}}>{`${props.category} related ${props.isBugReport? 'bugs' : 'feedbacks'}:`}</Typography>
                 {
                   comments['standardFeedback'].map((el: string) => {
-                    return <div style={{marginTop: 'auto', marginBottom: 'auto'}}>&#9679;&nbsp;{el}</div>
+                    return <div key={el} style={{marginTop: 'auto', marginBottom: 'auto'}}>&#9679;&nbsp;{el}</div>
                   })
                 }
               </div> : <div/>
@@ -79,7 +79,7 @@ const RenderComments = (props: IProps) => {
                             )
                           }
                           return (
-                            <div style={{display: 'flex', marginTop: '1rem'}}>
+                            <div key={key} style={{display: 'flex', marginTop: '1rem'}}>
                               <RenderNumber val={key} cname={classes.numbers}/>
                               <div style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '.5rem'}}>{comments[key].message}</div>
                             </div>
