@@ -94,6 +94,13 @@ export interface IAppFeedback {
       audio?: string
     },
     feedbackType: FeedbackType;
+    platformName: string;
+    platformVersion: string;
+    platformOs: {
+      family: string;
+      version: string;
+      architecture: string;
+    };
   }
 
 export interface ILastEvaluatedKey {

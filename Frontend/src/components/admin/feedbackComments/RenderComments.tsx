@@ -12,7 +12,9 @@ const RenderNumber = (props: any) => {
 
 interface IProps {
   comments?: ICommentObject,
-  old?: boolean
+  old?: boolean,
+  category?: string,
+  isBugReport: boolean,
 }
 
 const RenderComments = (props: IProps) => {
@@ -26,43 +28,76 @@ const RenderComments = (props: IProps) => {
         commentText = commentText + '\n' + comments[comment].message
       }
       if(comments[comment] && comment === 'generalComment') {
-        commentText = commentText + '\n' + comments[comment]}
+        commentText = commentText + '\n' + comments[comment]
       }
-    );
+      if(comments[comment] && comment === 'standardFeedback') {
+        commentText = commentText + '\n' + comments[comment]
+      } 
+    });
 
     const sortedKeys = Object.keys(comments).sort((a: string, b: string) => {
+      if(a === 'standardFeedback') {
+        return -1;
+      }
+      if(b === 'standardFeedback') {
+        return 1;
+      }
       if(parseInt(a, 10) === NaN) return -1;
       if(parseInt(b, 10) === NaN) return 1;
       if(a > b) return 1;
       if(b > a) return -1;
       return 0;
     })
-
+    
     return(
-      <div>
-        {old? 
-          <Box
-            aria-label="rating comments"
-            style={{ width: "100%" }}
-          >{commentText}</Box> :
-          <div style={{marginTop: '1.5rem'}}>
-            {sortedKeys.map((key: string) => {
-              if (key === 'generalComment') {
-                return (
-                  <div style={{marginTop: '1rem'}}>
-                    <Typography color="textSecondary" style={{fontSize: '.85rem'}}>User remarks:</Typography>
-                    <div style={{marginTop: 'auto', marginBottom: 'auto'}}>{comments[key]}</div>
-                  </div>
-                )
-              }
-              return ( 
-                <div style={{display: 'flex', marginTop: '1rem'}}>
-                  <RenderNumber val={key} cname={classes.numbers}/>
-                  <div style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '.5rem'}}>{comments[key].message}</div>
-                </div>
-              )
-            })}
-          </div>}
+      <div >
+        <div >
+          {
+            comments['standardFeedback'] && props.category && comments['standardFeedback'].length >  0 ?
+              <div style={{marginTop: '1rem'}}>
+                <Typography color="textSecondary" style={{fontSize: '.85rem'}}>{`${props.category} related ${props.isBugReport? 'bugs' : 'feedbacks'}:`}</Typography>
+                {
+                  comments['standardFeedback'].map((el: string) => {
+                    return <div style={{marginTop: 'auto', marginBottom: 'auto'}}>&#9679;&nbsp;{el}</div>
+                  })
+                }
+              </div> : <div/>
+          }
+        </div>
+        <div>
+          {
+            Object.keys(comments).length > 2 ? 
+              <div style={{marginTop: '1rem'}}>
+                <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Screen shot comments:</Typography>
+                    {sortedKeys.map((key: string) => {
+                        if(comments[key].message) {
+                          if(old) {
+                            return ( 
+                              <div key={key}>
+                                <div>&#9679;&nbsp;{comments[key].message}</div>
+                              </div>
+                            )
+                          }
+                          return (
+                            <div style={{display: 'flex', marginTop: '1rem'}}>
+                              <RenderNumber val={key} cname={classes.numbers}/>
+                              <div style={{marginTop: 'auto', marginBottom: 'auto', marginLeft: '.5rem'}}>{comments[key].message}</div>
+                            </div>
+                          )
+                        }
+                    })}
+              </div> : <div/>
+          }
+        </div>
+        <div>
+          {
+            comments['generalComment'] ?
+              <div style={{marginTop: '1rem'}}>
+                <Typography color="textSecondary" style={{fontSize: '.85rem'}}>User remarks:</Typography>
+                <div style={{marginTop: 'auto', marginBottom: 'auto'}}>&#9679;&nbsp;{comments['generalComment']}</div>
+              </div> : <div/>
+          }
+        </div>
       </div>)
     } else {
       return <div>-</div>

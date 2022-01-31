@@ -587,7 +587,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
                     </Grid>
                     </Grid>
                     <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>
-                      <RenderComments comments={getComments(focusAttachmentUid)} old={false}/></div>
+                      <RenderComments comments={getComments(focusAttachmentUid)} old={false} isBugReport={isBugReport} category={getBugCategory(focusAttachmentUid)}/></div>
                   </Grid>
               </Grid>
               </div>
