@@ -27,10 +27,17 @@
             (d.head || d.body).appendChild(s);
         })(document);
      }
+     if(typeof window.html2canvas === "undefined"){
+        (function(d) {
+            var s = d.createElement('script');s.async = true;
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.3/html2canvas.min.js';
+            (d.head || d.body).appendChild(s);
+        })(document);
+     }
 
     console.log('inside function');
 function gigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined"  || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
     console.log('inside giga timeout')
 }
 else{
@@ -409,6 +416,8 @@ else{
                 language: 'en',
                 display_powered_by: true,
                 config_data: [],
+                selected_category: [],
+                rating_limit: 2,
             },
             form_settings_default: {
                 bug: {
@@ -547,7 +556,7 @@ else{
                 recording: false,
                 video_annotation: [],
                 form_data: {
-                    rating: "0",
+                    rating: 0,
                     name: "",
                     email: "",
                     title: "",
@@ -928,15 +937,18 @@ else{
                         let src = window.URL.createObjectURL(video_blob);
                         // console.log(Feedback.video_url, 'video url')
                         Feedback.video_annotation = annotations;
+
                         Feedback.controls_step = 2;
                         Feedback.showControls(true);
                         setTimeout( function() {Feedback.recording = true;
+                            
                             Feedback.form_data.rating =  Feedback.form_data.rating;
                             Feedback.setFormHTML();
+                            Feedback.saveSubCategory();
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                                 console.log('selected rating');
-                                var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                            var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                             var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
                             var video_close = $('<button id="gigatester_video_player_close">').html(Svg_Icons.trash);
                             // video.appendTo(video_overlay.children("div"));
@@ -948,8 +960,10 @@ else{
                                 video.remove();
                                 Feedback.video_file = '';
                                 Feedback.recording = false;
+                                Feedback.saveCheckedCategory();
                                 video_close.remove();
                                 Feedback.setFormHTML();
+                                Feedback.saveSubCategory();
                                 if(Feedback.form_data.rating){
                                     Feedback.selectedRating();
                                 }
@@ -1239,6 +1253,7 @@ else{
                                     
                                 }).addClass("_gigatester-blank gigatester-svg-delete");
                                 this.svg_delete_icons.push(icon);
+                                Feedback.commentStart.call(Feedback, event);
                                 switch (this.type) {
                                     case "arrow":
                                         this.svg_obj_arrow_group.attr({
@@ -1736,29 +1751,62 @@ else{
                     var field_name = $(e.currentTarget).attr("name");
                     if (field_name && typeof this.form_data[field_name] !== "undefined") {
                         this.form_data[field_name] = $(e.currentTarget).val()
-                        // console.log( field_name,  $(e.currentTarget).val())
-                        if(field_name == 'category'){
+                        console.log( field_name,  $(e.currentTarget).val())
+                        if(field_name === 'category'){
                         if($(document.getElementById('gigatester-reason-checkbox'))){
                             $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
                             $(document.getElementsByClassName('gigatester-reason-labels')).next().remove("br");
                             $(document.getElementsByClassName('gigatester-reason-labels')).remove();
                         }
                         Feedback.configs.config_data[0].categories.map(items => {
+                            console.log(items)
                             if(items.name == $(e.currentTarget).val()){
                                 items.feedbacks.forEach( function(value){
+                                console.log(value)
                                 let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
                                 $(feedback_reason).insertAfter($(document.getElementById('category')))
                                 })
                             }
                         })
                     }
-                    var arr = [];
-                    $('.gigatester-reason-checkboxes:checked').each(function () {
-                        arr.push($(this).next("label").text());
-                        console.log(arr)
-                    });
+
                     }
                 },
+                saveCheckedCategory: function(){
+                    Feedback.configs.selected_category = [];
+                    $('.gigatester-reason-checkboxes:checked').each(function () {
+                        Feedback.configs.selected_category.push($(this).next("label").text());
+                        console.log(Feedback.configs.selected_category, 'data push')
+                    });
+                },
+                saveSubCategory: function() {
+                        if($(document.getElementById('gigatester-reason-checkbox'))){
+                            $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
+                            $(document.getElementsByClassName('gigatester-reason-labels')).next().remove("br");
+                            $(document.getElementsByClassName('gigatester-reason-labels')).remove();
+                        }
+                        Feedback.configs.config_data[0].categories.map(items => {
+                            console.log(items)
+                            if(items.name == $(document.getElementById('category')).val()){
+                                items.feedbacks.forEach( function(value){
+                                console.log(value)
+                                let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                                $(feedback_reason).insertAfter($(document.getElementById('category')))
+                                })
+                            }
+                        })
+                            Feedback.configs.selected_category.map(function (value){
+                                $('.gigatester-reason-checkboxes').each(function () {
+                                if($(this).next("label").text() == value){
+                                console.log($(this).next("label").text(), 'label');
+                                $(this).attr('checked', 'true')
+                                console.log(Feedback.configs.selected_category, 'data publish')
+                                }
+                            }) 
+                        });
+                        
+                    },
+                
                 removeControls: function() {
                     if (!this.ui.controls) {
                         return
@@ -2032,11 +2080,12 @@ else{
                             console.log(recorder.state)
                         }
                         if(stream){
+                            Feedback.saveCheckedCategory();
                             Feedback.hideControls();
                             setTimeout(()=> {recorder.start();
                                 setTimeout(()=> {recorder.stop(), stream.getTracks() // get all tracks from the MediaStream
-                                .forEach( track => track.stop() );}, 500);
-                            }, 500);
+                                .forEach( track => track.stop() );}, 300);
+                            }, 100);
                         }
                         console.log('image recording')
                         recorder.onstop = e => {
@@ -2051,7 +2100,7 @@ else{
                             const video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
                             video_close.appendTo(image_overlay);
                             video.insertAfter($(document.getElementsByClassName('gigatester-controls-attach-actions')));
-                            setTimeout(()=> (Feedback.screenshotVideo()), 700);
+                            setTimeout(()=> (Feedback.screenshotVideo()), 500);
                           };
                      })
                      .catch(function(err) {
@@ -2146,11 +2195,15 @@ else{
                   
                     Feedback.showControls();
                     Feedback.recording = true;
+                    Feedback.form_data.categories = Feedback.form_data.categories;
                     Feedback.form_data.rating =  Feedback.form_data.rating;
+                   
                     Feedback.setFormHTML();
+                   
                     if(Feedback.form_data.rating){
                         Feedback.selectedRating();
                     }
+                    Feedback.saveSubCategory();
                     Feedback.clearScreenStatus();
                     const image_overlay = $('<div id="gigatester_images_player"><div></div></div>');
                     const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
@@ -2163,8 +2216,10 @@ else{
                         image.remove();
                         Feedback.image_file = '';
                         Feedback.recording = false;
+                        Feedback.saveCheckedCategory();
                         image_close.remove();
                         Feedback.setFormHTML();
+                        Feedback.saveSubCategory();
                         if(Feedback.form_data.rating){
                             Feedback.selectedRating();
                         }
@@ -2251,7 +2306,9 @@ else{
                             Feedback.form_data.rating =  Feedback.form_data.rating;
                             Feedback.form_data.comment_field =  Feedback.form_data.comment_field
                             Feedback.form_data.category = Feedback.form_data.category
+                            Feedback.saveCheckedCategory();
                             Feedback.setFormHTML();
+                            Feedback.saveSubCategory();
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                             }
@@ -2271,8 +2328,10 @@ else{
                                 audio.remove();
                                 Feedback.audio_file = '';
                                 Feedback.recording = false;
+                                Feedback.saveCheckedCategory();
                                 audio_close.remove();
                                 Feedback.setFormHTML();
+                                Feedback.saveSubCategory();
                                 if(Feedback.form_data.rating){
                                     Feedback.selectedRating();
                                 }
@@ -2360,7 +2419,9 @@ else{
                                 $(video_stop_btn).remove();
                                 setTimeout( function() {Feedback.recording = true;
                                 Feedback.form_data.rating =  Feedback.form_data.rating;
+                                // Feedback.saveCheckedCategory();
                                 Feedback.setFormHTML();
+                                Feedback.saveSubCategory();
                                 if(Feedback.form_data.rating){
                                     Feedback.selectedRating();
                                     console.log('selected rating');
@@ -2374,8 +2435,10 @@ else{
                                     video.remove();
                                     Feedback.video_file = '';
                                     Feedback.recording = false;
+                                    Feedback.saveCheckedCategory();
                                     video_close.remove();
                                     Feedback.setFormHTML();
+                                    Feedback.saveSubCategory();
                                     if(Feedback.form_data.rating){
                                         Feedback.selectedRating();
                                     }
@@ -2417,6 +2480,7 @@ else{
                     //     }, Lang.get("ok", true));
                     //     return
                     // }
+                    Feedback.saveCheckedCategory();
                     this.hideControls();
                     console.log('video recorder started')
                     Video_Capture.start({
@@ -2587,9 +2651,9 @@ else{
                             console.log(rating)
                         }
                         this.form_data.rating = rating.slice(rating.length -1, rating.length)
-                        console.log(this.form_data.rating, 'form data')
+                        console.log(Feedback.configs.rating_limit, 'form data')
                     }
-                    if(this.form_data.rating < 3){
+                    if(this.form_data.rating <= Feedback.configs.rating_limit){
                     console.log('unbinded')
                     this.ui.controls.find(".gigatester-controls-form").show();
                     this.ui.controls.off("click", "gtrating > gtdiv");
@@ -2617,8 +2681,9 @@ else{
                         }
                         this.form_data.rating = rating.slice(rating.length -1, rating.length)
                         console.log(this.form_data.rating, 'form data')
+                        console.log(Feedback.configs.rating_limit, 'max rating limit')
                     }
-                    if(this.form_data.rating < 3){
+                    if(this.form_data.rating <= Feedback.configs.rating_limit){
                     console.log('unbinded')
                     this.ui.controls.find(".gigatester-controls-form").show();
                     this.ui.controls.off("click", "gtrating > gtdiv");
@@ -2670,8 +2735,10 @@ else{
                         external_file.remove();
                         Feedback.external_file = '';
                         Feedback.recording = false;
+                        Feedback.saveCheckedCategory();
                         external_file_close.remove();
                         Feedback.setFormHTML();
+                        Feedback.saveSubCategory();
                         if(Feedback.form_data.rating){
                             Feedback.selectedRating();
                         }
@@ -2800,7 +2867,7 @@ else{
                     if (!this.isAutoHide()) {
                         this.ui.button.show()
                     }
-                    console.log($(document.getElementById('category')).html())
+                    // console.log($(document.getElementById('category')).html())
                     // $(document.getElementById('category')).remove();
 
                     this.ui.element.removeAttr("isopen");
@@ -2876,7 +2943,7 @@ else{
                     let send_button = this.ui.controls.find(".gigatester-controls-send");
                     send_button.addClass("gigatester-controls-send-loading")
                     console.log(dataInfo, 'dataInfo');
-                    fetch('https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedbackMedia/', {
+                    fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedbackMedia/`, {
                         method: 'POST',
                         body:  JSON.stringify(dataInfo),
                         headers: { 'Content-Type': 'application/json' },
@@ -2914,6 +2981,17 @@ else{
                             this.post();
                           }
                         })
+                        .catch(error => {
+                            console.log(error, 'post api error');
+                            if (this.controls_step === 2) {
+                                send_button.removeClass("gigatester-controls-send-loading");
+                                send_button.removeClass("gigatester-controls-send-uploading");
+                                send_button.prop("disabled", false);
+                                $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertBefore(send_button)
+                            } else if (this.controls_step === 3) {
+                                $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("Feedback submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                            }
+                        }) 
                         })
                         .catch(error => {
                             console.log(error, 'post api error');
@@ -2984,7 +3062,7 @@ else{
                         //   'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T',   
                       }
                       console.log(postData, 'post Data')
-                      fetch(`https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedback/`, {
+                      fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedback/`, {
                         method: 'POST',
                         body:  JSON.stringify(postData),
                         headers: { 'Content-Type': 'application/json' },
@@ -3614,6 +3692,7 @@ else{
                 this.stop_x = 0;
                 this.stop_y = 0;
                 this.svg_obj_path = false
+                console.log('drag stopped')
             },
             startCapture: function() {
                 var displayMediaOptions = {
@@ -4018,12 +4097,12 @@ else{
         let GigaTester_Api = {
             isLoaded: function() {
                 console.log('js api')
-                fetch(`https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development/feedbackConfig?apiKey=${GigaTester.apiKey || "ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T"}&version=${GigaTester.productVersion || 0.1}`, {
+                fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedbackConfig?apiKey=${GigaTester.apiKey || "ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T"}&version=${GigaTester.productVersion || 0.1}`, {
                     method: 'GET',
                   })
                     .then(res => res.json())
                     .then(data => {
-                        // console.log(data);
+                        console.log(data);
                         Feedback.configs.categories = []
                         Feedback.configs.config_data = data;
                         let category = data[0].categories;
@@ -4204,7 +4283,7 @@ else{
 }
 }
 function checkgigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
 setTimeout(() => {
     checkgigatester();
     console.log('inside giga timeout')}, 200);
