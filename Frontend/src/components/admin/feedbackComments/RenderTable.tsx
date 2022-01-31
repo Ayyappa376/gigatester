@@ -99,8 +99,9 @@ const RenderTable = (props: IProps) => {
             let signedUrl: any;
             const time24HrsMilli = 24 * 60 * 60 * 1000;
             const timeNowMilli = new Date().getTime();
-            if(signedUrlMapping && signedUrlMapping[url] && ((timeNowMilli - signedUrlMapping[url].date) < time24HrsMilli)) {
+            if(signedUrlMapping && signedUrlMapping[url] && signedUrlMapping[url].signedUrl && ((timeNowMilli - signedUrlMapping[url].date) < time24HrsMilli)) {
               signedUrl = signedUrlMapping[url].signedUrl;
+              signedUrlMappingCopy[url] = {signedUrl, date: signedUrlMapping[url].date};
               return resolve({})
             } else {
               isUrlMissing = true;
