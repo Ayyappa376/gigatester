@@ -97,17 +97,22 @@ const RenderTable = (props: IProps) => {
         urls.map((url: string) => {
           return new Promise(async(resolve, reject) => {
             let signedUrl: any;
-            if(signedUrlMapping && signedUrlMapping[url]) {
-              signedUrl = signedUrlMapping[url]
+            const time24HrsMilli = 24 * 60 * 60 * 1000;
+            const timeNowMilli = new Date().getTime();
+            if(signedUrlMapping && signedUrlMapping[url] && signedUrlMapping[url].signedUrl && ((timeNowMilli - signedUrlMapping[url].date) < time24HrsMilli)) {
+              signedUrl = signedUrlMapping[url].signedUrl;
+              signedUrlMappingCopy[url] = {signedUrl, date: signedUrlMapping[url].date};
+              return resolve({})
             } else {
               isUrlMissing = true;
               signedUrl = await getSignedUrl(url, stateVariable);
-            }
-            if (signedUrl) {
-              signedUrlMappingCopy[url] = signedUrl;
-              return resolve({});
-            } else {
-              return reject({})
+              if (signedUrl) {
+                const now = new Date();
+                signedUrlMappingCopy[url] = {signedUrl, date: now.getTime()};
+                return resolve({});
+              } else {
+                return reject({})
+              }
             }
           })
         })
@@ -116,7 +121,7 @@ const RenderTable = (props: IProps) => {
         if(isUrlMissing) {
           updateSignedUrlData(signedUrlMappingCopy)}
         }
-      ).catch((error) => {console.log(error)});
+      ).catch((error) => {console.error(error)});
     }
 
     const handleOnSearch = (search: any) => { props.setKeyword(search); props.setSearchInitiated(true) };
@@ -193,7 +198,27 @@ const RenderTable = (props: IProps) => {
             <TableBody>
               {props.tableData.map(
                 (row: IAppFeedback, index: number) => {
+                  
                   const labelId = `enhanced-table-checkbox-${index}`;
+
+                  let sourceDetails = '-'
+                  
+                  if(row.userId) sourceDetails = row.userId;
+                  
+                  if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
+                  
+                  if(row.platformName) {
+                    let platformInfo;
+                    if(row.platformVersion) {
+                      platformInfo = `(${row.platformName} - ${row.platformVersion})`
+                    } else {
+                      platformInfo = row.platformName;
+                    }
+                    sourceDetails = sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
+                  }
+                  
+                  if(row.platformOs) sourceDetails = sourceDetails === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
+                  
                   return (
                     <TableRow
                       innerRef={index === tableData.length - 1 ? ref : null}
@@ -201,7 +226,7 @@ const RenderTable = (props: IProps) => {
                       key={row.id}
                     >
                       <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
-                            {row.sourceIP ? (row.userId ? row.userId + '-' : "")  + row.sourceIP : row.userId ? row.userId : "-"}
+                            {sourceDetails}
                       </TableCell>
                       <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
                             {row.createdOn ? getDateTime(row.createdOn) : '-'}
@@ -218,13 +243,13 @@ const RenderTable = (props: IProps) => {
                         <TableCell  align='center' style={{fontSize: '1rem'}}>
                             {row.feedbackCategory ? row.feedbackCategory : '-'}
                         </TableCell>
-                      <TableCell align='center' style={{maxWidth: '30vw', fontSize: '1rem'}}>
+                      <TableCell align='left' style={{maxWidth: '30vw', fontSize: '1rem'}}>
                         <div style={{overflow: 'auto', maxHeight: '20vh'}}>
-                            <RenderComments comments={(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)} old={true}/>
+                            <RenderComments category={row.feedbackCategory} isBugReport={isBugReport} comments={(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)} old={true}/>
                         </div>
                         <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
 
-                        <div>
+                        <div key="image-attachment">
                           {
                             row.feedbackMedia? row.feedbackMedia.image ? <Link
                             component="button"
@@ -235,13 +260,13 @@ const RenderTable = (props: IProps) => {
                             }}
                           >
                             {
-                              signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] ?
-                                <img src={signedUrlMapping[row.feedbackMedia.image]} style={{width: 150, marginTop: 20}}></img> : <div/>
+                              signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] && signedUrlMapping[row.feedbackMedia.image].signedUrl ?
+                                <img src={signedUrlMapping[row.feedbackMedia.image].signedUrl} style={{width: 150, marginTop: 20}}></img> : <div/>
                             }
                           </Link> : <div/> : <div/>
                           }
                         </div>
-                        <div>
+                        <div key="video-attachment">
                           {
                             row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
                             <div style={{maxWidth: 700}}>
@@ -256,7 +281,8 @@ const RenderTable = (props: IProps) => {
                                             marginLeft: 'auto',
                                             marginRight: 'auto',
                                           }}>
-                              <source src={signedUrlMapping[row.feedbackMedia.video]} type="video/mp4" />
+                              <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ? 
+                                signedUrlMapping[row.feedbackMedia.video].signedUrl : '' : ''} type="video/mp4" />
                             </video>
                             </div>
                             : <div style={{maxWidth: 700}}>
@@ -276,15 +302,15 @@ const RenderTable = (props: IProps) => {
                           }
                         </div>
                         </div>
-                        <div>
+                        <div key="audio-attachment">
                           {
                             row.feedbackMedia? row.feedbackMedia.audio ? <AudioPlayer url={row.feedbackMedia.audio}/> : <div/> : <div/>
                           }
                         </div>
-                        <div>
+                        <div key="file-attachment">
                           {
                             row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
-                              <a href={signedUrlMapping[row.feedbackMedia.file]} download>
+                              <a href={signedUrlMapping[row.feedbackMedia.file].signedUrl} download>
                                 <Link
                                   component="button"
                                   variant="body2"
@@ -295,7 +321,6 @@ const RenderTable = (props: IProps) => {
                           }
                         </div>
                       </TableCell>
-                      
                     </TableRow>
                   );
                 }

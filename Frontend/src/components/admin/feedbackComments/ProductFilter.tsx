@@ -71,7 +71,7 @@ export const VersionFilter = (props : IVersionFilterProps) => {
                 value={productVersion}
                 onChange={handleChange}
                 >
-                {versionList.map((version, i) => <MenuItem value={version}>{version}</MenuItem>)}
+                {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
                 </Select>
             </FormControl>
         </div>
