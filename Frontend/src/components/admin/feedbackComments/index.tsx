@@ -157,12 +157,15 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         return;
       }
       console.log(focusRating)
-      if(focusRating.length <= 0) return;
+      if(focusRating.length === 0) {
+        setData(rawData);
+        return;
+      }
       // fetch the results from backend
       setResultsFetched(false)
       setData([]);
-      setRawData([])
-      fetchRecursiveData({filterRating: focusRating})
+      //setRawData([])
+      fetchRecursiveData({filterRating: focusRating, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
     }, [focusRating])
 
     useEffect(() => {
@@ -170,12 +173,15 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         return;
       }
       console.log(focusSeverity)
-      if(focusSeverity.length <= 0) return;
+      if(focusSeverity.length <= 0) {
+        setData(rawData);
+        return;
+      }
       // fetch the results from backend
       setResultsFetched(false)
       setData([]);
-      setRawData([])
-      fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true})
+      //setRawData([])
+      fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
     }, [focusSeverity])
 
     useEffect(() => {
@@ -183,15 +189,18 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         return;
       }
       console.log(focusCategory)
-      if(focusCategory.length <= 0) return;
+      if(focusCategory.length <= 0) {
+        setData(rawData);
+        return;
+      }
       // fetch the results from backend
       setResultsFetched(false)
       setData([]);
-      setRawData([])
-      fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true})
+      //setRawData([])
+      fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
     }, [focusCategory])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, showNoEmptyError}: 
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate}: 
         IFetchRecursiveData) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
@@ -254,10 +263,13 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
           const dataCopy = new Set([...dataObj].concat(response.Items.Items));
           return Array.from(dataCopy)
         });
-        setRawData((rawDataObj) => {
-          const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
-          return Array.from(rawDataCopy)
-        });
+        if(!noRawDataUpdate) {          // This if check is useful for the cases where filtering is done. If filtering returns 0 elements, the presence of the raw data,
+          setRawData((rawDataObj) => {  // clear filter will get the idea that the data has already been fetched.
+            const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+            return Array.from(rawDataCopy)
+          });
+        }
+        
         if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
           setLastEvaluatedKey(response.Items.LastEvaluatedKey);
         }
@@ -575,7 +587,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
                     </Grid>
                     </Grid>
                     <div style={{fontWeight: 500, maxHeight: 500, overflow: 'auto'}}>
-                      <RenderComments comments={getComments(focusAttachmentUid)} old={false}/></div>
+                      <RenderComments comments={getComments(focusAttachmentUid)} old={false} isBugReport={isBugReport} category={getBugCategory(focusAttachmentUid)}/></div>
                   </Grid>
               </Grid>
               </div>

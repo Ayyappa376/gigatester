@@ -94,6 +94,13 @@ export interface IAppFeedback {
       audio?: string
     },
     feedbackType: FeedbackType;
+    platformName: string;
+    platformVersion: string;
+    platformOs: {
+      family: string;
+      version: string;
+      architecture: string;
+    };
   }
 
 export interface ILastEvaluatedKey {
@@ -163,6 +170,7 @@ export interface IFetchRecursiveData {
   prodVersion?: string,
   showNoEmptyError?: boolean,
   searchWord?: string;
+  noRawDataUpdate?: boolean;
 } 
 
 export const feedbackPieChartOptions = {
