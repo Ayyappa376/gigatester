@@ -1973,8 +1973,8 @@ justify-content: center;
   width: 300px;
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-form {
-    /* height: calc(100vh - 240px); */
     overflow: auto;
+    height: calc(100vh - 240px);
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-options {
   width: auto;

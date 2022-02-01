@@ -939,14 +939,15 @@ else{
 
                         Feedback.controls_step = 2;
                         Feedback.showControls(true);
-                        setTimeout( function() {Feedback.recording = true;
-                            
+                        setTimeout( function() {
+                            Feedback.recording = true;
                             Feedback.form_data.rating =  Feedback.form_data.rating;
                             Feedback.setFormHTML();
                             Feedback.saveSubCategory();
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                                 console.log('selected rating');
+                            }
                             var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                             var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
                             var video_close = $('<button id="gigatester_video_player_close">').html(Svg_Icons.trash);
@@ -967,22 +968,23 @@ else{
                                     Feedback.selectedRating();
                                 }
                                 })
-                            }
-                        else{
-                            var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
-                            var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                            var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
-                            // video.appendTo(video_overlay.children("div"));
-                            video_close.appendTo(video_overlay);
-                            video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                            video_close.on("click", function() {
-                                video_overlay.remove()
-                            })
-                        }}, 100);
+                            }, 100);
+                        // else{
+                        //     var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                        //     var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                        //     var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                        //     // video.appendTo(video_overlay.children("div"));
+                        //     video_close.appendTo(video_overlay);
+                        //     video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                        //     video_close.on("click", function() {
+                        //         video_overlay.remove()
+                        //     })
+                        // }
+                  
                             Feedback.showControls();
                             Feedback.loadVideo(src);
                         // Feedback.addScreenshotBadge()
-                    },
+                },
                     cancelAnnotation: function(e) {
                         
                         this.cancelRoutingOption()
@@ -995,12 +997,14 @@ else{
                             Feedback.form_data.rating = Feedback.form_data.rating;
                             Feedback.form_data.comment_field =  Feedback.form_data.comment_field;
                             Feedback.form_data.category = Feedback.form_data.category
+                            Feedback.saveCheckedCategory();
                             Feedback.setFormHTML();
                             console.log('cancel annotation')
                             Feedback.showControls();
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                             }
+                            Feedback.saveSubCategory();
                             Feedback.removeOverlay();
                             this.removeTools()
                         } else {
@@ -1311,6 +1315,8 @@ else{
                             Feedback.ui.overlay_hint_tooltip.remove();
                             Feedback.ui.overlay_hint_tooltip = false
                         }
+                        console.log('drag stopped')
+                        $(document.getElementsByClassName('.gigatester-button-input-save')).trigger('click')
                         Feedback.disableScroll()
                     },
                     dragMove: function() {
@@ -2084,7 +2090,7 @@ else{
                             setTimeout(()=> {recorder.start();
                                 setTimeout(()=> {recorder.stop(), stream.getTracks() // get all tracks from the MediaStream
                                 .forEach( track => track.stop() );}, 300);
-                            }, 100);
+                            }, 200);
                         }
                         console.log('image recording')
                         recorder.onstop = e => {
@@ -2385,6 +2391,7 @@ else{
                             audio: true,
                             video: true
                         }).then(function(stream){
+                            Feedback.saveCheckedCategory();
                             Feedback.hideControls();
                             let video_stop_btn = $('<gtbutton id="gigatester-video-stop-btn"> </gtbutton>').html(Svg_Icons.pause)
                             $(video_stop_btn).on('mouseenter', function(){
@@ -2416,15 +2423,18 @@ else{
                                 var src = URL.createObjectURL(completeBlob);
                                 console.log(src, 'video blob')
                                 $(video_stop_btn).remove();
-                                setTimeout( function() {Feedback.recording = true;
+                                setTimeout( function() {
+                                    Feedback.recording = true;
                                 Feedback.form_data.rating =  Feedback.form_data.rating;
                                 // Feedback.saveCheckedCategory();
                                 Feedback.setFormHTML();
-                                Feedback.saveSubCategory();
+                                
                                 if(Feedback.form_data.rating){
                                     Feedback.selectedRating();
                                     console.log('selected rating');
-                                    var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                                }
+                                Feedback.saveSubCategory();
+                                var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                                 var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
                                 var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
                                 // video.appendTo(video_overlay.children("div"));
@@ -2442,18 +2452,19 @@ else{
                                         Feedback.selectedRating();
                                     }
                                     })
-                                }
-                            else{
-                                var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
-                                var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                                var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
-                                // video.appendTo(video_overlay.children("div"));
-                                video_close.appendTo(video_overlay);
-                                video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                                video_close.on("click", function() {
-                                    video_overlay.remove()
-                                })
-                            }}, 100);
+                                
+                            // else{
+                            //     var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                            //     var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                            //     var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                            //     // video.appendTo(video_overlay.children("div"));
+                            //     video_close.appendTo(video_overlay);
+                            //     video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                            //     video_close.on("click", function() {
+                            //         video_overlay.remove()
+                            //     })
+                            // }
+                        }, 100);
                                 Feedback.showControls();
                                 Feedback.loadVideo(src);
                               };
@@ -2942,7 +2953,7 @@ else{
                     let send_button = this.ui.controls.find(".gigatester-controls-send");
                     send_button.addClass("gigatester-controls-send-loading")
                     console.log(dataInfo, 'dataInfo');
-                    fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedbackMedia/`, {
+                    fetch(`${GigaTester.endpoint}/feedbackMedia/`, {
                         method: 'POST',
                         body:  JSON.stringify(dataInfo),
                         headers: { 'Content-Type': 'application/json' },
@@ -3061,7 +3072,7 @@ else{
                         //   'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T',   
                       }
                       console.log(postData, 'post Data')
-                      fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedback/`, {
+                      fetch(`${GigaTester.endpoint}/feedback/`, {
                         method: 'POST',
                         body:  JSON.stringify(postData),
                         headers: { 'Content-Type': 'application/json' },
@@ -3290,11 +3301,18 @@ else{
                     }
                     if (this.comments.length && this.comments[this.comments.length - 1].isOpen()) {
                         this.comments[this.comments.length - 1].setPosition(pin_x, pin_y)
+                        $.each(this.comments, function(index, comment) {
+                            comment.hideForm()
+                        });
+                        this.addComment(pin_x, pin_y);
+                        console.log('add new comment')
+                        Feedback.disableScroll();
                     } else {
                         $.each(this.comments, function(index, comment) {
                             comment.hideForm()
                         });
                         this.addComment(pin_x, pin_y);
+                        console.log('add new comment')
                         Feedback.disableScroll();
                     }
                 }, 
@@ -3691,7 +3709,7 @@ else{
                 this.stop_x = 0;
                 this.stop_y = 0;
                 this.svg_obj_path = false
-                console.log('drag stopped')
+                // console.log('drag stopped')
             },
             startCapture: function() {
                 var displayMediaOptions = {
@@ -3944,7 +3962,7 @@ else{
                 e.stopPropagation()
             });
             this._getHTML = function() {
-                return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
+                return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input gigatester-button-input-save">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
             };
             this.isOpen = function() {
                 return element.find(".gigatester-comment-form").is(":visible")
@@ -3973,13 +3991,16 @@ else{
                 element.find(".gigatester-comment-form").hide()
             };
             this.setPosition = function(x, y) {
-                this.x = x;
-                this.y = y;
-                this.setFormDirection();
-                element.css({
-                    top: this.y,
-                    left: this.x
-                })
+                element.find(".gigatester-button-input-save").trigger('click');
+                // this.x = x;
+                // this.y = y;
+                // this.setFormDirection();
+                // element.css({
+                //     top: this.y,
+                //     left: this.x
+                // })
+                console.log('set position')
+               
             };
             this.setFormDirection = function() {
                 var is_mobile = false;
@@ -4054,7 +4075,7 @@ else{
                         document.execCommand("insertText", false, text)
                     } catch (e) {}
                 });
-                element.find(".gigatester-button-input").on("click", function(e) {
+                element.find(".gigatester-button-input-save").on("click", function(e) {
                     comment_message = element.find("gtcomment").html();
                     comment_message = comment_message.replace(/<br\/?>/gi, "\n");
                     comment_message = comment_message.replace(/(<([^>]+)>)/gi, "");
@@ -4071,9 +4092,12 @@ else{
                     this.hideForm()
                 }.bind(this));
                 element.appendTo($(document.body));
-                element.find("gtcomment").on('focus', function(){
-                    console.log(comment_message,'comment focus')
-                })
+                // element.find("gtcomment").on('mouseleave', function(){
+                    if(element.find("gtcomment").text()){
+                        console.log(element.find("gtcomment").text())
+                    element.find(".gigatester-button-input-save").trigger('click');
+                    }
+                // })
                 element.find("gtcomment").val('').trigger('focus').val(comment_message);
             };
             this.getData = function() {
@@ -4096,7 +4120,7 @@ else{
         let GigaTester_Api = {
             isLoaded: function() {
                 console.log('js api')
-                fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedbackConfig?apiKey=${GigaTester.apiKey || "ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T"}&version=${GigaTester.productVersion || 0.1}`, {
+                fetch(`${GigaTester.endpoint}/feedbackConfig?apiKey=${GigaTester.apiKey}&version=${GigaTester.productVersion}`, {
                     method: 'GET',
                   })
                     .then(res => res.json())
