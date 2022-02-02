@@ -26,6 +26,10 @@ import {
   CssBaseline,
   ListItemIcon,
   IconButton,
+  FormControl,
+  MenuItem,
+  Select,
+  InputLabel,
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -45,7 +49,11 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IProductInfo, IProductParams, ICategory, IFeedbackSettings, FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, RATING_ICON_TYPE_STAR, SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW } from '../../../model';
+import { IProductInfo, IProductParams, ICategory, IFeedbackSettings, 
+  FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, 
+  SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
+  INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
+  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
 import Success from '../../success-page';
@@ -101,6 +109,9 @@ const useStyles = makeStyles((theme) => ({
     width: '100%',
     marginTop: '20px',
     padding: '20px',
+  },
+  formControl: {
+    minWidth: '100%',
   },
 }));
 
@@ -162,7 +173,10 @@ const EditProductFeedbackSettings = (props: any) => {
         response.products[0].feedbackSettings = {
           categories: [],
           feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
+          invokeDelay: 300,
+          invokeOn: [INVOKE_TYPE_MANUAL],
           ratingIcon: RATING_ICON_TYPE_STAR,
+          ratingLimit: 2,
           severities: [SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW],
           title: 'GigaTester',
           uploadFileMaxSize: '3',
@@ -653,11 +667,85 @@ const EditProductFeedbackSettings = (props: any) => {
     }
   };
 
+  const handleTitleChange = (event: any) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        temp.products[0].feedbackSettings.title = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleFeedbackTypesChange = (event: any) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        let valueArray = temp.products[0].feedbackSettings.feedbackTypes || [];
+        valueArray = [...event.target.value];
+        temp.products[0].feedbackSettings.feedbackTypes = valueArray;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleUploadFileMaxSizeChange = (event: any) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        temp.products[0].feedbackSettings.uploadFileMaxSize = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleVideoAudioMaxDurationChange = (event: any) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        temp.products[0].feedbackSettings.videoAudioMaxDuration = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleInvokeOnChange = (event: any) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        let valueArray = temp.products[0].feedbackSettings.invokeOn || [];
+        valueArray = [...event.target.value];
+        temp.products[0].feedbackSettings.invokeOn = valueArray;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleInvokeDelayChange = (event: any) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        temp.products[0].feedbackSettings.invokeDelay = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleRatingLimitChange = (event: any) => {
+    if(productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
+        temp.products[0].feedbackSettings.ratingLimit = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
   const renderCategoryDetails = (category: ICategory, catIndex: number) => {
     return (
       <Fragment key={catIndex}>
-        <Grid container spacing={1}>
-          <Grid item xs={11} sm={11}>
+        <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px'}}>
+          <Grid item xs={10} sm={10}>
             <TextField
               required
               type='string'
@@ -671,7 +759,7 @@ const EditProductFeedbackSettings = (props: any) => {
               className='textFieldStyle'
           />
           </Grid>
-          <Grid item xs={1} sm={1}>
+          <Grid item xs={2} sm={2}>
             <LightTooltip
               title={'Delete this Category'}
               aria-label='delete this category'
@@ -682,17 +770,17 @@ const EditProductFeedbackSettings = (props: any) => {
             </LightTooltip>
           </Grid>
           <Grid item xs={1}></Grid>
-          <Grid item xs={10}>
+          <Grid item xs={6}>
             <Typography>Standard Feedbacks:</Typography>
           </Grid>
-          <Grid item xs={1}>
+          <Grid item xs={5} style={{ textAlign: "center" }}>
             <LightTooltip
               title={'Add a standard Feedback text'}
               aria-label='Add a standard Feedback text'
             >
-              <IconButton size='small' onClick={() => addFeedback(catIndex)} >
-                <AddIcon />
-              </IconButton>
+              <Button size='small' variant="outlined" onClick={() => addFeedback(catIndex)} >
+                <AddIcon /> Feedback Text
+              </Button>
             </LightTooltip>
           </Grid>
           { category.feedbacks &&
@@ -733,6 +821,192 @@ const EditProductFeedbackSettings = (props: any) => {
     );
   };
 
+  const renderCategorySettings = () => {
+    return (
+      <Grid container spacing={1} style={{borderBottom: 'solid 1px #dddddd', padding: '20px 0'}} >
+        <Grid item xs={6}>
+          <Typography variant="h6">Categories:</Typography>
+        </Grid>
+        <Grid item xs={6} style={{ textAlign: "center" }}>
+          <LightTooltip
+            title={'Add a category'}
+            aria-label='Add a category'
+          >
+            <Button size='small' variant="outlined" onClick={() => addCategory()} >
+              <AddIcon /> Category
+            </Button>
+          </LightTooltip>
+        </Grid>
+        { productParams && productParams.products && productParams.products[0] &&
+          productParams.products[0].feedbackSettings &&
+          productParams.products[0].feedbackSettings.categories.map((category: ICategory, index: number) => {
+            return renderCategoryDetails(category, index);
+        })}
+      </Grid>
+    );
+  };
+
+  const renderStandardSettings = () => {
+    return (
+      <Grid container spacing={1} style={{borderBottom: 'solid 1px #dddddd', padding: '20px 0'}} >
+        <Grid item xs={12}>
+          <Typography variant="h6">General Widget Settings:</Typography>
+        </Grid>
+        <TextField
+          required={true}
+          type='string'
+          id={`title`}
+          name={`title`}
+          value={
+            (productParams && productParams.products && productParams.products[0] &&
+            productParams.products[0].feedbackSettings &&
+            productParams.products[0].feedbackSettings.title)
+            ? productParams.products[0].feedbackSettings.title
+            : ''
+          }
+          label={'Title to display on the dialog'}
+          onChange={(event) => handleTitleChange(event)}
+          fullWidth
+          autoComplete='off'
+          className='textFieldStyle'
+        />
+
+        <FormControl className={classes.formControl}>
+          <InputLabel id={`feedbackTypes`} required={true}>
+            {'What can users submit using this widget (select multiple):'}
+          </InputLabel>
+          <Select
+            name={`select_feedbackTypes`}
+            multiple
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackSettings &&
+              productParams.products[0].feedbackSettings.feedbackTypes)
+              ? productParams.products[0].feedbackSettings.feedbackTypes
+              : []
+            }
+            onChange={(event) => handleFeedbackTypesChange(event)}
+          >
+            <MenuItem key={FEEDBACK_TYPE_FEEDBACK} value={FEEDBACK_TYPE_FEEDBACK}>{'Submit Feedback'}</MenuItem>
+            <MenuItem key={FEEDBACK_TYPE_BUGS} value={FEEDBACK_TYPE_BUGS}>{'Submit Bugs'}</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl className={classes.formControl}>
+          <InputLabel id={`uploadFileMaxSize`} required={true}>
+            {'Maximum size of the file that can be uploaded (In GB):'}
+          </InputLabel>
+          <Select
+            name={`select_uploadFileMaxSize`}
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackSettings &&
+              productParams.products[0].feedbackSettings.uploadFileMaxSize)
+              ? productParams.products[0].feedbackSettings.uploadFileMaxSize
+              : ''
+            }
+            onChange={(event) => handleUploadFileMaxSizeChange(event)}
+          >
+            <MenuItem key={1} value={1}>{'1 GB'}</MenuItem>
+            <MenuItem key={2} value={2}>{'2 GB'}</MenuItem>
+            <MenuItem key={3} value={3}>{'3 GB'}</MenuItem>
+            <MenuItem key={4} value={4}>{'4 GB'}</MenuItem>
+            <MenuItem key={5} value={5}>{'5 GB'}</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl className={classes.formControl}>
+          <InputLabel id={`videoAudioMaxDuration`} required={true}>
+            {'Maximum duration of the Audio and Video recordings (In min):'}
+          </InputLabel>
+          <Select
+            name={`select_videoAudioMaxDuration`}
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackSettings &&
+              productParams.products[0].feedbackSettings.videoAudioMaxDuration)
+              ? productParams.products[0].feedbackSettings.videoAudioMaxDuration
+              : ''
+            }
+            onChange={(event) => handleVideoAudioMaxDurationChange(event)}
+          >
+            <MenuItem key={1} value={1}>{'1 min'}</MenuItem>
+            <MenuItem key={2} value={2}>{'2 min'}</MenuItem>
+            <MenuItem key={3} value={3}>{'3 min'}</MenuItem>
+            <MenuItem key={4} value={4}>{'4 min'}</MenuItem>
+            <MenuItem key={5} value={5}>{'5 min'}</MenuItem>
+          </Select>
+        </FormControl>
+
+        <FormControl className={classes.formControl}>
+          <InputLabel id={`invokeOn`} required={true}>
+            {'How will the feedback dialog be invoked (can select multiple):'}
+          </InputLabel>
+          <Select
+            name={`select_invokeOn`}
+            multiple
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackSettings &&
+              productParams.products[0].feedbackSettings.invokeOn)
+              ? productParams.products[0].feedbackSettings.invokeOn
+              : []
+            }
+            onChange={(event) => handleInvokeOnChange(event)}
+          >
+            <MenuItem key={INVOKE_TYPE_MANUAL} value={INVOKE_TYPE_MANUAL}>{'User manually clicks button'}</MenuItem>
+            <MenuItem key={INVOKE_TYPE_AFTER_DELAY} value={INVOKE_TYPE_AFTER_DELAY}>{'Automatically display after sometime'}</MenuItem>
+            <MenuItem key={INVOKE_TYPE_CONTEXT_CHANGE} value={INVOKE_TYPE_CONTEXT_CHANGE}>{'Automatically display on context change'}</MenuItem>
+            <MenuItem key={INVOKE_TYPE_IDLE} value={INVOKE_TYPE_IDLE}>{'Automatically display when the is inactivity'}</MenuItem>
+          </Select>
+        </FormControl>
+
+        <TextField
+          required={false}
+          type='number'
+          id={`invokeDelay`}
+          name={`invokeDelay`}
+          value={
+            (productParams && productParams.products && productParams.products[0] &&
+            productParams.products[0].feedbackSettings &&
+            productParams.products[0].feedbackSettings.invokeDelay)
+            ? productParams.products[0].feedbackSettings.invokeDelay
+            : ''
+          }
+          label={'The delay (in minutes) after which feedback will be requested automatically'}
+          onChange={(event) => handleInvokeDelayChange(event)}
+          fullWidth
+          autoComplete='off'
+          InputProps={{ disableUnderline: true }}
+          className='textFieldStyle'
+        />
+
+        <FormControl className={classes.formControl}>
+          <InputLabel id={`ratingLimit`} required={true}>
+            {'The star rating till which detailed feedback will requested:'}
+          </InputLabel>
+          <Select
+            name={`select_ratingLimit`}
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackSettings &&
+              productParams.products[0].feedbackSettings.ratingLimit)
+              ? productParams.products[0].feedbackSettings.ratingLimit
+              : ''
+            }
+            onChange={(event) => handleRatingLimitChange(event)}
+          >
+            <MenuItem key={1} value={1}>{'1 star rating'}</MenuItem>
+            <MenuItem key={2} value={2}>{'2 star rating'}</MenuItem>
+            <MenuItem key={3} value={3}>{'3 star rating'}</MenuItem>
+            <MenuItem key={4} value={4}>{'4 star rating'}</MenuItem>
+            <MenuItem key={5} value={5}>{'5 star rating'}</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
+    );
+  };
+
   const renderFeedbackSettingsPage = () => {
     if (feedbackSettingsPosted) {
       return (
@@ -759,42 +1033,42 @@ const EditProductFeedbackSettings = (props: any) => {
           <Typography variant="h5">
             Product: 
             &nbsp;{ productParams && productParams.products && productParams.products[0] && productParams.products[0].name ? productParams.products[0].name : '' }
-            &nbsp;[version
+            &nbsp;, version:
             &nbsp;{ productParams && productParams.products && productParams.products[0] && productParams.products[0].version ? productParams.products[0].version : '' }
-            ]
           </Typography>
           <Paper className={classes.sections}>
-            <Grid container spacing={1}>
-              <Grid item xs={11}>
-              <Typography variant="h6">Categories:</Typography>
-              </Grid>
-              <Grid item xs={1}>
-                <LightTooltip
-                  title={'Add a category'}
-                  aria-label='Add a category'
-                >
-                  <IconButton size='small' onClick={() => addCategory()} >
-                    <AddIcon />
-                  </IconButton>
-                </LightTooltip>
-              </Grid>
-              { productParams && productParams.products && productParams.products[0] &&
-                productParams.products[0].feedbackSettings &&
-                productParams.products[0].feedbackSettings.categories.map((category: ICategory, index: number) => {
-                  return renderCategoryDetails(category, index);
-              })}
-            </Grid>
+            {renderStandardSettings()}
+            {renderCategorySettings()}
+            <div className='bottomButtonsContainer'>
+              <Button
+                className={classes.button}
+                variant='outlined'
+                onClick={() => {
+                  props.goBack(MANAGE_PRODUCTS);
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                onClick={() => {
+                  handleSave();
+                }}
+                className={classes.button}
+                variant='outlined'
+              >
+                <Text tid='save' />
+              </Button>
+            </div>
           </Paper>
           <Paper className={classes.sections}>
             <Grid container spacing={1}>
               <Grid item xs={12}>
                 <Typography variant="h6">API Key:</Typography>
               </Grid>
-              <Grid item xs={12}>
                 {(productParams && productParams.products && productParams.products[0] &&
                   productParams.products[0].apiKey) ? (
                   <Fragment>
-                    <Grid item xs={11}>
+                    <Grid item xs={10}>
                       <TextField
                         required={true}
                         disabled
@@ -807,48 +1081,29 @@ const EditProductFeedbackSettings = (props: any) => {
                         className='textFieldStyle'
                       />
                     </Grid>
-                    <Grid item xs={1}>
+                    <Grid item xs={2}>
                       <LightTooltip
                         title={'Delete API Key'}
                         aria-label='delete api key'
                       >
-                        <IconButton size='small' onClick={() => deleteApiKey()} >
-                          <ClearIcon />
-                        </IconButton>
+                        <Button size='small' variant="outlined" onClick={() => deleteApiKey()} >
+                          <ClearIcon /> Delete
+                        </Button>
                       </LightTooltip>
                     </Grid>
                   </Fragment>
                 ) : (
-                  <Button
-                    size='small'
-                    onClick={(event: any) => handleGenerateApiKey()}
-                  >
-                    Generate API Key
-                  </Button>
+                  <Grid item xs={12}>
+                    <Button
+                      size='small' variant="outlined"
+                      onClick={(event: any) => handleGenerateApiKey()}
+                    >
+                      Generate API Key
+                    </Button>
+                  </Grid>
                 )}
-              </Grid>
             </Grid>
           </Paper>
-          <div className='bottomButtonsContainer'>
-            <Button
-              className={classes.button}
-              variant='outlined'
-              onClick={() => {
-                props.goBack(MANAGE_PRODUCTS);
-              }}
-            >
-              <Text tid='goBack' />
-            </Button>
-            <Button
-              onClick={() => {
-                handleSave();
-              }}
-              className={classes.button}
-              variant='outlined'
-            >
-              <Text tid='save' />
-            </Button>
-          </div>
           <Paper className={classes.sections}>
             <Grid container spacing={1}>
               <Grid item xs={12}>
@@ -882,6 +1137,17 @@ const EditProductFeedbackSettings = (props: any) => {
               </Grid>
             </Grid>
           </Paper>
+          <div className='bottomButtonsContainer'>
+            <Button
+              className={classes.button}
+              variant='outlined'
+              onClick={() => {
+                props.goBack(MANAGE_PRODUCTS);
+              }}
+            >
+              <Text tid='goBack' />
+            </Button>
+          </div>
         </Container>
         <Snackbar
           anchorOrigin={{ vertical: 'top', horizontal: 'center' }}

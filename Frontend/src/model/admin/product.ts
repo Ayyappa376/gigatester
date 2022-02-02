@@ -23,13 +23,13 @@ export interface ITesterStatus {
 }
 
 export interface IFeedbackSettings {
-  autoInvokeDelay?: number; //in seconds
-  autoInvokeOn: AutoInvokeType[];
   categories: ICategory[];
   feedbackTypes: IFeedbackType[];
+  invokeDelay?: number; //in seconds
+  invokeOn: IInvokeType[];
   logo?: string;
   ratingIcon: IRatingIconType;
-  ratingLimit: number; //values 0,1,2,3,4,5 - 0 means it will never ask for details.
+  ratingLimit: number; //values 1,2,3,4,5
   severities: ISeverityType[];
   title: string;
   uploadFileMaxSize: string; //in GB, allowed values 1, 2, 3, 4 or 5
@@ -71,11 +71,11 @@ export const SEVERITY_TYPE_HIGH: ISeverityType = 'High';
 export const SEVERITY_TYPE_MEDIUM: ISeverityType = 'Medium';
 export const SEVERITY_TYPE_LOW: ISeverityType = 'Low';
 
-export type AutoInvokeType = 'MANUAL' | 'AFTER_DELAY' | 'CONTEXT_CHANGE' | 'IDLE';
-export const AUTO_INVOKE_TYPE_MANUAL: AutoInvokeType = 'MANUAL';
-export const AUTO_INVOKE_TYPE_AFTER_DELAY: AutoInvokeType = 'AFTER_DELAY';
-export const AUTO_INVOKE_TYPE_CONTEXT_CHANGE: AutoInvokeType = 'CONTEXT_CHANGE';
-export const AUTO_INVOKE_TYPE_IDLE: AutoInvokeType = 'IDLE';
+export type IInvokeType = 'MANUAL' | 'AFTER_DELAY' | 'CONTEXT_CHANGE' | 'IDLE';
+export const INVOKE_TYPE_MANUAL: IInvokeType = 'MANUAL';
+export const INVOKE_TYPE_AFTER_DELAY: IInvokeType = 'AFTER_DELAY';
+export const INVOKE_TYPE_CONTEXT_CHANGE: IInvokeType = 'CONTEXT_CHANGE';
+export const INVOKE_TYPE_IDLE: IInvokeType = 'IDLE';
 
 export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
