@@ -4596,6 +4596,38 @@ gtvideotoolbar {
 .gigatester-powered-by-logo{
   font-weight: 700;
 }
+#gigatester-popout-dialog-close{
+  position: absolute;
+  top: -17px;
+  background: #2786f0;
+  height: 20px;
+  width: 20px;
+  border-radius: 50px;
+  right: -9px;
+}
+#gigatester-popout-dialog-close svg{
+  font-size: 10px;
+    font-weight: 700;
+    height: 10px;
+    width: 10px;
+    color: white;
+}
+.gigatester-popout-dialog{
+  height: 55px;
+  width: 114px;
+  background: #fefefe;
+  position: absolute;
+  border-radius: 24px;
+  padding: 10px;
+  line-height: 20px;
+  color: black;
+  left: 76px;
+  transform: rotate(
+90deg
+);
+  bottom: 55px;
+  border: 3px solid black;
+}
 gtvideotoolbar btn {
   position: relative;
   float: left;
