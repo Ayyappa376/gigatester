@@ -54,6 +54,9 @@ exports.handler = async (event: any) => {
                 TableName: getTableNameFor('GT_Products'),
               });
                body = (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackSettings);
+               headers['Access-Control-Allow-Headers'] = '*';
+               headers['Access-Control-Allow-Origin'] = '*';
+               headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
                break;
             // case 'POST':
             //     body = await dynamo.put(tableparams).promise();

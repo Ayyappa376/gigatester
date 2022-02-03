@@ -1714,9 +1714,10 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
 }
 #gigatester_button_container .gigatester-controls gtfooter {
   display: block;
-  height: 20px;
+  height: 16px;
+  font-size:10px;
   line-height: 20px;
-  margin: 16px 0 0 0;
+  margin: 10px 0 0 0;
   padding: 0;
   text-align: center;
   box-sizing: border-box;
@@ -1973,7 +1974,7 @@ justify-content: center;
   width: 300px;
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-form {
-    /* height: calc(100vh - 240px); */
+    /* height: calc(100vh - 230px); */
     overflow: auto;
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-options {
