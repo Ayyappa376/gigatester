@@ -1973,8 +1973,8 @@ justify-content: center;
   width: 300px;
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-form {
+    /* height: calc(100vh - 240px); */
     overflow: auto;
-    height: calc(100vh - 240px);
 }
 #gigatester_button_container .gigatester-controls .gigatester-controls-options {
   width: auto;
@@ -4612,7 +4612,7 @@ gtvideotoolbar {
     width: 10px;
     color: white;
 }
-#gigatester-popout-dialog{
+.gigatester-popout-dialog{
   height: 55px;
   width: 114px;
   background: #fefefe;
@@ -4628,7 +4628,6 @@ gtvideotoolbar {
   bottom: 55px;
   border: 3px solid black;
 }
-
 gtvideotoolbar btn {
   position: relative;
   float: left;

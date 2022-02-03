@@ -27,10 +27,17 @@
             (d.head || d.body).appendChild(s);
         })(document);
      }
+     if(typeof window.html2canvas === "undefined"){
+        (function(d) {
+            var s = d.createElement('script');s.async = true;
+            s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.3.3/html2canvas.min.js';
+            (d.head || d.body).appendChild(s);
+        })(document);
+     }
 
     console.log('inside function');
 function gigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined"  || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
     console.log('inside giga timeout')
 }
 else{
@@ -313,7 +320,7 @@ else{
                 feedback_title: "Add a title",
                 select_a_category: "Select a category *",
                 select_a_reason: "Select a reason *",
-                select_a_priority: "Choose priority *",
+                select_a_severity: "Choose severity *",
                 assign_to: "Assign to",
                 leave_us_your_comment: "Leave us your comment *",
                 attach_a_screenshot: "Screenshot",
@@ -389,7 +396,7 @@ else{
             canvas_mode: false,
             canvas_target: false,
             controls_step: 0,
-            form_type: "general",
+            form_type: "FEEDBACK",
             audio_file: "",
             video_file: "",
             image_file:"",
@@ -400,19 +407,22 @@ else{
                 main_button_text: "FEEDBACK",
                 main_button_text_colour: "#FFFFFF",
                 main_button_background_colour: "#2878F0",
-                workflow_type: "bug,general",
-                routing_item_order: "bug,general",
+                workflow_type: 'BUGS,FEEDBACK',
+                routing_item_order: 'BUGS,FEEDBACK',
                 has_video: true,
                 categories:  ['Video', 'Screen', 'Audio', 'Images', 'Other'],
+                severities: ['Critical', 'High', 'Medium', 'Low'],
                 reasons: ['Video Error', 'Video Not Found'],
                 language: 'en',
                 display_powered_by: true,
                 config_data: [],
                 selected_category: [],
                 rating_limit: 2,
+                title: "GigaTester",
+                video_time: 120,
             },
             form_settings_default: {
-                bug: {
+                BUGS: {
                     allow_session_recording: false,
                     allow_screenshot: true,
                     allow_audio: true,
@@ -434,17 +444,17 @@ else{
                     comment_field_placeholder: "",
                     display_category: true,
                     display_reason: true,
-                    display_priority: true,
+                    display_severity: true,
                     display_assignee: false,
                     category_field_mandatory: true,
                     reason_field_mandatory: true,
-                    priority_field_mandatory: true,
+                    severity_field_mandatory: true,
                     assignee_field_mandatory: false,
                     custom_field_1_type: "",
                     custom_field_1_label: "",
                     custom_field_1_mandatory: false,
                     outro_icon_colour: "#2878F0",
-                    outro_icon: 1,
+                    outro_icon: 0,
                     outro_headline: "Thank you!",
                     outro_paragraph: "We really appreciate your feedback."
                 },
@@ -468,10 +478,10 @@ else{
                     comment_field_mandatory: false,
                     comment_field_placeholder: "",
                     display_category: false,
-                    display_priority: false,
+                    display_severity: false,
                     display_assignee: false,
                     category_field_mandatory: false,
-                    priority_field_mandatory: false,
+                    severity_field_mandatory: false,
                     assignee_field_mandatory: false,
                     custom_field_1_type: "",
                     custom_field_1_label: "",
@@ -481,13 +491,13 @@ else{
                     outro_headline: "Thank you!",
                     outro_paragraph: "We really appreciate your feedback."
                 },
-                general: {
+                FEEDBACK: {
                     allow_session_recording: false,
                     allow_screenshot: true,
                     allow_audio: true,
                     allow_video: true,
                     allow_attachment: true,
-                    rating_type: "star",
+                    rating_type: "STAR",
                     rating_help_message: "",
                     rating_mandatory: true,
                     send_button_text: "",
@@ -503,17 +513,17 @@ else{
                     comment_field_placeholder: "",
                     display_category: true,
                     display_reason: true,
-                    display_priority: false,
+                    display_severity: false,
                     display_assignee: false,
                     category_field_mandatory: true,
                     reason_field_mandatory: true,
-                    priority_field_mandatory: false,
+                    severity_field_mandatory: false,
                     assignee_field_mandatory: false,
                     custom_field_1_type: "",
                     custom_field_1_label: "",
                     custom_field_1_mandatory: false,
                     outro_icon_colour: "#2878F0",
-                    outro_icon: 1,
+                    outro_icon: 0,
                     outro_headline: "Thank you!",
                     outro_paragraph: "We really appreciate your feedback."
                 }
@@ -554,7 +564,7 @@ else{
                     title: "",
                     description: "",
                     category: "",
-                    priority: "",
+                    severity: "",
                     assignee: ""
                 },
                 comments: [],
@@ -572,7 +582,7 @@ else{
                 loadConfigSuccess: function(response) {
                     console.log('load success');
                     this.addCSS(function() {});
-                    response.workflow_type = 'general'
+                    response.workflow_type = 'FEEDBACK'
                     setTimeout(function() {
                         console.log('add button recorder');
                         this.addButton()
@@ -586,8 +596,11 @@ else{
                 },
                 getFormSettings: function(form_type) {
                     if (typeof this.configs.form_settings[form_type] === "undefined") {
+                        console.log(this.configs.form_settings_default)
+                        console.log(form_type)
                         return this.form_settings_default[form_type]
                     } else {
+                        
                         return this.configs.form_settings[form_type]
                     }
                 },
@@ -896,6 +909,7 @@ else{
                                 console.log('isliveconfigs')
                                 return
                             }
+                            Feedback.hideCommentForm();
                             Feedback.finalScreenshot();
                             // Session_Recorder.addCustomEvent("widget_open", {
                             //     type: "widget_interaction",
@@ -932,14 +946,15 @@ else{
 
                         Feedback.controls_step = 2;
                         Feedback.showControls(true);
-                        setTimeout( function() {Feedback.recording = true;
-                            
+                        setTimeout( function() {
+                            Feedback.recording = true;
                             Feedback.form_data.rating =  Feedback.form_data.rating;
                             Feedback.setFormHTML();
                             Feedback.saveSubCategory();
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                                 console.log('selected rating');
+                            }
                             var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                             var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
                             var video_close = $('<button id="gigatester_video_player_close">').html(Svg_Icons.trash);
@@ -960,22 +975,23 @@ else{
                                     Feedback.selectedRating();
                                 }
                                 })
-                            }
-                        else{
-                            var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
-                            var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                            var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
-                            // video.appendTo(video_overlay.children("div"));
-                            video_close.appendTo(video_overlay);
-                            video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                            video_close.on("click", function() {
-                                video_overlay.remove()
-                            })
-                        }}, 100);
+                            }, 100);
+                        // else{
+                        //     var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                        //     var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                        //     var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                        //     // video.appendTo(video_overlay.children("div"));
+                        //     video_close.appendTo(video_overlay);
+                        //     video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                        //     video_close.on("click", function() {
+                        //         video_overlay.remove()
+                        //     })
+                        // }
+                  
                             Feedback.showControls();
                             Feedback.loadVideo(src);
                         // Feedback.addScreenshotBadge()
-                    },
+                },
                     cancelAnnotation: function(e) {
                         
                         this.cancelRoutingOption()
@@ -988,12 +1004,14 @@ else{
                             Feedback.form_data.rating = Feedback.form_data.rating;
                             Feedback.form_data.comment_field =  Feedback.form_data.comment_field;
                             Feedback.form_data.category = Feedback.form_data.category
+                            Feedback.saveCheckedCategory();
                             Feedback.setFormHTML();
                             console.log('cancel annotation')
                             Feedback.showControls();
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                             }
+                            Feedback.saveSubCategory();
                             Feedback.removeOverlay();
                             this.removeTools()
                         } else {
@@ -1304,6 +1322,8 @@ else{
                             Feedback.ui.overlay_hint_tooltip.remove();
                             Feedback.ui.overlay_hint_tooltip = false
                         }
+                        console.log('drag stopped')
+                        $(document.getElementsByClassName('.gigatester-button-input-save')).trigger('click')
                         Feedback.disableScroll()
                     },
                     dragMove: function() {
@@ -1666,6 +1686,11 @@ else{
                         comment.hide()
                     })
                 },
+                hideCommentForm: function() {
+                    $.each(this.comments, function(index, comment) {
+                        comment.hideForm()
+                    })
+                },
                 removeComments: function() {
                     var screenshot_num = this.screenshot_data_uri.length;
                     var new_comments = [];
@@ -1717,7 +1742,7 @@ else{
                     this.ui.controls.on("change", ".gigatester-controls-attachment", this.uploadAttachment.bind(this));
                     this.ui.controls.on("submit", ".gigatester-controls-options", this.validateFields.bind(this));
                     this.ui.controls.on("change", 'select[name="category"]', this.changeCategory.bind(this));
-                    this.ui.controls.on("change", 'select[name="priority"]', this.changePriority.bind(this));
+                    this.ui.controls.on("change", 'select[name="severity"]', this.changeSeverity.bind(this));
                     // this.ui.controls.on("change", 'select[name="assignee"]', this.changeAssignee.bind(this));
                     this.ui.controls.on("click", ".gigatester-controls-video", this.startVideo.bind(this));
                     // this.ui.controls.on("click", ".gigatester-controls-video", this.recordVideo.bind(this));
@@ -1733,7 +1758,7 @@ else{
                     this.ui.controls.on("keyup", 'input[name="email"]', this.rememberFormData.bind(this));
                     this.ui.controls.on("keyup", 'input[name="title"]', this.rememberFormData.bind(this));
                     this.ui.controls.on("change", 'select[name="category"]', this.rememberFormData.bind(this));
-                    this.ui.controls.on("change", 'select[name="priority"]', this.rememberFormData.bind(this));
+                    this.ui.controls.on("change", 'select[name="severity"]', this.rememberFormData.bind(this));
                     this.ui.controls.on("change", 'select[name="assignee"]', this.rememberFormData.bind(this));
                     this.ui.controls.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
@@ -1810,9 +1835,9 @@ else{
                     var routing_items = {};
                     routing_items.screenshot = this.configs.workflow_type.indexOf("capture") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-draw">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_screenshot) || Lang.get("attach_a_screenshot")) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_screenshot_help) || Lang.get("draw_on_the_screen_help")) + "</gtdiv>" + "</gtroutemenu>";
                     routing_items.video = this.configs.workflow_type.indexOf("video") === -1 || !this.configs.has_video || Feedback.is_mobile ? "" : '<gtroutemenu class="gigatester-feedback-type-video">' + Svg_Icons.feedback_video + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_video) || Lang.get("capture_video", true)) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_video_help) || Lang.get("capture_video_help", true)) + "</gtdiv>" + "</gtroutemenu>";
-                    routing_items.bug = this.configs.workflow_type.indexOf("bug") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="bug">' + Svg_Icons.feedback_bug + "<gtdiv>" +  Lang.get("report_bug", true) + "</gtdiv>" + "<gtdiv>" +  Lang.get("report_bug_help", true) + "</gtdiv>" + "</gtroutemenu>";
+                    routing_items.BUGS = this.configs.workflow_type.indexOf("BUGS") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="BUGS">' + Svg_Icons.feedback_bug + "<gtdiv>" +  Lang.get("report_bug", true) + "</gtdiv>" + "<gtdiv>" +  Lang.get("report_bug_help", true) + "</gtdiv>" + "</gtroutemenu>";
                     routing_items.feature_request = this.configs.workflow_type.indexOf("feature_request") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="feature_request">' + Svg_Icons.feedback_feature_request + "<gtdiv>" +  Lang.get("feature_request", true) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_feature_request_help) || Lang.get("feature_request_help", true)) + "</gtdiv>" + "</gtroutemenu>";
-                    routing_items.general = this.configs.workflow_type.indexOf("general") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="general">' + Svg_Icons.feedback_general + "<gtdiv>" +  Lang.get("general_feedback") + "</gtdiv>" + "<gtdiv>" +  Lang.get("general_feedback_help") + "</gtdiv>" + "</gtroutemenu>";
+                    routing_items.FEEDBACK = this.configs.workflow_type.indexOf("FEEDBACK") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="FEEDBACK">' + Svg_Icons.feedback_general + "<gtdiv>" +  Lang.get("general_feedback") + "</gtdiv>" + "<gtdiv>" +  Lang.get("general_feedback_help") + "</gtdiv>" + "</gtroutemenu>";
                     routing_items.view_other = this.configs.display_feedback ? '<gtroutemenu class="gigatester-feedback-type-other">' + Svg_Icons.feedback_other + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_view_other) || Lang.get("view_other_feedback")) + "</gtdiv>" + "<gtdiv>" + (Lib.htmlEntities(this.configs.text_view_other_help) || Lang.get("view_other_feedback_help", true)) + "</gtdiv>" + "</gtroutemenu>" : "";
                     routing_items.help = this.configs.help_link ? '<gtroutemenu class="gigatester-feedback-type-help">' + Svg_Icons.feedback_help + "<gtdiv>" + (this.configs.help_title ? Lib.htmlEntities(this.configs.help_title) : Lang.get("contact_us")) + "</gtdiv>" + "<gtdiv>" + (this.configs.help_message ? Lib.htmlEntities(this.configs.help_message) : Lang.get("contact_us_help")) + "</gtdiv>" + "</gtroutemenu>" : "";
                     var item_order = this.configs.routing_item_order.split(",");
@@ -1829,7 +1854,7 @@ else{
                     });
                     var html = "";
                     html += '<gtclose class="gigatester-controls-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
-                    html += '<gtheader class="gigatester-controls-header" title="GigaTester">'+ "GigaTester"+ '</gtheader>'
+                    html += '<gtheader class="gigatester-controls-header" title="GigaTester">'+ Lib.htmlEntities(this.configs.title) + '</gtheader>'
                     html += this.configs.logo ? '<img class="gigatester-controls-logo" src="' + Lib.htmlEntities(this.configs.logo) + '">' : "";
                     html += '<gtdiv class="gigatester-controls-step" data-step="1">' + routing_item_options + "</gtdiv>";
                     html += '<gtdiv class="gigatester-controls-step" data-step="2"></gtdiv>';
@@ -1839,7 +1864,7 @@ else{
                     this.ui.controls.html(html);
                     this.setFormHTML();
                     var has_help = this.configs.help_link ? true : false;
-                    var has_one_type = (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "general" || this.configs.workflow_type === "bug" || this.configs.workflow_type === "feature_request") && !this.configs.display_feedback;
+                    var has_one_type = (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" || this.configs.workflow_type === "bug" || this.configs.workflow_type === "feature_request") && !this.configs.display_feedback;
                     if (has_one_type && !has_help) {
                         this.ui.controls.find('.gigatester-controls-step[data-step="1"]').hide();
                         this.ui.controls.find('.gigatester-controls-step[data-step="2"]').show()
@@ -1850,6 +1875,7 @@ else{
                 },
                 setFormHTML: function() {
                     let form_settings = this.getFormSettings(this.form_type);
+                    console.log(form_settings);
                     let display_screenshot = form_settings.allow_screenshot;
                     let display_audio = form_settings.allow_audio;
                     let display_video = form_settings.allow_video && this.configs.has_video && !Feedback.is_mobile && !this.canvas_mode;
@@ -1893,10 +1919,10 @@ else{
                     var default_title = this.form_data.title || "";
                     var default_description = this.form_data.description || "";
                     var default_category = this.form_data.category || GigaTester.categories || Feedback.categories || "";
-                    var default_priority = this.form_data.priority || GigaTester.priority || Feedback.priority || "";
+                    var default_severity = this.form_data.severity || GigaTester.severity || Feedback.severity || "";
                     // var default_assignee = this.form_data.assignee || "";
                     var default_rating = this.form_data.rating || 0;
-                    var priority_options = '<option value="critical">Critical</option>' + '<option value="high">High</option>' + '<option value="medium">Medium</option>' + '<option value="low">Low</option>';
+                    var severity_options = '<option value="critical">Critical</option>' + '<option value="high">High</option>' + '<option value="medium">Medium</option>' + '<option value="low">Low</option>';
                     var category_options = "";
                     let reason_options = "";
                     console.log(form_settings.display_category)
@@ -1905,8 +1931,8 @@ else{
                             category_options += "<option>" + category + "</option>"
                         }.bind(this))
                     }
-                    if (form_settings.display_reason) {
-                        this.configs.reasons.forEach(function(reason) {
+                    if (form_settings.severity_options) {
+                        this.configs.severities.forEach(function(reason) {
                             reason_options += "<option>" + reason + "</option>"
                         }.bind(this))
                     }
@@ -1918,13 +1944,13 @@ else{
                     // }
                     var rating_icons = "";
                     // form_settings.rating_type='s'
-                    if (form_settings.rating_type === "emoji") {
+                    if (form_settings.rating_type === "EMOJI") {
                         rating_icons += '<gtdiv data-rating="hate" class="inactive">' + Svg_Icons.face_hate + "</gtdiv>" + '<gtdiv data-rating="dislike" class="inactive">' + Svg_Icons.face_dislike + "</gtdiv>" + '<gtdiv data-rating="neutral" class="inactive">' + Svg_Icons.face_neutral + "</gtdiv>" + '<gtdiv data-rating="like" class="inactive">' + Svg_Icons.face_like + "</gtdiv>" + '<gtdiv data-rating="love" class="inactive">' + Svg_Icons.face_love + "</gtdiv>"
-                    } else if (form_settings.rating_type === "star") {
+                    } else if (form_settings.rating_type === "STAR") {
                         rating_icons += '<gtdiv data-rating="star_1" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + Svg_Icons.star + "</gtdiv>"
-                    } else if (form_settings.rating_type === "heart") {
+                    } else if (form_settings.rating_type === "HEART") {
                         rating_icons += '<gtdiv data-rating="heart_1" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_2" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_3" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_4" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_5" class="inactive">' + Svg_Icons.heart + "</gtdiv>"
-                    } else if (form_settings.rating_type === "thumb") {
+                    } else if (form_settings.rating_type === "THUMB") {
                         rating_icons += '<gtdiv data-rating="thumb_up" class="inactive">' + Svg_Icons.thumb_up + "</gtdiv>" + '<gtdiv data-rating="thumb_down" class="inactive">' + Svg_Icons.thumb_down + "</gtdiv>"
                     }
                     var html = "";
@@ -1942,7 +1968,7 @@ else{
                      + (form_settings.category_field_mandatory ? " required" : "")
                      + '><option id="category" value="category" selected disabled>' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
                     
-                     + (form_settings.display_priority ? '<select id="priority" name="priority"' + (form_settings.priority_field_mandatory ? " required" : "") + '><option value="priority" selected disabled>' + Lang.get("select_a_priority") + "</option>" + priority_options + "</select>" : "")
+                     + (form_settings.display_severity ? '<select id="severity" name="severity"' + (form_settings.severity_field_mandatory ? " required" : "") + '><option value="severity" selected disabled>' + Lang.get("select_a_severity") + "</option>" + severity_options + "</select>" : "")
                     //  + (form_settings.display_reason ? '<select name="category"'
                     //  + (form_settings.reason_field_mandatory ? " required" : "")
                     //  + '><option id="reason" value="" selected disabled>' + Lang.get("select_a_reason") + "</option>" + reason_options + "</select>" : "")
@@ -1993,8 +2019,8 @@ else{
                     if (default_category) {
                         this.ui.controls.find('.gigatester-controls-step[data-step="2"]').find('select[name="category"]').val(default_category)
                     }
-                    if (default_priority) {
-                        this.ui.controls.find('.gigatester-controls-step[data-step="2"]').find('select[name="priority"]').val(default_priority)
+                    if (default_severity) {
+                        this.ui.controls.find('.gigatester-controls-step[data-step="2"]').find('select[name="severity"]').val(default_severity)
                     }
                     // if (default_assignee) {
                     //     this.ui.controls.find('.gigatester-controls-step[data-step="2"]').find('select[name="assignee"]').val(default_assignee)
@@ -2003,7 +2029,7 @@ else{
                 menuItemClick: function(e) {
                     this.form_type = $(e.currentTarget).data("type");
                     var direct_to = "form";
-                    if (this.form_type === "bug") {
+                    if (this.form_type === "BUGS") {
                         direct_to = this.configs.direct_to_bug
                     } else if (this.form_type === "feature_request") {
                         direct_to = this.configs.direct_to_feature_request
@@ -2077,7 +2103,7 @@ else{
                             setTimeout(()=> {recorder.start();
                                 setTimeout(()=> {recorder.stop(), stream.getTracks() // get all tracks from the MediaStream
                                 .forEach( track => track.stop() );}, 300);
-                            }, 100);
+                            }, 300);
                         }
                         console.log('image recording')
                         recorder.onstop = e => {
@@ -2206,6 +2232,7 @@ else{
                     Feedback.loadImage(base64Image);
                     image_close.on("click", function() {
                         image.remove();
+                        Feedback.removeComments();
                         Feedback.image_file = '';
                         Feedback.recording = false;
                         Feedback.saveCheckedCategory();
@@ -2278,6 +2305,7 @@ else{
                         audio_record_close.appendTo(audio_record_overlay);
                         audio_record_text.appendTo(audio_record_overlay)
                         audio_record_overlay.appendTo($(document.body));  
+                        let mic_volume = $("<gtvideotoolbar> <gtvolume class='hasvolume'>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume> </gtvideotoolbar>").appendTo(audio_record_close);
                         const recorder = new MediaRecorder(stream);
                         const chunks = [];
                         console.log('recording')
@@ -2378,6 +2406,7 @@ else{
                             audio: true,
                             video: true
                         }).then(function(stream){
+                            Feedback.saveCheckedCategory();
                             Feedback.hideControls();
                             let video_stop_btn = $('<gtbutton id="gigatester-video-stop-btn"> </gtbutton>').html(Svg_Icons.pause)
                             $(video_stop_btn).on('mouseenter', function(){
@@ -2409,15 +2438,18 @@ else{
                                 var src = URL.createObjectURL(completeBlob);
                                 console.log(src, 'video blob')
                                 $(video_stop_btn).remove();
-                                setTimeout( function() {Feedback.recording = true;
+                                setTimeout( function() {
+                                    Feedback.recording = true;
                                 Feedback.form_data.rating =  Feedback.form_data.rating;
                                 // Feedback.saveCheckedCategory();
                                 Feedback.setFormHTML();
-                                Feedback.saveSubCategory();
+                                
                                 if(Feedback.form_data.rating){
                                     Feedback.selectedRating();
                                     console.log('selected rating');
-                                    var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                                }
+                                Feedback.saveSubCategory();
+                                var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                                 var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
                                 var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
                                 // video.appendTo(video_overlay.children("div"));
@@ -2435,18 +2467,19 @@ else{
                                         Feedback.selectedRating();
                                     }
                                     })
-                                }
-                            else{
-                                var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
-                                var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                                var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
-                                // video.appendTo(video_overlay.children("div"));
-                                video_close.appendTo(video_overlay);
-                                video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
-                                video_close.on("click", function() {
-                                    video_overlay.remove()
-                                })
-                            }}, 100);
+                                
+                            // else{
+                            //     var video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
+                            //     var video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                            //     var video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
+                            //     // video.appendTo(video_overlay.children("div"));
+                            //     video_close.appendTo(video_overlay);
+                            //     video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                            //     video_close.on("click", function() {
+                            //         video_overlay.remove()
+                            //     })
+                            // }
+                        }, 100);
                                 Feedback.showControls();
                                 Feedback.loadVideo(src);
                               };
@@ -2486,6 +2519,18 @@ else{
                     this.ui.controls.find(".gigatester-controls-attach-actions").toggle(this.ui.controls.find(".gigatester-controls-attach-actions btn[disabled]").length !== this.ui.controls.find(".gigatester-controls-attach-actions btn").length)
                 // this.recording = true;
                 //     this.setFormHTML();
+                },
+                popOutDialog: function(){
+                    let popup_dialog = $('<gtdiv class="gigatester-popout-dialog">Do u like to share your feedback?</gtdiv>')
+                    popup_dialog.appendTo($(document.getElementsByClassName("gigatester-button-e")));
+                    let popup_dialog_close = $('<btn id="gigatester-popout-dialog-close">').html(Svg_Icons.close);
+                    popup_dialog_close.appendTo(popup_dialog);
+                    popup_dialog.on("click", function() {
+                        popup_dialog.remove();
+                        Feedback.hideControls();    
+                        e.stopPropagation();
+                        e.preventDefault();
+                    })
                 },
                 videoFullscreen: function(e, video_url) {
                     video_url = video_url || this.video_url;
@@ -2561,23 +2606,23 @@ else{
                     var open_tool = false;
                     this.controls_step = 1;
                     if (!this.configs.display_feedback) {
-                        if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "general" && this.configs.direct_to_general !== "form" || this.configs.workflow_type === "bug" && this.configs.direct_to_bug !== "form" || this.configs.workflow_type === "feature_request" && this.configs.direct_to_feature_request !== "form") {
+                        if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general !== "form" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug !== "form" || this.configs.workflow_type === "feature_request" && this.configs.direct_to_feature_request !== "form") {
                             this.controls_step = 0
-                        } else if (this.configs.workflow_type === "general" || this.configs.workflow_type === "bug" || this.configs.workflow_type === "feature_request") {
+                        } else if (this.configs.workflow_type === "FEEDBACK" || this.configs.workflow_type === "BUGS" || this.configs.workflow_type === "feature_request") {
                             this.controls_step = 2
                         }
-                        if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "general" && this.configs.direct_to_general === "screenshot" || this.configs.workflow_type === "bug" && this.configs.direct_to_bug === "screenshot" || this.configs.workflow_type === "feature_request" && this.configs.direct_to_feature_request === "screenshot") {
+                        if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general === "screenshot" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug === "screenshot" || this.configs.workflow_type === "feature_request" && this.configs.direct_to_feature_request === "screenshot") {
                             if (this.configs.workflow_type === "capture") {
-                                this.form_type = "general"
+                                this.form_type = "FEEDBACK"
                             } else {
                                 this.form_type = this.configs.workflow_type
                             }
                             this.hideControls();
                             this.addOverlay();
                             open_tool = true
-                        } else if (this.configs.workflow_type === "video" || this.configs.workflow_type === "general" && this.configs.direct_to_general === "video" || this.configs.workflow_type === "bug" && this.configs.direct_to_bug === "video" || this.configs.workflow_type === "feature_request" && this.configs.direct_to_feature_request === "video") {
+                        } else if (this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general === "video" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug === "video" || this.configs.workflow_type === "feature_request" && this.configs.direct_to_feature_request === "video") {
                             if (this.configs.workflow_type === "capture") {
-                                this.form_type = "general"
+                                this.form_type = "FEEDBACK"
                             } else {
                                 this.form_type = this.configs.workflow_type
                             }
@@ -2607,8 +2652,8 @@ else{
                 changeCategory: function(e) {
                     this.categories = this.ui.controls.find('select[name="category"]').val()
                 },
-                changePriority: function(e) {
-                    this.priority = this.ui.controls.find('select[name="priority"]').val()
+                changeSeverity: function(e) {
+                    this.severity = this.ui.controls.find('select[name="severity"]').val()
                 },
                 checkboxToggle: function(e) {
                     if ($(e.currentTarget).attr("disabled")) {
@@ -2657,9 +2702,9 @@ else{
                 selectRating: function(e) {
                     var form_settings = this.getFormSettings(this.form_type);
                     this.ui.controls.find("gtrating > gtdiv").addClass("inactive");
-                    if (form_settings.rating_type === "emoji" || form_settings.rating_type === "thumb") {
+                    if (form_settings.rating_type === "EMOJI" || form_settings.rating_type === "THUMB") {
                         $(e.currentTarget).removeClass("inactive")
-                    } else if (form_settings.rating_type === "star" || form_settings.rating_type === "heart") {
+                    } else if (form_settings.rating_type === "STAR" || form_settings.rating_type === "HEART") {
                         $(e.currentTarget).prevAll().removeClass("inactive");
                         $(e.currentTarget).removeClass("inactive")
                     }
@@ -2689,11 +2734,11 @@ else{
                 },
                 previewRating: function(e) {
                     var form_settings = this.getFormSettings(this.form_type);
-                    if (form_settings.rating_type === "star" || form_settings.rating_type === "heart") {
+                    if (form_settings.rating_type === "STAR" || form_settings.rating_type === "HEART") {
                         this.ui.controls.find("gtrating > gtdiv").removeClass("highlight").addClass("preview");
                         $(e.currentTarget).prevAll().addClass("highlight");
                         $(e.currentTarget).addClass("highlight")
-                    } else if (form_settings.rating_type === "emoji" || form_settings.rating_type === "thumb") {
+                    } else if (form_settings.rating_type === "EMOJI" || form_settings.rating_type === "THUMB") {
                         this.ui.controls.find("gtrating > gtdiv").removeClass("highlight").addClass("preview");
                         $(e.currentTarget).addClass("highlight")
                     }
@@ -2720,7 +2765,7 @@ else{
                     var external_file = $('<div id="gigatester_external_file_preview">' + Feedback.external_file.name + '</div>').html(Feedback.external_file.fileName);
                     var external_file_close = $('<button id="gigatester_external_file_close">').html(Svg_Icons.trash);
                     // video.appendTo(video_overlay.children("div"));
-                    
+                    const size_limit = Feedback.configs.attachment_size || 1;
                     external_file.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
                     external_file_close.insertAfter(external_file);     
                     external_file_close.on("click", function() {
@@ -2735,6 +2780,14 @@ else{
                             Feedback.selectedRating();
                         }
                         }) 
+                        const filesize = Math.round((Feedback.external_file.size / 1024));
+                        console.log(filesize + 'KB')
+                        if (Feedback.external_file.size > size_limit * 1024 * 1024) {
+                            // error = Lang.get("max") + ": " + size_limit + "MB"
+                            console.log(Math.ceil(Feedback.external_file.size / 1024 / 1024) + 'MB')
+                            console.log( size_limit + "MB")
+                           
+                        }
                     // this.postMedia(e.target.files[0]);
                     // var file = e.target.files[0];
                     // var reader = new FileReader;
@@ -2816,7 +2869,7 @@ else{
                         dpi: this.session_data.dpi || window.devicePixelRatio || 0,
                         colour_depth: this.session_data.colour_depth || window.screen.colorDepth || 0,
                         categories: this.categories,
-                        priority: this.priority,
+                        severity: this.severity,
                         // assignee: this.assignee,
                         // custom_data: this.custom_data,
                         // custom_field: custom_field_data,
@@ -2846,7 +2899,7 @@ else{
                         return false
                     }
                     var widget_data = this.getData();
-                    if ((widget_data.description || widget_data.categories || widget_data.priority || Feedback.video_file || Feedback.image_file || widget_data.email || widget_data.rating || widget_data.screenshot.length || widget_data.attachment) && this.controls_step === 2) {
+                    if ((widget_data.description || widget_data.categories || widget_data.severity || Feedback.video_file || Feedback.image_file || widget_data.email || widget_data.rating || widget_data.screenshot.length || widget_data.attachment) && this.controls_step === 2) {
                         return true
                     } else {
                         return false
@@ -2881,7 +2934,7 @@ else{
                         title: "",
                         description: "",
                         category: "",
-                        priority: "",
+                        severity: "",
                         assignee: ""
                     };
                     this.recording = false;
@@ -2889,9 +2942,9 @@ else{
                     this.removeControls();
                     this.removeComments();
                     this.form_data['category'] = "category";
-                    this.form_data['priority'] = "priority";
+                    this.form_data['severity'] = "severity";
 
-                    console.log(this.form_data['priority']);
+                    console.log(this.form_data['severity']);
                     // $(document.getElementsByTagName('select')).remove();
                     // $(document.getElementByClassName('gigatester-controls-form'))
                     // this.removeFeedbackView();
@@ -2935,7 +2988,7 @@ else{
                     let send_button = this.ui.controls.find(".gigatester-controls-send");
                     send_button.addClass("gigatester-controls-send-loading")
                     console.log(dataInfo, 'dataInfo');
-                    fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedbackMedia/`, {
+                    fetch(`${GigaTester.endpoint}/feedbackMedia/`, {
                         method: 'POST',
                         body:  JSON.stringify(dataInfo),
                         headers: { 'Content-Type': 'application/json' },
@@ -3010,9 +3063,10 @@ else{
                     let send_button = this.ui.controls.find(".gigatester-controls-send");
                     send_button.addClass("gigatester-controls-send-loading")
                     $(document.getElementById('gigatester-loader')).addClass("gigatester-controls-loader")
-                    let outro_icon = Svg_Icons.outro_message_check;
+                    let outro_icon = ''
+                    // Svg_Icons.outro_message_check;
                     console.log( this.form_data['category']);
-                    console.log( this.form_data['priority']);
+                    console.log( this.form_data['severity']);
                     console.log(Feedback.image_file, 'img file')
                     // $(document.getElementsByClassName("gigatester-reason-checkboxes"))
                     $('.gigatester-reason-checkboxes:checked').each(function () {
@@ -3030,15 +3084,15 @@ else{
                     if(this.form_data['category'] === "category"){
                         this.form_data['category'] = ''
                     }
-                    if(this.form_data['priority'] === "priority"){
-                        this.form_data['priority'] = ''
+                    if(this.form_data['severity'] === "severity"){
+                        this.form_data['severity'] = ''
                     }
                     const postData = {
                         productRating: finalRating,
                         userName: this.ui.controls.find('input[name="email"]').val() ,
                         feedbackType: feedbackType,
                         feedbackCategory: this.form_data['category'],
-                        bugPriority: this.form_data['priority'],
+                        bugPriority: this.form_data['severity'],
                         productVersion: GigaTester.productVersion || '0.1',
                         platformName: platform.name,
                         platformVersion: platform.version,
@@ -3054,7 +3108,7 @@ else{
                         //   'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T',   
                       }
                       console.log(postData, 'post Data')
-                      fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedback/`, {
+                      fetch(`${GigaTester.endpoint}/feedback/`, {
                         method: 'POST',
                         body:  JSON.stringify(postData),
                         headers: { 'Content-Type': 'application/json' },
@@ -3070,7 +3124,8 @@ else{
                             setTimeout(function () {
                                 console.log(close_icon);
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-controls-loader")
-                                close_icon.trigger("click")}, 3000);
+                                // close_icon.trigger("click")
+                            }, 3000);
                             // var outro_has_link = this.ui.controls.find(".gigatester-controls-send-success p a").length ? true : false;
                         })
                         .catch(error => {
@@ -3283,11 +3338,18 @@ else{
                     }
                     if (this.comments.length && this.comments[this.comments.length - 1].isOpen()) {
                         this.comments[this.comments.length - 1].setPosition(pin_x, pin_y)
+                        $.each(this.comments, function(index, comment) {
+                            comment.hideForm()
+                        });
+                        this.addComment(pin_x, pin_y);
+                        console.log('add new comment')
+                        Feedback.disableScroll();
                     } else {
                         $.each(this.comments, function(index, comment) {
                             comment.hideForm()
                         });
                         this.addComment(pin_x, pin_y);
+                        console.log('add new comment')
                         Feedback.disableScroll();
                     }
                 }, 
@@ -3684,7 +3746,7 @@ else{
                 this.stop_x = 0;
                 this.stop_y = 0;
                 this.svg_obj_path = false
-                console.log('drag stopped')
+                // console.log('drag stopped')
             },
             startCapture: function() {
                 var displayMediaOptions = {
@@ -3937,7 +3999,7 @@ else{
                 e.stopPropagation()
             });
             this._getHTML = function() {
-                return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
+                return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input gigatester-button-input-save">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
             };
             this.isOpen = function() {
                 return element.find(".gigatester-comment-form").is(":visible")
@@ -3966,13 +4028,16 @@ else{
                 element.find(".gigatester-comment-form").hide()
             };
             this.setPosition = function(x, y) {
-                this.x = x;
-                this.y = y;
-                this.setFormDirection();
-                element.css({
-                    top: this.y,
-                    left: this.x
-                })
+                element.find(".gigatester-button-input-save").trigger('click');
+                // this.x = x;
+                // this.y = y;
+                // this.setFormDirection();
+                // element.css({
+                //     top: this.y,
+                //     left: this.x
+                // })
+                console.log('set position')
+               
             };
             this.setFormDirection = function() {
                 var is_mobile = false;
@@ -4047,7 +4112,7 @@ else{
                         document.execCommand("insertText", false, text)
                     } catch (e) {}
                 });
-                element.find(".gigatester-button-input").on("click", function(e) {
+                element.find(".gigatester-button-input-save").on("click", function(e) {
                     comment_message = element.find("gtcomment").html();
                     comment_message = comment_message.replace(/<br\/?>/gi, "\n");
                     comment_message = comment_message.replace(/(<([^>]+)>)/gi, "");
@@ -4064,9 +4129,12 @@ else{
                     this.hideForm()
                 }.bind(this));
                 element.appendTo($(document.body));
-                element.find("gtcomment").on('focus', function(){
-                    console.log(comment_message,'comment focus')
-                })
+                // element.find("gtcomment").on('mouseleave', function(){
+                    if(element.find("gtcomment").text()){
+                        console.log(element.find("gtcomment").text())
+                    element.find(".gigatester-button-input-save").trigger('click');
+                    }
+                // })
                 element.find("gtcomment").val('').trigger('focus').val(comment_message);
             };
             this.getData = function() {
@@ -4089,25 +4157,48 @@ else{
         let GigaTester_Api = {
             isLoaded: function() {
                 console.log('js api')
-                fetch(`${GigaTester.endpoint || 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development'}/feedbackConfig?apiKey=${GigaTester.apiKey || "ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T"}&version=${GigaTester.productVersion || 0.1}`, {
+                fetch(`${GigaTester.endpoint}/feedbackConfig?apiKey=${GigaTester.apiKey}&version=${GigaTester.productVersion}`, {
                     method: 'GET',
                   })
                     .then(res => res.json())
                     .then(data => {
                         console.log(data);
-                        Feedback.configs.categories = []
+                        Feedback.configs.categories = [];
+                        Feedback.configs.severities = [];
+                        Feedback.configs.workflow_type = "";
+                        Feedback.configs.rating_limit = data[0].ratingLimit;
+                        Feedback.configs.main_button_background_colour = data[0].widgetLookAndFeel.bgColor;
+                        Feedback.configs.main_button_text_colour = data[0].widgetLookAndFeel.fgColor;
+                        Feedback.configs.main_button_text = data[0].widgetLookAndFeel.text;
+                        Feedback.form_settings_default['FEEDBACK'].rating_type= data[0].ratingIcon;
+                        Feedback.configs.title = data[0].title;
+                        Feedback.configs.video_time = data[0].videoAudioMaxDuration * 60;
+                        data[0].feedbackTypes.map(item => {
+                                Feedback.configs.workflow_type += item
+                                Feedback.configs.workflow_type + ','
+
+                        })
+                        // if(data[0].invokeOn[0] === "AFTER_DELAY"){
+                        //     setTimeout(() => {
+                        //         Feedback.popOutDialog();
+                        //     }, data[0].invokeDelay*5 * 1000)
+                        // }
+                        
                         Feedback.configs.config_data = data;
                         let category = data[0].categories;
                         category.map(item => {
                             // console.log(item.name)
                         Feedback.configs.categories.push(item.name)
-                    // console.log(item.feedbacks)
-                    })
-                    })
-                    .catch(function(err) {
-                        console.log(err , 'err')
-                        /* handle the error */
-                      })
+                        // console.log(item.feedbacks)
+                        })
+                        data[0].severities.map(item => {
+                            Feedback.configs.severities.push(item)
+                        })
+                        })
+                        .catch(function(err) {
+                            console.log(err , 'err')
+                            /* handle the error */
+                        })
                 return true
                 // Feedback.is_loaded
             },
@@ -4142,11 +4233,11 @@ else{
                 Feedback.reset();
                 Feedback.openControls();
                 if (mode === "capture" || mode === "video") {
-                    Feedback.form_type = "general"
-                } else if (mode === "general" || mode === "form") {
-                    Feedback.form_type = "general"
-                } else if (mode === "bug") {
-                    Feedback.form_type = "bug"
+                    Feedback.form_type = "FEEDBACK"
+                } else if (mode === "FEEDBACK" || mode === "form") {
+                    Feedback.form_type = "FEEDBACK"
+                } else if (mode === "BUGS") {
+                    Feedback.form_type = "BUGS"
                 } else if (mode === "feature_request") {
                     Feedback.form_type = "feature_request"
                 }
@@ -4156,11 +4247,11 @@ else{
                 } else if (mode === "video" || direct_to === "video") {
                     Feedback.startVideo();
                     Feedback.controls_step = 0
-                } else if (mode === "general" || mode === "form") {
-                    Feedback.openForm("general");
+                } else if (mode === "FEEDBACK" || mode === "form") {
+                    Feedback.openForm("FEEDBACK");
                     Feedback.controls_step = 0
-                } else if (mode === "bug") {
-                    Feedback.openForm("bug");
+                } else if (mode === "BUGS") {
+                    Feedback.openForm("BUGS");
                     Feedback.controls_step = 0
                 } else if (mode === "feature_request") {
                     Feedback.openForm("feature_request");
@@ -4215,12 +4306,12 @@ else{
                     Feedback.categories = $.trim(categories)
                 }
             },
-            setPriority: function(priority) {
+            setSeverity: function(severity) {
                 if (!Feedback.features.javascript_api) {
                     return
                 }
-                if (typeof priority === "string") {
-                    Feedback.priority = $.trim(priority).toLowerCase()
+                if (typeof severity === "string") {
+                    Feedback.severity = $.trim(severity).toLowerCase()
                 }
             },
             setData: function(data) {
@@ -4275,7 +4366,7 @@ else{
 }
 }
 function checkgigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
 setTimeout(() => {
     checkgigatester();
     console.log('inside giga timeout')}, 200);
