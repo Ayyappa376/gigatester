@@ -61,7 +61,7 @@ import { hostUrl } from '../../../utils/http/constants';
 
 const widgetScript: string = `<script>\n\
 window.GigaTester = window.GigaTester || {};\n\
-GigaTester.productKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
+GigaTester.apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
 GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
 GigaTester.endpoint = \'${hostUrl}\';\n\
 (function(d) {\n\
