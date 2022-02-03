@@ -138,25 +138,6 @@ else{
                 image.src = image_data_uri
                 console.log(image_data_uri, 'img')
             },
-            isChrome: function() {
-                return "chrome"
-            }(),
-            //  browser.name.toLowerCase() === 
-            // isFirefox: function() {
-            //     return browser.name.toLowerCase() === "firefox"
-            // }(),
-            // isDesktop: function() {
-            //     return !browser.tablet && !bowser.mobile
-            // }(),
-            // isTablet: function() {
-            //     return bowser.tablet === true
-            // }(),
-            // isMobile: function() {
-            //     return bowser.mobile === true
-            // }(),
-            // isIE: function() {
-            //     return bowser.msie === true
-            // }(),
             storage: {
                 key: "ubwc",
                 hasLocalStroage: function() {
@@ -391,11 +372,12 @@ else{
             // request_url: "https://dev.gigatester.io",
             // proxy_url: "https://proxy.gigatester.io",
             static_url: "https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser",
-            widget_css: "./gigatester.css",
+            widget_css: "https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester.css",
             http_header: [],
             canvas_mode: false,
             canvas_target: false,
             controls_step: 0,
+            click_counter: 0,
             form_type: "FEEDBACK",
             audio_file: "",
             video_file: "",
@@ -1768,7 +1750,7 @@ else{
                     var field_name = $(e.currentTarget).attr("name");
                     if (field_name && typeof this.form_data[field_name] !== "undefined") {
                         this.form_data[field_name] = $(e.currentTarget).val()
-                        console.log( field_name,  $(e.currentTarget).val())
+                        // console.log( field_name,  $(e.currentTarget).val())
                         if(field_name === 'category'){
                         if($(document.getElementById('gigatester-reason-checkbox'))){
                             $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
@@ -1777,7 +1759,7 @@ else{
                         }
                         Feedback.configs.config_data[0].categories.map(items => {
                             console.log(items)
-                            if(items.name == $(e.currentTarget).val()){
+                            if(items.name.trim() == $(e.currentTarget).val().trim()){
                                 items.feedbacks.forEach( function(value){
                                 console.log(value)
                                 let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
@@ -2102,8 +2084,8 @@ else{
                             Feedback.hideControls();
                             setTimeout(()=> {recorder.start();
                                 setTimeout(()=> {recorder.stop(), stream.getTracks() // get all tracks from the MediaStream
-                                .forEach( track => track.stop() );}, 300);
-                            }, 300);
+                                .forEach( track => track.stop() );}, 500);
+                            }, 500);
                         }
                         console.log('image recording')
                         recorder.onstop = e => {
@@ -2521,16 +2503,21 @@ else{
                 //     this.setFormHTML();
                 },
                 popOutDialog: function(){
+                    if(Feedback.click_counter < 1){
+                        
                     let popup_dialog = $('<gtdiv class="gigatester-popout-dialog">Do u like to share your feedback?</gtdiv>')
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-button-e")));
                     let popup_dialog_close = $('<btn id="gigatester-popout-dialog-close">').html(Svg_Icons.close);
                     popup_dialog_close.appendTo(popup_dialog);
-                    popup_dialog.on("click", function() {
+                    popup_dialog.on("click", function(e) {
                         popup_dialog.remove();
-                        Feedback.hideControls();    
+                    })
+                    popup_dialog_close.on("click", function(e) {
+                        popup_dialog.remove();
                         e.stopPropagation();
                         e.preventDefault();
                     })
+                }
                 },
                 videoFullscreen: function(e, video_url) {
                     video_url = video_url || this.video_url;
@@ -2602,6 +2589,10 @@ else{
                     // });
                     // this.checkLive();
                     this.addControls();
+                    Feedback.click_counter++;
+                    if($(document.getElementsByClassName("gigatester-popout-dialog"))){
+                        $(document.getElementsByClassName("gigatester-popout-dialog")).remove();
+                    }
                     // var has_help = this.configs.help_link ? true : false;
                     var open_tool = false;
                     this.controls_step = 1;
@@ -3006,23 +2997,23 @@ else{
                           send_button.removeClass("gigatester-controls-send-loading") 
                           if(response.url.slice(56,64) === 'gt_image'){
                             // console.log(data.Key, "img");
-                            Feedback.image_file = response.url;
-                            console.log(response.url, 'img data')
+                            Feedback.image_file = response.url.split('?')[0];
+                            console.log(response.url.split('?')[0], 'img data')
                             this.post();
                           }
                           else if(response.url.slice(56,64) === 'gt_video'){
                             // console.log(data.Key, "vid");
-                            Feedback.video_file = response.url
+                            Feedback.video_file = response.url.split('?')[0]
                             this.post();
                           }
                           else if(response.url.slice(56,64) === 'gt_audio'){
                             // console.log(data.Key, "vid");
-                            Feedback.audio_file = response.url
+                            Feedback.audio_file = response.url.split('?')[0]
                             this.post();
                           }
                           else{
                             // console.log(data.Key, "file");
-                            Feedback.external_file = response.url
+                            Feedback.external_file = response.url.split('?')[0]
                             this.post();
                           }
                         })
@@ -3124,7 +3115,7 @@ else{
                             setTimeout(function () {
                                 console.log(close_icon);
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-controls-loader")
-                                // close_icon.trigger("click")
+                                close_icon.trigger("click")
                             }, 3000);
                             // var outro_has_link = this.ui.controls.find(".gigatester-controls-send-success p a").length ? true : false;
                         })
@@ -3418,7 +3409,7 @@ else{
                 }
                 navigator.mediaDevices.enumerateDevices().then(function(devices) {
                     devices.forEach(function(device) {
-                        console.log(device.kind)
+                        // console.log(device)
                         switch (device.kind) {
                             case "audioinput":
                                 this.device_list.audioinput.push(device);
@@ -3802,7 +3793,8 @@ else{
                             }.bind(this)).catch(this.handleCaptureError.bind(this))
                         }
                     }.bind(this);
-                    if (this.device_list.audioinput.length) {
+                    // console.log(this.device_list.audioinput.length);
+                    if (this.device_list.audioinput.length >= 0) {
                         navigator.mediaDevices.getUserMedia(userMediaOptions).then(function(stream) {
                             this.voice_stream = stream;
                             _afterGetVoiceStream();
@@ -3947,7 +3939,7 @@ else{
                 }
                 switch (this.recorder.state) {
                     case "recording":
-                        this.pause_btn.html("<btn-tooltip><btn-name>" + Lang.get("recording_resume", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + Svg_Icons.resume);
+                        this.pause_btn.html("<btn-tooltip><btn-name>" + Lang.get("recording_resume", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + Svg_Icons.play);
                         this.recorder.pause();
                         this.stop_btn.find("btn-timer, btn-timer-mask").css("animation-play-state", "paused");
                         this.stopTimer();
@@ -4188,7 +4180,7 @@ else{
                         let category = data[0].categories;
                         category.map(item => {
                             // console.log(item.name)
-                        Feedback.configs.categories.push(item.name)
+                        Feedback.configs.categories.push(item.name.trim())
                         // console.log(item.feedbacks)
                         })
                         data[0].severities.map(item => {
@@ -4361,7 +4353,6 @@ else{
         } 
         window.GigaTester = $.extend(window.GigaTester, GigaTester_Api);
         $(document).ready($.proxy(Feedback.init, Feedback))
-        // console.log(Feedback, 'fs');
     })(JQ);    
 }
 }
