@@ -138,25 +138,6 @@ else{
                 image.src = image_data_uri
                 console.log(image_data_uri, 'img')
             },
-            isChrome: function() {
-                return "chrome"
-            }(),
-            //  browser.name.toLowerCase() === 
-            // isFirefox: function() {
-            //     return browser.name.toLowerCase() === "firefox"
-            // }(),
-            // isDesktop: function() {
-            //     return !browser.tablet && !bowser.mobile
-            // }(),
-            // isTablet: function() {
-            //     return bowser.tablet === true
-            // }(),
-            // isMobile: function() {
-            //     return bowser.mobile === true
-            // }(),
-            // isIE: function() {
-            //     return bowser.msie === true
-            // }(),
             storage: {
                 key: "ubwc",
                 hasLocalStroage: function() {
@@ -396,6 +377,7 @@ else{
             canvas_mode: false,
             canvas_target: false,
             controls_step: 0,
+            click_counter: 0,
             form_type: "FEEDBACK",
             audio_file: "",
             video_file: "",
@@ -2521,16 +2503,21 @@ else{
                 //     this.setFormHTML();
                 },
                 popOutDialog: function(){
+                    if(Feedback.click_counter < 1){
+                        
                     let popup_dialog = $('<gtdiv class="gigatester-popout-dialog">Do u like to share your feedback?</gtdiv>')
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-button-e")));
                     let popup_dialog_close = $('<btn id="gigatester-popout-dialog-close">').html(Svg_Icons.close);
                     popup_dialog_close.appendTo(popup_dialog);
-                    popup_dialog.on("click", function() {
+                    popup_dialog.on("click", function(e) {
                         popup_dialog.remove();
-                        Feedback.hideControls();    
+                    })
+                    popup_dialog_close.on("click", function(e) {
+                        popup_dialog.remove();
                         e.stopPropagation();
                         e.preventDefault();
                     })
+                }
                 },
                 videoFullscreen: function(e, video_url) {
                     video_url = video_url || this.video_url;
@@ -2602,6 +2589,10 @@ else{
                     // });
                     // this.checkLive();
                     this.addControls();
+                    Feedback.click_counter++;
+                    if($(document.getElementsByClassName("gigatester-popout-dialog"))){
+                        $(document.getElementsByClassName("gigatester-popout-dialog")).remove();
+                    }
                     // var has_help = this.configs.help_link ? true : false;
                     var open_tool = false;
                     this.controls_step = 1;
@@ -4178,11 +4169,11 @@ else{
                                 Feedback.configs.workflow_type + ','
 
                         })
-                        // if(data[0].invokeOn[0] === "AFTER_DELAY"){
-                        //     setTimeout(() => {
-                        //         Feedback.popOutDialog();
-                        //     }, data[0].invokeDelay*5 * 1000)
-                        // }
+                        if(data[0].invokeOn[0] === "AFTER_DELAY"){
+                            setTimeout(() => {
+                                Feedback.popOutDialog();
+                            }, data[0].invokeDelay*5 * 1000)
+                        }
                         
                         Feedback.configs.config_data = data;
                         let category = data[0].categories;
@@ -4361,7 +4352,6 @@ else{
         } 
         window.GigaTester = $.extend(window.GigaTester, GigaTester_Api);
         $(document).ready($.proxy(Feedback.init, Feedback))
-        // console.log(Feedback, 'fs');
     })(JQ);    
 }
 }
