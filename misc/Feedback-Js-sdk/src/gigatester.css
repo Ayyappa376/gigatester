@@ -2996,8 +2996,10 @@ justify-content: center;
   width: 17px;
 }
 #gigatester-reason-label{
-  font-size: 1rem;
-  color: black;
+  font-size: 14px;
+  font-weight: 400;
+  color: #354c5f;
+  font-family: inherit;
 }
 #gigatester_button_container
   .gigatester-controls
@@ -3473,7 +3475,7 @@ justify-content: center;
 #gigatester_button_container
   .gigatester-controls[poweredby]
   .gigatester-controls-send {
-  margin-bottom: 32px;
+  margin-bottom: 2px;
 }
 @media (max-width: 800px) {
   #gigatester_button_container[isopen="true"] {
@@ -3612,27 +3614,39 @@ justify-content: center;
 }
 #gigatester_audio_player_close{
   float: right;
-  width: 23px;
-  height: 39px;
+  width: 32px;
+  height: 30px;
   margin: 5px;
+  background: none;
+  border: none;
 }
 #gigatester_video_player_close{
   float: right;
-  width: 23px;
-  height: 39px;
+  width: 32px;
+  height: 30px;
   margin: 5px;
+  background: none;
+  border: none;
 }
 #gigatester_external_file_close{
   float: right;
-  width: 23px;
-  height: 39px;
+  width: 32px;
+  height: 30px;
   margin: 5px;
+  background: none;
+  border: none;
 }
 #gigatester_images_player_close{
   float: right;
-  width: 23px;
-  height: 39px;
+  width: 32px;
+  height: 30px;
   margin: 5px;
+  background: none;
+  border: none;
+}
+#gigatester-audio-volume-control{
+  position: relative;
+  left: 0px;
 }
 .gigatester-feedback-view
   .gigatester-feedback-view-title
