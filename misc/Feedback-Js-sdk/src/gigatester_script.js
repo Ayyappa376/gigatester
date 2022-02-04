@@ -2154,8 +2154,8 @@ else{
                     const video = document.getElementById('gigatester_image_preview_player')
                     const canvas = document.createElement("canvas");
                     const context = canvas.getContext("2d");
-                    canvas.width= window.screen.width;
-                    canvas.height = window.screen.height;
+                    canvas.width= window.innerWidth;
+                    canvas.height = window.innerHeight;
                     if(video && context){
                     // context.drawImage(video, 0, 0, window.screen.width, window.screen.height);
                     context.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
@@ -2199,8 +2199,10 @@ else{
                     html2canvas(document.body, {
                         useCORS: true,
                         allowTaint : true,
-                        width: window.innerWidth,
-                        height: window.innerHeight,
+                        width: window.screen.availWidth,
+                        height: window.screen.availHeight,
+                        // width: window.innerWidth,
+                        // height: window.innerHeight,
                         windowWidth: window.innerWidth,
                         windowHeight: window.innerHeight,
                         x:0,
