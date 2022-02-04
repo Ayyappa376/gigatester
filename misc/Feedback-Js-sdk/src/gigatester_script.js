@@ -3450,7 +3450,7 @@ else{
                 }
                 await navigator.mediaDevices.enumerateDevices().then(function(devices) {
                     devices.forEach(function(device) {
-                        console.log(device)
+                        // console.log(device)
                         switch (device.kind) {
                             case "audioinput":
                                 this.device_list.audioinput.push(device);
@@ -3838,7 +3838,8 @@ else{
                             }.bind(this)).catch(this.handleCaptureError.bind(this))
                         }
                     }.bind(this);
-                    if (this.device_list.audioinput.length) {
+                    // console.log(this.device_list.audioinput.length);
+                    if (this.device_list.audioinput.length >= 0) {
                         navigator.mediaDevices.getUserMedia(userMediaOptions).then(function(stream) {
                             this.voice_stream = stream;
                             _afterGetVoiceStream();

@@ -3,10 +3,10 @@ import { Http } from "../../../utils";
 import { CONST_BUG_REPORT, CONST_FEEDBACK, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART } from "./common";
 
 export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
-    if(!url) {
-      return;
-    }
     return new Promise((resolve, reject) => {
+      if(!url || typeof url !== 'string') {
+        return reject(new Error("url not valid"));
+      }
       const urlSplit = url.split('/')
       let name = urlSplit[urlSplit.length - 1]
   

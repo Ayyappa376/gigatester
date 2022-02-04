@@ -105,13 +105,15 @@ const RenderTable = (props: IProps) => {
               return resolve({})
             } else {
               isUrlMissing = true;
-              signedUrl = await getSignedUrl(url, stateVariable);
+              signedUrl = await getSignedUrl(url, stateVariable).catch((e) => {
+                return resolve({}) // we need to use resolve even in catch scenearios because the promise chain will get resolved only when every promise will resolve.
+              });
               if (signedUrl) {
                 const now = new Date();
                 signedUrlMappingCopy[url] = {signedUrl, date: now.getTime()};
                 return resolve({});
               } else {
-                return reject({})
+                return resolve({})
               }
             }
           })
