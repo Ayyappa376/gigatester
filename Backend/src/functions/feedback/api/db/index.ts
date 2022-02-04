@@ -11,15 +11,21 @@ exports.handler = async (event: any) => {
   console.log('feedback-api-db-handler: Received event:', JSON.stringify(event, undefined, 2));
   let body;
   let statusCode = '200';
+  // const headers = {
+  //   'Access-Control-Allow-Origin':'*',
+  //   'Content-Type': 'application/json'
+  // };
   const headers = {
+    'Access-Control-Allow-Headers':'*',
+    'Access-Control-Allow-Methods':'HEAD, POST',//'HEAD, GET, POST, PUT, DELETE',
     'Access-Control-Allow-Origin':'*',
     'Content-Type': 'application/json'
-  };
-  try {
+};
+try {
     switch (event.httpMethod) {
-      case 'DELETE':
-          body = await dynamo.delete(JSON.parse(event.body)).promise();
-          break;
+      // case 'DELETE':
+      //     body = await dynamo.delete(JSON.parse(event.body)).promise();
+      //     break;
       case 'POST':
         const jsonBody = JSON.parse(event.body);
         const now = new Date();
@@ -50,14 +56,14 @@ exports.handler = async (event: any) => {
         };
         body = await dynamo.put(tableparams).promise();
         break;
-      case 'PUT':
-        body = await dynamo.update(JSON.parse(event.body)).promise();
-        break;
+      // case 'PUT':
+      //   body = await dynamo.update(JSON.parse(event.body)).promise();
+      //   break;
       case 'OPTIONS':
         statusCode = '200';
-        headers['Access-Control-Allow-Headers'] = '*';
-        headers['Access-Control-Allow-Origin'] = '*';
-        headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
+        // headers['Access-Control-Allow-Headers'] = '*';
+        // headers['Access-Control-Allow-Origin'] = '*';
+        // headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
         break;
       default:
         throw new Error(`Unsupported method "${event.httpMethod}"`);

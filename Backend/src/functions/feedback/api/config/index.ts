@@ -12,6 +12,8 @@ exports.handler = async (event: any) => {
     let body;
     let statusCode = '200';
     const headers = {
+        'Access-Control-Allow-Headers':'*',
+        'Access-Control-Allow-Methods':'HEAD, GET',//'HEAD, GET, POST, PUT, DELETE',
         'Access-Control-Allow-Origin':'*',
         'Content-Type': 'application/json'
     };
@@ -54,9 +56,9 @@ exports.handler = async (event: any) => {
                 TableName: getTableNameFor('GT_Products'),
               });
                body = (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackSettings);
-               headers['Access-Control-Allow-Headers'] = '*';
-               headers['Access-Control-Allow-Origin'] = '*';
-               headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
+//               headers['Access-Control-Allow-Headers'] = '*';
+//               headers['Access-Control-Allow-Origin'] = '*';
+//               headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
                break;
             // case 'POST':
             //     body = await dynamo.put(tableparams).promise();
@@ -66,9 +68,9 @@ exports.handler = async (event: any) => {
             //     break;
             case 'OPTIONS':
                 statusCode = '200';
-                headers['Access-Control-Allow-Headers'] = '*';
-                headers['Access-Control-Allow-Origin'] = '*';
-                headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
+//                headers['Access-Control-Allow-Headers'] = '*';
+//                headers['Access-Control-Allow-Origin'] = '*';
+//                headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
                 break;
             default:
                 throw new Error(`Unsupported method "${event.httpMethod}"`);

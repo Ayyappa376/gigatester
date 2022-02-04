@@ -4,12 +4,18 @@ cors({
     origin: true,
   });
 
-  exports.handler = async (event: any) => {
+exports.handler = async (event: any) => {
     console.log('feedback-api-media-handler: Received event:', JSON.stringify(event, undefined, 2));
     // console.log('Received event:', JSON.stringify(event, null, 2));
     let body;
     let statusCode = '200';
+    // const headers = {
+    //     'Access-Control-Allow-Origin':'*',
+    //     'Content-Type': 'application/json'
+    // };
     const headers = {
+        'Access-Control-Allow-Headers':'*',
+        'Access-Control-Allow-Methods':'HEAD, POST',//'HEAD, GET, POST, PUT, DELETE',
         'Access-Control-Allow-Origin':'*',
         'Content-Type': 'application/json'
     };
@@ -32,15 +38,15 @@ cors({
                     };
                     body = await  s3.getSignedUrlPromise('putObject', params);
                     headers['Access-Control-Allow-Credentials']= true;
-                    headers['Access-Control-Allow-Origin']= '*';
+                    // headers['Access-Control-Allow-Origin']= '*';
                 } catch (err) {
                     console.log(err, 'Internal Server Error');
                 }
             case 'OPTIONS':
                 statusCode = '200';
-                headers['Access-Control-Allow-Headers'] = '*';
-                headers['Access-Control-Allow-Origin'] = '*';
-                headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
+                // headers['Access-Control-Allow-Headers'] = '*';
+                // headers['Access-Control-Allow-Origin'] = '*';
+                // headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
                 break;
             default:
                 throw new Error(`Unsupported method "${event.httpMethod}"`);
