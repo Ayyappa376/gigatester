@@ -17,8 +17,8 @@ exports.handler = async (event: any) => {
   // };
   const headers = {
     'Access-Control-Allow-Headers':'*',
-    'Access-Control-Allow-Origin':'*',
     'Access-Control-Allow-Methods':'HEAD, POST',//'HEAD, GET, POST, PUT, DELETE',
+    'Access-Control-Allow-Origin':'*',
     'Content-Type': 'application/json'
 };
 try {

@@ -13,8 +13,8 @@ exports.handler = async (event: any) => {
     let statusCode = '200';
     const headers = {
         'Access-Control-Allow-Headers':'*',
-        'Access-Control-Allow-Origin':'*',
         'Access-Control-Allow-Methods':'HEAD, GET',//'HEAD, GET, POST, PUT, DELETE',
+        'Access-Control-Allow-Origin':'*',
         'Content-Type': 'application/json'
     };
     function scan<T>(params: DynamoDB.ScanInput): Promise<T> {
