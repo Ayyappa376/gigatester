@@ -61,7 +61,7 @@ import { hostUrl } from '../../../utils/http/constants';
 
 const widgetScript: string = `<script>\n\
 window.GigaTester = window.GigaTester || {};\n\
-GigaTester.productKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
+GigaTester.apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
 GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
 GigaTester.endpoint = \'${hostUrl}\';\n\
 (function(d) {\n\
@@ -69,7 +69,22 @@ GigaTester.endpoint = \'${hostUrl}\';\n\
     s.src = \'https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester_script.js\';\n\
     (d.head || d.body).appendChild(s);\n\
 })(document);\n\
-</script>`;
+</script>
+
+// callback function : below function needs to be implement by app & this will be called each time feedback button invokes
+// window.gigatesterDefaultcategory = function() {
+//     return "ScreenShare"
+// }
+
+// GigaTester.hide() => to hide the Feedback button for full screen video
+// GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
+// GigaTester.open() => to open GigaTester form dialog
+// GigaTester.open("BUGS") => to show Bug report form dialog
+// GigaTester.open("FEEDBACK") => to show Feedback form dialog
+// GigaTester.close() => to close GigaTester dialog
+// GigaTester.setEmail("xyz@abc.com") => to set default Email(should be string) in GigaTester form.
+`
+;
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
