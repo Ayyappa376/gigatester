@@ -49,7 +49,7 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IProductInfo, IProductParams, ICategory, IFeedbackSettings, 
+import { IProductParams, ICategory, IFeedbackAgentSettings, 
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, 
   SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
@@ -64,6 +64,8 @@ window.GigaTester = window.GigaTester || {};\n\
 GigaTester.apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
 GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
 GigaTester.endpoint = \'${hostUrl}\';\n\
+GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION );\n\
+GigaTester.setUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION );\n\
 (function(d) {\n\
     var s = d.createElement(\'script\'); s.async = true;\n\
     s.src = \'https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester_script.js\';\n\
@@ -71,11 +73,52 @@ GigaTester.endpoint = \'${hostUrl}\';\n\
 })(document);\n\
 </script>
 
-// callback function : below function needs to be implement by app & this will be called each time feedback button invokes
-// window.gigatesterDefaultcategory = function() {
-//     return "ScreenShare"
-// }
-
+/****************************************/
+// YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the 
+// name of the category to display in the context of invocation.
+// The callback function should be a global function.
+// The signature of this callback is as follows:
+//   function YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION (feedbackType) {
+//     return categoryNameInThisContext;
+//   }
+// where feedbackType is a string with value "BUGS" or "FEEDBACK"
+// and categoryNameInThisContext is a string that is the name of the category depending on the feedbackType parameter.
+//
+// Example:
+//   function getCategoryContext(feedbackType) {
+//     return feedbackType === "BUGS" ? "ScreenShare" : "Video";
+//   }
+// GigaTester.selectDefaultCategory( getCategoryContext );
+//
+//-------------------------------
+//
+// YOUR_USER_DETAILS_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the 
+// email and other details of the user that your app wish to store along with feedbacks.
+// The callback function should be a global function.
+// The signature of this callback is as follows:
+//   function YOUR_USER_DETAILS_CALLBACK_FUNCTION () {
+//     return {
+//       email: userEmail, //the email of the logged in user
+//       ... //other details of the user like id, guid etc.
+//     };
+//   }
+// where email is a field our app expects in the object that is returned. If not present, will prompt 
+//   the user to provide one. The remaining field in the returned object will be stored as it is.
+//
+// Example:
+//   function getUserDetails() {
+//     return {
+//       email: 'somebody@somewhere.com',
+//       id: 'user_1234567890',
+//       guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
+//       name: 'Some Person'
+//     };
+//   }
+// GigaTester.setUserDetails( getUserDetails );
+//
+//-------------------------------
+// The following functions can be used to have a handle on the GigaTester feedback agent dialog and button.
+//
 // GigaTester.hide() => to hide the Feedback button for full screen video
 // GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
 // GigaTester.open() => to open GigaTester form dialog
@@ -83,6 +126,7 @@ GigaTester.endpoint = \'${hostUrl}\';\n\
 // GigaTester.open("FEEDBACK") => to show Feedback form dialog
 // GigaTester.close() => to close GigaTester dialog
 // GigaTester.setEmail("xyz@abc.com") => to set default Email(should be string) in GigaTester form.
+/****************************************/
 `
 ;
 
@@ -130,47 +174,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const EditProductFeedbackSettings = (props: any) => {
+const EditProductfeedbackAgentSettings = (props: any) => {
   const classes = useStyles();
-  const [feedbackSettingsPosted, setFeedbackSettingsPosted] = useState(false);
-  const [feedbackSettingsFetched, setFeedbackSettingsFetched] = useState(false);
+  const [feedbackAgentSettingsPosted, setfeedbackAgentSettingsPosted] = useState(false);
+  const [feedbackAgentSettingsFetched, setfeedbackAgentSettingsFetched] = useState(false);
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
   const [productParams, setProductParams] = React.useState<
     IProductParams | undefined
   >();
-//  const [prodId, setProdId] = React.useState<string>('');
-//  const [prodVersion, setProdVersion] = React.useState<string>('');
-//  const [fetchProducts, setFetchProducts] = React.useState(false);
-//  const [allProducts, setAllProducts] = React.useState<IProductInfo[]>([]);
-//  const [backdropOpen, setBackdropOpen] = React.useState(false);
-//  const [openModal, setOpenModal] = useState(false);
-  // const [searchString, setSearchString] = useState('');
-  // const [products, setProducts] = useState<IProductInfo[]>([]);
-  // const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-  // const [itemsPerPage, setItemsPerPage] = useState(10);
-  // const [currentPage, setCurrentPage] = useState(1);
-//  const [dialogOpen, setDialogOpen] = useState(false);
-  // const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
-  // const [selectedProd, setSelectedProd] = useState<IProductInfo | undefined>(undefined);
-  // const [userParamState, setUserParamState] = React.useState<any>('');
-  // const [softwareOption, setSoftwareOption] = useState(false);
-  // const [fileContentType, setFileContentType] = useState('');
-  // const [fileSelected, setFileSelected] = useState('');
-  // const [fileName, setFileName] = useState('');
-  // const [numberOfProducts, setNumberOfProducts] = useState(0);
-  // const [itemLimit, setItemLimit] = useState({
-  //   lowerLimit: 0,
-  //   upperLimit: 9,
-  // });
-  // const [order, setOrder] = useState<'asc' | 'desc'>('desc');
-  // const [orderBy, setOrderBy] = useState('name');
-  const [notify, setNotify] = useState({
-    isOpen: false,
-    message: '',
-    type: '',
-  });
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState('Something went wrong');
   const [success, setSuccess] = useState(false);
@@ -184,8 +197,8 @@ const EditProductFeedbackSettings = (props: any) => {
     })
     .then((response: any) => {
 //      fixMultiSelectValuesAndSave(response);
-      if(!response.products[0].feedbackSettings) {
-        response.products[0].feedbackSettings = {
+      if(!response.products[0].feedbackAgentSettings) {
+        response.products[0].feedbackAgentSettings = {
           categories: [],
           feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
           invokeDelay: 300,
@@ -207,7 +220,7 @@ const EditProductFeedbackSettings = (props: any) => {
         };
       }
       setProductParams(response);
-      setFeedbackSettingsFetched(true);
+      setfeedbackAgentSettingsFetched(true);
     })
     .catch((error: any) => {
       const perror = JSON.stringify(error);
@@ -287,7 +300,7 @@ const EditProductFeedbackSettings = (props: any) => {
       .then((response: any) => {
 //          setProdId('');
 //          setProdVersion('');
-        setFeedbackSettingsPosted(true);
+        setfeedbackAgentSettingsPosted(true);
       })
       .catch((error: any) => {
         const perror = JSON.stringify(error);
@@ -306,43 +319,61 @@ const EditProductFeedbackSettings = (props: any) => {
 
   function mandatoryFieldsCheck(): boolean {
     if(!(productParams && productParams.products && productParams.products[0] &&
-        productParams.products[0].feedbackSettings)) {
+        productParams.products[0].feedbackAgentSettings)) {
       setFailureMessage('No data found to save');
       setFailure(true);
       return false;
     }
 
-    if(productParams.products[0].feedbackSettings.categories.length < 1) {
-      setFailureMessage('You must specify at least one category');
-      setFailure(true);
-      return false;
-    }
-
-    if(productParams.products[0].feedbackSettings.feedbackTypes.length < 1) {
+    if(productParams.products[0].feedbackAgentSettings.feedbackTypes.length < 1) {
       setFailureMessage('You must choose at least one feedback type');
       setFailure(true);
       return false;
     }
 
-    if(productParams.products[0].feedbackSettings.ratingIcon.length < 1) {
-      setFailureMessage('You must select a rathing icon');
+    if(productParams.products[0].feedbackAgentSettings.feedbackTypes.includes(FEEDBACK_TYPE_FEEDBACK) &&
+      !productParams.products[0].feedbackAgentSettings.feedbackSettings) {
+      setFailureMessage('You must specify feedback settings');
       setFailure(true);
       return false;
     }
 
-    if(productParams.products[0].feedbackSettings.title.length < 1) {
+    if(productParams.products[0].feedbackAgentSettings.feedbackTypes.includes(FEEDBACK_TYPE_BUGS) &&
+      !productParams.products[0].feedbackAgentSettings.bugSettings) {
+      setFailureMessage('You must specify bug settings');
+      setFailure(true);
+      return false;
+    }
+
+    if(productParams.products[0].feedbackAgentSettings.feedbackSettings) {
+      if(productParams.products[0].feedbackAgentSettings.feedbackSettings.categories.length < 1) {
+        setFailureMessage('You must specify at least one category in feedback settings');
+        setFailure(true);
+        return false;
+      }
+    }
+
+    if(productParams.products[0].feedbackAgentSettings.bugSettings){
+      if(productParams.products[0].feedbackAgentSettings.bugSettings.categories.length < 1) {
+        setFailureMessage('You must specify at least one category in bug settings');
+        setFailure(true);
+        return false;
+      }
+    }
+
+    if(productParams.products[0].feedbackAgentSettings.title.length < 1) {
       setFailureMessage('You must specify a title or name to display on the widget dialog');
       setFailure(true);
       return false;
     }
 
-    if(productParams.products[0].feedbackSettings.uploadFileMaxSize.length < 1) {
+    if(productParams.products[0].feedbackAgentSettings.uploadFileMaxSize.length < 1) {
       setFailureMessage('You must select the maximum allowed size of uploaded file');
       setFailure(true);
       return false;
     }
 
-    if(productParams.products[0].feedbackSettings.videoAudioMaxDuration.length < 1) {
+    if(productParams.products[0].feedbackAgentSettings.videoAudioMaxDuration.length < 1) {
       setFailureMessage('You must select the maximum allowed duration of audio and video recordings');
       setFailure(true);
       return false;
@@ -351,74 +382,6 @@ const EditProductFeedbackSettings = (props: any) => {
     return true;
   }
 
-/*
-  const handleChangeProductSoftware = (row: IProductInfo | undefined) => {
-    if (row) {
-      if (userParamState) {
-        row.software = userParamState;
-        row.softwareType = 'url';
-        handleSave(row);
-      } else if (fileName) {
-        row.software = fileName;
-        row.softwareType = fileContentType;
-        handleSave(row);
-        setTimeout(() => {
-          setUserParamState('');
-          closeDialog();
-        }, 2000);
-      }
-    }
-    setTimeout(() => {
-      setUserParamState('');
-      closeDialog();
-    }, 2000);
-  };
-
-  const getUploadPreSignedUrl = (event: any) => {
-    event.preventDefault();
-    setFileSelected(event.target.files[0]);
-    setFileName(event.target.files[0].name);
-    setFileContentType(event.target.files[0].type);
-  };
-
-  const uploadPreSignedUrlSoftware = () => {
-    setNotify({
-      isOpen: true,
-      message: 'Uploading...',
-      type: 'info',
-    });
-    Http.post({
-      url: `/api/v2/softwares/medium`,
-      state: stateVariable,
-      body: {
-        fileName: fileName,
-        fileType: fileContentType,
-      },
-    })
-      .then((response: any) => {
-        fetch(response.filePath, {
-          method: 'PUT',
-          body: fileSelected,
-        })
-          .then((response) => {
-            setNotify({
-              isOpen: true,
-              message: `The ${fileName} has been uploaded successfully.`,
-              type: 'info',
-            });
-            setFileName('');
-            handleChangeProductSoftware(selectedProd);
-            // response.json();
-          })
-          .catch((error) => {
-            console.error(error);
-          });
-      })
-      .catch((error: any) => {
-        console.log(error);
-      });
-  };
-*/
   const handleGenerateApiKey = () => {
     if (productParams && productParams.products && productParams.products[0]) {
       let productId: string = productParams.products[0].id;
@@ -480,157 +443,34 @@ const EditProductFeedbackSettings = (props: any) => {
     setSuccess(false);
   };
 
-/*
-  const handleChangedValue = (event: any) => {
-    if (event.target.value) {
-      setUserParamState(event.target.value);
-
-      setSoftwareOption(true);
-    } else {
-      setSoftwareOption(false);
-    }
-  };
-
-  const uploadForm = () => {
-    return (
-      <React.Fragment>
-        <Grid container spacing={1}>
-          <Grid item xs={12} sm={12}>
-            <TextField
-              id='uploadFile'
-              name='uploadFile'
-              label='External File URL'
-              fullWidth
-              onChange={(event) => handleChangedValue(event)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={12} />
-          <br />
-          <Grid item xs={6} sm={6} />
-          <Typography style={{ fontSize: '16px' }}> OR</Typography>
-          <Grid item xs={12} sm={12} />
-          <br />
-          <Grid item xs={3} sm={3} />
-          <input
-            style={{ display: 'none' }}
-            id='upload-software-file'
-            multiple
-            type='file'
-            onChange={(e) => getUploadPreSignedUrl(e)}
-          />
-          <Link style={{ fontSize: '14px' }}>
-            <label
-              htmlFor='upload-software-file'
-              style={{ fontSize: '14px', color: '#0645AD' }}
-            >
-              {fileName ? fileName : 'Click here to upload local software'}
-            </label>
-          </Link>
-          <Grid item xs={4} sm={4} />
-          <Grid item xs={4} sm={4} />
-          <Button
-            component='span'
-            variant='outlined'
-            disabled={softwareOption}
-            className={classes.button}
-            onClick={() => {
-              uploadPreSignedUrlSoftware();
-            }}
-          >
-            Upload
-          </Button>
-          <Grid item xs={12} sm={12} />
-          <br />
-          <br />
-          <Grid item xs={12} sm={12} />
-          <Grid item xs={3} sm={3} />
-          <Button
-            component='span'
-            variant='outlined'
-            onClick={() => {
-              handleChangeProductSoftware(selectedProd);
-            }}
-            disabled={!softwareOption}
-          >
-            ok
-          </Button>
-          <Grid item xs={2} sm={2} />
-          <Button
-            component='span'
-            variant='outlined'
-            onClick={() => {
-              setDialogOpen(false);
-            }}
-          >
-            Cancel
-          </Button>
-          <Grid item xs={4} sm={4} />
-        </Grid>
-      </React.Fragment>
-    );
-  };
-
-  const renderSoftwareDialog = () => {
-    return (
-      <React.Fragment>
-        <Dialog
-          className={classes.dialogPaper}
-          open={dialogOpen}
-          aria-labelledby='form-dialog-title'
-          onClose={closeDialog}
-          fullWidth={true}
-        >
-          <DialogTitle
-            id='form-dialog-title'
-            style={{ textAlign: 'center', padding: '30px 0px' }}
-          >
-            <Typography style={{ fontSize: '14px' }}>
-              <Text tid={'Upload Software'} />
-            </Typography>
-            <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent style={{ marginBottom: '20px' }}>
-            <CssBaseline />
-            {uploadForm()}
-          </DialogContent>
-        </Dialog>
-        <Notification notify={notify} setNotify={setNotify} />
-      </React.Fragment>
-    );
-  };
-
-  const handleUploadButton = (row: IProductInfo) => {
-    setDialogOpen(true);
-    setSelectedProd(row);
-  };
-*/
-  const handleChangeCategoryName = (event: any, catIndex: number) => {
+  const handleChangeFeedbackCategoryName = (event: any, catIndex: number) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if(temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings && event.target.value) {
-        temp.products[0].feedbackSettings.categories[catIndex].name = event.target.value;
+      if(temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings && event.target.value) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex].name = event.target.value;
         setProductParams(temp);
       }
     }
   };
 
-  const deleteCategory = (catIndex: number) => {
+  const deleteFeedbackCategory = (catIndex: number) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.categories.splice(catIndex, 1);
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories.splice(catIndex, 1);
         setProductParams(temp);
       }
     }
   };
 
-  const addCategory = () => {
+  const addFeedbackCategory = () => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.categories.push({
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories.push({
           name: '',
           feedbacks: [],
         });
@@ -639,12 +479,13 @@ const EditProductFeedbackSettings = (props: any) => {
     }
   };
 
-  const handleChangeFeedback = (event: any, catIndex: number, index: number) => {
+  const handleChangeFeedbackStdFeedbackText = (event: any, catIndex: number, index: number) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings
-        && temp.products[0].feedbackSettings.categories[catIndex]) {
-        const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
         if(tempCat.feedbacks && event.target.value) {
           tempCat.feedbacks[index] = event.target.value;
           setProductParams(temp);
@@ -653,12 +494,13 @@ const EditProductFeedbackSettings = (props: any) => {
     }
   };
 
-  const deleteFeedback = (catIndex: number, index: number) => {
+  const deleteFeedbackStdFeedbackText = (catIndex: number, index: number) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings
-        && temp.products[0].feedbackSettings.categories[catIndex]) {
-        const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
         if(tempCat.feedbacks) {
           tempCat.feedbacks.splice(index, 1);
           setProductParams(temp);
@@ -667,12 +509,13 @@ const EditProductFeedbackSettings = (props: any) => {
     }
   };
 
-  const addFeedback = (catIndex: number) => {
+  const addFeedbackStdFeedbackText = (catIndex: number) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings
-        && temp.products[0].feedbackSettings.categories[catIndex]) {
-        const tempCat = temp.products[0].feedbackSettings.categories[catIndex];
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
         if (!tempCat.feedbacks) {
           tempCat.feedbacks = [];
         }
@@ -685,8 +528,8 @@ const EditProductFeedbackSettings = (props: any) => {
   const handleTitleChange = (event: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.title = event.target.value;
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.title = event.target.value;
         setProductParams(temp);
       }
     }
@@ -695,10 +538,10 @@ const EditProductFeedbackSettings = (props: any) => {
   const handleFeedbackTypesChange = (event: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        let valueArray = temp.products[0].feedbackSettings.feedbackTypes || [];
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        let valueArray = temp.products[0].feedbackAgentSettings.feedbackTypes || [];
         valueArray = [...event.target.value];
-        temp.products[0].feedbackSettings.feedbackTypes = valueArray;
+        temp.products[0].feedbackAgentSettings.feedbackTypes = valueArray;
         setProductParams(temp);
       }
     }
@@ -707,8 +550,8 @@ const EditProductFeedbackSettings = (props: any) => {
   const handleUploadFileMaxSizeChange = (event: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.uploadFileMaxSize = event.target.value;
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.uploadFileMaxSize = event.target.value;
         setProductParams(temp);
       }
     }
@@ -717,8 +560,8 @@ const EditProductFeedbackSettings = (props: any) => {
   const handleVideoAudioMaxDurationChange = (event: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.videoAudioMaxDuration = event.target.value;
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.videoAudioMaxDuration = event.target.value;
         setProductParams(temp);
       }
     }
@@ -727,10 +570,10 @@ const EditProductFeedbackSettings = (props: any) => {
   const handleInvokeOnChange = (event: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        let valueArray = temp.products[0].feedbackSettings.invokeOn || [];
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        let valueArray = temp.products[0].feedbackAgentSettings.invokeOn || [];
         valueArray = [...event.target.value];
-        temp.products[0].feedbackSettings.invokeOn = valueArray;
+        temp.products[0].feedbackAgentSettings.invokeOn = valueArray;
         setProductParams(temp);
       }
     }
@@ -739,8 +582,8 @@ const EditProductFeedbackSettings = (props: any) => {
   const handleInvokeDelayChange = (event: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.invokeDelay = event.target.value;
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.invokeDelay = event.target.value;
         setProductParams(temp);
       }
     }
@@ -749,8 +592,9 @@ const EditProductFeedbackSettings = (props: any) => {
   const handleRatingLimitChange = (event: any) => {
     if(productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackSettings) {
-        temp.products[0].feedbackSettings.ratingLimit = event.target.value;
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit = event.target.value;
         setProductParams(temp);
       }
     }
@@ -769,7 +613,7 @@ const EditProductFeedbackSettings = (props: any) => {
               label='Category Name'
               value={category.name}
               fullWidth
-              onChange={(event) => handleChangeCategoryName(event, catIndex)}
+              onChange={(event) => handleChangeFeedbackCategoryName(event, catIndex)}
               autoComplete='off'
               className='textFieldStyle'
           />
@@ -779,7 +623,7 @@ const EditProductFeedbackSettings = (props: any) => {
               title={'Delete this Category'}
               aria-label='delete this category'
             >
-              <IconButton size='small' onClick={() => deleteCategory(catIndex)} >
+              <IconButton size='small' onClick={() => deleteFeedbackCategory(catIndex)} >
                 <ClearIcon />
               </IconButton>
             </LightTooltip>
@@ -793,7 +637,7 @@ const EditProductFeedbackSettings = (props: any) => {
               title={'Add a standard Feedback text'}
               aria-label='Add a standard Feedback text'
             >
-              <Button size='small' variant="outlined" onClick={() => addFeedback(catIndex)} >
+              <Button size='small' variant="outlined" onClick={() => addFeedbackStdFeedbackText(catIndex)} >
                 <AddIcon /> Feedback Text
               </Button>
             </LightTooltip>
@@ -812,7 +656,7 @@ const EditProductFeedbackSettings = (props: any) => {
                       label='Feedback text'
                       value={feedback ? feedback : ''}
                       fullWidth
-                      onChange={(event) => handleChangeFeedback(event, catIndex, index)}
+                      onChange={(event) => handleChangeFeedbackStdFeedbackText(event, catIndex, index)}
                       autoComplete='off'
                       className='textFieldStyle'
                     />
@@ -822,7 +666,7 @@ const EditProductFeedbackSettings = (props: any) => {
                       title={'Delete this standard Feedback'}
                       aria-label='Delete this standard Feedback'
                     >
-                      <IconButton size='small' onClick={() => deleteFeedback(catIndex, index)} >
+                      <IconButton size='small' onClick={() => deleteFeedbackStdFeedbackText(catIndex, index)} >
                         <ClearIcon />
                       </IconButton>
                     </LightTooltip>
@@ -847,14 +691,15 @@ const EditProductFeedbackSettings = (props: any) => {
             title={'Add a category'}
             aria-label='Add a category'
           >
-            <Button size='small' variant="outlined" onClick={() => addCategory()} >
+            <Button size='small' variant="outlined" onClick={() => addFeedbackCategory()} >
               <AddIcon /> Category
             </Button>
           </LightTooltip>
         </Grid>
         { productParams && productParams.products && productParams.products[0] &&
-          productParams.products[0].feedbackSettings &&
-          productParams.products[0].feedbackSettings.categories.map((category: ICategory, index: number) => {
+          productParams.products[0].feedbackAgentSettings &&
+          productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+          productParams.products[0].feedbackAgentSettings.feedbackSettings.categories.map((category: ICategory, index: number) => {
             return renderCategoryDetails(category, index);
         })}
       </Grid>
@@ -874,9 +719,9 @@ const EditProductFeedbackSettings = (props: any) => {
           name={`title`}
           value={
             (productParams && productParams.products && productParams.products[0] &&
-            productParams.products[0].feedbackSettings &&
-            productParams.products[0].feedbackSettings.title)
-            ? productParams.products[0].feedbackSettings.title
+            productParams.products[0].feedbackAgentSettings &&
+            productParams.products[0].feedbackAgentSettings.title)
+            ? productParams.products[0].feedbackAgentSettings.title
             : ''
           }
           label={'Title to display on the dialog'}
@@ -895,9 +740,9 @@ const EditProductFeedbackSettings = (props: any) => {
             multiple
             value={
               (productParams && productParams.products && productParams.products[0] &&
-              productParams.products[0].feedbackSettings &&
-              productParams.products[0].feedbackSettings.feedbackTypes)
-              ? productParams.products[0].feedbackSettings.feedbackTypes
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackTypes)
+              ? productParams.products[0].feedbackAgentSettings.feedbackTypes
               : []
             }
             onChange={(event) => handleFeedbackTypesChange(event)}
@@ -915,9 +760,9 @@ const EditProductFeedbackSettings = (props: any) => {
             name={`select_uploadFileMaxSize`}
             value={
               (productParams && productParams.products && productParams.products[0] &&
-              productParams.products[0].feedbackSettings &&
-              productParams.products[0].feedbackSettings.uploadFileMaxSize)
-              ? productParams.products[0].feedbackSettings.uploadFileMaxSize
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.uploadFileMaxSize)
+              ? productParams.products[0].feedbackAgentSettings.uploadFileMaxSize
               : ''
             }
             onChange={(event) => handleUploadFileMaxSizeChange(event)}
@@ -938,9 +783,9 @@ const EditProductFeedbackSettings = (props: any) => {
             name={`select_videoAudioMaxDuration`}
             value={
               (productParams && productParams.products && productParams.products[0] &&
-              productParams.products[0].feedbackSettings &&
-              productParams.products[0].feedbackSettings.videoAudioMaxDuration)
-              ? productParams.products[0].feedbackSettings.videoAudioMaxDuration
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.videoAudioMaxDuration)
+              ? productParams.products[0].feedbackAgentSettings.videoAudioMaxDuration
               : ''
             }
             onChange={(event) => handleVideoAudioMaxDurationChange(event)}
@@ -962,17 +807,17 @@ const EditProductFeedbackSettings = (props: any) => {
             multiple
             value={
               (productParams && productParams.products && productParams.products[0] &&
-              productParams.products[0].feedbackSettings &&
-              productParams.products[0].feedbackSettings.invokeOn)
-              ? productParams.products[0].feedbackSettings.invokeOn
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.invokeOn)
+              ? productParams.products[0].feedbackAgentSettings.invokeOn
               : []
             }
             onChange={(event) => handleInvokeOnChange(event)}
           >
             <MenuItem key={INVOKE_TYPE_MANUAL} value={INVOKE_TYPE_MANUAL}>{'User manually clicks button'}</MenuItem>
-            <MenuItem key={INVOKE_TYPE_AFTER_DELAY} value={INVOKE_TYPE_AFTER_DELAY}>{'Automatically display after sometime'}</MenuItem>
+            {/*<MenuItem key={INVOKE_TYPE_AFTER_DELAY} value={INVOKE_TYPE_AFTER_DELAY}>{'Automatically display after sometime'}</MenuItem>
             <MenuItem key={INVOKE_TYPE_CONTEXT_CHANGE} value={INVOKE_TYPE_CONTEXT_CHANGE}>{'Automatically display on context change'}</MenuItem>
-            <MenuItem key={INVOKE_TYPE_IDLE} value={INVOKE_TYPE_IDLE}>{'Automatically display when the is inactivity'}</MenuItem>
+            <MenuItem key={INVOKE_TYPE_IDLE} value={INVOKE_TYPE_IDLE}>{'Automatically display when the is inactivity'}</MenuItem>*/}
           </Select>
         </FormControl>
 
@@ -983,9 +828,9 @@ const EditProductFeedbackSettings = (props: any) => {
           name={`invokeDelay`}
           value={
             (productParams && productParams.products && productParams.products[0] &&
-            productParams.products[0].feedbackSettings &&
-            productParams.products[0].feedbackSettings.invokeDelay)
-            ? productParams.products[0].feedbackSettings.invokeDelay
+            productParams.products[0].feedbackAgentSettings &&
+            productParams.products[0].feedbackAgentSettings.invokeDelay)
+            ? productParams.products[0].feedbackAgentSettings.invokeDelay
             : ''
           }
           label={'The delay (in minutes) after which feedback will be requested automatically'}
@@ -1004,9 +849,10 @@ const EditProductFeedbackSettings = (props: any) => {
             name={`select_ratingLimit`}
             value={
               (productParams && productParams.products && productParams.products[0] &&
-              productParams.products[0].feedbackSettings &&
-              productParams.products[0].feedbackSettings.ratingLimit)
-              ? productParams.products[0].feedbackSettings.ratingLimit
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit)
+              ? productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit
               : ''
             }
             onChange={(event) => handleRatingLimitChange(event)}
@@ -1022,8 +868,8 @@ const EditProductFeedbackSettings = (props: any) => {
     );
   };
 
-  const renderFeedbackSettingsPage = () => {
-    if (feedbackSettingsPosted) {
+  const renderfeedbackAgentSettingsPage = () => {
+    if (feedbackAgentSettingsPosted) {
       return (
         <Fragment>
           <Success message={msgSuccess} />
@@ -1196,8 +1042,8 @@ const EditProductFeedbackSettings = (props: any) => {
 
   return (
     <Fragment>
-      {feedbackSettingsFetched && productParams ? (
-        renderFeedbackSettingsPage()
+      {feedbackAgentSettingsFetched && productParams ? (
+        renderfeedbackAgentSettingsPage()
       ) : (
         <Container className='loaderStyle'>
           <Loader />
@@ -1206,4 +1052,4 @@ const EditProductFeedbackSettings = (props: any) => {
     </Fragment>
   );
 };
-export default withRouter(EditProductFeedbackSettings);
+export default withRouter(EditProductfeedbackAgentSettings);

@@ -1,4 +1,4 @@
-import { ConfigItem, DeviceInfo, FeedbackSettings, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
+import { ConfigItem, DeviceInfo, FeedbackAgentSettings, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, getDevicesList, getPlatformsList, getProductConfig,  getTestSuites} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
@@ -57,6 +57,7 @@ export const createProduct = async (productData: ProductInfo, userId: string): P
     appLogger.info({ createCampaign_put_params: params });
     return put<ProductInfo>(params);
 };
+
 export const getCreateProductConfig = async (
   orgId: string
 ): Promise<ConfigItem> => {
@@ -249,7 +250,7 @@ export const removeAPIKeyFromProduct = async (apiKeyId: string) => {
   }
 };
 
-export const getProductFeedbackSettings = async (apiKey: string, version: string): Promise<Array<FeedbackSettings | undefined>> => {
+export const getProductFeedbackSettings = async (apiKey: string, version: string): Promise<Array<FeedbackAgentSettings | undefined>> => {
   const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
     ExpressionAttributeValues: {
       ':apiKey': apiKey,
@@ -258,5 +259,5 @@ export const getProductFeedbackSettings = async (apiKey: string, version: string
     TableName: TableNames.getProductsTableName(),
   });
   appLogger.info({ getProductFeedbackSettings_scan_params: params });
-  return (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackSettings);
+  return (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackAgentSettings);
 };
