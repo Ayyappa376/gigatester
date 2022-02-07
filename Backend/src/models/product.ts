@@ -3,7 +3,7 @@ export interface ProductInfo {
     apiKeyId?: string;
     description?: string;
     devices?: string[];
-    feedbackSettings?: FeedbackSettings;
+    feedbackAgentSettings?: FeedbackAgentSettings;
     id: string;
     name: string;
     platforms: string[];
@@ -12,6 +12,7 @@ export interface ProductInfo {
     status: string;
     testers?: TesterStatus[];
     testSuite?: string[];
+    trackingSystemDetails?: TrackingSystemDetails;
     version: string;
     [keyName: string]: any;
 }
@@ -21,19 +22,30 @@ export interface TesterStatus {
     id: string;
 }
 
-export interface FeedbackSettings {
-    categories: Category[];
+export interface FeedbackAgentSettings {
+    bugSettings?: BugSettings;
+    feedbackSettings?: FeedbackSettings;
     feedbackTypes: FeedbackType[];
     invokeDelay?: number; //in seconds
     invokeOn: InvokeType[];
     logo?: string;
-    ratingIcon: RatingIconType;
-    ratingLimit: number; //values 0,1,2,3,4,5 - 0 means it will never ask for details.
-    severities: SeverityType[];
     title: string;
-    uploadFileMaxSize: string; //in GB, allowed values 1, 2, 3, 4 or 5
-    videoAudioMaxDuration: string; //in min, allowed values 1, 2, 3, 4 or 5
+    uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
+    videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
     widgetLookAndFeel: WidgetLAF;
+}
+
+export interface BugSettings {
+    categories: Category[];
+    severities: SeverityType[];
+    title?: string;
+}
+
+export interface FeedbackSettings {
+    categories: Category[];
+    ratingIcon: RatingIconType;
+    ratingLimit: number; //values 1,2,3,4,5
+    title?: string;
 }
 
 export interface WidgetLAF {
@@ -48,6 +60,13 @@ export interface WidgetLAF {
 export interface Category {
     feedbacks?: string[];
     name: string;
+}
+
+export interface TrackingSystemDetails {
+    auth: {
+        [key: string]: string;
+    };
+    url: string;
 }
 
 export type FeedbackType = 'FEEDBACK' | 'BUGS';

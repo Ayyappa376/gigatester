@@ -55,7 +55,7 @@ exports.handler = async (event: any) => {
                 FilterExpression: 'apiKey = :apiKey AND version = :version',
                 TableName: getTableNameFor('GT_Products'),
               });
-               body = (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackSettings);
+               body = (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackAgentSettings);
 //               headers['Access-Control-Allow-Headers'] = '*';
 //               headers['Access-Control-Allow-Origin'] = '*';
 //               headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
