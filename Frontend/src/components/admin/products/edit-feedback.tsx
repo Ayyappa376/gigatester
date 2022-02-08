@@ -4,54 +4,26 @@ import {
   makeStyles,
   Container,
   Paper,
-  Table,
-  TableHead,
-  TableRow,
-  TableCell,
-  TableBody,
   Button,
-  CircularProgress,
-  Backdrop,
   Grid,
-  TableSortLabel,
-  MuiThemeProvider,
   Snackbar,
   SnackbarContent,
-  Tooltip,
   TextField,
-  Link,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  CssBaseline,
-  ListItemIcon,
   IconButton,
-  FormControl,
-  MenuItem,
-  Select,
-  InputLabel,
 } from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
 import ClearIcon from '@material-ui/icons/Clear';
-import Notification from '../../../common/notification';
 import AddIcon from '@material-ui/icons/Add';
-import EditIcon from '@material-ui/icons/Edit';
-import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
 import { Http } from '../../../utils';
 import { withRouter } from 'react-router-dom';
-import { ModalComponent } from '../../modal';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
-import SearchControl from '../../common/searchControl';
-import PageSizeDropDown from '../../common/page-size-dropdown';
-import RenderPagination from '../../common/pagination';
 import EditFeedbackTabs from './tabs';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import {
-  IProductParams, ICategory, IFeedbackAgentSettings,
+  IProductParams, ICategory,
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
@@ -238,59 +210,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       });
   }, []);
 
-  /*
-    const deleteClicked = (row: IProductInfo) => {
-      setSelectedProd(row);
-      setOpenModal(true);
-    };
-
-    const modalNoClicked = () => {
-      setOpenModal(false);
-    };
-
-    const deleteProduct = (prod: IProductInfo) => {
-      setBackdropOpen(true);
-      Http.deleteReq({
-        url: `/api/v2/products/${prod.id}/${prod.version}`,
-        state: stateVariable,
-      })
-        .then((response: any) => {
-          setBackdropOpen(false);
-  //        setDeleteProductId('');
-  //        setDeleteProductVersion('');
-          setSelectedProd(undefined);
-          fetchProductList();
-        })
-        .catch((error) => {
-          const perror = JSON.stringify(error);
-          const object = JSON.parse(perror);
-          if (object.code === 400) {
-            setFailureMessage(object.apiError.msg);
-          } else if (object.code === 401) {
-            props.history.push('/relogin');
-          } else {
-            setFailureMessage(<Text tid='somethingWentWrong' />);
-            setFailure(true);
-          }
-          setBackdropOpen(false);
-          fetchProductList();
-        });
-    };
-
-    const modalYesClicked = () => {
-      if(selectedProd) {
-        deleteProduct(selectedProd);
-        setOpenModal(false);
-      }
-    };
-
-    const closeDialog = () => {
-      setDialogOpen(false);
-  //    setSoftwareOption(false);
-  //    setSelectedProd(undefined);
-    };
-  */
-
   const handleSave = () => {
     if (mandatoryFieldsCheck()) {
       const postData = productParams;
@@ -302,8 +221,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         state: stateVariable,
       })
         .then((response: any) => {
-          //          setProdId('');
-          //          setProdVersion('');
           setfeedbackAgentSettingsPosted(true);
         })
         .catch((error: any) => {
