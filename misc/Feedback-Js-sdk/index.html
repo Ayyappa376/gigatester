@@ -12,13 +12,16 @@
             padding: 0px;
         }
     </style>
+
     <script>
       window.GigaTester = window.GigaTester || {};
       GigaTester.apiKey = 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T';
       GigaTester.productVersion = '0.1';
+      GigaTester.defaultCategoryCallback = 'sampleDefaultCategory';
+      GigaTester.userDetailCallback = 'sampleUserData';
       GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
       (function(d) {
-            var s = d.createElement('script'); s.async = true;
+            var s = d.createElement('script'); s.sync = true;
             s.type = 'module';
             s.src = './src/gigatester_script.js';
             (d.head || d.body).appendChild(s);
@@ -26,11 +29,15 @@
     </script>
 </head>
 <body>
-    <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.5.1/snap.svg-min.js" integrity="sha512-Gk+uNk8NWN235mIkS6B7/424TsDuPDaoAsUekJCKTWLKP6wlaPv+PBGfO7dbvZeibVPGW+mYidz0vL0XaWwz4w==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.0/html2canvas.min.js" integrity="sha512-UcDEnmFoMh0dYHu0wGsf5SKB7z7i5j3GuXHCnb3i4s44hfctoLihr896bxM0zL7jGkcHQXXrJsFIL62ehtd6yQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <script src="./gigatester_script.js"></script> -->
-    <!-- <script src="./userback_trim_script.js"></script> -->
+    <script>
+        window.sampleDefaultCategory = function(params){
+            return (params === "BUGS") ? "Audio" : "Ratings"
+        }
+        let userData = {"email" : "xyz@abc.com", "id" : "xyz"}
+        window.sampleUserData = function(){
+            return userData
+        }
+    </script>
     <h1>Sample app</h1>
 </body>
 </html>
