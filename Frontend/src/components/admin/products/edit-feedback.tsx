@@ -9,10 +9,9 @@ import {
   Snackbar,
   SnackbarContent,
   TextField,
-  IconButton,
+  Box,
 } from "@material-ui/core";
 import ClearIcon from '@material-ui/icons/Clear';
-import AddIcon from '@material-ui/icons/Add';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
@@ -34,76 +33,89 @@ import { LightTooltip } from '../../common/tooltip';
 import Success from '../../success-page';
 import { hostUrl } from '../../../utils/http/constants';
 
-const widgetScript: string = `<script>\n\
-window.GigaTester = window.GigaTester || {};\n\
-GigaTester.apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';\n\
-GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';\n\
-GigaTester.endpoint = \'${hostUrl}\';\n\
-GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION );\n\
-GigaTester.setUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION );\n\
-(function(d) {\n\
-    var s = d.createElement(\'script\'); s.async = true;\n\
-    s.src = \'https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester_script.js\';\n\
-    (d.head || d.body).appendChild(s);\n\
-})(document);\n\
+const widgetScript: string = `<script>
+window.GigaTester = window.GigaTester || {};
+GigaTester.apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';
+GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';
+GigaTester.endpoint = \'${hostUrl}\';
+GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION ); //Remove this line if not used
+GigaTester.appUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION ); //Remove this line if not used
+(function(d) {
+    var s = d.createElement(\'script\'); s.async = true;
+    s.src = \'https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester_script.js\';
+    (d.head || d.body).appendChild(s);
+})(document);
 </script>
+`;
 
-/****************************************/
-// YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the
-// name of the category to display in the context of invocation.
-// The callback function should be a global function.
-// The signature of this callback is as follows:
-//   function YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION (feedbackType) {
-//     return categoryNameInThisContext;
-//   }
-// where feedbackType is a string with value "BUGS" or "FEEDBACK"
-// and categoryNameInThisContext is a string that is the name of the category depending on the feedbackType parameter.
-//
-// Example:
-//   function getCategoryContext(feedbackType) {
-//     return feedbackType === "BUGS" ? "ScreenShare" : "Video";
-//   }
-// GigaTester.selectDefaultCategory( getCategoryContext );
-//
-//-------------------------------
-//
-// YOUR_USER_DETAILS_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the
-// email and other details of the user that your app wish to store along with feedbacks.
-// The callback function should be a global function.
-// The signature of this callback is as follows:
-//   function YOUR_USER_DETAILS_CALLBACK_FUNCTION () {
-//     return {
-//       email: userEmail, //the email of the logged in user
-//       ... //other details of the user like id, guid etc.
-//     };
-//   }
-// where email is a field our app expects in the object that is returned. If not present, will prompt
-//   the user to provide one. The remaining field in the returned object will be stored as it is.
-//
-// Example:
-//   function getUserDetails() {
-//     return {
-//       email: 'somebody@somewhere.com',
-//       id: 'user_1234567890',
-//       guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
-//       name: 'Some Person'
-//     };
-//   }
-// GigaTester.setUserDetails( getUserDetails );
-//
-//-------------------------------
-// The following functions can be used to have a handle on the GigaTester feedback agent dialog and button.
-//
-// GigaTester.hide() => to hide the Feedback button for full screen video
-// GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
-// GigaTester.open() => to open GigaTester form dialog
-// GigaTester.open("BUGS") => to show Bug report form dialog
-// GigaTester.open("FEEDBACK") => to show Feedback form dialog
-// GigaTester.close() => to close GigaTester dialog
-// GigaTester.setEmail("xyz@abc.com") => to set default Email(should be string) in GigaTester form.
-/****************************************/
-`
-  ;
+const scriptHelpText: string = `GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION );
+and
+GigaTester.appUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION )
+are optional parameters and can be removed if not used.
+
+Below you will find the explanation on how to use these callbacks and certain other functions provided by Gigatester feedback widget.
+
+--------------------------------------------------------------------
+
+YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the name of the category to display in the context of invocation.
+
+The callback function should be a global function.
+
+The signature of this callback is as follows:
+
+  function YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION (feedbackType) {
+    return categoryNameInThisContext;
+  }
+
+where feedbackType is a string with value "BUGS" or "FEEDBACK"
+and categoryNameInThisContext is a string that is the name of the category depending on the feedbackType parameter.
+
+Example:
+  function getCategoryContext(feedbackType) {
+    return feedbackType === "BUGS" ? "ScreenShare" : "Video";
+  }
+GigaTester.selectDefaultCategory( getCategoryContext );
+
+------------------------------------------------------------------------
+
+YOUR_USER_DETAILS_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the email and other details of the user that your app wish to store along with feedbacks.
+
+The callback function should be a global function.
+
+The signature of this callback is as follows:
+
+  function YOUR_USER_DETAILS_CALLBACK_FUNCTION () {
+    return {
+      email: userEmail, //the email of the logged in user
+      ... //other details of the user like id, guid etc.
+    };
+  }
+
+where email is a field our app expects in the object that is returned. If not present, will prompt the user to provide one. The remaining field in the returned object will be stored as it is.
+
+Example:
+  function getUserDetails() {
+    return {
+      email: 'somebody@somewhere.com',
+      id: 'user_1234567890',
+      guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
+      name: 'Some Person'
+    };
+  }
+GigaTester.appUserDetails( getUserDetails );
+
+----------------------------------------------------------------------
+
+The following functions can be used to have a handle on the GigaTester feedback agent dialog and button.
+
+GigaTester.hide() => to hide the Feedback button for full screen video
+GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
+GigaTester.open() => to open GigaTester form dialog
+GigaTester.open("BUGS") => to show Bug report form dialog
+GigaTester.open("FEEDBACK") => to show Feedback form dialog
+GigaTester.close() => to close GigaTester dialog
+GigaTester.setEmail("xyz@abc.com") => to set default Email(should be string) in GigaTester form.
+`;
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -163,6 +175,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   const [failureMessage, setFailureMessage] = useState('Something went wrong');
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('Saved successfully');
+  const [showHelp, setShowHelp] = useState(false);
+
   let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
 
   useEffect(() => {
@@ -176,14 +190,14 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           response.products[0].feedbackAgentSettings = {
             categories: [],
             feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
-            invokeDelay: 300,
+            invokeDelay: 5,
             invokeOn: [INVOKE_TYPE_MANUAL],
             ratingIcon: RATING_ICON_TYPE_STAR,
             ratingLimit: 2,
             severities: [SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW],
             title: 'GigaTester',
-            uploadFileMaxSize: '3',
-            videoAudioMaxDuration: '3',
+            uploadFileMaxSize: '400',
+            videoAudioMaxDuration: '1.5',
             widgetLookAndFeel: {
               bgColor: '#2878f0',
               fgColor: '#ffffff',
@@ -446,6 +460,88 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   };
 
+  const handleChangeBugCategoryName = (event: any, catIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings && event.target.value) {
+        temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex].name = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const deleteBugCategory = (catIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.categories.splice(catIndex, 1);
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const addBugCategory = () => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.categories.push({
+          name: '',
+          feedbacks: [],
+        });
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const handleChangeBugStdFeedbackText = (event: any, catIndex: number, index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex];
+        if (tempCat.feedbacks && event.target.value) {
+          tempCat.feedbacks[index] = event.target.value;
+          setProductParams(temp);
+        }
+      }
+    }
+  };
+
+  const deleteBugStdFeedbackText = (catIndex: number, index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex];
+        if (tempCat.feedbacks) {
+          tempCat.feedbacks.splice(index, 1);
+          setProductParams(temp);
+        }
+      }
+    }
+  };
+
+  const addBugStdFeedbackText = (catIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex];
+        if (!tempCat.feedbacks) {
+          tempCat.feedbacks = [];
+        }
+        tempCat.feedbacks.push('');
+        setProductParams(temp);
+      }
+    }
+  };
+
   const handleTitleChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -459,7 +555,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   const handleFeedbackTitleChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.feedbackSettings) {
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
         temp.products[0].feedbackAgentSettings.feedbackSettings.title = event.target.value;
         setProductParams(temp);
       }
@@ -469,7 +566,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   const handleBugTitleChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.bugSettings) {
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
         temp.products[0].feedbackAgentSettings.bugSettings.title = event.target.value;
         setProductParams(temp);
       }
@@ -541,85 +639,13 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
-  const renderCategoryDetails = (category: ICategory, catIndex: number) => {
-    return (
-      <Fragment key={catIndex}>
-        <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
-          <Grid item xs={10} sm={10}>
-            <TextField
-              required
-              type='string'
-              id={`category_${catIndex}`}
-              name={`category_${catIndex}`}
-              label='Category Name'
-              value={category.name}
-              fullWidth
-              onChange={(event) => handleChangeFeedbackCategoryName(event, catIndex)}
-              autoComplete='off'
-              className='textFieldStyle'
-            />
-          </Grid>
-          <Grid item xs={2} sm={2}>
-            <LightTooltip
-              title={'Delete this Category'}
-              aria-label='delete this category'
-            >
-              <IconButton size='small' onClick={() => deleteFeedbackCategory(catIndex)} >
-                <ClearIcon />
-              </IconButton>
-            </LightTooltip>
-          </Grid>
-          <Grid item xs={1}></Grid>
-          <Grid item xs={6}>
-            <Typography>Standard Feedbacks:</Typography>
-          </Grid>
-          <Grid item xs={5} style={{ textAlign: "center" }}>
-            <LightTooltip
-              title={'Add a standard Feedback text'}
-              aria-label='Add a standard Feedback text'
-            >
-              <Button size='small' variant="outlined" onClick={() => addFeedbackStdFeedbackText(catIndex)} >
-                <AddIcon /> Feedback Text
-              </Button>
-            </LightTooltip>
-          </Grid>
-          {category.feedbacks &&
-            category.feedbacks.map((feedback: string, index: number) => {
-              return (
-                <Grid key={index} container spacing={1}>
-                  <Grid item xs={1} sm={1}></Grid>
-                  <Grid item xs={10} sm={10}>
-                    <TextField
-                      required
-                      type='string'
-                      id={`feedback_${catIndex}_${index}`}
-                      name={`feedback_${catIndex}_${index}`}
-                      label='Feedback text'
-                      value={feedback ? feedback : ''}
-                      fullWidth
-                      onChange={(event) => handleChangeFeedbackStdFeedbackText(event, catIndex, index)}
-                      autoComplete='off'
-                      className='textFieldStyle'
-                    />
-                  </Grid>
-                  <Grid item xs={1} sm={1}>
-                    <LightTooltip
-                      title={'Delete this standard Feedback'}
-                      aria-label='Delete this standard Feedback'
-                    >
-                      <IconButton size='small' onClick={() => deleteFeedbackStdFeedbackText(catIndex, index)} >
-                        <ClearIcon />
-                      </IconButton>
-                    </LightTooltip>
-                  </Grid>
-                </Grid>
-              );
-            })
-          }
-        </Grid>
-      </Fragment>
-    );
-  };
+  const copyToClipboard = () => {
+    const textArea = document.querySelector('#widgetScript');
+    console.log(textArea);
+    const textToCopy = (textArea && textArea.textContent) ? textArea.textContent : '';
+    console.log(textToCopy);
+    navigator.clipboard.writeText(textToCopy);
+  }
 
   const renderfeedbackAgentSettingsPage = () => {
     if (feedbackAgentSettingsPosted) {
@@ -646,18 +672,23 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleInvokeDelayChange: handleInvokeDelayChange,
       handleTitleChange: handleTitleChange,
       handleVideoAudioMaxDurationChange: handleVideoAudioMaxDurationChange,
-      handleRatingLimitChange: handleRatingLimitChange,
       handleInvokeOnChange: handleInvokeOnChange,
       handleFeedbackTypesChange: handleFeedbackTypesChange,
       handleUploadFileMaxSizeChange: handleUploadFileMaxSizeChange,
       addFeedbackCategory: addFeedbackCategory,
-      renderCategoryDetails: renderCategoryDetails,
       handleChangeFeedbackCategoryName: handleChangeFeedbackCategoryName,
       deleteFeedbackCategory: deleteFeedbackCategory,
       addFeedbackStdFeedbackText: addFeedbackStdFeedbackText,
       handleChangeFeedbackStdFeedbackText: handleChangeFeedbackStdFeedbackText,
       deleteFeedbackStdFeedbackText: deleteFeedbackStdFeedbackText,
       handleFeedbackTitleChange: handleFeedbackTitleChange,
+      handleRatingLimitChange: handleRatingLimitChange,
+      addBugCategory: addBugCategory,
+      handleChangeBugCategoryName: handleChangeBugCategoryName,
+      deleteBugCategory: deleteBugCategory,
+      addBugStdFeedbackText: addBugStdFeedbackText,
+      handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
+      deleteBugStdFeedbackText: deleteBugStdFeedbackText,
       handleBugTitleChange: handleBugTitleChange,
     }
 
@@ -746,7 +777,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               <Grid item xs={12}>
                 <TextField
                   multiline
-                  rows={8}
+                  rows={12}
                   disabled
                   variant='outlined'
                   type='string'
@@ -766,9 +797,33 @@ const EditProductfeedbackAgentSettings = (props: any) => {
                   }
                   fullWidth
                   label='Widget Script'
-                  helperText='Copy the above script and paste it close to your opening body tag of your page.'
+                  helperText='Copy the above script and paste it in the head tag of your html page. Check detailed help on other intergration options.'
                 />
               </Grid>
+              <Button
+                size='small' variant="outlined" style={{margin: '2px'}}
+                onClick={(event: any) => copyToClipboard()}
+              >
+                Copy to clipboard
+              </Button>
+              <Button
+                size='small' variant="outlined" style={{margin: '2px'}}
+                onClick={(event: any) => setShowHelp(!showHelp)}
+              >
+                {showHelp ? 'Hide detailed help' : 'Show detailed help'}
+              </Button>
+              <TextField
+                multiline
+                variant="filled"
+                type='string'
+                id={`helpText`}
+                name={`helpText`}
+                value={scriptHelpText}
+                fullWidth
+                label=''
+                InputProps={{ disableUnderline: true }}
+                style={showHelp ? {display: 'block'} : { display: 'none'}}
+              />
             </Grid>
           </Paper>
           <div className='bottomButtonsContainer'>
