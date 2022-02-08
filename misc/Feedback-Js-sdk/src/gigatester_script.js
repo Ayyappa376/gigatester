@@ -1890,9 +1890,11 @@ else{
                         // console.log(item.feedbacks)
                         })
                         console.log(Feedback.default_category_callback.length, 'callback length')
+                        if(typeof GigaTester.default_category_callback !== 'undefined'){
                         if(GigaTester.defaultCategoryCallback.length){
                             GigaTester.selectDefaultCategory(GigaTester.defaultCategoryCallback, "BUGS");
                         }
+                    }
                     }
                     else if(Feedback.form_type === "FEEDBACK"){
                         Feedback.configs.categories = [];
@@ -1902,9 +1904,11 @@ else{
                         Feedback.configs.categories.push(item.name.trim())
                         // console.log(item.feedbacks)
                         })
+                        if(typeof GigaTester.default_category_callback !== 'undefined'){
                         if(GigaTester.defaultCategoryCallback.length){
                             GigaTester.selectDefaultCategory(GigaTester.defaultCategoryCallback, "FEEDBACK");
                         }
+                    }
                     }
                 },
                 checkDefaultCategory: function(){
@@ -2791,7 +2795,7 @@ else{
                     this.addControls();
                     Feedback.click_counter++;
                     console.log(Feedback.user_detail)
-                    if(Object.keys(Feedback.user_detail).length){
+                    if(typeof GigaTester.userDetailCallback !== 'undefined'){
                         GigaTester.appUserDetails(GigaTester.userDetailCallback);
                         console.log(GigaTester.userDetailCallback)
                         }
