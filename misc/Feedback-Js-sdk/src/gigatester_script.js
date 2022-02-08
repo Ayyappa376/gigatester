@@ -4463,7 +4463,6 @@ else{
                         //     "title" : "Provide your rating"
                         // }
                         Feedback.configs.config_data = data;
-                        Feedback
                         console.log(Feedback.form_type, 'form type');
                         if(Feedback.form_type === "BUGS"){
                             let category = data[0].bugSettings.categories;
