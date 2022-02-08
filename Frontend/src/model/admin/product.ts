@@ -12,8 +12,9 @@ export interface IProductInfo {
   platforms: string[];
   testSuite?: string[];
   testers?: ITesterStatus[];
-  feedbackSettings?: IFeedbackSettings;
+  feedbackAgentSettings?: IFeedbackAgentSettings;
   status: string;
+  trackingSystemDetails?: ITrackingSystemDetails;
   [keyName: string]: any;
 }
 
@@ -22,19 +23,30 @@ export interface ITesterStatus {
   approved: boolean;
 }
 
-export interface IFeedbackSettings {
-  categories: ICategory[];
+export interface IFeedbackAgentSettings {
   feedbackTypes: IFeedbackType[];
+  logo?: string;
   invokeDelay?: number; //in seconds
   invokeOn: IInvokeType[];
-  logo?: string;
+  title: string;
+  uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
+  videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
+  widgetLookAndFeel: IWidgetLAF;
+  bugSettings?: IBugSettings;
+  feedbackSettings?: IFeedbackSettings;
+}
+
+export interface IBugSettings {
+  categories: ICategory[];
+  severities: ISeverityType[];
+  title?: string;
+}
+
+export interface IFeedbackSettings {
+  categories: ICategory[];
   ratingIcon: IRatingIconType;
   ratingLimit: number; //values 1,2,3,4,5
-  severities: ISeverityType[];
-  title: string;
-  uploadFileMaxSize: string; //in GB, allowed values 1, 2, 3, 4 or 5
-  videoAudioMaxDuration: string; //in min, allowed values 1, 2, 3, 4 or 5
-  widgetLookAndFeel: IWidgetLAF;
+  title?: string;
 }
 
 export interface IWidgetLAF {
@@ -49,6 +61,13 @@ export interface IWidgetLAF {
 export interface ICategory {
   feedbacks?: string[];
   name: string;
+}
+
+export interface ITrackingSystemDetails {
+  url: string;
+  auth: {
+    [key: string]: string;
+  };
 }
 
 export interface IProductParams {
