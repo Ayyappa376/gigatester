@@ -498,7 +498,7 @@ else{
                     name_field: false,
                     name_field_mandatory: false,
                     email_field: true,
-                    email_field_mandatory: true,
+                    email_field_mandatory: false,
                     title_field: false,
                     title_field_mandatory: false,
                     title_field_placeholder: "",
@@ -568,7 +568,7 @@ else{
                     name_field: false,
                     name_field_mandatory: false,
                     email_field: true,
-                    email_field_mandatory: true,
+                    email_field_mandatory: false,
                     title_field: false,
                     title_field_mandatory: false,
                     title_field_placeholder: "",
@@ -2910,7 +2910,7 @@ else{
                     this.focusControls()
                     }
                     else{
-                        this.post(e);
+                        this.post();
                     }
                 },
                 previewRating: function(e) {
@@ -3156,12 +3156,19 @@ else{
                 validateFields: function(e){
                     e.preventDefault();
                     // console.log(this.form_data['category'], 'category')
-                    // if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
-                    //     console.log('category')
-                    // }
-                    // else{
-                        this.submitPost(e);
-                    // }
+                    if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
+                        console.log('category')
+                        Feedback.setScreenStatus('Please select a category')
+                        setTimeout(()=> Feedback.clearScreenStatus(), 4000);
+                    }
+                    if(this.form_data['severity'] === 'severity' || this.form_data['severity'] === ''){
+                        console.log('severity')
+                        Feedback.setScreenStatus('Please select bug severity')
+                        setTimeout(()=> Feedback.clearScreenStatus(), 4000);
+                    }
+                    else{
+                    this.submitPost(e);
+                    }
                 },
                 postMediaContent: function(dataInfo, fileSelected){
                     if($('gtdiv').hasClass('gigatester-controls-send-error')){
