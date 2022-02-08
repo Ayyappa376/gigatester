@@ -1977,6 +1977,14 @@ justify-content: center;
     /* height: calc(100vh - 230px); */
     overflow: auto;
 }
+.gigatester-bug-help-message{
+  font-size: 13px;
+  font-weight: 500;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 10px;
+  text-align: center;
+}
 #gigatester_button_container .gigatester-controls .gigatester-controls-form {
   /* height: calc(100vh - 230px); */
   overflow: auto;
