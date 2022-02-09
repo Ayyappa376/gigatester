@@ -91,6 +91,10 @@ const ManageDevices = (props: any) => {
     })
       .then((response: any) => {
         console.log(response);
+        if(typeof window.GigaTester !== 'undefined'){
+          window.GigaTester.setDefaultCategory("Devices-Bug", "BUGS");
+          window.GigaTester.setDefaultCategory("Devices", "FEEDBACK");
+        }
         response.devices.sort((a: IDeviceInfo, b: IDeviceInfo) => {
           return a.name.localeCompare(b.name);
         });

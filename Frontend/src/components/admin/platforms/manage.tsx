@@ -97,6 +97,10 @@ const ManagePlatforms = (props: any) => {
         setAllPlatforms(response.platforms);
         setPlatforms(response.platforms);
         setBackdropOpen(false);
+        if(typeof window.GigaTester !== 'undefined'){
+          window.GigaTester.setDefaultCategory("Platform-Bug", "BUGS");
+          window.GigaTester.setDefaultCategory("Platform", "FEEDBACK");
+        }
       })
       .catch((error: any) => {
         setFetchPlatforms(true);

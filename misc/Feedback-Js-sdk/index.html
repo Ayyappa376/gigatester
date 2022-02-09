@@ -17,8 +17,8 @@
       window.GigaTester = window.GigaTester || {};
       GigaTester.apiKey = 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T';
       GigaTester.productVersion = '0.1';
-      GigaTester.defaultCategoryCallback = 'sampleDefaultCategory';
-      GigaTester.userDetailCallback = 'sampleUserData';
+    //   GigaTester.defaultCategoryCallback = 'sampleDefaultCategory';
+    //   GigaTester.userDetailCallback = 'sampleUserData';
       GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
       (function(d) {
             var s = d.createElement('script'); s.sync = true;
@@ -30,13 +30,20 @@
 </head>
 <body>
     <script>
-        window.sampleDefaultCategory = function(params){
+        sampleDefaultCategory = function(params){
+            return (params === "BUGS") ? "Player" : "Player"
+        }
+        sampleDefaultCategory = function(params){
             return (params === "BUGS") ? "Audio" : "Ratings"
         }
         let userData = {"email" : "xyz@abc.com", "id" : "xyz"}
-        window.sampleUserData = function(){
+        sampleUserData = function(){
             return userData
         }
+        // window.GigaTester.appUserDetails(sampleUserData);
+        // window.GigaTester.selectDefaultCategory(sampleDefaultCategory);
+        // GigaTester.defaultCategoryCallback = sampleDefaultCategory;
+        // GigaTester.userDetailCallback = sampleUserData;
     </script>
     <h1>Sample app</h1>
 </body>
