@@ -10,7 +10,6 @@ interface SettingsProps {
   handleVideoAudioMaxDurationChange: any,
   handleInvokeOnChange: any,
   handleInvokeDelayChange: any,
-  handleRatingLimitChange: any,
   handleUploadFileMaxSizeChange: any,
   handleFeedbackTypesChange: any,
 }
@@ -59,7 +58,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const StandardSettings = ({ productParams, handleInvokeDelayChange, handleTitleChange, handleVideoAudioMaxDurationChange, handleRatingLimitChange, handleInvokeOnChange, handleFeedbackTypesChange, handleUploadFileMaxSizeChange }: SettingsProps) => {
+const StandardSettings = ({
+  productParams,
+  handleInvokeDelayChange,
+  handleTitleChange,
+  handleVideoAudioMaxDurationChange,
+  handleInvokeOnChange,
+  handleFeedbackTypesChange,
+  handleUploadFileMaxSizeChange
+}: SettingsProps) => {
   const classes = useStyles();
 
   return (
@@ -109,7 +116,7 @@ const StandardSettings = ({ productParams, handleInvokeDelayChange, handleTitleC
 
       <FormControl className={classes.formControl}>
         <InputLabel id={`uploadFileMaxSize`} required={true}>
-          {'Maximum size of the file that can be uploaded (In GB):'}
+          {'Maximum size of the file that can be uploaded (In MB):'}
         </InputLabel>
         <Select
           name={`select_uploadFileMaxSize`}
@@ -122,17 +129,17 @@ const StandardSettings = ({ productParams, handleInvokeDelayChange, handleTitleC
           }
           onChange={(event) => handleUploadFileMaxSizeChange(event)}
         >
-          <MenuItem key={1} value={1}>{'1 GB'}</MenuItem>
-          <MenuItem key={2} value={2}>{'2 GB'}</MenuItem>
-          <MenuItem key={3} value={3}>{'3 GB'}</MenuItem>
-          <MenuItem key={4} value={4}>{'4 GB'}</MenuItem>
-          <MenuItem key={5} value={5}>{'5 GB'}</MenuItem>
+          <MenuItem key={200} value={200}>{'200 MB'}</MenuItem>
+          <MenuItem key={400} value={400}>{'400 MB'}</MenuItem>
+          <MenuItem key={600} value={600}>{'600 MB'}</MenuItem>
+          <MenuItem key={800} value={800}>{'800 MB'}</MenuItem>
+          <MenuItem key={1024} value={1024}>{'1 GB'}</MenuItem>
         </Select>
       </FormControl>
 
       <FormControl className={classes.formControl}>
         <InputLabel id={`videoAudioMaxDuration`} required={true}>
-          {'Maximum duration of the Audio and Video recordings (In min):'}
+          {'Maximum duration of the Audio and Video recordings (In minutes):'}
         </InputLabel>
         <Select
           name={`select_videoAudioMaxDuration`}
@@ -145,11 +152,12 @@ const StandardSettings = ({ productParams, handleInvokeDelayChange, handleTitleC
           }
           onChange={(event) => handleVideoAudioMaxDurationChange(event)}
         >
-          <MenuItem key={1} value={1}>{'1 min'}</MenuItem>
-          <MenuItem key={2} value={2}>{'2 min'}</MenuItem>
-          <MenuItem key={3} value={3}>{'3 min'}</MenuItem>
-          <MenuItem key={4} value={4}>{'4 min'}</MenuItem>
-          <MenuItem key={5} value={5}>{'5 min'}</MenuItem>
+          <MenuItem key={0.5} value={0.5}>{'half a minute'}</MenuItem>
+          <MenuItem key={1} value={1}>{'1 minute'}</MenuItem>
+          <MenuItem key={1.5} value={1.5}>{'1 and a half minutes'}</MenuItem>
+          <MenuItem key={2} value={2}>{'2 minutes'}</MenuItem>
+          <MenuItem key={2.5} value={2.5}>{'2 and a half minutes'}</MenuItem>
+          <MenuItem key={3} value={3}>{'3 minutes'}</MenuItem>
         </Select>
       </FormControl>
 
@@ -195,30 +203,6 @@ const StandardSettings = ({ productParams, handleInvokeDelayChange, handleTitleC
         InputProps={{ disableUnderline: true }}
         className='textFieldStyle'
       />
-
-      <FormControl className={classes.formControl}>
-        <InputLabel id={`ratingLimit`} required={true}>
-          {'The star rating till which detailed feedback will requested:'}
-        </InputLabel>
-        <Select
-          name={`select_ratingLimit`}
-          value={
-            (productParams && productParams.products && productParams.products[0] &&
-            productParams.products[0].feedbackAgentSettings &&
-            productParams.products[0].feedbackAgentSettings.feedbackSettings &&
-            productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit)
-            ? productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit
-            : ''
-          }
-          onChange={(event) => handleRatingLimitChange(event)}
-        >
-          <MenuItem key={1} value={1}>{'1 star rating'}</MenuItem>
-          <MenuItem key={2} value={2}>{'2 star rating'}</MenuItem>
-          <MenuItem key={3} value={3}>{'3 star rating'}</MenuItem>
-          <MenuItem key={4} value={4}>{'4 star rating'}</MenuItem>
-          <MenuItem key={5} value={5}>{'5 star rating'}</MenuItem>
-        </Select>
-      </FormControl>
     </Grid>
   );
 }

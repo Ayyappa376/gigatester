@@ -30,20 +30,13 @@
 </head>
 <body>
     <script>
-        sampleDefaultCategory = function(params){
-            return (params === "BUGS") ? "Player" : "Player"
-        }
-        sampleDefaultCategory = function(params){
+        window.sampleDefaultCategory = function(params){
             return (params === "BUGS") ? "Audio" : "Ratings"
         }
         let userData = {"email" : "xyz@abc.com", "id" : "xyz"}
-        sampleUserData = function(){
+        window.sampleUserData = function(){
             return userData
         }
-        // window.GigaTester.appUserDetails(sampleUserData);
-        // window.GigaTester.selectDefaultCategory(sampleDefaultCategory);
-        // GigaTester.defaultCategoryCallback = sampleDefaultCategory;
-        // GigaTester.userDetailCallback = sampleUserData;
     </script>
     <h1>Sample app</h1>
 </body>

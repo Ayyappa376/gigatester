@@ -2546,8 +2546,7 @@ else{
                             video: false
                         }).then(function(stream){
                         Feedback.recording = true;
-                        Feedback.set_screen_default_category = false;
-                        
+                        Feedback.set_screen_default_category = false;                    
                         let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
                         // let video = $('<video preload="auto" controls src="' + video_url + '"></video>');
                         let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')

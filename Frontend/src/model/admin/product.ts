@@ -26,10 +26,10 @@ export interface ITesterStatus {
 export interface IFeedbackAgentSettings {
   feedbackTypes: IFeedbackType[];
   logo?: string;
-  invokeDelay?: number; //in seconds
+  invokeDelay?: number; //in minutes
   invokeOn: IInvokeType[];
   title: string;
-  uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
+  uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1024
   videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
   widgetLookAndFeel: IWidgetLAF;
   bugSettings?: IBugSettings;

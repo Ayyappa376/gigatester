@@ -8,20 +8,24 @@ import ClearIcon from '@material-ui/icons/Clear';
 interface CategoryProps {
   productParams: any,
   addFeedbackCategory: any,
-  renderCategoryDetails: any,
   handleChangeFeedbackCategoryName: any,
   deleteFeedbackCategory: any,
   addFeedbackStdFeedbackText: any,
   handleChangeFeedbackStdFeedbackText: any,
   deleteFeedbackStdFeedbackText: any,
   handleFeedbackTitleChange: any,
+  handleRatingLimitChange: any,
 }
 
-const renderCategoryDetails = (category: ICategory, catIndex: number, handleChangeFeedbackCategoryName: any,
+const renderCategoryDetails = (
+  category: ICategory,
+  catIndex: number,
+  handleChangeFeedbackCategoryName: any,
   deleteFeedbackCategory: any,
   addFeedbackStdFeedbackText: any,
   handleChangeFeedbackStdFeedbackText: any,
-  deleteFeedbackStdFeedbackText: any,) => {
+  deleteFeedbackStdFeedbackText: any
+) => {
   return (
     <Fragment key={catIndex}>
       <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
@@ -102,65 +106,91 @@ const renderCategoryDetails = (category: ICategory, catIndex: number, handleChan
 };
 
 
-const FeedbackSettings = ({ productParams, addFeedbackCategory, renderCategoryDetails, handleChangeFeedbackCategoryName,
+const FeedbackSettings = ({
+  productParams,
+  addFeedbackCategory,
+  handleChangeFeedbackCategoryName,
   deleteFeedbackCategory,
   addFeedbackStdFeedbackText,
   handleChangeFeedbackStdFeedbackText,
-  deleteFeedbackStdFeedbackText, handleFeedbackTitleChange }: CategoryProps) => {
+  deleteFeedbackStdFeedbackText,
+  handleFeedbackTitleChange,
+  handleRatingLimitChange,
+}: CategoryProps) => {
   return (
-    <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
-      <Grid item xs={10}>
-        <Typography variant="h6">Categories:</Typography>
-      </Grid>
-      <Grid item xs={2} style={{ textAlign: "center" }}>
-        <LightTooltip
-          title={'Add a category'}
-          aria-label='Add a category'
-        >
-          <Button size='small' variant="outlined" onClick={() => addFeedbackCategory()} >
-            <AddIcon /> Category
-          </Button>
-        </LightTooltip>
-      </Grid>
-      <Grid item xs={10} sm={10}>
-        <Box>
-          <TextField
-            required
-            type='string'
-            id={`category_$`}
-            name={`category_$`}
-            label='Title'
-            value={productParams.products[0].feedbackAgentSettings.feedbackSettings.title}
-            fullWidth
-            onChange={(event) => console.log('hello')}
-            autoComplete='off'
-            className='textFieldStyle'
-          />
+    <Fragment>
+      <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
+        <Grid item xs={12} sm={12}>
+          <Box>
+            <TextField
+              required
+              type='string'
+              id={`category_$`}
+              name={`category_$`}
+              label='Message on the feedbacks window.'
+              value={productParams.products[0].feedbackAgentSettings.feedbackSettings.title}
+              fullWidth
+              onChange={(event) => handleFeedbackTitleChange()}
+              autoComplete='off'
+              className='textFieldStyle'
+            />
           </Box>
         </Grid>
-        <Grid item xs={2} sm={2}>
+
+        <Grid item xs={12} sm={12}>
+          <FormControl style={{ minWidth: '100%' }}>
+            <InputLabel id={`ratingLimit`} required={true}>
+              {'The star rating till which detailed feedback will requested:'}
+            </InputLabel>
+            <Select
+              name={`select_ratingLimit`}
+              value={
+                (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit
+                : ''
+              }
+              onChange={(event) => handleRatingLimitChange(event)}
+            >
+              <MenuItem key={1} value={1}>{'1 star rating'}</MenuItem>
+              <MenuItem key={2} value={2}>{'2 star rating'}</MenuItem>
+              <MenuItem key={3} value={3}>{'3 star rating'}</MenuItem>
+              <MenuItem key={4} value={4}>{'4 star rating'}</MenuItem>
+              <MenuItem key={5} value={5}>{'5 star rating'}</MenuItem>
+            </Select>
+          </FormControl>
+         </Grid>
+      </Grid>
+      <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
+        <Grid item xs={10}>
+          <Typography variant="h6">Categories:</Typography>
+        </Grid>
+        <Grid item xs={2} style={{ textAlign: "center" }}>
           <LightTooltip
-            title={'Delete this Category'}
-            aria-label='delete this category'
+            title={'Add a category'}
+            aria-label='Add a category'
           >
-            <IconButton size='small' onClick={(event) => handleFeedbackTitleChange()} >
-              <ClearIcon />
-            </IconButton>
+            <Button size='small' variant="outlined" onClick={() => addFeedbackCategory()} >
+              <AddIcon /> Category
+            </Button>
           </LightTooltip>
         </Grid>
-      {productParams && productParams.products && productParams.products[0] &&
-        productParams.products[0].feedbackAgentSettings &&
-        productParams.products[0].feedbackAgentSettings.feedbackSettings &&
-        productParams.products[0].feedbackAgentSettings.feedbackSettings.categories.map((category: ICategory, index: number) => {
-          return renderCategoryDetails(category,
-            index,
-            handleChangeFeedbackCategoryName,
-            deleteFeedbackCategory,
-            addFeedbackStdFeedbackText,
-            handleChangeFeedbackStdFeedbackText,
-            deleteFeedbackStdFeedbackText);
-        })}
-    </Grid>
+        {productParams && productParams.products && productParams.products[0] &&
+          productParams.products[0].feedbackAgentSettings &&
+          productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+          productParams.products[0].feedbackAgentSettings.feedbackSettings.categories.map((category: ICategory, index: number) => {
+            return renderCategoryDetails(category,
+              index,
+              handleChangeFeedbackCategoryName,
+              deleteFeedbackCategory,
+              addFeedbackStdFeedbackText,
+              handleChangeFeedbackStdFeedbackText,
+              deleteFeedbackStdFeedbackText);
+          })}
+      </Grid>
+    </Fragment>
   );
 }
 
