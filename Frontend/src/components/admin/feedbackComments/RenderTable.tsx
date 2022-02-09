@@ -25,7 +25,7 @@ interface IProps {
     tableData: IAppFeedback[],
     viewAttachmentClicked: Function,
     urls: string[],
-    isBugReport: boolean,
+    isBugReport: boolean | undefined,
     fetchMore: Function,
     focusRating: number[],
     setFocusRating: Function,
@@ -56,7 +56,8 @@ export const ALROUND = 'alround'
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
-    const {isBugReport, tableData, resultsFetched} = props;
+    const { tableData, resultsFetched} = props;
+    const isBugReport = false;
     const [fetchAllUrls, setFetchAllUrls] = useState(false);
     const { ref, inView, entry } = useInView();
     const stateVariable = useSelector((state: IRootState) => {
@@ -127,13 +128,13 @@ const RenderTable = (props: IProps) => {
     }
 
     const handleOnSearch = (search: any) => { props.setKeyword(search); props.setSearchInitiated(true) };
-    
+
     console.log({tableData})
-    
+
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper style={{padding: '2rem'}}>
-            {isBugReport ? 
+            {isBugReport ?
               <Grid container>
                 <Grid item md={5}>
                   {
@@ -194,21 +195,21 @@ const RenderTable = (props: IProps) => {
               order={props.order}
               onRequestSort={(property: string) => { props.handleRequestSort()}}
               rowCount={tableData.length}
-              isBugReport={isBugReport}
+              // isBugReport={isBugReport}
               searchInitiated={props.searchInitiated}
-            />{tableData.length > 0 ? 
+            />{tableData.length > 0 ?
             <TableBody>
               {props.tableData.map(
                 (row: IAppFeedback, index: number) => {
-                  
+
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   let sourceDetails = '-'
-                  
+
                   if(row.userId) sourceDetails = row.userId;
-                  
+
                   if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
-                  
+
                   if(row.platformName) {
                     let platformInfo;
                     if(row.platformVersion) {
@@ -218,13 +219,13 @@ const RenderTable = (props: IProps) => {
                     }
                     sourceDetails = sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
                   }
-                  
+
                   if(row.platformOs) sourceDetails = sourceDetails === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
-                  
+
                   return (
                     <TableRow
                       innerRef={index === tableData.length - 1 ? ref : null}
-                      hover role="checkbox" tabIndex={-1} 
+                      hover role="checkbox" tabIndex={-1}
                       key={row.id}
                     >
                       <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
@@ -234,7 +235,7 @@ const RenderTable = (props: IProps) => {
                             {row.createdOn ? getDateTime(row.createdOn) : '-'}
                       </TableCell>
                       {
-                        isBugReport ? 
+                        isBugReport ?
                         <TableCell  align='center' style={{fontSize: '1rem'}}>
                             {row.bugPriority}
                         </TableCell> :
@@ -283,7 +284,7 @@ const RenderTable = (props: IProps) => {
                                             marginLeft: 'auto',
                                             marginRight: 'auto',
                                           }}>
-                              <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ? 
+                              <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ?
                                 signedUrlMapping[row.feedbackMedia.video].signedUrl : '' : ''} type="video/mp4" />
                             </video>
                             </div>
@@ -328,7 +329,7 @@ const RenderTable = (props: IProps) => {
                 }
               )}
             </TableBody>
-            : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}> 
+            : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}>
                 {
                   props.resultsFetched ? <div style={{marginLeft: "62%", transform: 'translateX: "-50%'}}>{`There are no ${isBugReport? 'bugs' : 'feedbacks'} to show.`}</div> :
                   <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"

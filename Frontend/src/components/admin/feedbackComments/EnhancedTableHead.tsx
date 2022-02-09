@@ -15,7 +15,7 @@ interface EnhancedTableProps {
   onRequestSort: (property: string) => void;
   order: Order;
   rowCount: number;
-  isBugReport: boolean;
+  // isBugReport: boolean;
   searchInitiated: boolean;
 }
 
@@ -49,7 +49,7 @@ const headCells: HeadCell[] = [
 
 const EnhancedTableHead = (props: EnhancedTableProps) => {
     const sortClass = useStylesLabel()
-    const { classes, order, onRequestSort, isBugReport, searchInitiated } = props;
+    const { classes, order, onRequestSort, searchInitiated } = props;
     const createSortHandler = (property: string) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(property);
     };
@@ -57,12 +57,12 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
       <TableHead>
         <TableRow>
           {headCells.map((headCell) => {
-            if(isBugReport && headCell.headType === FEEDBACK) {
+            if(headCell.headType === FEEDBACK) {
               return;
             }
-            if(!isBugReport && headCell.headType === BUG_REPORT) {
-              return;
-            }
+            // if(!isBugReport && headCell.headType === BUG_REPORT) {
+            //   return;
+            // }
             return(
             <TableCell
               key={headCell.id}
@@ -83,17 +83,17 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
                         {headCell.label}
                       </div>
                     </TableSortLabel>
-                  </Tooltip> : 
+                  </Tooltip> :
                   <div>
                     {headCell.label}
                   </div>
               }
-              
+
             </TableCell>
           )})}
         </TableRow>
       </TableHead>
     );
   }
-  
+
   export default EnhancedTableHead;

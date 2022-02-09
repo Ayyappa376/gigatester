@@ -14,13 +14,13 @@ interface IProps {
   comments?: ICommentObject,
   old?: boolean,
   category?: string,
-  isBugReport: boolean,
+  isBugReport: boolean | undefined,
 }
 
 const RenderComments = (props: IProps) => {
   const {comments, old} = props;
   const classes = useStyles();
-  
+
   if(comments && Object.keys(comments).length > 0) {
     let commentText = '';
     Object.keys(comments).forEach((comment: string) => {
@@ -32,7 +32,7 @@ const RenderComments = (props: IProps) => {
       }
       if(comments[comment] && comment === 'standardFeedback') {
         commentText = commentText + '\n' + comments[comment]
-      } 
+      }
     });
 
     const sortedKeys = Object.keys(comments).sort((a: string, b: string) => {
@@ -48,7 +48,7 @@ const RenderComments = (props: IProps) => {
       if(b > a) return -1;
       return 0;
     })
-    
+
     return(
       <div >
         <div >
@@ -66,13 +66,13 @@ const RenderComments = (props: IProps) => {
         </div>
         <div>
           {
-            Object.keys(comments).length > 2 ? 
+            Object.keys(comments).length > 2 ?
               <div style={{marginTop: '1rem'}}>
                 <Typography color="textSecondary" style={{fontSize: '.85rem'}}>Screen shot comments:</Typography>
                     {sortedKeys.map((key: string) => {
                         if(comments[key].message) {
                           if(old) {
-                            return ( 
+                            return (
                               <div key={key}>
                                 <div>&#9679;&nbsp;{comments[key].message}</div>
                               </div>

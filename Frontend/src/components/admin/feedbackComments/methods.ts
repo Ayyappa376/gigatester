@@ -9,7 +9,7 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
       }
       const urlSplit = url.split('/')
       let name = urlSplit[urlSplit.length - 1]
-  
+
       Http.get({
         url: `/api/v2/signedurl/${name}`,
       }).then((response: any) => {
@@ -22,49 +22,73 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
       })
     })
   }
-  
-export const getFeedbackData = ({isBugReport, urlAppend}: any) => {
+
+export const getFeedbackData = ({ urlAppend}: any) => {
     return new Promise((resolve, reject) => {
-      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`+ urlAppend;
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK}`+ urlAppend;
       Http.get({
         url,
       }).then((response: any) => {
-        return resolve(response);      
+        return resolve(response);
       })
       .catch((error) => {
         return reject(error);
       });
     })
   }
+
+  export const getBugData = ({urlAppend}: any) => {
+    return new Promise((resolve, reject) => {
+      let url = `/api/v2/userFeedback/${CONST_BUG_REPORT}`+ urlAppend;
+      Http.get({
+        url,
+      }).then((response: any) => {
+        return resolve(response);
+      })
+      .catch((error) => {
+        return reject(error);
+      });
+    })
+  }
+
+
 interface IGetChartData {
-  isBugReport: boolean,
   setFeedbackBarChartData: Function,
   setBugBarChartSeries: Function,
   setPieChartSeries: Function,
   prodId: string,
   prodVersion: string
 }
-  
-export const getChartData = async({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT_CHART : CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
+
+export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
       Http.get({
         url,
       }).then((response: any) => {
         const processedData = response.Items;
         console.log(response)
-        if(isBugReport) {
-          setBugBarChartSeries([{
-            name: 'Severity',
-            data: Object.values(processedData.barChartData)
-          }])
-          setPieChartSeries(processedData.pieChartData)
-        } else {
-          setFeedbackBarChartData(processedData.barChartData);
-          setPieChartSeries(processedData.pieChartData);
-        }
+        setFeedbackBarChartData(processedData.barChartData);
+        setPieChartSeries(processedData.pieChartData);
       })
       .catch((error) => {
         console.error(error)
       });
   }
-  
+
+  export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
+    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
+    Http.get({
+      url,
+    }).then((response: any) => {
+      const processedData = response.Items;
+      console.log('bug charr', response)
+        setBugBarChartSeries([{
+          name: 'Severity',
+          data: Object.values(processedData.barChartData)
+        }])
+        setPieChartSeries(processedData.pieChartData)
+    })
+    .catch((error) => {
+      console.error(error)
+    });
+}
