@@ -62,9 +62,10 @@ const RenderTable = (props: IProps) => {
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
+    const currentLength = tableData.length;
 
     useEffect(() => {
-      if(inView && tableData.length > 0) {
+      if(inView && tableData.length > 5) {
         props.fetchMore()
       }
       return () => {
@@ -127,13 +128,11 @@ const RenderTable = (props: IProps) => {
     }
 
     const handleOnSearch = (search: any) => { props.setKeyword(search); props.setSearchInitiated(true) };
-    
-    console.log({tableData})
-    
+
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper style={{padding: '2rem'}}>
-            {isBugReport ? 
+            {isBugReport ?
               <Grid container>
                 <Grid item md={5}>
                   {
@@ -146,7 +145,7 @@ const RenderTable = (props: IProps) => {
                     <div>
                     <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                    <RenderCategoryFilter focusCategory={props.focusCategory} isBugReport={props.isBugReport} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
@@ -162,7 +161,7 @@ const RenderTable = (props: IProps) => {
                         <div>
                           <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                           <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                          <RenderCategoryFilter focusCategory={props.focusCategory} isBugReport={props.isBugReport} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                         </div>
                     }
                   </Grid>
@@ -196,19 +195,19 @@ const RenderTable = (props: IProps) => {
               rowCount={tableData.length}
               isBugReport={isBugReport}
               searchInitiated={props.searchInitiated}
-            />{tableData.length > 0 ? 
+            />{tableData.length > 0 ?
             <TableBody>
               {props.tableData.map(
                 (row: IAppFeedback, index: number) => {
-                  
+
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   let sourceDetails = '-'
-                  
+
                   if(row.userId) sourceDetails = row.userId;
-                  
+
                   if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
-                  
+
                   if(row.platformName) {
                     let platformInfo;
                     if(row.platformVersion) {
@@ -218,13 +217,13 @@ const RenderTable = (props: IProps) => {
                     }
                     sourceDetails = sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
                   }
-                  
+
                   if(row.platformOs) sourceDetails = sourceDetails === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
-                  
+
                   return (
                     <TableRow
                       innerRef={index === tableData.length - 1 ? ref : null}
-                      hover role="checkbox" tabIndex={-1} 
+                      hover role="checkbox" tabIndex={-1}
                       key={row.id}
                     >
                       <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
@@ -234,7 +233,7 @@ const RenderTable = (props: IProps) => {
                             {row.createdOn ? getDateTime(row.createdOn) : '-'}
                       </TableCell>
                       {
-                        isBugReport ? 
+                        isBugReport ?
                         <TableCell  align='center' style={{fontSize: '1rem'}}>
                             {row.bugPriority}
                         </TableCell> :
@@ -283,7 +282,7 @@ const RenderTable = (props: IProps) => {
                                             marginLeft: 'auto',
                                             marginRight: 'auto',
                                           }}>
-                              <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ? 
+                              <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ?
                                 signedUrlMapping[row.feedbackMedia.video].signedUrl : '' : ''} type="video/mp4" />
                             </video>
                             </div>
@@ -328,7 +327,7 @@ const RenderTable = (props: IProps) => {
                 }
               )}
             </TableBody>
-            : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}> 
+            : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}>
                 {
                   props.resultsFetched ? <div style={{marginLeft: "62%", transform: 'translateX: "-50%'}}>{`There are no ${isBugReport? 'bugs' : 'feedbacks'} to show.`}</div> :
                   <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"

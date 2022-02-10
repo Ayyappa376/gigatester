@@ -19,9 +19,7 @@ const SearchField = (props: IProps) => {
     })
 
     const handleTyping = (e: any) => {
-        //e.preventDefault()
         setKeyword(e.target.value);
-        
     }
 
     const handleKeyPress = (e: any) => {
@@ -52,7 +50,7 @@ const SearchField = (props: IProps) => {
                 />
                 {
                     searchInitiated ? <IconButton type="button" key="searchFieldClearIconButton" style={{ padding: '10px' }} disableRipple={true} aria-label="cancel" onClick={handleClear}>
-                        <ClearIcon key="searchFieldClearIcon"/> 
+                        <ClearIcon key="searchFieldClearIcon"/>
                     </IconButton> : <div/>
                 }
                 <Divider style={{ height: 28, marginLeft: 5 }} orientation="vertical" />

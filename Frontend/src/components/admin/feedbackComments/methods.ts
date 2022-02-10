@@ -9,7 +9,7 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
       }
       const urlSplit = url.split('/')
       let name = urlSplit[urlSplit.length - 1]
-  
+
       Http.get({
         url: `/api/v2/signedurl/${name}`,
       }).then((response: any) => {
@@ -22,14 +22,16 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
       })
     })
   }
-  
+
 export const getFeedbackData = ({isBugReport, urlAppend}: any) => {
+  console.log(urlAppend);
     return new Promise((resolve, reject) => {
       let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`+ urlAppend;
+      console.log('url', url);
       Http.get({
         url,
       }).then((response: any) => {
-        return resolve(response);      
+        return resolve(response);
       })
       .catch((error) => {
         return reject(error);
@@ -44,7 +46,7 @@ interface IGetChartData {
   prodId: string,
   prodVersion: string
 }
-  
+
 export const getChartData = async({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
       let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT_CHART : CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
       Http.get({
@@ -67,4 +69,3 @@ export const getChartData = async({isBugReport, setFeedbackBarChartData, setBugB
         console.error(error)
       });
   }
-  

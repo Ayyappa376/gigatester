@@ -24,9 +24,11 @@ const ProductFilter = (props : IProps) => {
         props.setSelectedProdId(event.target.value as string);
       };
 
+      const label = 'Choose Product';
+
     return (
         <div style={{paddingLeft: '2rem'}}>
-            <FormControl className={classes.formControl}>
+            <FormControl className={classes.formControl} style={{ width: label.length * 9}}>
                 <InputLabel id="product-select-label">Choose Product</InputLabel>
                 <Select
                     labelId="product-select-label"

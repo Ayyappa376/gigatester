@@ -8,19 +8,22 @@ interface IProps {
     focusCategory: string[];
     disableButtons: boolean;
     categoryList: string[];
+    isBugReport: boolean;
 }
 
 const categoryList = [
     "Audio", "Video", "Screen", "Images", "Other"
 ]
 const RenderCategoryFilter = (props: IProps) => {
-    const {focusCategory, setFocusCategory, categoryList} = props;
+    const { focusCategory, setFocusCategory, categoryList, isBugReport } = props;
+
+    // console.log(categoryList);
 
     const handleKeywordClick = (val: string) => {
-        if(props.disableButtons) {
+        if (props.disableButtons) {
             return;
         }
-        if(focusCategory.indexOf(val) > -1) {
+        if (focusCategory.indexOf(val) > -1) {
             setFocusCategory((prevValue: string[]) => {
                 const prevValCopy = [...prevValue]
                 prevValCopy.splice(prevValue.indexOf(val), 1);
@@ -36,12 +39,14 @@ const RenderCategoryFilter = (props: IProps) => {
     return (
         <div id="RenderFilter-Block">
             <div id="RenderFilter-textContainer">
-                <Typography id="RenderFilter-textHeader">Choose bugs with category:</Typography>
+                <Typography id="RenderFilter-textHeader">
+                    {`Chose ${isBugReport ? 'bugs' : 'feedback'} with category:`}
+                </Typography>
             </div>
             <div id="RenderFilter-flexContainer">
-                {categoryList.map((val) => 
+                {categoryList.map((val) =>
                     <Button variant='outlined' key={val} disabled={props.disableButtons}
-                        onClick={() => {handleKeywordClick(val)}} id={focusCategory.indexOf(val) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
+                        onClick={() => { handleKeywordClick(val) }} id={focusCategory.indexOf(val) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
                 )}
             </div>
         </div>
