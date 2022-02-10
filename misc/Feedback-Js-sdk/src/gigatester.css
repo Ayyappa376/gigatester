@@ -19,8 +19,11 @@ gtspan {
   pointer-events: none !important;
 }
 #gigatester_image_overlay{
-width: 100vw;
-height: 100vh;
+  position: fixed;
+  top: 0;
+  z-index: 214567;
+  width: 100vw;
+  height: 100vh;
 }
 #gigatester-image-overlay .gigatester-image-overlay-hide{
     display: none;
@@ -1996,7 +1999,7 @@ justify-content: center;
   overflow: auto;
 }
 /* .gigatester-dialog-scroll{
-  overflow-y: auto;
+  overflow: auto;
 } */
 .gigatester-dialog-scroll::-webkit-scrollbar {
   /* height: calc(100vh - 230px); */
@@ -4629,8 +4632,8 @@ background: #fafbfd;
   background-color: rgba(128, 144, 160, 0.3);
 }
 #gigatester_image_preview{
-width: 100%;
-height: 100%;
+/* width: 100%;
+height: 100%; */
 overflow: hidden;
 position: absolute;
 z-index: 100;
