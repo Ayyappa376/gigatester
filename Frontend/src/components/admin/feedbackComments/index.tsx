@@ -28,6 +28,8 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     const [rawData, setRawData] = useState([]);
     const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
     const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
+    const [prodNameIdMappingBackUp, setProdNameIdMappingBackUp] = useState<IProductNameIdMapping>({})
+    const [prodNameIdMappingBugs, setProdNameIdMappingBugs] = useState<IProductNameIdMapping>({});
     const [isBugReport, setIsBugReport] = useState(false);
     const classes = useStyles();
     const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
@@ -68,6 +70,8 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     const [focusCategory, setFocusCategory] = useState([]);
     const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
     const [resultsFetched, setResultsFetched] = useState(false);
+
+    console.log(data);
 
     useEffect(() => {
       if(feedbackBarChartData) {
@@ -125,7 +129,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         });
         setRatingMapping(rateMap);
       }
-      
+
       const urlArrayCopy = [...urlArray];
       urlArrayCopy.push(...urls);
       setUrlArray(urlArrayCopy)
@@ -200,10 +204,11 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
     }, [focusCategory])
 
-    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate}: 
+    const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate}:
         IFetchRecursiveData) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
+      console.log('search', searchWord);
       if(prodId) {
         urlAppend += `?prodId=${prodId}`;
         if(prodVersion) {
@@ -213,27 +218,17 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       if(filterRating) {
         urlAppend += urlAppend ? `&filterRating=${filterRating.join(',')}` : `?filterRating=${filterRating.join(',')}`
         numItems = 500;
-      }
-
-      if(filterSeverity) {
+      } else if (filterSeverity) {
         urlAppend += urlAppend ? `&filterSeverity=${filterSeverity.join(',')}` : `?filterSeverity=${filterSeverity.join(',')}`
         numItems = 500;
-      }
-
-      if(filterCategory) {
+      } else if (filterCategory) {
         urlAppend += urlAppend ? `&filterCategory=${filterCategory.join(',')}` : `?filterCategory=${filterCategory.join(',')}`
         numItems = 500;
-      }
-
-      if(lastEvalKey && Object.keys(lastEvalKey).length > 0) {
+      } else if (lastEvalKey && Object.keys(lastEvalKey).length > 0) {
         urlAppend += urlAppend ? `&lastEvalKey=${JSON.stringify(lastEvalKey)}` : `?lastEvalKey=${JSON.stringify(lastEvalKey)}`
-      }
-
-      if(fetchOrder) {
+      } else if (fetchOrder) {
         urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`
-      }
-
-      if(searchWord) {
+      } else if (searchWord) {
         urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
       }
 
@@ -269,7 +264,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
             return Array.from(rawDataCopy)
           });
         }
-        
+
         if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
           setLastEvaluatedKey(response.Items.LastEvaluatedKey);
         }
@@ -285,7 +280,8 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 
     const fetchMore = () => {
       if(Object.keys(lastEvaluatedKey).length > 0) {
-        fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true});
+        fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true});
+        // lastEvalKey: lastEvaluatedKey,
       }
     }
 
@@ -297,6 +293,11 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         setFocusSeverity([]);
         setFocusRating([]);
       }
+      if (isBugReport) {
+        setProdNameIdMapping(prodNameIdMappingBugs);
+      } else {
+        setProdNameIdMapping(prodNameIdMappingBackUp);
+      }
       setBackdropOpen(true);
       if(productInfo.length === 0) {
         getProductDetails();
@@ -306,7 +307,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
           getChartData({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
         }
       }
-      
+
     }, [isBugReport])
 
     useEffect(() => {
@@ -332,10 +333,10 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         Http.get({
           url: `/api/v2/products`,
         }).then((response: any) => {
-          console.log(response);
           if(response && response.products && Array.isArray(response.products) && response.products.length > 0) {
               const productInfoCopy = [...productInfo]
               const prodNameIdMappingCopy: any = {...prodNameIdMapping};
+              const  prodNameIdMappingBugCopy: any = {...prodNameIdMapping};
               response.products.forEach((el: ProductInfo) => {
                   const prodInfo = {id: "", name: ""};
                   prodInfo.id = el.id;
@@ -344,16 +345,25 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
                   if(prodNameIdMappingCopy[prodInfo.id]) {
                     prodNameIdMappingCopy[prodInfo.id].version.push(el.version);
                   } else {
-                    prodNameIdMappingCopy[prodInfo.id] = {
-                      name: prodInfo.name,
-                      version: [el.version],
-                      categories: el.feedbackSettings ? el.feedbackSettings.categories ? el.feedbackSettings.categories : [] : []
-                    }
+                      prodNameIdMappingBugCopy[prodInfo.id] = {
+                        name: prodInfo.name,
+                        version: [el.version],
+                        categories: el.feedbackAgentSettings ? el.feedbackAgentSettings.bugSettings.categories ? el.feedbackAgentSettings.bugSettings.categories : [] : []
+                      }
+                      prodNameIdMappingCopy[prodInfo.id] = {
+                        name: prodInfo.name,
+                        version: [el.version],
+                        categories: el.feedbackAgentSettings ? el.feedbackAgentSettings.feedbackSettings.categories ? el.feedbackAgentSettings.feedbackSettings.categories : [] : []
+                      }
+
                   }
-                  
+
               })
+              const  prodNameIdMappingBackUp = prodNameIdMappingCopy;
               setProductInfo(productInfoCopy);
               setProdNameIdMapping(prodNameIdMappingCopy);
+              setProdNameIdMappingBackUp(prodNameIdMappingBackUp);
+              setProdNameIdMappingBugs(prodNameIdMappingBugCopy);
               if(props.productId && props.prodVersion) {
                 return;
               }
@@ -511,7 +521,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     const handleImageClicked = () => {
       if(signedImageUrl) {
         setSlideShowImageUrl(signedImageUrl)
-      } 
+      }
     }
 
     const getCategoryList = () => {
@@ -521,7 +531,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
           categoryList.push(el.name);
         });
       }
-      
+
       return categoryList;
     }
 
@@ -607,7 +617,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
             <div style={{ width: '80vw', marginLeft: '10vw',  marginTop: '2vh'}}>
               <Image aspectRatio={16/9} width='90%' height='90%'   src={slideShowImageUrl} />
             </div>
-          
+
           </div>
           <Grid container>
             <Grid item xl={6}>
@@ -621,7 +631,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
             <div >
               <ProductFilter selectedProdId={selectedProdId}
                 setSelectedProdId={filterByProduct}
-                productNameIdMapping={prodNameIdMapping} 
+                productNameIdMapping={prodNameIdMapping}
                 productInfo={productInfo}
               />
             </div>
