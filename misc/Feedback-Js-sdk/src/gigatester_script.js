@@ -121,7 +121,7 @@ else{
     //     }
     // }
     //     }
-        
+
         window.GigaTester.hide = function(){
             $(document.getElementById("gigatester_button_container")).css('display', 'none')
         }
@@ -915,7 +915,7 @@ else{
                     toolbar: null,
                     min_drag_distance: 10,
                     toolbar_is_hidden: false,
-                    init: function() {  
+                    init: function() {
                         this.snap = Snap("#snap_svg");
                         // this.snap.image('https://images.unsplash.com/photo-1638913974071-ad0045d13691?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80');
                         this.svg_obj_base_path = this.snap.path();
@@ -1108,7 +1108,7 @@ else{
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                             }
-                            
+
                             Feedback.saveSubCategory();
                             Feedback.removeOverlay();
                             this.removeTools()
@@ -2372,12 +2372,12 @@ else{
                      .catch(function(err) {
                         console.log(err , 'err')
                         Feedback.set_screen_default_category = true;
-                        Feedback.showControls(); 
+                        Feedback.showControls();
                         Feedback.setFormHTML();
                         if(Feedback.form_data.rating){
                             Feedback.selectedRating();
                         }
-                        
+
                         /* handle the error */
                       })
                 }
@@ -2434,8 +2434,6 @@ else{
                         allowTaint : true,
                         width: window.screen.availWidth,
                         height: window.screen.availHeight,
-                        // width: window.innerWidth,
-                        // height: window.innerHeight,
                         windowWidth: window.innerWidth,
                         windowHeight: window.innerHeight,
                         x:0,
@@ -2578,7 +2576,7 @@ else{
                     clearTimeout(this.count_down_timeout)
                 },
                 resetTimer: function() {
-                    Feedback.configs.audio_time = Feedback.configs.config_data[0].videoAudioMaxDuration * 60 || 180; 
+                    Feedback.configs.audio_time = Feedback.configs.config_data[0].videoAudioMaxDuration * 60 || 180;
                 },
                 recordAudio: async function(e){
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -2590,7 +2588,7 @@ else{
                             video: false
                         }).then(function(stream){
                         Feedback.recording = true;
-                        Feedback.set_screen_default_category = false;                    
+                        Feedback.set_screen_default_category = false;
                         let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
                         // let video = $('<video preload="auto" controls src="' + video_url + '"></video>');
                         let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
@@ -4775,7 +4773,7 @@ else{
     })(JQ);
     }catch(err){
             console.log(err, 'err')
-        }   
+        }
 }
 }
 function checkgigatester(){
