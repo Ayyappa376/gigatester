@@ -225,8 +225,8 @@ export default function SignInForm(props: any) {
               // window.GigaTester.selectDefaultCategory(sampleDefaultCategory)
               // window.GigaTester.appUserDetails(sampleUserData)
               window.GigaTester.setUserDetails(userData);
-              window.GigaTester.setDefaultCategory("Audio", "BUGS");
-              window.GigaTester.setDefaultCategory("General", "FEEDBACK");
+              window.GigaTester.setDefaultCategory("Admin-Bug", "BUGS");
+              window.GigaTester.setDefaultCategory("Admin", "FEEDBACK");
             }
             if (
               tokenInfo["cognito:groups"].includes("Admin") ||
