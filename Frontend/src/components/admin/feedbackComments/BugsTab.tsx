@@ -64,8 +64,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     return ''
   })
   const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>(() => {
-    if (props.productInfoProp.prodNameIdMapping) {
-      return props.productInfoProp.prodNameIdMapping
+    if (props.productInfoProp.prodNameIdMappingBugCopy) {
+      return props.productInfoProp.prodNameIdMappingBugCopy
     }
     return ''
   })
@@ -78,9 +78,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   const [focusCategory, setFocusCategory] = useState([]);
   const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
   const [resultsFetched, setResultsFetched] = useState(false);
-
-  console.log('rawData', rawData);
-  console.log(data)
 
   useEffect(() => {
     if(feedbackBarChartData) {
@@ -278,7 +275,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   }
 
   const fetchMore = () => {
-    if(Object.keys(lastEvaluatedKey).length > 0) {
+    if(Object.keys(lastEvaluatedKey).length > 0 && !searchInitiated) {
       fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true});
     }
   }
@@ -315,13 +312,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     fetchSignedUrl(url)
     setAttachmentType(type)
   }
-
-  // const getRating = (id: string) => {
-  //   if(bugDataMapping[id]) {
-  //     return bugDataMapping[id].rating
-  //   }
-  //   return 0
-  // }
 
   const getDateString = (id: string) => {
     if(bugDataMapping[id]) {
@@ -469,7 +459,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
 
           </div>
           {searchInitiated ? <div>
-            <RenderTable key="renderTable2" tableData={searchedData} isBugReport={isBugReport} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
@@ -483,7 +473,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
             <div style={{marginTop: 50}}>
               <Grid container style={{marginTop: '5rem'}}>
                 <Grid item lg={5}>
-                  <ReactApexChart options={feedbackBarChartOptions} series={barChartSeries} type="bar" width={500} height={320} />
+                  <ReactApexChart options={feedbackBarChartOptions} series={bugBarChartSeries} type="bar" width={500} height={320} />
                 </Grid>
                 <Grid item lg={2}></Grid>
                 <Grid item lg={5}>
@@ -491,7 +481,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
                 </Grid>
               </Grid>
             </div>
-            <RenderTable key="renderTable1" tableData={data} isBugReport={isBugReport} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}

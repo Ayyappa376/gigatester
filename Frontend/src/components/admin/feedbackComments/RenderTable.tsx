@@ -25,7 +25,6 @@ interface IProps {
     tableData: IAppFeedback[],
     viewAttachmentClicked: Function,
     urls: string[],
-    isBugReport: boolean | undefined,
     fetchMore: Function,
     focusRating: number[],
     setFocusRating: Function,
@@ -41,7 +40,8 @@ interface IProps {
     searchInitiated: boolean,
     setSearchInitiated: Function,
     handleRequestSort: Function,
-    resultsFetched: boolean
+    resultsFetched: boolean,
+    currentType: string,
 }
 
 export type Order = 'asc' | 'desc';
@@ -57,12 +57,18 @@ export const ALROUND = 'alround'
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
     const { tableData, resultsFetched} = props;
-    const isBugReport = false;
     const [fetchAllUrls, setFetchAllUrls] = useState(false);
+    const [isBugReport, setBugReport] = useState<boolean>(false);
     const { ref, inView, entry } = useInView();
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
+    const [type, setType] = useState(() => {
+      if (props.currentType) {
+        return props.currentType;
+      }
+      return ''
+    })
     const currentLength = tableData.length;
 
     useEffect(() => {
@@ -73,6 +79,16 @@ const RenderTable = (props: IProps) => {
         // can't do anything to cancel fetch more.
       }
     }, [inView])
+
+    useEffect(() => {
+      if (type) {
+        if (type === 'Feedback') {
+          setBugReport(false);
+        } else if (type === 'Bug') {
+          setBugReport(true);
+        }
+      }
+    }, [type])
 
     const initiateFetchAllUrls = useCallback(() => {
       if(!fetchAllUrls && tableData.length > 0) {
@@ -130,11 +146,9 @@ const RenderTable = (props: IProps) => {
 
     const handleOnSearch = (search: any) => { props.setKeyword(search); props.setSearchInitiated(true) };
 
-    console.log({tableData})
-
     return (
         <Container style={{marginTop: '5rem'}}>
-          <Paper style={{padding: '2rem'}}>
+          <Paper className={classes.filters}>
             {isBugReport ?
               <Grid container>
                 <Grid item md={5}>
@@ -148,7 +162,7 @@ const RenderTable = (props: IProps) => {
                     <div>
                     <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter focusCategory={props.focusCategory} isBugReport={props.isBugReport} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
@@ -164,19 +178,19 @@ const RenderTable = (props: IProps) => {
                         <div>
                           <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                           <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                          <RenderCategoryFilter focusCategory={props.focusCategory} isBugReport={props.isBugReport} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                         </div>
                     }
                   </Grid>
               </Grid>
             }
-          </Paper>
-          <Paper className={classes.paper}>
+            </Paper>
+          <div className={classes.paper}>
           <Toolbar
             className={classes.root}
           >
             <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-              {isBugReport ? 'Bugs Reported' : 'Feedback'}
+              {`${type}`}
             </Typography>
               <SearchField style={{marginTop: 10, marginLeft: 'auto'}} key="SearchFieldEl"
                     default={props.keyword}
@@ -312,7 +326,7 @@ const RenderTable = (props: IProps) => {
                           }
                         </div>
                         <div key="file-attachment">
-                          {
+                          {/* {
                             row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
                               <a href={signedUrlMapping[row.feedbackMedia.file].signedUrl} download>
                                 <Link
@@ -322,7 +336,7 @@ const RenderTable = (props: IProps) => {
                                   >Download attachment</Link>
                               </a>
                              : <div/> : <div/> : <div/>
-                          }
+                          } */}
                         </div>
                       </TableCell>
                     </TableRow>
@@ -342,7 +356,7 @@ const RenderTable = (props: IProps) => {
           }
             </Table>
           </TableContainer>
-        </Paper>
+        </div>
         </Container>
     )
 }
@@ -376,9 +390,17 @@ export const useStyles = makeStyles((theme) => ({
     commentsColumn: {
       maxWidth: '250px',
     },
+    filters: {
+      width: '100%',
+      backgroundColor: 'transparent',
+      border: '1px solid #D8D8D8',
+      borderRadius: '10px',
+      boxShadow: 'none',
+      padding: '15px',
+    },
     paper: {
       width: '100%',
-      marginTop: theme.spacing(2),
+      marginTop: theme.spacing(4),
       marginBottom: theme.spacing(2),
     },
     table: {

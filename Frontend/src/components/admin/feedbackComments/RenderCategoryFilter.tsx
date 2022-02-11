@@ -8,16 +8,14 @@ interface IProps {
     focusCategory: string[];
     disableButtons: boolean;
     categoryList: string[];
-    isBugReport: boolean;
+    type: string,
 }
 
 const categoryList = [
     "Audio", "Video", "Screen", "Images", "Other"
 ]
 const RenderCategoryFilter = (props: IProps) => {
-    const { focusCategory, setFocusCategory, categoryList, isBugReport } = props;
-
-    // console.log(categoryList);
+    const { focusCategory, setFocusCategory, categoryList, type } = props;
 
     const handleKeywordClick = (val: string) => {
         if (props.disableButtons) {
@@ -40,7 +38,7 @@ const RenderCategoryFilter = (props: IProps) => {
         <div id="RenderFilter-Block">
             <div id="RenderFilter-textContainer">
                 <Typography id="RenderFilter-textHeader">
-                    {`Chose ${isBugReport ? 'bugs' : 'feedback'} with category:`}
+                    {`Chose ${type} with category:`}
                 </Typography>
             </div>
             <div id="RenderFilter-flexContainer">

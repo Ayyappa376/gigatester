@@ -66,7 +66,6 @@ export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarCha
         url,
       }).then((response: any) => {
         const processedData = response.Items;
-        console.log(response)
         setFeedbackBarChartData(processedData.barChartData);
         setPieChartSeries(processedData.pieChartData);
       })
@@ -81,7 +80,6 @@ export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarCha
       url,
     }).then((response: any) => {
       const processedData = response.Items;
-      console.log('bug charr', response)
         setBugBarChartSeries([{
           name: 'Severity',
           data: Object.values(processedData.barChartData)

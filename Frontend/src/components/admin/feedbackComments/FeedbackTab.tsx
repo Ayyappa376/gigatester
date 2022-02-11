@@ -82,9 +82,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
   const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
   const [resultsFetched, setResultsFetched] = useState(false);
 
-  console.log('rawData', rawData);
-  console.log(data)
-
   useEffect(() => {
     if(feedbackBarChartData) {
       const series = [{
@@ -475,7 +472,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
 
           </div>
           {searchInitiated ? <div>
-            <RenderTable key="renderTable2" tableData={searchedData} isBugReport={undefined}  urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Feedback'}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
@@ -497,7 +494,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
                 </Grid>
               </Grid>
             </div>
-            <RenderTable key="renderTable1" tableData={data} isBugReport={undefined} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore}
+            <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Feedback'}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
