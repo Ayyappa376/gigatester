@@ -121,7 +121,7 @@ else{
     //     }
     // }
     //     }
-        
+
         window.GigaTester.hide = function(){
             $(document.getElementById("gigatester_button_container")).css('display', 'none')
         }
@@ -822,7 +822,7 @@ else{
                     if (this.canvas_mode) {
                         this.ui.overlay.attr("canvas", "true")
                     }
-                    this.ui.overlay.appendTo($(document.getElementById('gigatester_image_overlay')));
+                    this.ui.overlay.appendTo($(document.body));
                     this.setOverlaySize();
                     this.ui.overlay.append('<svg id="snap_svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>');
                     this.Tools.init();
@@ -916,7 +916,7 @@ else{
                     toolbar: null,
                     min_drag_distance: 10,
                     toolbar_is_hidden: false,
-                    init: function() {  
+                    init: function() {
                         this.snap = Snap("#snap_svg");
                         // this.snap.image('https://images.unsplash.com/photo-1638913974071-ad0045d13691?ixlib=rb-1.2.1&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80');
                         this.svg_obj_base_path = this.snap.path();
@@ -1109,7 +1109,7 @@ else{
                             if(Feedback.form_data.rating){
                                 Feedback.selectedRating();
                             }
-                            
+
                             Feedback.saveSubCategory();
                             Feedback.removeOverlay();
                             this.removeTools()
@@ -2049,6 +2049,7 @@ else{
                                 }
                             })
                         });
+
                     },
 
                 removeControls: function() {
@@ -2358,7 +2359,7 @@ else{
                             const src = URL.createObjectURL(completeBlob);
                             Feedback.Tools.image_capture = 'false';
                             console.log('GigaTester: Image blob url',src);
-                            const image_overlay = $('<gtdiv id="gigatester_video_player"><gtdiv></gtdiv></gtdiv>');
+                            const image_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                             const video = $('<video width="0" height="0" id="gigatester_image_preview_player" preload="auto" src="' + src + '"></video>');
                             const video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
                             video_close.appendTo(image_overlay);
@@ -2369,12 +2370,12 @@ else{
                      .catch(function(err) {
                         console.log(err , 'err')
                         Feedback.set_screen_default_category = true;
-                        Feedback.showControls(); 
+                        Feedback.showControls();
                         Feedback.setFormHTML();
                         if(Feedback.form_data.rating){
                             Feedback.selectedRating();
                         }
-                        
+
                         /* handle the error */
                       })
                 }
@@ -2390,7 +2391,7 @@ else{
                     // context.drawImage(video, 0, 0, window.screen.width, window.screen.height);
                     context.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
                     const frame = canvas.toDataURL("image/jpeg");
-                    const image_overlay = $('<gtdiv id="gigatester_image_overlay"></gtdiv>')
+                    const image_overlay = $('<div id="gigatester_image_overlay"></div>')
                     const image =  $('<image id="gigatester_image_preview" preload="auto" src="' + frame + '"></image>');
                     image.appendTo(image_overlay)
                     image_overlay.appendTo(document.body)
@@ -2425,20 +2426,16 @@ else{
                 finalScreenshot: async function(){
                     Feedback.setScreenStatus("Taking screenshot...");
                     const annoted = document.getElementById('gigatester_image_overlay')
-                    //  document.getElementById('gigatester_button_container')
-                    // document.getElementById('gigatester_image_overlay')
-                    // console.log(document.body, 'annoted')
-                    html2canvas(annoted , {
+                    console.log(annoted, 'annoted')
+                    html2canvas(document.body, {
                         useCORS: true,
                         allowTaint : true,
                         width: window.screen.availWidth,
                         height: window.screen.availHeight,
-                        // width: window.innerWidth,
-                        // height: window.innerHeight,
-                        windowWidth: document.getElementsByClassName('gigatester-overlay').scrollWidth,
-                        windowHeight: document.getElementsByClassName('gigatester-overlay').scrollHeight,
-                        // x:0,
-                        // y:window.pageYOffset
+                        windowWidth: window.innerWidth,
+                        windowHeight: window.innerHeight,
+                        x:0,
+                        y:window.pageYOffset
                     } ).then(function(canvas) {
 
                     if(canvas){
@@ -2478,7 +2475,7 @@ else{
                     }
                     // Feedback.saveSubCategory();
                     Feedback.clearScreenStatus();
-                    const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
+                    const image_overlay = $('<div id="gigatester_images_player"><div></div></div>');
                     const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
                     const image_close = $('<button id="gigatester_images_player_close">').html(Svg_Icons.trash);
                     // video.appendTo(video_overlay.children("div"));
@@ -2577,7 +2574,7 @@ else{
                     clearTimeout(this.count_down_timeout)
                 },
                 resetTimer: function() {
-                    Feedback.configs.audio_time = Feedback.configs.config_data[0].videoAudioMaxDuration * 60 || 180; 
+                    Feedback.configs.audio_time = Feedback.configs.config_data[0].videoAudioMaxDuration * 60 || 180;
                 },
                 recordAudio: async function(e){
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -2589,7 +2586,7 @@ else{
                             video: false
                         }).then(function(stream){
                         Feedback.recording = true;
-                        Feedback.set_screen_default_category = false;                    
+                        Feedback.set_screen_default_category = false;
                         let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
                         // let video = $('<video preload="auto" controls src="' + video_url + '"></video>');
                         let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
@@ -3683,11 +3680,8 @@ else{
                         pin_x = e.changedTouches[0].pageX;
                         pin_y = e.changedTouches[0].pageY
                     } else {
-                        pin_x = e.clientX;
-                        pin_y = e.clientY;
-                        console.log(e.clientX);
-                        console.log(e.clientY);
-                        console.log(e.pageX, e.pageY);
+                        pin_x = e.pageX;
+                        pin_y = e.pageY
                     }
                     if (this.comments.length && this.comments[this.comments.length - 1].isOpen()) {
                         this.comments[this.comments.length - 1].setPosition(pin_x, pin_y)
@@ -3996,7 +3990,7 @@ else{
                 });
                 this.overlay.append('<svg id="snap_svg_video" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>');
                 this.overlay.css("height", $(document).height());
-                this.overlay.appendTo($(document.getElementById('gigatester_image_overlay')));
+                this.overlay.appendTo($(document.body));
                 this.snap = Snap("#snap_svg_video");
                 this.snap.drag(this.dragMove.bind(this), this.dragStart.bind(this), this.dragStop.bind(this));
                 this.snap.touchstart(this.dragStart.bind(this));
@@ -4497,7 +4491,7 @@ else{
                     this.is_new = false;
                     this.hideForm()
                 }.bind(this));
-                element.appendTo($(document.getElementById('gigatester_image_overlay')));
+                element.appendTo($(document.body));
                 // element.find("gtcomment").on('mouseleave', function(){
                     if(element.find("gtcomment").text()){
                         console.log(element.find("gtcomment").text())
@@ -4777,7 +4771,7 @@ else{
     })(JQ);
     }catch(err){
             console.log(err, 'err')
-        }   
+        }
 }
 }
 function checkgigatester(){

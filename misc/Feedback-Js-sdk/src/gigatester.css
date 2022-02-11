@@ -2017,6 +2017,7 @@ justify-content: center;
   position: relative;
   display: block;
 }
+
 #gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar {
   /* height: calc(100vh - 230px); */
   width: 7px;
