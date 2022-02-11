@@ -489,6 +489,7 @@ else{
                 audio_time: 10,
                 feedback_default_category: "",
                 bugs_default_category:"",
+                max_file_size: 20,
             },
             form_settings_default: {
                 BUGS: {
@@ -2674,10 +2675,6 @@ else{
                         });
                 },
                 loadAudio: async function(src) {
-                    // this.form_settings_default.bug.display_screenshot = false;
-                    // this.form_settings_default.bug.display_audio = false;
-                    // this.form_settings_default.bug.display_video = false;
-
                     Feedback.audio_file = await fetch(src)
                     .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_audio_' + Feedback.UUIDv4() +'.wav', { type: 'audio/wav' }));
                     console.log(Feedback.audio_file, 'audio file loaded');
@@ -2697,9 +2694,7 @@ else{
                     }
                 },
                 recordVideo: async function(e) {
-                    console.log(navigator.mediaDevices.getSupportedConstraints())
-
-
+                    console.log("GigaTester: Supported Devices ",navigator.mediaDevices.getSupportedConstraints())
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                         callback();
                         return
@@ -3295,8 +3290,22 @@ else{
                     e.preventDefault();
                     console.log(Feedback.form_type)
                     // console.log(this.form_data['category'], 'category')
-
-                    if(Feedback.form_type === "BUGS"){
+                    if(Feedback.audio_file || Feedback.external_file || Feedback.video_file || Feedback.image_file){
+                        let size_limit = Feedback.configs.max_file_size;
+                        const file = Feedback.audio_file || Feedback.external_file || Feedback.video_file || Feedback.image_file;
+                        const filesize = Math.round((file.size / 1024));
+                        console.log('GigaTester: uploaded file size ', Math.ceil(file.size / 1024 / 1024) + 'MB')
+                        if (file.size > size_limit * 1024 * 1024) {
+                            // error = Lang.get("max") + ": " + size_limit + "MB"
+                            console.log('GigaTester: Max upload file size ', size_limit + "MB")
+                            Feedback.setScreenStatus(`${'Media size is greater than ' + Feedback.configs.max_file_size + 'MB, Kindly delete and retry again'}`)
+                            setTimeout(()=> Feedback.clearScreenStatus(), 4000);
+                        }
+                        else{
+                            this.submitPost(e);
+                        }
+                        }
+                    else if(Feedback.form_type === "BUGS"){
                     if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
                         console.log('category')
                         Feedback.setScreenStatus('Please select a category')
@@ -3326,7 +3335,6 @@ else{
                         this.submitPost(e);
                         }
                     }
-
                 },
                 postMediaContent: function(dataInfo, fileSelected){
                     if($('gtdiv').hasClass('gigatester-controls-send-error')){
@@ -3343,40 +3351,53 @@ else{
                       })
                         .then(res => res.json())
                         .then(data => {
-
+                          var xhr = new XMLHttpRequest();
                           console.log('Success:', data);
-                            fetch(data, {
-                              method: 'PUT',
-                              body: fileSelected,
-                            })
-                              .then((response) => {
-                          console.log(response.url.slice(56,64), 'key')
-                          send_button.removeClass("gigatester-controls-send-loading")
-                          if(response.url.slice(56,64) === 'gt_image'){
-                            // console.log(data.Key, "img");
-                            Feedback.image_file = response.url.split('?')[0];
-                            console.log(response.url.split('?')[0], 'img data')
-                            this.post();
-                          }
-                          else if(response.url.slice(56,64) === 'gt_video'){
-                            // console.log(data.Key, "vid");
-                            Feedback.video_file = response.url.split('?')[0]
-                            this.post();
-                          }
-                          else if(response.url.slice(56,64) === 'gt_audio'){
-                            // console.log(data.Key, "vid");
-                            Feedback.audio_file = response.url.split('?')[0]
-                            this.post();
-                          }
-                          else{
-                            // console.log(data.Key, "file");
-                            Feedback.external_file = response.url.split('?')[0]
-                            this.post();
-                          }
-                        })
-                        .catch(error => {
-                            console.log(error, 'post api error');
-                            if (this.controls_step === 2) {
+                          xhr.onreadystatechange = function() {
+                            if (xhr.readyState === 4) {
+                              if (xhr.status === 200) {
+                                console.log("UPLOAD SUCCESSFUL");
+                                $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("Media uploaded successfully, Submitting Feedback Form...").insertBefore(send_button)
+                                console.log('GigaTester: ', xhr.responseURL);
+                                // send_button.addClass("gigatester-controls-send-loading")
+                                if(xhr.responseURL.slice(56,64) === 'gt_image'){
+                                // console.log(data.Key, "img");
+                                Feedback.image_file = xhr.responseURL.split('?')[0];
+                                console.log(xhr.responseURL.split('?')[0], 'img data')
+                                Feedback.post();
+                                }
+                                else if(xhr.responseURL.slice(56,64) === 'gt_video'){
+                                // console.log(data.Key, "vid");
+                                Feedback.video_file = xhr.responseURL.split('?')[0]
+                                Feedback.post();
+                                }
+                                else if(xhr.responseURL.slice(56,64) === 'gt_audio'){
+                                // console.log(data.Key, "vid");
+                                Feedback.audio_file = xhr.responseURL.split('?')[0]
+                                Feedback.post();
+                                }
+                                else{
+                                // console.log(data.Key, "file");
+                                Feedback.external_file = xhr.responseURL.split('?')[0]
+                                Feedback.post();
+                                }
+                            }
+                              }
+                              else {
+                                console.log(xhr.status, 'GigaTester: Media post api error');
+                                if (this.controls_step === 2) {
+                                    send_button.removeClass("gigatester-controls-send-loading");
+                                    send_button.removeClass("gigatester-controls-send-uploading");
+                                    send_button.prop("disabled", false);
+                                    $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertBefore(send_button)
+                                } else if (this.controls_step === 3) {
+                                    $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("Feedback submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                                }
+                              }
+                          };
+                          xhr.onerror = function(){
+                              console.log(xhr.status)
+                              if (this.controls_step === 2) {
                                 send_button.removeClass("gigatester-controls-send-loading");
                                 send_button.removeClass("gigatester-controls-send-uploading");
                                 send_button.prop("disabled", false);
@@ -3384,7 +3405,20 @@ else{
                             } else if (this.controls_step === 3) {
                                 $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("Feedback submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
                             }
-                        })
+                          }
+                          xhr.upload.addEventListener("progress", function(evt) {
+                            if (evt.lengthComputable) {
+                                send_button.removeClass("gigatester-controls-send-loading");
+                                send_button.width(send_button.width());
+                                let percent = parseInt(evt.loaded / evt.total * 100, 10);
+                                console.log(percent, evt)
+                                send_button.find(".gigatester-controls-send-text").text(percent + "%");
+                                send_button.find(".gigatester-controls-send-progress").width(percent + "%")
+                            }
+                        }, false)
+                          
+                          xhr.open("PUT", data);
+                          xhr.send(fileSelected);
                         })
                         .catch(error => {
                             console.log(error, 'post api error');
@@ -3453,7 +3487,6 @@ else{
                         },
                           feedbackComments: { "generalComment" : this.form_data['description'], "standardFeedback" : standardFeedback , ...comments },
                           productKey: GigaTester.apiKey
-                        //   'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T',
                       }
                       console.log(postData, 'post Data')
                       fetch(`${GigaTester.endpoint}/feedback/`, {
@@ -3466,15 +3499,17 @@ else{
                             var success_icon = $('<gtdiv class="gigatester-controls-send-success">').html("<style>" + ":root {" + "--widget-outro-icon: " + form_settings.outro_icon_colour + " !important;" + "}" + "</style>" + '<gtdiv data-icon="' + form_settings.outro_icon + '">' + outro_icon + "<gtspan>" + Lib.htmlEntities(form_settings.outro_headline) + "</gtspan>" + "<p>" + Lib.htmlEntitiesWithA(form_settings.outro_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
                             this.ui.controls.append(success_icon);
                             this.controls_step = 3;
+                            send_button.find(".gigatester-controls-send-text").text('Send feedback');
                             send_button.removeClass("gigatester-controls-send-loading");
                             this.recording = false;
                             $(document.getElementsByClassName('gigatester-controls-options')).css('display', 'none');
                             var close_icon = $(document.getElementsByClassName('gigatester-controls-close'));
+                            $(document.getElementsByClassName('gigatester-controls-e')).css('width','355px');
                             setTimeout(function () {
                                 console.log(close_icon);
-                                $(document.getElementsByClassName('gigatester-controls-options')).css('display', 'block');
+                                // $(document.getElementsByClassName('gigatester-controls-options')).css('display', 'block');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-controls-loader")
-                                close_icon.trigger("click")
+                                // close_icon.trigger("click")
                             }, 3000);
                             // var outro_has_link = this.ui.controls.find(".gigatester-controls-send-success p a").length ? true : false;
                         })
@@ -4546,6 +4581,7 @@ else{
                         Feedback.configs.title = data[0].title;
                         Feedback.configs.video_time = data[0].videoAudioMaxDuration * 60;
                         Feedback.configs.audio_time = data[0].videoAudioMaxDuration * 60;
+                        Feedback.configs.max_file_size = data[0].uploadFileMaxSize;
                         data[0].feedbackTypes.map(item => {
                                 Feedback.configs.workflow_type += item
                                 Feedback.configs.workflow_type + ','

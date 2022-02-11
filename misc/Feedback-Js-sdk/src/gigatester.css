@@ -3159,7 +3159,7 @@ justify-content: center;
   .gigatester-controls-send-success
   > gtdiv {
   position: absolute;
-  top: 50%;
+  top: 60%;
   left: 0;
   right: 0;
   transform: translateY(-50%);
