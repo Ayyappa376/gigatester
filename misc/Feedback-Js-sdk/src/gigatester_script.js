@@ -288,7 +288,7 @@ else{
             pause: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">' + '<path d="M 11,26 15,26 15,10 11,10 z M 21,26 25,26 25,10 21,10 z"></path>' + "</svg>",
             resume: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">' + '<path d="M 18,11 V 7 l -5,5 5,5 v -4 c 3.3,0 6,2.7 6,6 0,3.3 -2.7,6 -6,6 -3.3,0 -6,-2.7 -6,-6 h -2 c 0,4.4 3.6,8 8,8 4.4,0 8,-3.6 8,-8 0,-4.4 -3.6,-8 -8,-8 z"></path>' + "</svg>",
             stop: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 493.56 493.56">' + '<path d="M438.254,0H58.974C27.502,0,0.006,25.992,0.006,57.472v379.256c0,31.48,27.496,56.832,58.968,56.832h379.28 c31.468,0,55.3-25.352,55.3-56.832V57.472C493.554,25.992,469.722,0,438.254,0z"/>' + "</svg>",
-            square: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">' +'<path d="M10 0 L10 100 L100 100 V0 Z" />' + '</svg>',
+            square: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 36 36">' +'<path d="M0 0 L0 36 L36 36 V0 Z" />' + '</svg>',
             //  + '<path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z"></path>' + '<path d="m 20,10 0,2 4,0 0,4 2,0 L 26,10 l -6,0 0,0 z"></path>' + '<path d="m 24,24 -4,0 0,2 L 26,26 l 0,-6 -2,0 0,4 0,0 z"></path>' + '<path d="M 12,20 10,20 10,26 l 6,0 0,-2 -4,0 0,-4 0,0 z"></path>' + "</svg>",
             fullScreen: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">' + '<path fill-rule="evenodd" d="M1,8 C0.448,8 0,7.553 0,7 L0,4 C0,1.8 1.8,0 4,0 L7,0 C7.552,0 8,0.447 8,1 C8,1.553 7.552,2 7,2 L4,2 C2.897,2 2,2.897 2,4 L2,7 C2,7.553 1.552,8 1,8 Z M16,0 C18.2,0 20,1.8 20,4 L20,7 C20,7.553 19.552,8 19,8 C18.448,8 18,7.553 18,7 L18,4 C18,2.897 17.103,2 16,2 L13,2 C12.448,2 12,1.553 12,1 C12,0.447 12.448,0 13,0 L16,0 Z M7,18 C7.552,18 8,18.447 8,19 C8,19.553 7.552,20 7,20 L4,20 C1.8,20 0,18.2 0,16 L0,13 C0,12.447 0.448,12 1,12 C1.552,12 2,12.447 2,13 L2,16 C2,17.103 2.897,18 4,18 L7,18 Z M19,12 C19.552,12 20,12.447 20,13 L20,16 C20,18.2 18.2,20 16,20 L13,20 C12.448,20 12,19.553 12,19 C12,18.447 12.448,18 13,18 L16,18 C17.103,18 18,17.103 18,16 L18,13 C18,12.447 18.448,12 19,12 Z"/>' + "</svg>",
             blackout: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">' + '<rect width="20" height="20" fill-rule="evenodd" rx="4"/>' + "</svg>",
@@ -1915,7 +1915,7 @@ else{
                         Feedback.configs.categories.push(item.name.trim())
                         // console.log(item.feedbacks)
                         })
-                        console.log('GigaTester: ', Feedback.configs.bugs_default_category)
+                        console.log('GigaTester: Default Category ', Feedback.configs.bugs_default_category)
                         if(Feedback.configs.bugs_default_category){
                             GigaTester.setDefaultCategory(Feedback.configs.bugs_default_category.trim(), "BUGS")
                         }
@@ -2234,7 +2234,6 @@ else{
                      + '<button class="gigatester-controls-send gigatester-button-input">' + '<span class="gigatester-controls-send-progress"></span>' + '<span class="gigatester-controls-send-text">' +  Lang.get("send") + "</span>" + "</button>" + "</gtdiv>" + "</form>";
                    this.ui.controls.find('.gigatester-controls-step[data-step="2"]').html(html);
                     if(Feedback.configs.rating_limit > 4){
-                        console.log('inside')
                         this.ui.controls.find(".gigatester-controls-form").show();
                         this.focusControls();
                     }
@@ -2289,9 +2288,7 @@ else{
                     this.ui.controls.find('.gigatester-controls-step[data-step="1"]').hide();
                     this.ui.controls.find('.gigatester-controls-step[data-step="2"]').show();
                     if(Feedback.configs.rating_limit > 4){
-                        console.log('inside')
                         this.ui.controls.find(".gigatester-controls-form").show();
-
                         this.focusControls();
                     }
                     this.focusControls();

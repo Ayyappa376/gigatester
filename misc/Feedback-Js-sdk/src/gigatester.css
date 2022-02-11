@@ -253,6 +253,11 @@ gttoolbar .gigatester-toolbar-tool:hover svg,
 gttoolbar .gigatester-toolbar-tool:hover svg * {
   fill: #354c5f;
 }
+gttoolbar .gigatester-toolbar-tool.gigatester-toolbar-tool-square svg * {
+  fill: rgba(255, 255, 255, 0.8);
+  stroke-width: 5;
+  stroke: rgba(29, 38, 45, 0.8);
+}
 gttoolbar .gigatester-toolbar-tool svg {
   position: absolute !important;
   top: 0 !important;
@@ -265,9 +270,11 @@ gttoolbar .gigatester-toolbar-tool svg {
   box-sizing: border-box !important;
   fill: rgba(53, 76, 95, 0.8);
 }
-gttoolbar .gigatester-toolbar-tool svg * {
+
+/* gttoolbar .gigatester-toolbar-tool svg * {
   fill: rgba(53, 76, 95, 0.8);
-}
+} */
+
 gttoolbar .gigatester-toolbar-tool-active {
   cursor: default;
 }
@@ -1235,6 +1242,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   right: -35px;
   top: 50%;
   margin-top: -20px;
+  border-radius: 5px;
   bottom: auto;
   transform: rotate(90deg);
   animation: feedbackSlideLeft 0.2s linear;
@@ -1976,10 +1984,6 @@ justify-content: center;
   height: 160px;
   width: 300px;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-form {
-    /* max-height: calc(100vh - 30vh); */
-    overflow: auto;
-}
 #gigatester-audio-timer-btn{
   position: relative;
   left: 20px;
@@ -1993,48 +1997,6 @@ justify-content: center;
   justify-content: center;
   margin-bottom: 10px;
   text-align: center;
-}
-#gigatester_button_container .gigatester-controls .gigatester-controls-form {
-  /* height: calc(100vh - 230px); */
-  overflow: hidden;
-}
-/* .gigatester-dialog-scroll{
-  overflow: auto;
-} */
-.gigatester-dialog-scroll::-webkit-scrollbar {
-  /* height: calc(100vh - 230px); */
-  width: 7px;
-  margin-left: 3px;
-  }
-.gigatester-dialog-scroll::-webkit-scrollbar-track  {
-  /* height: calc(100vh - 230px); */
-  background: transparent;
-  border-radius: 5px;
-  box-shadow: inset 0 0 6px rgba(94, 94, 94, 0.3);
-  border: none;
-  }
-  .gigatester-dialog-scroll::-webkit-scrollbar-thumb  {
-    /* height: calc(100vh - 230px); */
-    background: #a7a7a7;
-    border-radius: 5px;
-    }
-    
-#gigatester_button_container .gigatester-controls .gigatester-controls-form::-webkit-scrollbar {
-/* height: calc(100vh - 230px); */
-width: 7px;
-margin-left: 3px;
-}
-#gigatester_button_container .gigatester-controls .gigatester-controls-form::-webkit-scrollbar-track  {
-/* height: calc(100vh - 230px); */
-background: transparent;
-border-radius: 5px;
-box-shadow: inset 0 0 6px rgba(94, 94, 94, 0.3);
-border: none;
-}
-#gigatester_button_container .gigatester-controls .gigatester-controls-form::-webkit-scrollbar-thumb  {
-/* height: calc(100vh - 230px); */
-background: #a7a7a7;
-border-radius: 5px;
 }
 
 #gigatester_button_container .gigatester-controls .gigatester-controls-options {
@@ -2060,18 +2022,23 @@ border-radius: 5px;
   width: 7px;
   margin-left: 3px;
   }
-  #gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar-track  {
+#gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar-track  {
   /* height: calc(100vh - 230px); */
   background: transparent;
   border-radius: 5px;
   box-shadow: inset 0 0 6px rgba(94, 94, 94, 0.3);
   border: none;
   }
-  #gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar-thumb  {
+#gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar-thumb  {
     /* height: calc(100vh - 230px); */
     background: #a7a7a7;
     border-radius: 5px;
     }
+#gigatester_button_container .gigatester-controls .gigatester-controls-form {
+      /* height: calc(100vh - 230px); */
+      color: rgb(50, 50, 50);
+  }
+    
 #gigatester_button_container .gigatester-controls .gigatester-disclaimer {
   width: auto;
   height: auto;
@@ -3184,7 +3151,7 @@ border-radius: 5px;
   bottom: 0;
   left: 0;
   background-color: #fff;
-  border-radius: 12px;
+  border-radius: 5px;
 }
 #gigatester_button_container
   .gigatester-controls
@@ -3299,10 +3266,10 @@ border-radius: 5px;
   overflow: hidden;
   position: relative;
   display: block;
-  height: 46px;
+  height: 40px;
   padding: 0 24px;
   margin: 20px 0 12px 0;
-  border-radius: 24px;
+  border-radius: 5px;
   box-sizing: border-box;
   font-weight: 600;
   font-family: "Poppins", Helvetica, Arial, sans-serif !important;
