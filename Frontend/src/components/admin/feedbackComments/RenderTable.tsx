@@ -63,9 +63,10 @@ const RenderTable = (props: IProps) => {
     const stateVariable = useSelector((state: IRootState) => {
       return state;
     });
+    const currentLength = tableData.length;
 
     useEffect(() => {
-      if(inView && tableData.length > 0) {
+      if(inView && tableData.length > 5) {
         props.fetchMore()
       }
       return () => {
@@ -147,7 +148,7 @@ const RenderTable = (props: IProps) => {
                     <div>
                     <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                    <RenderCategoryFilter focusCategory={props.focusCategory} isBugReport={props.isBugReport} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
@@ -163,7 +164,7 @@ const RenderTable = (props: IProps) => {
                         <div>
                           <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                           <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                          <RenderCategoryFilter focusCategory={props.focusCategory} isBugReport={props.isBugReport} setFocusCategory={props.setFocusCategory} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                         </div>
                     }
                   </Grid>

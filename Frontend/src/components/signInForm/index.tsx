@@ -26,7 +26,9 @@ import { useInput } from "../../utils/form";
 import SignupForm from "../signUpForm";
 import SetNewPassword from "./setNewPassword";
 import Notification from "../../common/notification";
-
+declare global {
+  interface Window { GigaTester: any; }
+}
 export default function SignInForm(props: any) {
   const useStyles = makeStyles((theme) => ({
     bigLogo: {
@@ -65,11 +67,18 @@ export default function SignInForm(props: any) {
   const { value: newPassword, bind: bindNewPassword } = useInput("");
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } =
     useInput("");
-
+  let userData: any = {}
   const validatePassword = (password: string) => {
     const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/;
     return re.test(password);
   };
+  const sampleDefaultCategory = (params: any) => {
+    return (params === "BUGS") ? "Audio" : "Ratings";
+  }
+
+  const sampleUserData = function(){
+      return userData
+  }
 
   const handleSubmit = async (event: React.SyntheticEvent<Element, Event>) => {
     event.preventDefault();
@@ -209,6 +218,16 @@ export default function SignInForm(props: any) {
             roles: tokenInfo["cognito:groups"],
           });
           if (tokenInfo["cognito:groups"].length) {
+            console.log(tokenInfo);
+            console.log(tokenInfo['email']);
+            userData.email = tokenInfo['email']
+            if(typeof window.GigaTester !== 'undefined'){
+              // window.GigaTester.selectDefaultCategory(sampleDefaultCategory)
+              // window.GigaTester.appUserDetails(sampleUserData)
+              window.GigaTester.setUserDetails(userData);
+              window.GigaTester.setDefaultCategory("Admin-Bug", "BUGS");
+              window.GigaTester.setDefaultCategory("Admin", "FEEDBACK");
+            }
             if (
               tokenInfo["cognito:groups"].includes("Admin") ||
               tokenInfo["cognito:groups"].includes("Manager")

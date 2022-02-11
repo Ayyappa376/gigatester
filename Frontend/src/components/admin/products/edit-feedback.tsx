@@ -48,65 +48,76 @@ GigaTester.appUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION ); //Remove this 
 </script>
 `;
 
-const scriptHelpText: string = `GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION );
-and
-GigaTester.appUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION )
-are optional parameters and can be removed if not used.
+// const scriptHelpText: string = `GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION );
+// and
+// GigaTester.appUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION )
+// are optional parameters and can be removed if not used.
 
-Below you will find the explanation on how to use these callbacks and certain other functions provided by Gigatester feedback widget.
+// Below you will find the explanation on how to use these callbacks and certain other functions provided by Gigatester feedback widget.
 
---------------------------------------------------------------------
+// --------------------------------------------------------------------
 
-YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the name of the category to display in the context of invocation.
+// YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the name of the category to display in the context of invocation.
 
-The callback function should be a global function.
+// The callback function should be a global function.
 
-The signature of this callback is as follows:
+// The signature of this callback is as follows:
 
-  function YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION (feedbackType) {
-    return categoryNameInThisContext;
-  }
+//   function YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION (feedbackType) {
+//     return categoryNameInThisContext;
+//   }
 
-where feedbackType is a string with value "BUGS" or "FEEDBACK"
-and categoryNameInThisContext is a string that is the name of the category depending on the feedbackType parameter.
+// where feedbackType is a string with value "BUGS" or "FEEDBACK"
+// and categoryNameInThisContext is a string that is the name of the category depending on the feedbackType parameter.
 
-Example:
-  function getCategoryContext(feedbackType) {
-    return feedbackType === "BUGS" ? "ScreenShare" : "Video";
-  }
-GigaTester.selectDefaultCategory( getCategoryContext );
+// Example:
+//   function getCategoryContext(feedbackType) {
+//     return feedbackType === "BUGS" ? "ScreenShare" : "Video";
+//   }
+// GigaTester.selectDefaultCategory( getCategoryContext );
 
-------------------------------------------------------------------------
+// ------------------------------------------------------------------------
 
-YOUR_USER_DETAILS_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the email and other details of the user that your app wish to store along with feedbacks.
+// YOUR_USER_DETAILS_CALLBACK_FUNCTION is the callback function that GigaTester agent will call to get the email and other details of the user that your app wish to store along with feedbacks.
 
-The callback function should be a global function.
+// The callback function should be a global function.
 
-The signature of this callback is as follows:
+// The signature of this callback is as follows:
 
-  function YOUR_USER_DETAILS_CALLBACK_FUNCTION () {
-    return {
-      email: userEmail, //the email of the logged in user
-      ... //other details of the user like id, guid etc.
-    };
-  }
+//   function YOUR_USER_DETAILS_CALLBACK_FUNCTION () {
+//     return {
+//       email: userEmail, //the email of the logged in user
+//       ... //other details of the user like id, guid etc.
+//     };
+//   }
 
-where email is a field our app expects in the object that is returned. If not present, will prompt the user to provide one. The remaining field in the returned object will be stored as it is.
+// where email is a field our app expects in the object that is returned. If not present, will prompt the user to provide one. The remaining field in the returned object will be stored as it is.
 
-Example:
-  function getUserDetails() {
-    return {
-      email: 'somebody@somewhere.com',
-      id: 'user_1234567890',
-      guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
-      name: 'Some Person'
-    };
-  }
-GigaTester.appUserDetails( getUserDetails );
+// Example:
+//   function getUserDetails() {
+//     return {
+//       email: 'somebody@somewhere.com',
+//       id: 'user_1234567890',
+//       guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
+//       name: 'Some Person'
+//     };
+//   }
+// GigaTester.appUserDetails( getUserDetails );
 
-----------------------------------------------------------------------
+// ----------------------------------------------------------------------
 
-The following functions can be used to have a handle on the GigaTester feedback agent dialog and button.
+// The following functions can be used to have a handle on the GigaTester feedback agent dialog and button.
+
+// GigaTester.hide() => to hide the Feedback button for full screen video
+// GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
+// GigaTester.open() => to open GigaTester form dialog
+// GigaTester.open("BUGS") => to show Bug report form dialog
+// GigaTester.open("FEEDBACK") => to show Feedback form dialog
+// GigaTester.close() => to close GigaTester dialog
+// GigaTester.setEmail("xyz@abc.com") => to set default Email(should be string) in GigaTester form.
+// `;
+
+const scriptHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.
 
 GigaTester.hide() => to hide the Feedback button for full screen video
 GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
@@ -114,7 +125,14 @@ GigaTester.open() => to open GigaTester form dialog
 GigaTester.open("BUGS") => to show Bug report form dialog
 GigaTester.open("FEEDBACK") => to show Feedback form dialog
 GigaTester.close() => to close GigaTester dialog
-GigaTester.setEmail("xyz@abc.com") => to set default Email(should be string) in GigaTester form.
+GigaTester.setUserDetails({
+    email: 'somebody@somewhere.com',
+    id: 'user_1234567890',
+    guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
+    name: 'Some Person'
+  }) => to set details of the user including the email in GigaTester.
+GigaTester.setDefaultCategory("Category Name", "BUGS") => To set the default category to show in Bug report form depending on context.
+GigaTester.setDefaultCategory("Category Name", "FEEDBACK") => To set the default category to show in Feedback form depending on context.
 `;
 
 const useStyles = makeStyles((theme) => ({
