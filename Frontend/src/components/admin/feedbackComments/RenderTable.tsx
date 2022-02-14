@@ -2,7 +2,7 @@ import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, Ta
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { getDate, getDateTime } from '../../../utils/data';
-
+import FolderList from './FolderList';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
@@ -203,13 +203,13 @@ const RenderTable = (props: IProps) => {
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   let sourceDetails = '-'
+                  let osInfo = '-';
 
                   if(row.userId) sourceDetails = row.userId;
 
                   if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
-
+                  let platformInfo;
                   if(row.platformName) {
-                    let platformInfo;
                     if(row.platformVersion) {
                       platformInfo = `(${row.platformName} - ${row.platformVersion})`
                     } else {
@@ -218,7 +218,7 @@ const RenderTable = (props: IProps) => {
                     sourceDetails = sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
                   }
 
-                  if(row.platformOs) sourceDetails = sourceDetails === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
+                  if(row.platformOs) osInfo = osInfo === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
 
                   return (
                     <TableRow
@@ -226,10 +226,10 @@ const RenderTable = (props: IProps) => {
                       hover role="checkbox" tabIndex={-1}
                       key={row.id}
                     >
-                      <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
-                            {sourceDetails}
+                      <TableCell style={{fontSize: '1rem', maxWidth: '15rem', overflowWrap: 'break-word'}}>
+                            <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} platformName={row.platformName} platformVersion={osInfo}/>
                       </TableCell>
-                      <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
+                      <TableCell align='center' style={{fontSize: '1rem', minWidth: '9rem'}}>
                             {row.createdOn ? getDateTime(row.createdOn) : '-'}
                       </TableCell>
                       {
