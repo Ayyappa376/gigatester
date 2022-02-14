@@ -3,6 +3,7 @@
 import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
+import { String } from 'aws-sdk/clients/batch';
 import { queryRaw, scan } from './sdk';
 
 export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
@@ -248,20 +249,28 @@ export const bugProcessBarChartData = (items: AppFeedback[]) => {
     return severityData;
 };
 
-export const getCategoriesList = ({prodId, prodVersion}: {prodId: string; prodVersion: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
+export const getCategoriesList = ({prodId, prodVersion, chartType}: {prodId: string; prodVersion: string, chartType: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
     const categoryList: string[] = [];
     const productInfo = await getProductDetails(prodId, prodVersion);
-    if(productInfo && productInfo.feedbackSettings && productInfo.feedbackSettings.categories.length) {
-      productInfo.feedbackSettings.categories.map((el) => {
-        categoryList.push(el.name);
-      });
+    if (chartType === 'FEEDBACK') {
+      if(productInfo && productInfo.feedbackAgentSettings && productInfo.feedbackAgentSettings.feedbackSettings && productInfo.feedbackAgentSettings.feedbackSettings.categories.length) {
+        productInfo.feedbackAgentSettings.feedbackSettings.categories.map((el: any) => {
+          categoryList.push(el.name);
+        });
+      }
+    } else if (chartType === 'BUG_REPORT') {
+      if(productInfo && productInfo.feedbackAgentSettings && productInfo.feedbackAgentSettings.bugSettings && productInfo.feedbackAgentSettings.bugSettings.categories.length) {
+        productInfo.feedbackAgentSettings.bugSettings.categories.map((el: any) => {
+          categoryList.push(el.name);
+        });
+      }
     }
     return resolve(categoryList);
   });
 
-export const processPieChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
+export const processPieChartData = async({data, prodId, prodVersion, chartType}: {data: AppFeedback[]; prodId?: string; prodVersion?: string, chartType: String}) => {
   if(prodId && prodVersion) {
-    const categories: string[] = await getCategoriesList({prodId, prodVersion});
+    const categories: string[] = await getCategoriesList({prodId, prodVersion, chartType});
     const categoryData: ProcessedData = {};
     categories.forEach((el) => {
       categoryData[el] = 0;
@@ -278,17 +287,17 @@ export const processPieChartData = async({data, prodId, prodVersion}: {data: App
   return {};
 };
 
-const processFeedbackChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string})  => {
+const processFeedbackChartData = async({data, prodId, prodVersion, chartType}: {data: AppFeedback[]; prodId?: string; prodVersion?: string, chartType: string})  => {
   const barChartData = feedbackProcessBarChartData(data);
-  const pieChartData = await processPieChartData({data, prodId, prodVersion});
+  const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
   return {
     barChartData, pieChartData
   };
 };
 
-const processBugReportChartData = async({data, prodId, prodVersion}: {data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
+const processBugReportChartData = async({data, prodId, prodVersion, chartType}: {data: AppFeedback[]; prodId?: string; prodVersion?: string, chartType: string}) => {
   const barChartData = bugProcessBarChartData(data);
-  const pieChartData = await processPieChartData({data, prodId, prodVersion});
+  const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
   return {
     barChartData, pieChartData
   };
@@ -300,5 +309,5 @@ export const getChartData = async({type, prodId, prodVersion}: GetChartDataProps
     chartType = 'BUG_REPORT';
   }
   const data = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion});
-  return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion}) : processBugReportChartData({data, prodId, prodVersion});
+  return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType}) : processBugReportChartData({data, prodId, prodVersion, chartType});
 };

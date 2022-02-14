@@ -208,7 +208,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         IFetchRecursiveData) => {
       let urlAppend = ``;
       let numItems = NUMBER_OF_ITEMS_PER_FETCH;
-      console.log('search', searchWord);
       if(prodId) {
         urlAppend += `?prodId=${prodId}`;
         if(prodVersion) {
@@ -654,7 +653,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
           <div>
             <ImageModal/>
             <div style={{marginTop: 50}}>
-              <Grid container style={{marginTop: '5rem'}}>
+              <Grid container style={{marginTop: '5rem', width: '95%'}}>
                 <Grid item lg={5}>
                   <ReactApexChart options={isBugReport ? bugBarChartOtions : feedbackBarChartOptions} series={isBugReport? bugBarChartSeries : barChartSeries} type="bar" width={500} height={320} />
                 </Grid>
