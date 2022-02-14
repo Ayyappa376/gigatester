@@ -10,7 +10,7 @@ import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { ILimitedProductDetails, IFeedbackComments,
   IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, 
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions,
   feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions } from './common';
 import { IProductInfo } from '../../../model';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -72,8 +72,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     const [focusCategory, setFocusCategory] = useState([]);
     const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
     const [resultsFetched, setResultsFetched] = useState(false);
-
-    console.log(data);
 
     useEffect(() => {
       if(feedbackBarChartData) {
