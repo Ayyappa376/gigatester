@@ -11,15 +11,17 @@ const AudioPlayer = (props: any) => {
   });
 
   useEffect(() => {
-    getSignedUrl(url, stateVariable).then((fetchSignedUrl: any) => {
-      setSignedUrl(fetchSignedUrl);
-    });
-  }, [])
+    if (url) {
+      getSignedUrl(url, stateVariable).then((fetchSignedUrl: any) => {
+        setSignedUrl(fetchSignedUrl);
+      });
+    }
+  }, [url])
 
   return (
     <div>
       {signedUrl !== '' ?
-        <audio src={signedUrl} controls preload='auto'/> : 
+        <audio src={signedUrl} controls preload='auto'/> :
         <audio src={''}  />
       }
     </div>

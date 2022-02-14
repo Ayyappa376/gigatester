@@ -1,11 +1,13 @@
 import { Button, Typography } from '@material-ui/core';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './stylesRenderFilters.css'
 
 interface IProps {
     setFocusRating: Function;
     focusRating: number[];
     disableButtons: boolean;
+    disable: any;
+    setDisable: Function;
 }
 
 const ratingButtonValues=[
@@ -17,12 +19,10 @@ const ratingButtonValues=[
 ]
 
 const RenderRatingFilter = React.memo((props: IProps) => {
-    const {focusRating, setFocusRating} = props;
+    const {focusRating, setFocusRating, disable, setDisable} = props;
 
     const handleKeywordClick = (val: number) => {
-        console.log(val, props.disableButtons);
         if(props.disableButtons) {
-
             return;
         }
         if(focusRating.indexOf(val) > -1) {
@@ -31,7 +31,9 @@ const RenderRatingFilter = React.memo((props: IProps) => {
                 prevValCopy.splice(prevValue.indexOf(val), 1);
                 return prevValCopy;
             });
+            setDisable('');
         } else {
+            setDisable('rating');
             setFocusRating((prevVal: number[]) => {
                 return [...prevVal, val]
             });
@@ -41,12 +43,12 @@ const RenderRatingFilter = React.memo((props: IProps) => {
     return (
         <div id="RenderFilter-Block" >
             <div id="RenderFilter-textContainer">
-                <Typography id="RenderFilter-textHeader">Choose feedbacks with rating:</Typography>
+                <Typography id="RenderFilter-textHeader">Choose feedback with rating:</Typography>
             </div>
             <div id="RenderFilter-flexContainer">
                 {ratingButtonValues.map((el) => {
                     console.log()
-                    return <Button variant='outlined' disabled={props.disableButtons}
+                    return <Button variant='outlined' disabled={disable}
                     key={el.value} onClick={() => {handleKeywordClick(el.value)}} id={focusRating.indexOf(el.value) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el.discription}</Button>
                 }
                 )}
