@@ -8,9 +8,11 @@ import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import ProductFilter, { VersionFilter } from './ProductFilter';
-import { ILimitedProductDetails,
-  IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
+import { ILimitedProductDetails, IFeedbackComments,
+  IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, 
+  feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions } from './common';
+import { IProductInfo } from '../../../model';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import RenderStars from './RenderStarts';
 import { getChartData, getFeedbackData } from './methods';
@@ -279,9 +281,8 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     }
 
     const fetchMore = () => {
-      if(Object.keys(lastEvaluatedKey).length > 0) {
-        fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true});
-        // lastEvalKey: lastEvaluatedKey,
+    if(!searchInitiated && Object.keys(lastEvaluatedKey).length > 0) {
+        fetchRecursiveData({ prodId: selectedProdId, lastEvalKey: lastEvaluatedKey, prodVersion: productVersion, showNoEmptyError: true});
       }
     }
 
@@ -337,23 +338,21 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
               const productInfoCopy = [...productInfo]
               const prodNameIdMappingCopy: any = {...prodNameIdMapping};
               const  prodNameIdMappingBugCopy: any = {...prodNameIdMapping};
-              response.products.forEach((el: ProductInfo) => {
-                  const prodInfo = {id: "", name: ""};
-                  prodInfo.id = el.id;
-                  prodInfo.name = el.name;
+              response.products.forEach((prod: IProductInfo) => {
+                  const prodInfo = {id: prod.id, name: prod.name};
                   productInfoCopy.push(prodInfo);
                   if(prodNameIdMappingCopy[prodInfo.id]) {
-                    prodNameIdMappingCopy[prodInfo.id].version.push(el.version);
+                    prodNameIdMappingCopy[prodInfo.id].version.push(prod.version);
                   } else {
                       prodNameIdMappingBugCopy[prodInfo.id] = {
                         name: prodInfo.name,
-                        version: [el.version],
-                        categories: el.feedbackAgentSettings ? el.feedbackAgentSettings.bugSettings.categories ? el.feedbackAgentSettings.bugSettings.categories : [] : []
+                        version: [prod.version],
+                        categories: (prod.feedbackAgentSettings && prod.feedbackAgentSettings.bugSettings && prod.feedbackAgentSettings.bugSettings.categories) ? prod.feedbackAgentSettings.bugSettings.categories : []
                       }
                       prodNameIdMappingCopy[prodInfo.id] = {
                         name: prodInfo.name,
-                        version: [el.version],
-                        categories: el.feedbackAgentSettings ? el.feedbackAgentSettings.feedbackSettings.categories ? el.feedbackAgentSettings.feedbackSettings.categories : [] : []
+                        version: [prod.version],
+                        categories: (prod.feedbackAgentSettings && prod.feedbackAgentSettings.feedbackSettings && prod.feedbackAgentSettings.feedbackSettings.categories) ? prod.feedbackAgentSettings.feedbackSettings.categories : []
                       }
 
                   }

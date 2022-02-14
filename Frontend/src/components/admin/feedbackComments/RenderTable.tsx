@@ -310,7 +310,7 @@ const RenderTable = (props: IProps) => {
                         </div>
                         <div key="file-attachment">
                           {
-                            row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
+                            (row.feedbackMedia && row.feedbackMedia.file && signedUrlMapping[row.feedbackMedia.file] && fetchAllUrls) ?
                               <a href={signedUrlMapping[row.feedbackMedia.file].signedUrl} download>
                                 <Link
                                   component="button"
@@ -318,7 +318,7 @@ const RenderTable = (props: IProps) => {
                                   style={{fontSize: 11}}
                                   >Download attachment</Link>
                               </a>
-                             : <div/> : <div/> : <div/>
+                             : <div/>
                           }
                         </div>
                       </TableCell>
