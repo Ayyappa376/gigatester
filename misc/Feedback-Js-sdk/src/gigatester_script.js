@@ -446,11 +446,26 @@ else{
                 }
             }
         };
+        let mySrcUrl = '';
+        let sc = document.getElementsByTagName("script");
+        for(var i = 0; i < sc.length; i+=1)
+        {
+          let s = sc.item(i);        
+          if(s.src && s.src.match(/gigatester_script\.js$/)) {
+            mySrcUrl = s.src.substring(0, s.src.indexOf('gigatester_script'));
+          }
+        }
+        console.log('my source url =', mySrcUrl);
+        if(mySrcUrl === '') {
+            console.log("Error: GigaTester: could not locate the source URL.")
+        }
         let Feedback = {
             // request_url: "https://dev.gigatester.io",
             // proxy_url: "https://proxy.gigatester.io",
-            static_url: "https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser",
-            widget_css: "https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester.css",
+//            static_url: "https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser",
+//            widget_css: "https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester.css",
+            static_url: mySrcUrl,
+            widget_css: mySrcUrl + "gigatester.css",
             http_header: [],
             canvas_mode: false,
             canvas_target: false,
