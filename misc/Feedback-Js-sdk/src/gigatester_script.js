@@ -6,13 +6,6 @@
             (d.head || d.body).appendChild(s);
         })(document);
     }
-    if(typeof window.rrweb === "undefined"){
-        (function(d) {
-            var s = d.createElement('script');s.async = true;
-            s.src = 'https://cdn.jsdelivr.net/npm/rrweb@0.7.0/dist/rrweb.min.js';
-            (d.head || d.body).appendChild(s);
-        })(document);
-     }
      if(typeof window.platform === "undefined"){
         (function(d) {
             var s = d.createElement('script');s.async = true;
@@ -37,7 +30,7 @@
 
     console.log('GigaTester: dependency loading');
 function gigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined"  || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined"  || typeof window.platform === "undefined" ||  typeof window.Snap === "undefined"){
     console.log('GigaTester: inside giga timeout')
 }
 else{
@@ -175,7 +168,7 @@ else{
                 }))
             },
             replaceUnpairedSurrogates: function(str) {
-                return str.replace(/[\uD800-\uDBFF]+([^\uDC00-\uDFFF]|$)/g, "ï¿½$1").replace(/(^|[^\uD800-\uDBFF])[\uDC00-\uDFFF]+/g, "$1ï¿½")
+                return str.replace(/[\uD800-\uDBFF]+([^\uDC00-\uDFFF]|$)/g, "Ã¯Â¿Â½$1").replace(/(^|[^\uD800-\uDBFF])[\uDC00-\uDFFF]+/g, "$1Ã¯Â¿Â½")
             },
             baseName: function(path) {
                 var path_array = path.split("/");
@@ -666,7 +659,6 @@ else{
                     console.log('GigaTester: load configs')
                     GigaTester_Api.isLoaded();
                     var response = {}
-                    Session_Recorder.recordSession();
                     this.checkSessionStorage();
                     this.loadConfigSuccess.call(this, response);
                 },
@@ -824,7 +816,6 @@ else{
                 modalClose: function() {
                     $("gtmodal").remove();
                     $(document.body).removeClass("gigatester-modal-open");
-                    Session_Recorder.recordSession();
                 },
                 addOverlay: function() {
                     if (this.ui.overlay) {
@@ -1016,19 +1007,12 @@ else{
                             e.stopPropagation();
                             e.preventDefault();
                             if (Feedback.configs.is_live_checked) {
-                                Feedback.check_live_callback = function() {
-                                    // Feedback.Tools.submitAnnotation()
-                                };
                                 Feedback.Tools.removeTools();
                                 Feedback.setScreenStatus("Taking screenshot...");
                                 return
                             }
                             Feedback.hideCommentForm();
                             Feedback.finalScreenshot();
-                            // Session_Recorder.addCustomEvent("widget_open", {
-                            //     type: "widget_interaction",
-                            //     name: "Capture Screenshot"
-                            // })
                         }.bind(this));
                         this.toolbar.find(".gigatester-toolbar-close").on("click", function(e) {
                             e.stopPropagation();
@@ -2369,11 +2353,12 @@ else{
                                     // before attempting less optimal solution
                                     try {
                                         const imageCapture = new ImageCapture(track);
-                                        imageCapture.grabFrame()
+                                        setTimeout(() => { imageCapture.grabFrame()
                                             .then((screenshot) => {
                                                 Feedback.screenshotVideo(screenshot);
                                             })
                                             .catch((error) => console.error(error));
+                                        },200);
                                     } catch(error) {
                                         console.warn('ImageCapture not supported on this browser');
                                         recorder.onstop = e => {
@@ -3519,7 +3504,8 @@ else{
                           audio: Feedback.audio_file,
                         },
                           feedbackComments: { "generalComment" : this.form_data['description'], "standardFeedback" : standardFeedback , ...comments },
-                          productKey: GigaTester.apiKey
+                          productKey: GigaTester.apiKey,
+                          userDetails: Feedback.user_detail
                       }
                       console.log(postData, 'post Data')
                       fetch(`${GigaTester.endpoint}/feedback/`, {
@@ -3658,7 +3644,7 @@ else{
                     };
                     var _post_complete = function() {
                         if (this.hasSessionRecording()) {
-                            Session_Recorder.startRecording()
+                            // Session_Recorder.startRecording()
                         }
                     };
                     var _post = function() {
@@ -4668,7 +4654,7 @@ else{
                 }
                 GigaTester.Event_Recorder.stop();
                 GigaTester.Console_Recorder.stop();
-                Session_Recorder.stopRecording();
+                // Session_Recorder.stopRecording();
                 $("link.gigatester-css").remove();
                 $("script#gigatester-sdk").remove();
                 delete window.GigaTester
@@ -4735,6 +4721,7 @@ else{
                     }
                     console.log(key.trim().toLowerCase(), val);
                   });
+                Feedback.user_detail = userData
                 sessionStorage.setItem('gigatesterDefaultUserDetails', JSON.stringify(userData))
                 }
             },
@@ -4850,7 +4837,7 @@ else{
 }
 }
 function checkgigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" || typeof window.rrweb === "undefined" || typeof window.Snap === "undefined"){
+if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" ||  typeof window.Snap === "undefined"){
 setTimeout(() => {
     checkgigatester();
     console.log('GigaTester: inside giga timeout function')}, 200);
