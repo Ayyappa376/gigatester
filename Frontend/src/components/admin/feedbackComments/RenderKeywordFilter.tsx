@@ -1,11 +1,13 @@
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './stylesRenderFilters.css'
 
 interface IKeywordFilterProps {
     onSubmit: Function;
     onClear: Function;
+    disable: any;
+    setDisable: Function;
 }
 
 const keywords = [
@@ -15,13 +17,15 @@ const keywords = [
 
 export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
     const [keyword, setKeyword] = useState("");
+    const [show, setShow] = useState<boolean>(false);
 
     const handleKeywordClick = (val: string) => {
         if(keyword === val) {
             props.onClear();
-            setKeyword("")
+            setKeyword("");
         } else {
             props.onSubmit(val);
+            props.setDisable('key');
             setKeyword(val);
         }
     }
@@ -32,8 +36,8 @@ export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
                 <Typography id="RenderFilter-textHeader">Read comments that mention:</Typography>
             </div>
             <div id="RenderFilter-flexContainer">
-                {keywords.map((el) => 
-                    <Button variant='outlined' key={el} onClick={() => {handleKeywordClick(el)}} id={keyword === el ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
+                {keywords.map((el) =>
+                    <Button variant='outlined' disabled={props.disable} key={el} onClick={() => {handleKeywordClick(el)}} id={keyword === el ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
                 )}
             </div>
         </div>

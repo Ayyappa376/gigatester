@@ -1,9 +1,11 @@
 import { Order } from "./RenderTable";
+import { IProductInfo, ICategory, ISeverityType, IFeedbackType,
+  SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_LOW } from "../../../model/admin/product";
 
-export const SEVERITY_CRITICAL = 'Critical';
-export const SEVERITY_HIGH = 'High';
-export const SEVERITY_MEDIUM = 'Medium';
-export const SEVERITY_LOW = 'Low';
+// export const SEVERITY_CRITICAL = 'Critical';
+// export const SEVERITY_HIGH = 'High';
+// export const SEVERITY_MEDIUM = 'Medium';
+// export const SEVERITY_LOW = 'Low';
 
 export const RATING_ONE = "1";
 export const RATING_TWO = "2";
@@ -25,7 +27,7 @@ export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
 
-export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
+//export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 
 export const CONST_FEEDBACK = 'FEEDBACK';
 export const CONST_FEEDBACK_CHART = 'FEEDBACK-CHART';
@@ -40,6 +42,7 @@ export interface IFeedbackComments {
   goBack: Function
 }
 
+/*
 export interface ProductInfo {
     description?: string;
     devices?: string[];
@@ -57,22 +60,22 @@ export interface TesterStatus {
     approved: boolean;
     id: string;
 }
-
+*/
 export interface ILimitedProductDetails {
     id: string;
     name: string;
 }
 
-export interface ICategories {
-  name: string;
-  feedbacks: string[];
-}
+// export interface ICategories {
+//   name: string;
+//   feedbacks: string[];
+// }
 
 export interface IProductNameIdMapping {
     [key : string] : {
         name: string;
         version: string[];
-        categories: ICategories[];
+        categories: ICategory[];
     }
 }
 
@@ -86,7 +89,7 @@ export interface IAppFeedback {
     userId ? : string;
     sourceIP?: string;
     feedbackCategory?: FeedbackCategory;
-    bugPriority: BudPriority;
+    bugPriority: ISeverityType;
     feedbackMedia: {
       image?: string,
       video?: string,
@@ -140,7 +143,7 @@ export interface IRatingMapData {
 export interface IBugMapData {
     userId: string,
     userIp: string,
-    severity?: BudPriority,
+    severity?: ISeverityType,
     category?: FeedbackCategory;
     date: number,
     comments: ICommentObject | undefined,
@@ -215,7 +218,7 @@ export const bugBarChartOtions: any = {
       id: 'severity-chart'
     },
     xaxis: {
-      categories: [SEVERITY_CRITICAL, SEVERITY_HIGH, SEVERITY_MEDIUM, SEVERITY_LOW],
+      categories: [SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_LOW],
     }
   };
 
