@@ -1,5 +1,5 @@
 import { Backdrop, Button, CircularProgress, Container, Grid, makeStyles, Modal, Typography } from '@material-ui/core';
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { Http } from '../../../utils';
 import ReactApexChart from 'react-apexcharts'
@@ -8,9 +8,11 @@ import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { getDate } from '../../../utils/data';
-import { ILimitedProductDetails,
+import {
+  ILimitedProductDetails,
   IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments
+} from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getFeedbckChartData, getFeedbackData } from './methods';
 import Failure from '../../failure-page';
@@ -22,16 +24,16 @@ interface ChosenProps {
   productInfoProp: any,
 }
 
-const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
+const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   const [backdropOpen, setBackdropOpen] = useState(false);
   const [error, setError] = useState(false)
   const [isBugReport, setBugReport] = useState<boolean | undefined>();
-  const [noDataError, setNoDataError] = useState(false)
+  const [noDataError, setNoDataError] = useState(true)
   const [data, setData] = useState<IAppFeedback[]>([]);
   const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
   const [rawData, setRawData] = useState([]);
   const classes = useStyles();
-  const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
+  const [feedbackBarChartData, setFeedbackBarChartData] = useState<IFeedbackBarChartData>({});
   const [pieChartSeries, setPieChartSeries] = useState({})
   const [showImageModal, setShowImageModal] = useState(false);
   const [signedImageUrl, setSignedImageUrl] = useState('');
@@ -49,13 +51,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
     data: [0, 0, 0, 0, 0]
   }])
   const [selectedProdId, setSelectedProdId] = useState<string>(() => {
-    if(props.productInfoProp.selectedProdId) {
+    if (props.productInfoProp.selectedProdId) {
       return props.productInfoProp.selectedProdId;
     }
     return ''
   })
   const [productVersion, setProductVersion] = useState(() => {
-    if(props.productInfoProp.productVersion) {
+    if (props.productInfoProp.productVersion) {
       return props.productInfoProp.productVersion;
     }
     return ''
@@ -81,9 +83,14 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
   const [focusCategory, setFocusCategory] = useState([]);
   const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
   const [resultsFetched, setResultsFetched] = useState(false);
+  const [currentDisable, setCurrentDisable] = useState<string>('');
+  const [category, setCat] = useState<boolean>(false);
+  const [severity, setSeverity] = useState<boolean>(false);
+  const [keys, setKey] = useState<boolean>(false);
+  const [rating, setRating] = useState<boolean>(false);
 
   useEffect(() => {
-    if(feedbackBarChartData) {
+    if (feedbackBarChartData) {
       const series = [{
         name: 'Ratings',
         data: Object.values(feedbackBarChartData)
@@ -92,33 +99,66 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
     }
   }, [feedbackBarChartData])
 
-  const pieChartOptions = getPieChartOptions(pieChartSeries)
+  const pieChartOptions = getPieChartOptions(pieChartSeries);
+
+  const disbaleFilterButtons = (filter: string) => {
+    if (filter === '') {
+      setCat(false);
+      setRating(false);
+      setSeverity(false);
+      setKey(false);
+    } else if (filter === 'key') {
+      setCat(true);
+      setRating(true);
+      setSeverity(true);
+      setKey(false);
+    } else if (filter === 'category') {
+      setCat(false);
+      setRating(true);
+      setSeverity(true);
+      setKey(true);
+    } else if (filter === 'severity') {
+      setCat(true);
+      setRating(true);
+      setSeverity(false);
+      setKey(true);
+    } else if (filter === 'rating') {
+      setCat(true);
+      setRating(false);
+      setSeverity(true);
+      setKey(true);
+    }
+  }
+
+  useEffect(() => {
+    disbaleFilterButtons(currentDisable);
+  }, [currentDisable])
 
   useEffect(() => {
     const rateMap: IRatingMapping = {};
     const bugMap: IBugDataMapping = {};
     const urls: string[] = [];
 
-      data.forEach((item: IAppFeedback) => {
-        if (item.feedbackType === "FEEDBACK") {
-          rateMap[item.id] = {
-            userId: item.userId ? item.userId : 'Anonymous',
-            userIp: item.sourceIP? item.sourceIP : '',
-            category: item.feedbackCategory,
-            rating : item.productRating,
-            date : item.createdOn,
-            comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
-            productId: item.productId,
-            productVersion: item.productVersion
-          }
-          if(item.feedbackMedia ) {
-            const links: any = Object.values(item.feedbackMedia);
-            const linksFiltered = links.filter((key: string) => key !== '')
-            urls.push(...linksFiltered);
-          }
+    data.forEach((item: IAppFeedback) => {
+      if (item.feedbackType === "FEEDBACK") {
+        rateMap[item.id] = {
+          userId: item.userId ? item.userId : 'Anonymous',
+          userIp: item.sourceIP ? item.sourceIP : '',
+          category: item.feedbackCategory,
+          rating: item.productRating,
+          date: item.createdOn,
+          comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
+          productId: item.productId,
+          productVersion: item.productVersion
         }
-        setRatingMapping(rateMap);
-      });
+        if (item.feedbackMedia) {
+          const links: any = Object.values(item.feedbackMedia);
+          const linksFiltered = links.filter((key: string) => key !== '')
+          urls.push(...linksFiltered);
+        }
+      }
+      setRatingMapping(rateMap);
+    });
 
     const urlArrayCopy = [...urlArray];
     urlArrayCopy.push(...urls);
@@ -126,32 +166,33 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
   }, [data])
 
   useEffect(() => {
-    if(selectedProdId && productVersion) {
-      fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
+    if (selectedProdId && productVersion) {
+      fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion });
     }
   }, [selectedProdId, productVersion])
 
   useEffect(() => {
-    if(rawData.length === 0) {
+    if (rawData.length === 0) {
       return;
     }
-    if(Object.keys(lastEvaluatedKey).length > 0) {
+    if (Object.keys(lastEvaluatedKey).length > 0) {
       // fetch the results from backend
       setData([]);
       setRawData([])
-      fetchRecursiveData({fetchOrder: order, prodId: selectedProdId, prodVersion: productVersion})
+      fetchRecursiveData({ fetchOrder: order, prodId: selectedProdId, prodVersion: productVersion })
     } else {
       setData(sortTableByDate(data, order))
     }
   }, [order])
 
   useEffect(() => {
-    if(rawData.length === 0) {
+    if (rawData.length === 0) {
       return;
     }
     console.log(focusRating)
-    if(focusRating.length === 0) {
+    if (focusRating.length === 0) {
+      setCurrentDisable('');
       setData(rawData);
       return;
     }
@@ -159,15 +200,16 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
     setResultsFetched(false)
     setData([]);
     //setRawData([])
-    fetchRecursiveData({filterRating: focusRating, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
+    fetchRecursiveData({ filterRating: focusRating, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true })
   }, [focusRating])
 
   useEffect(() => {
-    if(rawData.length === 0) {
+    if (rawData.length === 0) {
       return;
     }
     console.log(focusSeverity)
-    if(focusSeverity.length <= 0) {
+    if (focusSeverity.length <= 0) {
+      setCurrentDisable('');
       setData(rawData);
       return;
     }
@@ -175,15 +217,16 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
     setResultsFetched(false)
     setData([]);
     //setRawData([])
-    fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
+    fetchRecursiveData({ filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true })
   }, [focusSeverity])
 
   useEffect(() => {
-    if(rawData.length === 0) {
+    if (rawData.length === 0) {
       return;
     }
     console.log(focusCategory)
-    if(focusCategory.length <= 0) {
+    if (focusCategory.length <= 0) {
+      setCurrentDisable('');
       setData(rawData);
       return;
     }
@@ -191,49 +234,49 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
     setResultsFetched(false)
     setData([]);
     //setRawData([])
-    fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
+    fetchRecursiveData({ filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true })
   }, [focusCategory])
 
-  const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate}:
-      IFetchRecursiveData) => {
+  const fetchRecursiveData = async ({ lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory, prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate }:
+    IFetchRecursiveData) => {
     let urlAppend = ``;
     let numItems = NUMBER_OF_ITEMS_PER_FETCH;
-    if(prodId) {
+    if (prodId) {
       urlAppend += `?prodId=${prodId}`;
-      if(prodVersion) {
+      if (prodVersion) {
         urlAppend += `&prodVersion=${prodVersion}`;
       }
     }
-    if(filterRating) {
+    if (filterRating) {
       urlAppend += urlAppend ? `&filterRating=${filterRating.join(',')}` : `?filterRating=${filterRating.join(',')}`
       numItems = 500;
     }
 
-    if(filterSeverity) {
+    if (filterSeverity) {
       urlAppend += urlAppend ? `&filterSeverity=${filterSeverity.join(',')}` : `?filterSeverity=${filterSeverity.join(',')}`
       numItems = 500;
     }
 
-    if(filterCategory) {
+    if (filterCategory) {
       urlAppend += urlAppend ? `&filterCategory=${filterCategory.join(',')}` : `?filterCategory=${filterCategory.join(',')}`
       numItems = 500;
     }
 
-    if(lastEvalKey && Object.keys(lastEvalKey).length > 0) {
+    if (lastEvalKey && Object.keys(lastEvalKey).length > 0) {
       urlAppend += urlAppend ? `&lastEvalKey=${JSON.stringify(lastEvalKey)}` : `?lastEvalKey=${JSON.stringify(lastEvalKey)}`
     }
 
-    if(fetchOrder) {
+    if (fetchOrder) {
       urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`
     }
 
-    if(searchWord) {
+    if (searchWord) {
       urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
     }
 
     urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
 
-    const response: any = await getFeedbackData({ props, urlAppend}).catch((error) => {
+    const response: any = await getFeedbackData({ props, urlAppend }).catch((error) => {
       const perror = JSON.stringify(error);
       const object = JSON.parse(perror);
       if (object.code === 401) {
@@ -245,8 +288,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
       return;
     })
     setResultsFetched(true);
-    if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
-      if(searchInitiated && searchWord) {
+    if (response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
+      if (searchInitiated && searchWord) {
         setSearchedData((dataObj) => {
           const dataCopy = new Set([...dataObj].concat(response.Items.Items));
           return Array.from(dataCopy)
@@ -257,55 +300,56 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
         const dataCopy = new Set([...dataObj].concat(response.Items.Items));
         return Array.from(dataCopy)
       });
-      if(!noRawDataUpdate) {          // This if check is useful for the cases where filtering is done. If filtering returns 0 elements, the presence of the raw data,
+      if (!noRawDataUpdate) {          // This if check is useful for the cases where filtering is done. If filtering returns 0 elements, the presence of the raw data,
         setRawData((rawDataObj) => {  // clear filter will get the idea that the data has already been fetched.
           const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
           return Array.from(rawDataCopy)
         });
       }
 
-      if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
+      if (response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
         setLastEvaluatedKey(response.Items.LastEvaluatedKey);
       }
-      if(Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
+      if (Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
         setLastEvaluatedKey({})
       }
     } else {
-      if(!showNoEmptyError) {
+      if (!showNoEmptyError) {
         setNoDataError(true);
       }
     }
   }
 
   const fetchMore = () => {
-    if(Object.keys(lastEvaluatedKey).length > 0) {
-      fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true});
+    if (Object.keys(lastEvaluatedKey).length > 0) {
+      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true });
     }
   }
 
   useEffect(() => {
-    console.log("In the primary: ",{rawData})
-    if(error || noDataError) {
+    console.log("In the primary: ", { rawData })
+    if (error || noDataError) {
       setBackdropOpen(false);
     }
-    if(rawData.length > 0 && selectedProdId) {
-        if(Object.keys(feedbackBarChartData).length > 0) {
-          setBackdropOpen(false);
-        }
+    if (rawData.length > 0 && selectedProdId) {
+      setNoDataError(false);
+      if (Object.keys(feedbackBarChartData).length > 0) {
+        setBackdropOpen(false);
+      }
     }
-  }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])
+  }, [selectedProdId, rawData, feedbackBarChartData, error, noDataError])
 
   const fetchSignedUrl = (imgUrl: string) => {
     const urlSplit = imgUrl.split('/')
     let name = urlSplit[urlSplit.length - 1]
     Http.get({
-        url: `/api/v2/signedurl/${name}`,
+      url: `/api/v2/signedurl/${name}`,
     }).then((response: any) => {
-       if(response.filePath) {
-         setSignedImageUrl(response.filePath);
-       }
-    }).catch((error : any) => {
-        console.error(error);
+      if (response.filePath) {
+        setSignedImageUrl(response.filePath);
+      }
+    }).catch((error: any) => {
+      console.error(error);
     })
   }
 
@@ -317,56 +361,56 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
   }
 
   const getRating = (id: string) => {
-    if(ratingMapping[id]) {
+    if (ratingMapping[id]) {
       return ratingMapping[id].rating
     }
     return 0
   }
 
   const getDateString = (id: string) => {
-    if(ratingMapping[id]) {
+    if (ratingMapping[id]) {
       return getDate(ratingMapping[id].date)
     }
     return ""
   }
 
   const getComments = (id: string) => {
-    if(ratingMapping[id]) {
+    if (ratingMapping[id]) {
       return ratingMapping[id].comments
     }
     return {}
   }
 
   const getUserId = (id: string) => {
-    if(ratingMapping[id]) {
+    if (ratingMapping[id]) {
       return ratingMapping[id].userId
     }
     return undefined
   }
 
   const getUserIp = (id: string) => {
-    if(ratingMapping[id]) {
+    if (ratingMapping[id]) {
       return ratingMapping[id].userIp
     }
     return undefined
   }
 
   const getProductVersion = (id: string) => {
-    if(ratingMapping[id]) {
+    if (ratingMapping[id]) {
       return ratingMapping[id].productVersion
     }
     return ""
   }
 
   const getBugSeverity = (id: string) => {
-    if(bugDataMapping[id]) {
+    if (bugDataMapping[id]) {
       return bugDataMapping[id].severity
     }
     return ""
   }
 
   const getBugCategory = (id: string) => {
-    if(ratingMapping[id]) {
+    if (ratingMapping[id]) {
       return ratingMapping[id].category
     }
     return ""
@@ -378,7 +422,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
 
   const filterByProduct = (val: string) => {
     console.log(prodNameIdMapping);
-    if(val) {
+    if (val) {
       setSelectedProdId(val);
       setProductVersion(prodNameIdMapping[val].version[0])
       setNoDataError(false);
@@ -410,10 +454,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
   }
 
   useEffect(() => {
-    if(keyword && searchInitiated) {
+    if (keyword && searchInitiated) {
       setResultsFetched(false)
       setSearchedData([])
-      fetchRecursiveData({prodId:  selectedProdId, prodVersion: productVersion, searchWord: keyword,  showNoEmptyError: true })
+      fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, searchWord: keyword, showNoEmptyError: true })
     }
   }, [searchInitiated, keyword])
 
@@ -425,14 +469,14 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
   }
 
   const handleImageClicked = () => {
-    if(signedImageUrl) {
+    if (signedImageUrl) {
       setSlideShowImageUrl(signedImageUrl)
     }
   }
 
   const getCategoryList = () => {
     const categoryList: string[] = []
-    if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
+    if (prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
       prodNameIdMapping[selectedProdId].categories.map((el) => {
         categoryList.push(el.name);
       });
@@ -461,47 +505,48 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps ) => {
 
   return (
     <div>
-        <Container>
-          <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
-          <Close htmlColor='#fff' style={{position: 'absolute', cursor: 'pointer',
-                    top: 10, right: 10, fontSize: '2.5rem'
-                  }} onClick={() => {setSlideShowImageUrl('')}}/>
-            <div style={{ width: '80vw', marginLeft: '10vw',  marginTop: '2vh'}}>
-              <Image aspectRatio={16/9} width='90%' height='90%'   src={slideShowImageUrl} />
-            </div>
+      <Container>
+        <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
+          <Close htmlColor='#fff' style={{
+            position: 'absolute', cursor: 'pointer',
+            top: 10, right: 10, fontSize: '2.5rem'
+          }} onClick={() => { setSlideShowImageUrl('') }} />
+          <div style={{ width: '80vw', marginLeft: '10vw', marginTop: '2vh' }}>
+            <Image aspectRatio={16 / 9} width='90%' height='90%' src={slideShowImageUrl} />
+          </div>
 
-          </div>
-          {searchInitiated ? <div>
-            <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Feedback'}
+        </div>
+        {searchInitiated ? <div>
+          <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Feedback'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
             focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
-            />
-          </div>
+          />
+        </div>
           :
-          noDataError ? <div style={{marginTop: '3rem'}}><Failure message={`There is no feedback to show.`}/></div>:
-          <div>
-            <ImageModal {...imagePayload}/>
-            <div style={{marginTop: 50}}>
-              <Grid container style={{marginTop: '5rem'}}>
-                <Grid item lg={5}>
-                  <ReactApexChart options={feedbackBarChartOptions} series={barChartSeries} type="bar" width={500} height={320} />
+          noDataError ? <div style={{ marginTop: '3rem' }}><Failure message={`There is no feedback to show.`} /></div> :
+            <div>
+              <ImageModal {...imagePayload} />
+              <div style={{ marginTop: 50 }}>
+                <Grid container style={{ marginTop: '5rem' }}>
+                  <Grid item lg={5}>
+                    <ReactApexChart options={feedbackBarChartOptions} series={barChartSeries} type="bar" width={500} height={320} />
+                  </Grid>
+                  <Grid item lg={2}></Grid>
+                  <Grid item lg={5}>
+                    <ReactApexChart options={pieChartOptions} series={Object.values(pieChartSeries)} type="pie" width={500} height={320} />
+                  </Grid>
                 </Grid>
-                <Grid item lg={2}></Grid>
-                <Grid item lg={5}>
-                  <ReactApexChart options={pieChartOptions} series={Object.values(pieChartSeries)} type="pie" width={500} height={320} />
-                </Grid>
-              </Grid>
-            </div>
-            <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Feedback'}
-            order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
-            focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
-            />
-          </div>}
-        </Container>
+              </div>
+              <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Feedback'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
+                order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+                searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
+                focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
+                focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+              />
+            </div>}
+      </Container>
     </div>
   )
 }

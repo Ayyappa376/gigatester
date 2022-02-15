@@ -2,7 +2,8 @@ import { Container, Paper, Table, TableHead, TableRow, TableCell, Typography, Ta
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { getDate, getDateTime } from '../../../utils/data';
-
+import Alert from '@material-ui/lab/Alert';
+import FolderList from './FolderList';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import AudioPlayer from './audioPlayer';
@@ -42,6 +43,12 @@ interface IProps {
     handleRequestSort: Function,
     resultsFetched: boolean,
     currentType: string,
+    disable: string,
+    setDisable: Function,
+    keys: boolean,
+    category: boolean,
+    severity: boolean,
+    rating: boolean,
 }
 
 export type Order = 'asc' | 'desc';
@@ -56,7 +63,7 @@ export const ALROUND = 'alround'
 
 const RenderTable = (props: IProps) => {
     const classes = useStyles();
-    const { tableData, resultsFetched} = props;
+    const { tableData, resultsFetched, category, severity, keys, rating, setDisable, disable } = props;
     const [fetchAllUrls, setFetchAllUrls] = useState(false);
     const [isBugReport, setBugReport] = useState<boolean>(false);
     const { ref, inView, entry } = useInView();
@@ -149,36 +156,41 @@ const RenderTable = (props: IProps) => {
     return (
         <Container style={{marginTop: '5rem'}}>
           <Paper className={classes.filters}>
+          {disable.length > 0 ? <Alert className={classes.info} severity="info">
+            Deselect button to reactivate filters
+            </Alert> : <Alert className={classes.info} severity="info">
+              Please only select one filter at a time. Other options will disabled automatically when selecting
+            </Alert>}
             {isBugReport ?
               <Grid container>
                 <Grid item md={5}>
                   {
-                    <RenderKeywordFilter onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
+                    <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
                   }
                 </Grid>
                 <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
                 <Grid item md={6}>
                   {
                     <div>
-                    <RenderSeverityFilter focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
+                    <RenderSeverityFilter severity={severity} setDisable={setDisable} focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                     <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                    <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                    <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                     </div>
                   }
                 </Grid>
               </Grid> : <Grid container>
                   <Grid item md={6}>
                     {
-                      <RenderKeywordFilter onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
+                      <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
                     }
                   </Grid>
                   <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
                   <Grid item md={5}>
                     {
                         <div>
-                          <RenderRatingFilter focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
+                          <RenderRatingFilter rating={rating}  setDisable={setDisable} focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                           <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                          <RenderCategoryFilter focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                          <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                         </div>
                     }
                   </Grid>
@@ -219,14 +231,15 @@ const RenderTable = (props: IProps) => {
 
                   const labelId = `enhanced-table-checkbox-${index}`;
 
-                  let sourceDetails = '-'
+                  let sourceDetails = '-';
+                  let osInfo = '-';
 
                   if(row.userId) sourceDetails = row.userId;
 
                   if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
 
+                  let platformInfo;
                   if(row.platformName) {
-                    let platformInfo;
                     if(row.platformVersion) {
                       platformInfo = `(${row.platformName} - ${row.platformVersion})`
                     } else {
@@ -235,7 +248,7 @@ const RenderTable = (props: IProps) => {
                     sourceDetails = sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
                   }
 
-                  if(row.platformOs) sourceDetails = sourceDetails === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
+                  if(row.platformOs) osInfo = osInfo  === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
 
                   return (
                     <TableRow
@@ -244,7 +257,7 @@ const RenderTable = (props: IProps) => {
                       key={row.id}
                     >
                       <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
-                            {sourceDetails}
+                            <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} platformName={row.platformName} platformVersion={osInfo} />
                       </TableCell>
                       <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
                             {row.createdOn ? getDateTime(row.createdOn) : '-'}
@@ -423,6 +436,18 @@ export const useStyles = makeStyles((theme) => ({
     title: {
       flex: '1 1 100%',
     },
+    info: {
+      display: 'flex',
+      flexDirection: 'row',
+      justifyContent: 'flex-start',
+      alignItems: 'center',
+      width: '85%',
+      height: '25px',
+      fontSize: '15px',
+      padding: '0',
+      marginBottom: '10px',
+      borderRadius: '10px',
+    }
   }));
 
 export default RenderTable;

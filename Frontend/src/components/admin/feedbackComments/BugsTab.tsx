@@ -78,6 +78,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   const [focusCategory, setFocusCategory] = useState([]);
   const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
   const [resultsFetched, setResultsFetched] = useState(false);
+  const [currentDisable, setCurrentDisable] = useState<string>('');
+  const [category, setCat] = useState<boolean>(false);
+  const [severity, setSeverity] = useState<boolean>(false);
+  const [keys, setKey] = useState<boolean>(false);
+  const [rating, setRating] = useState<boolean>(false);
 
   useEffect(() => {
     if(feedbackBarChartData) {
@@ -89,7 +94,40 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     }
   }, [feedbackBarChartData])
 
-  const pieChartOptions = getPieChartOptions(pieChartSeries)
+  const pieChartOptions = getPieChartOptions(pieChartSeries);
+
+  const disbaleFilterButtons = (filter: string) => {
+    if (filter === '') {
+      setCat(false);
+      setRating(false);
+      setSeverity(false);
+      setKey(false);
+    } else if (filter === 'key') {
+      setCat(true);
+      setRating(true);
+      setSeverity(true);
+      setKey(false);
+    } else if (filter === 'category') {
+      setCat(false);
+      setRating(true);
+      setSeverity(true);
+      setKey(true);
+    } else if (filter === 'severity') {
+      setCat(true);
+      setRating(true);
+      setSeverity(false);
+      setKey(true);
+    } else if (filter === 'rating') {
+      setCat(true);
+      setRating(false);
+      setSeverity(true);
+      setKey(true);
+    }
+  }
+
+  useEffect(() => {
+    disbaleFilterButtons(currentDisable);
+  }, [currentDisable])
 
   useEffect(() => {
     const rateMap: IRatingMapping = {};
@@ -149,6 +187,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     }
     console.log(focusRating)
     if(focusRating.length === 0) {
+      setCurrentDisable('');
       setData(rawData);
       return;
     }
@@ -165,6 +204,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     }
     console.log(focusSeverity)
     if(focusSeverity.length <= 0) {
+      setCurrentDisable('');
       setData(rawData);
       return;
     }
@@ -181,6 +221,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     }
     console.log(focusCategory)
     if(focusCategory.length <= 0) {
+      setCurrentDisable('');
       setData(rawData);
       return;
     }
@@ -286,6 +327,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
       setBackdropOpen(false);
     }
     if(rawData.length > 0 && selectedProdId) {
+      setNoDataError(false);
         if(Object.keys(feedbackBarChartData).length > 0) {
           setBackdropOpen(false);
         }
@@ -459,7 +501,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
 
           </div>
           {searchInitiated ? <div>
-            <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'}
+            <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
@@ -481,7 +523,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
                 </Grid>
               </Grid>
             </div>
-            <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'}
+            <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}

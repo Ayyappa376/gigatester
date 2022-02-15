@@ -10,6 +10,7 @@ import ProductFilter, { VersionFilter } from './ProductFilter';
 import { Http } from '../../../utils';
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
+  const classes = useStyles();
   const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
   const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
@@ -40,6 +41,12 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     productVersion: productVersion,
     selectedProduct: selectedProdId,
   }
+
+  useEffect(() => {
+    productInfoProp.selectedProdId = selectedProdId;
+    productInfoProp.productVersion = productVersion;
+    productInfoProp.selectedProduct = selectedProdId;
+  }, [selectedProdId, productVersion])
 
 
   const getProductDetails = () => {
@@ -162,7 +169,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
   return (
     <Container>
       <Paper>
-        <Grid container>
+        <Grid className={classes.selectors} container>
           <Grid item xl={4} style={{ position: 'relative' }}>
             <div >
               <ProductFilter selectedProdId={selectedProdId}
@@ -207,5 +214,13 @@ const useStyles = makeStyles({
   },
   tab: {
     border: '1px solid gray',
+  },
+  selectors: {
+    padding: '10px',
+    marginBottom: '10px',
+    marginTop: '20px',
+    width: '100%',
+    backgroundColor: '#E9E9E9',
+    color: 'black',
   }
 })

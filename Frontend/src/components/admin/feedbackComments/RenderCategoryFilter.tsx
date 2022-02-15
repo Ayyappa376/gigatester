@@ -8,26 +8,30 @@ interface IProps {
     focusCategory: string[];
     disableButtons: boolean;
     categoryList: string[];
-    type: string,
+    type: string;
+    category: boolean;
+    setDisable: Function;
 }
 
 const categoryList = [
     "Audio", "Video", "Screen", "Images", "Other"
 ]
 const RenderCategoryFilter = (props: IProps) => {
-    const { focusCategory, setFocusCategory, categoryList, type } = props;
+    const { focusCategory, setFocusCategory, categoryList, type, category, setDisable } = props;
 
     const handleKeywordClick = (val: string) => {
         if (props.disableButtons) {
             return;
         }
         if (focusCategory.indexOf(val) > -1) {
+            setDisable('category')
             setFocusCategory((prevValue: string[]) => {
                 const prevValCopy = [...prevValue]
                 prevValCopy.splice(prevValue.indexOf(val), 1);
                 return prevValCopy;
             });
         } else {
+            setDisable('category');
             setFocusCategory((prevVal: string[]) => {
                 return [...prevVal, val]
             });
@@ -43,7 +47,7 @@ const RenderCategoryFilter = (props: IProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {categoryList.map((val) =>
-                    <Button variant='outlined' key={val} disabled={props.disableButtons}
+                    <Button variant='outlined' key={val} disabled={category}
                         onClick={() => { handleKeywordClick(val) }} id={focusCategory.indexOf(val) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{val}</Button>
                 )}
             </div>
