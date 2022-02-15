@@ -3,7 +3,6 @@
 import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { String } from 'aws-sdk/clients/batch';
 import { queryRaw, scan } from './sdk';
 
 export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
@@ -249,7 +248,7 @@ export const bugProcessBarChartData = (items: AppFeedback[]) => {
     return severityData;
 };
 
-export const getCategoriesList = ({prodId, prodVersion, chartType}: {prodId: string; prodVersion: string, chartType: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
+export const getCategoriesList = ({prodId, prodVersion, chartType}: {chartType: string; prodId: string; prodVersion: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
     const categoryList: string[] = [];
     const productInfo = await getProductDetails(prodId, prodVersion);
     if (chartType === 'FEEDBACK') {
@@ -268,7 +267,7 @@ export const getCategoriesList = ({prodId, prodVersion, chartType}: {prodId: str
     return resolve(categoryList);
   });
 
-export const processPieChartData = async({data, prodId, prodVersion, chartType}: {data: AppFeedback[]; prodId?: string; prodVersion?: string, chartType: String}) => {
+export const processPieChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
   if(prodId && prodVersion) {
     const categories: string[] = await getCategoriesList({prodId, prodVersion, chartType});
     const categoryData: ProcessedData = {};
@@ -287,7 +286,7 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
   return {};
 };
 
-const processFeedbackChartData = async({data, prodId, prodVersion, chartType}: {data: AppFeedback[]; prodId?: string; prodVersion?: string, chartType: string})  => {
+const processFeedbackChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string})  => {
   const barChartData = feedbackProcessBarChartData(data);
   const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
   return {
@@ -295,7 +294,7 @@ const processFeedbackChartData = async({data, prodId, prodVersion, chartType}: {
   };
 };
 
-const processBugReportChartData = async({data, prodId, prodVersion, chartType}: {data: AppFeedback[]; prodId?: string; prodVersion?: string, chartType: string}) => {
+const processBugReportChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
   const barChartData = bugProcessBarChartData(data);
   const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
   return {
