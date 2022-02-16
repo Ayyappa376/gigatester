@@ -50,6 +50,7 @@ try {
             productRating: jsonBody.productRating,
             productVersion: jsonBody.productVersion,
             sourceIP: event.requestContext.identity.sourceIp,
+            userDetails: jsonBody.userDetails,
             userId: jsonBody.userName,
           },
           TableName: getTableNameFor('GT_feedback')

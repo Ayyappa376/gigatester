@@ -11,15 +11,22 @@ const AudioPlayer = (props: any) => {
   });
 
   useEffect(() => {
-    getSignedUrl(url, stateVariable).then((fetchSignedUrl: any) => {
-      setSignedUrl(fetchSignedUrl);
-    });
-  }, [])
+    let unmount = false;
+
+    if (!unmount && url) {
+      getSignedUrl(url, stateVariable).then((fetchSignedUrl: any) => {
+        setSignedUrl(fetchSignedUrl);
+      });
+    }
+    return (() => {
+      unmount = true;
+    })
+  }, [url])
 
   return (
     <div>
       {signedUrl !== '' ?
-        <audio src={signedUrl} controls preload='auto'/> : 
+        <audio src={signedUrl} controls preload='auto'/> :
         <audio src={''}  />
       }
     </div>

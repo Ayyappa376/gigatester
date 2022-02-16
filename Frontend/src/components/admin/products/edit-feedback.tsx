@@ -38,11 +38,9 @@ window.GigaTester = window.GigaTester || {};
 GigaTester.apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';
 GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';
 GigaTester.endpoint = \'${hostUrl}\';
-GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION ); //Remove this line if not used
-GigaTester.appUserDetails( YOUR_USER_DETAILS_CALLBACK_FUNCTION ); //Remove this line if not used
 (function(d) {
     var s = d.createElement(\'script\'); s.async = true;
-    s.src = \'https://s3.amazonaws.com/dist.gigatester.io/feedback-agent/browser/gigatester_script.js\';
+    s.src = \'${window.location.origin}/dist/feedback-agent/browser/gigatester_script.js\';
     (d.head || d.body).appendChild(s);
 })(document);
 </script>

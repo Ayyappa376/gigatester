@@ -1,6 +1,6 @@
 import { Button, Typography } from '@material-ui/core';
 import { makeStyles } from '@material-ui/styles';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './stylesRenderFilters.css'
 
 interface IKeywordFilterProps {
@@ -17,11 +17,12 @@ const keywords = [
 
 export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
     const [keyword, setKeyword] = useState("");
+    const [show, setShow] = useState<boolean>(false);
 
     const handleKeywordClick = (val: string) => {
         if(keyword === val) {
             props.onClear();
-            setKeyword("")
+            setKeyword("");
         } else {
             props.onSubmit(val);
             props.setDisable('key');

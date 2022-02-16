@@ -20,7 +20,7 @@ import {
   Container,
   Grid,
 } from '@material-ui/core';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
+//import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
 import DashboardIcon from '@material-ui/icons/Dashboard';
 import MenuIcon from '@material-ui/icons/Menu';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
@@ -32,8 +32,8 @@ import AssessmentIcon from '@material-ui/icons/Assessment';
 import DeveloperModeIcon from '@material-ui/icons/DeveloperMode';
 import DevicesOtherIcon from '@material-ui/icons/DevicesOther';
 import PhonelinkIcon from '@material-ui/icons/Phonelink';
-import AssignmentIcon from '@material-ui/icons/Assignment';
-import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
+// import AssignmentIcon from '@material-ui/icons/Assignment';
+// import AssignmentOutlinedIcon from '@material-ui/icons/AssignmentOutlined';
 import BallotIcon from '@material-ui/icons/Ballot';
 import BallotOutlinedIcon from '@material-ui/icons/BallotOutlined';
 import FeedbackIcon from '@material-ui/icons/Feedback';
@@ -69,7 +69,7 @@ import CreateQuestion, {
 } from '../../components/admin/create-question';
 import ManageQuestion from '../../components/admin/manage-question';
 import EditQuestion from '../../components/admin/manage-question/edit-question';
-import AdminFeedback from '../../components/admin/feedback';
+//import AdminFeedback from '../../components/admin/feedback';
 import ManageSettings from '../../components/admin/manage-settings';
 import EditSettingsObjectConfig from '../../components/admin/manage-settings/configure-objects';
 import EditSettingsGeneralConfig from '../../components/admin/manage-settings/configure-general';
@@ -77,8 +77,6 @@ import EditSettingsCollectorConfig from '../../components/admin/manage-settings/
 import { Text } from '../../common/Language';
 import './style.css';
 import FeedbackComments from "../../components/admin/feedbackComments";
-import AssignmentLateIcon from '@material-ui/icons/AssignmentLate';
-import { Settings } from 'http2';
 
 
 export const ADMIN_HOME = 'admin-home';
@@ -106,7 +104,7 @@ export const EDIT_QUESTIONNAIRE = 'edit-assessment';
 export const CREATE_QUESTION = 'create-question';
 export const MANAGE_QUESTION = 'manageQuestions';
 export const EDIT_QUESTION = 'edit-question';
-export const FEEDBACK = 'feedback';
+//export const FEEDBACK = 'feedback';
 export const MANAGE_SETTINGS = 'manage-settings';
 export const EDIT_SETTINGS_USER_CONFIG = 'UserConfig';
 export const EDIT_SETTINGS_TEAM_CONFIG = 'TeamConfig';
@@ -427,10 +425,10 @@ export default function Admin() {
     setTitle('editTestCases');
   };
 
-  const handleFeedbackClick = () => {
-    setButtonValue(FEEDBACK);
-    setTitle('feedback');
-  };
+  // const handleFeedbackClick = () => {
+  //   setButtonValue(FEEDBACK);
+  //   setTitle('feedback');
+  // };
 
   const handleManageSettings = () => {
     setButtonValue(MANAGE_SETTINGS);
@@ -636,8 +634,8 @@ export default function Admin() {
         return (
           <EditQuestion question={focusQuestionData} goBack={switchPage} />
         );
-      case FEEDBACK:
-        return <AdminFeedback goBack={switchToAdminHome} />;
+//      case FEEDBACK:
+//        return <AdminFeedback goBack={switchToAdminHome} />;
       case FEEDBACK_COMMENTS:
         return <FeedbackComments
           productId={focusProductId}
@@ -973,7 +971,7 @@ export default function Admin() {
               arrow={true}
             >
               <ListItemIcon className={classes.iconWidth}>
-                <AssignmentLateIcon />
+                <FeedbackIcon />
               </ListItemIcon>
             </Tooltip>
             <ListItemText primary={<Text tid="viewFeedback" />} />

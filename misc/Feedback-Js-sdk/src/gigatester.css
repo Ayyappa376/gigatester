@@ -19,11 +19,12 @@ gtspan {
   pointer-events: none !important;
 }
 #gigatester_image_overlay{
+  background: none;
   position: fixed;
   top: 0;
   z-index: 214567;
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
 }
 #gigatester-image-overlay .gigatester-image-overlay-hide{
     display: none;
@@ -2039,7 +2040,7 @@ justify-content: center;
       /* height: calc(100vh - 230px); */
       color: rgb(50, 50, 50);
   }
-    
+
 #gigatester_button_container .gigatester-controls .gigatester-disclaimer {
   width: auto;
   height: auto;
