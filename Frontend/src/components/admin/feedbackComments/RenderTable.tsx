@@ -163,10 +163,10 @@ const RenderTable = (props: IProps) => {
   const handleOnSearch = (search: any) => { props.setKeyword(search); props.setSearchInitiated(true) };
 
   return (
-    <Container style={{ marginTop: '5rem' }}>
+    <Container style={{marginTop: '5rem'}}>
       <Paper className={classes.filters}>
-        {disable.length > 0 ? <Alert className={classes.info} severity="info">
-          Deselect button to reactivate filters
+      {disable.length > 0 ? <Alert className={classes.info} severity="info">
+        Deselect button to reactivate filters
         </Alert> : <Alert className={classes.info} severity="info">
           Please only select one filter at a time. Other options will disabled automatically when selecting
         </Alert>}
@@ -174,118 +174,213 @@ const RenderTable = (props: IProps) => {
           <Grid container>
             <Grid item md={5}>
               {
-                <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => { props.setKeyword(val) }} onClear={() => { props.clearSearch() }} />
+                <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
               }
             </Grid>
-            <Grid item lg={1}><Divider orientation="vertical" variant="middle" /></Grid>
+            <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
             <Grid item md={6}>
               {
                 <div>
-                  <RenderSeverityFilter severity={severity} setDisable={setDisable} focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} />
-                  <Divider style={{ marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)' }} />
-                  <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList} />
+                <RenderSeverityFilter severity={severity} setDisable={setDisable} focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
+                <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
+                <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
                 </div>
               }
             </Grid>
           </Grid> : <Grid container>
-            <Grid item md={6}>
-              {
-                <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => { props.setKeyword(val) }} onClear={() => { props.clearSearch() }} />
-              }
-            </Grid>
-            <Grid item lg={1}><Divider orientation="vertical" variant="middle" /></Grid>
-            <Grid item md={5}>
-              {
-                <div>
-                  <RenderRatingFilter rating={rating} setDisable={setDisable} focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} />
-                  <Divider style={{ marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)' }} />
-                  <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList} />
-                </div>
-              }
-            </Grid>
+              <Grid item md={6}>
+                {
+                  <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
+                }
+              </Grid>
+              <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
+              <Grid item md={5}>
+                {
+                    <div>
+                      <RenderRatingFilter rating={rating}  setDisable={setDisable} focusRating={props.focusRating} setFocusRating={props.setFocusRating} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
+                      <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
+                      <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                    </div>
+                }
+              </Grid>
           </Grid>
         }
-      </Paper>
+        </Paper>
       <div className={classes.paper}>
-        <Toolbar
-          className={classes.root}
-        >
-          <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
-            {`${type}`}
-          </Typography>
-          <SearchField style={{ marginTop: 10, marginLeft: 'auto' }} key="SearchFieldEl"
-            default={props.keyword}
-            searchInitiated={props.searchInitiated}
-            onSearch={handleOnSearch}
-            clearSearch={props.clearSearch} />
-        </Toolbar>
-        <TableContainer>
-          <Table
-            className={classes.table}
-            aria-labelledby="tableTitle"
-            size={'medium'}
-            aria-label="enhanced table"
-          >
-            <EnhancedTableHead
-              classes={classes}
-              order={props.order}
-              onRequestSort={(property: string) => { props.handleRequestSort() }}
-              rowCount={tableData.length}
-              // isBugReport={isBugReport}
-              searchInitiated={props.searchInitiated}
-            />
-            {tableData.length > 0 ? <div>
-              <TableBody>
-                {tableData.map((row: IAppFeedback, index: number) => {
-                  const labelId = `enhanced-table-checkbox-${index}`;
+      <Toolbar
+        className={classes.root}
+      >
+        <Typography className={classes.title} variant="h6" id="tableTitle" component="div">
+          {`${type}`}
+        </Typography>
+          <SearchField style={{marginTop: 10, marginLeft: 'auto'}} key="SearchFieldEl"
+                default={props.keyword}
+                searchInitiated ={props.searchInitiated}
+                onSearch={handleOnSearch}
+                clearSearch={props.clearSearch}/>
+      </Toolbar>
+      <TableContainer>
+      <Table
+        className={classes.table}
+        aria-labelledby="tableTitle"
+        size={'medium'}
+        aria-label="enhanced table"
+      >
+        <EnhancedTableHead
+          classes={classes}
+          order={props.order}
+          onRequestSort={(property: string) => { props.handleRequestSort()}}
+          rowCount={tableData.length}
+          // isBugReport={isBugReport}
+          searchInitiated={props.searchInitiated}
+        />{tableData.length > 0 ?
+        <TableBody>
+          {props.tableData.map(
+            (row: IAppFeedback, index: number) => {
 
-                  let sourceDetails = '-';
-                  let osInfo = '-'
+              const labelId = `enhanced-table-checkbox-${index}`;
 
-                  if (row.userId) sourceDetails = row.userId;
+              let sourceDetails = '-';
+              let osInfo = '-';
 
-                  let platformInfo;
-                  if (row.platformName) {
-                    if (row.platformVersion) {
-                      platformInfo = `(${row.platformName} - ${row.platformVersion})`
-                    } else {
-                      platformInfo = row.platformName;
-                    }
-                  }
+              if(row.userId) sourceDetails = row.userId;
 
-                  if (row.platformOs) osInfo = osInfo === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
+              if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
 
-                  return (
-                    <TableRow
-                      innerRef={index === tableData.length - 1 ? ref : null}
-                      hover role="checkbox" tabIndex={-1}
-                      key={row.id}
-                    >
-                      <TableCell style={{ fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word' }}>
+              let platformInfo;
+              if(row.platformName) {
+                if(row.platformVersion) {
+                  platformInfo = `(${row.platformName} - ${row.platformVersion})`
+                } else {
+                  platformInfo = row.platformName;
+                }
+                sourceDetails = sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
+              }
+
+              if(row.platformOs) osInfo = osInfo  === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
+
+              return (
+                <TableRow
+                  innerRef={index === tableData.length - 1 ? ref : null}
+                  hover role="checkbox" tabIndex={-1}
+                  key={row.id}
+                >
+                  <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
                         <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} platformName={row.platformName} platformVersion={osInfo} />
-                      </TableCell>
-                      <TableCell align='center' style={{ fontSize: '1rem', minWidth: '12rem' }}>
+                  </TableCell>
+                  <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
                         {row.createdOn ? getDateTime(row.createdOn) : '-'}
-                      </TableCell>
-                      {isBugReport ?
-                        <TableCell align='center' style={{ fontSize: '1rem' }}>
-                          {row.bugPriority}
-                        </TableCell> :
-                        <TableCell align='center' style={{ minWidth: '150px', fontSize: '1rem' }}>
-                          <RenderStars rating={row.productRating} />
-                        </TableCell>
+                  </TableCell>
+                  {
+                    isBugReport ?
+                    <TableCell  align='center' style={{fontSize: '1rem'}}>
+                        {row.bugPriority}
+                    </TableCell> :
+                    <TableCell  align='center' style={{minWidth: '150px', fontSize: '1rem'}}>
+                      <RenderStars rating={row.productRating}/>
+                    </TableCell>
+                  }
+                    <TableCell  align='center' style={{fontSize: '1rem'}}>
+                        {row.feedbackCategory ? row.feedbackCategory : '-'}
+                    </TableCell>
+                  <TableCell align='left' style={{maxWidth: '30vw', fontSize: '1rem'}}>
+                    <div style={{overflow: 'auto', maxHeight: '20vh'}}>
+                        <RenderComments category={row.feedbackCategory} isBugReport={isBugReport} comments={(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)} old={true}/>
+                    </div>
+                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+
+                    <div key="image-attachment">
+                      {
+                        row.feedbackMedia? row.feedbackMedia.image ? <Link
+                        component="button"
+                        variant="body2"
+                        style={{fontSize: 11}}
+                        onClick={() => {
+                          props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
+                        }}
+                      >
+                        {
+                          signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] && signedUrlMapping[row.feedbackMedia.image].signedUrl ?
+                            <img src={signedUrlMapping[row.feedbackMedia.image].signedUrl} style={{width: 150, marginTop: 20}}></img> : <div/>
                         }
-                    </TableRow>
-                  )
-                })}
-              </TableBody>
-            </div> : <div>
-            </div>}
-          </Table>
-        </TableContainer>
-      </div>
+                      </Link> : <div/> : <div/>
+                      }
+                    </div>
+                    <div key="video-attachment">
+                      {
+                        row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
+                        <div style={{maxWidth: 700}}>
+                        <video width="50%" controls style={row.feedbackMedia.image ?
+                                      {
+                                        display: 'flex',
+                                        marginTop: 20,
+                                        marginLeft: 20
+                                      } : {
+                                        display: 'block',
+                                        marginTop: 20,
+                                        marginLeft: 'auto',
+                                        marginRight: 'auto',
+                                      }}>
+                          <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ?
+                            signedUrlMapping[row.feedbackMedia.video].signedUrl : '' : ''} type="video/mp4" />
+                        </video>
+                        </div>
+                        : <div style={{maxWidth: 700}}>
+                        <video width="50%" controls style={row.feedbackMedia.image ?
+                                      {
+                                        display: 'flex',
+                                        marginTop: 20,
+                                        marginLeft: 20
+                                      } : {
+                                        display: 'block',
+                                        marginTop: 20,
+                                        marginLeft: 'auto',
+                                        marginRight: 'auto',
+                                      }}>
+                        </video>
+                        </div> : <div/> : <div/>
+                      }
+                    </div>
+                    </div>
+                    <div key="audio-attachment">
+                      {
+                        row.feedbackMedia? row.feedbackMedia.audio ? <AudioPlayer url={row.feedbackMedia.audio}/> : <div/> : <div/>
+                      }
+                    </div>
+                    <div key="file-attachment">
+                      {
+                        row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
+                          <a href={signedUrlMapping[row.feedbackMedia.file].signedUrl} download>
+                            <Link
+                              component="button"
+                              variant="body2"
+                              style={{fontSize: 11}}
+                              >Download attachment</Link>
+                          </a>
+                         : <div/> : <div/> : <div/>
+                      }
+                    </div>
+                  </TableCell>
+                </TableRow>
+              );
+            }
+          )}
+        </TableBody>
+        : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}>
+            {
+              props.resultsFetched ? <div style={{marginLeft: "62%", transform: 'translateX: "-50%'}}>{`There are no ${isBugReport? 'bugs' : 'feedbacks'} to show.`}</div> :
+              <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"
+              width="30"
+              color='black'
+              ariaLabel='loading'/>
+            }
+            </div>
+      }
+        </Table>
+      </TableContainer>
+    </div>
     </Container>
-  )
+)
 }
 
 
