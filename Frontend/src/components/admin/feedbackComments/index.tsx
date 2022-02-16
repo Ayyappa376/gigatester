@@ -93,8 +93,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
   const pieChartOptions = getPieChartOptions(pieChartSeries)
 
   const disbaleFilterButtons = (filter: string) => {
-    if (filter) {
-      console.log('filter', filter);
       if (filter === '') {
         setCat(false);
         setRating(false);
@@ -121,7 +119,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
         setSeverity(true);
         setKey(true);
       }
-    }
   }
 
   useEffect(() => {
@@ -206,8 +203,8 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     }
     console.log(focusRating)
     if (focusRating.length === 0) {
-      setData(rawData);
       setCurrentDisable('');
+      setData(rawData);
       return;
     }
     // fetch the results from backend
@@ -356,18 +353,19 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
   }, [isBugReport])
 
   useEffect(() => {
-    console.log("In the primary: ", { rawData })
+    // console.log("In the primary: ", { rawData })
     if (error || noDataError) {
       setBackdropOpen(false);
-    }
-    if (rawData.length > 0 && selectedProdId) {
-      if (isBugReport) {
-        //if(Object.keys(pieChartSeries).length > 0) {
-        setBackdropOpen(false);
-        //}
-      } else {
-        if (Object.keys(feedbackBarChartData).length > 0) {
+    } else {
+      if (rawData.length > 0 && selectedProdId) {
+        if (isBugReport) {
+          //if(Object.keys(pieChartSeries).length > 0) {
           setBackdropOpen(false);
+          //}
+        } else {
+          if (Object.keys(feedbackBarChartData).length > 0) {
+            setBackdropOpen(false);
+          }
         }
       }
     }

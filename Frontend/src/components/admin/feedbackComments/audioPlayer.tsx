@@ -11,11 +11,16 @@ const AudioPlayer = (props: any) => {
   });
 
   useEffect(() => {
-    if (url) {
+    let unmount = false;
+
+    if (!unmount && url) {
       getSignedUrl(url, stateVariable).then((fetchSignedUrl: any) => {
         setSignedUrl(fetchSignedUrl);
       });
     }
+    return (() => {
+      unmount = true;
+    })
   }, [url])
 
   return (

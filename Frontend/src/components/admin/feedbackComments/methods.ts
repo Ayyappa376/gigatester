@@ -24,10 +24,14 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
   }
 
 export const getFeedbackData = ({isBugReport, urlAppend}: any) => {
+  const customHeaders = {
+    "Access-Control-Allow-Origin": "*"
+  }
     return new Promise((resolve, reject) => {
       let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`+ urlAppend;
       Http.get({
         url,
+        customHeaders,
       }).then((response: any) => {
         return resolve(response);
       })

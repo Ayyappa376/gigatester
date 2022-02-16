@@ -88,7 +88,14 @@ const RenderTable = (props: IProps) => {
   }, [tableData])
 
   useEffect(() => {
-    initiateFetchAllUrls();
+    let unmount = false;
+
+    if (unmount) {
+      initiateFetchAllUrls();
+    }
+    return () => {
+      unmount = true;
+    }
   }, [])
 
   const updateSignedUrlData = useActions(updateSignedUrls);
@@ -141,9 +148,11 @@ const RenderTable = (props: IProps) => {
   return (
     <Container style={{ marginTop: '5rem' }}>
       <Paper style={{ padding: '2rem' }}>
-        {props.currentDisable && props.currentDisable.length > 0 ?  <Alert className={classes.info} severity="info">
-        Please only select one filter at a time. Options will be disabled automatically when selecting
-      </Alert> : null}
+        {props.currentDisable.length > 0 ? <Alert className={classes.info} severity="info">
+          Deselect button to reactivate filters
+        </Alert> : <Alert className={classes.info} severity="info">
+          Please only select one filter at a time. Other options will disabled automatically when selecting
+        </Alert>}
         {isBugReport ?
           <Grid container>
             <Grid item md={5}>
@@ -415,8 +424,16 @@ export const useStyles = makeStyles((theme) => ({
     flex: '1 1 100%',
   },
   info: {
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
     width: '85%',
-    height: 'auto',
+    height: '25px',
+    fontSize: '15px',
+    padding: '0',
+    marginBottom: '10px',
+    borderRadius: '10px',
   }
 }));
 
