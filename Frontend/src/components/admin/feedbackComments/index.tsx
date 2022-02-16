@@ -1,7 +1,7 @@
 import { Box, Tabs, Tab, Container, Grid, makeStyles, Divider, Paper } from '@material-ui/core';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { IFeedbackComments, IProductNameIdMapping, ILimitedProductDetails, IAppFeedback, IFeedbackBarChartData, ILastEvalKey, ProductInfo } from './common';
+import { IFeedbackComments, IProductNameIdMapping, ILimitedProductDetails, IAppFeedback, IFeedbackBarChartData, ILastEvalKey } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import RenderTable, { Order } from './RenderTable';
 import FeedbackTab from './FeedbackTab';
@@ -57,7 +57,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       if (response && response.products && Array.isArray(response.products) && response.products.length > 0) {
         const productInfoCopy = [...productInfo]
         const prodNameIdMappingCopy: any = { ...prodNameIdMapping };
-        response.products.forEach((el: ProductInfo) => {
+        response.products.forEach((el: any) => {
           const prodInfo = { id: "", name: "" };
           prodInfo.id = el.id;
           prodInfo.name = el.name;

@@ -112,6 +112,8 @@ const RenderTable = (props: IProps) => {
       (state: IRootState) => state.admin.signedUrls
     );
 
+    console.log('signeduplmapping', signedUrlMapping);
+
     const fetchSignedUrls = (urls: string[]) => {
       if(urls.length === 0) {
         return;
@@ -339,7 +341,7 @@ const RenderTable = (props: IProps) => {
                           }
                         </div>
                         <div key="file-attachment">
-                          {/* {
+                          {
                             row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
                               <a href={signedUrlMapping[row.feedbackMedia.file].signedUrl} download>
                                 <Link
@@ -349,7 +351,7 @@ const RenderTable = (props: IProps) => {
                                   >Download attachment</Link>
                               </a>
                              : <div/> : <div/> : <div/>
-                          } */}
+                          }
                         </div>
                       </TableCell>
                     </TableRow>
