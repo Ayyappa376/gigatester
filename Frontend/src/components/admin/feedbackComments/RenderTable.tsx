@@ -105,14 +105,7 @@ const RenderTable = (props: IProps) => {
   }, [tableData])
 
   useEffect(() => {
-    let unmount = false;
-
-    if (unmount) {
-      initiateFetchAllUrls();
-    }
-    return () => {
-      unmount = true;
-    }
+    initiateFetchAllUrls();
   }, [])
 
   const updateSignedUrlData = useActions(updateSignedUrls);
@@ -219,7 +212,7 @@ const RenderTable = (props: IProps) => {
                 onSearch={handleOnSearch}
                 clearSearch={props.clearSearch}/>
       </Toolbar>
-      <TableContainer>
+      <TableContainer className={classes.tableCont} >
       <Table
         className={classes.table}
         aria-labelledby="tableTitle"
@@ -237,7 +230,6 @@ const RenderTable = (props: IProps) => {
         <TableBody>
           {props.tableData.map(
             (row: IAppFeedback, index: number) => {
-
               const labelId = `enhanced-table-checkbox-${index}`;
 
               let sourceDetails = '-';
@@ -431,6 +423,7 @@ export const useStyles = makeStyles((theme) => ({
   },
   table: {
     minWidth: 750,
+    width: 'auto',
   },
   root: {
     paddingLeft: theme.spacing(2),
@@ -460,6 +453,10 @@ export const useStyles = makeStyles((theme) => ({
     padding: '0',
     marginBottom: '10px',
     borderRadius: '10px',
+  },
+  tableCont: {
+    width: '100%',
+    overflow: 'auto',
   }
 }));
 

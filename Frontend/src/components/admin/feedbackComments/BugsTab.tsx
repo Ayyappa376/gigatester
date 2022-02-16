@@ -322,7 +322,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   }
 
   useEffect(() => {
-    console.log("In the primary: ",{rawData})
     if(error || noDataError) {
       setBackdropOpen(false);
     }

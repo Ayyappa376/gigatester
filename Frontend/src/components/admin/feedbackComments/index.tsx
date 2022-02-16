@@ -53,7 +53,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     Http.get({
       url: `/api/v2/products`,
     }).then((response: any) => {
-      console.log(response);
       if (response && response.products && Array.isArray(response.products) && response.products.length > 0) {
         const productInfoCopy = [...productInfo]
         const prodNameIdMappingCopy: any = { ...prodNameIdMapping };
@@ -149,7 +148,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     }
 
     return (
-      <Box sx={{ width: '95%' }}>
+      <Box sx={{ width: '97%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} className={classes.tabs} onChange={handleChange} aria-label="view-feedback-tabs">
             <Tab  label="Feedback" {...a11yProps(0)} />
@@ -170,7 +169,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     <Container>
       <Paper>
         <Grid className={classes.selectors} container>
-          <Grid item xl={4} style={{ position: 'relative' }}>
+          <Grid item xl={2} style={{ position: 'relative' }}>
             <div >
               <ProductFilter selectedProdId={selectedProdId}
                 setSelectedProdId={setProduct}
