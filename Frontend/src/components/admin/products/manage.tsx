@@ -92,15 +92,12 @@ const ManageProducts = (props: any) => {
   const [allProducts, setAllProducts] = React.useState<IProductInfo[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-//  const [deleteProductId, setDeleteProductId] = useState('');
-//  const [deleteProductVersion, setDeleteProductVersion] = useState('');
   const [searchString, setSearchString] = useState('');
   const [products, setProducts] = useState<IProductInfo[]>([]);
   const [searchButtonPressed, setSearchButtonPressed] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [currentPage, setCurrentPage] = useState(1);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const [feedbackDialogOpen, setFeedbackDialogOpen] = useState(false);
   const [selectedProd, setSelectedProd] = useState<IProductInfo | undefined>(undefined);
   const [userParamState, setUserParamState] = React.useState<any>('');
   const [softwareOption, setSoftwareOption] = useState(false);
@@ -244,9 +241,7 @@ const ManageProducts = (props: any) => {
     setCurrentPage(event);
   };
 
-  const deleteClicked = (row: IProductInfo/* productId: string, version: string*/) => {
-//    setDeleteProductId(productId);
-//    setDeleteProductVersion(version);
+  const deleteClicked = (row: IProductInfo) => {
     setSelectedProd(row);
     setOpenModal(true);
   };
@@ -255,7 +250,7 @@ const ManageProducts = (props: any) => {
     setOpenModal(false);
   };
 
-  const deleteProduct = (prod: IProductInfo/* productId: string, version: string */) => {
+  const deleteProduct = (prod: IProductInfo) => {
     setBackdropOpen(true);
     Http.deleteReq({
       url: `/api/v2/products/${prod.id}/${prod.version}`,
@@ -263,8 +258,6 @@ const ManageProducts = (props: any) => {
     })
       .then((response: any) => {
         setBackdropOpen(false);
-//        setDeleteProductId('');
-//        setDeleteProductVersion('');
         setSelectedProd(undefined);
         fetchProductList();
       })
@@ -287,8 +280,6 @@ const ManageProducts = (props: any) => {
   const modalYesClicked = () => {
     if(selectedProd) {
       deleteProduct(selectedProd);
-//    if (deleteProductId !== '') {
-//      deleteProduct(deleteProductId, deleteProductVersion);
       setOpenModal(false);
     }
   };
@@ -321,19 +312,28 @@ const ManageProducts = (props: any) => {
           url: `/api/v2/software/delete/${row.software}`,
           state: stateVariable,
         })
-          .then((response: any) => {
-            setFailureMessage(<Text tid='File Deleted Successfully' />);
+        .then((response: any) => {
+          setFailureMessage(<Text tid='File Deleted Successfully' />);
+          setFailure(true);
+          if (row.software) {
+            /* tslint:disable-next-line */
+            row.software = '';
+            row.softwareType = '';
+            handleSave(row);
+          }
+        })
+        .catch((error: any) => {
+          const perror = JSON.stringify(error);
+          const object = JSON.parse(perror);
+          if (object.code === 400) {
+            setFailureMessage(object.apiError.msg);
+          } else if (object.code === 401) {
+            props.history.push('/relogin');
+          } else {
+            setFailureMessage(<Text tid='somethingWentWrong' />);
             setFailure(true);
-            if (row.software) {
-              /* tslint:disable-next-line */
-              row.software = '';
-              row.softwareType = '';
-              handleSave(row);
-            }
-          })
-          .catch((error: any) => {
-            console.log(error);
-          });
+          }
+        });
       }
     }
   };
@@ -349,29 +349,27 @@ const ManageProducts = (props: any) => {
           },
           state: stateVariable,
         })
-          .then((response: any) => {
-            setSearchString('');
-            setSearchButtonPressed(true);
-            // setDialogOpen(false);
-            // setProductPosted(true);
-          })
-          .catch((error: any) => {
-            // handleSaveError(error);
-          });
-      } else {
-        Http.post({
-          url: `/api/v2/products`,
-          body: {
-            ...postData,
-          },
-          state: stateVariable,
+        .then((response: any) => {
+          setSearchString('');
+          setSearchButtonPressed(true);
         })
-          .then((response: any) => {
-            // setProductPosted(true);
-          })
-          .catch((error: any) => {
-            // handleSaveError(error);
-          });
+        .catch((error: any) => {
+          const perror = JSON.stringify(error);
+          const object = JSON.parse(perror);
+          if (object.code === 400) {
+            setFailureMessage(object.apiError.msg);
+          } else if (object.code === 401) {
+            props.history.push('/relogin');
+          } else {
+            setFailureMessage(<Text tid='somethingWentWrong' />);
+            setFailure(true);
+          }
+          setBackdropOpen(false);
+          fetchProductList();
+        });
+      } else {
+        setFailureMessage(<Text tid='Product details not available for saving.' />);
+        setFailure(true);
       }
     }
   };
@@ -442,69 +440,7 @@ const ManageProducts = (props: any) => {
         console.log(error);
       });
   };
-/*
-  const handleGeneralApiKeyButton = (row: IProductInfo, index: any) => {
-    if (row) {
-      let productId: string = row.id;
-      Http.post({
-        url: `/api/v2/productApiKey/`,
-        state: stateVariable,
-        body: {
-          productId,
-        },
-      })
-      .then((response: any) => {
-        if (row) {
-          row.apiKey = response.data.value;
-          row.apiKeyId = response.data.id;
-          handleSave(row);
-          closeDialog();
-          setNotify({
-            isOpen: false,
-            message: 'Uploading...',
-            type: 'info',
-          });
-        }
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-    }
-  };
 
-  const deleteApiKey = (row: IProductInfo, index: number) => {
-    if (row) {
-      setNotify({
-        isOpen: true,
-        message: 'Deleting... ',
-        type: 'info',
-      });
-
-      Http.deleteReq({
-        url: `/api/v2/productApiKey/${row.apiKeyId}`,
-        state: stateVariable,
-      })
-        .then((response: any) => {
-          setFailureMessage(<Text tid='Api Key Deleted Successfully' />);
-          setFailure(true);
-          if (row) {
-            row.apiKey = '';
-            row.apiKeyId = '';
-            handleSave(row);
-            closeDialog();
-            setNotify({
-              isOpen: false,
-              message: 'Deleting... ',
-              type: 'info',
-            });
-          }
-        })
-        .catch((error: any) => {
-          console.log(error);
-        });
-    }
-  };
-*/
   const handleChangedValue = (event: any) => {
     if (event.target.value) {
       setUserParamState(event.target.value);
@@ -635,225 +571,6 @@ const ManageProducts = (props: any) => {
     setSelectedProd(row);
   };
 
-  const handleChangeCategory = (event: any, catIndex: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex] && event.target.value) {
-      temp.categories[catIndex].name = event.target.value;
-      setSelectedProd(temp);
-    }
-  };
-
-  const deleteCategory = (catIndex: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories) {
-      temp.categories = temp.categories.splice(catIndex, 1);
-      setSelectedProd(temp);
-    }
-  };
-
-  const addCategory = () => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp) {
-      if (!temp.categories) {
-        temp.categories = [];
-      }
-      temp.categories.push({
-        name: '',
-        feedbacks: [],
-      });
-      setSelectedProd(temp);
-    }
-  };
-
-  const handleChangeFeedback = (event: any, catIndex: number, index: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex]) {
-      const tempCat = temp.categories[catIndex];
-      if(tempCat.feedbacks && tempCat.feedbacks[index] && event.target.value) {
-        tempCat.feedbacks[index] = event.target.value;
-        setSelectedProd(temp);
-      }
-    }
-  };
-
-  const deleteFeedback = (catIndex: number, index: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex]) {
-      const tempCat = temp.categories[catIndex];
-      if(tempCat.feedbacks) {
-        tempCat.feedbacks = tempCat.feedbacks.splice(index, 1);
-        setSelectedProd(temp);
-      }
-    }
-  };
-
-  const addFeedback = (catIndex: number) => {
-    const temp: IProductInfo | undefined = selectedProd;
-    if (temp && temp.categories && temp.categories[catIndex]) {
-      const tempCat = temp.categories[catIndex];
-      if (!tempCat.feedbacks) {
-        tempCat.feedbacks = [];
-      }
-      tempCat.feedbacks.push('');
-      setSelectedProd(temp);
-    }
-  };
-/*
-  const renderCategoryDetails = (category: ICategory, catIndex: number) => {
-    return (
-      <Fragment>
-        <Grid container spacing={1}>
-          <Grid item xs={11} sm={11}>
-            <TextField
-              id='category'
-              name='category'
-              label='Category Name'
-              fullWidth
-              onChange={(event) => handleChangeCategory(event, catIndex)}
-            />
-          </Grid>
-          <Grid item xs={1} sm={1}>
-            <div style={{ marginTop: "15px", cursor: "pointer" }}>
-              <AddIcon
-                fontSize="large"
-                onClick={() => {
-                  deleteCategory(catIndex);
-                }}
-              />
-            </div>
-          </Grid>
-          <Grid item xs={11}>
-            <Typography>Feedbacks:</Typography>
-          </Grid>
-          <Grid item xs={1}>
-            <div style={{ marginTop: "15px", cursor: "pointer" }}>
-              <AddIcon
-                fontSize="large"
-                onClick={() => {
-                  addFeedback(catIndex);
-                }}
-              />
-            </div>
-          </Grid>
-          { category.feedbacks &&
-            category.feedbacks.map((feedback: string, index: number) => {
-              return (
-                <Grid container spacing={1}>
-                  <Grid item xs={11} sm={11}></Grid>
-                  <Grid item xs={10} sm={10}>
-                  <TextField
-                    id='category'
-                    name='category'
-                    label='Category Name'
-                    fullWidth
-                    onChange={(event) => handleChangeFeedback(event, catIndex, index)}
-                  />
-                </Grid>
-                <Grid item xs={1} sm={1}>
-                  <div style={{ marginTop: "15px", cursor: "pointer" }}>
-                    <AddIcon
-                      fontSize="large"
-                      onClick={() => {
-                        deleteFeedback(catIndex, index);
-                      }}
-                    />
-                  </div>
-                </Grid>
-              </Grid>
-            );
-          })}
-        </Grid>
-      </Fragment>
-    );
-  };
-
-  const renderFeedbackDialog = () => {
-    return (
-      <React.Fragment>
-        <Dialog
-          className={classes.dialogPaper}
-          open={feedbackDialogOpen}
-          aria-labelledby='form-dialog-title'
-          onClose={closeFeedbackDialog}
-          fullWidth={true}
-        >
-          <DialogTitle
-            id='form-dialog-title'
-            style={{ textAlign: 'center', padding: '30px 0px' }}
-          >
-            <Typography style={{ fontSize: '14px' }}>
-              Configure Feedback Component
-            </Typography>
-            <IconButton aria-label="close" className={classes.closeButton} onClick={closeFeedbackDialog}>
-              <CloseIcon />
-            </IconButton>
-          </DialogTitle>
-          <DialogContent style={{ marginBottom: '20px' }}>
-            <CssBaseline />
-            <Grid container spacing={1}>
-              <Grid item xs={11}>
-              <Typography>Categories:</Typography>
-              </Grid>
-              <Grid item xs={1}>
-                <div style={{ marginTop: "15px", cursor: "pointer" }}>
-                  <AddIcon
-                    fontSize="large"
-                    onClick={() => {
-                      addCategory();
-                    }}
-                  />
-                </div>
-              </Grid>
-              { selectedProd && 
-                selectedProd.categories &&
-                selectedProd.categories.map((category: ICategory, index: number) => {
-                  return renderCategoryDetails(category, index);
-              })}
-              <Grid item xs={12} sm={12}>
-                <Button
-                  component='span'
-                  variant='outlined'
-                  disabled={softwareOption}
-                  className={classes.button}
-                  onClick={() => {
-                    storeCategoriesOfProd();
-                  }}
-                >
-                  Done
-                </Button>
-                <Button
-                  component='span'
-                  variant='outlined'
-                  className={classes.button}
-                  onClick={closeFeedbackDialog}
-                >
-                  Discard
-                </Button>
-              </Grid>
-            </Grid>
-          </DialogContent>
-        </Dialog>
-        <Notification notify={notify} setNotify={setNotify} />
-      </React.Fragment>
-    );
-  };
-
-  const handleFeedbackConfigure = (row: IProductInfo, index: number) => {
-    setFeedbackDialogOpen(true);
-    setSelectedProd(row);
-  }
-
-  const closeFeedbackDialog = () => {
-    setFeedbackDialogOpen(false);
-    setSelectedProd(undefined);
-  };
-
-  const storeCategoriesOfProd = () => {
-    //TODO: implement
-    setFeedbackDialogOpen(false);
-    setSelectedProd(undefined);
-  }
-*/
   const renderProductsTable = () => {
     return (
       <Fragment>
@@ -918,6 +635,11 @@ const ManageProducts = (props: any) => {
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
                       Feedback Component
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      External System
                     </Typography>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
@@ -1015,6 +737,16 @@ const ManageProducts = (props: any) => {
                       >
                         <button onClick={() => props.feedbackSettingsClicked(product.id, product.version)} >
                           <Typography>Configure and Get</Typography>
+                        </button>
+                      </TableCell>
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        align='center'
+                        className='tableCell'
+                      >
+                        <button onClick={() => props.extSystemSettingsClicked(product.id, product.version)} >
+                          <Typography>External System Settings</Typography>
                         </button>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
