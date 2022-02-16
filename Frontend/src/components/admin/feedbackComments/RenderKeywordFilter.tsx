@@ -17,11 +17,11 @@ const keywords = [
 
 export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
     const [keyword, setKeyword] = useState("");
-    const [show, setShow] = useState<boolean>(false);
 
     const handleKeywordClick = (val: string) => {
         if(keyword === val) {
             props.onClear();
+            props.setDisable('');
             setKeyword("");
         } else {
             props.onSubmit(val);

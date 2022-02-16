@@ -10,7 +10,7 @@ import ProductFilter, { VersionFilter } from './ProductFilter';
 import { getDate } from '../../../utils/data';
 import {
   ILimitedProductDetails,
-  IProductNameIdMapping, ProductInfo, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
+  IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
   IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments
 } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
