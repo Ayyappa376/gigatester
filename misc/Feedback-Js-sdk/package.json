@@ -1,0 +1,21 @@
+{
+    "name": "gigatester-js-sdk",
+    "version": "1.0.0",
+    "private": false,
+    "description": "Gigatester feedback modal for browser application",
+    "scripts": {
+      "build": "node ./src/ObfuscatorUtils.js"
+    },
+    "keywords": [
+      "gigatester"
+    ],
+    "files": [
+      "lib"
+    ],
+    "author": "Gigatester",
+    "license": "ISC",
+    "dependencies": {
+      "javascript-obfuscator": "^4.0.0"
+    }
+  }
+  

@@ -15,4 +15,4 @@ goto :doSync
 
 :doSync
 echo deploying to %copyDir%
-aws s3 sync src/ %copyDir%
+aws s3 sync build/ %copyDir%
