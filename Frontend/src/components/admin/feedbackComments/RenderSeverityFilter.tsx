@@ -7,7 +7,7 @@ interface IProps {
     setFocusSeverity: Function;
     focusSeverity: string[];
     disableButtons: boolean;
-    disable: any;
+    severity: boolean;
     setDisable: Function;
 }
 
@@ -15,8 +15,7 @@ const severityList = [
     "Critical", "High", "Medium", "Low"
 ]
 const RenderSeverityFilter = React.memo((props: IProps) => {
-    const {focusSeverity, setFocusSeverity, disable, setDisable} = props;
-    const [show, setShow] = useState<boolean>(false);
+    const {focusSeverity, setFocusSeverity, severity, setDisable} = props;
 
     const handleKeywordClick = (val: string) => {
         if(props.disableButtons) {
@@ -44,7 +43,7 @@ const RenderSeverityFilter = React.memo((props: IProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {severityList.map((el) => {
-                    return <Button variant='outlined' disabled={disable}
+                    return <Button variant='outlined' disabled={severity}
                     key={el} onClick={() => {handleKeywordClick(el)}} id={focusSeverity.indexOf(el) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
                 }
                 )}
