@@ -1,4 +1,4 @@
-@import "https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap";
+@import "https://fonts.googleapis.com/css2?family=Merriweather Sans:wght@300;400;500;600;700&display=swap";
 :root {
   --widget-button-bg: #2787f0;
   --widget-button-text: #ffffff;
@@ -42,7 +42,7 @@ gtspan {
   word-spacing: normal;
   text-decoration: none;
   text-align: center;
-  background-color: #2878f0 !important;
+  background-color: #042e5b !important;
   color: #fff !important;
   background-color: var(--widget-button-bg) !important;
   color: var(--widget-button-text) !important;
@@ -90,7 +90,7 @@ gtclose {
   border-radius: 50%;
   box-sizing: border-box;
   cursor: pointer;
-  background: #2878f0;
+  background: #042e5b;
   background: var(--widget-button-bg);
 }
 gtclose svg {
@@ -169,7 +169,7 @@ gtclose svg {
   animation: feedbackSlideIn 0.2s linear 0.8s forwards;
   white-space: nowrap;
   font-size: 16px;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased;
 }
 gttoolbar {
@@ -310,10 +310,10 @@ gttoolbar .gigatester-toolbar-tool-done {
   margin: 5px 5px 0 10px;
   border-radius: 4px;
   text-decoration: none;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   opacity: 1;
   right: 5px;
-  background: #2878f0;
+  background: #042e5b;
   background: var(--widget-button-bg);
   cursor: default;
   text-align: center;
@@ -364,7 +364,7 @@ gttoolbar .gigatester-toolbar-close {
   margin: 5px 5px 0 10px;
   border-radius: 4px;
   text-decoration: none;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   right: 5px;
   background: #2787f0;
   background: var(--widget-button-bg);
@@ -587,7 +587,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   left: 0;
   right: 0;
   height: 4px;
-  background: #2878f0;
+  background: #042e5b;
   background: var(--widget-button-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
@@ -607,7 +607,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   top: 0;
   bottom: 0;
   width: 4px;
-  background: #2878f0;
+  background: #042e5b;
   background: var(--widget-button-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
@@ -760,7 +760,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   font-size: 12px;
   overflow: hidden;
   white-space: nowrap;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   pointer-events: none;
 }
 .gigatester-overlay[lang="en"] .gigatester-overlay-hint-cursor:before {
@@ -834,7 +834,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   left: -20px;
   width: 35px;
   height: 35px;
-  background: #2878f0;
+  background: var(--widget-button-bg) !important;
   border-radius: 25px;
   border: none;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
@@ -854,7 +854,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   color: #fff;
   font-size: 14px;
   text-align: center;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   letter-spacing: normal;
   word-spacing: normal;
@@ -868,7 +868,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   z-index: 90;
   content: "";
   position: absolute;
-  background-color: #2878f0;
+  background-color: #042e5b;
   top: 0;
   right: 0;
   bottom: 0;
@@ -984,7 +984,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   font-size: 13px;
   outline: none;
   box-shadow: none;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   color: #000;
   background: none;
   box-sizing: border-box;
@@ -1020,7 +1020,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   height: 30px;
   line-height: 30px;
   padding: 0 14px;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: 500;
   text-transform: none;
 }
@@ -1143,15 +1143,15 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   padding: 0 20px;
   margin: 0;
   border-radius: 3px 3px 0 0;
-  background-color: #2878f0;
+  background-color: #042e5b;
   color: #fff;
   background-color: var(--widget-button-bg);
   color: var(--widget-button-text);
   background-image: none;
   text-align: center;
   font-size: 14px;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
-  font-weight: 500;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-weight: 300;
   letter-spacing: normal;
   word-spacing: normal;
   cursor: pointer;
@@ -1321,7 +1321,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   border-radius: 12px;
   background-color: #fff;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   letter-spacing: normal;
   word-spacing: normal;
@@ -1492,7 +1492,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   font-size: 15px;
   font-weight: 600;
   color: #354c5f;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
 }
 #gigatester_button_container
   .gigatester-controls
@@ -1516,7 +1516,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   > gtdiv:nth-child(3) {
   font-size: 14px;
   color: rgba(53, 76, 95, 0.8);
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
 }
 #gigatester_button_container
   .gigatester-controls
@@ -1759,7 +1759,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   display: inline-block;
   margin: 0 8px 0 0;
   font-size: 12px;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   color: rgba(53, 76, 95, 0.4);
 }
@@ -1767,7 +1767,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   display: inline-block;
   font-weight: 600;
   font-size: 12px;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   color: rgba(53, 76, 95, 0.6);
   text-transform: uppercase;
   vertical-align: baseline;
@@ -1791,7 +1791,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   gtfooter
   > a:hover
   path:first-child {
-  fill: #2878f0;
+  fill: #042e5b;
 }
 #gigatester_button_container
   .gigatester-controls
@@ -1809,11 +1809,11 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   text-transform: none;
   text-align: center;
   font-size: 14px;
-  font-weight: 500;
+  font-weight: 300;
 }
 .gigatester-controls-loader{
   border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #2878f0; /* Blue */
+  border-top: 16px solid #042e5b; /* Blue */
   border-radius: 50%;
   width: 12px;
   height: 12px;
@@ -2842,7 +2842,7 @@ justify-content: center;
   border: 1px solid #e9f1fd;
   border-radius: 2px;
   background: none;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   font-weight: 400;
   letter-spacing: normal;
@@ -2876,7 +2876,7 @@ justify-content: center;
 }
 #gigatester_button_container .gigatester-controls input[type="text"]::placeholder,
 #gigatester_button_container .gigatester-controls input[type="email"]::placeholder {
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(53, 76, 95, 0.4);
   text-transform: none;
@@ -2918,7 +2918,7 @@ justify-content: center;
   border: 1px solid #e9f1fd;
   border-radius: 2px;
   background: none;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   font-weight: 400;
   letter-spacing: normal;
@@ -2954,7 +2954,7 @@ justify-content: center;
   border-color: #eee;
 }
 #gigatester_button_container .gigatester-controls select::placeholder {
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(53, 76, 95, 0.4);
   text-transform: none;
@@ -2982,7 +2982,7 @@ justify-content: center;
   border: 1px solid #e9f1fd;
   border-radius: 2px;
   background: none;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   font-weight: 400;
   letter-spacing: normal;
@@ -3012,7 +3012,7 @@ justify-content: center;
   border-color: #eee;
 }
 #gigatester_button_container .gigatester-controls textarea::placeholder {
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(53, 76, 95, 0.4);
   text-transform: none;
@@ -3121,7 +3121,7 @@ justify-content: center;
   margin: 3px;
   vertical-align: top !important;
   box-sizing: border-box;
-  fill: #2878f0;
+  fill: #042e5b;
   fill: var(--widget-button-bg);
 }
 #gigatester_button_container
@@ -3252,7 +3252,7 @@ justify-content: center;
   width: 64px;
   height: 64px;
   animation: outro-icon-2 0.8s;
-  fill: #2878f0;
+  fill: #042e5b;
   fill: var(--widget-outro-icon);
 }
 #gigatester_button_container
@@ -3274,7 +3274,7 @@ justify-content: center;
   border-radius: 5px;
   box-sizing: border-box;
   font-weight: 600;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px;
   white-space: nowrap;
   transition: all 0.2s linear;
@@ -3644,7 +3644,7 @@ justify-content: center;
   padding: 0 20px;
   height: 50px;
   line-height: 50px;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   letter-spacing: normal;
   word-spacing: normal;
@@ -3806,7 +3806,7 @@ justify-content: center;
   height: 12px;
   margin: 0 8px 0 0;
   vertical-align: middle;
-  fill: #2878f0;
+  fill: #042e5b;
   fill: var(--widget-button-bg);
 }
 .gigatester-feedback-view
@@ -3845,7 +3845,7 @@ justify-content: center;
   border-radius: 4px;
   background: #fff;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   font-size: 12px;
   box-sizing: border-box;
@@ -3861,7 +3861,7 @@ justify-content: center;
   margin: 20px auto 0 auto;
   padding: 0;
   text-align: center;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   font-size: 12px;
   color: #354c5f;
@@ -3909,7 +3909,7 @@ justify-content: center;
   margin: 30% 0 0 0;
   padding: 0;
   text-align: center;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: 500;
   font-size: 13px;
   color: #354c5f;
@@ -3925,7 +3925,7 @@ justify-content: center;
   overflow: hidden;
   margin: 16px;
   padding: 0;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   font-size: 10px;
   text-align: left;
@@ -3978,7 +3978,7 @@ justify-content: center;
   left: 0;
   margin: auto;
   border-radius: 50%;
-  background: #2878f0;
+  background: #042e5b;
 }
 .gigatester-feedback-view .gigatester-feedback > a > svg path {
   fill: #fff;
@@ -4162,11 +4162,11 @@ gtmodal > gtdiv {
   color: #4c545b;
   animation: feedbackZoomIn 0.1s;
   font-size: 16px;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   box-sizing: border-box;
 }
 gtmodal > gtdiv a {
-  color: #2878f0;
+  color: #042e5b;
   text-decoration: underline;
 }
 gtmodal > gtdiv .gigatester-modal-buttons {
@@ -4639,7 +4639,7 @@ gtvideotoolbar {
   border-radius: 4px;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
   animation: feedbackSlideUp 0.3s linear;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   cursor: move;
 }
 /* gtvideotoolbar:before {
@@ -5044,7 +5044,7 @@ gtmouseclick {
   background-color: rgba(0, 0, 0, 0.8);
   opacity: 0;
   animation: gt-countdownOverlay 1s linear;
-  font-family: "Poppins", Helvetica, Arial, sans-serif !important;
+  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
 }
 @keyframes gt-countdownOverlay {
   0% {
