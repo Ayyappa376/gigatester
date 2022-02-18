@@ -96,7 +96,7 @@ else{
                 capture_screenshot: "Capture screenshot",
                 save: "Save",
                 delete: "Delete",
-                add_your_comment_here: "Enter your comment...",
+                add_your_comment_here: "Type your comment",
                 attach_a_file: "Attach a file",
                 file_format_not_supported: "File format not supported",
                 max: "Maximum",
@@ -166,12 +166,13 @@ else{
             search: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.879px" height="119.799px" viewBox="0 0 122.879 119.799" enable-background="new 0 0 122.879 119.799" xml:space="preserve"><g><path d="M49.988,0h0.016v0.007C63.803,0.011,76.298,5.608,85.34,14.652c9.027,9.031,14.619,21.515,14.628,35.303h0.007v0.033v0.04 h-0.007c-0.005,5.557-0.917,10.905-2.594,15.892c-0.281,0.837-0.575,1.641-0.877,2.409v0.007c-1.446,3.66-3.315,7.12-5.547,10.307 l29.082,26.139l0.018,0.016l0.157,0.146l0.011,0.011c1.642,1.563,2.536,3.656,2.649,5.78c0.11,2.1-0.543,4.248-1.979,5.971 l-0.011,0.016l-0.175,0.203l-0.035,0.035l-0.146,0.16l-0.016,0.021c-1.565,1.642-3.654,2.534-5.78,2.646 c-2.097,0.111-4.247-0.54-5.971-1.978l-0.015-0.011l-0.204-0.175l-0.029-0.024L78.761,90.865c-0.88,0.62-1.778,1.209-2.687,1.765 c-1.233,0.755-2.51,1.466-3.813,2.115c-6.699,3.342-14.269,5.222-22.272,5.222v0.007h-0.016v-0.007 c-13.799-0.004-26.296-5.601-35.338-14.645C5.605,76.291,0.016,63.805,0.007,50.021H0v-0.033v-0.016h0.007 c0.004-13.799,5.601-26.296,14.645-35.338C23.683,5.608,36.167,0.016,49.955,0.007V0H49.988L49.988,0z M50.004,11.21v0.007h-0.016 h-0.033V11.21c-10.686,0.007-20.372,4.35-27.384,11.359C15.56,29.578,11.213,39.274,11.21,49.973h0.007v0.016v0.033H11.21 c0.007,10.686,4.347,20.367,11.359,27.381c7.009,7.012,16.705,11.359,27.403,11.361v-0.007h0.016h0.033v0.007 c10.686-0.007,20.368-4.348,27.382-11.359c7.011-7.009,11.358-16.702,11.36-27.4h-0.006v-0.016v-0.033h0.006 c-0.006-10.686-4.35-20.372-11.358-27.384C70.396,15.56,60.703,11.213,50.004,11.21L50.004,11.21z"/></g></svg>',
             file_search: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="110.66px" height="122.879px" viewBox="0 0 110.66 122.879" enable-background="new 0 0 110.66 122.879" xml:space="preserve"><g><path d="M81.813,70.818c6.268,0,11.949,2.549,16.066,6.648c4.115,4.117,6.648,9.783,6.648,16.066c0,4.582-1.365,8.865-3.699,12.432 l9.832,10.715l-6.781,6.199l-9.484-10.432c-3.6,2.4-7.932,3.799-12.582,3.799c-6.266,0-11.949-2.549-16.064-6.648 c-4.117-4.117-6.65-9.783-6.65-16.064c0-6.268,2.551-11.949,6.65-16.066C69.863,73.35,75.531,70.818,81.813,70.818L81.813,70.818z M19.784,57.08c-1.445,0-2.649-1.308-2.649-2.89c0-1.617,1.169-2.89,2.649-2.89h22.639c1.445,0,2.649,1.308,2.649,2.89 c0,1.617-1.17,2.89-2.649,2.89H19.784L19.784,57.08z M84.879,17.582h9.496c1.859,0,3.58,0.757,4.783,1.995 c1.238,1.239,1.996,2.925,1.996,4.783v37.031c-0.203,2.121-5.41,2.148-5.85,0V24.359c0-0.275-0.104-0.516-0.275-0.688 c-0.172-0.172-0.412-0.275-0.688-0.275h-9.496v37.995c-0.506,1.924-4.838,2.213-5.814,0V6.778c0-0.275-0.104-0.516-0.275-0.688 c-0.172-0.172-0.414-0.275-0.689-0.275H6.744c-0.275,0-0.517,0.103-0.688,0.275C5.883,6.262,5.78,6.502,5.78,6.778v80.58 c0,0.275,0.103,0.516,0.275,0.688s0.413,0.275,0.688,0.275h42.53c2.929,0.301,3.017,5.365,0,5.814H22.054v10.803 c0,0.275,0.104,0.518,0.275,0.689s0.413,0.275,0.688,0.275h26.256c2.122,0.238,2.805,5.063,0,5.814H23.052 c-1.858,0-3.578-0.758-4.782-1.996c-1.239-1.238-1.996-2.924-1.996-4.783V94.135H6.778c-1.858,0-3.578-0.758-4.782-1.996 C0.757,90.9,0,89.215,0,87.357V6.778C0,4.92,0.757,3.2,1.996,1.995C3.234,0.757,4.92,0,6.778,0h71.324 c1.857,0,3.578,0.757,4.783,1.995c1.238,1.239,1.994,2.925,1.994,4.783V17.582L84.879,17.582L84.879,17.582z M19.749,26.045 c-1.445,0-2.649-1.308-2.649-2.891c0-1.617,1.17-2.89,2.649-2.89h45.278c1.445,0,2.648,1.308,2.648,2.89 c0,1.617-1.168,2.891-2.648,2.891H19.749L19.749,26.045z M19.749,41.563c-1.445,0-2.649-1.308-2.649-2.89 c0-1.617,1.17-2.89,2.649-2.89h45.278c1.445,0,2.648,1.307,2.648,2.89c0,1.617-1.168,2.89-2.648,2.89H19.749L19.749,41.563z M93.891,81.455c-3.09-3.09-7.365-5.008-12.078-5.008c-4.711,0-8.986,1.918-12.076,5.008s-5.01,7.365-5.01,12.078 c0,4.711,1.92,8.986,5.01,12.076s7.365,5.01,12.076,5.01c4.713,0,8.988-1.92,12.078-5.01s5.008-7.365,5.008-12.076 C98.898,88.82,96.98,84.545,93.891,81.455L93.891,81.455L93.891,81.455z"/></g></svg>',
             paperclip: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.877px" height="112.531px" viewBox="0 0 122.877 112.531" enable-background="new 0 0 122.877 112.531" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M8.872,8.869L8.872,8.869C-2.956,20.694-2.958,40.039,8.87,51.864L53.433,96.43 c4.873,0.274,7.517-1.769,7.055-7.055L16.287,45.172c-7.945-7.945-7.945-20.941,0-28.887l0,0 c7.943-7.942,20.943-7.945,28.889-0.002c21.27,21.27,42.542,42.543,63.807,63.81c5.035,5.032,5.318,13.691,0.279,18.73l0,0 c-5.035,5.036-13.656,4.721-18.693-0.315C74.424,82.364,58.402,66.342,42.256,50.197c-2.235-2.235-2.349-6.006-0.113-8.245l0,0 c2.234-2.236,6.009-2.12,8.245,0.113L79.092,70.77c5.201,0.411,7.434-2.138,7.182-7.181L57.569,34.884 c-6.188-6.188-16.308-6.188-22.492-0.002l0,0c-6.19,6.188-6.184,16.315-0.002,22.496l19.662,19.664l9.269,9.27l19.201,19.199 c8.977,8.978,24.23,9.54,33.207,0.56c8.982-8.981,8.422-24.23-0.559-33.21L87.387,44.392v0.002L51.862,8.869 C40.039-2.958,20.693-2.954,8.872,8.869L8.872,8.869z"/></g></svg>',
-            tick: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.881px" height="89.842px" viewBox="0 0 122.881 89.842" enable-background="new 0 0 122.881 89.842" xml:space="preserve"><g><path d="M1.232,55.541c-1.533-1.388-1.652-3.756-0.265-5.289c1.388-1.534,3.756-1.652,5.29-0.265l34.053,30.878l76.099-79.699 c1.429-1.501,3.804-1.561,5.305-0.132c1.502,1.428,1.561,3.803,0.133,5.305L43.223,88.683l-0.005-0.005 c-1.396,1.468-3.716,1.563-5.227,0.196L1.232,55.541L1.232,55.541z"/></g></svg>',
+            tick: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="52.881px" height="20.842px" viewBox="0 0 122.881 89.842" enable-background="new 0 0 122.881 89.842" xml:space="preserve"><g><path d="M1.232,55.541c-1.533-1.388-1.652-3.756-0.265-5.289c1.388-1.534,3.756-1.652,5.29-0.265l34.053,30.878l76.099-79.699 c1.429-1.501,3.804-1.561,5.305-0.132c1.502,1.428,1.561,3.803,0.133,5.305L43.223,88.683l-0.005-0.005 c-1.396,1.468-3.716,1.563-5.227,0.196L1.232,55.541L1.232,55.541z"/></g></svg>',
             close: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.878px" height="122.88px" viewBox="0 0 122.878 122.88" enable-background="new 0 0 122.878 122.88" xml:space="preserve"><g><path d="M1.426,8.313c-1.901-1.901-1.901-4.984,0-6.886c1.901-1.902,4.984-1.902,6.886,0l53.127,53.127l53.127-53.127 c1.901-1.902,4.984-1.902,6.887,0c1.901,1.901,1.901,4.985,0,6.886L68.324,61.439l53.128,53.128c1.901,1.901,1.901,4.984,0,6.886 c-1.902,1.902-4.985,1.902-6.887,0L61.438,68.326L8.312,121.453c-1.901,1.902-4.984,1.902-6.886,0 c-1.901-1.901-1.901-4.984,0-6.886l53.127-53.128L1.426,8.313L1.426,8.313z"/></g></svg>',
             times: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="121.31px" height="122.876px" viewBox="0 0 121.31 122.876" enable-background="new 0 0 121.31 122.876" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M90.914,5.296c6.927-7.034,18.188-7.065,25.154-0.068 c6.961,6.995,6.991,18.369,0.068,25.397L85.743,61.452l30.425,30.855c6.866,6.978,6.773,18.28-0.208,25.247 c-6.983,6.964-18.21,6.946-25.074-0.031L60.669,86.881L30.395,117.58c-6.927,7.034-18.188,7.065-25.154,0.068 c-6.961-6.995-6.992-18.369-0.068-25.397l30.393-30.827L5.142,30.568c-6.867-6.978-6.773-18.28,0.208-25.247 c6.983-6.963,18.21-6.946,25.074,0.031l30.217,30.643L90.914,5.296L90.914,5.296z"/></g></svg>',
             check: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.877px" height="101.052px" viewBox="0 0 122.877 101.052" enable-background="new 0 0 122.877 101.052" xml:space="preserve"><g><path d="M4.43,63.63c-2.869-2.755-4.352-6.42-4.427-10.11c-0.074-3.689,1.261-7.412,4.015-10.281 c2.752-2.867,6.417-4.351,10.106-4.425c3.691-0.076,7.412,1.255,10.283,4.012l24.787,23.851L98.543,3.989l1.768,1.349l-1.77-1.355 c0.141-0.183,0.301-0.339,0.479-0.466c2.936-2.543,6.621-3.691,10.223-3.495V0.018l0.176,0.016c3.623,0.24,7.162,1.85,9.775,4.766 c2.658,2.965,3.863,6.731,3.662,10.412h0.004l-0.016,0.176c-0.236,3.558-1.791,7.035-4.609,9.632l-59.224,72.09l0.004,0.004 c-0.111,0.141-0.236,0.262-0.372,0.368c-2.773,2.435-6.275,3.629-9.757,3.569c-3.511-0.061-7.015-1.396-9.741-4.016L4.43,63.63 L4.43,63.63z"/></g></svg>',
             star: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 117.1"><path class="star" fill="#FFD401" d="M64.42,2,80.13,38.7,120,42.26a3.2,3.2,0,0,1,1.82,5.62h0L91.64,74.18l8.9,39A3.19,3.19,0,0,1,98.12,117a3.27,3.27,0,0,1-2.46-.46L61.41,96.1,27.07,116.64a3.18,3.18,0,0,1-4.38-1.09,3.14,3.14,0,0,1-.37-2.38h0l8.91-39L1.09,47.88a3.24,3.24,0,0,1-.32-4.52,3.32,3.32,0,0,1,2.29-1l39.72-3.56L58.49,2a3.24,3.24,0,0,1,5.93,0Z"/></svg>',
             trash: '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105.7 122.88"><title>trash-bin</title><path d="M30.46,14.57V5.22A5.18,5.18,0,0,1,32,1.55v0A5.19,5.19,0,0,1,35.68,0H70a5.22,5.22,0,0,1,3.67,1.53l0,0a5.22,5.22,0,0,1,1.53,3.67v9.35h27.08a3.36,3.36,0,0,1,3.38,3.37V29.58A3.38,3.38,0,0,1,102.32,33H98.51l-8.3,87.22a3,3,0,0,1-2.95,2.69H18.43a3,3,0,0,1-3-2.95L7.19,33H3.37A3.38,3.38,0,0,1,0,29.58V17.94a3.36,3.36,0,0,1,3.37-3.37Zm36.27,0V8.51H39v6.06ZM49.48,49.25a3.4,3.4,0,0,1,6.8,0v51.81a3.4,3.4,0,1,1-6.8,0V49.25ZM69.59,49a3.4,3.4,0,1,1,6.78.42L73,101.27a3.4,3.4,0,0,1-6.78-.43L69.59,49Zm-40.26.42A3.39,3.39,0,1,1,36.1,49l3.41,51.8a3.39,3.39,0,1,1-6.77.43L29.33,49.46ZM92.51,33.38H13.19l7.94,83.55H84.56l8-83.55Z"/></svg>',
+            delete: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADZUlEQVRogdWaz0sUYRjHP9UhSKpDJfRDKjz0gxDMy7YgeghhkWUPKxjRVtAqoYW7RD9IL1HQdovoFqH9C0EEXeoSZREdsiIoo1sZQTlRq5UTzzIT4zaj8777jo5feFCQ99nPd+bxfZ55Z5dhRluBJLDHie3AOmC1k/078AX4AIwBL4BHwLihz9fSGuAEcA+YAWyNuA8UHbMLpg3AFeeK6kD7xTfgKrApahMFYNIgeHX8BM5GAS41/SBC8OoYBXaagk8BPxYQ3o1fQLZW+COLAF4d/brwh2MA70afKvz+GMG7kQkLXw/8jqEBiW1hDDyLKbzEm/ng+2MM78Z5L7B3FloFWMDysLW2iFrvTAKzYC8sEXjRZfeXFc7PlcBtVQONjY3k83nq6uoYH1cbLFtbW+nu7sayLCYmJpTWAi3AdWf0qOi4ai02NTXZlmXZrgYGBkKvzefz/9aVy2U7kUjo/C+c8jp6qJqgVCrZ1SoUCkrwroaHh3UMjLnwG3V2g46Ojv9ARMViMXBNb2+v75quri7dHUkepDiou6VJ2fjJr5z8rrxocHBQF17iqBgo1ZAg0IS3nILgh4aGaoGXuCkG7tSYpALrp2w2a6dSqajgbee5mpcGEgWaiBBe4q0Y+GgoWWA5RQQv8RlnfDCWNJPJVPb2ak1NTdm5XM4kvIRlfHSQzmrbtu/fJicnTX9c5YM+mboiQbuNV2GanWoJvTKRLKhJ+WmuZqcY78TA3aiuvNS8dFk/qcxOc8RjnFM24/De3SZMs9OMYTFwSDdBT09P6K0yqE/UaOKYGNiis7i9vT00/Hwm0um0roFGdzsaVV3sN06HaVJ+5TQyMqIDP+sB/6RqgpaWFnt6eloJ3u9OzMzM2G1tbToGznkNyAP9H9Ukzc3NlTshQ5vq2s7OzsraZDKpWz711V3tmmaixYhbLrT3WGUt8NVkn49QG50hdNYphLwlObME4C+58EEai3HpvA/jsCHGBnaEvU3pGMIfUK21vhjBn1aFdxWH0+qaN5YunSZnKHK1wrvaDTxdQHD5KsJeU/BeDQFTEYLLnb4YBbhXDc7RdtkguLyTu+EdjxdCm50j7ic1gD93pspQL+/8ZOrrNtJgEsA+YJczq8i3WWTKFcmLCDlTkROQ186RoDzPyoGCvoC/pkcwDQU7NiIAAAAASUVORK5CYII=",
             angle_down: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 66.91" style="enable-background:new 0 0 122.88 66.91" xml:space="preserve"><g><path d="M11.68,1.95C8.95-0.7,4.6-0.64,1.95,2.08c-2.65,2.72-2.59,7.08,0.13,9.73l54.79,53.13l4.8-4.93l-4.8,4.95 c2.74,2.65,7.1,2.58,9.75-0.15c0.08-0.08,0.15-0.16,0.22-0.24l53.95-52.76c2.73-2.65,2.79-7.01,0.14-9.73 c-2.65-2.72-7.01-2.79-9.73-0.13L61.65,50.41L11.68,1.95L11.68,1.95z"/></g></svg>',
             plus: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.875px" height="122.648px" viewBox="0 0 122.875 122.648" enable-background="new 0 0 122.875 122.648" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M108.993,47.079c7.683-0.059,13.898,6.12,13.882,13.805 c-0.018,7.683-6.26,13.959-13.942,14.019L75.24,75.138l-0.235,33.73c-0.063,7.619-6.338,13.789-14.014,13.78 c-7.678-0.01-13.848-6.197-13.785-13.818l0.233-33.497l-33.558,0.235C6.2,75.628-0.016,69.448,0,61.764 c0.018-7.683,6.261-13.959,13.943-14.018l33.692-0.236l0.236-33.73C47.935,6.161,54.209-0.009,61.885,0 c7.678,0.009,13.848,6.197,13.784,13.818l-0.233,33.497L108.993,47.079L108.993,47.079z"/></g></svg>',
             photo: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.88px" height="122.151px" viewBox="0 0 122.88 122.151" enable-background="new 0 0 122.88 122.151" xml:space="preserve"><g><path d="M8.676,0h105.529c2.405,0,4.557,0.984,6.124,2.552c1.567,1.567,2.551,3.754,2.551,6.124v104.8 c0,2.405-0.983,4.557-2.551,6.124c-1.568,1.567-3.755,2.552-6.124,2.552H8.676c-2.406,0-4.557-0.984-6.124-2.553 C0.984,118.032,0,115.845,0,113.476V8.675C0,6.27,0.984,4.119,2.552,2.552C4.12,0.984,6.307,0,8.676,0L8.676,0z M9.097,88.323 l35.411-33.9c1.421-1.313,3.645-1.167,4.921,0.255c0.037,0.036,0.037,0.073,0.073,0.073l31.459,37.218l4.812-29.6 c0.328-1.896,2.114-3.208,4.01-2.879c0.729,0.109,1.385,0.474,1.895,0.948l22.07,23.184V10.773c0-0.474-0.183-0.875-0.511-1.166 c-0.291-0.292-0.729-0.511-1.166-0.511H10.737c-0.474,0-0.875,0.182-1.166,0.511c-0.292,0.291-0.511,0.729-0.511,1.166v77.55H9.097 L9.097,88.323z M90.526,19.866c3.464,0,6.635,1.422,8.895,3.682c2.297,2.296,3.682,5.431,3.682,8.895 c0,3.463-1.421,6.634-3.682,8.894c-2.296,2.297-5.431,3.682-8.895,3.682c-3.462,0-6.634-1.421-8.894-3.682 c-2.297-2.296-3.682-5.431-3.682-8.894c0-3.463,1.421-6.634,3.682-8.895C83.929,21.251,87.064,19.866,90.526,19.866L90.526,19.866z"/></g></svg>',
@@ -365,15 +366,6 @@ else{
                     this.custom_ui.button.text(this.configs.main_button_text)
                     this.custom_ui.button.appendTo(this.custom_ui.element);
                     this.custom_ui.button.on("click", this.openControls.bind(this));
-                    if ( this.configs.style === "text" && (this.configs.position === "e" || this.configs.position === "w")) {
-                        if (navigator.userAgent.indexOf("Chrome") || navigator.userAgent.indexOf("chrome")) {
-                            let button_width = this.custom_ui.button.outerWidth();
-                            if (button_width % 2 === 1) {
-                                button_width++
-                            }
-                            this.custom_ui.button.css("min-width", button_width)
-                        }
-                    }
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         // console.log(e,'mouse event')
                         e.stopPropagation()
@@ -402,7 +394,7 @@ else{
                         this.custom_ui.screen_status = false
                     }
                 },
-                isAutoHide: function() {
+                autoHide: function() {
                     if (this.canvas_mode) {
                         return true
                     }
@@ -471,7 +463,8 @@ else{
                     this.custom_ui.element.attr("drawing", "true");
                     this.hideControls();
                     let dpr = typeof window.devicePixelRatio === "undefined" ? 1 : window.devicePixelRatio;
-                    this.custom_ui.overlay = $("<gtdiv>").addClass("gigatester-overlay").html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("lang", GigaTester_modal.configs.language).attr("tooltype", this.Draw_Tools.type);
+                    this.custom_ui.overlay = $("<gtdiv>").addClass("gigatester-overlay")
+                    // .html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("lang", GigaTester_modal.configs.language).attr("tooltype", this.Draw_Tools.type);
                     // .attr("data-html2canvas-ignore", "true");
                     if (this.canvas_mode) {
                         this.custom_ui.overlay.attr("canvas", "true")
@@ -555,11 +548,6 @@ else{
                     $(window).off("resize", $.proxy(this.windowResize, this))
                 },
                 Draw_Tools: {
-                    type: "square",
-                    colour: {
-                        options: ["#E80000", "#FF7E42", "#FFD042", "#84FF42", "#42FFE6", "#2878F0", "#7828F0", "#FF42F9", "#FFFFFF", "#000000"],
-                        value:  "#E80000"
-                    },
                     start_x: 0,
                     start_y: 0,
                     stop_x: 0,
@@ -571,6 +559,11 @@ else{
                     svg_delete_icons: [],
                     annotation_count: 0,
                     cut_outs: [],
+                    type: "square",
+                    colour: {
+                        options: ["#E80000", "#FF7E42", "#042e5b", "#84FF42", "#42FFE6", "#2878F0", "#7828F0", "#FF42F9", "#FFFFFF", "#000000"],
+                        value:  "#042e5b"
+                    },
                     svg_obj_base_path: false,
                     svg_obj_arrow_group: false,
                     svg_obj_new_arrow: false,
@@ -588,10 +581,11 @@ else{
                         this.snap = Snap("#snap_svg");
                         this.svg_obj_base_path = this.snap.path();
                         this.svg_obj_base_path.attr({
-                            fill: "rgb(128, 144, 160)",
-                            "fill-opacity": GigaTester_modal.canvas_mode ? 0 : .3,
+                            "fill-opacity": GigaTester_modal.canvas_mode ? 0 : .01,
                             "fill-rule": "evenodd"
                         });
+                        $(this.svg_obj_base_path).css("outline","5px solid black");
+                        $(this.svg_obj_base_path).css("outline-offset", "-5px");
                         this.setBasePathSize();
                         this.snap.drag(this.onDragMove.bind(this), this.isDragStart.bind(this), this.onsDragStop.bind(this));
                         this.snap.touchstart(this.isDragStart.bind(this));
@@ -629,14 +623,12 @@ else{
                         tool_colour_indicator += "</gtdiv>";
                         var display_tutorial = false;
                         var tools = '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-square" data-type="square" title="' + Lang.get("rectangle") + '">' + Svg_Icons.square + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-path" data-type="path" title="' + Lang.get("pencil") + '">' + Svg_Icons.highlighter + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-line" data-type="line" title="' + Lang.get("line") + '">' + Svg_Icons.line + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-arrow" data-type="arrow" title="' + Lang.get("arrow") + '">' + Svg_Icons.arrow + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + Lang.get("blackout") + '">' + Svg_Icons.blackout + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-text" data-type="text" title="' + Lang.get("text") + '">' + Svg_Icons.text + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-colour" data-type="colour">' + tool_colour_indicator + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool-done' + (GigaTester_modal.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + Lang.get("capture_screenshot") + '">' + Svg_Icons.tick + "<span>" + (Lang.get("next") ? Lang.get("capture") : Lang.get("save")) + "</span>" + "</btn>"
-                         + (GigaTester_modal.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "Cancel" + '">' + "<span>" + Lang.get("cancel") + "<span>" + "</btn>") + (display_tutorial ? '<btn class="gigatester-toolbar-help">' + Svg_Icons.widget_question + "</btn>" : "");
+                         + '<btn class="gigatester-toolbar-tool-done' + (GigaTester_modal.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + Lang.get("capture_screenshot") + '">' + Svg_Icons.tick
+                        //   + "<span>" + (Lang.get("next") ? Lang.get("capture") : Lang.get("save")) + "</span>" 
+                          + "</btn>"
+                         + (GigaTester_modal.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "Cancel" + '">' +  Svg_Icons.close + "</btn>");
                         this.toolbar = $("<gttoolbar>").attr("lang", GigaTester_modal.configs.language).attr("data-html2canvas-ignore", "true");
                         this.toolbar.html(tools);
                         this.setToolColour();
@@ -654,9 +646,6 @@ else{
                             var tool_type = $(e.currentTarget).data("type");
                             if (tool_type === "colour") {
                                 return
-                            } else if (tool_type === "blackout") {
-                                this.colour.value = "#000000";
-                                this.setToolColour()
                             }
                             this.type = tool_type;
                             this.toolbar.find(".gigatester-toolbar-tool").removeClass("gigatester-toolbar-tool-active");
@@ -958,10 +947,9 @@ else{
                                     icon_x = parseInt(this.svg_obj_rectangular.attr("x"), 10) + parseInt(this.svg_obj_rectangular.attr("width"), 10) - 12;
                                     icon_y = parseInt(this.svg_obj_rectangular.attr("y"), 10) - 12
                                 }
-                                var icon = this.snap.image(Svg_Icons.delete_icon, icon_x, icon_y, 24, 24).attr({
+                                var icon = this.snap.image(Svg_Icons.delete, icon_x, icon_y, 24, 24).attr({
                                     cursor: "pointer",
-                
-                                }).addClass("_gigatester-blank gigatester-svg-delete");
+                                }).addClass("gigatester-svg-delete");
                                 this.svg_delete_icons.push(icon);
                                 GigaTester_modal.canvasCommentStart.call(GigaTester_modal, event);
                                 switch (this.type) {
@@ -1169,7 +1157,6 @@ else{
                         }
                     },
                     isHoverable: function(obj, delete_icon, type, cut_out_id) {
-                        var shadow_filter = this.snap.filter(Snap.filter.shadow(0, 0, 5, "black", .5));
                         var timeout_id = false;
                         var self = this;
                         this.annotation_count++;
@@ -1203,17 +1190,11 @@ else{
                             }
                             clearTimeout(timeout_id);
                             delete_icon.attr("display", "");
-                            this.attr({
-                                filter: shadow_filter
-                            })
                         });
                         obj.mouseout(function() {
                             GigaTester_modal.custom_ui.overlay.removeAttr("hidecursor");
                             timeout_id = setTimeout(function() {
                                 delete_icon.attr("display", "none");
-                                this.attr({
-                                    filter: ""
-                                })
                             }.bind(this), 200)
                         });
                         if (GigaTester_modal.has_touch) {
@@ -1403,7 +1384,7 @@ else{
                         return
                     }
                     this.custom_ui.events = $("<div>").addClass("gigatester-controls gigatester-controls-" + this.configs.position);
-                    this.custom_ui.events.attr("wstyle", this.configs.style);
+                    // this.custom_ui.events.attr("wstyle", this.configs.style);
                     if (this.configs.display_powered_by) {
                         this.custom_ui.events.attr("poweredby", 1)
                     }
@@ -1628,6 +1609,7 @@ else{
                         }
                     });
                     let html = "";
+                    html += '<form class="gigatester-controls-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
                     html += '<gtclose class="gigatester-controls-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
                     html += '<gtheader class="gigatester-controls-header" title="GigaTester">'+ String_Validator.validate(this.configs.title) + '</gtheader>'
@@ -2227,7 +2209,7 @@ else{
                     this.custom_ui.element.removeAttr("isopen")
                 },
                 showControls: function(force_show_form) {
-                    if (!this.isAutoHide()) {
+                    if (!this.autoHide()) {
                         this.custom_ui.button.show()
                     }
                     if (this.controls_step === 2) {
@@ -2449,7 +2431,7 @@ else{
                     if (e && e.type === "click") {
                         e.preventDefault()
                     }
-                    if (!this.isAutoHide()) {
+                    if (!this.autoHide()) {
                         this.custom_ui.button.show()
                     }
                     this.custom_ui.element.removeAttr("isopen");
