@@ -1,8 +1,8 @@
 @import "https://fonts.googleapis.com/css2?family=Merriweather Sans:wght@300;400;500;600;700&display=swap";
 :root {
-  --widget-button-bg: #042e5b;
-  --widget-button-text: #ffffff;
-  --widget-outro-icon: #00c878;
+  --main-button-bg: #042e5b;
+  --main-button-text: #ffffff;
+  --main-outro-icon: #00c878;
 }
 
 gtdiv {
@@ -34,7 +34,7 @@ gtspan {
   display: block;
   margin: 0;
   border: none;
-  border-radius: 20px;
+  border-radius: 5px;
   line-height: normal;
   font-size: 12px;
   font-weight: normal;
@@ -44,8 +44,8 @@ gtspan {
   text-align: center;
   background-color: #042e5b !important;
   color: #fff !important;
-  background-color: var(--widget-button-bg) !important;
-  color: var(--widget-button-text) !important;
+  background-color: var(--main-button-bg) !important;
+  color: var(--main-button-text) !important;
   cursor: pointer;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
@@ -63,7 +63,7 @@ gtspan {
   cursor: not-allowed;
 }
 .gigatester-button-input .gigatester-controls-send-text {
-  color: var(--widget-button-text) !important;
+  color: var(--main-button-text) !important;
 }
 gtclose {
   width: auto;
@@ -91,7 +91,7 @@ gtclose {
   box-sizing: border-box;
   cursor: pointer;
   background: #042e5b;
-  background: var(--widget-button-bg);
+  background: var(--main-button-bg);
 }
 gtclose svg {
   display: block !important;
@@ -99,7 +99,7 @@ gtclose svg {
   width: 14px;
   height: 14px;
   fill: #fff;
-  fill: var(--widget-button-text);
+  fill: var(--main-button-text);
 }
 .gigatester-button-close-light {
   width: auto;
@@ -188,21 +188,22 @@ gttoolbar {
   background: none;
   position: fixed;
   z-index: 2147483645;
-  top: 12px;
-  left: 50%;
+  top: 150px;
+  left: -89px;
   right: auto;
   width: auto;
   height: 44px;
-  margin: auto auto auto -208px;
   padding: 0 0 0 10px;
   opacity: 1;
   box-sizing: border-box;
   white-space: nowrap;
   text-align: left;
   border-radius: 4px;
+  transform: rotate(270deg);
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
-  background-color: #fff;
+  background-color: rgba(255, 255, 255, 0.253);
   animation: feedbackToolbarIn 0.3s linear;
+  backdrop-filter: blur(3px);
   direction: ltr;
   -webkit-font-smoothing: antialiased;
   transition: top 0.2s linear;
@@ -220,7 +221,7 @@ gttoolbar {
   }
 }
 gttoolbar:hover {
-  background: #fff;
+  background: rgba(255, 255, 255, 0.144);
 }
 gttoolbar.gigatester-toolbar-slide-out {
   top: -44px;
@@ -291,7 +292,8 @@ gttoolbar .gigatester-toolbar-close {
   }
 }
 gttoolbar .gigatester-toolbar-tool-active {
-  background: #f4f4f4;
+  background: #ffffff;
+  border-radius: 50%;
 }
 gttoolbar .gigatester-toolbar-tool-active:hover {
   background: #f4f4f4;
@@ -304,7 +306,7 @@ gttoolbar .gigatester-toolbar-tool-done {
   position: relative;
   float: left;
   width: auto;
-  min-width: 80px;
+  min-width: 30px;
   height: 34px;
   padding: 0 10px;
   margin: 5px 5px 0 10px;
@@ -313,8 +315,6 @@ gttoolbar .gigatester-toolbar-tool-done {
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   opacity: 1;
   right: 5px;
-  background: #042e5b;
-  background: var(--widget-button-bg);
   cursor: default;
   text-align: center;
   user-select: none;
@@ -328,10 +328,12 @@ gttoolbar .gigatester-toolbar-tool-done {
 gttoolbar .gigatester-toolbar-tool-done.gigatester-toolbar-tool-done-active {
   opacity: 1;
   cursor: pointer;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 gttoolbar .gigatester-toolbar-tool-done svg {
-  display: none !important;
+  position: relative !important;
+  top: 7px;
+  width: 20px;
+  transform: rotate(90deg);
 }
 gttoolbar .gigatester-toolbar-tool-done span {
   width: auto;
@@ -348,7 +350,7 @@ gttoolbar .gigatester-toolbar-tool-done span {
   border-radius: 0;
   background: none;
   color: #fff;
-  color: var(--widget-button-text);
+  color: var(--main-button-text);
   line-height: 34px;
   font-size: 14px;
   font-weight: 500;
@@ -358,7 +360,7 @@ gttoolbar .gigatester-toolbar-close {
   position: relative;
   float: left;
   width: auto;
-  min-width: 80px;
+  min-width: 30px;
   height: 34px;
   padding: 0 10px;
   margin: 5px 5px 0 10px;
@@ -366,8 +368,6 @@ gttoolbar .gigatester-toolbar-close {
   text-decoration: none;
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   right: 5px;
-  background: #2787f0;
-  background: var(--widget-button-bg);
   opacity: 0.9;
   cursor: default;
   text-align: center;
@@ -385,7 +385,9 @@ gttoolbar .gigatester-toolbar-close.gigatester-toolbar-close-active {
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
 }
 gttoolbar .gigatester-toolbar-close svg {
-  display: none !important;
+  position: relative !important;
+  top: -45px;
+  width: 16px;
 }
 gttoolbar .gigatester-toolbar-close span {
   width: auto;
@@ -402,7 +404,7 @@ gttoolbar .gigatester-toolbar-close span {
   border-radius: 0;
   background: none;
   color: #fff;
-  color: var(--widget-button-text);
+  color: var(--main-button-text);
   line-height: 34px;
   font-size: 14px;
   font-weight: 500;
@@ -471,7 +473,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker {
   display: none;
   position: absolute;
   z-index: 2147483645;
-  top: 100%;
+  top: 80%;
   left: -60px;
   width: 136px;
   margin: 18px 0 0 0;
@@ -485,7 +487,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker {
 gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker:before {
   content: "";
   position: absolute;
-  bottom: 100%;
+  top: 100%;
   left: 0;
   right: 0;
   height: 20px;
@@ -588,7 +590,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   right: 0;
   height: 4px;
   background: #042e5b;
-  background: var(--widget-button-bg);
+  background: var(--main-button-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
   pointer-events: none;
@@ -608,7 +610,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   bottom: 0;
   width: 4px;
   background: #042e5b;
-  background: var(--widget-button-bg);
+  background: var(--main-button-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
   pointer-events: none;
@@ -637,6 +639,8 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   left: 0;
   width: 100%;
   height: 100%;
+  outline: 5px solid #042e5b;
+  outline-offset: -5px;
 }
 .gigatester-overlay #snap_svg rect:not(.blackout) {
   fill: transparent;
@@ -652,86 +656,6 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
 .gigatester-overlay[extension-capturing="true"] .gigatester-overlay-boundary-right {
   display: none;
 }
-/* .gigatester-overlay[tooltype="square"] {
-  cursor: url("https://static.userback.io/image/cursor_square1x.png") 7 22,
-    crosshair;
-}
-.gigatester-overlay[tooltype="blackout"] {
-  cursor: url("https://static.userback.io/image/cursor_blackout1x.png") 7 22,
-    crosshair;
-}
-.gigatester-overlay[tooltype="path"] {
-  cursor: url("https://static.userback.io/image/cursor_draw1x.png") 7 22,
-    crosshair;
-}
-.gigatester-overlay[tooltype="line"] {
-  cursor: url("https://static.userback.io/image/cursor_line1x.png") 7 22,
-    crosshair;
-}
-.gigatester-overlay[tooltype="arrow"] {
-  cursor: url("https://static.userback.io/image/cursor_arrow1x.png") 7 22,
-    crosshair;
-}
-.gigatester-overlay[tooltype="text"] {
-  cursor: url("https://static.userback.io/image/cursor_comment1x.png") 7 22,
-    crosshair;
-}
-.gigatester-overlay[dpr="2.00"] {
-  cursor: -webkit-image-set(
-        url("https://static.userback.io/image/cursor1x.png") 1x,
-        url("https://static.userback.io/image/cursor2x.png") 2x
-      )
-      8 8,
-    crosshair;
-}
-.gigatester-overlay[dpr="2.00"][tooltype="square"] {
-  cursor: -webkit-image-set(
-        url("https://static.userback.io/image/cursor1x.png") 1x,
-        url("https://static.userback.io/image/cursor_square2x.png") 2x
-      )
-      8 17,
-    crosshair;
-}
-.gigatester-overlay[dpr="2.00"][tooltype="blackout"] {
-  cursor: -webkit-image-set(
-        url("https://static.userback.io/image/cursor1x.png") 1x,
-        url("https://static.userback.io/image/cursor_blackout2x.png") 2x
-      )
-      8 17,
-    crosshair;
-}
-.gigatester-overlay[dpr="2.00"][tooltype="path"] {
-  cursor: -webkit-image-set(
-        url("https://static.userback.io/image/cursor1x.png") 1x,
-        url("https://static.userback.io/image/cursor_draw2x.png") 2x
-      )
-      8 17,
-    crosshair;
-}
-.gigatester-overlay[dpr="2.00"][tooltype="line"] {
-  cursor: -webkit-image-set(
-        url("https://static.userback.io/image/cursor1x.png") 1x,
-        url("https://static.userback.io/image/cursor_line2x.png") 2x
-      )
-      8 17,
-    crosshair;
-}
-.gigatester-overlay[dpr="2.00"][tooltype="arrow"] {
-  cursor: -webkit-image-set(
-        url("https://static.userback.io/image/cursor1x.png") 1x,
-        url("https://static.userback.io/image/cursor_arrow2x.png") 2x
-      )
-      8 17,
-    crosshair;
-}
-.gigatester-overlay[dpr="2.00"][tooltype="text"] {
-  cursor: -webkit-image-set(
-        url("https://static.userback.io/image/cursor1x.png") 1x,
-        url("https://static.userback.io/image/cursor_comment2x.png") 2x
-      )
-      8 17,
-    crosshair;
-} */
 .gigatester-overlay[lang="en"] .gigatester-overlay-hint-cursor {
   width: auto;
   height: auto;
@@ -834,8 +758,8 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   left: -20px;
   width: 35px;
   height: 35px;
-  background: var(--widget-button-bg) !important;
-  border-radius: 25px;
+  background: var(--main-button-bg) !important;
+  border-radius: 5px;
   border: none;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
   cursor: pointer;
@@ -1016,13 +940,13 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   cursor: default;
 }
 .gigatester-comment .gigatester-comment-form .gigatester-button-input {
-  float: right;
   height: 30px;
   line-height: 30px;
   padding: 0 14px;
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: 500;
   text-transform: none;
+
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-delete {
   display: none;
@@ -1145,8 +1069,8 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   border-radius: 3px 3px 0 0;
   background-color: #042e5b;
   color: #fff;
-  background-color: var(--widget-button-bg);
-  color: var(--widget-button-text);
+  background-color: var(--main-button-bg);
+  color: var(--main-button-text);
   background-image: none;
   text-align: center;
   font-size: 14px;
@@ -1162,7 +1086,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
 }
 #gigatester_button_container .gigatester-button svg path {
   fill: #fff;
-  fill: var(--widget-button-text);
+  fill: var(--main-button-text);
 }
 #gigatester_button_container .gigatester-button[wstyle="text"],
 #gigatester_button_container .gigatester-button[wstyle="text_icon"] {
@@ -1217,28 +1141,6 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   fill: #fff;
   box-sizing: border-box;
 }
-#gigatester_button_container .gigatester-button-se {
-  left: auto;
-  right: 20px;
-  animation: feedbackSlideUp 0.2s linear;
-}
-#gigatester_button_container .gigatester-button-sw {
-  right: auto;
-  left: 20px;
-  animation: feedbackSlideUp 0.2s linear;
-}
-#gigatester_button_container .gigatester-button-se[wstyle="text"],
-#gigatester_button_container .gigatester-button-se[wstyle="text_icon"],
-#gigatester_button_container .gigatester-button-sw[wstyle="text"],
-#gigatester_button_container .gigatester-button-sw[wstyle="text_icon"] {
-  bottom: -2px;
-}
-#gigatester_button_container .gigatester-button-se[wstyle="text"]:hover,
-#gigatester_button_container .gigatester-button-se[wstyle="text_icon"]:hover,
-#gigatester_button_container .gigatester-button-sw[wstyle="text"]:hover,
-#gigatester_button_container .gigatester-button-sw[wstyle="text_icon"]:hover {
-  bottom: 0;
-}
 #gigatester_button_container .gigatester-button-e {
   right: -35px;
   top: 50%;
@@ -1263,33 +1165,6 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
 }
 #gigatester_button_container .gigatester-button-e[wstyle="circle"] {
   right: 20px;
-  top: 50%;
-  margin-top: -28px;
-  animation: feedbackZoomIn 0.2s linear;
-}
-#gigatester_button_container .gigatester-button-w {
-  left: -2px;
-  top: 50%;
-  margin-top: -20px;
-  bottom: auto;
-  animation: feedbackSlideRight 0.2s linear;
-  border-bottom: 2px solid transparent;
-}
-#gigatester_button_container .gigatester-button-w[wstyle="text"],
-#gigatester_button_container .gigatester-button-w[wstyle="text_icon"] {
-  transform: rotate(-90deg) translate(-50%, 50%);
-  transform-origin: 0 50%;
-  border-radius: 0 0 3px 3px;
-}
-#gigatester_button_container .gigatester-button-w[wstyle="text"]:hover,
-#gigatester_button_container .gigatester-button-w[wstyle="text_icon"]:hover {
-  left: 0;
-}
-#gigatester_button_container .gigatester-button-w[wstyle="text_icon"] svg {
-  transform: rotate(90deg);
-}
-#gigatester_button_container .gigatester-button-w[wstyle="circle"] {
-  left: 20px;
   top: 50%;
   margin-top: -28px;
   animation: feedbackZoomIn 0.2s linear;
@@ -2000,7 +1875,7 @@ justify-content: center;
   text-align: center;
 }
 
-#gigatester_button_container .gigatester-controls .gigatester-controls-options {
+#gigatester_button_container .gigatester-controls .gigatester-controls-options { 
   width: auto;
   height: auto;
   line-height: normal;
@@ -2008,7 +1883,7 @@ justify-content: center;
   min-height: 0;
   max-width: none;
   overflow-y: auto;
-  max-height: calc(100vh - 27vh);
+  /* max-height: calc(100vh - 27vh); */
   margin: 0;
   padding: 0;
   outline: none;
@@ -2017,7 +1892,7 @@ justify-content: center;
   background: none;
   position: relative;
   display: block;
-}
+} */
 
 #gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar {
   /* height: calc(100vh - 230px); */
@@ -3122,7 +2997,7 @@ justify-content: center;
   vertical-align: top !important;
   box-sizing: border-box;
   fill: #042e5b;
-  fill: var(--widget-button-bg);
+  fill: var(--main-button-bg);
 }
 #gigatester_button_container
   .gigatester-controls
@@ -3253,7 +3128,7 @@ justify-content: center;
   height: 64px;
   animation: outro-icon-2 0.8s;
   fill: #042e5b;
-  fill: var(--widget-outro-icon);
+  fill: var(--main-outro-icon);
 }
 #gigatester_button_container
   .gigatester-controls
@@ -3807,7 +3682,7 @@ justify-content: center;
   margin: 0 8px 0 0;
   vertical-align: middle;
   fill: #042e5b;
-  fill: var(--widget-button-bg);
+  fill: var(--main-button-bg);
 }
 .gigatester-feedback-view
   .gigatester-feedback-view-title
@@ -4468,7 +4343,7 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   stroke: #fff;
   stroke-miterlimit: 10;
   box-shadow: inset 0px 0px 0px #00c878;
-  box-shadow: inset 0px 0px 0px var(--widget-outro-icon);
+  box-shadow: inset 0px 0px 0px var(--main-outro-icon);
   animation: gt-checkmark-fill 0.4s ease-in-out 0.4s forwards,
     gt-checkmark-scale 0.3s ease-in-out 0.9s both;
 }
@@ -4478,7 +4353,7 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   stroke-width: 2;
   stroke-miterlimit: 10;
   stroke: #00c878;
-  stroke: var(--widget-outro-icon);
+  stroke: var(--main-outro-icon);
   fill: none;
   animation: gt-checkmark-stroke 0.6s cgtic-bezier(0.65, 0, 0.45, 1) forwards;
 }
@@ -4493,7 +4368,7 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   animation: none;
   transform: none;
   box-shadow: inset 0px 0px 0px 30px #00c878;
-  box-shadow: inset 0px 0px 0px 30px var(--widget-outro-icon);
+  box-shadow: inset 0px 0px 0px 30px var(--main-outro-icon);
 }
 .gt-checkmark-fixed .gt-checkmark__circle {
   animation: none;
@@ -4974,18 +4849,6 @@ gtvideooverlay {
   right: 0;
   left: 0;
 }
-gtvideooverlay[recording="true"] {
-  cursor: url("https://static.gigatester.io/image/cursor_highlighter1x.png") 7 22,
-    crosshair;
-}
-gtvideooverlay[recording="true"][dpr="2.00"] {
-  cursor: -webkit-image-set(
-        url("https://static.gigatester.io/image/cursor_highlighter1x.png") 1x,
-        url("https://static.gigatester.io/image/cursor_highlighter2x.png") 2x
-      )
-      8 17,
-    crosshair;
-}
 gtvideooverlay #snap_svg_video {
   display: block;
   pointer-events: auto;
@@ -5076,7 +4939,7 @@ gtmouseclick {
 @keyframes gt-checkmark-fill {
   100% {
     box-shadow: inset 0px 0px 0px 30px #00c878;
-    box-shadow: inset 0px 0px 0px 30px var(--widget-outro-icon);
+    box-shadow: inset 0px 0px 0px 30px var(--main-outro-icon);
   }
 }
 @keyframes gt-micVolume {
