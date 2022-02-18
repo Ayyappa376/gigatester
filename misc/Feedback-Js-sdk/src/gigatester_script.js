@@ -345,7 +345,7 @@ else{
                         }
                         detector.remove()
                     }, 10);
-                    let branding_css = ":root {" + "--widget-button-bg: " + this.configs.main_button_background_colour + " !important;" + "--widget-button-text: " + this.configs.main_button_text_colour + " !important;" + "}";
+                    let branding_css = ":root {" + "--main-button-bg: " + this.configs.main_button_background_colour + " !important;" + "--main-button-text: " + this.configs.main_button_text_colour + " !important;" + "}";
                     $("<style>").html(branding_css).appendTo($(document.body))
                 },
                 addFeedbackButton: function() {
@@ -1384,7 +1384,6 @@ else{
                         return
                     }
                     this.custom_ui.events = $("<div>").addClass("gigatester-controls gigatester-controls-" + this.configs.position);
-                    // this.custom_ui.events.attr("wstyle", this.configs.style);
                     if (this.configs.display_powered_by) {
                         this.custom_ui.events.attr("poweredby", 1)
                     }
@@ -2690,7 +2689,7 @@ else{
                       })
                         .then(res => res.json())
                         .then(data => {console.log(data)
-                            let success_icon = $('<gtdiv class="gigatester-controls-send-success">').html("<style>" + ":root {" + "--widget-outro-icon: " + form_settings.completed_dialog_icon_colour + " !important;" + "}" + "</style>" + '<gtdiv data-icon="' + form_settings.completed_dialog_icon + '">' + completed_dialog_icon + "<gtspan>" + String_Validator.validate(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + String_Validator.validate(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
+                            let success_icon = $('<gtdiv class="gigatester-controls-send-success">').html("<style>" + ":root {" + "--main-outro-icon: " + form_settings.completed_dialog_icon_colour + " !important;" + "}" + "</style>" + '<gtdiv data-icon="' + form_settings.completed_dialog_icon + '">' + completed_dialog_icon + "<gtspan>" + String_Validator.validate(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + String_Validator.validate(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
                             send_button.find(".gigatester-controls-send-text").text('Send feedback');

@@ -55,7 +55,7 @@
       GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
     (function(d) {
         var s = d.createElement('script'); s.async = true;
-        s.src = 'https://dev.gigatester.io/dist/feedback-agent/browser/gigatester_script.js';
+        s.src = `${window.location.origin}/dist/feedback-agent/browser/gigatester_script.js`;
         (d.head || d.body).appendChild(s);
     })(document);
     </script>

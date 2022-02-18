@@ -128,7 +128,14 @@ const FeedbackSettings = ({
               id={`category_$`}
               name={`category_$`}
               label='Message on the feedbacks window.'
-              value={productParams.products[0].feedbackAgentSettings.feedbackSettings.title}
+              value={
+                (productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                  productParams.products[0].feedbackAgentSettings.feedbackSettings.title)
+                  ? productParams.products[0].feedbackAgentSettings.feedbackSettings.title
+                  : ''
+              }
               fullWidth
               onChange={(event) => handleFeedbackTitleChange()}
               autoComplete='off'

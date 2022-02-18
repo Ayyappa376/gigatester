@@ -215,12 +215,12 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             uploadFileMaxSize: '400',
             videoAudioMaxDuration: '1.5',
             widgetLookAndFeel: {
-              bgColor: '#2878f0',
+              bgColor: '#042e5b',
               fgColor: '#ffffff',
               font: 'inherit',
               icon: '',
               position: 'center right',
-              text: 'feedback',
+              text: 'Feedback',
             }
           };
         }
@@ -657,9 +657,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
 
   const copyToClipboard = () => {
     const textArea = document.querySelector('#widgetScript');
-    console.log(textArea);
     const textToCopy = (textArea && textArea.textContent) ? textArea.textContent : '';
-    console.log(textToCopy);
     navigator.clipboard.writeText(textToCopy);
   }
 
