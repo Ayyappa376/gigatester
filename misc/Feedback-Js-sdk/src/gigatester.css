@@ -1,7 +1,7 @@
 @import "https://fonts.googleapis.com/css2?family=Merriweather Sans:wght@300;400;500;600;700&display=swap";
 :root {
-  --main-button-bg: #042e5b;
-  --main-button-text: #ffffff;
+  --main-btn-bg: #042e5b;
+  --main-btn-text: #ffffff;
   --main-outro-icon: #00c878;
 }
 
@@ -12,13 +12,13 @@ gtdiv {
 gtspan {
   all: unset;
 }
-.gigatester-session-frame {
+/*.gigatester-session-frame {
   display: none !important;
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
-}
-#gigatester_image_overlay{
+}*/
+#gigatester_screencapture_area{
   background: none;
   position: fixed;
   top: 0;
@@ -26,10 +26,12 @@ gtspan {
   width: 100%;
   height: 100%;
 }
+/*
 #gigatester-image-overlay .gigatester-image-overlay-hide{
     display: none;
 }
-.gigatester-button-input {
+*/
+.gigatester-input-btn {
   position: relative;
   display: block;
   margin: 0;
@@ -44,26 +46,26 @@ gtspan {
   text-align: center;
   background-color: #042e5b !important;
   color: #fff !important;
-  background-color: var(--main-button-bg) !important;
-  color: var(--main-button-text) !important;
+  background-color: var(--main-btn-bg) !important;
+  color: var(--main-btn-text) !important;
   cursor: pointer;
   box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
   box-sizing: border-box;
   outline: none;
 }
-.gigatester-button-input::-moz-focus-inner {
+.gigatester-input-btn::-moz-focus-inner {
   padding: 0;
   border: 0;
 }
-.gigatester-button-input:focus {
+.gigatester-input-btn:focus {
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2) inset;
 }
-.gigatester-button-input:disabled {
+.gigatester-input-btn:disabled {
   box-shadow: none;
   cursor: not-allowed;
 }
-.gigatester-button-input .gigatester-controls-send-text {
-  color: var(--main-button-text) !important;
+.gigatester-input-btn .gigatester-ctrl-item-send-text {
+  color: var(--main-btn-text) !important;
 }
 gtclose {
   width: auto;
@@ -91,7 +93,7 @@ gtclose {
   box-sizing: border-box;
   cursor: pointer;
   background: #042e5b;
-  background: var(--main-button-bg);
+  background: var(--main-btn-bg);
 }
 gtclose svg {
   display: block !important;
@@ -99,9 +101,9 @@ gtclose svg {
   width: 14px;
   height: 14px;
   fill: #fff;
-  fill: var(--main-button-text);
+  fill: var(--main-btn-text);
 }
-.gigatester-button-close-light {
+.gigatester-btn-close-light {
   width: auto;
   height: auto;
   line-height: normal;
@@ -126,17 +128,17 @@ gtclose svg {
   cursor: pointer;
   background: rgba(53, 76, 95, 0.1);
 }
-.gigatester-button-close-light svg {
+.gigatester-btn-close-light svg {
   display: block;
   margin: 4px auto;
   width: 12px;
   height: 12px;
   fill: rgba(53, 76, 95, 0.4);
 }
-.gigatester-button-close-light:hover {
+.gigatester-btn-close-light:hover {
   background: rgba(53, 76, 95, 0.2);
 }
-.gigatester-button-close-light:hover svg {
+.gigatester-btn-close-light:hover svg {
   fill: rgba(53, 76, 95, 0.8);
 }
 .gigatester-mobile-only {
@@ -350,7 +352,7 @@ gttoolbar .gigatester-toolbar-tool-done span {
   border-radius: 0;
   background: none;
   color: #fff;
-  color: var(--main-button-text);
+  color: var(--main-btn-text);
   line-height: 34px;
   font-size: 14px;
   font-weight: 500;
@@ -404,7 +406,7 @@ gttoolbar .gigatester-toolbar-close span {
   border-radius: 0;
   background: none;
   color: #fff;
-  color: var(--main-button-text);
+  color: var(--main-btn-text);
   line-height: 34px;
   font-size: 14px;
   font-weight: 500;
@@ -590,7 +592,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   right: 0;
   height: 4px;
   background: #042e5b;
-  background: var(--main-button-bg);
+  background: var(--main-btn-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
   pointer-events: none;
@@ -610,7 +612,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   bottom: 0;
   width: 4px;
   background: #042e5b;
-  background: var(--main-button-bg);
+  background: var(--main-btn-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
   pointer-events: none;
@@ -758,7 +760,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   left: -20px;
   width: 35px;
   height: 35px;
-  background: var(--main-button-bg) !important;
+  background: var(--main-btn-bg) !important;
   border-radius: 5px;
   border: none;
   box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
@@ -939,7 +941,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   opacity: 0.2;
   cursor: default;
 }
-.gigatester-comment .gigatester-comment-form .gigatester-button-input {
+.gigatester-comment .gigatester-comment-form .gigatester-input-btn {
   height: 30px;
   line-height: 30px;
   padding: 0 14px;
@@ -1042,20 +1044,20 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-close svg path {
   fill: rgba(53, 76, 95, 0.4);
 }
-#gigatester_button_container {
+#gigatester_ctrls_container {
   display: block;
   width: auto !important;
   height: auto !important;
 }
 @media print {
-  #gigatester_button_container {
+  #gigatester_ctrls_container {
     display: none;
   }
 }
-.gigatester-modal-open #gigatester_button_container {
+.gigatester-modal-open #gigatester_ctrls_container {
   filter: blur(5px);
 }
-#gigatester_button_container .gigatester-button {
+#gigatester_ctrls_container .gigatester-btn {
   display: block;
   position: fixed;
   z-index: 2147483644;
@@ -1069,8 +1071,8 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   border-radius: 3px 3px 0 0;
   background-color: #042e5b;
   color: #fff;
-  background-color: var(--main-button-bg);
-  color: var(--main-button-text);
+  background-color: var(--main-btn-bg);
+  color: var(--main-btn-text);
   background-image: none;
   text-align: center;
   font-size: 14px;
@@ -1084,21 +1086,21 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   user-select: none;
   -webkit-font-smoothing: antialiased;
 }
-#gigatester_button_container .gigatester-button svg path {
+#gigatester_ctrls_container .gigatester-btn svg path {
   fill: #fff;
-  fill: var(--main-button-text);
+  fill: var(--main-btn-text);
 }
-#gigatester_button_container .gigatester-button[wstyle="text"],
-#gigatester_button_container .gigatester-button[wstyle="text_icon"] {
+#gigatester_ctrls_container .gigatester-btn[wstyle="text"],
+#gigatester_ctrls_container .gigatester-btn[wstyle="text_icon"] {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   white-space: nowrap !important;
 }
-#gigatester_button_container .gigatester-button[wstyle="text"]:hover,
-#gigatester_button_container .gigatester-button[wstyle="text_icon"]:hover {
+#gigatester_ctrls_container .gigatester-btn[wstyle="text"]:hover,
+#gigatester_ctrls_container .gigatester-btn[wstyle="text_icon"]:hover {
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
 }
-#gigatester_button_container .gigatester-button[wstyle="text"]:hover:before,
-#gigatester_button_container .gigatester-button[wstyle="text_icon"]:hover:before {
+#gigatester_ctrls_container .gigatester-btn[wstyle="text"]:hover:before,
+#gigatester_ctrls_container .gigatester-btn[wstyle="text_icon"]:hover:before {
   content: "";
   position: absolute;
   top: 0;
@@ -1107,16 +1109,16 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   left: 0;
   background-color: rgba(0, 0, 0, 0.05);
 }
-#gigatester_button_container .gigatester-button[wstyle="text_icon"] {
+#gigatester_ctrls_container .gigatester-btn[wstyle="text_icon"] {
   padding: 0 16px 0 14px;
 }
-#gigatester_button_container .gigatester-button[wstyle="text_icon"] svg {
+#gigatester_ctrls_container .gigatester-btn[wstyle="text_icon"] svg {
   float: left;
   width: 16px;
   height: 16px;
   margin: 12px 4px 0 0;
 }
-#gigatester_button_container .gigatester-button[wstyle="circle"] {
+#gigatester_ctrls_container .gigatester-btn[wstyle="circle"] {
   bottom: 20px;
   width: 56px;
   height: 56px;
@@ -1126,10 +1128,10 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   box-sizing: border-box;
   animation: feedbackZoomInUp 0.2s linear;
 }
-#gigatester_button_container .gigatester-button[wstyle="circle"]:hover {
+#gigatester_ctrls_container .gigatester-btn[wstyle="circle"]:hover {
   transform: scale(1.1);
 }
-#gigatester_button_container .gigatester-button[wstyle="circle"] svg {
+#gigatester_ctrls_container .gigatester-btn[wstyle="circle"] svg {
   position: absolute;
   top: 0;
   right: 0;
@@ -1141,7 +1143,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   fill: #fff;
   box-sizing: border-box;
 }
-#gigatester_button_container .gigatester-button-e {
+#gigatester_ctrls_container .gigatester-btn-r {
   right: -35px;
   top: 50%;
   margin-top: -20px;
@@ -1151,25 +1153,25 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   animation: feedbackSlideLeft 0.2s linear;
   border-bottom: 2px solid transparent;
 }
-#gigatester_button_container .gigatester-button-e[wstyle="text"],
-#gigatester_button_container .gigatester-button-e[wstyle="text_icon"] {
+#gigatester_ctrls_container .gigatester-btn-r[wstyle="text"],
+#gigatester_ctrls_container .gigatester-btn-r[wstyle="text_icon"] {
   transform: rotate(-90deg) translate(50%, -50%);
   transform-origin: 100% 50%;
 }
-#gigatester_button_container .gigatester-button-e[wstyle="text"]:hover,
-#gigatester_button_container .gigatester-button-e[wstyle="text_icon"]:hover {
+#gigatester_ctrls_container .gigatester-btn-r[wstyle="text"]:hover,
+#gigatester_ctrls_container .gigatester-btn-r[wstyle="text_icon"]:hover {
   right: 0;
 }
-#gigatester_button_container .gigatester-button-e[wstyle="text_icon"] svg {
+#gigatester_ctrls_container .gigatester-btn-r[wstyle="text_icon"] svg {
   transform: rotate(90deg);
 }
-#gigatester_button_container .gigatester-button-e[wstyle="circle"] {
+#gigatester_ctrls_container .gigatester-btn-r[wstyle="circle"] {
   right: 20px;
   top: 50%;
   margin-top: -28px;
   animation: feedbackZoomIn 0.2s linear;
 }
-#gigatester_button_container .gigatester-controls {
+#gigatester_ctrls_container .gigatester-ctrl-item {
   width: auto;
   height: auto;
   line-height: normal;
@@ -1206,7 +1208,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   -webkit-font-smoothing: antialiased;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls {
+  #gigatester_ctrls_container .gigatester-ctrl-item {
     overflow: auto;
     top: auto;
     left: 0;
@@ -1223,12 +1225,12 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   }
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls gtclose {
+  #gigatester_ctrls_container .gigatester-ctrl-item gtclose {
     top: 8px;
     right: 8px;
   }
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-logo {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-logo {
   width: auto;
   height: auto;
   line-height: normal;
@@ -1246,7 +1248,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   max-height: 36px;
   margin: 24px auto 32px auto;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-header {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-header {
     width: auto;
     height: auto;
     line-height: normal;
@@ -1267,7 +1269,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
     max-height: 36px;
     margin: 20px auto 20px auto;
   }
-#gigatester_button_container .gigatester-controls .gigatester-controls-step {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-step {
   width: auto;
   height: auto;
   line-height: normal;
@@ -1282,20 +1284,20 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   border-radius: 0;
   background: none;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other {
   display: block;
   position: relative;
@@ -1307,60 +1309,60 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   word-break: break-all;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-draw,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-video,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-form,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-help,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-other {
     padding: 24px 0 24px 68px;
   }
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw:hover,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video:hover,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form:hover,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help:hover,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other:hover {
   background-color: rgba(240, 243, 249, 0.9);
   transform: scale(1.02);
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   > gtdiv:nth-child(2),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   > gtdiv:nth-child(2),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   > gtdiv:nth-child(2),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   > gtdiv:nth-child(2),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   > gtdiv:nth-child(2) {
   margin-bottom: 4px;
@@ -1369,48 +1371,48 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   color: #354c5f;
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   > gtdiv:nth-child(3),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   > gtdiv:nth-child(3),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   > gtdiv:nth-child(3),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   > gtdiv:nth-child(3),
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   > gtdiv:nth-child(3) {
   font-size: 14px;
   color: rgba(53, 76, 95, 0.8);
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   svg,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   svg,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   svg,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   svg,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   svg {
   position: absolute;
@@ -1422,184 +1424,184 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   margin: auto;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-draw
     svg,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-video
     svg,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-form
     svg,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-help
     svg,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     gtroutemenu.gigatester-feedback-type-other
     svg {
     left: 12px;
   }
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   svg
   polygon,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   svg
   circle,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   svg
   polygon,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   svg
   circle,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   svg
   polygon,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   svg
   circle,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   svg
   polygon,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   svg
   circle,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   svg
   polygon,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   svg
   circle,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   svg
   path {
   fill: #354c5f;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   svg
   polygon.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   svg
   circle.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-draw
   svg
   path.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   svg
   polygon.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   svg
   circle.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-video
   svg
   path.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   svg
   polygon.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   svg
   circle.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-form
   svg
   path.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   svg
   polygon.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   svg
   circle.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-help
   svg
   path.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   svg
   polygon.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   svg
   circle.colour,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtroutemenu.gigatester-feedback-type-other
   svg
   path.colour {
   fill: #236ca2;
 }
-#gigatester_button_container .gigatester-controls gtfooter {
+#gigatester_ctrls_container .gigatester-ctrl-item gtfooter {
   display: block;
   height: 16px;
   font-size:10px;
@@ -1610,7 +1612,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   box-sizing: border-box;
   user-select: none;
 }
-#gigatester_button_container .gigatester-controls gtfooter svg {
+#gigatester_ctrls_container .gigatester-ctrl-item gtfooter svg {
   display: inline-block;
   width: 12px;
   height: 12px;
@@ -1618,19 +1620,19 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   vertical-align: top;
   transform: translateY(4px);
 }
-#gigatester_button_container .gigatester-controls gtfooter svg path:first-child {
+#gigatester_ctrls_container .gigatester-ctrl-item gtfooter svg path:first-child {
   fill: rgba(53, 76, 95, 0.6);
 }
-#gigatester_button_container .gigatester-controls gtfooter svg path:last-child {
+#gigatester_ctrls_container .gigatester-ctrl-item gtfooter svg path:last-child {
   fill: rgba(53, 76, 95, 0.4);
 }
-#gigatester_button_container .gigatester-controls gtfooter > a {
+#gigatester_ctrls_container .gigatester-ctrl-item gtfooter > a {
   display: inline-block;
   margin: 0;
   padding: 0;
   text-decoration: none;
 }
-#gigatester_button_container .gigatester-controls gtfooter > a > span:first-child {
+#gigatester_ctrls_container .gigatester-ctrl-item gtfooter > a > span:first-child {
   display: inline-block;
   margin: 0 8px 0 0;
   font-size: 12px;
@@ -1638,7 +1640,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   font-weight: normal;
   color: rgba(53, 76, 95, 0.4);
 }
-#gigatester_button_container .gigatester-controls gtfooter > a > span:last-child {
+#gigatester_ctrls_container .gigatester-ctrl-item gtfooter > a > span:last-child {
   display: inline-block;
   font-weight: 600;
   font-size: 12px;
@@ -1647,35 +1649,35 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   text-transform: uppercase;
   vertical-align: baseline;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtfooter
   > a:hover
   > span:first-child {
   color: rgba(53, 76, 95, 0.6);
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtfooter
   > a:hover
   > span:last-child {
   color: rgba(53, 76, 95, 0.8);
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtfooter
   > a:hover
   path:first-child {
   fill: #042e5b;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtfooter
   > a:hover
   path:last-child {
   fill: #00c878;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-help-message {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-help-message {
   width: auto;
   height: auto;
   line-height: 150%;
@@ -1686,7 +1688,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   font-size: 14px;
   font-weight: 300;
 }
-.gigatester-controls-loader{
+.gigatester-ctrl-item-loader{
   border: 16px solid #f3f3f3; /* Light grey */
   border-top: 16px solid #042e5b; /* Blue */
   border-radius: 50%;
@@ -1729,7 +1731,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   height: 100vw;
   background-color: #000;
 }
-.gigatester-controls-loader-toggle{
+.gigatester-ctrl-item-loader-toggle{
 display: flex;
 justify-content: center;
 }
@@ -1737,7 +1739,7 @@ justify-content: center;
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-#gigatester_button_container .gigatester-controls gtrating {
+#gigatester_ctrls_container .gigatester-ctrl-item gtrating {
   position: relative;
   display: block;
   width: auto;
@@ -1746,7 +1748,7 @@ justify-content: center;
   padding: 0;
   text-align: center;
 }
-#gigatester_button_container .gigatester-controls gtrating > gtdiv {
+#gigatester_ctrls_container .gigatester-ctrl-item gtrating > gtdiv {
   display: inline-block;
   padding: 0 8px;
   margin: 0;
@@ -1756,25 +1758,25 @@ justify-content: center;
   cursor: pointer;
   border: none;
 }
-#gigatester_button_container .gigatester-controls gtrating > gtdiv svg {
+#gigatester_ctrls_container .gigatester-ctrl-item gtrating > gtdiv svg {
   display: block !important;
   width: 40px !important;
   height: 40px !important;
   margin: auto auto 14px auto !important;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls gtrating > gtdiv svg {
+  #gigatester_ctrls_container .gigatester-ctrl-item gtrating > gtdiv svg {
     width: 32px !important;
   }
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv[data-rating="thumb_up"] {
   padding: 0 12px;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv[data-rating="thumb_up"]
   svg {
@@ -1782,14 +1784,14 @@ justify-content: center;
   height: 52px !important;
   transform: translateY(-4px);
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv[data-rating="thumb_down"] {
   padding: 0 12px;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv[data-rating="thumb_down"]
   svg {
@@ -1797,59 +1799,59 @@ justify-content: center;
   height: 52px !important;
   transform: translateY(4px);
 }
-#gigatester_button_container .gigatester-controls gtrating > gtdiv.selected span {
+#gigatester_ctrls_container .gigatester-ctrl-item gtrating > gtdiv.selected span {
   font-weight: 700;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.inactive:not(.highlight)
   svg
   .bg {
   fill: #e1e5eb;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.inactive:not(.highlight)
   svg
   .shape {
   fill: #c2cad2;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.inactive:not(.highlight)
   svg
   .star,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.inactive:not(.highlight)
   svg
   .heart,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.inactive:not(.highlight)
   svg
   .thumb {
   fill: #e1e5eb;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.preview:not(.highlight)
   svg
   .star,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.preview:not(.highlight)
   svg
   .heart,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   gtrating
   > gtdiv.preview:not(.highlight)
   svg
@@ -1875,7 +1877,7 @@ justify-content: center;
   text-align: center;
 }
 
-#gigatester_button_container .gigatester-controls .gigatester-controls-options { 
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options { 
   width: auto;
   height: auto;
   line-height: normal;
@@ -1894,29 +1896,29 @@ justify-content: center;
   display: block;
 } */
 
-#gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options::-webkit-scrollbar {
   /* height: calc(100vh - 230px); */
   width: 7px;
   margin-left: 3px;
   }
-#gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar-track  {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options::-webkit-scrollbar-track  {
   /* height: calc(100vh - 230px); */
   background: transparent;
   border-radius: 5px;
   box-shadow: inset 0 0 6px rgba(94, 94, 94, 0.3);
   border: none;
   }
-#gigatester_button_container .gigatester-controls .gigatester-controls-options::-webkit-scrollbar-thumb  {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options::-webkit-scrollbar-thumb  {
     /* height: calc(100vh - 230px); */
     background: #a7a7a7;
     border-radius: 5px;
     }
-#gigatester_button_container .gigatester-controls .gigatester-controls-form {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form {
       /* height: calc(100vh - 230px); */
       color: rgb(50, 50, 50);
   }
 
-#gigatester_button_container .gigatester-controls .gigatester-disclaimer {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-disclaimer {
   width: auto;
   height: auto;
   line-height: normal;
@@ -1934,58 +1936,58 @@ justify-content: center;
   padding: 4px 0 4px 0;
   font-size: 13px;
 }
-#gigatester_button_container .gigatester-controls .gigatester-disclaimer a {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-disclaimer a {
   color: #4c545b;
   text-decoration: underline;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions {
   height: 52px;
   margin: 0 0 10px 0;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="4"]
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="4"]
   btn {
   width: 25%;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="3"]
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="3"]
   btn {
   width: 33.3333%;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="2"]
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="2"]
   btn {
   width: 50%;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="1"] {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="1"] {
   height: auto;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="1"]
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="1"]
   btn {
   display: block;
   float: none;
   width: 100%;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="1"]
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="1"]
   btn
   > svg {
   float: left;
   margin: 13px 12px 0 24px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="1"]
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="1"]
   btn
   > gtdiv {
   display: block;
@@ -1993,16 +1995,16 @@ justify-content: center;
   line-height: 50px;
   font-size: 14px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions[data-item="1"]
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions[data-item="1"]
   btn:hover:not([disabled])
   gttooltip {
   display: none;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn {
   position: relative;
   float: left;
@@ -2015,57 +2017,57 @@ justify-content: center;
   cursor: pointer;
   box-sizing: border-box;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn:first-child {
   border-top-left-radius: 10px;
   border-bottom-left-radius: 10px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn:last-child {
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   border-right-width: 1px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn:hover:not([disabled]) {
   background: #f6f8fc;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn:hover:not([disabled])
   gttooltip {
   display: block;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn:hover:not([disabled])
   svg {
   fill: #354c5f;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn[disabled] {
   cursor: not-allowed;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn[disabled]
   > svg {
   opacity: 0.4;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn
   > svg {
   display: block !important;
@@ -2075,16 +2077,16 @@ justify-content: center;
   fill: rgba(53, 76, 95, 0.8);
   /* vertical-align: unset; */
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn
   > gtdiv {
   display: none;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn
   .gigatester-screenshot-preview-checkmark {
   display: none;
@@ -2095,18 +2097,18 @@ justify-content: center;
   height: 18px;
   margin: auto;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   btn
   .gigatester-screenshot-preview-checkmark
   svg {
   width: 18px;
   height: 18px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   gttooltip {
   display: none;
   position: absolute;
@@ -2123,9 +2125,9 @@ justify-content: center;
   background-color: #354c5f;
   transform: translateX(-50%);
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attach-actions
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attach-actions
   gttooltip:after {
   content: "";
   position: absolute;
@@ -2138,13 +2140,13 @@ justify-content: center;
   border: 6px solid transparent;
   border-top-color: #354c5f;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview,
-#gigatester_button_container .gigatester-controls .gigatester-controls-video-preview,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview,
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-video-preview,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name {
   display: none;
   position: relative;
   height: 50px;
@@ -2156,28 +2158,28 @@ justify-content: center;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview.gigatester-controls-attachment-name,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview.gigatester-controls-attachment-name,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name.gigatester-controls-attachment-name {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview.gigatester-ctrl-item-attachment-name,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview.gigatester-ctrl-item-attachment-name,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name.gigatester-ctrl-item-attachment-name {
   padding-left: 34px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
   > svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
   > svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
   > svg {
   position: absolute;
   top: 0;
@@ -2188,17 +2190,17 @@ justify-content: center;
   margin: auto;
   fill: #354c5f;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
   > span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
   > span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
   > span {
   width: auto;
   height: auto;
@@ -2217,17 +2219,17 @@ justify-content: center;
   font-size: 13px;
   text-transform: none;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
   > btn,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
   > btn,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
   > btn {
   float: right;
   width: 30px;
@@ -2236,19 +2238,19 @@ justify-content: center;
   cursor: pointer;
   border-radius: 4px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
   > btn
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
   > btn
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
   > btn
   svg {
   display: block !important;
@@ -2256,135 +2258,135 @@ justify-content: center;
   height: 16px;
   margin: 7px auto;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
   > btn
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
   > btn
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
   > btn
   svg
   path {
   fill: #354c5f;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
   > btn:hover:not([disabled]),
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
   > btn:hover:not([disabled]),
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
   > btn:hover:not([disabled]) {
   background: rgba(0, 0, 0, 0.02);
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  > btn.gigatester-controls-remove-screenshot:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  > btn.gigatester-ctrl-item-remove-screenshot:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  > btn.gigatester-controls-remove-video:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  > btn.gigatester-ctrl-item-remove-video:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  > btn.gigatester-controls-remove-attachment:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  > btn.gigatester-ctrl-item-remove-attachment:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  > btn.gigatester-controls-remove-screenshot:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  > btn.gigatester-ctrl-item-remove-screenshot:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  > btn.gigatester-controls-remove-video:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  > btn.gigatester-ctrl-item-remove-video:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  > btn.gigatester-controls-remove-attachment:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  > btn.gigatester-ctrl-item-remove-attachment:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  > btn.gigatester-controls-remove-screenshot:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  > btn.gigatester-ctrl-item-remove-screenshot:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  > btn.gigatester-controls-remove-video:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  > btn.gigatester-ctrl-item-remove-video:hover
   svg
   path,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  > btn.gigatester-controls-remove-attachment:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  > btn.gigatester-ctrl-item-remove-attachment:hover
   svg
   path {
   fill: #2787f0;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
   > btn[disabled],
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
   > btn[disabled],
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
   > btn[disabled] {
   cursor: not-allowed;
   opacity: 0.4;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-video-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-video-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-video-thumbnail {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-video-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-video-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-video-thumbnail {
   display: block;
   position: relative;
   float: left;
@@ -2397,35 +2399,35 @@ justify-content: center;
   border-radius: 4px;
   user-select: none;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   > svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-video-thumbnail
   > svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   > svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-video-thumbnail
   > svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail
   > svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-video-thumbnail
   > svg {
   float: left;
   display: block;
@@ -2433,122 +2435,122 @@ justify-content: center;
   margin: 7px 0 0 0;
   fill: #fff;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-video-thumbnail
   span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-video-thumbnail
   span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail
   span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-video-thumbnail
   span {
   font-size: 13px;
   color: #fff;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail {
   padding: 0 12px 0 4px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail
   svg {
   width: 16px;
   height: 16px;
   margin: 7px 0 0 4px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail
   span {
   margin-left: 8px;
   text-transform: capitalize;
   vertical-align: middle;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail:hover
   .gigatester-screenshot-preview,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail:hover
   .gigatester-screenshot-preview,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail:hover
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail:hover
   .gigatester-screenshot-preview {
   display: block;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   .gigatester-screenshot-preview,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   .gigatester-screenshot-preview,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail
   .gigatester-screenshot-preview {
   width: auto;
   height: auto;
@@ -2570,22 +2572,22 @@ justify-content: center;
   white-space: nowrap;
   animation: feedbackFadeIn 0.2s;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   .gigatester-screenshot-preview
   img,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-thumbnail
   .gigatester-screenshot-preview
   img,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-thumbnail
   .gigatester-screenshot-preview
   img {
   width: auto;
@@ -2608,49 +2610,49 @@ justify-content: center;
   border-radius: 4px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-video-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-video-thumbnail,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-video-thumbnail {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-video-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-video-thumbnail,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-video-thumbnail {
   cursor: pointer;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-video-thumbnail
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-video-thumbnail
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-video-thumbnail
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-video-thumbnail
   svg {
   margin: 7px 6px 0 6px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-counter,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-counter,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-counter {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-counter,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-counter,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-counter {
   width: auto;
   height: auto;
   line-height: normal;
@@ -2668,20 +2670,20 @@ justify-content: center;
   margin-left: 6px;
   line-height: 50px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-counter
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-counter
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-counter
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-counter
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-counter
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-counter
   svg {
   float: left;
   display: block;
@@ -2689,25 +2691,25 @@ justify-content: center;
   height: 12px;
   margin: 19px 2px 4px 0;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-screenshot-preview
-  .gigatester-controls-screenshot-counter
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-screenshot-preview
+  .gigatester-ctrl-item-screenshot-counter
   > span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-video-preview
-  .gigatester-controls-screenshot-counter
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-video-preview
+  .gigatester-ctrl-item-screenshot-counter
   > span,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-attachment-name
-  .gigatester-controls-screenshot-counter
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-attachment-name
+  .gigatester-ctrl-item-screenshot-counter
   > span {
   color: #354c5f;
 }
-#gigatester_button_container .gigatester-controls input[type="text"],
-#gigatester_button_container .gigatester-controls input[type="email"] {
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="text"],
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="email"] {
   display: block;
   width: 100%;
   height: auto;
@@ -2740,51 +2742,51 @@ justify-content: center;
   color: #354c5f;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls input[type="text"],
-  #gigatester_button_container .gigatester-controls input[type="email"] {
+  #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"],
+  #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"] {
     font-size: 16px !important;
   }
 }
-#gigatester_button_container .gigatester-controls input[type="text"]:focus,
-#gigatester_button_container .gigatester-controls input[type="email"]:focus {
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]:focus,
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]:focus {
   border-color: #eee;
 }
-#gigatester_button_container .gigatester-controls input[type="text"]::placeholder,
-#gigatester_button_container .gigatester-controls input[type="email"]::placeholder {
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]::placeholder,
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]::placeholder {
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(53, 76, 95, 0.4);
   text-transform: none;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls input[type="text"]::placeholder,
-  #gigatester_button_container
-    .gigatester-controls
+  #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]::placeholder,
+  #gigatester_ctrls_container
+    .gigatester-ctrl-item
     input[type="email"]::placeholder {
     font-size: 16px !important;
   }
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   input[type="text"]:-ms-input-placeholder,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   input[type="email"]:-ms-input-placeholder {
   color: #aaa;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   input[type="text"]::-ms-input-placeholder,
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   input[type="email"]::-ms-input-placeholder {
   color: #aaa;
 }
-#gigatester_button_container .gigatester-controls input[type="text"]:focus,
-#gigatester_button_container .gigatester-controls input[type="email"]:focus {
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]:focus,
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]:focus {
   border-color: #76bce2;
 }
-#gigatester_button_container .gigatester-controls select {
+#gigatester_ctrls_container .gigatester-ctrl-item select {
   display: block;
   width: 100%;
   height: auto;
@@ -2821,34 +2823,34 @@ justify-content: center;
   border-radius: 10px;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls select {
+  #gigatester_ctrls_container .gigatester-ctrl-item select {
     font-size: 16px !important;
   }
 }
-#gigatester_button_container .gigatester-controls select:focus {
+#gigatester_ctrls_container .gigatester-ctrl-item select:focus {
   border-color: #eee;
 }
-#gigatester_button_container .gigatester-controls select::placeholder {
+#gigatester_ctrls_container .gigatester-ctrl-item select::placeholder {
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(53, 76, 95, 0.4);
   text-transform: none;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls select::placeholder {
+  #gigatester_ctrls_container .gigatester-ctrl-item select::placeholder {
     font-size: 16px !important;
   }
 }
-#gigatester_button_container .gigatester-controls select:-ms-input-placeholder {
+#gigatester_ctrls_container .gigatester-ctrl-item select:-ms-input-placeholder {
   color: #aaa;
 }
-#gigatester_button_container .gigatester-controls select::-ms-input-placeholder {
+#gigatester_ctrls_container .gigatester-ctrl-item select::-ms-input-placeholder {
   color: #aaa;
 }
-#gigatester_button_container .gigatester-controls select:focus {
+#gigatester_ctrls_container .gigatester-ctrl-item select:focus {
   border-color: #76bce2;
 }
-#gigatester_button_container .gigatester-controls textarea {
+#gigatester_ctrls_container .gigatester-ctrl-item textarea {
   display: block;
   width: 100%;
   height: auto;
@@ -2879,34 +2881,34 @@ justify-content: center;
   transition: all 0.1s linear;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls textarea {
+  #gigatester_ctrls_container .gigatester-ctrl-item textarea {
     font-size: 16px !important;
   }
 }
-#gigatester_button_container .gigatester-controls textarea:focus {
+#gigatester_ctrls_container .gigatester-ctrl-item textarea:focus {
   border-color: #eee;
 }
-#gigatester_button_container .gigatester-controls textarea::placeholder {
+#gigatester_ctrls_container .gigatester-ctrl-item textarea::placeholder {
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(53, 76, 95, 0.4);
   text-transform: none;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls textarea::placeholder {
+  #gigatester_ctrls_container .gigatester-ctrl-item textarea::placeholder {
     font-size: 16px !important;
   }
 }
-#gigatester_button_container .gigatester-controls textarea:-ms-input-placeholder {
+#gigatester_ctrls_container .gigatester-ctrl-item textarea:-ms-input-placeholder {
   color: #aaa;
 }
-#gigatester_button_container .gigatester-controls textarea::-ms-input-placeholder {
+#gigatester_ctrls_container .gigatester-ctrl-item textarea::-ms-input-placeholder {
   color: #aaa;
 }
-#gigatester_button_container .gigatester-controls textarea:focus {
+#gigatester_ctrls_container .gigatester-ctrl-item textarea:focus {
   border-color: #76bce2;
 }
-#gigatester_button_container .gigatester-controls .gigatester-checkbox-container {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-checkbox-container {
   position: relative;
   overflow: hidden;
   margin: 16px 0 4px 0;
@@ -2924,28 +2926,28 @@ justify-content: center;
   color: #354c5f;
   font-family: inherit;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   > gtdiv {
   display: inline-block;
   cursor: pointer;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   > gtdiv:hover:not[disabled]
   .gigatester-checkbox {
   border-color: #76bce2;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   > gtdiv[disabled] {
   cursor: not-allowed;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   input[type="checkbox"] {
   position: absolute;
@@ -2959,8 +2961,8 @@ justify-content: center;
   opacity: 0 !important;
   pointer-events: none;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   .gigatester-checkbox {
   width: auto;
@@ -2985,8 +2987,8 @@ justify-content: center;
   box-sizing: border-box;
   transition: all 0.1s;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   .gigatester-checkbox
   svg {
@@ -2997,10 +2999,10 @@ justify-content: center;
   vertical-align: top !important;
   box-sizing: border-box;
   fill: #042e5b;
-  fill: var(--main-button-bg);
+  fill: var(--main-btn-bg);
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   .gigatester-checkbox-label {
   float: left;
@@ -3009,19 +3011,19 @@ justify-content: center;
   font-size: 13px;
   user-select: none;
 }
-#gigatester_button_container
-  .gigatester-controls
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
   .gigatester-checkbox-container
   .gigatester-checkbox-label
   a {
   color: #4c545b;
   text-decoration: underline;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-attachment {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-attachment {
   display: none !important;
   opacity: 0 !important;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-send-success {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success {
   position: absolute;
   top: 0;
   right: 0;
@@ -3030,9 +3032,9 @@ justify-content: center;
   background-color: #fff;
   border-radius: 5px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv {
   position: absolute;
   top: 60%;
@@ -3043,9 +3045,9 @@ justify-content: center;
   margin-top: -48px;
   text-align: center;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv
   .emoji-icon {
   display: block;
@@ -3055,17 +3057,17 @@ justify-content: center;
   font-size: 64px;
   animation: outro-icon-2 0.8s;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv
   svg {
   display: block;
   margin: auto;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv
   > gtspan {
   display: block;
@@ -3074,9 +3076,9 @@ justify-content: center;
   font-size: 18px;
   font-weight: 600;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv
   > p {
   width: auto;
@@ -3095,33 +3097,33 @@ justify-content: center;
   margin: 8px 0 0 0;
   font-size: 14px;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv[data-icon="1"]
   svg {
   width: 48px;
   height: 48px;
   fill: #fff;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv[data-icon="2"]
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv[data-icon="3"]
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv[data-icon="4"]
   svg,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   > gtdiv[data-icon="5"]
   svg {
   width: 64px;
@@ -3130,16 +3132,16 @@ justify-content: center;
   fill: #042e5b;
   fill: var(--main-outro-icon);
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-success
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-success
   gtfooter {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 32px;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-send {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send {
   overflow: hidden;
   position: relative;
   display: block;
@@ -3154,41 +3156,41 @@ justify-content: center;
   white-space: nowrap;
   transition: all 0.2s linear;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-send svg {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send svg {
   width: 18px;
   height: 18px;
   fill: #fff;
   animation: feedbackFadeInUp 0.1s;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-send-loading,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:hover {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:hover {
   color: transparent !important;
   cursor: default;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading
-  .gigatester-controls-send-text,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:hover
-  .gigatester-controls-send-text {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading
+  .gigatester-ctrl-item-send-text,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:hover
+  .gigatester-ctrl-item-send-text {
   color: transparent !important;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:before,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:after,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:hover:before,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:hover:after {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:before,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:after,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:hover:before,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:hover:after {
   content: "";
   position: absolute;
   top: 50%;
@@ -3201,29 +3203,29 @@ justify-content: center;
   border-radius: 50%;
   box-sizing: border-box;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:after,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-loading:hover:after {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:after,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-loading:hover:after {
   border-left-color: rgba(255, 255, 255, 0.9);
   animation: feedbackRotate 0.8s linear infinite;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-send-uploading,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-uploading:hover {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-uploading,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-uploading:hover {
   cursor: default;
 }
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-uploading
-  .gigatester-controls-send-progress,
-#gigatester_button_container
-  .gigatester-controls
-  .gigatester-controls-send-uploading:hover
-  .gigatester-controls-send-progress {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-uploading
+  .gigatester-ctrl-item-send-progress,
+#gigatester_ctrls_container
+  .gigatester-ctrl-item
+  .gigatester-ctrl-item-send-uploading:hover
+  .gigatester-ctrl-item-send-progress {
   width: auto;
   height: auto;
   line-height: normal;
@@ -3245,7 +3247,7 @@ justify-content: center;
   background-color: rgba(0, 0, 0, 0.1);
   transition: all 0.1s linear;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-send-error {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-error {
   width: auto;
   height: auto;
   line-height: normal;
@@ -3266,7 +3268,7 @@ justify-content: center;
   vertical-align: middle;
   font-size: 13px;
 }
-#gigatester_button_container .gigatester-controls .gigatester-controls-send-error-2 {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-error-2 {
   width: auto;
   height: auto;
   line-height: normal;
@@ -3289,24 +3291,24 @@ justify-content: center;
   color: #2787f0;
   font-size: 13px;
 }
-#gigatester_button_container .gigatester-controls-se {
+#gigatester_ctrls_container .gigatester-ctrl-item-br {
   left: auto;
   right: 20px;
   animation: feedbackControlsZoomIn 0.2s;
   transform-origin: 100% 100%;
 }
-#gigatester_button_container .gigatester-controls-se[wstyle="text"],
-#gigatester_button_container .gigatester-controls-se[wstyle="text_icon"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-br[wstyle="text"],
+#gigatester_ctrls_container .gigatester-ctrl-item-br[wstyle="text_icon"] {
   bottom: 60px;
 }
-#gigatester_button_container .gigatester-controls-se[wstyle="circle"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-br[wstyle="circle"] {
   bottom: 100px;
 }
-#gigatester_button_container .gigatester-controls-se[modal="true"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-br[modal="true"] {
   bottom: 20px;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls-se {
+  #gigatester_ctrls_container .gigatester-ctrl-item-br {
     top: auto;
     right: 0;
     bottom: 0 !important;
@@ -3315,24 +3317,24 @@ justify-content: center;
     animation: none;
   }
 }
-#gigatester_button_container .gigatester-controls-sw {
+#gigatester_ctrls_container .gigatester-ctrl-item-bl {
   right: auto;
   left: 20px;
   animation: feedbackControlsZoomIn 0.2s;
   transform-origin: 0 100%;
 }
-#gigatester_button_container .gigatester-controls-sw[wstyle="text"],
-#gigatester_button_container .gigatester-controls-sw[wstyle="text_icon"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-bl[wstyle="text"],
+#gigatester_ctrls_container .gigatester-ctrl-item-bl[wstyle="text_icon"] {
   bottom: 60px;
 }
-#gigatester_button_container .gigatester-controls-sw[wstyle="circle"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-bl[wstyle="circle"] {
   bottom: 100px;
 }
-#gigatester_button_container .gigatester-controls-sw[modal="true"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-bl[modal="true"] {
   bottom: 20px;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls-sw {
+  #gigatester_ctrls_container .gigatester-ctrl-item-bl {
     top: auto;
     right: 0;
     bottom: 0 !important;
@@ -3341,25 +3343,25 @@ justify-content: center;
     animation: none;
   }
 }
-#gigatester_button_container .gigatester-controls-e {
+#gigatester_ctrls_container .gigatester-ctrl-item-r {
   top: 50%;
   bottom: auto;
   left: auto;
   transform: translateY(-50%);
   animation: feedbackControlsSlideLeft 0.2s;
 }
-#gigatester_button_container .gigatester-controls-e[wstyle="text"],
-#gigatester_button_container .gigatester-controls-e[wstyle="text_icon"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-r[wstyle="text"],
+#gigatester_ctrls_container .gigatester-ctrl-item-r[wstyle="text_icon"] {
   right: 60px;
 }
-#gigatester_button_container .gigatester-controls-e[wstyle="circle"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-r[wstyle="circle"] {
   right: 100px;
 }
-#gigatester_button_container .gigatester-controls-e[modal="true"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-r[modal="true"] {
   right: 20px;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls-e {
+  #gigatester_ctrls_container .gigatester-ctrl-item-r {
     top: auto;
     right: 0 !important;
     bottom: 0;
@@ -3368,25 +3370,25 @@ justify-content: center;
     animation: none;
   }
 }
-#gigatester_button_container .gigatester-controls-w {
+#gigatester_ctrls_container .gigatester-ctrl-item-l {
   top: 50%;
   bottom: auto;
   right: auto;
   transform: translateY(-50%);
   animation: feedbackControlsSlideRight 0.2s;
 }
-#gigatester_button_container .gigatester-controls-w[wstyle="text"],
-#gigatester_button_container .gigatester-controls-w[wstyle="text_icon"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-l[wstyle="text"],
+#gigatester_ctrls_container .gigatester-ctrl-item-l[wstyle="text_icon"] {
   left: 60px;
 }
-#gigatester_button_container .gigatester-controls-w[wstyle="circle"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-l[wstyle="circle"] {
   left: 100px;
 }
-#gigatester_button_container .gigatester-controls-w[modal="true"] {
+#gigatester_ctrls_container .gigatester-ctrl-item-l[modal="true"] {
   left: 20px;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container .gigatester-controls-w {
+  #gigatester_ctrls_container .gigatester-ctrl-item-l {
     top: auto;
     right: 0;
     bottom: 0;
@@ -3395,13 +3397,13 @@ justify-content: center;
     animation: none;
   }
 }
-#gigatester_button_container
-  .gigatester-controls[poweredby]
-  .gigatester-controls-send {
+#gigatester_ctrls_container
+  .gigatester-ctrl-item[poweredby]
+  .gigatester-ctrl-item-send {
   margin-bottom: 2px;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container[isopen="true"] {
+  #gigatester_ctrls_container[isopen="true"] {
     position: fixed;
     z-index: 2147483642;
     top: 0;
@@ -3412,11 +3414,11 @@ justify-content: center;
   }
 }
 @media (max-width: 800px) {
-  #gigatester_button_container[isopen="true"] .gigatester-button {
+  #gigatester_ctrls_container[isopen="true"] .gigatester-btn {
     display: none !important;
   }
 }
-#gigatester_button_container[modal="true"][isopen="true"] {
+#gigatester_ctrls_container[modal="true"][isopen="true"] {
   overflow-x: hidden;
   overflow-y: auto;
   display: flex;
@@ -3435,22 +3437,22 @@ justify-content: center;
   scrollbar-color: transparent;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container[modal="true"][isopen="true"] {
+  #gigatester_ctrls_container[modal="true"][isopen="true"] {
     display: block;
     padding-top: 0;
     padding-bottom: 0;
   }
 }
-#gigatester_button_container[modal="true"][isopen="true"]::-webkit-scrollbar {
+#gigatester_ctrls_container[modal="true"][isopen="true"]::-webkit-scrollbar {
   width: 0;
   height: 0;
   background-color: transparent;
 }
-#gigatester_button_container[modal="true"][isopen="true"]::-webkit-scrollbar-thumb {
+#gigatester_ctrls_container[modal="true"][isopen="true"]::-webkit-scrollbar-thumb {
   border-radius: 0;
   background: transparent;
 }
-#gigatester_button_container[modal="true"][isopen="true"] .gigatester-controls {
+#gigatester_ctrls_container[modal="true"][isopen="true"] .gigatester-ctrl-item {
   position: relative;
   top: auto;
   right: auto;
@@ -3463,7 +3465,7 @@ justify-content: center;
   animation: feedbackFadeIn 0.1s linear 0.05s forwards;
 }
 @media (max-width: 800px) {
-  #gigatester_button_container[modal="true"][isopen="true"] .gigatester-controls {
+  #gigatester_ctrls_container[modal="true"][isopen="true"] .gigatester-ctrl-item {
     position: absolute;
     max-height: 100%;
     left: 0;
@@ -3475,13 +3477,13 @@ justify-content: center;
     box-shadow: none;
   }
 }
-#gigatester_button_container[modal="true"][isopen="true"][msie="true"]
-  .gigatester-controls {
+#gigatester_ctrls_container[modal="true"][isopen="true"][msie="true"]
+  .gigatester-ctrl-item {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
 }
-#gigatester_button_container[drawing="true"] {
+#gigatester_ctrls_container[drawing="true"] {
   position: static;
   top: auto;
   right: auto;
@@ -3682,7 +3684,7 @@ justify-content: center;
   margin: 0 8px 0 0;
   vertical-align: middle;
   fill: #042e5b;
-  fill: var(--main-button-bg);
+  fill: var(--main-btn-bg);
 }
 .gigatester-feedback-view
   .gigatester-feedback-view-title
@@ -3945,28 +3947,28 @@ justify-content: center;
   > gtdiv {
   display: block;
 }
-.gigatester-feedback-view-e,
-.gigatester-feedback-view-se {
+.gigatester-feedback-view-r,
+.gigatester-feedback-view-br {
   right: 0;
   left: auto;
   animation: feedbackFadeInRight 0.2s;
 }
 @media (max-width: 800px) {
-  .gigatester-feedback-view-e,
-  .gigatester-feedback-view-se {
+  .gigatester-feedback-view-r,
+  .gigatester-feedback-view-br {
     left: 0;
     animation: fadeIn 0.1s linear;
   }
 }
-.gigatester-feedback-view-w,
-.gigatester-feedback-view-sw {
+.gigatester-feedback-view-l,
+.gigatester-feedback-view-bl {
   left: 0;
   right: auto;
   animation: feedbackFadeInLeft 0.2s;
 }
 @media (max-width: 800px) {
-  .gigatester-feedback-view-w,
-  .gigatester-feedback-view-sw {
+  .gigatester-feedback-view-l,
+  .gigatester-feedback-view-bl {
     right: 0;
     animation: fadeIn 0.1s linear;
   }
@@ -4044,11 +4046,11 @@ gtmodal > gtdiv a {
   color: #042e5b;
   text-decoration: underline;
 }
-gtmodal > gtdiv .gigatester-modal-buttons {
+gtmodal > gtdiv .gigatester-modal-btns {
   margin-top: 20px;
   text-align: right;
 }
-gtmodal > gtdiv .gigatester-modal-buttons btn {
+gtmodal > gtdiv .gigatester-modal-btns btn {
   display: inline-block;
   height: 40px;
   line-height: 40px;
@@ -4060,12 +4062,12 @@ gtmodal > gtdiv .gigatester-modal-buttons btn {
   font-weight: 600;
   cursor: pointer;
 }
-gtmodal > gtdiv .gigatester-modal-buttons btn:first-child {
+gtmodal > gtdiv .gigatester-modal-btns btn:first-child {
   background: none;
   box-shadow: none;
   color: #4c545b;
 }
-gtmodal > gtdiv .gigatester-modal-buttons btn:first-child:hover {
+gtmodal > gtdiv .gigatester-modal-btns btn:first-child:hover {
   background: rgba(0, 0, 0, 0.03);
 }
 gtmodal > gtdiv .gigatester-modal-info-text {
@@ -4531,7 +4533,7 @@ gtvideotoolbar {
     4px 4px 0 0 rgba(128, 144, 160, 0.3), 4px 8px 0 0 rgba(128, 144, 160, 0.3),
     4px 12px 0 0 rgba(128, 144, 160, 0.3), 4px 16px 0 0 rgba(128, 144, 160, 0.3);
 } */
-.gigatester-powered-by-logo{
+.gigatester-footer{
   font-weight: 700;
 }
 #gigatester-popout-dialog-close{

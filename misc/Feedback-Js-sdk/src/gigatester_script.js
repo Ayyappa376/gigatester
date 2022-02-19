@@ -44,7 +44,7 @@ else{
             window.GigaTester = {}
         }
         window.GigaTester.hide = function(){
-            $(document.getElementById("gigatester_button_container")).css('display', 'none')
+            $(document.getElementById("gigatester_ctrls_container")).css('display', 'none')
         }
         let mySrcUrl = '';
         let sc = document.getElementsByTagName("script");
@@ -345,7 +345,7 @@ else{
                         }
                         detector.remove()
                     }, 10);
-                    let branding_css = ":root {" + "--main-button-bg: " + this.configs.main_button_background_colour + " !important;" + "--main-button-text: " + this.configs.main_button_text_colour + " !important;" + "}";
+                    let branding_css = ":root {" + "--main-btn-bg: " + this.configs.main_button_background_colour + " !important;" + "--main-btn-text: " + this.configs.main_button_text_colour + " !important;" + "}";
                     $("<style>").html(branding_css).appendTo($(document.body))
                 },
                 addFeedbackButton: function() {
@@ -356,12 +356,12 @@ else{
                     if(root){
                     root.attr({"data-html2canvas-ignore": "true"})
                     }
-                    this.custom_ui.element = $("<gtdiv>").addClass("gigatester-button-container").attr({
-                        id: "gigatester_button_container",
+                    this.custom_ui.element = $("<gtdiv>").addClass("gigatester-ctrls-container").attr({
+                        id: "gigatester_ctrls_container",
                         // "data-html2canvas-ignore": "true"
                     }).appendTo($(document.body));
-                    this.configs.position = 'e'
-                    this.custom_ui.button = $("<gtdiv>").addClass("gigatester-button gigatester-button-" + this.configs.position);
+                    this.configs.position = 'r'
+                    this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
                     this.custom_ui.element.attr("modal", "true")
                     this.custom_ui.button.text(this.configs.main_button_text)
                     this.custom_ui.button.appendTo(this.custom_ui.element);
@@ -447,10 +447,10 @@ else{
                 },
                 modalConfirm: function(message, confirm_func, button_text) {
                     button_text = button_text || Lang.get("discard");
-                    let buttons = '<div class="gigatester-modal-buttons">' + "<btn>" + Lang.get("cancel") + "</btn>" + '<btn class="gigatester-button-input">' + button_text + "</btn>" + "</div>";
+                    let buttons = '<div class="gigatester-modal-btns">' + "<btn>" + Lang.get("cancel") + "</btn>" + '<btn class="gigatester-input-btn">' + button_text + "</btn>" + "</div>";
                     let modal_overlay = this.modalMessage(message + buttons);
-                    modal_overlay.find(".gigatester-modal-buttons btn:first").on("click", this.modalClose);
-                    modal_overlay.find(".gigatester-modal-buttons btn:last").on("click", confirm_func)
+                    modal_overlay.find(".gigatester-modal-btns btn:first").on("click", this.modalClose);
+                    modal_overlay.find(".gigatester-modal-btns btn:last").on("click", confirm_func)
                 },
                 modalClose: function() {
                     $("gtmodal").remove();
@@ -469,7 +469,7 @@ else{
                     if (this.canvas_mode) {
                         this.custom_ui.overlay.attr("canvas", "true")
                     }
-                    this.custom_ui.overlay.appendTo($(document.getElementById('gigatester_image_overlay')));
+                    this.custom_ui.overlay.appendTo($(document.getElementById('gigatester_screencapture_area')));
                     this.setOverlaySize();
                     this.custom_ui.overlay.append('<svg id="snap_svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>');
                     this.Draw_Tools.init();
@@ -537,7 +537,7 @@ else{
                     if (!this.custom_ui.overlay) {
                         return
                     }
-                    $(document.getElementById('gigatester_image_overlay')).remove()
+                    $(document.getElementById('gigatester_screencapture_area')).remove()
                     this.custom_ui.element.removeAttr("drawing");
                     if (this.custom_ui.overlay.overlay_hint_tooltip) {
                         this.custom_ui.overlay.overlay_hint_tooltip.remove();
@@ -1011,7 +1011,7 @@ else{
                             GigaTester_modal.custom_ui.overlay_hint_tooltip = false
                         }
                         console.log('GigaTester: drag stopped')
-                        $(document.getElementsByClassName('.gigatester-button-input-save')).trigger('click')
+                        $(document.getElementsByClassName('.gigatester-btn-save')).trigger('click')
                         GigaTester_modal.disableScroll()
                     },
                     onDragMove: function() {
@@ -1383,7 +1383,7 @@ else{
                     if (this.custom_ui.events) {
                         return
                     }
-                    this.custom_ui.events = $("<div>").addClass("gigatester-controls gigatester-controls-" + this.configs.position);
+                    this.custom_ui.events = $("<div>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.configs.position);
                     if (this.configs.display_powered_by) {
                         this.custom_ui.events.attr("poweredby", 1)
                     }
@@ -1393,22 +1393,22 @@ else{
                     }
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
-                    this.custom_ui.events.on("click", ".gigatester-controls-close", this.closeDialog.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-feedback-type-draw", this.attachScreenshot.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-feedback-type-video", this.startScreenRecorder.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-feedback-type-form", this.menuItemClick.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-controls-add-attachment", this.selectAttachment.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-add-attachment", this.selectAttachment.bind(this));
                     this.custom_ui.events.on("click", "gtrating > gtdiv", this.selectRating.bind(this));
                     this.custom_ui.events.on("mouseenter", "gtrating > gtdiv", this.previewRating.bind(this));
                     this.custom_ui.events.on("mouseleave", "gtrating > gtdiv", this.unPreviewRating.bind(this));
-                    this.custom_ui.events.on("change", ".gigatester-controls-attachment", this.uploadAttachment.bind(this));
-                    this.custom_ui.events.on("submit", ".gigatester-controls-options", this.validateFields.bind(this));
+                    this.custom_ui.events.on("change", ".gigatester-ctrl-item-attachment", this.uploadAttachment.bind(this));
+                    this.custom_ui.events.on("submit", ".gigatester-ctrl-item-options", this.validateFields.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.changeCategory.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.changeSeverity.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-controls-video", this.startScreenRecorder.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-controls-audio", this.recordAudio.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-controls-screenshot", this.overlayImage.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-controls-add-screenshot", this.attachScreenshot.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-audio", this.recordAudio.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.overlayImage.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-add-screenshot", this.attachScreenshot.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-checkbox-container > gtdiv", this.checkboxToggle.bind(this));
                     this.custom_ui.events.on("keyup", 'textarea[name="description"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("keyup", 'input[name="name"]', this.rememberFormData.bind(this));
@@ -1608,26 +1608,26 @@ else{
                         }
                     });
                     let html = "";
-                    html += '<form class="gigatester-controls-options">';
+                    html += '<form class="gigatester-ctrl-item-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
-                    html += '<gtclose class="gigatester-controls-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
-                    html += '<gtheader class="gigatester-controls-header" title="GigaTester">'+ String_Validator.validate(this.configs.title) + '</gtheader>'
-                    html += this.configs.logo ? '<img class="gigatester-controls-logo" src="' + String_Validator.validate(this.configs.logo) + '">' : "";
-                    html += '<gtdiv class="gigatester-controls-step" data-step="1">' + routing_item_options + "</gtdiv>";
-                    html += '<gtdiv class="gigatester-controls-step" data-step="2"></gtdiv>';
+                    html += '<gtclose class="gigatester-ctrl-item-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
+                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ String_Validator.validate(this.configs.title) + '</gtheader>'
+                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + String_Validator.validate(this.configs.logo) + '">' : "";
+                    html += '<gtdiv class="gigatester-ctrl-item-step" data-step="1">' + routing_item_options + "</gtdiv>";
+                    html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
                     if (this.configs.display_powered_by) {
-                        html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-powered-by-logo'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>"
+                        html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>"
                     }
                     this.custom_ui.events.html(html);
                     this.setDialogForm();
                     let has_help = this.configs.help_link ? true : false;
                     let has_one_type = (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" || this.configs.workflow_type === "bug" || this.configs.workflow_type === "FEATURE") && !this.configs.display_feedback;
                     if (has_one_type && !has_help) {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="1"]').hide();
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').show()
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').hide();
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').show()
                     } else {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="1"]').show();
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').hide()
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').show();
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').hide()
                     }
                 },
                 setDialogForm: function() {
@@ -1702,10 +1702,10 @@ else{
                         rating_icons += '<gtdiv data-rating="thumb_up" class="inactive">' + Svg_Icons.thumb_up + "</gtdiv>" + '<gtdiv data-rating="thumb_down" class="inactive">' + Svg_Icons.thumb_down + "</gtdiv>"
                     }
                     let html = "";
-                    html += '<form class="gigatester-controls-options">'
-                     + (form_settings.rating_title_message ? '<div class="gigatester-controls-help-message">' + String_Validator.validate(form_settings.rating_title_message) + "</div>" : "")
-                     + (form_settings.rating_type ? "<gtrating>" + rating_icons + "</gtrating><gtdiv class='gigatester-controls-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
-                     + '<gtdiv class="gigatester-controls-form"'
+                    html += '<form class="gigatester-ctrl-item-options">'
+                     + (form_settings.rating_title_message ? '<div class="gigatester-ctrl-item-help-message">' + String_Validator.validate(form_settings.rating_title_message) + "</div>" : "")
+                     + (form_settings.rating_type ? "<gtrating>" + rating_icons + "</gtrating><gtdiv class='gigatester-ctrl-item-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
+                     + '<gtdiv class="gigatester-ctrl-item-form"'
                      + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
                      + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + Lang.get("your_name") + '"'
                      + (form_settings.name_field_mandatory ? " required" : "") + ">" : "")
@@ -1719,52 +1719,52 @@ else{
                      + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (String_Validator.validate(form_settings.title_field_placeholder) || Lang.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
                      + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (String_Validator.validate(form_settings.comment_field_placeholder) || Lang.get("leave_us_your_comment")) + '"'
                      + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
-                     + (display_screenshot || display_audio || display_video || display_attachment ?  GigaTester_modal.recording ? '<gtdiv class="gigatester-controls-attach-actions" >' + "<gtdiv>" : '<gtdiv class="gigatester-controls-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
-                     + (display_screenshot ? '<btn class="gigatester-controls-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>"
+                     + (display_screenshot || display_audio || display_video || display_attachment ?  GigaTester_modal.recording ? '<gtdiv class="gigatester-ctrl-item-attach-actions" >' + "<gtdiv>" : '<gtdiv class="gigatester-ctrl-item-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
+                     + (display_screenshot ? '<btn class="gigatester-ctrl-item-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>"
                      + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
-                     + (display_audio ? '<btn class="gigatester-controls-audio">' + Svg_Icons.mic + "<gtdiv>" + Lang.get("capture_audio") + "</gtdiv>"
+                     + (display_audio ? '<btn class="gigatester-ctrl-item-audio">' + Svg_Icons.mic + "<gtdiv>" + Lang.get("capture_audio") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("capture_audio") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
-                     + (display_video ?  '<btn class="gigatester-controls-video">' + Svg_Icons.feedback_video + "<gtdiv>" + Lang.get("capture_screen_recorder") + "</gtdiv>"
+                     + (display_video ?  '<btn class="gigatester-ctrl-item-video">' + Svg_Icons.feedback_video + "<gtdiv>" + Lang.get("capture_screen_recorder") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("capture_screen_recorder") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
-                     + (display_attachment ?'<btn class="gigatester-controls-add-attachment">' + Svg_Icons.paperclip + "<gtdiv>" + Lang.get("attach_a_file") + "</gtdiv>" + "<gttooltip>" + Lang.get("attach_a_file")
+                     + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + Svg_Icons.paperclip + "<gtdiv>" + Lang.get("attach_a_file") + "</gtdiv>" + "<gttooltip>" + Lang.get("attach_a_file")
                      + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "") + "</gtdiv>"
-                     + '<input type="file" class="gigatester-controls-attachment">' + "</gtdiv>" : "")
-                     + '<gtdiv class="gigatester-controls-screenshot-preview">' + '<btn class="gigatester-controls-remove-screenshot">' + Svg_Icons.trash + "</btn>"
-                     + '<gtbadge class="gigatester-controls-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
-                     + '<gtdiv class="gigatester-controls-video-preview">' + '<btn class="gigatester-controls-remove-video">' + Svg_Icons.trash + "</btn>"
-                     + '<gtbadge class="gigatester-controls-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>"
-                     + "</gtbadge>" + "</gtdiv>" + '<gtdiv class="gigatester-controls-attachment-name">' + Svg_Icons.paperclip + "<span></span>"
-                     + '<btn class="gigatester-controls-remove-attachment">' + Svg_Icons.trash + "</btn>"
+                     + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
+                     + '<gtdiv class="gigatester-ctrl-item-screenshot-preview">' + '<btn class="gigatester-ctrl-item-remove-screenshot">' + Svg_Icons.trash + "</btn>"
+                     + '<gtbadge class="gigatester-ctrl-item-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
+                     + '<gtdiv class="gigatester-ctrl-item-video-preview">' + '<btn class="gigatester-ctrl-item-remove-video">' + Svg_Icons.trash + "</btn>"
+                     + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>"
+                     + "</gtbadge>" + "</gtdiv>" + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + Svg_Icons.paperclip + "<span></span>"
+                     + '<btn class="gigatester-ctrl-item-remove-attachment">' + Svg_Icons.trash + "</btn>"
                      + "</gtdiv>" + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
                      + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
                      + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + Svg_Icons.check + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
-                     + '<button class="gigatester-controls-send gigatester-button-input">' + '<span class="gigatester-controls-send-progress"></span>' + '<span class="gigatester-controls-send-text">' +  Lang.get("send") + "</span>" + "</button>" + "</gtdiv>" + "</form>";
-                   this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').html(html);
+                     + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">' +  Lang.get("send") + "</span>" + "</button>" + "</gtdiv>" + "</form>";
+                   this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').html(html);
                     if(GigaTester_modal.configs.rating_limit > 4){
-                        this.custom_ui.events.find(".gigatester-controls-form").show();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                         this.focusControls();
                     }
                     if (default_rating) {
                         this.custom_ui.events.find('gtrating gtdiv[data-rating="' + default_rating + '"]').click()
                     }
                     if (default_name) {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').find('input[name="name"]').val(default_name)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('input[name="name"]').val(default_name)
                     }
                     if (default_email) {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').find('input[name="email"]').val(default_email)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('input[name="email"]').val(default_email)
                     }
                     if (default_title) {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').find('input[name="title"]').val(default_title)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('input[name="title"]').val(default_title)
                     }
                     if (default_description) {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').find('textarea[name="description"]').val(default_description)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('textarea[name="description"]').val(default_description)
                     }
                     if (default_category) {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').find('select[name="category"]').val(default_category)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('select[name="category"]').val(default_category)
                     }
                     if (default_severity) {
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').find('select[name="severity"]').val(default_severity)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('select[name="severity"]').val(default_severity)
                     }
                     GigaTester_modal.saveSubCategory();
                 },
@@ -1789,10 +1789,10 @@ else{
                 openForm: function(form_type) {
                     this.form_type = form_type;
                     this.setDialogForm();
-                    this.custom_ui.events.find('.gigatester-controls-step[data-step="1"]').hide();
-                    this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').show();
+                    this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').hide();
+                    this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').show();
                     if(GigaTester_modal.configs.rating_limit > 4){
-                        this.custom_ui.events.find(".gigatester-controls-form").show();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                         this.focusControls();
                     }
                     this.focusControls();
@@ -1872,7 +1872,7 @@ else{
                                             const video = $('<video width="0" height="0" id="gigatester_image_preview_player" preload="auto" src="' + src + '"></video>');
                                             const video_close = $('<btn id="gigatester_video_player_close">').html(Svg_Icons.close);
                                             video_close.appendTo(image_overlay);
-                                            video.insertAfter($(document.getElementsByClassName('gigatester-controls-attach-actions')));
+                                            video.insertAfter($(document.getElementsByClassName('gigatester-ctrl-item-attach-actions')));
                                             setTimeout(()=> (GigaTester_modal.screenshotVideo(video.get(0))), 700);
                                         };
                                     }
@@ -1907,18 +1907,18 @@ else{
                     if(video && context){
                         context.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
                         const frame = canvas.toDataURL("image/jpeg");
-                        const image_overlay = $('<gtdiv id="gigatester_image_overlay"></gtdiv>')
+                        const image_overlay = $('<gtdiv id="gigatester_screencapture_area"></gtdiv>')
                         const image =  $('<image id="gigatester_image_preview" preload="auto" src="' + frame + '"></image>');
                         image.appendTo(image_overlay)
                         image_overlay.appendTo(document.body)
                         this.addCanvas();
                         GigaTester_modal.disableScroll();
-                        console.log('GigaTester: Img base64 value', frame);
+                        console.log('GigaTester: [Info] Img base64 value ', frame);
                     }
                 },
                 finalScreenshot: async function(){
                     GigaTester_modal.setNotifyStatus("Taking screenshot...");
-                    const annoted = document.getElementById('gigatester_image_overlay')
+                    const annoted = document.getElementById('gigatester_screencapture_area')
                     html2canvas(annoted , {
                         useCORS: true,
                         allowTaint : true,
@@ -1972,7 +1972,7 @@ else{
                         const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
                         const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
                         const image_close = $('<button id="gigatester_images_player_close">').html(Svg_Icons.trash);
-                        image.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                        image.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                         image_close.insertAfter(image);
                         GigaTester_modal.loadImage(base64Image);
                         image_close.on("click", function() {
@@ -2080,7 +2080,7 @@ else{
                             let audio_overlay = $('<div id="gigatester_audio_player"><div></div></div>');
                             let audio = $('<audio id="gigatester_audio_preview_player" controls loop autoplay preload="auto" src="' + src + '"></audio>');
                             let audio_close = $('<button id="gigatester_audio_player_close">').html(Svg_Icons.trash);
-                            audio.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                            audio.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                             audio_close.insertAfter(audio);
                             GigaTester_modal.loadAudio(src);
                             audio_close.on("click", function() {
@@ -2145,7 +2145,7 @@ else{
                         let video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                         let video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
                         let video_close = $('<button id="gigatester_video_player_close">').html(Svg_Icons.trash);
-                        video.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                        video.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                         video_close.insertAfter(video);
                         video_close.on("click", function() {
                             video_overlay.remove()
@@ -2184,12 +2184,12 @@ else{
                     console.log(GigaTester_modal.video_file, 'video file loaded');
                 },
                 toggleAttachButtons: function() {
-                    this.custom_ui.events.find(".gigatester-controls-attach-actions").toggle(this.custom_ui.events.find(".gigatester-controls-attach-actions btn[disabled]").length !== this.custom_ui.events.find(".gigatester-controls-attach-actions btn").length)
+                    this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").toggle(this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn[disabled]").length !== this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn").length)
                 },
                 popOutDialog: function(){
                     if(GigaTester_modal.click_counter < 1){
                     let popup_dialog = $('<gtdiv class="gigatester-popout-dialog">Do u like to share your feedback?</gtdiv>')
-                    popup_dialog.appendTo($(document.getElementsByClassName("gigatester-button-e")));
+                    popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
                     let popup_dialog_close = $('<btn id="gigatester-popout-dialog-close">').html(Svg_Icons.close);
                     popup_dialog_close.appendTo(popup_dialog);
                     popup_dialog.on("click", function(e) {
@@ -2213,10 +2213,10 @@ else{
                     }
                     if (this.controls_step === 2) {
                         this.setDialogForm();
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="1"]').hide();
-                        this.custom_ui.events.find('.gigatester-controls-step[data-step="2"]').show();
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').hide();
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').show();
                         if (force_show_form) {
-                            this.custom_ui.events.find(".gigatester-controls-form").show()
+                            this.custom_ui.events.find(".gigatester-ctrl-item-form").show()
                         }
                     }
                     this.custom_ui.events.show();
@@ -2295,7 +2295,7 @@ else{
                     if ($(e.currentTarget).attr("disabled")) {
                         return
                     }
-                    this.custom_ui.events.find(".gigatester-controls-attachment").click()
+                    this.custom_ui.events.find(".gigatester-ctrl-item-attachment").click()
                 },
                 selectedRating: function(){
                     let form_settings = this.getFormSettings(this.form_type);
@@ -2314,7 +2314,7 @@ else{
                         console.log(GigaTester_modal.configs.rating_limit, 'form data')
                     }
                     if(this.form_data.rating <= GigaTester_modal.configs.rating_limit){
-                    this.custom_ui.events.find(".gigatester-controls-form").show();
+                    this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                     this.custom_ui.events.off("click", "gtrating > gtdiv");
                     this.custom_ui.events.off("mouseenter", "gtrating > gtdiv");
                     this.custom_ui.events.off("mouseleave", "gtrating > gtdiv");
@@ -2343,7 +2343,7 @@ else{
                         console.log('GigaTester : max commented rating limit', GigaTester_modal.configs.rating_limit)
                     }
                     if(this.form_data.rating <= GigaTester_modal.configs.rating_limit){
-                    this.custom_ui.events.find(".gigatester-controls-form").show();
+                    this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                     this.custom_ui.events.off("click", "gtrating > gtdiv");
                     this.custom_ui.events.off("mouseenter", "gtrating > gtdiv");
                     this.custom_ui.events.off("mouseleave", "gtrating > gtdiv");
@@ -2377,7 +2377,7 @@ else{
                     let external_file = $('<div id="gigatester_external_file_preview">' + GigaTester_modal.external_file.name + '</div>').html(GigaTester_modal.external_file.fileName);
                     let external_file_close = $('<button id="gigatester_external_file_close">').html(Svg_Icons.trash);
                     const size_limit = GigaTester_modal.configs.attachment_size || 1;
-                    external_file.insertBefore($(document.getElementsByClassName('gigatester-controls-send gigatester-button-input')));
+                    external_file.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                     external_file_close.insertAfter(external_file);
                     external_file_close.on("click", function() {
                         external_file.remove();
@@ -2398,11 +2398,11 @@ else{
                             console.log( size_limit + "MB")
 
                         }
-                        this.custom_ui.events.find(".gigatester-controls-screenshot").remove();
-                        this.custom_ui.events.find(".gigatester-controls-video").remove();
-                        this.custom_ui.events.find(".gigatester-controls-audio").remove();
-                        this.custom_ui.events.find(".gigatester-controls-add-attachment").remove();
-                        this.custom_ui.events.find(".gigatester-controls-attach-actions").remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-video").remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-audio").remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").remove();
                 },
                 closeDialog: function(e) {
                     let _doClose = function() {
@@ -2534,12 +2534,12 @@ else{
                     }
                 },
                 postMediaContent: function(dataInfo, fileSelected){
-                    if($('gtdiv').hasClass('gigatester-controls-send-error')){
-                        $(document.getElementsByClassName('gigatester-controls-send-error')).remove();
+                    if($('gtdiv').hasClass('gigatester-ctrl-item-send-error')){
+                        $(document.getElementsByClassName('gigatester-ctrl-item-send-error')).remove();
                     }
                     //qe1lgcnkwh.execute-api.us-east-1.amazonaws.com
-                    let send_button = this.custom_ui.events.find(".gigatester-controls-send");
-                    send_button.addClass("gigatester-controls-send-loading")
+                    let send_button = this.custom_ui.events.find(".gigatester-ctrl-item-send");
+                    send_button.addClass("gigatester-ctrl-item-send-loading")
                     console.log(dataInfo, 'dataInfo');
                     fetch(`${GigaTester.endpoint}/feedbackMedia/`, {
                         method: 'POST',
@@ -2554,9 +2554,9 @@ else{
                             if (xhr.readyState === 4) {
                               if (xhr.status === 200) {
                                 console.log("UPLOAD SUCCESSFUL");
-                                $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("Media uploaded successfully, Submitting GigaTester_modal Form...").insertBefore(send_button)
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("Media uploaded successfully, Submitting GigaTester_modal Form...").insertBefore(send_button)
                                 console.log('GigaTester: ', xhr.responseURL);
-                                // send_button.addClass("gigatester-controls-send-loading")
+                                // send_button.addClass("gigatester-ctrl-item-send-loading")
                                 if(xhr.responseURL.slice(56,64) === 'gt_image'){
                                 // console.log(data.Key, "img");
                                 GigaTester_modal.image_file = xhr.responseURL.split('?')[0];
@@ -2583,34 +2583,34 @@ else{
                               else {
                                 console.log(xhr.status, 'GigaTester: Media post api error');
                                 if (this.controls_step === 2) {
-                                    send_button.removeClass("gigatester-controls-send-loading");
-                                    send_button.removeClass("gigatester-controls-send-uploading");
+                                    send_button.removeClass("gigatester-ctrl-item-send-loading");
+                                    send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                     send_button.prop("disabled", false);
-                                    $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertBefore(send_button)
+                                    $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertBefore(send_button)
                                 } else if (this.controls_step === 3) {
-                                    $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                                    $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
                                 }
                               }
                           };
                           xhr.onerror = function(){
                               console.log(xhr.status)
                               if (this.controls_step === 2) {
-                                send_button.removeClass("gigatester-controls-send-loading");
-                                send_button.removeClass("gigatester-controls-send-uploading");
+                                send_button.removeClass("gigatester-ctrl-item-send-loading");
+                                send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
-                                $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertBefore(send_button)
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertBefore(send_button)
                             } else if (this.controls_step === 3) {
-                                $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
                             }
                           }
                           xhr.upload.addEventListener("progress", function(evt) {
                             if (evt.lengthComputable) {
-                                send_button.removeClass("gigatester-controls-send-loading");
+                                send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.width(send_button.width());
                                 let percent = parseInt(evt.loaded / evt.total * 100, 10);
                                 console.log(percent, evt)
-                                send_button.find(".gigatester-controls-send-text").text(percent + "%");
-                                send_button.find(".gigatester-controls-send-progress").width(percent + "%")
+                                send_button.find(".gigatester-ctrl-item-send-text").text(percent + "%");
+                                send_button.find(".gigatester-ctrl-item-send-progress").width(percent + "%")
                             }
                         }, false)
 
@@ -2620,12 +2620,12 @@ else{
                         .catch(error => {
                             console.log(error, 'post api error');
                             if (this.controls_step === 2) {
-                                send_button.removeClass("gigatester-controls-send-loading");
-                                send_button.removeClass("gigatester-controls-send-uploading");
+                                send_button.removeClass("gigatester-ctrl-item-send-loading");
+                                send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
-                                $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertBefore(send_button)
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertBefore(send_button)
                             } else if (this.controls_step === 3) {
-                                $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
                             }
                         })
                 },
@@ -2639,9 +2639,9 @@ else{
                         comments.push(comment.getData())
                     });
                     console.log(comments, 'canvas comments')
-                    let send_button = this.custom_ui.events.find(".gigatester-controls-send");
-                    send_button.addClass("gigatester-controls-send-loading")
-                    $(document.getElementById('gigatester-loader')).addClass("gigatester-controls-loader")
+                    let send_button = this.custom_ui.events.find(".gigatester-ctrl-item-send");
+                    send_button.addClass("gigatester-ctrl-item-send-loading")
+                    $(document.getElementById('gigatester-loader')).addClass("gigatester-ctrl-item-loader")
                     let completed_dialog_icon = ''
                     $('.gigatester-reason-checkboxes:checked').each(function () {
                         standardFeedback.push($(this).next("label").text());
@@ -2689,31 +2689,31 @@ else{
                       })
                         .then(res => res.json())
                         .then(data => {console.log(data)
-                            let success_icon = $('<gtdiv class="gigatester-controls-send-success">').html("<style>" + ":root {" + "--main-outro-icon: " + form_settings.completed_dialog_icon_colour + " !important;" + "}" + "</style>" + '<gtdiv data-icon="' + form_settings.completed_dialog_icon + '">' + completed_dialog_icon + "<gtspan>" + String_Validator.validate(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + String_Validator.validate(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
+                            let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html("<style>" + ":root {" + "--main-outro-icon: " + form_settings.completed_dialog_icon_colour + " !important;" + "}" + "</style>" + '<gtdiv data-icon="' + form_settings.completed_dialog_icon + '">' + completed_dialog_icon + "<gtspan>" + String_Validator.validate(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + String_Validator.validate(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
-                            send_button.find(".gigatester-controls-send-text").text('Send feedback');
-                            send_button.removeClass("gigatester-controls-send-loading");
+                            send_button.find(".gigatester-ctrl-item-send-text").text('Send feedback');
+                            send_button.removeClass("gigatester-ctrl-item-send-loading");
                             this.recording = false;
-                            $(document.getElementsByClassName('gigatester-controls-options')).css('display', 'none');
-                            let close_icon = $(document.getElementsByClassName('gigatester-controls-close'));
-                            $(document.getElementsByClassName('gigatester-controls-e')).css('width','355px');
+                            $(document.getElementsByClassName('gigatester-ctrl-item-options')).css('display', 'none');
+                            let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
+                            $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
                             setTimeout(function () {
                                 console.log(close_icon);
-                                $(document.getElementsByClassName('gigatester-controls-options')).css('display', 'block');
-                                $(document.getElementById('gigatester-loader')).removeClass("gigatester-controls-loader")
+                                $(document.getElementsByClassName('gigatester-ctrl-item-options')).css('display', 'block');
+                                $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
                                 close_icon.trigger("click")
                             }, 3000);
                                                    })
                         .catch(error => {
                             console.log(error, 'post api error');
                             if (this.controls_step === 2) {
-                                send_button.removeClass("gigatester-controls-send-loading");
-                                send_button.removeClass("gigatester-controls-send-uploading");
+                                send_button.removeClass("gigatester-ctrl-item-send-loading");
+                                send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
-                                $("<gtdiv>").addClass("gigatester-controls-send-error").text("Error, please try again.").insertAfter(send_button)
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertAfter(send_button)
                             } else if (this.controls_step === 3) {
-                                $("<gtdiv>").addClass("gigatester-controls-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-controls-send-success"))
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
                             }
                         })
                 },
@@ -2792,7 +2792,7 @@ else{
                     e.stopPropagation()
                 });
                 this.setHTML = function() {
-                    return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-button-input gigatester-button-input-save">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
+                    return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + Lang.get("add_your_comment_here") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-input-btn gigatester-btn-save">' + Lang.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + Lang.get("delete") + '">' + Svg_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</btn>" + "</form>"
                 };
                 this.isOpen = function() {
                     return element.find(".gigatester-comment-form").is(":visible")
@@ -2805,7 +2805,7 @@ else{
                     element.find(".gigatester-comment-pin > span").text(counter + 1)
                 };
                 this.submit = function() {
-                    element.find(".gigatester-button-input").click()
+                    element.find(".gigatester-input-btn").click()
                 }, this.show = function() {
                     element.show()
                 };
@@ -2821,10 +2821,10 @@ else{
                     element.find(".gigatester-comment-form").hide()
                 };
                 this.saveComment = function(){
-                    element.find(".gigatester-button-input-save").trigger('click');
+                    element.find(".gigatester-btn-save").trigger('click');
                 }
                 this.saveCanvasComments = function() {
-                    element.find(".gigatester-button-input-save").trigger('click');
+                    element.find(".gigatester-btn-save").trigger('click');
                     console.log('set position')
                 };
                 this.setFormDirection = function() {
@@ -2899,7 +2899,7 @@ else{
                             document.execCommand("insertText", false, text)
                         } catch (e) {}
                     });
-                    element.find(".gigatester-button-input-save").on("click", function(e) {
+                    element.find(".gigatester-btn-save").on("click", function(e) {
                         canvas_comment_message = element.find("gtcomment").html();
                         canvas_comment_message = canvas_comment_message.replace(/<br\/?>/gi, "\n");
                         canvas_comment_message = canvas_comment_message.replace(/(<([^>]+)>)/gi, "");
@@ -2915,10 +2915,10 @@ else{
                         this.is_new = false;
                         this.hideForm()
                     }.bind(this));
-                    element.appendTo($(document.getElementById('gigatester_image_overlay')));
+                    element.appendTo($(document.getElementById('gigatester_screencapture_area')));
                         if(element.find("gtcomment").text()){
                             console.log(element.find("gtcomment").text())
-                        element.find(".gigatester-button-input-save").trigger('click');
+                        element.find(".gigatester-btn-save").trigger('click');
                         }
                     element.find("gtcomment").val('').trigger('focus').val(canvas_comment_message);
                 };
