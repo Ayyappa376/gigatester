@@ -122,7 +122,9 @@ else{
                 recording_finish: "Finish recording",
                 video_not_supported: "Video recording is not supported",
                 video_requires_https: "A secure HTTPS connection is required for video recording.",
-                ok: "OK"            
+                ok: "OK",
+                report_bug: "Report Bug",
+                give_feedback: "Give Feedback"
             },
             setLang: function(language) {
                 this.language = language
@@ -2129,28 +2131,34 @@ else{
                     this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").toggle(this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn[disabled]").length !== this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn").length)
                 },
                 popOutDialog: function(){
-                    let popup_dialog = $('<gtdiv class="gigatester-popout-dialog">Do u like to share your experience?</gtdiv>')
+                    if($(document.getElementsByClassName("gigatester-popup-dialog"))){
+                        $(document.getElementsByClassName("gigatester-popup-dialog")).remove();
+                    }
+                    let popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>')
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
-                    let popup_dialog_close = $('<btn id="gigatester-popout-dialog-close">').html(Svg_Icons.close);
-                    let popup_bug_icon = $('<popupbtn><gtdiv></gtdiv></popupbtn>').html(Svg_Icons.feedback_bug);
-                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html("Bug report")
-                    let popup_feedback_icon = $('<popupbtn></popupbtn>').html(Svg_Icons.feedback_general);
-                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html("General Feedback")
+                    let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(Svg_Icons.close);
+                    let popup_bug_icon = $('<popupbtn><gtdiv>' + Svg_Icons.feedback_bug + Lang.get('report_bug') + '</gtdiv></popupbtn>');
+                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(Lang.get('report_bug'));
+                    let popup_feedback_icon = $('<popupbtn><gtdiv>' + Svg_Icons.feedback_general + Lang.get('give_feedback') + '</gtdiv></popupbtn>');
+                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(Lang.get('give_feedback'));
                     popup_bug_icon.appendTo(popup_dialog);
                     popup_bug_icon_tooltip.appendTo(popup_bug_icon);
                     popup_feedback_icon.appendTo(popup_dialog);
                     popup_feedback_icon_tooltip.appendTo(popup_feedback_icon);
                     popup_dialog_close.appendTo(popup_dialog);
                     popup_bug_icon.on("click", function(e){
-                        $(popup_dialog_close).trigger("click");
                         GigaTester_modal.form_type = "BUGS";
                         window.GigaTester.open("BUGS");
-
+                        popup_dialog.remove();
+                        e.stopPropagation();
+                        e.preventDefault();
                     })
                     popup_feedback_icon.on("click", function(e){
                         GigaTester_modal.form_type = "FEEDBACK";
                         window.GigaTester.open("FEEDBACK");
-                        console.log('dialog removed');
+                        popup_dialog.remove();
+                        e.stopPropagation();
+                        e.preventDefault();
                     })
                     popup_dialog_close.on("click", function(e) {
                         popup_dialog.remove();
@@ -2182,8 +2190,8 @@ else{
                 openControls: function() {
                     this.addControls();
                     // GigaTester_modal.click_counter++;
-                    if($(document.getElementsByClassName("gigatester-popout-dialog"))){
-                        $(document.getElementsByClassName("gigatester-popout-dialog")).remove();
+                    if($(document.getElementsByClassName("gigatester-popup-dialog"))){
+                        $(document.getElementsByClassName("gigatester-popup-dialog")).remove();
                     }
                     let open_tool = false;
                     this.controls_step = 2;
