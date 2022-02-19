@@ -360,12 +360,12 @@ else{
                         id: "gigatester_ctrls_container",
                         // "data-html2canvas-ignore": "true"
                     }).appendTo($(document.body));
-                    this.configs.position = 'r'
+                    this.configs.position = 'r';
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
                     this.custom_ui.element.attr("modal", "true")
                     this.custom_ui.button.text(this.configs.main_button_text)
                     this.custom_ui.button.appendTo(this.custom_ui.element);
-                    this.custom_ui.button.on("click", this.openControls.bind(this));
+                    this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         // console.log(e,'mouse event')
                         e.stopPropagation()
@@ -375,10 +375,10 @@ else{
                     });
                     $(window).on("beforeunload", function(e) {
                         console.log('GigaTester : Changes not saved')
-                        if (this.unSavedChanges()) {
-                            e.returnValue = "Are you sure you want to leave the page?";
-                            return "Are you sure you want to leave the page?"
-                        }
+                        // if (this.unSavedChanges()) {
+                        //     e.returnValue = "Are you sure you want to leave the page?";
+                        //     return "Are you sure you want to leave the page?"
+                        // }
                     }.bind(this))
                 },
                 setNotifyStatus: function(message) {
@@ -1587,51 +1587,19 @@ else{
                     this.custom_ui.events = null
                 },
                 setRoutings: function() {
-                    let routing_items = {};
-                    routing_items.screenshot = this.configs.workflow_type.indexOf("capture") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-draw">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + (String_Validator.validate(this.configs.text_screenshot) || Lang.get("attach_a_screenshot")) + "</gtdiv>" + "<gtdiv>" + (String_Validator.validate(this.configs.text_screenshot_help) || Lang.get("draw_on_the_screen_help")) + "</gtdiv>" + "</gtroutemenu>";
-                    routing_items.video = this.configs.workflow_type.indexOf("video") === -1 || !this.configs.has_video || GigaTester_modal.is_mobile ? "" : '<gtroutemenu class="gigatester-feedback-type-video">' + Svg_Icons.feedback_video + "<gtdiv>" + (String_Validator.validate(this.configs.text_video) || Lang.get("capture_screen_recorder", true)) + "</gtdiv>" + "<gtdiv>" + (String_Validator.validate(this.configs.text_video_help) || Lang.get("capture_video_help", true)) + "</gtdiv>" + "</gtroutemenu>";
-                    routing_items.BUGS = this.configs.workflow_type.indexOf("BUGS") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="BUGS">' + Svg_Icons.feedback_bug + "<gtdiv>" +  Lang.get("report_bug", true) + "</gtdiv>" + "<gtdiv>" +  Lang.get("report_bug_help", true) + "</gtdiv>" + "</gtroutemenu>";
-                    routing_items.FEATURE = this.configs.workflow_type.indexOf("FEATURE") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="FEATURE">' + Svg_Icons.feedback_feature + "<gtdiv>" +  Lang.get("FEATURE", true) + "</gtdiv>" + "<gtdiv>" + (String_Validator.validate(this.configs.text_feature_help) || Lang.get("feature_request", true)) + "</gtdiv>" + "</gtroutemenu>";
-                    routing_items.FEEDBACK = this.configs.workflow_type.indexOf("FEEDBACK") === -1 ? "" : '<gtroutemenu class="gigatester-feedback-type-form" data-type="FEEDBACK">' + Svg_Icons.feedback_general + "<gtdiv>" +  Lang.get("general_feedback") + "</gtdiv>" + "<gtdiv>" +  Lang.get("general_feedback_help") + "</gtdiv>" + "</gtroutemenu>";
-                    routing_items.view_other = this.configs.display_feedback ? '<gtroutemenu class="gigatester-feedback-type-other">' + Svg_Icons.feedback_other + "<gtdiv>" + (String_Validator.validate(this.configs.text_view_other) || Lang.get("view_other_feedback")) + "</gtdiv>" + "<gtdiv>" + (String_Validator.validate(this.configs.text_view_other_help) || Lang.get("view_other_feedback_help", true)) + "</gtdiv>" + "</gtroutemenu>" : "";
-                    routing_items.help = this.configs.help_link ? '<gtroutemenu class="gigatester-feedback-type-help">' + Svg_Icons.feedback_help + "<gtdiv>" + (this.configs.help_title ? String_Validator.validate(this.configs.help_title) : Lang.get("contact_us")) + "</gtdiv>" + "<gtdiv>" + (this.configs.help_message ? String_Validator.validate(this.configs.help_message) : Lang.get("contact_us_help")) + "</gtdiv>" + "</gtroutemenu>" : "";
-                    let item_order = this.configs.routing_item_order.split(",");
-                    let routing_item_options = "";
-                    $.each(routing_items, function(item_type, item) {
-                        if (item_order.indexOf(item_type) === -1) {
-                            routing_item_options += item
-                        }
-                    });
-                    item_order.forEach(function(item_type) {
-                        if (typeof routing_items[item_type]) {
-                            routing_item_options += routing_items[item_type] || ""
-                        }
-                    });
-                    let html = "";
-                    html += '<form class="gigatester-ctrl-item-options">';
+                    let html = '<form class="gigatester-ctrl-item-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
                     html += '<gtclose class="gigatester-ctrl-item-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
                     html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ String_Validator.validate(this.configs.title) + '</gtheader>'
                     html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + String_Validator.validate(this.configs.logo) + '">' : "";
-                    html += '<gtdiv class="gigatester-ctrl-item-step" data-step="1">' + routing_item_options + "</gtdiv>";
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
-                    if (this.configs.display_powered_by) {
-                        html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>"
-                    }
+                    html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>"
                     this.custom_ui.events.html(html);
                     this.setDialogForm();
-                    let has_help = this.configs.help_link ? true : false;
-                    let has_one_type = (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" || this.configs.workflow_type === "bug" || this.configs.workflow_type === "FEATURE") && !this.configs.display_feedback;
-                    if (has_one_type && !has_help) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').hide();
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').show()
-                    } else {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').show();
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').hide()
-                    }
                 },
                 setDialogForm: function() {
                     let form_settings = this.getFormSettings(this.form_type);
+                    console.log(this.form_type, 'form type')
                     console.log('GigaTester : form settings ', form_settings);
                     console.log('GigaTester : dialog refresh mode', GigaTester_modal.set_screen_default_category)
                     if(GigaTester_modal.set_screen_default_category){
@@ -1649,23 +1617,6 @@ else{
                         console.log("You are using a Mobile Device : " + navigator.userAgent);
                         display_screenshot = false;
                         display_video = false;
-                    } else {
-                        let userAgent = navigator.userAgent;
-                        let browserName;
-
-                        if(userAgent.match(/chrome|chromium|crios/i)){
-                            browserName = "chrome";
-                        }else if(userAgent.match(/firefox|fxios/i)){
-                            browserName = "firefox";
-                        }  else if(userAgent.match(/safari/i)){
-                            browserName = "safari";
-                        }else if(userAgent.match(/opr\//i)){
-                            browserName = "opera";
-                        } else if(userAgent.match(/edg/i)){
-                            browserName = "edge";
-                        }else{
-                            browserName="No browser detection";
-                        }
                     }
                     data_item += display_screenshot ? 1 : 0;
                     data_item += display_video ? 1 : 0;
@@ -1691,20 +1642,11 @@ else{
                             reason_options += "<option>" + reason + "</option>"
                         }.bind(this))
                     }
-                    let rating_icons = "";
-                    if (form_settings.rating_type === "EMOJI") {
-                        rating_icons += '<gtdiv data-rating="hate" class="inactive">' + Svg_Icons.face_hate + "</gtdiv>" + '<gtdiv data-rating="dislike" class="inactive">' + Svg_Icons.face_dislike + "</gtdiv>" + '<gtdiv data-rating="neutral" class="inactive">' + Svg_Icons.face_neutral + "</gtdiv>" + '<gtdiv data-rating="like" class="inactive">' + Svg_Icons.face_like + "</gtdiv>" + '<gtdiv data-rating="love" class="inactive">' + Svg_Icons.face_love + "</gtdiv>"
-                    } else if (form_settings.rating_type === "STAR") {
-                        rating_icons += '<gtdiv data-rating="star_1" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + Svg_Icons.star + "</gtdiv>"
-                    } else if (form_settings.rating_type === "HEART") {
-                        rating_icons += '<gtdiv data-rating="heart_1" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_2" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_3" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_4" class="inactive">' + Svg_Icons.heart + "</gtdiv>" + '<gtdiv data-rating="heart_5" class="inactive">' + Svg_Icons.heart + "</gtdiv>"
-                    } else if (form_settings.rating_type === "THUMB") {
-                        rating_icons += '<gtdiv data-rating="thumb_up" class="inactive">' + Svg_Icons.thumb_up + "</gtdiv>" + '<gtdiv data-rating="thumb_down" class="inactive">' + Svg_Icons.thumb_down + "</gtdiv>"
-                    }
+
                     let html = "";
                     html += '<form class="gigatester-ctrl-item-options">'
                      + (form_settings.rating_title_message ? '<div class="gigatester-ctrl-item-help-message">' + String_Validator.validate(form_settings.rating_title_message) + "</div>" : "")
-                     + (form_settings.rating_type ? "<gtrating>" + rating_icons + "</gtrating><gtdiv class='gigatester-ctrl-item-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
+                     + (form_settings.rating_type ? "<gtrating>" + '<gtdiv data-rating="star_1" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + Svg_Icons.star + "</gtdiv>" + "</gtrating><gtdiv class='gigatester-ctrl-item-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
                      + '<gtdiv class="gigatester-ctrl-item-form"'
                      + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
                      + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + Lang.get("your_name") + '"'
@@ -2187,20 +2129,34 @@ else{
                     this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").toggle(this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn[disabled]").length !== this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn").length)
                 },
                 popOutDialog: function(){
-                    if(GigaTester_modal.click_counter < 1){
-                    let popup_dialog = $('<gtdiv class="gigatester-popout-dialog">Do u like to share your feedback?</gtdiv>')
+                    let popup_dialog = $('<gtdiv class="gigatester-popout-dialog">Do u like to share your experience?</gtdiv>')
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
                     let popup_dialog_close = $('<btn id="gigatester-popout-dialog-close">').html(Svg_Icons.close);
+                    let popup_bug_icon = $('<popupbtn><gtdiv></gtdiv></popupbtn>').html(Svg_Icons.feedback_bug);
+                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html("Bug report")
+                    let popup_feedback_icon = $('<popupbtn></popupbtn>').html(Svg_Icons.feedback_general);
+                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html("General Feedback")
+                    popup_bug_icon.appendTo(popup_dialog);
+                    popup_bug_icon_tooltip.appendTo(popup_bug_icon);
+                    popup_feedback_icon.appendTo(popup_dialog);
+                    popup_feedback_icon_tooltip.appendTo(popup_feedback_icon);
                     popup_dialog_close.appendTo(popup_dialog);
-                    popup_dialog.on("click", function(e) {
-                        popup_dialog.remove();
+                    popup_bug_icon.on("click", function(e){
+                        $(popup_dialog_close).trigger("click");
+                        GigaTester_modal.form_type = "BUGS";
+                        window.GigaTester.open("BUGS");
+
+                    })
+                    popup_feedback_icon.on("click", function(e){
+                        GigaTester_modal.form_type = "FEEDBACK";
+                        window.GigaTester.open("FEEDBACK");
+                        console.log('dialog removed');
                     })
                     popup_dialog_close.on("click", function(e) {
                         popup_dialog.remove();
                         e.stopPropagation();
                         e.preventDefault();
                     })
-                }
                 },
                 hideControls: function() {
                     this.custom_ui.button.hide();
@@ -2223,39 +2179,39 @@ else{
                     this.focusControls();
                     this.custom_ui.element.attr("isopen", "true")
                 },
-                openControls: function(e) {
+                openControls: function() {
                     this.addControls();
-                    GigaTester_modal.click_counter++;
+                    // GigaTester_modal.click_counter++;
                     if($(document.getElementsByClassName("gigatester-popout-dialog"))){
                         $(document.getElementsByClassName("gigatester-popout-dialog")).remove();
                     }
                     let open_tool = false;
-                    this.controls_step = 1;
-                    if (!this.configs.display_feedback) {
-                        if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general !== "form" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug !== "form" || this.configs.workflow_type === "FEATURE" && this.configs.direct_to_feature_request !== "form") {
-                            this.controls_step = 0
-                        } else if (this.configs.workflow_type === "FEEDBACK" || this.configs.workflow_type === "BUGS" || this.configs.workflow_type === "FEATURE") {
-                            this.controls_step = 2
-                        }
-                        if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general === "screenshot" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug === "screenshot" || this.configs.workflow_type === "FEATURE" && this.configs.direct_to_feature_request === "screenshot") {
-                            if (this.configs.workflow_type === "capture") {
-                                this.form_type = "FEEDBACK"
-                            } else {
-                                this.form_type = this.configs.workflow_type
-                            }
-                            this.hideControls();
-                            this.addCanvas();
-                            open_tool = true
-                        } else if (this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general === "video" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug === "video" || this.configs.workflow_type === "FEATURE" && this.configs.direct_to_feature_request === "video") {
-                            if (this.configs.workflow_type === "capture") {
-                                this.form_type = "FEEDBACK"
-                            } else {
-                                this.form_type = this.configs.workflow_type
-                            }
-                            this.startScreenRecorder();
-                            open_tool = true
-                        }
-                    }
+                    this.controls_step = 2;
+                    // if (!this.configs.display_feedback) {
+                    //     if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general !== "form" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug !== "form" || this.configs.workflow_type === "FEATURE" && this.configs.direct_to_feature_request !== "form") {
+                    //         this.controls_step = 0
+                    //     } else if (this.configs.workflow_type === "FEEDBACK" || this.configs.workflow_type === "BUGS" || this.configs.workflow_type === "FEATURE") {
+                    //         this.controls_step = 2
+                    //     }
+                    //     if (this.configs.workflow_type === "capture" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general === "screenshot" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug === "screenshot" || this.configs.workflow_type === "FEATURE" && this.configs.direct_to_feature_request === "screenshot") {
+                    //         if (this.configs.workflow_type === "capture") {
+                    //             this.form_type = "FEEDBACK"
+                    //         } else {
+                    //             this.form_type = this.configs.workflow_type
+                    //         }
+                    //         this.hideControls();
+                    //         this.addCanvas();
+                    //         open_tool = true
+                    //     } else if (this.configs.workflow_type === "video" || this.configs.workflow_type === "FEEDBACK" && this.configs.direct_to_general === "video" || this.configs.workflow_type === "BUGS" && this.configs.direct_to_bug === "video" || this.configs.workflow_type === "FEATURE" && this.configs.direct_to_feature_request === "video") {
+                    //         if (this.configs.workflow_type === "capture") {
+                    //             this.form_type = "FEEDBACK"
+                    //         } else {
+                    //             this.form_type = this.configs.workflow_type
+                    //         }
+                    //         this.startScreenRecorder();
+                    //         open_tool = true
+                    //     }
+                    // }
                     if (!open_tool) {
                         this.custom_ui.element.attr("isopen", "true")
                     }
@@ -2410,22 +2366,22 @@ else{
                         this.reset();
                         this.modalClose()
                     }.bind(this);
-                    if (this.unSavedChanges()) {
-                        this.modalConfirm('<div class="gigatester-modal-title">' + Lang.get("want_to_leave", true) + '</div><div class="gigatester-modal-info-text">' + Lang.get("changes_not_saved", true) + "</div>", _doClose)
-                    } else {
+                    // if (this.unSavedChanges()) {
+                    //     this.modalConfirm('<div class="gigatester-modal-title">' + Lang.get("want_to_leave", true) + '</div><div class="gigatester-modal-info-text">' + Lang.get("changes_not_saved", true) + "</div>", _doClose)
+                    // } else {
                         _doClose()
-                    }
+                    // }
                 },
-                unSavedChanges: function(e) {
-                    if (!this.custom_ui.events) {
-                        return false
-                    }
-                    if ((GigaTester_modal.video_file || GigaTester_modal.image_file || GigaTester_modal.form_data.rating  || GigaTester_modal.external_file) && this.controls_step === 2) {
-                        return true
-                    } else {
-                        return false
-                    }
-                },
+                // unSavedChanges: function(e) {
+                //     if (!this.custom_ui.events) {
+                //         return false
+                //     }
+                //     if ((GigaTester_modal.video_file || GigaTester_modal.image_file || GigaTester_modal.form_data.rating  || GigaTester_modal.external_file) && this.controls_step === 2) {
+                //         return true
+                //     } else {
+                //         return false
+                //     }
+                // },
                 reset: function(e) {
                     if (e && e.type === "click") {
                         e.preventDefault()
@@ -3346,36 +3302,11 @@ else{
                 $("script#gigatester-sdk").remove();
                 delete window.GigaTester
             },
-            open: function(mode, direct_to) {
+            open: function(mode) {
                 console.log('js api open');
-                console.log(mode, direct_to)
+                console.log(mode)
                 GigaTester_modal.reset();
                 GigaTester_modal.openControls();
-                if (mode === "capture" || mode === "video") {
-                    GigaTester_modal.form_type = "FEEDBACK"
-                } else if (mode === "FEEDBACK" || mode === "form") {
-                    GigaTester_modal.form_type = "FEEDBACK"
-                } else if (mode === "BUGS") {
-                    GigaTester_modal.form_type = "BUGS"
-                } else if (mode === "FEATURE") {
-                    GigaTester_modal.form_type = "FEATURE"
-                }
-                if (mode === "capture" || direct_to === "screenshot") {
-                    GigaTester_modal.attachScreenshot();
-                    GigaTester_modal.controls_step = 0
-                } else if (mode === "video" || direct_to === "video") {
-                    GigaTester_modal.startScreenRecorder();
-                    GigaTester_modal.controls_step = 0
-                } else if (mode === "FEEDBACK" || mode === "form") {
-                    GigaTester_modal.openForm("FEEDBACK");
-                    GigaTester_modal.controls_step = 0
-                } else if (mode === "BUGS") {
-                    GigaTester_modal.openForm("BUGS");
-                    GigaTester_modal.controls_step = 0
-                } else if (mode === "FEATURE") {
-                    GigaTester_modal.openForm("FEATURE");
-                    GigaTester_modal.controls_step = 0
-                }
             },
             close: function() {
                 GigaTester_modal.modalClose();
@@ -3456,9 +3387,9 @@ else{
                         }
                 }
             },
-            unSavedChanges: function() {
-                return GigaTester_modal.unSavedChanges()
-            },
+            // unSavedChanges: function() {
+            //     return GigaTester_modal.unSavedChanges()
+            // },
             }
         window.GigaTester = $.extend(window.GigaTester, GigaTester_Api);
         $(document).ready($.proxy(GigaTester_modal.init, GigaTester_modal))
