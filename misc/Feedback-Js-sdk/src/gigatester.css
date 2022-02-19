@@ -185,14 +185,13 @@ gttoolbar {
   margin: 0;
   padding: 0;
   outline: none;
-  border: none;
+  border: 1px solid #042e5b;
   border-radius: 0;
   background: none;
   position: fixed;
   z-index: 2147483645;
-  top: 150px;
-  left: -89px;
-  right: auto;
+  top: 40%;
+  right: -89px;
   width: auto;
   height: 44px;
   padding: 0 0 0 10px;
@@ -1087,8 +1086,40 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder]
   -webkit-font-smoothing: antialiased;
 }
 #gigatester_ctrls_container .gigatester-btn svg path {
-  fill: #fff;
-  fill: var(--main-btn-text);
+  fill: #000;
+}
+popupbtn {
+  position: relative;
+    top: 0px;
+    left: 0px;
+}
+popupbtn svg{
+  width: 50px;
+  height: 30px;
+  margin: 1px;
+}
+popupbtn svg g path{
+  fill: black;
+}
+
+popuptooltip {
+  visibility: hidden;
+  width: 120px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+  font-size: 12px;
+  /* Position the tooltip */
+  position: absolute;
+  top: 18px;
+  left: -45px;
+  z-index: 1;
+}
+
+popupbtn:hover popuptooltip {
+  visibility: visible;
 }
 #gigatester_ctrls_container .gigatester-btn[wstyle="text"],
 #gigatester_ctrls_container .gigatester-btn[wstyle="text_icon"] {
@@ -4538,12 +4569,14 @@ gtvideotoolbar {
 }
 #gigatester-popout-dialog-close{
   position: absolute;
-  top: -17px;
-  background: #2786f0;
+  top: -19px;
   height: 20px;
   width: 20px;
   border-radius: 50px;
   right: -9px;
+  border: 2px solid #042e5b;
+  background: #fefefebb;
+  backdrop-filter: blur(1px);
 }
 #gigatester-popout-dialog-close svg{
   font-size: 10px;
@@ -4553,6 +4586,21 @@ gtvideotoolbar {
     color: white;
 }
 .gigatester-popout-dialog{
+  height: auto;
+  width: 114px;
+  background: #fefefebb;
+  position: absolute;
+  border-radius: 24px;
+  padding: 10px;
+  line-height: 20px;
+  color: black;
+  left: -120px;
+  transform: rotate( 270deg );
+  bottom: -94px;
+  border: 2px solid #042e5b;
+  backdrop-filter: blur(1px);
+}
+/* .gigatester-popout-dialog{
   height: 55px;
   width: 114px;
   background: #fefefe;
@@ -4567,7 +4615,7 @@ gtvideotoolbar {
 );
   bottom: 55px;
   border: 3px solid black;
-}
+} */
 gtvideotoolbar btn {
   position: relative;
   float: left;
