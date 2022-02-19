@@ -14,7 +14,7 @@ export interface IProductInfo {
   testers?: ITesterStatus[];
   feedbackAgentSettings?: IFeedbackAgentSettings;
   status: string;
-  trackingSystemDetails?: ITrackingSystemDetails;
+  trackingSystem?: TrackingSystem;
   [keyName: string]: any;
 }
 
@@ -63,17 +63,23 @@ export interface ICategory {
   name: string;
 }
 
-export interface ITrackingSystemDetails {
-  url: string;
+export interface TrackingSystem {
   auth: {
-    [key: string]: string;
+      [key: string]: string;
   };
+  type: TrackingSystemType;
+  url: string;
+  [key: string]: any;
 }
 
 export interface IProductParams {
   productConfig: IObjectConfigDetails;
   products?: IProductInfo[];
 }
+
+export const STATUS_PRODUCT_ACTIVE = 'active';
+export const STATUS_PRODUCT_DELETED = 'deleted';
+//export const STATUS_PRODUCT_ARCHIVED = 'archived';
 
 export type IFeedbackType = 'FEEDBACK' | 'BUGS';
 export const FEEDBACK_TYPE_FEEDBACK: IFeedbackType = 'FEEDBACK';
@@ -96,6 +102,6 @@ export const INVOKE_TYPE_AFTER_DELAY: IInvokeType = 'AFTER_DELAY';
 export const INVOKE_TYPE_CONTEXT_CHANGE: IInvokeType = 'CONTEXT_CHANGE';
 export const INVOKE_TYPE_IDLE: IInvokeType = 'IDLE';
 
-export const STATUS_PRODUCT_ACTIVE = 'active';
-export const STATUS_PRODUCT_DELETED = 'deleted';
-//export const STATUS_PRODUCT_ARCHIVED = 'archived';
+export type TrackingSystemType = 'SELF' | 'JIRA';
+export const TRACKING_SYSTEM_SELF: TrackingSystemType = 'SELF';
+export const TRACKING_SYSTEM_JIRA: TrackingSystemType = 'JIRA';

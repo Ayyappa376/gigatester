@@ -1,11 +1,9 @@
-//import { CampaignInfo, ConfigItem, DeviceInfo, PlatformInfo, ProductInfo } from '@models/index';
-//import * as TableNames from '@utils/dynamoDb/getTableNames';
+import { SeverityType } from '@models/index';
 import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { queryRaw, scan } from './sdk';
 
-export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
 
 interface Params {
@@ -32,7 +30,7 @@ export interface ProcessedData {
 }
 
 export interface AppFeedback {
-  bugPriority: BudPriority;
+  bugPriority: SeverityType;
   createdOn: number;
   feedbackCategory?: FeedbackCategory;
   feedbackComments?: string[];
