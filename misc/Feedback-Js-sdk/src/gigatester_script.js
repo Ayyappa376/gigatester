@@ -46,7 +46,7 @@ else{
         window.GigaTester.hide = function(){
             $(document.getElementById("gigatester_ctrls_container")).css('display', 'none')
         }
-        let mySrcUrl = '';
+/*        let mySrcUrl = '';
         let sc = document.getElementsByTagName("script");
         for(let i = 0; i < sc.length; i+=1)
         {
@@ -58,7 +58,7 @@ else{
         console.log('my source url =', mySrcUrl);
         if(mySrcUrl === '') {
             console.log("Error: GigaTester: could not locate the source URL.")
-        }
+        }*/
         const Lang = {
             language: "en",
             en: {
@@ -197,7 +197,7 @@ else{
             user_detail_callback: "",
             default_category_callback: "",
             default_category_value: "",
-            static_css: mySrcUrl + "gigatester.css",
+//            static_css: mySrcUrl + "gigatester.css",
             canvas_mode: false,
             canvas_target: false,
             controls_step: 0,

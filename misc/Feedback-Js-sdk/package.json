@@ -4,10 +4,9 @@
     "private": false,
     "description": "Gigatester feedback modal for browser application",
     "scripts": {
-        "clean": "rimraf build/*",
+        "clean": "rimraf build/* dist/*",
         "build": "node ./src/ObfuscatorUtils.js",
         "start": "webpack",
-        "copy": "copyfiles -u 1 src/gigatester.css build",
         "deploy:dev": "aws s3 sync build/ s3://dev.gigatester.io/dist/feedback-agent/browser",
         "deploy:beta": "aws s3 sync build/ s3://beta.gigatester.io/dist/feedback-agent/browser"
     },
@@ -23,7 +22,6 @@
         "javascript-obfuscator": "^4.0.0"
     },
     "devDependencies": {
-        "copyfiles": "^2.4.1",
         "css-loader": "^6.6.0",
         "rimraf": "^2.6.3",
         "style-loader": "^3.3.1",
