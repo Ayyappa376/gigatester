@@ -172,7 +172,7 @@ else{
             close: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.878px" height="122.88px" viewBox="0 0 122.878 122.88" enable-background="new 0 0 122.878 122.88" xml:space="preserve"><g><path d="M1.426,8.313c-1.901-1.901-1.901-4.984,0-6.886c1.901-1.902,4.984-1.902,6.886,0l53.127,53.127l53.127-53.127 c1.901-1.902,4.984-1.902,6.887,0c1.901,1.901,1.901,4.985,0,6.886L68.324,61.439l53.128,53.128c1.901,1.901,1.901,4.984,0,6.886 c-1.902,1.902-4.985,1.902-6.887,0L61.438,68.326L8.312,121.453c-1.901,1.902-4.984,1.902-6.886,0 c-1.901-1.901-1.901-4.984,0-6.886l53.127-53.128L1.426,8.313L1.426,8.313z"/></g></svg>',
             times: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="121.31px" height="122.876px" viewBox="0 0 121.31 122.876" enable-background="new 0 0 121.31 122.876" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M90.914,5.296c6.927-7.034,18.188-7.065,25.154-0.068 c6.961,6.995,6.991,18.369,0.068,25.397L85.743,61.452l30.425,30.855c6.866,6.978,6.773,18.28-0.208,25.247 c-6.983,6.964-18.21,6.946-25.074-0.031L60.669,86.881L30.395,117.58c-6.927,7.034-18.188,7.065-25.154,0.068 c-6.961-6.995-6.992-18.369-0.068-25.397l30.393-30.827L5.142,30.568c-6.867-6.978-6.773-18.28,0.208-25.247 c6.983-6.963,18.21-6.946,25.074,0.031l30.217,30.643L90.914,5.296L90.914,5.296z"/></g></svg>',
             check: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.877px" height="101.052px" viewBox="0 0 122.877 101.052" enable-background="new 0 0 122.877 101.052" xml:space="preserve"><g><path d="M4.43,63.63c-2.869-2.755-4.352-6.42-4.427-10.11c-0.074-3.689,1.261-7.412,4.015-10.281 c2.752-2.867,6.417-4.351,10.106-4.425c3.691-0.076,7.412,1.255,10.283,4.012l24.787,23.851L98.543,3.989l1.768,1.349l-1.77-1.355 c0.141-0.183,0.301-0.339,0.479-0.466c2.936-2.543,6.621-3.691,10.223-3.495V0.018l0.176,0.016c3.623,0.24,7.162,1.85,9.775,4.766 c2.658,2.965,3.863,6.731,3.662,10.412h0.004l-0.016,0.176c-0.236,3.558-1.791,7.035-4.609,9.632l-59.224,72.09l0.004,0.004 c-0.111,0.141-0.236,0.262-0.372,0.368c-2.773,2.435-6.275,3.629-9.757,3.569c-3.511-0.061-7.015-1.396-9.741-4.016L4.43,63.63 L4.43,63.63z"/></g></svg>',
-            star: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 117.1"><path class="star" fill="#FFD401" d="M64.42,2,80.13,38.7,120,42.26a3.2,3.2,0,0,1,1.82,5.62h0L91.64,74.18l8.9,39A3.19,3.19,0,0,1,98.12,117a3.27,3.27,0,0,1-2.46-.46L61.41,96.1,27.07,116.64a3.18,3.18,0,0,1-4.38-1.09,3.14,3.14,0,0,1-.37-2.38h0l8.91-39L1.09,47.88a3.24,3.24,0,0,1-.32-4.52,3.32,3.32,0,0,1,2.29-1l39.72-3.56L58.49,2a3.24,3.24,0,0,1,5.93,0Z"/></svg>',
+            star: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 117.1"><path class="star" fill="#042e5b" d="M64.42,2,80.13,38.7,120,42.26a3.2,3.2,0,0,1,1.82,5.62h0L91.64,74.18l8.9,39A3.19,3.19,0,0,1,98.12,117a3.27,3.27,0,0,1-2.46-.46L61.41,96.1,27.07,116.64a3.18,3.18,0,0,1-4.38-1.09,3.14,3.14,0,0,1-.37-2.38h0l8.91-39L1.09,47.88a3.24,3.24,0,0,1-.32-4.52,3.32,3.32,0,0,1,2.29-1l39.72-3.56L58.49,2a3.24,3.24,0,0,1,5.93,0Z"/></svg>',
             trash: '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105.7 122.88"><title>trash-bin</title><path d="M30.46,14.57V5.22A5.18,5.18,0,0,1,32,1.55v0A5.19,5.19,0,0,1,35.68,0H70a5.22,5.22,0,0,1,3.67,1.53l0,0a5.22,5.22,0,0,1,1.53,3.67v9.35h27.08a3.36,3.36,0,0,1,3.38,3.37V29.58A3.38,3.38,0,0,1,102.32,33H98.51l-8.3,87.22a3,3,0,0,1-2.95,2.69H18.43a3,3,0,0,1-3-2.95L7.19,33H3.37A3.38,3.38,0,0,1,0,29.58V17.94a3.36,3.36,0,0,1,3.37-3.37Zm36.27,0V8.51H39v6.06ZM49.48,49.25a3.4,3.4,0,0,1,6.8,0v51.81a3.4,3.4,0,1,1-6.8,0V49.25ZM69.59,49a3.4,3.4,0,1,1,6.78.42L73,101.27a3.4,3.4,0,0,1-6.78-.43L69.59,49Zm-40.26.42A3.39,3.39,0,1,1,36.1,49l3.41,51.8a3.39,3.39,0,1,1-6.77.43L29.33,49.46ZM92.51,33.38H13.19l7.94,83.55H84.56l8-83.55Z"/></svg>',
             delete: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADZUlEQVRogdWaz0sUYRjHP9UhSKpDJfRDKjz0gxDMy7YgeghhkWUPKxjRVtAqoYW7RD9IL1HQdovoFqH9C0EEXeoSZREdsiIoo1sZQTlRq5UTzzIT4zaj8777jo5feFCQ99nPd+bxfZ55Z5dhRluBJLDHie3AOmC1k/078AX4AIwBL4BHwLihz9fSGuAEcA+YAWyNuA8UHbMLpg3AFeeK6kD7xTfgKrApahMFYNIgeHX8BM5GAS41/SBC8OoYBXaagk8BPxYQ3o1fQLZW+COLAF4d/brwh2MA70afKvz+GMG7kQkLXw/8jqEBiW1hDDyLKbzEm/ng+2MM78Z5L7B3FloFWMDysLW2iFrvTAKzYC8sEXjRZfeXFc7PlcBtVQONjY3k83nq6uoYH1cbLFtbW+nu7sayLCYmJpTWAi3AdWf0qOi4ai02NTXZlmXZrgYGBkKvzefz/9aVy2U7kUjo/C+c8jp6qJqgVCrZ1SoUCkrwroaHh3UMjLnwG3V2g46Ojv9ARMViMXBNb2+v75quri7dHUkepDiou6VJ2fjJr5z8rrxocHBQF17iqBgo1ZAg0IS3nILgh4aGaoGXuCkG7tSYpALrp2w2a6dSqajgbee5mpcGEgWaiBBe4q0Y+GgoWWA5RQQv8RlnfDCWNJPJVPb2ak1NTdm5XM4kvIRlfHSQzmrbtu/fJicnTX9c5YM+mboiQbuNV2GanWoJvTKRLKhJ+WmuZqcY78TA3aiuvNS8dFk/qcxOc8RjnFM24/De3SZMs9OMYTFwSDdBT09P6K0yqE/UaOKYGNiis7i9vT00/Hwm0um0roFGdzsaVV3sN06HaVJ+5TQyMqIDP+sB/6RqgpaWFnt6eloJ3u9OzMzM2G1tbToGznkNyAP9H9Ukzc3NlTshQ5vq2s7OzsraZDKpWz711V3tmmaixYhbLrT3WGUt8NVkn49QG50hdNYphLwlObME4C+58EEai3HpvA/jsCHGBnaEvU3pGMIfUK21vhjBn1aFdxWH0+qaN5YunSZnKHK1wrvaDTxdQHD5KsJeU/BeDQFTEYLLnb4YBbhXDc7RdtkguLyTu+EdjxdCm50j7ic1gD93pspQL+/8ZOrrNtJgEsA+YJczq8i3WWTKFcmLCDlTkROQ186RoDzPyoGCvoC/pkcwDQU7NiIAAAAASUVORK5CYII=",
             angle_down: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 66.91" style="enable-background:new 0 0 122.88 66.91" xml:space="preserve"><g><path d="M11.68,1.95C8.95-0.7,4.6-0.64,1.95,2.08c-2.65,2.72-2.59,7.08,0.13,9.73l54.79,53.13l4.8-4.93l-4.8,4.95 c2.74,2.65,7.1,2.58,9.75-0.15c0.08-0.08,0.15-0.16,0.22-0.24l53.95-52.76c2.73-2.65,2.79-7.01,0.14-9.73 c-2.65-2.72-7.01-2.79-9.73-0.13L61.65,50.41L11.68,1.95L11.68,1.95z"/></g></svg>',
@@ -181,7 +181,7 @@ else{
         };
         let String_Validator = {
             validate: function(str, nl2br) {
-                var text = String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
+                let text = String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
                 if (nl2br) {
                     text = text.replace(/(?:\r\n|\r|\n)/g, "<br>")
                 }
@@ -220,8 +220,8 @@ else{
                 title: "GigaTester",
                 screen_record_time: 120,
                 main_button_text: "FEEDBACK",
-                main_button_text_colour: "#FFFFFF",
-                main_button_background_colour: "#042e5b",
+                main_button_text_color: "#FFFFFF",
+                main_button_background_color: "#042e5b",
                 workflow_type: 'BUGS,FEEDBACK',
                 routing_item_order: 'BUGS,FEEDBACK',
                 audio_time: 10,
@@ -257,7 +257,7 @@ else{
                     category_field_mandatory: true,
                     reason_field_mandatory: true,
                     severity_field_mandatory: true,
-                    completed_dialog_icon_colour: "#2878F0",
+                    completed_dialog_icon_color: "#2878F0",
                     completed_dialog_icon: 0,
                     completed_dialog_headline: "Thank you!",
                     completed_dialog_paragraph: "We really appreciate your feedback."
@@ -288,7 +288,7 @@ else{
                     category_field_mandatory: true,
                     reason_field_mandatory: true,
                     severity_field_mandatory: false,
-                    completed_dialog_icon_colour: "#2878F0",
+                    completed_dialog_icon_color: "#2878F0",
                     completed_dialog_icon: 0,
                     completed_dialog_headline: "Thank you!",
                     completed_dialog_paragraph: "We really appreciate your feedback."
@@ -329,27 +329,27 @@ else{
                     console.log('GigaTester: load configs')
                     GigaTester_Api.isLoaded();
                     this.checkSessionStorage();
-                    this.addCSS(function() {});
+                    // this.addCSS(function() {});
                 },
-                addCSS: function(callback) {
-                    let parent_node = document.head || document.body;
-                    $("<link>").attr({
-                        rel: "stylesheet",
-                        class: "gigatester-css",
-                        href: this.static_css
-                    }).appendTo($(parent_node));
-                    let self = this;
-                    let _interval_id = setInterval(function() {
-                        let detector = $("<div>").addClass("gigatester-load-detector").appendTo($(document.body));
-                        if (detector.css("z-index") == 1999) {
-                            callback.call(self);
-                            clearInterval(_interval_id)
-                        }
-                        detector.remove()
-                    }, 10);
-                    let branding_css = ":root {" + "--main-btn-bg: " + this.configs.main_button_background_colour + " !important;" + "--main-btn-text: " + this.configs.main_button_text_colour + " !important;" + "}";
-                    $("<style>").html(branding_css).appendTo($(document.body))
-                },
+                // addCSS: function(callback) {
+                //     let parent_node = document.head || document.body;
+                //     $("<link>").attr({
+                //         rel: "stylesheet",
+                //         class: "gigatester-css",
+                //         href: this.static_css
+                //     }).appendTo($(parent_node));
+                //     let self = this;
+                //     let _interval_id = setInterval(function() {
+                //         let detector = $("<div>").addClass("gigatester-load-detector").appendTo($(document.body));
+                //         if (detector.css("z-index") == 1999) {
+                //             callback.call(self);
+                //             clearInterval(_interval_id)
+                //         }
+                //         detector.remove()
+                //     }, 10);
+                //     let branding_css = ":root {" + "--main-btn-bg: " + this.configs.main_button_background_color + " !important;" + "--main-btn-text: " + this.configs.main_button_text_color + " !important;" + "}";
+                //     $("<style>").html(branding_css).appendTo($(document.body))
+                // },
                 addFeedbackButton: function() {
                     if (this.custom_ui.button) {
                         return
@@ -364,7 +364,6 @@ else{
                     }).appendTo($(document.body));
                     this.configs.position = 'r';
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
-                    this.custom_ui.element.attr("modal", "true")
                     this.custom_ui.button.text(this.configs.main_button_text)
                     this.custom_ui.button.appendTo(this.custom_ui.element);
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
@@ -499,7 +498,7 @@ else{
                         }
                     }.bind(this);
                     this.custom_ui.overlay.on("mouseenter", function(e) {
-                        if (!this.custom_ui.overlay.attr("screenshot-capturing") && !this.custom_ui.overlay_hint_tooltip && !this.overlay_hint_tooltip_added) {
+                        if (!this.custom_ui.overlay_hint_tooltip && !this.overlay_hint_tooltip_added) {
                             console.log('GigaTester: overlay hint');
                             this.custom_ui.overlay_hint_tooltip = $("<div>").addClass("gigatester-overlay-hint-cursor");
                             setTooltipPos(e);
@@ -560,13 +559,13 @@ else{
                     path_max_y: 0,
                     svg_delete_icons: [],
                     annotation_count: 0,
-                    cut_outs: [],
+                    svg_user_draw: [],
                     type: "square",
-                    colour: {
+                    color: {
                         options: ["#E80000", "#FF7E42", "#042e5b", "#84FF42", "#42FFE6", "#2878F0", "#7828F0", "#FF42F9", "#FFFFFF", "#000000"],
                         value:  "#042e5b"
                     },
-                    svg_obj_base_path: false,
+                    svg_obj_initial: false,
                     svg_obj_arrow_group: false,
                     svg_obj_new_arrow: false,
                     svg_obj_new_arrow_top: false,
@@ -581,13 +580,13 @@ else{
                     toolbar_is_hidden: false,
                     init: function() {
                         this.snap = Snap("#snap_svg");
-                        this.svg_obj_base_path = this.snap.path();
-                        this.svg_obj_base_path.attr({
+                        this.svg_obj_initial = this.snap.path();
+                        this.svg_obj_initial.attr({
                             "fill-opacity": GigaTester_modal.canvas_mode ? 0 : .01,
                             "fill-rule": "evenodd"
                         });
-                        $(this.svg_obj_base_path).css("outline","5px solid black");
-                        $(this.svg_obj_base_path).css("outline-offset", "-5px");
+                        $(this.svg_obj_initial).css("outline","5px solid black");
+                        $(this.svg_obj_initial).css("outline-offset", "-5px");
                         this.setBasePathSize();
                         this.snap.drag(this.onDragMove.bind(this), this.isDragStart.bind(this), this.onsDragStop.bind(this));
                         this.snap.touchstart(this.isDragStart.bind(this));
@@ -597,16 +596,16 @@ else{
                         this.addTools()
                     },
                     setBasePathSize: function() {
-                        if (!this.svg_obj_base_path) {
+                        if (!this.svg_obj_initial) {
                             return
                         }
-                        var base_width = $("#snap_svg").width();
-                        var base_height = $("#snap_svg").height();
-                        var path = "M0 0 h" + base_width + " v" + base_height + " h-" + base_width + " Z";
-                        for (var i = 0; i < this.cut_outs.length; i++) {
-                            path += " M" + this.cut_outs[i].x + " " + this.cut_outs[i].y + " h" + this.cut_outs[i].w + " v" + this.cut_outs[i].h + " h-" + this.cut_outs[i].w + " Z"
+                        let base_width = $("#snap_svg").width();
+                        let base_height = $("#snap_svg").height();
+                        let path = "M0 0 h" + base_width + " v" + base_height + " h-" + base_width + " Z";
+                        for (let i = 0; i < this.svg_user_draw.length; i++) {
+                            path += " M" + this.svg_user_draw[i].x + " " + this.svg_user_draw[i].y + " h" + this.svg_user_draw[i].w + " v" + this.svg_user_draw[i].h + " h-" + this.svg_user_draw[i].w + " Z"
                         }
-                        this.svg_obj_base_path.attr("path", path)
+                        this.svg_obj_initial.attr("path", path)
                     },
                     addTools: function() {
                         if (GigaTester_modal.is_touch) {
@@ -615,29 +614,27 @@ else{
                         if (this.toolbar) {
                             return
                         }
-                        var tool_colour_indicator = "";
-                        tool_colour_indicator += '<gtdiv class="gigatester-toolbar-tool-colour-indicator">';
-                        tool_colour_indicator += "<gtcolourpicker>";
-                        $.each(this.colour.options, function(index, colour) {
-                            tool_colour_indicator += '<gtdiv class="gigatester-toolbar-tool-colour-indicator-option" data-colour="' + colour + '">' + '<span style="background-color:' + colour + ';"' + (colour === "#FFFFFF" ? ' hasborder="1"' : "") + "></span>" + "</gtdiv>"
+                        let tool_color_indicator = "";
+                        tool_color_indicator += '<gtdiv class="gigatester-toolbar-tool-color-indicator">';
+                        tool_color_indicator += "<gtcolorpicker>";
+                        $.each(this.color.options, function(index, color) {
+                            tool_color_indicator += '<gtdiv class="gigatester-toolbar-tool-color-indicator-option" data-color="' + color + '">' + '<span style="background-color:' + color + ';"' + (color === "#FFFFFF" ? ' hasborder="1"' : "") + "></span>" + "</gtdiv>"
                         });
-                        tool_colour_indicator += "</gtcolourpicker>";
-                        tool_colour_indicator += "</gtdiv>";
-                        var display_tutorial = false;
-                        var tools = '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-square" data-type="square" title="' + Lang.get("rectangle") + '">' + Svg_Icons.square + "</btn>"
+                        tool_color_indicator += "</gtcolorpicker>";
+                        tool_color_indicator += "</gtdiv>";
+                        let display_tutorial = false;
+                        let tools = '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-square" data-type="square" title="' + Lang.get("rectangle") + '">' + Svg_Icons.square + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + Lang.get("blackout") + '">' + Svg_Icons.blackout + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-colour" data-type="colour">' + tool_colour_indicator + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool-done' + (GigaTester_modal.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + Lang.get("capture_screenshot") + '">' + Svg_Icons.tick
-                        //   + "<span>" + (Lang.get("next") ? Lang.get("capture") : Lang.get("save")) + "</span>" 
-                          + "</btn>"
+                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-color" data-type="color">' + tool_color_indicator + "</btn>"
+                         + '<btn class="gigatester-toolbar-tool-done' + (GigaTester_modal.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + Lang.get("capture_screenshot") + '">' + Svg_Icons.tick + "</btn>"
                          + (GigaTester_modal.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "Cancel" + '">' +  Svg_Icons.close + "</btn>");
                         this.toolbar = $("<gttoolbar>").attr("lang", GigaTester_modal.configs.language).attr("data-html2canvas-ignore", "true");
                         this.toolbar.html(tools);
-                        this.setToolColour();
+                        this.setToolsColor();
                         this.toolbar.appendTo($(document.body));
                         this.toolbar.on("mouseenter", $.proxy(function() {
                             if (this.draw_started || this.dragging_obj) {
-                                this.toolbar.css("opacity", "0.5")
+                                this.toolbar.css("opacity", "0.2")
                             }
                         }, this));
                         this.toolbar.on("mouseleave", $.proxy(function() {
@@ -645,8 +642,8 @@ else{
                         }, this));
                         this.toolbar.find('.gigatester-toolbar-tool[data-type="' + this.type + '"]').addClass("gigatester-toolbar-tool-active");
                         this.toolbar.find(".gigatester-toolbar-tool").on("click", $.proxy(function(e) {
-                            var tool_type = $(e.currentTarget).data("type");
-                            if (tool_type === "colour") {
+                            let tool_type = $(e.currentTarget).data("type");
+                            if (tool_type === "color") {
                                 return
                             }
                             this.type = tool_type;
@@ -657,38 +654,27 @@ else{
                         this.toolbar.find(".gigatester-toolbar-tool-done").on("click", function(e) {
                             e.stopPropagation();
                             e.preventDefault();
-                            if (GigaTester_modal.configs.is_live_checked) {
-                                GigaTester_modal.Draw_Tools.removeTools();
-                                GigaTester_modal.setNotifyStatus("Taking screenshot...");
-                                return
-                            }
                             GigaTester_modal.hideCommentForm();
                             GigaTester_modal.finalScreenshot();
                         }.bind(this));
                         this.toolbar.find(".gigatester-toolbar-close").on("click", function(e) {
                             e.stopPropagation();
                             e.preventDefault();
-                            this.cancelAnnotation();
+                            this.cancelCapture();
                             GigaTester_modal.removeComments();
                             GigaTester_modal.Draw_Tools.image_capture = false;
                         }.bind(this));
-                        this.toolbar.find(".gigatester-toolbar-tool-colour-indicator-option").on("click", $.proxy(function(e) {
-                            var colour = $(e.currentTarget).data("colour");
-                            var tool_type = $(e.currentTarget).parents(".gigatester-toolbar-tool:first").data("type");
-                            this.colour.value = colour;
-                            this.setToolColour()
+                        this.toolbar.find(".gigatester-toolbar-tool-color-indicator-option").on("click", $.proxy(function(e) {
+                            let color = $(e.currentTarget).data("color");
+                            let tool_type = $(e.currentTarget).parents(".gigatester-toolbar-tool:first").data("type");
+                            this.color.value = color;
+                            this.setToolsColor()
                         }, this));
                         this.toolbar.on("click", function(e) {
                             e.stopPropagation()
                         })
                     },
-                    cancelVideoCapture: function() {
-                        this.cancelRoutingOption()
-                    },
-                    cancelAnnotation: function(e) {
-                        this.cancelRoutingOption()
-                    },
-                    cancelRoutingOption: function() {
+                    cancelCapture: function() {
                         if (GigaTester_modal.controls_step) {
                             GigaTester_modal.form_data.rating = GigaTester_modal.form_data.rating;
                             GigaTester_modal.form_data.comment_field =  GigaTester_modal.form_data.comment_field;
@@ -721,8 +707,8 @@ else{
                         }
                         this.toolbar.remove();
                         this.toolbar = null;
-                        this.svg_obj_base_path = null;
-                        this.cut_outs = []
+                        this.svg_obj_initial = null;
+                        this.svg_user_draw = []
                     },
                     removeDeleteIcons: function() {
                         $(this.svg_delete_icons).each(function() {
@@ -730,28 +716,23 @@ else{
                         });
                         this.svg_delete_icons = []
                     },
-                    setToolColour: function() {
-                        this.toolbar.find(".gigatester-toolbar-tool-colour-indicator").css("background-color", this.colour.value);
-                        if (this.colour.value === "#FFFFFF") {
-                            this.toolbar.find(".gigatester-toolbar-tool-colour-indicator").attr("hasborder", 1)
+                    setToolsColor: function() {
+                        this.toolbar.find(".gigatester-toolbar-tool-color-indicator").css("background-color", this.color.value);
+                        if (this.color.value === "#FFFFFF") {
+                            this.toolbar.find(".gigatester-toolbar-tool-color-indicator").attr("hasborder", 1)
                         } else {
-                            this.toolbar.find(".gigatester-toolbar-tool-colour-indicator").removeAttr("hasborder")
+                            this.toolbar.find(".gigatester-toolbar-tool-color-indicator").removeAttr("hasborder")
                         }
                     },
                     isDragStart: function() {
-                        var x, y, event;
+                        let x, y, event;
                         if (typeof arguments[0] === "object") {
                             event = arguments[0]
                         } else {
                             event = arguments[2]
                         }
-                        if (event.changedTouches && event.changedTouches.length) {
-                            x = event.changedTouches[0].clientX;
-                            y = event.changedTouches[0].clientY
-                        } else {
                             x = event.clientX;
                             y = event.clientY
-                        }
                         if (GigaTester_modal.canvas_mode) {
                             x = event.offsetX;
                             y = event.offsetY
@@ -771,19 +752,19 @@ else{
                                 this.dragging_obj.data("transform_y", 0)
                             }
                             if (this.dragging_obj.data("type") === "square") {
-                                var cut_out_x = this.dragging_obj[0].attr("x");
-                                var cut_out_y = this.dragging_obj[0].attr("y");
-                                var cut_out_index = false;
-                                for (var i = 0; i < this.cut_outs.length; i++) {
-                                    if (this.cut_outs[i].x == cut_out_x && this.cut_outs[i].y == cut_out_y) {
-                                        cut_out_index = i;
+                                let cut_out_x = this.dragging_obj[0].attr("x");
+                                let cut_out_y = this.dragging_obj[0].attr("y");
+                                let user_draw_count = false;
+                                for (let i = 0; i < this.svg_user_draw.length; i++) {
+                                    if (this.svg_user_draw[i].x == cut_out_x && this.svg_user_draw[i].y == cut_out_y) {
+                                        user_draw_count = i;
                                         break
                                     }
                                 }
-                                if (cut_out_index !== false) {
-                                    this.dragging_obj.data("cut_out_index", cut_out_index);
-                                    this.dragging_obj.data("cut_out_original_x", this.cut_outs[cut_out_index].x);
-                                    this.dragging_obj.data("cut_out_original_y", this.cut_outs[cut_out_index].y)
+                                if (user_draw_count !== false) {
+                                    this.dragging_obj.data("user_draw_count", user_draw_count);
+                                    this.dragging_obj.data("cut_out_original_x", this.svg_user_draw[user_draw_count].x);
+                                    this.dragging_obj.data("cut_out_original_y", this.svg_user_draw[user_draw_count].y)
                                 }
                             }
                         } else {
@@ -792,49 +773,19 @@ else{
                                 return
                             }
                             this.draw_started = true;
-                            var cut_out_id = (new Date).getTime();
+                            let cut_out_id = (new Date).getTime();
                             switch (this.type) {
-                                case "arrow":
-                                    this.svg_obj_new_arrow = this.snap.line(x, y, x, y);
-                                    this.svg_obj_new_arrow.attr({
-                                        stroke: this.colour.value,
-                                        "stroke-width": 3,
-                                        "stroke-linecap": "round",
-                                        "stroke-linejoin": "round"
-                                    });
-                                    var point1 = x + " " + y;
-                                    var point2 = x + " " + y;
-                                    var point3 = x + " " + y;
-                                    this.svg_obj_new_arrow_top = this.snap.polyline(point1 + "," + point2 + "," + point3);
-                                    this.svg_obj_new_arrow_top.attr({
-                                        fill: this.colour.value
-                                    });
-                                    this.svg_obj_arrow_group = this.snap.group(this.svg_obj_new_arrow, this.svg_obj_new_arrow_top);
-                                    this.svg_obj_arrow_group.attr({
-                                        opacity: .5
-                                    });
-                                    break;
-                                case "line":
-                                    this.svg_obj_line = this.snap.line(x, y, x, y);
-                                    this.svg_obj_line.attr({
-                                        stroke: this.colour.value,
-                                        "stroke-width": 4,
-                                        "stroke-linecap": "round",
-                                        "stroke-linejoin": "round",
-                                        opacity: .5
-                                    });
-                                    break;
                                 case "square":
                                     this.svg_obj_rectangular = this.snap.rect(x, y, 1, 1, 3, 3);
                                     this.svg_obj_rectangular.attr({
-                                        stroke: this.colour.value,
-                                        "stroke-width": 4,
-                                        "stroke-linecap": "round",
-                                        "stroke-linejoin": "round",
+                                        stroke: this.color.value,
+                                        "stroke-width": 3,
+                                        "stroke-linecap": "square",
+                                        "stroke-linejoin": "square",
                                         fill: "transparent",
-                                        opacity: .5
+                                        opacity: .6
                                     });
-                                    this.cut_outs.push({
+                                    this.svg_user_draw.push({
                                         id: cut_out_id,
                                         x: x,
                                         y: y,
@@ -845,22 +796,11 @@ else{
                                 case "blackout":
                                     this.svg_obj_rectangular = this.snap.rect(x, y, 1, 1, 3, 3);
                                     this.svg_obj_rectangular.attr({
-                                        fill: this.colour.value,
+                                        fill: this.color.value,
                                         class: "blackout",
                                         opacity: .5
                                     });
                                     break;
-                                case "path":
-                                    this.svg_obj_path = this.snap.path("M" + x + "," + y);
-                                    this.svg_obj_path.attr({
-                                        stroke: this.colour.value,
-                                        "stroke-width": 5,
-                                        "stroke-linecap": "round",
-                                        "stroke-linejoin": "round",
-                                        fill: "transparent",
-                                        opacity: .8
-                                    });
-                                    break
                             }
                         }
                         this.start_x = x;
@@ -877,14 +817,9 @@ else{
                         this.toolbar_bottom = this.toolbar_top + this.toolbar.outerHeight() + 60
                     },
                     onsDragStop: function(event) {
-                        var x, y;
-                        if (event.changedTouches && event.changedTouches.length) {
-                            x = event.changedTouches[0].clientX;
-                            y = event.changedTouches[0].clientY
-                        } else {
+                        let x, y;
                             x = event.clientX;
                             y = event.clientY
-                        }
                         if (GigaTester_modal.canvas_mode) {
                             x = event.pageX - GigaTester_modal.custom_ui.overlay.offset().left;
                             y = event.pageY - GigaTester_modal.custom_ui.overlay.offset().top
@@ -894,10 +829,10 @@ else{
                                 return
                             }
                             this.dragging_obj.data("drag_started", false);
-                            this.dragging_obj.data("transform_x", this.dragging_obj.data("transform_x_temp"));
-                            this.dragging_obj.data("transform_y", this.dragging_obj.data("transform_y_temp"));
-                            var movement_x = Math.abs(this.start_x - x);
-                            var movement_y = Math.abs(this.start_y - y);
+                            // this.dragging_obj.data("transform_x", this.dragging_obj.data("transform_x_temp"));
+                            // this.dragging_obj.data("transform_y", this.dragging_obj.data("transform_y_temp"));
+                            let movement_x = Math.abs(this.start_x - x);
+                            let movement_y = Math.abs(this.start_y - y);
                             if (!$(event.target).hasClass("gigatester-svg-delete") && movement_x <= 2 && movement_y <= 2) {
                                 GigaTester_modal.canvasCommentStart.call(GigaTester_modal, event)
                             }
@@ -915,68 +850,41 @@ else{
                                 return
                             }
                             this.toolbar.removeClass("gigatester-toolbar-slide-out");
-                            var direction_x = x - this.start_x > 0 ? "right" : "left";
-                            var direction_y = y - this.start_y > 0 ? "down" : "up";
                             if (this.type === "text" || Math.abs(this.path_max_x - this.path_min_x) < this.min_drag_distance && Math.abs(this.path_max_y - this.path_min_y) < this.min_drag_distance) {
                                 switch (this.type) {
-                                    case "arrow":
-                                        this.svg_obj_arrow_group.remove();
-                                        break;
-                                    case "line":
-                                        this.svg_obj_line.remove();
-                                        break;
                                     case "square":
                                     case "blackout":
                                         this.svg_obj_rectangular.remove();
                                         break;
-                                    case "path":
-                                        this.svg_obj_path.remove();
-                                        break
                                 }
-                                if (this.cut_outs.length) {
-                                    var last_cut_out = this.cut_outs[this.cut_outs.length - 1];
+                                if (this.svg_user_draw.length) {
+                                    let last_cut_out = this.svg_user_draw[this.svg_user_draw.length - 1];
                                     if (last_cut_out.w < this.min_drag_distance && last_cut_out.h < this.min_drag_distance) {
-                                        this.cut_outs.splice(this.cut_outs.length - 1, 1)
+                                        this.svg_user_draw.splice(this.svg_user_draw.length - 1, 1)
                                     }
                                 }
                                 this.setBasePathSize();
                                 GigaTester_modal.canvasCommentStart.call(GigaTester_modal, event);
                                 GigaTester_modal.custom_ui.overlay.trigger("mouseleave")
                             } else {
-                                var icon_x = x - 12;
-                                var icon_y = y - 12;
+                                let icon_x = x - 12;
+                                let icon_y = y - 12;
                                 if (this.type === "square" || this.type === "blackout") {
                                     icon_x = parseInt(this.svg_obj_rectangular.attr("x"), 10) + parseInt(this.svg_obj_rectangular.attr("width"), 10) - 12;
                                     icon_y = parseInt(this.svg_obj_rectangular.attr("y"), 10) - 12
                                 }
-                                var icon = this.snap.image(Svg_Icons.delete, icon_x, icon_y, 24, 24).attr({
+                                let icon = this.snap.image(Svg_Icons.delete, icon_x, icon_y, 24, 24).attr({
                                     cursor: "pointer",
                                 }).addClass("gigatester-svg-delete");
                                 this.svg_delete_icons.push(icon);
                                 GigaTester_modal.canvasCommentStart.call(GigaTester_modal, event);
                                 switch (this.type) {
-                                    case "arrow":
-                                        this.svg_obj_arrow_group.attr({
-                                            opacity: 1
-                                        });
-                                        this.svg_obj_arrow_group = this.snap.group(this.svg_obj_arrow_group, icon);
-                                        this.isHoverable(this.svg_obj_arrow_group, icon, this.type);
-                                        this.isDraggable(this.svg_obj_arrow_group, this.type);
-                                        break;
-                                    case "line":
-                                        this.svg_obj_line.attr({
-                                            opacity: 1
-                                        });
-                                        this.svg_obj_line = this.snap.group(this.svg_obj_line, icon);
-                                        this.isHoverable(this.svg_obj_line, icon, this.type);
-                                        this.isDraggable(this.svg_obj_line, this.type);
-                                        break;
                                     case "square":
                                         this.svg_obj_rectangular.attr({
                                             opacity: 1
                                         });
                                         this.svg_obj_rectangular = this.snap.group(this.svg_obj_rectangular, icon);
-                                        this.isHoverable(this.svg_obj_rectangular, icon, this.type, this.cut_outs[this.cut_outs.length - 1].id);
+                                        this.isHoverable(this.svg_obj_rectangular, icon, this.type, this.svg_user_draw[this.svg_user_draw.length - 1].id);
                                         this.isDraggable(this.svg_obj_rectangular, this.type);
                                         break;
                                     case "blackout":
@@ -987,11 +895,6 @@ else{
                                         this.isHoverable(this.svg_obj_rectangular, icon, this.type);
                                         this.isDraggable(this.svg_obj_rectangular, this.type);
                                         break;
-                                    case "path":
-                                        this.svg_obj_path = this.snap.group(this.svg_obj_path, icon);
-                                        this.isHoverable(this.svg_obj_path, icon, this.type);
-                                        this.isDraggable(this.svg_obj_path, this.type);
-                                        break
                                 }
                             }
                             this.draw_started = false;
@@ -1017,19 +920,14 @@ else{
                         GigaTester_modal.disableScroll()
                     },
                     onDragMove: function() {
-                        var x, y, event;
+                        let x, y, event;
                         if (typeof arguments[0] === "object") {
                             event = arguments[0]
                         } else {
                             event = arguments[4]
                         }
-                        if (event.changedTouches && event.changedTouches.length) {
-                            x = event.changedTouches[0].clientX;
-                            y = event.changedTouches[0].clientY
-                        } else {
                             x = event.clientX;
                             y = event.clientY
-                        }
                         if (GigaTester_modal.canvas_mode) {
                             x = event.pageX - GigaTester_modal.custom_ui.overlay.offset().left;
                             y = event.pageY - GigaTester_modal.custom_ui.overlay.offset().top
@@ -1038,27 +936,27 @@ else{
                             if (!this.dragging_obj.data("drag_started")) {
                                 return
                             }
-                            var t = new Snap.Matrix;
-                            var mouse_movement_x = x - this.dragging_obj.data("original_x");
-                            var mouse_movement_y = y - this.dragging_obj.data("original_y");
-                            var transform_x = mouse_movement_x + this.dragging_obj.data("transform_x");
-                            var transform_y = mouse_movement_y + this.dragging_obj.data("transform_y");
+                            let hovered = new Snap.Matrix;
+                            let mouse_movement_x = x - this.dragging_obj.data("original_x");
+                            let mouse_movement_y = y - this.dragging_obj.data("original_y");
+                            let transform_x = mouse_movement_x + this.dragging_obj.data("transform_x");
+                            let transform_y = mouse_movement_y + this.dragging_obj.data("transform_y");
                             this.dragging_obj.data("transform_x_temp", transform_x);
                             this.dragging_obj.data("transform_y_temp", transform_y);
-                            t.translate(transform_x, transform_y);
-                            this.dragging_obj.transform(t);
+                            hovered.translate(transform_x, transform_y);
+                            this.dragging_obj.transform(hovered);
                             if (this.dragging_obj.data("type") === "square") {
-                                var cut_out_index = this.dragging_obj.data("cut_out_index");
-                                this.cut_outs[cut_out_index].x = this.dragging_obj.data("cut_out_original_x") + transform_x;
-                                this.cut_outs[cut_out_index].y = this.dragging_obj.data("cut_out_original_y") + transform_y;
+                                let user_draw_count = this.dragging_obj.data("user_draw_count");
+                                this.svg_user_draw[user_draw_count].x = this.dragging_obj.data("cut_out_original_x") + transform_x;
+                                this.svg_user_draw[user_draw_count].y = this.dragging_obj.data("cut_out_original_y") + transform_y;
                                 this.setBasePathSize()
                             }
                         } else {
                             if (!this.draw_started) {
                                 return
                             }
-                            var direction_x = x - this.start_x > 0 ? "right" : "left";
-                            var direction_y = y - this.start_y > 0 ? "down" : "up";
+                            let direction_x = x - this.start_x > 0 ? "right" : "left";
+                            let direction_y = y - this.start_y > 0 ? "down" : "up";
                             this.stop_x = x;
                             this.stop_y = y;
                             this.stop_x = Math.max(6, this.stop_x);
@@ -1070,67 +968,21 @@ else{
                             this.path_max_x = Math.max(this.path_max_x, x);
                             this.path_max_y = Math.max(this.path_max_y, y);
                             switch (this.type) {
-                                case "arrow":
-                                    this.svg_obj_new_arrow.attr({
-                                        x2: this.stop_x,
-                                        y2: this.stop_y
-                                    });
-                                    var x_length = Math.abs(this.stop_x - this.start_x);
-                                    var y_length = Math.abs(this.stop_y - this.start_y);
-                                    var y_amount = 40;
-                                    if (x_length < y_amount && y_length < y_amount) {
-                                        y_amount = Math.max(x_length, y_length)
-                                    }
-                                    var x_amount = y_amount / 2.5;
-                                    var point1 = this.stop_x + " " + this.stop_y;
-                                    var point2;
-                                    var point3;
-                                    var point4;
-                                    var translate_y = 0;
-                                    if (this.stop_y >= this.start_y) {
-                                        point2 = this.stop_x - x_amount + " " + (this.stop_y - y_amount);
-                                        point3 = this.stop_x + " " + (this.stop_y - y_amount + 5);
-                                        point4 = this.stop_x + x_amount + " " + (this.stop_y - y_amount);
-                                        translate_y = 8
-                                    } else {
-                                        point2 = this.stop_x - x_amount + " " + (this.stop_y + y_amount);
-                                        point3 = this.stop_x + " " + (this.stop_y + y_amount - 5);
-                                        point4 = this.stop_x + x_amount + " " + (this.stop_y + y_amount);
-                                        translate_y = -8
-                                    }
-                                    this.svg_obj_new_arrow_top.attr({
-                                        points: point1 + "," + point2 + "," + point3 + "," + point4 + "," + point1
-                                    });
-                                    var deg = Math.atan((this.stop_x - this.start_x) / (this.stop_y - this.start_y)) * 180 / Math.PI;
-                                    if (!deg) {
-                                        deg = 0
-                                    }
-                                    var arrow_2_matrix = new Snap.Matrix;
-                                    arrow_2_matrix.rotate(deg * -1, this.stop_x, this.stop_y);
-                                    arrow_2_matrix.translate(0, translate_y);
-                                    this.svg_obj_new_arrow_top.transform(arrow_2_matrix);
-                                    break;
-                                case "line":
-                                    this.svg_obj_line.attr({
-                                        x2: this.stop_x,
-                                        y2: this.stop_y
-                                    });
-                                    break;
                                 case "square":
-                                    var square_x = direction_x === "right" ? this.start_x : this.stop_x;
-                                    var square_y = direction_y === "down" ? this.start_y : this.stop_y;
-                                    var square_w = Math.abs(this.stop_x - this.start_x);
-                                    var square_h = Math.abs(this.stop_y - this.start_y);
+                                    let square_x = direction_x === "right" ? this.start_x : this.stop_x;
+                                    let square_y = direction_y === "down" ? this.start_y : this.stop_y;
+                                    let square_w = Math.abs(this.stop_x - this.start_x);
+                                    let square_h = Math.abs(this.stop_y - this.start_y);
                                     this.svg_obj_rectangular.attr({
                                         x: square_x,
                                         y: square_y,
                                         width: square_w,
                                         height: square_h
                                     });
-                                    this.cut_outs[this.cut_outs.length - 1].x = square_x;
-                                    this.cut_outs[this.cut_outs.length - 1].y = square_y;
-                                    this.cut_outs[this.cut_outs.length - 1].w = square_w;
-                                    this.cut_outs[this.cut_outs.length - 1].h = square_h;
+                                    this.svg_user_draw[this.svg_user_draw.length - 1].x = square_x;
+                                    this.svg_user_draw[this.svg_user_draw.length - 1].y = square_y;
+                                    this.svg_user_draw[this.svg_user_draw.length - 1].w = square_w;
+                                    this.svg_user_draw[this.svg_user_draw.length - 1].h = square_h;
                                     this.setBasePathSize();
                                     break;
                                 case "blackout":
@@ -1141,11 +993,6 @@ else{
                                         height: Math.abs(this.stop_y - this.start_y)
                                     });
                                     break;
-                                case "path":
-                                    var current_path = this.svg_obj_path.attr("path");
-                                    var new_path = current_path + "L" + this.stop_x + "," + this.stop_y;
-                                    this.svg_obj_path.attr("path", new_path);
-                                    break
                             }
                             if (Math.abs(this.stop_x - this.start_x) > this.min_drag_distance || Math.abs(this.stop_y - this.start_y) > this.min_drag_distance) {
                                 if (this.stop_x > this.toolbar_left && this.stop_x < this.toolbar_right && this.stop_y > this.toolbar_top && this.stop_y < this.toolbar_bottom) {
@@ -1159,21 +1006,21 @@ else{
                         }
                     },
                     isHoverable: function(obj, delete_icon, type, cut_out_id) {
-                        var timeout_id = false;
-                        var self = this;
+                        let timeout_id = false;
+                        let self = this;
                         this.annotation_count++;
-                        var _doRemove = function() {
+                        let _doRemove = function() {
                             obj.remove();
                             if (type === "square") {
-                                var cut_out_index = false;
-                                for (var i = 0; i < self.cut_outs.length; i++) {
-                                    if (self.cut_outs[i].id === cut_out_id) {
-                                        cut_out_index = i;
+                                let user_draw_count = false;
+                                for (let i = 0; i < self.svg_user_draw.length; i++) {
+                                    if (self.svg_user_draw[i].id === cut_out_id) {
+                                        user_draw_count = i;
                                         break
                                     }
                                 }
-                                if (cut_out_index !== false) {
-                                    self.cut_outs.splice(cut_out_index, 1);
+                                if (user_draw_count !== false) {
+                                    self.svg_user_draw.splice(user_draw_count, 1);
                                     self.setBasePathSize()
                                 }
                             }
@@ -1199,23 +1046,9 @@ else{
                                 delete_icon.attr("display", "none");
                             }.bind(this), 200)
                         });
-                        if (GigaTester_modal.has_touch) {
-                            delete_icon.touchend(function() {
-                                setTimeout(function() {
-                                    _doRemove()
-                                }, 0)
-                            });
-                            obj.touchstart(function() {
-                                if (delete_icon.attr("display") === "none") {
-                                    delete_icon.attr("display", "")
-                                } else {
-                                    delete_icon.attr("display", "none")
-                                }
-                            })
-                        }
                     },
                     isDraggable: function(obj, type) {
-                        var isDragStart = $.proxy(function(event, x, y) {
+                        let isDragStart = $.proxy(function(event, x, y) {
                             this.dragging_obj = obj;
                             this.dragging_obj.data("type", type)
                         }, this);
@@ -1258,26 +1091,26 @@ else{
                     $(window).scrollTop(this._scroll_top)
                 },
                 disableScroll: function() {
-                    if (this._scroll_disabled) {
+                    if (this.canvas_mode) {
                         return
                     }
-                    if (this.canvas_mode) {
+                    if (this._scroll_disabled) {
                         return
                     }
                     this._scroll_top = $(window).scrollTop();
                     this._scroll_disabled = true;
                     $("html").addClass("gt-noscroll");
                     $(window).on("scroll", $.proxy(this._scrollWindow, this));
-                    window.addEventListener("wheel", this._mouseScroll, {
-                        passive: false
-                    });
-                    window.addEventListener("mousewheel", this._mouseScroll, {
-                        passive: false
-                    });
                     window.addEventListener("DOMMouseScroll", this._mouseScroll, {
                         passive: false
                     });
                     window.addEventListener("touchmove", this._mouseScroll, {
+                        passive: false
+                    });
+                    window.addEventListener("wheel", this._mouseScroll, {
+                        passive: false
+                    });
+                    window.addEventListener("mousewheel", this._mouseScroll, {
                         passive: false
                     });
                     $(document).on("keydown", this._scrollKeyDown)
@@ -1286,16 +1119,16 @@ else{
                     this._scroll_disabled = false;
                     $("html").removeClass("gt-noscroll");
                     $(window).off("scroll", $.proxy(this._scrollWindow, this));
-                    window.removeEventListener("wheel", this._mouseScroll, {
-                        passive: false
-                    });
-                    window.removeEventListener("mousewheel", this._mouseScroll, {
-                        passive: false
-                    });
                     window.removeEventListener("DOMMouseScroll", this._mouseScroll, {
                         passive: false
                     });
                     window.removeEventListener("touchmove", this._mouseScroll, {
+                        passive: false
+                    });
+                    window.removeEventListener("wheel", this._mouseScroll, {
+                        passive: false
+                    });
+                    window.removeEventListener("mousewheel", this._mouseScroll, {
                         passive: false
                     });
                     $(document).off("keydown", this._scrollKeyDown)
@@ -1386,13 +1219,6 @@ else{
                         return
                     }
                     this.custom_ui.events = $("<div>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.configs.position);
-                    if (this.configs.display_powered_by) {
-                        this.custom_ui.events.attr("poweredby", 1)
-                    }
-                    this.custom_ui.events.attr("modal", "true")
-                    if (this.configs.use_modal) {
-                        this.custom_ui.events.attr("modal", "true")
-                    }
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
@@ -2120,7 +1946,7 @@ else{
                     console.log('video recorder started')
                     Screen_Recorder.start({
                         onSubmit: GigaTester_modal.submitVideoCapture,
-                        onCancel: this.Draw_Tools.cancelVideoCapture.bind(this.Draw_Tools),
+                        onCancel: this.Draw_Tools.cancelCapture.bind(this.Draw_Tools),
                         timer: this.configs.screen_record_time
                     })
                 },
@@ -2655,7 +2481,7 @@ else{
                       })
                         .then(res => res.json())
                         .then(data => {console.log(data)
-                            let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html("<style>" + ":root {" + "--main-outro-icon: " + form_settings.completed_dialog_icon_colour + " !important;" + "}" + "</style>" + '<gtdiv data-icon="' + form_settings.completed_dialog_icon + '">' + completed_dialog_icon + "<gtspan>" + String_Validator.validate(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + String_Validator.validate(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
+                            let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html("<style>" + ":root {" + "--main-outro-icon: " + form_settings.completed_dialog_icon_color + " !important;" + "}" + "</style>" + '<gtdiv>' + "<gtspan>" + String_Validator.validate(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + String_Validator.validate(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
                             send_button.find(".gigatester-ctrl-item-send-text").text('Send feedback');
@@ -2666,9 +2492,9 @@ else{
                             $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
                             setTimeout(function () {
                                 console.log(close_icon);
-                                $(document.getElementsByClassName('gigatester-ctrl-item-options')).css('display', 'block');
+                                // $(document.getElementsByClassName('gigatester-ctrl-item-options')).css('display', 'block');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
-                                close_icon.trigger("click")
+                                // close_icon.trigger("click")
                             }, 3000);
                                                    })
                         .catch(error => {
@@ -2749,8 +2575,8 @@ else{
                 this.scroll_l = options.scroll_l;
                 this.offset_x = options.offset_x;
                 this.offset_y = options.offset_y;
-                var element = $("<div>").addClass("gigatester-comment");
-                var canvas_comment_message = "";
+                let element = $("<div>").addClass("gigatester-comment");
+                let canvas_comment_message = "";
                 element.on("click mouseup mousedown", function(e) {
                     e.stopPropagation()
                 });
@@ -2794,9 +2620,9 @@ else{
                     console.log('set position')
                 };
                 this.setFormDirection = function() {
-                    var is_mobile = GigaTester_modal.is_mobile;
-                    var form_width = is_mobile ? 210 : 430;
-                    var form_height = is_mobile ? 150 : 200;
+                    let is_mobile = GigaTester_modal.is_mobile;
+                    let form_width = is_mobile ? 210 : 430;
+                    let form_height = is_mobile ? 150 : 200;
                     if (is_mobile) {
                         if (this.x > $(window).width() / 2) {
                             element.find(".gigatester-comment-form").attr("xdirection", "left")
@@ -2861,7 +2687,7 @@ else{
                     element.find("gtcomment").on("paste", function(e) {
                         e.preventDefault();
                         try {
-                            var text = (e.originalEvent || e).clipboardData.getData("text/plain");
+                            let text = (e.originalEvent || e).clipboardData.getData("text/plain");
                             document.execCommand("insertText", false, text)
                         } catch (e) {}
                     });
@@ -2889,8 +2715,8 @@ else{
                     element.find("gtcomment").val('').trigger('focus').val(canvas_comment_message);
                 };
                 this.getData = function() {
-                    var screen_x = parseInt(this.x - this.scroll_l - this.offset_x, 10);
-                    var screen_y = parseInt(this.y - this.scroll_t - this.offset_y, 10);
+                    let screen_x = parseInt(this.x - this.scroll_l - this.offset_x, 10);
+                    let screen_y = parseInt(this.y - this.scroll_t - this.offset_y, 10);
                     return {
                         screen_x: screen_x,
                         screen_y: screen_y,
@@ -3250,8 +3076,8 @@ else{
                         GigaTester_modal.configs.severities = [];
                         GigaTester_modal.configs.workflow_type = "";
                         GigaTester_modal.configs.rating_limit = data[0].feedbackSettings.ratingLimit;
-                        GigaTester_modal.configs.main_button_background_colour = data[0].widgetLookAndFeel.bgColor;
-                        GigaTester_modal.configs.main_button_text_colour = data[0].widgetLookAndFeel.fgColor;
+                        GigaTester_modal.configs.main_button_background_color = data[0].widgetLookAndFeel.bgColor;
+                        GigaTester_modal.configs.main_button_text_color = data[0].widgetLookAndFeel.fgColor;
                         GigaTester_modal.configs.main_button_text = data[0].widgetLookAndFeel.text;
                         GigaTester_modal.form_settings_default['FEEDBACK'].rating_type= data[0].feedbackSettings.ratingIcon;
                         GigaTester_modal.form_settings_default['BUGS'].bug_title_message = data[0].bugSettings.title;
