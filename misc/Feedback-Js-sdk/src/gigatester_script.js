@@ -1589,9 +1589,10 @@ else{
                     this.custom_ui.events = null
                 },
                 setRoutings: function() {
-                    let html = '<form class="gigatester-ctrl-item-options">';
+                    let html = '<gtclose class="gigatester-ctrl-item-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
+                    html += '<form class="gigatester-ctrl-item-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
-                    html += '<gtclose class="gigatester-ctrl-item-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
+//                    html += '<gtclose class="gigatester-ctrl-item-close" title="' + Lang.get("close") + '">' + Svg_Icons.times + "</gtclose>";
                     html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ String_Validator.validate(this.configs.title) + '</gtheader>'
                     html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + String_Validator.validate(this.configs.logo) + '">' : "";
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
@@ -1648,42 +1649,43 @@ else{
                     let html = "";
                     html += '<form class="gigatester-ctrl-item-options">'
                      + (form_settings.rating_title_message ? '<div class="gigatester-ctrl-item-help-message">' + String_Validator.validate(form_settings.rating_title_message) + "</div>" : "")
-                     + (form_settings.rating_type ? "<gtrating>" + '<gtdiv data-rating="star_1" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + Svg_Icons.star + "</gtdiv>" + "</gtrating><gtdiv class='gigatester-ctrl-item-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
-                     + '<gtdiv class="gigatester-ctrl-item-form"'
-                     + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
-                     + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + Lang.get("your_name") + '"'
-                     + (form_settings.name_field_mandatory ? " required" : "") + ">" : "")
+                     + (form_settings.rating_type ? "<gtrating>" + '<gtdiv data-rating="star_1" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + Svg_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + Svg_Icons.star + "</gtdiv>" + "</gtrating>"
+                     + "<gtdiv class='gigatester-ctrl-item-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
+                     + '<gtdiv class="gigatester-ctrl-item-form"' + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
                      + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
+                     + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
+                     + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + Lang.get("your_name") + '"' + (form_settings.name_field_mandatory ? " required" : "") + ">" : "")
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + Lang.get("your_email_address") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
-                     + (form_settings.display_category ? '<select id="category" name="category"'
-                     + (form_settings.category_field_mandatory ? " required" : "")
-                     + '><option id="category" value="category" selected disabled>' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
+                     + (form_settings.display_category ? '<select id="category" name="category"' + (form_settings.category_field_mandatory ? " required" : "") + ">"
+                     + '<option id="category" value="category" selected disabled>' + Lang.get("select_a_category") + "</option>" + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="category_standard_feedback"></gtdiv>' : '')
-                     + (form_settings.display_severity ? '<select id="severity" name="severity"' + (form_settings.severity_field_mandatory ? " required" : "") + '><option value="severity" selected disabled>' + Lang.get("select_a_severity") + "</option>" + severity_options + "</select>" : "")
+                     + (form_settings.display_severity ? '<select id="severity" name="severity"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
+                     + '<option value="severity" selected disabled>' + Lang.get("select_a_severity") + "</option>" + severity_options + "</select>" : "")
                      + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (String_Validator.validate(form_settings.title_field_placeholder) || Lang.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
-                     + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (String_Validator.validate(form_settings.comment_field_placeholder) || Lang.get("leave_us_your_comment")) + '"'
-                     + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
-                     + (display_screenshot || display_audio || display_video || display_attachment ?  GigaTester_modal.recording ? '<gtdiv class="gigatester-ctrl-item-attach-actions" >' + "<gtdiv>" : '<gtdiv class="gigatester-ctrl-item-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
+                     + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (String_Validator.validate(form_settings.comment_field_placeholder) || Lang.get("leave_us_your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
+                     + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
+                     + (display_screenshot || display_audio || display_video || display_attachment ? GigaTester_modal.recording ? '<gtdiv class="gigatester-ctrl-item-attach-actions" >' + "<gtdiv>" : '<gtdiv class="gigatester-ctrl-item-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
                      + (display_screenshot ? '<btn class="gigatester-ctrl-item-screenshot">' + Svg_Icons.feedback_screenshot + "<gtdiv>" + Lang.get("attach_a_screenshot") + "</gtdiv>"
-                     + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>"
-                     + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
+                     + "<gttooltip>" + Lang.get("attach_a_screenshot") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
                      + (display_audio ? '<btn class="gigatester-ctrl-item-audio">' + Svg_Icons.mic + "<gtdiv>" + Lang.get("capture_audio") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("capture_audio") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
                      + (display_video ?  '<btn class="gigatester-ctrl-item-video">' + Svg_Icons.feedback_video + "<gtdiv>" + Lang.get("capture_screen_recorder") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("capture_screen_recorder") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
-                     + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + Svg_Icons.paperclip + "<gtdiv>" + Lang.get("attach_a_file") + "</gtdiv>" + "<gttooltip>" + Lang.get("attach_a_file")
-                     + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "") + "</gtdiv>"
-                     + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
+                     + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + Svg_Icons.paperclip + "<gtdiv>" + Lang.get("attach_a_file") + "</gtdiv>"
+                     + "<gttooltip>" + Lang.get("attach_a_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
+                     + "</gtdiv>" + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
                      + '<gtdiv class="gigatester-ctrl-item-screenshot-preview">' + '<btn class="gigatester-ctrl-item-remove-screenshot">' + Svg_Icons.trash + "</btn>"
                      + '<gtbadge class="gigatester-ctrl-item-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
                      + '<gtdiv class="gigatester-ctrl-item-video-preview">' + '<btn class="gigatester-ctrl-item-remove-video">' + Svg_Icons.trash + "</btn>"
-                     + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>"
-                     + "</gtbadge>" + "</gtdiv>" + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + Svg_Icons.paperclip + "<span></span>"
-                     + '<btn class="gigatester-ctrl-item-remove-attachment">' + Svg_Icons.trash + "</btn>"
-                     + "</gtdiv>" + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
+                     + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>" + "</gtbadge>" + "</gtdiv>"
+                     + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + Svg_Icons.paperclip + "<span></span>" + '<btn class="gigatester-ctrl-item-remove-attachment">' + Svg_Icons.trash + "</btn>" + "</gtdiv>"
+                     + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
                      + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
                      + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + Svg_Icons.check + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
-                     + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">' +  Lang.get("send") + "</span>" + "</button>" + "</gtdiv>" + "</form>";
+                     + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">' +  Lang.get("send") + "</span>" + "</button>"
+                     + '</gtdiv></gtdiv>'
+                     + "</gtdiv>"
+                     + "</form>";
                    this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').html(html);
                     if(GigaTester_modal.configs.rating_limit > 4){
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
