@@ -617,26 +617,21 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
 }
 .gigatester-overlay .gigatester-overlay-hint-cursor {
   width: auto;
-  height: auto;
-  line-height: normal;
+  height: 24px;
   min-width: 0;
   min-height: 0;
   max-width: none;
   max-height: none;
+  line-height: 24px;
   margin: 0;
-  padding: 0;
   outline: none;
   border: none;
-  border-radius: 0;
   background: none;
   position: absolute;
   z-index: 5;
   top: 200px;
   left: 200px;
   padding: 0 10px;
-  width: auto;
-  height: 24px;
-  line-height: 24px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.7);
   border-radius: 15px;
@@ -645,9 +640,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   white-space: nowrap;
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   pointer-events: none;
-}
-.gigatester-overlay .gigatester-overlay-hint-cursor:before {
-  content: "Click to add a comment or drag to highlight";
 }
 .gigatester-overlay[hidecursor="true"] .gigatester-overlay-hint-cursor {
   display: none;
@@ -1701,6 +1693,13 @@ justify-content: center;
   border: 6px solid transparent;
   border-top-color: #042e5b;
 }
+
+#gigatester_ctrls_container
+.gigatester-ctrl-item
+.gigatester-ctrl-item-preview-placeholder {
+ display: block;
+}
+
 #gigatester_ctrls_container
   .gigatester-ctrl-item
   .gigatester-ctrl-item-screenshot-preview,

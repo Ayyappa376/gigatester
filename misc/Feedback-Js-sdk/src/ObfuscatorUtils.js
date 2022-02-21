@@ -1,7 +1,7 @@
 var fs = require("fs");
 var jsObfuscator = require('javascript-obfuscator')
 
-fs.readFile('./src/gigatester_script.js', 'UTF-8', function(error, code){
+fs.readFile('./dist/bundle.js', 'UTF-8', function(error, code){
 if(error){
     throw error;
 }
