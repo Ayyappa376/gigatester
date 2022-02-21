@@ -1,4 +1,8 @@
 // @ts-nocheck
+const GigaTester_StringRes = require('./js/stringRes');
+const GigaTester_Icons = require('./js/icons');
+const GigaTester_StringUtils = require('./js/stringUtils');
+
 (function() {
     if(typeof window.jQuery === "undefined"){
         (function(d) {
@@ -31,90 +35,6 @@
 
     console.log('GigaTester: dependency loading');
 
-    //All the strings that are displayed in the UI and may need to be internationalized
-    //Currently only 'en' locale is supported
-    const GigaTester_StringRes = {
-        locale: "en",
-        en: {
-            report_bug: "Report Bug",
-            give_feedback: "Give Feedback",
-            draw_hint: "Click & drag to draw or click to add a comment",
-            capture_screen_recording: "Screen Recorder",
-            capture_audio: "Capture audio",
-            attach_a_screenshot: "Screenshot",
-            attach_a_file: "Attach a file",
-            your_email: "Your email",
-            select_category: "Select a category *",
-            select_severity: "Choose severity *",
-            your_comment: "Provide your comments *",
-            screenshot_attached: "Screenshot attached",
-            send: "Send feedback",
-            close: "Close",
-            rectangle: "Draw Rectangle",
-            blackout: "Blackout",
-            capture_screenshot: "Capture screenshot",
-            save: "Save",
-            delete: "Delete",
-            add_comment: "Type your comment",
-            cancel: "Cancel",
-            unsaved_changes: "You have unsaved changes",
-            confirm_close: "Are you sure that you want to close?",
-            discard: "Discard",
-            start_recording: "Start recording",
-            screen_recording: "Screen recording",
-            recording_mute: "Turn off microphone",
-            recording_unmute: "Turn on microphone",
-            recording_pause: "Pause",
-            recording_resume: "Resume",
-            recording_finish: "Finish recording",
-        },
-        setLang: function(locale) {
-            this.locale = locale
-        },
-        get: function(key, include_fallback) {
-            if (!GigaTester_StringRes[GigaTester_StringRes.locale]) {
-                GigaTester_StringRes.locale = "en"
-            }
-            if (GigaTester_StringRes[GigaTester_StringRes.locale][key]) {
-                return GigaTester_StringRes[GigaTester_StringRes.locale][key]
-            } else {
-                if (include_fallback) {
-                    return GigaTester_StringRes["en"][key] || ""
-                } else {
-                    return ""
-                }
-            }
-        }
-    };
-
-    //All the icons that are displayed in the UI. Need to be SVGs or base64 encoded image strings.
-    //Cannot be external file reference.
-    const GigaTester_Icons = {
-        feedback_screenshot: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 117.52" style="enable-background:new 0 0 122.88 117.52" xml:space="preserve"><g><path d="M74.01,0v11.98H19.13c-3.93,0.01-7.14,3.22-7.15,7.15v17.74H0V19.13c0-1.07,0.09-2.09,0.26-3.14 c0.91-5.37,3.99-10,8.56-12.96c3.13-2,6.6-3.01,10.31-3.03H74.01L74.01,0z M106.86,101.52v16H94.87v-16H79.6V89.53h15.27V69.72 h11.98v19.81h16.03v11.98H106.86L106.86,101.52z M0,48.85h11.98v33.53c0.01,2.69,1.52,5.12,3.9,6.36L10.4,99.4 c-3.97-2.06-7.06-5.36-8.84-9.46C0.52,87.51,0.01,85.02,0,82.39V48.85L0,48.85z M24.89,101.52V89.53h42.73v11.98H24.89 L24.89,101.52z M106.85,57.74H94.87V19.13c-0.01-3.93-3.22-7.14-7.15-7.15h-1.73V0h1.73c1.07,0,2.09,0.09,3.14,0.26 c5.37,0.91,10,3.99,12.96,8.56c2,3.13,3.01,6.6,3.03,10.31V57.74L106.85,57.74z"/></g></svg>',
-        feedback_video: '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 118.38 122.88"><defs><style>.cls-1{fill:#d8453e;fill-rule:evenodd;}</style></defs><title>screen-recorder</title><path d="M118.38,77v41.87a4,4,0,0,1-4,4H74.5v-9.27h34.63V77ZM81.53,90.36l5,1.49a9.13,9.13,0,0,1-1.57,3.49,6.88,6.88,0,0,1-2.67,2.11,10,10,0,0,1-4,.71,11.76,11.76,0,0,1-4.88-.86,7.78,7.78,0,0,1-3.27-3.06,10.28,10.28,0,0,1-1.38-5.58q0-4.55,2.41-7a9.26,9.26,0,0,1,6.85-2.44,9.25,9.25,0,0,1,5.44,1.41,8.17,8.17,0,0,1,2.94,4.3l-5,1.1a4.43,4.43,0,0,0-.55-1.22,3.21,3.21,0,0,0-2.71-1.34,3.36,3.36,0,0,0-3,1.54,6.7,6.7,0,0,0-.78,3.6q0,3,.93,4.17a3.63,3.63,0,0,0,5,.21,5.42,5.42,0,0,0,1.23-2.64ZM51.27,79.54H66.41v3.91H57v2.91h8.77V90.1H57v3.6H66.7v4.14H51.27V79.54ZM31.88,97.86V79.54h9.43a13.79,13.79,0,0,1,4,.45,4.3,4.3,0,0,1,2.23,1.66,5.06,5.06,0,0,1,.85,3,5.18,5.18,0,0,1-.65,2.63A4.85,4.85,0,0,1,46,89.05a6.82,6.82,0,0,1-2,.72,6,6,0,0,1,1.48.67,6.57,6.57,0,0,1,.9,1,7,7,0,0,1,.79,1.14l2.75,5.28H43.51l-3-5.58a4.33,4.33,0,0,0-1-1.41,2.43,2.43,0,0,0-1.39-.43h-.5v7.42l-5.69,0ZM37.57,87H40a9.36,9.36,0,0,0,1.5-.25,1.49,1.49,0,0,0,.91-.58,1.86,1.86,0,0,0-.2-2.43,3.48,3.48,0,0,0-2.11-.47H37.58V87Zm37-77.8V0h39.86a4,4,0,0,1,4,4V45.9H109.1V9.18ZM9.28,45.84H0V4A4,4,0,0,1,4,0h39.5V9.29H9.28V45.84Zm34.14,67.79v9.25H4a4,4,0,0,1-4-4V77H9.28v36.66H43.42Z"/><path class="cls-1" d="M81.78,46.69c0,11.77-10.82,22.58-22.59,22.58S36.6,58.46,36.6,46.69c0-14.6,11.23-21.93,22.48-22s22.7,7.28,22.7,22ZM59.19,35.46A11.23,11.23,0,1,1,48,46.69,11.22,11.22,0,0,1,59.19,35.46Z"/></svg>',
-        feedback_bug: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 116.96 122.88" style="enable-background:new 0 0 116.96 122.88" xml:space="preserve"><style type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M91.53,67.05c0.03,0.85,0.05,1.71,0.05,2.58c0,2.38-0.12,4.71-0.37,6.99l14.92,7.57 c1.58,0.8,2.62,2.26,2.93,3.88l6.36,28.08c0.67,2.97-1.2,5.92-4.17,6.59c-2.97,0.67-5.92-1.2-6.59-4.17l-5.82-25.7l-9.88-5.01 c-4.98,16.53-16.52,28.11-29.96,28.11c-13.52,0-25.11-11.72-30.04-28.41l-10.8,4.9l-4.95,25.94c-0.57,3-3.47,4.96-6.46,4.39 c-3-0.57-4.96-3.47-4.39-6.46l5.47-28.64c0.3-1.75,1.44-3.32,3.17-4.1l15.77-7.16c-0.23-2.24-0.35-4.53-0.35-6.79v-0.01 c0-0.87,0.02-1.74,0.05-2.61L9.83,61.27c-1.74-0.6-2.99-1.99-3.48-3.64l-0.02,0l-6.1-20.21c-0.87-2.92,0.79-6,3.72-6.87 c2.92-0.87,6,0.79,6.87,3.72l5.28,17.5l13.33,4.6l59.22,0l12.21-4.21l5.28-17.5c0.87-2.92,3.95-4.59,6.87-3.72 c2.92,0.87,4.59,3.95,3.72,6.87l-6.1,20.21l-0.02,0c-0.49,1.64-1.74,3.03-3.48,3.63L91.53,67.05L91.53,67.05L91.53,67.05z M58.66,25.55c2.07,0,4.09,0.39,6.03,1.11c0.71-1.57,1.35-3.04,1.94-4.38C72.81,8.23,73.61,6.4,94.9,0.15 c1.99-0.58,4.08,0.56,4.67,2.55c0.59,1.99-0.56,4.08-2.55,4.67c-17.93,5.26-18.57,6.72-23.5,17.95c-0.69,1.56-1.45,3.29-2.35,5.27 c5.61,4.84,10.02,12.84,12.28,22.51l-49.58,0c2.27-9.67,6.67-17.67,12.28-22.51c-0.91-1.98-1.67-3.71-2.35-5.27 c-4.93-11.23-5.58-12.69-23.5-17.95c-1.99-0.58-3.13-2.68-2.55-4.67c0.59-1.99,2.67-3.13,4.67-2.55C43.7,6.4,44.5,8.23,50.68,22.28 c0.59,1.34,1.24,2.81,1.95,4.38C54.56,25.94,56.58,25.55,58.66,25.55L58.66,25.55L58.66,25.55z M67.99,36.6 c2.77,0,5.02,2.25,5.02,5.02c0,2.77-2.25,5.02-5.02,5.02c-2.77,0-5.02-2.25-5.02-5.02C62.97,38.85,65.22,36.6,67.99,36.6 L67.99,36.6z M49.32,36.6c2.77,0,5.02,2.25,5.02,5.02c0,2.77-2.25,5.02-5.02,5.02s-5.02-2.25-5.02-5.02 C44.3,38.85,46.55,36.6,49.32,36.6L49.32,36.6z"/></g></svg>',
-        feedback_general: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 112.77 122.88" style="enable-background:new 0 0 112.77 122.88" xml:space="preserve"><g><path d="M64.44,61.11c1.79,0,3.12-1.45,3.12-3.12c0-1.78-1.45-3.12-3.12-3.12H24.75c-1.78,0-3.12,1.45-3.12,3.12 c0,1.78,1.45,3.12,3.12,3.12H64.44L64.44,61.11L64.44,61.11L64.44,61.11z M77.45,19.73l18.1-19.14c0.69-0.58,1.39-0.81,2.2-0.35 l14.56,14.1c0.58,0.69,0.69,1.5-0.12,2.31L93.75,36.14L77.45,19.73L77.45,19.73L77.45,19.73L77.45,19.73z M87.74,42.27l-18.66,3.86 l2.36-20.28L87.74,42.27L87.74,42.27z M19.14,13.09h41.73l-3.05,6.45H19.14c-3.48,0-6.65,1.43-8.96,3.73s-3.73,5.46-3.73,8.96 v45.74c0,3.48,1.43,6.66,3.73,8.96c2.3,2.3,5.47,3.73,8.96,3.73h3.72v0.01l0.21,0.01c1.77,0.12,3.12,1.66,2.99,3.43l-1.26,18.1 L48.78,97.7c0.58-0.58,1.38-0.93,2.27-0.93h37.32c3.48,0,6.65-1.42,8.96-3.73c2.3-2.3,3.73-5.48,3.73-8.96V50.45h6.68v42.69 c0.35,9.63-3.58,15.04-19.43,15.7l-32.25-0.74l-32.73,13.87l-0.16,0.13c-1.35,1.16-3.38,1-4.54-0.36c-0.57-0.67-0.82-1.49-0.77-2.3 l1.55-22.34h-0.26c-5.26,0-10.05-2.15-13.52-5.62C2.15,88.03,0,83.24,0,77.98V32.23c0-5.26,2.15-10.05,5.62-13.52 C9.08,15.24,13.87,13.09,19.14,13.09L19.14,13.09L19.14,13.09z M79.69,78.42c1.79,0,3.12-1.45,3.12-3.12 c0-1.79-1.45-3.12-3.12-3.12H24.75c-1.78,0-3.12,1.45-3.12,3.12c0,1.78,1.45,3.12,3.12,3.12H79.69L79.69,78.42L79.69,78.42 L79.69,78.42z M50.39,43.81c1.78,0,3.12-1.45,3.12-3.12c0-1.67-1.45-3.12-3.12-3.12H24.75c-1.78,0-3.12,1.45-3.12,3.12 c0,1.78,1.45,3.12,3.12,3.12H50.39L50.39,43.81L50.39,43.81L50.39,43.81z"/></g></svg>',
-//        arrow_to_left: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="94.051px" height="122.879px" viewBox="0 0 94.051 122.879" enable-background="new 0 0 94.051 122.879" xml:space="preserve"><g><path d="M92.125,110.623c2.619,2.692,2.561,6.995-0.135,9.618c-2.689,2.618-6.994,2.558-9.611-0.137L29.865,65.95l4.875-4.737 l-4.895,4.747c-2.623-2.705-2.56-7.024,0.146-9.644c0.081-0.076,0.159-0.148,0.239-0.22L82.377,2.774 c2.619-2.694,6.924-2.755,9.613-0.137c2.695,2.623,2.754,6.925,0.135,9.618L44.229,61.232L92.125,110.623L92.125,110.623 L92.125,110.623z M12.651,6.325C12.651,2.832,9.819,0,6.325,0C2.833,0,0,2.832,0,6.325v110.229c0,3.493,2.833,6.325,6.325,6.325 c3.494,0,6.326-2.832,6.326-6.325V6.325L12.651,6.325z"/></g></svg>',
-//        arrow_to_right: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="94.051px" height="122.879px" viewBox="0 0 94.051 122.879" enable-background="new 0 0 94.051 122.879" xml:space="preserve"><g><path d="M1.926,110.623c-2.618,2.692-2.56,6.995,0.134,9.618c2.69,2.618,6.995,2.558,9.613-0.137L64.186,65.95l-4.875-4.737 l4.896,4.747c2.623-2.705,2.56-7.024-0.146-9.644c-0.081-0.076-0.159-0.148-0.24-0.22L11.674,2.774 C9.056,0.081,4.75,0.02,2.06,2.637c-2.693,2.623-2.752,6.925-0.134,9.618l47.896,48.978L1.926,110.623L1.926,110.623L1.926,110.623 z M81.401,6.325C81.401,2.832,84.233,0,87.726,0s6.325,2.832,6.325,6.325v110.229c0,3.493-2.832,6.325-6.325,6.325 s-6.325-2.832-6.325-6.325V6.325L81.401,6.325z"/></g></svg>',
-        mic: '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 82.05 122.88"><title>mic-microphone</title><path d="M59.89,20.83V52.3c0,27-37.73,27-37.73,0V20.83c0-27.77,37.73-27.77,37.73,0Zm-14.18,76V118.2a4.69,4.69,0,0,1-9.37,0V96.78a40.71,40.71,0,0,1-12.45-3.51A41.63,41.63,0,0,1,12.05,85L12,84.91A41.31,41.31,0,0,1,3.12,71.68,40.73,40.73,0,0,1,0,56a4.67,4.67,0,0,1,8-3.31l.1.1A4.68,4.68,0,0,1,9.37,56a31.27,31.27,0,0,0,2.4,12.06A32,32,0,0,0,29,85.28a31.41,31.41,0,0,0,24.13,0,31.89,31.89,0,0,0,10.29-6.9l.08-.07a32,32,0,0,0,6.82-10.22A31.27,31.27,0,0,0,72.68,56a4.69,4.69,0,0,1,9.37,0,40.65,40.65,0,0,1-3.12,15.65A41.45,41.45,0,0,1,70,85l-.09.08a41.34,41.34,0,0,1-11.75,8.18,40.86,40.86,0,0,1-12.46,3.51Z"/></svg>',
-        play: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 122.88" style="enable-background:new 0 0 122.88 122.88" xml:space="preserve"><style type="text/css">.st0{fill-rule:evenodd;clip-rule:evenodd;}</style><g><path class="st0" d="M61.44,0c33.93,0,61.44,27.51,61.44,61.44s-27.51,61.44-61.44,61.44S0,95.37,0,61.44S27.51,0,61.44,0L61.44,0z M83.31,65.24c3.13-2.02,3.12-4.27,0-6.06L50.98,40.6c-2.55-1.6-5.21-0.66-5.14,2.67l0.1,37.55c0.22,3.61,2.28,4.6,5.32,2.93 L83.31,65.24L83.31,65.24z M61.44,12.48c27.04,0,48.96,21.92,48.96,48.96c0,27.04-21.92,48.96-48.96,48.96S12.48,88.48,12.48,61.44 C12.48,34.4,34.4,12.48,61.44,12.48L61.44,12.48z"/></g></svg>',
-        pause: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 122.88" style="enable-background:new 0 0 122.88 122.88" xml:space="preserve"><g><path d="M61.44,0c16.97,0,32.33,6.88,43.44,18c11.12,11.12,18,26.48,18,43.44c0,16.97-6.88,32.33-18,43.44 c-11.12,11.12-26.48,18-43.44,18c-16.97,0-32.33-6.88-43.44-18C6.88,93.77,0,78.41,0,61.44C0,44.47,6.88,29.11,18,18 C29.11,6.88,44.47,0,61.44,0L61.44,0z M42.3,39.47h13.59v43.95l-13.59,0V39.47L42.3,39.47L42.3,39.47z M66.99,39.47h13.59v43.95 l-13.59,0V39.47L66.99,39.47L66.99,39.47z M97.42,25.46c-9.21-9.21-21.93-14.9-35.98-14.9c-14.05,0-26.78,5.7-35.98,14.9 c-9.21,9.21-14.9,21.93-14.9,35.98s5.7,26.78,14.9,35.98c9.21,9.21,21.93,14.9,35.98,14.9c14.05,0,26.78-5.7,35.98-14.9 c9.21-9.21,14.9-21.93,14.9-35.98S106.63,34.66,97.42,25.46L97.42,25.46z"/></g></svg>',
-        stop: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 493.56 493.56"><path d="M438.254,0H58.974C27.502,0,0.006,25.992,0.006,57.472v379.256c0,31.48,27.496,56.832,58.968,56.832h379.28 c31.468,0,55.3-25.352,55.3-56.832V57.472C493.554,25.992,469.722,0,438.254,0z"/></svg>',
-//        fullscreen: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 122.87" style="enable-background:new 0 0 122.88 122.87" xml:space="preserve"><g><path d="M122.88,77.63v41.12c0,2.28-1.85,4.12-4.12,4.12H77.33v-9.62h35.95c0-12.34,0-23.27,0-35.62H122.88L122.88,77.63z M77.39,9.53V0h41.37c2.28,0,4.12,1.85,4.12,4.12v41.18h-9.63V9.53H77.39L77.39,9.53z M9.63,45.24H0V4.12C0,1.85,1.85,0,4.12,0h41 v9.64H9.63V45.24L9.63,45.24z M45.07,113.27v9.6H4.12c-2.28,0-4.12-1.85-4.12-4.13V77.57h9.63v35.71H45.07L45.07,113.27z"/></g></svg>',
-        blackout: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 493.56 493.56"><path d="M438.254,0H58.974C27.502,0,0.006,25.992,0.006,57.472v379.256c0,31.48,27.496,56.832,58.968,56.832h379.28 c31.468,0,55.3-25.352,55.3-56.832V57.472C493.554,25.992,469.722,0,438.254,0z"/></svg>',
-        square: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.661px" height="122.88px" viewBox="0 0 122.661 122.88" enable-background="new 0 0 122.661 122.88" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M21.26,0h80.142c11.692,0,21.26,9.706,21.26,21.569v79.741 c0,11.864-9.567,21.569-21.26,21.569H21.26C9.566,122.88,0,113.175,0,101.311V21.569C0,9.706,9.566,0,21.26,0L21.26,0z M21.674,11.14h79.312c5.855,0,10.647,4.788,10.647,10.641v79.313c0,5.855-4.792,10.646-10.647,10.646H21.674 c-5.855,0-10.646-4.79-10.646-10.646V21.78C11.027,15.928,15.818,11.14,21.674,11.14L21.674,11.14z"/></g></svg>',
-        paperclip: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.877px" height="112.531px" viewBox="0 0 122.877 112.531" enable-background="new 0 0 122.877 112.531" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M8.872,8.869L8.872,8.869C-2.956,20.694-2.958,40.039,8.87,51.864L53.433,96.43 c4.873,0.274,7.517-1.769,7.055-7.055L16.287,45.172c-7.945-7.945-7.945-20.941,0-28.887l0,0 c7.943-7.942,20.943-7.945,28.889-0.002c21.27,21.27,42.542,42.543,63.807,63.81c5.035,5.032,5.318,13.691,0.279,18.73l0,0 c-5.035,5.036-13.656,4.721-18.693-0.315C74.424,82.364,58.402,66.342,42.256,50.197c-2.235-2.235-2.349-6.006-0.113-8.245l0,0 c2.234-2.236,6.009-2.12,8.245,0.113L79.092,70.77c5.201,0.411,7.434-2.138,7.182-7.181L57.569,34.884 c-6.188-6.188-16.308-6.188-22.492-0.002l0,0c-6.19,6.188-6.184,16.315-0.002,22.496l19.662,19.664l9.269,9.27l19.201,19.199 c8.977,8.978,24.23,9.54,33.207,0.56c8.982-8.981,8.422-24.23-0.559-33.21L87.387,44.392v0.002L51.862,8.869 C40.039-2.958,20.693-2.954,8.872,8.869L8.872,8.869z"/></g></svg>',
-        tick: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="52.881px" height="20.842px" viewBox="0 0 122.881 89.842" enable-background="new 0 0 122.881 89.842" xml:space="preserve"><g><path d="M1.232,55.541c-1.533-1.388-1.652-3.756-0.265-5.289c1.388-1.534,3.756-1.652,5.29-0.265l34.053,30.878l76.099-79.699 c1.429-1.501,3.804-1.561,5.305-0.132c1.502,1.428,1.561,3.803,0.133,5.305L43.223,88.683l-0.005-0.005 c-1.396,1.468-3.716,1.563-5.227,0.196L1.232,55.541L1.232,55.541z"/></g></svg>',
-        close: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.878px" height="122.88px" viewBox="0 0 122.878 122.88" enable-background="new 0 0 122.878 122.88" xml:space="preserve"><g><path d="M1.426,8.313c-1.901-1.901-1.901-4.984,0-6.886c1.901-1.902,4.984-1.902,6.886,0l53.127,53.127l53.127-53.127 c1.901-1.902,4.984-1.902,6.887,0c1.901,1.901,1.901,4.985,0,6.886L68.324,61.439l53.128,53.128c1.901,1.901,1.901,4.984,0,6.886 c-1.902,1.902-4.985,1.902-6.887,0L61.438,68.326L8.312,121.453c-1.901,1.902-4.984,1.902-6.886,0 c-1.901-1.901-1.901-4.984,0-6.886l53.127-53.128L1.426,8.313L1.426,8.313z"/></g></svg>',
-        times: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="121.31px" height="122.876px" viewBox="0 0 121.31 122.876" enable-background="new 0 0 121.31 122.876" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M90.914,5.296c6.927-7.034,18.188-7.065,25.154-0.068 c6.961,6.995,6.991,18.369,0.068,25.397L85.743,61.452l30.425,30.855c6.866,6.978,6.773,18.28-0.208,25.247 c-6.983,6.964-18.21,6.946-25.074-0.031L60.669,86.881L30.395,117.58c-6.927,7.034-18.188,7.065-25.154,0.068 c-6.961-6.995-6.992-18.369-0.068-25.397l30.393-30.827L5.142,30.568c-6.867-6.978-6.773-18.28,0.208-25.247 c6.983-6.963,18.21-6.946,25.074,0.031l30.217,30.643L90.914,5.296L90.914,5.296z"/></g></svg>',
-        check: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.877px" height="101.052px" viewBox="0 0 122.877 101.052" enable-background="new 0 0 122.877 101.052" xml:space="preserve"><g><path d="M4.43,63.63c-2.869-2.755-4.352-6.42-4.427-10.11c-0.074-3.689,1.261-7.412,4.015-10.281 c2.752-2.867,6.417-4.351,10.106-4.425c3.691-0.076,7.412,1.255,10.283,4.012l24.787,23.851L98.543,3.989l1.768,1.349l-1.77-1.355 c0.141-0.183,0.301-0.339,0.479-0.466c2.936-2.543,6.621-3.691,10.223-3.495V0.018l0.176,0.016c3.623,0.24,7.162,1.85,9.775,4.766 c2.658,2.965,3.863,6.731,3.662,10.412h0.004l-0.016,0.176c-0.236,3.558-1.791,7.035-4.609,9.632l-59.224,72.09l0.004,0.004 c-0.111,0.141-0.236,0.262-0.372,0.368c-2.773,2.435-6.275,3.629-9.757,3.569c-3.511-0.061-7.015-1.396-9.741-4.016L4.43,63.63 L4.43,63.63z"/></g></svg>',
-        star: '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 122.88 117.1"><path class="star" fill="#042e5b" d="M64.42,2,80.13,38.7,120,42.26a3.2,3.2,0,0,1,1.82,5.62h0L91.64,74.18l8.9,39A3.19,3.19,0,0,1,98.12,117a3.27,3.27,0,0,1-2.46-.46L61.41,96.1,27.07,116.64a3.18,3.18,0,0,1-4.38-1.09,3.14,3.14,0,0,1-.37-2.38h0l8.91-39L1.09,47.88a3.24,3.24,0,0,1-.32-4.52,3.32,3.32,0,0,1,2.29-1l39.72-3.56L58.49,2a3.24,3.24,0,0,1,5.93,0Z"/></svg>',
-        trash: '<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 105.7 122.88"><title>trash-bin</title><path d="M30.46,14.57V5.22A5.18,5.18,0,0,1,32,1.55v0A5.19,5.19,0,0,1,35.68,0H70a5.22,5.22,0,0,1,3.67,1.53l0,0a5.22,5.22,0,0,1,1.53,3.67v9.35h27.08a3.36,3.36,0,0,1,3.38,3.37V29.58A3.38,3.38,0,0,1,102.32,33H98.51l-8.3,87.22a3,3,0,0,1-2.95,2.69H18.43a3,3,0,0,1-3-2.95L7.19,33H3.37A3.38,3.38,0,0,1,0,29.58V17.94a3.36,3.36,0,0,1,3.37-3.37Zm36.27,0V8.51H39v6.06ZM49.48,49.25a3.4,3.4,0,0,1,6.8,0v51.81a3.4,3.4,0,1,1-6.8,0V49.25ZM69.59,49a3.4,3.4,0,1,1,6.78.42L73,101.27a3.4,3.4,0,0,1-6.78-.43L69.59,49Zm-40.26.42A3.39,3.39,0,1,1,36.1,49l3.41,51.8a3.39,3.39,0,1,1-6.77.43L29.33,49.46ZM92.51,33.38H13.19l7.94,83.55H84.56l8-83.55Z"/></svg>',
-        delete: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAADAAAAAwCAYAAABXAvmHAAADZUlEQVRogdWaz0sUYRjHP9UhSKpDJfRDKjz0gxDMy7YgeghhkWUPKxjRVtAqoYW7RD9IL1HQdovoFqH9C0EEXeoSZREdsiIoo1sZQTlRq5UTzzIT4zaj8777jo5feFCQ99nPd+bxfZ55Z5dhRluBJLDHie3AOmC1k/078AX4AIwBL4BHwLihz9fSGuAEcA+YAWyNuA8UHbMLpg3AFeeK6kD7xTfgKrApahMFYNIgeHX8BM5GAS41/SBC8OoYBXaagk8BPxYQ3o1fQLZW+COLAF4d/brwh2MA70afKvz+GMG7kQkLXw/8jqEBiW1hDDyLKbzEm/ng+2MM78Z5L7B3FloFWMDysLW2iFrvTAKzYC8sEXjRZfeXFc7PlcBtVQONjY3k83nq6uoYH1cbLFtbW+nu7sayLCYmJpTWAi3AdWf0qOi4ai02NTXZlmXZrgYGBkKvzefz/9aVy2U7kUjo/C+c8jp6qJqgVCrZ1SoUCkrwroaHh3UMjLnwG3V2g46Ojv9ARMViMXBNb2+v75quri7dHUkepDiou6VJ2fjJr5z8rrxocHBQF17iqBgo1ZAg0IS3nILgh4aGaoGXuCkG7tSYpALrp2w2a6dSqajgbee5mpcGEgWaiBBe4q0Y+GgoWWA5RQQv8RlnfDCWNJPJVPb2ak1NTdm5XM4kvIRlfHSQzmrbtu/fJicnTX9c5YM+mboiQbuNV2GanWoJvTKRLKhJ+WmuZqcY78TA3aiuvNS8dFk/qcxOc8RjnFM24/De3SZMs9OMYTFwSDdBT09P6K0yqE/UaOKYGNiis7i9vT00/Hwm0um0roFGdzsaVV3sN06HaVJ+5TQyMqIDP+sB/6RqgpaWFnt6eloJ3u9OzMzM2G1tbToGznkNyAP9H9Ukzc3NlTshQ5vq2s7OzsraZDKpWz711V3tmmaixYhbLrT3WGUt8NVkn49QG50hdNYphLwlObME4C+58EEai3HpvA/jsCHGBnaEvU3pGMIfUK21vhjBn1aFdxWH0+qaN5YunSZnKHK1wrvaDTxdQHD5KsJeU/BeDQFTEYLLnb4YBbhXDc7RdtkguLyTu+EdjxdCm50j7ic1gD93pspQL+/8ZOrrNtJgEsA+YJczq8i3WWTKFcmLCDlTkROQ186RoDzPyoGCvoC/pkcwDQU7NiIAAAAASUVORK5CYII=",
-//        angle_down: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" viewBox="0 0 122.88 66.91" style="enable-background:new 0 0 122.88 66.91" xml:space="preserve"><g><path d="M11.68,1.95C8.95-0.7,4.6-0.64,1.95,2.08c-2.65,2.72-2.59,7.08,0.13,9.73l54.79,53.13l4.8-4.93l-4.8,4.95 c2.74,2.65,7.1,2.58,9.75-0.15c0.08-0.08,0.15-0.16,0.22-0.24l53.95-52.76c2.73-2.65,2.79-7.01,0.14-9.73 c-2.65-2.72-7.01-2.79-9.73-0.13L61.65,50.41L11.68,1.95L11.68,1.95z"/></g></svg>',
-//        plus: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.875px" height="122.648px" viewBox="0 0 122.875 122.648" enable-background="new 0 0 122.875 122.648" xml:space="preserve"><g><path fill-rule="evenodd" clip-rule="evenodd" d="M108.993,47.079c7.683-0.059,13.898,6.12,13.882,13.805 c-0.018,7.683-6.26,13.959-13.942,14.019L75.24,75.138l-0.235,33.73c-0.063,7.619-6.338,13.789-14.014,13.78 c-7.678-0.01-13.848-6.197-13.785-13.818l0.233-33.497l-33.558,0.235C6.2,75.628-0.016,69.448,0,61.764 c0.018-7.683,6.261-13.959,13.943-14.018l33.692-0.236l0.236-33.73C47.935,6.161,54.209-0.009,61.885,0 c7.678,0.009,13.848,6.197,13.784,13.818l-0.233,33.497L108.993,47.079L108.993,47.079z"/></g></svg>',
-        photo: '<svg version="1.1" id="Layer_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="122.88px" height="122.151px" viewBox="0 0 122.88 122.151" enable-background="new 0 0 122.88 122.151" xml:space="preserve"><g><path d="M8.676,0h105.529c2.405,0,4.557,0.984,6.124,2.552c1.567,1.567,2.551,3.754,2.551,6.124v104.8 c0,2.405-0.983,4.557-2.551,6.124c-1.568,1.567-3.755,2.552-6.124,2.552H8.676c-2.406,0-4.557-0.984-6.124-2.553 C0.984,118.032,0,115.845,0,113.476V8.675C0,6.27,0.984,4.119,2.552,2.552C4.12,0.984,6.307,0,8.676,0L8.676,0z M9.097,88.323 l35.411-33.9c1.421-1.313,3.645-1.167,4.921,0.255c0.037,0.036,0.037,0.073,0.073,0.073l31.459,37.218l4.812-29.6 c0.328-1.896,2.114-3.208,4.01-2.879c0.729,0.109,1.385,0.474,1.895,0.948l22.07,23.184V10.773c0-0.474-0.183-0.875-0.511-1.166 c-0.291-0.292-0.729-0.511-1.166-0.511H10.737c-0.474,0-0.875,0.182-1.166,0.511c-0.292,0.291-0.511,0.729-0.511,1.166v77.55H9.097 L9.097,88.323z M90.526,19.866c3.464,0,6.635,1.422,8.895,3.682c2.297,2.296,3.682,5.431,3.682,8.895 c0,3.463-1.421,6.634-3.682,8.894c-2.296,2.297-5.431,3.682-8.895,3.682c-3.462,0-6.634-1.421-8.894-3.682 c-2.297-2.296-3.682-5.431-3.682-8.894c0-3.463,1.421-6.634,3.682-8.895C83.929,21.251,87.064,19.866,90.526,19.866L90.526,19.866z"/></g></svg>',
-    };
 
     function gigatester(){
     if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined"  || typeof window.platform === "undefined" ||  typeof window.Snap === "undefined"){
@@ -132,38 +52,534 @@
             window.GigaTester.hide = function(){
                 $(document.getElementById("gigatester_ctrls_container")).css('display', 'none')
             }
-            let String_Validator = {
-                validate: function(str, nl2br) {
-                    let text = String(str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&apos;");
-                    if (nl2br) {
-                        text = text.replace(/(?:\r\n|\r|\n)/g, "<br>")
+
+            //this is the object that deals with the comments provided on the screenshot object
+            let GigaTester_ScreenshotComment = function(options) {
+                this.is_new = true;
+                this.x = options.x;
+                this.y = options.y;
+                this.counter = options.counter;
+                this.screenshot_num = options.screenshot_num;
+                this.onDelete = options.onDelete;
+                this.onOpen = options.onOpen;
+                this.scroll_t = options.scroll_t;
+                this.scroll_l = options.scroll_l;
+                this.offset_x = options.offset_x;
+                this.offset_y = options.offset_y;
+                this.is_mobile = options.is_mobile;
+                let element = $("<div>").addClass("gigatester-comment");
+                let canvas_comment_message = "";
+                element.on("click mouseup mousedown", function(e) {
+                    e.stopPropagation()
+                });
+                element.on("keydown keyup", function(e) {
+                    e.stopPropagation()
+                });
+                this.setHTML = function() {
+                    return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + GigaTester_StringRes.get("add_comment") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-input-btn gigatester-btn-save">' + GigaTester_StringRes.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + GigaTester_StringRes.get("delete") + '">' + GigaTester_Icons.trash_bin_icon + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</btn>" + "</form>"
+                };
+                this.isOpen = function() {
+                    return element.find(".gigatester-comment-form").is(":visible")
+                };
+                this.isEmpty = function() {
+                    return canvas_comment_message ? false : true
+                };
+                this.setCounter = function(counter) {
+                    this.counter = counter;
+                    element.find(".gigatester-comment-pin > span").text(counter + 1)
+                };
+                this.submit = function() {
+                    element.find(".gigatester-input-btn").click()
+                }, this.show = function() {
+                    element.show()
+                };
+                this.hide = function() {
+                    element.hide()
+                };
+                this.showForm = function() {
+                    element.find(".gigatester-comment-form").show();
+                    element.find("gtcomment").html(Lib.htmlEntities(canvas_comment_message, true)).focus()
+                };
+                this.hideForm = function() {
+                    element.find(".gigatester-comment-form-delete").show();
+                    element.find(".gigatester-comment-form").hide()
+                };
+                this.saveComment = function(){
+                    element.find(".gigatester-btn-save").trigger('click');
+                }
+                this.saveCanvasComments = function() {
+                    element.find(".gigatester-btn-save").trigger('click');
+                    console.log('set position')
+                };
+                this.setFormDirection = function() {
+                    let form_width = this.is_mobile ? 210 : 430;
+                    let form_height = this.is_mobile ? 150 : 200;
+                    if (this.is_mobile) {
+                        if (this.x > $(window).width() / 2) {
+                            element.find(".gigatester-comment-form").attr("xdirection", "left")
+                        } else {
+                            element.find(".gigatester-comment-form").attr("xdirection", "right")
+                        }
+                        if (this.y > 140) {
+                            element.find(".gigatester-comment-form").attr("ydirection", "top")
+                        } else {
+                            element.find(".gigatester-comment-form").attr("ydirection", "down")
+                        }
+                    } else {
+                        if ($(window).scrollLeft() + $(window).width() - this.x >= form_width) {
+                            element.find(".gigatester-comment-form").attr("xdirection", "right")
+                        } else {
+                            element.find(".gigatester-comment-form").attr("xdirection", "left")
+                        }
+                        if ($(window).scrollTop() + $(window).height() - this.y >= form_height) {
+                            element.find(".gigatester-comment-form").attr("ydirection", "down")
+                        } else {
+                            element.find(".gigatester-comment-form").attr("ydirection", "top")
+                        }
                     }
-                    return text
-                },
+                };
+                this.add = function() {
+                    element.css({
+                        top: this.y,
+                        left: this.x
+                    });
+                    element.html(this.setHTML());
+                    this.setFormDirection();
+                    element.find(".gigatester-comment-pin").on("click", function(e) {
+                        this.showForm();
+                        this.onOpen(this.counter)
+                    }.bind(this));
+                    element.find(".gigatester-comment-form-close").on("click", function(e) {
+                        e.stopPropagation();
+                        if (this.is_new) {
+                            this.destroy();
+                            this.onDelete(this.counter);
+                            return
+                        }
+                        this.hideForm()
+                    }.bind(this));
+                    element.find(".gigatester-comment-form-delete").on("click", function(e) {
+                        e.stopPropagation();
+                        this.destroy();
+                        this.onDelete(this.counter)
+                    }.bind(this));
+                    element.find("gtcomment").on("keydown", function(e) {
+                        if (e.which === 13) {
+                            if (e.ctrlKey || e.metaKey) {
+                                element.find('button[type="submit"]').on('click')
+                            }
+                        }
+                    });
+                    element.find("gtcomment").on("keyup", function(e) {
+                        if ($(this).html() === "<br>") {
+                            $(this).html("")
+                        }
+                    });
+                    element.find("gtcomment").on("paste", function(e) {
+                        e.preventDefault();
+                        try {
+                            let text = (e.originalEvent || e).clipboardData.getData("text/plain");
+                            document.execCommand("insertText", false, text)
+                        } catch (e) {}
+                    });
+                    element.find(".gigatester-btn-save").on("click", function(e) {
+                        canvas_comment_message = element.find("gtcomment").html();
+                        canvas_comment_message = canvas_comment_message.replace(/<br\/?>/gi, "\n");
+                        canvas_comment_message = canvas_comment_message.replace(/(<([^>]+)>)/gi, "");
+                        canvas_comment_message = canvas_comment_message.replace(/&nbsp;/gi, " ");
+                        canvas_comment_message = canvas_comment_message.replace(/&lt;/gi, "<");
+                        canvas_comment_message = canvas_comment_message.replace(/&gt;/gi, ">");
+                        canvas_comment_message = canvas_comment_message.replace(/&amp;/gi, "&");
+                        canvas_comment_message = canvas_comment_message.replace(/&quot;/gi, '"');
+                        canvas_comment_message = canvas_comment_message.trim();
+                        if (!canvas_comment_message) {
+                            return
+                        }
+                        this.is_new = false;
+                        this.hideForm()
+                    }.bind(this));
+                    element.appendTo($(document.getElementById('gigatester_screencapture_area')));
+                        if(element.find("gtcomment").text()){
+                            console.log(element.find("gtcomment").text())
+                        element.find(".gigatester-btn-save").trigger('click');
+                        }
+                    element.find("gtcomment").val('').trigger('focus').val(canvas_comment_message);
+                };
+                this.getData = function() {
+                    let screen_x = parseInt(this.x - this.scroll_l - this.offset_x, 10);
+                    let screen_y = parseInt(this.y - this.scroll_t - this.offset_y, 10);
+                    return {
+                        screen_x: screen_x,
+                        screen_y: screen_y,
+                        screen_number: this.counter + 1,
+                        screenshot_num: this.screenshot_num,
+                        message: canvas_comment_message
+                    }
+                };
+                this.destroy = function() {
+                    element.remove();
+                    element = undefined;
+                    canvas_comment_message = ""
+                }
             };
+
+            let Screen_Recorder = {
+                recorded_blobs: [],
+                recorder: null,
+                display_stream: null,
+                audio_stream: null,
+                combined_stream: null,
+                options: {
+                    onSubmit: null,
+                    onCancel: null
+                },
+                timer_timeout: null,
+                timer: 60,
+                timer_total: 60,
+                count_down_timeout: null,
+                count_down: 0,
+                is_muted: false,
+                mime_type: 'video/webm; codecs="vp8, opus"',
+                device_list: {
+                    audioinput: [],
+                    screeninput: [],
+                },
+                isOpen: function() {
+                    return this.controls ? true : false
+                },
+                start: function(options) {
+                    this.options.onSubmit = options.onSubmit || null;
+                    this.options.onCancel = options.onCancel || null;
+                    this.timer = options.timer || 180;
+                    this.timer = Math.min(300, this.timer);
+                    this.timer = Math.max(30, this.timer);
+                    this.timer_total = this.timer;
+                    console.log('started screen record')
+                    this.reset();
+                    this.getDevice(this.createNewControls.bind(this));
+                },
+                reset: function() {
+                    this.recorded_blobs = [];
+                    this.recorder = null;
+                    this.display_stream = null;
+                    this.audio_stream = null;
+                    this.combined_stream = null;
+                    this.is_muted = false;
+                    if (this.controls) {
+                        this.pause_button.html(GigaTester_Icons.pause_icon)
+                    }
+                },
+                getDevice: async function(callback) {
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+                        callback();
+                        return
+                    }
+                    await navigator.mediaDevices.enumerateDevices().then(function(devices) {
+                        devices.forEach(function(device) {
+                            console.log(device)
+                            switch (device.kind) {
+                                case "audioinput":
+                                    this.device_list.audioinput.push(device);
+                                    break;
+                                case "screeninput":
+                                    this.device_list.screeninput.push(device);
+                                    break;
+                            }
+                        }.bind(this));
+                        if(this.device_list.audioinput.length || this.device_list.screeninput.length){
+                            this.startVideoCapture()
+                        callback();
+                        }
+                    }.bind(this)).catch(function(error) {})
+                },
+                createNewControls: function() {
+                    this.screen_recorder_overlay = $("<gtdiv>").attr("id", "gigatester_video_container").appendTo($(document.body));
+                    this.controls = $("<gtvideotoolbar>").appendTo($(document.body));
+                    this.mute_button = $("<btn>").addClass("gigatester-video-controls-mute gigatester-video-controls-active").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_mute", true) + "</btn-name>" + "<btn-shortcut>Shift + M</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.mic_icon).appendTo(this.controls);
+                    this.pause_button = $("<btn>").addClass("gigatester-video-controls-pause").attr("disabled", true).html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name>" + "<btn-shortcut>Shift + P</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon).appendTo(this.controls);
+                    this.start_button = $("<btn>").addClass("gigatester-video-controls-start").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("start_recording", true) + "</btn-name>" + "<btn-shortcut>Shift + S</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-record></btn-record>").appendTo(this.controls);
+                    this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>" + "<btn-shortcut>Shift + S</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>" + GigaTester_Icons.stop).appendTo(this.controls);
+                    this.timer_button = $("<btn>").addClass("gigatester-video-controls-timer").text(this.getTimerText()).appendTo(this.controls);
+                    this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>" + "<btn-shortcut>Esc</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.cross_icon).appendTo(this.controls);
+                    this.mic_volume = $("<gtvolume>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume>").appendTo(this.mute_button);
+                    if (!this.device_list.audioinput.length) {
+                        this.is_muted = true;
+                        this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true)
+                    }
+                    this.stop_button.find("btn-timer, btn-timer-mask").css("animation-duration", this.timer + "s");
+                    this.start_button.on("click", this.startVideoCapture.bind(this));
+                    this.stop_button.on("click", this.stopCapture.bind(this));
+                    this.close_button.on("click", this.cancelCapture.bind(this));
+                    this.pause_button.on("click", this.pauseRecording.bind(this));
+                    this.mute_button.on("click", this.muteVoice.bind(this));
+                },
+                removeControls: function() {
+                    this.screen_recorder_overlay.remove();
+                    this.controls.remove();
+                    this.screen_recorder_overlay = null;
+                    this.controls = null;
+                    $("gtmouseclick").remove();
+                },
+                muteVoice: function() {
+                    if (this.mute_button.attr("disabled")) {
+                        return
+                    }
+                    this.is_muted = !this.is_muted;
+                    if (this.is_muted) {
+                        this.mute_button.removeClass("gigatester-video-controls-active");
+                        this.mute_button.find("btn-name").text(GigaTester_StringRes.get("recording_unmute", true))
+                    } else {
+                        this.mute_button.addClass("gigatester-video-controls-active");
+                        this.mute_button.find("btn-name").text(GigaTester_StringRes.get("recording_mute", true))
+                    }
+                    this.toggleAudio()
+                },
+                toggleAudio: function() {
+                    if (!this.combined_stream) {
+                        return
+                    }
+                    let audio_tracks = this.combined_stream.getAudioTracks();
+                    if (audio_tracks.length) {
+                        audio_tracks.forEach(function(audio_track) {
+                            audio_track.enabled = !this.is_muted
+                        }.bind(this))
+                    }
+                },
+                startVideoCapture: function() {
+                    let displayMediaOptions = {
+                        video: {
+                            cursor: "always"
+                        },
+                        audio: false,
+                        preferCurrentTab:false
+                    };
+                    let userMediaOptions = {
+                        audio: true,
+                        video: false
+                    };
+                    try {
+                        let afterGetVideoStream = function() {
+                            this.display_stream.getTracks()[0].onended = function() {
+                                this.stopCapture()
+                            }.bind(this);
+                            let count_down = this.count_down;
+                            let timer = function() {
+                                if (count_down === 0) {
+                                    this.screen_recorder_overlay.hide();
+                                    $(".gigatester-video-count-down").remove();
+                                    this.startRecording()
+                                } else {
+                                    $("<gttimer>").addClass("gigatester-video-count-down").text(count_down).appendTo($(document.body));
+                                    count_down--;
+                                    this.count_down_timeout = setTimeout(timer.bind(this), 1e3)
+                                }
+                            };
+                            timer.call(this);
+                            this.stop_button.show();
+                            this.timer_button.show();
+                            this.start_button.hide();
+                            this.close_button.hide()
+                        }.bind(this);
+                        let afterGetAudioStream = function() {
+                            if (this.audio_stream) {
+                                navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
+                                    this.display_stream = stream;
+                                    let display_tracks = this.display_stream.getTracks();
+                                    let audio_tracks = this.audio_stream.getTracks();
+                                    this.combined_stream = new MediaStream(display_tracks.concat(audio_tracks));
+                                    afterGetVideoStream()
+                                }.bind(this)).catch(this.handleStreamCaptureError.bind(this))
+                            } else {
+                                navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
+                                    this.display_stream = stream;
+                                    let display_tracks = this.display_stream.getTracks();
+                                    this.combined_stream = this.display_stream;
+                                    this.is_muted = true;
+                                    this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true);
+                                    afterGetVideoStream()
+                                }.bind(this)).catch(this.handleStreamCaptureError.bind(this))
+                            }
+                        }.bind(this);
+                        console.log(this.device_list.audioinput.length);
+                        if (this.device_list.audioinput.length >= 0) {
+                            navigator.mediaDevices.getUserMedia(userMediaOptions).then(function(stream) {
+                                this.audio_stream = stream;
+                                afterGetAudioStream();
+                            }.bind(this)).catch(function() {
+                                afterGetAudioStream()
+                            }.bind(this))
+                        } else {
+                            afterGetAudioStream()
+                        }
+                    } catch (e) {
+                        this.handleStreamCaptureError(e)
+                    }
+                },
+                stopCapture: function() {
+                    if (this.recorder) {
+                        this.submitRecording()
+                    } else {
+                        this.stopRecording();
+                        this.removeControls();
+                        this.reset();
+                        if (this.options.onCancel) {
+                            this.options.onCancel()
+                        }
+                    }
+                },
+                cancelCapture: function() {
+                    this.stopRecording();
+                    this.removeControls();
+                    this.reset();
+                    if (this.options.onCancel) {
+                        this.options.onCancel()
+                    }
+                },
+                handleStreamCaptureError: function(e) {
+                    if (typeof e.name !== "undefined" && e.name === "NotAllowedError") {
+                        this.stopCapture()
+                    } else {
+                        GigaTester_modal.modalConfirm('<div style="margin-bottom: 8px;"><b>Video recording is not supported in your browser</b></div><div class="gigatester-modal-info-text">Please download the latest version of <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/firefox/download/thanks/">Firefox</a> or <a href="http://microsoft.com/en-us/edge">Microsoft Edge</a>.</div>', function() {
+                            GigaTester_modal.modalClose()
+                        }, GigaTester_StringRes.get('ok'))
+                    }
+                },
+                getTimerText: function() {
+                    let min = Math.floor(this.timer / 60);
+                    let sec = this.timer - min * 60;
+                    if (min < 10) {
+                        min = "0" + min
+                    }
+                    if (sec < 10) {
+                        sec = "0" + sec
+                    }
+                    return min + ":" + sec
+                },
+                startTimer: function() {
+                    this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
+                    this.timer_timeout = setInterval(function() {
+                        let timer_text = this.getTimerText();
+                        this.timer_button.text(timer_text);
+                        this.timer--;
+                        if (timer_text === "00:00") {
+                            clearInterval(this.timer_timeout);
+                            this.submitRecording()
+                        }
+                    }.bind(this), 1e3)
+                },
+                stopTimer: function() {
+                    clearInterval(this.timer_timeout)
+                },
+                stopCountDown: function() {
+                    clearTimeout(this.count_down_timeout)
+                },
+                startRecording: function() {
+                    try {
+                        this.recorder = new MediaRecorder(this.combined_stream, {
+                            mimeType: this.mime_type
+                        })
+                    } catch (e) {
+                        return
+                    }
+                    this.toggleAudio();
+                    this.recorder.addEventListener("dataavailable", this.handleDataAvailable.bind(this));
+                    this.recorder.start(10);
+                    this.pause_button.removeAttr("disabled");
+                    // this.draw_btn.removeAttr("disabled");
+                    if (this.overlay) {
+                        this.overlay.attr("recording", this.recorder ? "true" : "false")
+                    }
+                    this.startTimer();
+                    window.addEventListener("beforeunload", function(e) {
+                        if (!this.recorder) {
+                            return
+                        }
+                        e.preventDefault();
+                        e.returnValue = ""
+                    }.bind(this))
+                },
+                stopRecording: function() {
+                    if (this.recorder) {
+                        this.recorder.stop()
+                    }
+                    if (this.combined_stream) {
+                        this.combined_stream.getTracks().forEach(function(track) {
+                            track.stop()
+                        })
+                    }
+                    else if(this.audio_stream){
+                        this.audio_stream.getTracks().forEach(function(track) {
+                            track.stop()
+                        })
+                    }
+                    console.log('stop recording')
+                    this.stopTimer();
+                    this.stopCountDown()
+                },
+                pauseRecording: function() {
+                    if (this.pause_button.attr("disabled")) {
+                        return
+                    }
+                    if (!this.recorder) {
+                        return
+                    }
+                    switch (this.recorder.state) {
+                        case "recording":
+                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_resume", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.play_icon);
+                            this.recorder.pause();
+                            this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "paused");
+                            this.stopTimer();
+                            break;
+                        case "paused":
+                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon);
+                            this.recorder.resume();
+                            this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
+                            this.startTimer();
+                            break
+                    }
+                },
+                submitRecording: function() {
+                    this.stopRecording();
+                    if (this.options.onSubmit) {
+                        let video_blob = new Blob(this.recorded_blobs, {
+                            type: "video/webm"
+                        });
+                        this.options.onSubmit(video_blob)
+                    }
+                    this.removeControls();
+                    this.reset()
+                },
+                handleDataAvailable: function(e) {
+                    if (e.data && e.data.size > 0) {
+                        this.recorded_blobs.push(e.data)
+                    }
+                }
+            };
+            
+            //the main object that stores all the data and controls all the flow.
             let GigaTester_modal = {
                 audio_file: "",
                 video_file: "",
                 image_file:"",
                 external_file:"",
-                screenshot_file:"",
-                user_detail_callback: "",
+//                screenshot_file:"",
+//                user_detail_callback: "",
                 default_category_callback: "",
-                default_category_value: "",
+//                default_category_value: "",
                 canvas_mode: false,
                 canvas_target: false,
                 controls_step: 0,
-                click_counter: 0,
+//                click_counter: 0,
                 form_type: "FEEDBACK",
                 timer: 180,
-                session_data: {},
+//                session_data: {},
                 user_detail: {},
                 set_screen_default_category: true,
                 configs: {
                     has_video: true,
                     categories:  ['Video', 'Screen', 'Audio', 'Images', 'Other'],
                     severities: ['Critical', 'High', 'Medium', 'Low'],
-    //                reasons: ['Video Error', 'Video Not Found'],
+//                    reasons: ['Video Error', 'Video Not Found'],
                     locale: 'en',
                     display_powered_by: true,
                     config_data: [],
@@ -175,7 +591,7 @@
                     main_button_text_color: "#FFFFFF",
                     main_button_background_color: "#042e5b",
                     workflow_type: 'BUGS,FEEDBACK',
-                    routing_item_order: 'BUGS,FEEDBACK',
+//                    routing_item_order: 'BUGS,FEEDBACK',
                     audio_time: 10,
                     feedback_default_category: "",
                     bugs_default_category:"",
@@ -191,7 +607,7 @@
                         rating_title_message: "",
                         bug_title_message: "",
                         rating_mandatory: false,
-                        send_button_text: "",
+//                        send_button_text: "",
                         name_field: false,
                         name_field_mandatory: false,
                         email_field: true,
@@ -203,11 +619,11 @@
                         comment_field_mandatory: true,
                         comment_field_placeholder: "",
                         display_category: true,
-                        display_reason: true,
+//                        display_reason: true,
                         display_severity: true,
-                        display_assignee: false,
+//                        display_assignee: false,
                         category_field_mandatory: true,
-                        reason_field_mandatory: true,
+//                        reason_field_mandatory: true,
                         severity_field_mandatory: true,
                         completed_dialog_icon_color: "#2878F0",
                         completed_dialog_icon: 0,
@@ -222,7 +638,7 @@
                         rating_type: "STAR",
                         rating_title_message: "Provide your rating",
                         rating_mandatory: true,
-                        send_button_text: "",
+//                        send_button_text: "",
                         name_field: false,
                         name_field_mandatory: false,
                         email_field: true,
@@ -234,11 +650,11 @@
                         comment_field_mandatory: true,
                         comment_field_placeholder: "",
                         display_category: true,
-                        display_reason: true,
+//                        display_reason: true,
                         display_severity: false,
-                        display_assignee: false,
+//                        display_assignee: false,
                         category_field_mandatory: true,
-                        reason_field_mandatory: true,
+//                        reason_field_mandatory: true,
                         severity_field_mandatory: false,
                         completed_dialog_icon_color: "#2878F0",
                         completed_dialog_icon: 0,
@@ -256,12 +672,12 @@
                 overlay_hint_tooltip_added: false,
                 email: "",
                 categories: "",
-                custom_data: {},
+//                custom_data: {},
                 screenshot_data_uri: [],
                 video_blob: null,
-                video_url: "",
+//                video_url: "",
                 recording: false,
-                video_annotation: [],
+//                video_annotation: [],
                 form_data: {
                     rating: 0,
                     name: "",
@@ -270,7 +686,7 @@
                     description: "",
                     category: "",
                     severity: "",
-                    assignee: ""
+//                    assignee: ""
                 },
                 comments: [],
                 init: function() {
@@ -279,7 +695,8 @@
                 },
                 loadApi: function() {
                     console.log('GigaTester: load configs')
-                    GigaTester_Api.isLoaded();
+//                    GigaTester_Api.isLoaded();
+                    window.GigaTester.isLoaded();
                     this.checkSessionStorage();
                 },
                 addFeedbackButton: function() {
@@ -366,7 +783,7 @@
                     }
                     modal_overlay.empty();
                     let modal = $("<gtdiv>").html(message).appendTo(modal_overlay);
-                    let modal_close = $("<gtclose>").addClass("gigatester-modal-close").html(GigaTester_Icons.times).appendTo(modal);
+                    let modal_close = $("<gtclose>").addClass("gigatester-modal-close").html(GigaTester_Icons.cross_icon).appendTo(modal);
                     let _documentKeyup = function(e) {
                         if (e.which === 27) {
                             this.modalClose();
@@ -555,11 +972,11 @@
                         tool_color_indicator += "</gtcolorpicker>";
                         tool_color_indicator += "</gtdiv>";
                         let display_tutorial = false;
-                        let tools = '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-square" data-type="square" title="' + GigaTester_StringRes.get("rectangle") + '">' + GigaTester_Icons.square + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + GigaTester_StringRes.get("blackout") + '">' + GigaTester_Icons.blackout + "</btn>"
+                        let tools = '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-square" data-type="square" title="' + GigaTester_StringRes.get("rectangle") + '">' + GigaTester_Icons.square_outline_icon + "</btn>"
+                         + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + GigaTester_StringRes.get("blackout") + '">' + GigaTester_Icons.square_filled_icon + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-color" data-type="color">' + tool_color_indicator + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool-done' + (GigaTester_modal.canvas_mode ? "gigatester-toolbar-tool-done-active" : "") + '" title="' + GigaTester_StringRes.get("capture_screenshot") + '">' + GigaTester_Icons.tick + "</btn>"
-                         + (GigaTester_modal.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + "Cancel" + '">' +  GigaTester_Icons.close + "</btn>");
+                         + '<btn class="gigatester-toolbar-tool-done' + (GigaTester_modal.canvas_mode ? " gigatester-toolbar-tool-done-active" : "") + '" title="' + GigaTester_StringRes.get("capture_screenshot") + '">' + GigaTester_StringRes.get("capture") + "</btn>"
+                         + (GigaTester_modal.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + GigaTester_StringRes.get("cancel") + '">' +  GigaTester_StringRes.get("cancel") + "</btn>");
                         this.toolbar = $("<gttoolbar>").attr("lang", GigaTester_modal.configs.locale).attr("data-html2canvas-ignore", "true");
                         this.toolbar.html(tools);
                         this.setToolsColor();
@@ -805,7 +1222,7 @@
                                     icon_x = parseInt(this.svg_obj_rectangular.attr("x"), 10) + parseInt(this.svg_obj_rectangular.attr("width"), 10) - 12;
                                     icon_y = parseInt(this.svg_obj_rectangular.attr("y"), 10) - 12
                                 }
-                                let icon = this.snap.image(GigaTester_Icons.delete, icon_x, icon_y, 24, 24).attr({
+                                let icon = this.snap.image(GigaTester_Icons.delete_image, icon_x, icon_y, 24, 24).attr({
                                     cursor: "pointer",
                                 }).addClass("gigatester-svg-delete");
                                 this.svg_delete_icons.push(icon);
@@ -1074,13 +1491,14 @@
                             counter++
                         }
                     });
-                    let comment = new Canvas_Comment({
+                    let comment = new GigaTester_ScreenshotComment({
                         x: x,
                         y: y,
                         scroll_l: this.canvas_mode ? 0 : $(window).scrollLeft(),
                         scroll_t: this.canvas_mode ? 0 : $(window).scrollTop(),
                         offset_x: this.canvas_mode ? this.custom_ui.overlay.offset().left : 0,
                         offset_y: this.canvas_mode ? this.custom_ui.overlay.offset().top : 0,
+                        is_mobile: this.is_mobile,
                         screenshot_num: screenshot_num,
                         counter: counter,
                         onOpen: $.proxy(function(counter) {
@@ -1154,9 +1572,9 @@
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-feedback-type-draw", this.attachScreenshot.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-feedback-type-video", this.startScreenRecorder.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-feedback-type-form", this.menuItemClick.bind(this));
+//                    this.custom_ui.events.on("click", ".gigatester-feedback-type-draw", this.attachScreenshot.bind(this));
+//                    this.custom_ui.events.on("click", ".gigatester-feedback-type-video", this.startScreenRecorder.bind(this));
+//                    this.custom_ui.events.on("click", ".gigatester-feedback-type-form", this.menuItemClick.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-add-attachment", this.selectAttachment.bind(this));
                     this.custom_ui.events.on("click", "gtrating > gtdiv", this.selectRating.bind(this));
                     this.custom_ui.events.on("mouseenter", "gtrating > gtdiv", this.previewRating.bind(this));
@@ -1168,7 +1586,7 @@
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-audio", this.recordAudio.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.overlayImage.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-add-screenshot", this.attachScreenshot.bind(this));
+//                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-add-screenshot", this.attachScreenshot.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-checkbox-container > gtdiv", this.checkboxToggle.bind(this));
                     this.custom_ui.events.on("keyup", 'textarea[name="description"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("keyup", 'input[name="name"]', this.rememberFormData.bind(this));
@@ -1176,7 +1594,7 @@
                     this.custom_ui.events.on("keyup", 'input[name="title"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.rememberFormData.bind(this));
-                    this.custom_ui.events.on("change", 'select[name="assignee"]', this.rememberFormData.bind(this));
+//                    this.custom_ui.events.on("change", 'select[name="assignee"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
                     })
@@ -1347,12 +1765,12 @@
                     this.custom_ui.events = null
                 },
                 setRoutings: function() {
-                    let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.times + "</gtclose>";
+                    let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
                     html += '<form class="gigatester-ctrl-item-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
-//                    html += '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.times + "</gtclose>";
-                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ String_Validator.validate(this.configs.title) + '</gtheader>'
-                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + String_Validator.validate(this.configs.logo) + '">' : "";
+//                    html += '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
+                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
+                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : "";
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
                     html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>"
                     this.custom_ui.events.html(html);
@@ -1392,7 +1810,7 @@
                     let default_rating = this.form_data.rating || 0;
                     let severity_options = '<option value="critical">Critical</option>' + '<option value="high">High</option>' + '<option value="medium">Medium</option>' + '<option value="low">Low</option>';
                     let category_options = "";
-                    let reason_options = "";
+//                    let reason_options = "";
                     if (form_settings.display_category) {
                         this.configs.categories.forEach(function(category) {
                             category_options += "<option>" + category + "</option>"
@@ -1406,8 +1824,8 @@
 
                     let html = "";
                     html += '<form class="gigatester-ctrl-item-options">'
-                     + (form_settings.rating_title_message ? '<div class="gigatester-ctrl-item-help-message">' + String_Validator.validate(form_settings.rating_title_message) + "</div>" : "")
-                     + (form_settings.rating_type ? "<gtrating>" + '<gtdiv data-rating="star_1" class="inactive">' + GigaTester_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + GigaTester_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + GigaTester_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + GigaTester_Icons.star + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + GigaTester_Icons.star + "</gtdiv>" + "</gtrating>"
+                     + (form_settings.rating_title_message ? '<div class="gigatester-ctrl-item-help-message">' + GigaTester_StringUtils.escapeSpecialChars(form_settings.rating_title_message) + "</div>" : "")
+                     + (form_settings.rating_type ? "<gtrating>" + '<gtdiv data-rating="star_1" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + "</gtrating>"
                      + "<gtdiv class='gigatester-ctrl-item-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
                      + '<gtdiv class="gigatester-ctrl-item-form"' + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
                      + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
@@ -1419,27 +1837,27 @@
                      + (form_settings.display_category ? '<gtdiv id="category_standard_feedback"></gtdiv>' : '')
                      + (form_settings.display_severity ? '<select id="severity" name="severity"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
                      + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>" + severity_options + "</select>" : "")
-                     + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (String_Validator.validate(form_settings.title_field_placeholder) || GigaTester_StringRes.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
-                     + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (String_Validator.validate(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
+                     + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.title_field_placeholder) || GigaTester_StringRes.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
+                     + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
                      + (display_screenshot || display_audio || display_video || display_attachment ? GigaTester_modal.recording ? '<gtdiv class="gigatester-ctrl-item-attach-actions" >' + "<gtdiv>" : '<gtdiv class="gigatester-ctrl-item-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
-                     + (display_screenshot ? '<btn class="gigatester-ctrl-item-screenshot">' + GigaTester_Icons.feedback_screenshot + "<gtdiv>" + GigaTester_StringRes.get("attach_a_screenshot") + "</gtdiv>"
+                     + (display_screenshot ? '<btn class="gigatester-ctrl-item-screenshot">' + GigaTester_Icons.screenshot_icon + "<gtdiv>" + GigaTester_StringRes.get("attach_a_screenshot") + "</gtdiv>"
                      + "<gttooltip>" + GigaTester_StringRes.get("attach_a_screenshot") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
-                     + (display_audio ? '<btn class="gigatester-ctrl-item-audio">' + GigaTester_Icons.mic + "<gtdiv>" + GigaTester_StringRes.get("capture_audio") + "</gtdiv>"
+                     + (display_audio ? '<btn class="gigatester-ctrl-item-audio">' + GigaTester_Icons.mic_icon + "<gtdiv>" + GigaTester_StringRes.get("capture_audio") + "</gtdiv>"
                      + "<gttooltip>" + GigaTester_StringRes.get("capture_audio") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
-                     + (display_video ?  '<btn class="gigatester-ctrl-item-video">' + GigaTester_Icons.feedback_video + "<gtdiv>" + GigaTester_StringRes.get("capture_screen_recording") + "</gtdiv>"
+                     + (display_video ?  '<btn class="gigatester-ctrl-item-video">' + GigaTester_Icons.video_icon + "<gtdiv>" + GigaTester_StringRes.get("capture_screen_recording") + "</gtdiv>"
                      + "<gttooltip>" + GigaTester_StringRes.get("capture_screen_recording") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
-                     + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + GigaTester_Icons.paperclip + "<gtdiv>" + GigaTester_StringRes.get("attach_a_file") + "</gtdiv>"
+                     + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + GigaTester_Icons.paperclip_icon + "<gtdiv>" + GigaTester_StringRes.get("attach_a_file") + "</gtdiv>"
                      + "<gttooltip>" + GigaTester_StringRes.get("attach_a_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
                      + "</gtdiv>" + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
-                     + '<gtdiv class="gigatester-ctrl-item-screenshot-preview">' + '<btn class="gigatester-ctrl-item-remove-screenshot">' + GigaTester_Icons.trash + "</btn>"
-                     + '<gtbadge class="gigatester-ctrl-item-screenshot-thumbnail">' + GigaTester_Icons.photo + "<span>" + GigaTester_StringRes.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
-                     + '<gtdiv class="gigatester-ctrl-item-video-preview">' + '<btn class="gigatester-ctrl-item-remove-video">' + GigaTester_Icons.trash + "</btn>"
-                     + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + GigaTester_Icons.play + "<span>" + GigaTester_StringRes.get("screen_recording") + "</span>" + "</gtbadge>" + "</gtdiv>"
-                     + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + GigaTester_Icons.paperclip + "<span></span>" + '<btn class="gigatester-ctrl-item-remove-attachment">' + GigaTester_Icons.trash + "</btn>" + "</gtdiv>"
+                     + '<gtdiv class="gigatester-ctrl-item-screenshot-preview">' + '<btn class="gigatester-ctrl-item-remove-screenshot">' + GigaTester_Icons.trash_bin_icon + "</btn>"
+                     + '<gtbadge class="gigatester-ctrl-item-screenshot-thumbnail">' + GigaTester_Icons.image_icon + "<span>" + GigaTester_StringRes.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
+                     + '<gtdiv class="gigatester-ctrl-item-video-preview">' + '<btn class="gigatester-ctrl-item-remove-video">' + GigaTester_Icons.trash_bin_icon + "</btn>"
+                     + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + GigaTester_Icons.play_icon + "<span>" + GigaTester_StringRes.get("screen_recording") + "</span>" + "</gtbadge>" + "</gtdiv>"
+                     + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + GigaTester_Icons.paperclip_icon + "<span></span>" + '<btn class="gigatester-ctrl-item-remove-attachment">' + GigaTester_Icons.trash_bin_icon + "</btn>" + "</gtdiv>"
                      + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
                      + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
-                     + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + GigaTester_Icons.check + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
+                     + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + GigaTester_Icons.check_mark_icon + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
                      + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("send") + "</span>" + "</button>"
                      + '</gtdiv></gtdiv>'
                      + "</gtdiv>"
@@ -1472,24 +1890,24 @@
                     }
                     GigaTester_modal.saveSubCategory();
                 },
-                menuItemClick: function(e) {
-                    this.form_type = $(e.currentTarget).data("type");
-                    let direct_to = "form";
-                    if (this.form_type === "BUGS") {
-                        direct_to = this.configs.direct_to_bug
-                    } else if (this.form_type === "FEATURE") {
-                        direct_to = this.configs.direct_to_feature_request
-                    } else {
-                        direct_to = this.configs.direct_to_general
-                    }
-                    if (direct_to === "screenshot") {
-                        this.attachScreenshot()
-                    } else if (direct_to === "video") {
-                        this.startScreenRecorder()
-                    } else {
-                        this.openForm(this.form_type)
-                    }
-                },
+                // menuItemClick: function(e) {
+                //     this.form_type = $(e.currentTarget).data("type");
+                //     let direct_to = "form";
+                //     if (this.form_type === "BUGS") {
+                //         direct_to = this.configs.direct_to_bug
+                //     } else if (this.form_type === "FEATURE") {
+                //         direct_to = this.configs.direct_to_feature_request
+                //     } else {
+                //         direct_to = this.configs.direct_to_general
+                //     }
+                //     if (direct_to === "screenshot") {
+                //         this.attachScreenshot()
+                //     } else if (direct_to === "video") {
+                //         this.startScreenRecorder()
+                //     } else {
+                //         this.openForm(this.form_type)
+                //     }
+                // },
                 openForm: function(form_type) {
                     this.form_type = form_type;
                     this.setDialogForm();
@@ -1502,19 +1920,19 @@
                     this.focusControls();
                     this.controls_step = 2
                 },
-                attachScreenshot: function(e) {
-                    console.log(e, 'screenshot')
-                    console.log($(e.currentTarget).attr("disabled"))
-                    console.log(this.screenshot_data_uri.length)
-                    console.log(this.screenshot_limit)
-                    if (typeof e !== "undefined" && $(e.currentTarget).attr("disabled")) {
-                        console.log('non screenshot')
-                        return
-                    }
-                    else {
-                        console.log('overlay screenhsot')
-                    }
-                },
+                // attachScreenshot: function(e) {
+                //     console.log(e, 'screenshot')
+                //     console.log($(e.currentTarget).attr("disabled"))
+                //     console.log(this.screenshot_data_uri.length)
+                //     console.log(this.screenshot_limit)
+                //     if (typeof e !== "undefined" && $(e.currentTarget).attr("disabled")) {
+                //         console.log('non screenshot')
+                //         return
+                //     }
+                //     else {
+                //         console.log('overlay screenhsot')
+                //     }
+                // },
                 overlayImage: function(){
                     this.recordImage();
                 },
@@ -1574,7 +1992,7 @@
                                             console.log('GigaTester: Image blob url',src);
                                             const image_overlay = $('<gtdiv id="gigatester_video_player"><gtdiv></gtdiv></gtdiv>');
                                             const video = $('<video width="0" height="0" id="gigatester_image_preview_player" preload="auto" src="' + src + '"></video>');
-                                            const video_close = $('<btn id="gigatester_video_player_close">').html(GigaTester_Icons.close);
+                                            const video_close = $('<btn id="gigatester_video_player_close">').html(GigaTester_Icons.close_icon);
                                             video_close.appendTo(image_overlay);
                                             video.insertAfter($(document.getElementsByClassName('gigatester-ctrl-item-attach-actions')));
                                             setTimeout(()=> (GigaTester_modal.screenshotVideo(video.get(0))), 700);
@@ -1675,7 +2093,7 @@
                         GigaTester_modal.clearNotifyStatus();
                         const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
                         const image = $('<image id="gigatester_images_preview_player" width=300 height=160 src="' + base64Image + '"></image>');
-                        const image_close = $('<button id="gigatester_images_player_close">').html(GigaTester_Icons.trash);
+                        const image_close = $('<button id="gigatester_images_player_close">').html(GigaTester_Icons.trash_bin_icon);
                         image.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                         image_close.insertAfter(image);
                         GigaTester_modal.loadImage(base64Image);
@@ -1746,7 +2164,7 @@
                         let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
                         let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
                         let timer_button = $("<btn id='gigatester-audio-timer-btn'>").addClass("gigatester-video-controls-timer").text(GigaTester_modal.getTimerText());
-                        let audio_record_close = $('<btn id="gigatester_audio_record_player_close">').html(GigaTester_Icons.mic);
+                        let audio_record_close = $('<btn id="gigatester_audio_record_player_close">').html(GigaTester_Icons.mic_icon);
                         audio_record_close.appendTo(audio_record_overlay);
                         timer_button.appendTo(audio_record_close);
                         audio_record_text.appendTo(audio_record_overlay)
@@ -1783,7 +2201,7 @@
                             console.log(src, 'audio blob')
                             let audio_overlay = $('<div id="gigatester_audio_player"><div></div></div>');
                             let audio = $('<audio id="gigatester_audio_preview_player" controls loop autoplay preload="auto" src="' + src + '"></audio>');
-                            let audio_close = $('<button id="gigatester_audio_player_close">').html(GigaTester_Icons.trash);
+                            let audio_close = $('<button id="gigatester_audio_player_close">').html(GigaTester_Icons.trash_bin_icon);
                             audio.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                             audio_close.insertAfter(audio);
                             GigaTester_modal.loadAudio(src);
@@ -1848,7 +2266,7 @@
                         }
                         let video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                         let video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                        let video_close = $('<button id="gigatester_video_player_close">').html(GigaTester_Icons.trash);
+                        let video_close = $('<button id="gigatester_video_player_close">').html(GigaTester_Icons.trash_bin_icon);
                         video.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                         video_close.insertAfter(video);
                         video_close.on("click", function() {
@@ -1896,10 +2314,10 @@
                     }
                     let popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>')
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
-                    let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close);
-                    let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_bug + GigaTester_StringRes.get('report_bug') + '</gtdiv></popupbtn>');
+                    let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
+                    let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_StringRes.get('report_bug') + '</gtdiv></popupbtn>');
                     let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('report_bug'));
-                    let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_general + GigaTester_StringRes.get('give_feedback') + '</gtdiv></popupbtn>');
+                    let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_StringRes.get('give_feedback') + '</gtdiv></popupbtn>');
                     let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('give_feedback'));
                     popup_bug_icon.appendTo(popup_dialog);
                     popup_bug_icon_tooltip.appendTo(popup_bug_icon);
@@ -2099,7 +2517,7 @@
                     GigaTester_modal.external_file = e.target.files[0];
                     let external_file_overlay = $('<div id="gigatester_external_file_loader"><div></div></div>');
                     let external_file = $('<div id="gigatester_external_file_preview">' + GigaTester_modal.external_file.name + '</div>').html(GigaTester_modal.external_file.fileName);
-                    let external_file_close = $('<button id="gigatester_external_file_close">').html(GigaTester_Icons.trash);
+                    let external_file_close = $('<button id="gigatester_external_file_close">').html(GigaTester_Icons.trash_bin_icon);
                     const size_limit = GigaTester_modal.configs.attachment_size || 1;
                     external_file.insertBefore($(document.getElementsByClassName('gigatester-ctrl-item-send gigatester-input-btn')));
                     external_file_close.insertAfter(external_file);
@@ -2161,8 +2579,8 @@
                     this.comments = [];
                     this.screenshot_data_uri = [];
                     this.video_blob = null;
-                    this.video_url = "";
-                    this.video_annotation = [];
+//                    this.video_url = "";
+//                    this.video_annotation = [];
                     this.audio_file = '';
                     this.video_file='';
                     this.external_file='';
@@ -2175,7 +2593,7 @@
                         description: "",
                         category: "",
                         severity: "",
-                        assignee: ""
+//                        assignee: ""
                     };
                     this.recording = false;
                     this.removeOverlay();
@@ -2302,9 +2720,9 @@
                                 GigaTester_modal.external_file = xhr.responseURL.split('?')[0]
                                 GigaTester_modal.post();
                                 }
-                            }
                               }
-                              else {
+                            }
+                            else {
                                 console.log(xhr.status, 'GigaTester: Media post api error');
                                 if (this.controls_step === 2) {
                                     send_button.removeClass("gigatester-ctrl-item-send-loading");
@@ -2314,7 +2732,7 @@
                                 } else if (this.controls_step === 3) {
                                     $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
                                 }
-                              }
+                            }
                           };
                           xhr.onerror = function(){
                               console.log(xhr.status)
@@ -2413,7 +2831,7 @@
                       })
                         .then(res => res.json())
                         .then(data => {console.log(data)
-                            let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html("<style>" + ":root {" + "--main-outro-icon: " + form_settings.completed_dialog_icon_color + " !important;" + "}" + "</style>" + '<gtdiv>' + "<gtspan>" + String_Validator.validate(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + String_Validator.validate(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
+                            let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html("<style>" + ":root {" + "--main-outro-icon: " + form_settings.completed_dialog_icon_color + " !important;" + "}" + "</style>" + '<gtdiv>' + "<gtspan>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
                             send_button.find(".gigatester-ctrl-item-send-text").text('Send feedback');
@@ -2495,506 +2913,9 @@
                     }
                 },
             }
-        let Canvas_Comment = function(options) {
-                this.is_new = true;
-                this.x = options.x;
-                this.y = options.y;
-                this.counter = options.counter;
-                this.screenshot_num = options.screenshot_num;
-                this.onDelete = options.onDelete;
-                this.onOpen = options.onOpen;
-                this.scroll_t = options.scroll_t;
-                this.scroll_l = options.scroll_l;
-                this.offset_x = options.offset_x;
-                this.offset_y = options.offset_y;
-                let element = $("<div>").addClass("gigatester-comment");
-                let canvas_comment_message = "";
-                element.on("click mouseup mousedown", function(e) {
-                    e.stopPropagation()
-                });
-                element.on("keydown keyup", function(e) {
-                    e.stopPropagation()
-                });
-                this.setHTML = function() {
-                    return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + GigaTester_StringRes.get("add_comment") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-input-btn gigatester-btn-save">' + GigaTester_StringRes.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + GigaTester_StringRes.get("delete") + '">' + GigaTester_Icons.trash + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.times + "</btn>" + "</form>"
-                };
-                this.isOpen = function() {
-                    return element.find(".gigatester-comment-form").is(":visible")
-                };
-                this.isEmpty = function() {
-                    return canvas_comment_message ? false : true
-                };
-                this.setCounter = function(counter) {
-                    this.counter = counter;
-                    element.find(".gigatester-comment-pin > span").text(counter + 1)
-                };
-                this.submit = function() {
-                    element.find(".gigatester-input-btn").click()
-                }, this.show = function() {
-                    element.show()
-                };
-                this.hide = function() {
-                    element.hide()
-                };
-                this.showForm = function() {
-                    element.find(".gigatester-comment-form").show();
-                    element.find("gtcomment").html(Lib.htmlEntities(canvas_comment_message, true)).focus()
-                };
-                this.hideForm = function() {
-                    element.find(".gigatester-comment-form-delete").show();
-                    element.find(".gigatester-comment-form").hide()
-                };
-                this.saveComment = function(){
-                    element.find(".gigatester-btn-save").trigger('click');
-                }
-                this.saveCanvasComments = function() {
-                    element.find(".gigatester-btn-save").trigger('click');
-                    console.log('set position')
-                };
-                this.setFormDirection = function() {
-                    let is_mobile = GigaTester_modal.is_mobile;
-                    let form_width = is_mobile ? 210 : 430;
-                    let form_height = is_mobile ? 150 : 200;
-                    if (is_mobile) {
-                        if (this.x > $(window).width() / 2) {
-                            element.find(".gigatester-comment-form").attr("xdirection", "left")
-                        } else {
-                            element.find(".gigatester-comment-form").attr("xdirection", "right")
-                        }
-                        if (this.y > 140) {
-                            element.find(".gigatester-comment-form").attr("ydirection", "top")
-                        } else {
-                            element.find(".gigatester-comment-form").attr("ydirection", "down")
-                        }
-                    } else {
-                        if ($(window).scrollLeft() + $(window).width() - this.x >= form_width) {
-                            element.find(".gigatester-comment-form").attr("xdirection", "right")
-                        } else {
-                            element.find(".gigatester-comment-form").attr("xdirection", "left")
-                        }
-                        if ($(window).scrollTop() + $(window).height() - this.y >= form_height) {
-                            element.find(".gigatester-comment-form").attr("ydirection", "down")
-                        } else {
-                            element.find(".gigatester-comment-form").attr("ydirection", "top")
-                        }
-                    }
-                };
-                this.add = function() {
-                    element.css({
-                        top: this.y,
-                        left: this.x
-                    });
-                    element.html(this.setHTML());
-                    this.setFormDirection();
-                    element.find(".gigatester-comment-pin").on("click", function(e) {
-                        this.showForm();
-                        this.onOpen(this.counter)
-                    }.bind(this));
-                    element.find(".gigatester-comment-form-close").on("click", function(e) {
-                        e.stopPropagation();
-                        if (this.is_new) {
-                            this.destroy();
-                            this.onDelete(this.counter);
-                            return
-                        }
-                        this.hideForm()
-                    }.bind(this));
-                    element.find(".gigatester-comment-form-delete").on("click", function(e) {
-                        e.stopPropagation();
-                        this.destroy();
-                        this.onDelete(this.counter)
-                    }.bind(this));
-                    element.find("gtcomment").on("keydown", function(e) {
-                        if (e.which === 13) {
-                            if (e.ctrlKey || e.metaKey) {
-                                element.find('button[type="submit"]').on('click')
-                            }
-                        }
-                    });
-                    element.find("gtcomment").on("keyup", function(e) {
-                        if ($(this).html() === "<br>") {
-                            $(this).html("")
-                        }
-                    });
-                    element.find("gtcomment").on("paste", function(e) {
-                        e.preventDefault();
-                        try {
-                            let text = (e.originalEvent || e).clipboardData.getData("text/plain");
-                            document.execCommand("insertText", false, text)
-                        } catch (e) {}
-                    });
-                    element.find(".gigatester-btn-save").on("click", function(e) {
-                        canvas_comment_message = element.find("gtcomment").html();
-                        canvas_comment_message = canvas_comment_message.replace(/<br\/?>/gi, "\n");
-                        canvas_comment_message = canvas_comment_message.replace(/(<([^>]+)>)/gi, "");
-                        canvas_comment_message = canvas_comment_message.replace(/&nbsp;/gi, " ");
-                        canvas_comment_message = canvas_comment_message.replace(/&lt;/gi, "<");
-                        canvas_comment_message = canvas_comment_message.replace(/&gt;/gi, ">");
-                        canvas_comment_message = canvas_comment_message.replace(/&amp;/gi, "&");
-                        canvas_comment_message = canvas_comment_message.replace(/&quot;/gi, '"');
-                        canvas_comment_message = canvas_comment_message.trim();
-                        if (!canvas_comment_message) {
-                            return
-                        }
-                        this.is_new = false;
-                        this.hideForm()
-                    }.bind(this));
-                    element.appendTo($(document.getElementById('gigatester_screencapture_area')));
-                        if(element.find("gtcomment").text()){
-                            console.log(element.find("gtcomment").text())
-                        element.find(".gigatester-btn-save").trigger('click');
-                        }
-                    element.find("gtcomment").val('').trigger('focus').val(canvas_comment_message);
-                };
-                this.getData = function() {
-                    let screen_x = parseInt(this.x - this.scroll_l - this.offset_x, 10);
-                    let screen_y = parseInt(this.y - this.scroll_t - this.offset_y, 10);
-                    return {
-                        screen_x: screen_x,
-                        screen_y: screen_y,
-                        screen_number: this.counter + 1,
-                        screenshot_num: this.screenshot_num,
-                        message: canvas_comment_message
-                    }
-                };
-                this.destroy = function() {
-                    element.remove();
-                    element = undefined;
-                    canvas_comment_message = ""
-                }
-            };
-        let Screen_Recorder = {
-                recorded_blobs: [],
-                recorder: null,
-                display_stream: null,
-                audio_stream: null,
-                combined_stream: null,
-                options: {
-                    onSubmit: null,
-                    onCancel: null
-                },
-                timer_timeout: null,
-                timer: 60,
-                timer_total: 60,
-                count_down_timeout: null,
-                count_down: 0,
-                is_muted: false,
-                mime_type: 'video/webm; codecs="vp8, opus"',
-                device_list: {
-                    audioinput: [],
-                    screeninput: [],
-                },
-                isOpen: function() {
-                    return this.controls ? true : false
-                },
-                start: function(options) {
-                    this.options.onSubmit = options.onSubmit || null;
-                    this.options.onCancel = options.onCancel || null;
-                    this.timer = options.timer || 180;
-                    this.timer = Math.min(300, this.timer);
-                    this.timer = Math.max(30, this.timer);
-                    this.timer_total = this.timer;
-                    console.log('started screen record')
-                    this.reset();
-                    this.getDevice(this.createNewControls.bind(this));
-                },
-                reset: function() {
-                    this.recorded_blobs = [];
-                    this.recorder = null;
-                    this.display_stream = null;
-                    this.audio_stream = null;
-                    this.combined_stream = null;
-                    this.is_muted = false;
-                    if (this.controls) {
-                        this.pause_button.html(GigaTester_Icons.pause)
-                    }
-                },
-                getDevice: async function(callback) {
-                    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-                        callback();
-                        return
-                    }
-                    await navigator.mediaDevices.enumerateDevices().then(function(devices) {
-                        devices.forEach(function(device) {
-                            console.log(device)
-                            switch (device.kind) {
-                                case "audioinput":
-                                    this.device_list.audioinput.push(device);
-                                    break;
-                                case "screeninput":
-                                    this.device_list.screeninput.push(device);
-                                    break;
-                            }
-                        }.bind(this));
-                        if(this.device_list.audioinput.length || this.device_list.screeninput.length){
-                            this.startVideoCapture()
-                        callback();
-                        }
-                    }.bind(this)).catch(function(error) {})
-                },
-                createNewControls: function() {
-                    this.screen_recorder_overlay = $("<gtdiv>").attr("id", "gigatester_video_container").appendTo($(document.body));
-                    this.controls = $("<gtvideotoolbar>").appendTo($(document.body));
-                    this.mute_button = $("<btn>").addClass("gigatester-video-controls-mute gigatester-video-controls-active").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_mute", true) + "</btn-name>" + "<btn-shortcut>Shift + M</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.mic).appendTo(this.controls);
-                    this.pause_button = $("<btn>").addClass("gigatester-video-controls-pause").attr("disabled", true).html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name>" + "<btn-shortcut>Shift + P</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause).appendTo(this.controls);
-                    this.start_button = $("<btn>").addClass("gigatester-video-controls-start").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("start_recording", true) + "</btn-name>" + "<btn-shortcut>Shift + S</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-record></btn-record>").appendTo(this.controls);
-                    this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>" + "<btn-shortcut>Shift + S</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>" + GigaTester_Icons.stop).appendTo(this.controls);
-                    this.timer_button = $("<btn>").addClass("gigatester-video-controls-timer").text(this.getTimerText()).appendTo(this.controls);
-                    this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>" + "<btn-shortcut>Esc</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.times).appendTo(this.controls);
-                    this.mic_volume = $("<gtvolume>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume>").appendTo(this.mute_button);
-                    if (!this.device_list.audioinput.length) {
-                        this.is_muted = true;
-                        this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true)
-                    }
-                    this.stop_button.find("btn-timer, btn-timer-mask").css("animation-duration", this.timer + "s");
-                    this.start_button.on("click", this.startVideoCapture.bind(this));
-                    this.stop_button.on("click", this.stopCapture.bind(this));
-                    this.close_button.on("click", this.cancelCapture.bind(this));
-                    this.pause_button.on("click", this.pauseRecording.bind(this));
-                    this.mute_button.on("click", this.muteVoice.bind(this));
-                },
-                removeControls: function() {
-                    this.screen_recorder_overlay.remove();
-                    this.controls.remove();
-                    this.screen_recorder_overlay = null;
-                    this.controls = null;
-                    $("gtmouseclick").remove();
-                },
-                muteVoice: function() {
-                    if (this.mute_button.attr("disabled")) {
-                        return
-                    }
-                    this.is_muted = !this.is_muted;
-                    if (this.is_muted) {
-                        this.mute_button.removeClass("gigatester-video-controls-active");
-                        this.mute_button.find("btn-name").text(GigaTester_StringRes.get("recording_unmute", true))
-                    } else {
-                        this.mute_button.addClass("gigatester-video-controls-active");
-                        this.mute_button.find("btn-name").text(GigaTester_StringRes.get("recording_mute", true))
-                    }
-                    this.toggleAudio()
-                },
-                toggleAudio: function() {
-                    if (!this.combined_stream) {
-                        return
-                    }
-                    let audio_tracks = this.combined_stream.getAudioTracks();
-                    if (audio_tracks.length) {
-                        audio_tracks.forEach(function(audio_track) {
-                            audio_track.enabled = !this.is_muted
-                        }.bind(this))
-                    }
-                },
-                startVideoCapture: function() {
-                    let displayMediaOptions = {
-                        video: {
-                            cursor: "always"
-                        },
-                        audio: false,
-                        preferCurrentTab:false
-                    };
-                    let userMediaOptions = {
-                        audio: true,
-                        video: false
-                    };
-                    try {
-                        let afterGetVideoStream = function() {
-                            this.display_stream.getTracks()[0].onended = function() {
-                                this.stopCapture()
-                            }.bind(this);
-                            let count_down = this.count_down;
-                            let timer = function() {
-                                if (count_down === 0) {
-                                    this.screen_recorder_overlay.hide();
-                                    $(".gigatester-video-count-down").remove();
-                                    this.startRecording()
-                                } else {
-                                    $("<gttimer>").addClass("gigatester-video-count-down").text(count_down).appendTo($(document.body));
-                                    count_down--;
-                                    this.count_down_timeout = setTimeout(timer.bind(this), 1e3)
-                                }
-                            };
-                            timer.call(this);
-                            this.stop_button.show();
-                            this.timer_button.show();
-                            this.start_button.hide();
-                            this.close_button.hide()
-                        }.bind(this);
-                        let afterGetAudioStream = function() {
-                            if (this.audio_stream) {
-                                navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
-                                    this.display_stream = stream;
-                                    let display_tracks = this.display_stream.getTracks();
-                                    let audio_tracks = this.audio_stream.getTracks();
-                                    this.combined_stream = new MediaStream(display_tracks.concat(audio_tracks));
-                                    afterGetVideoStream()
-                                }.bind(this)).catch(this.handleStreamCaptureError.bind(this))
-                            } else {
-                                navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
-                                    this.display_stream = stream;
-                                    let display_tracks = this.display_stream.getTracks();
-                                    this.combined_stream = this.display_stream;
-                                    this.is_muted = true;
-                                    this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true);
-                                    afterGetVideoStream()
-                                }.bind(this)).catch(this.handleStreamCaptureError.bind(this))
-                            }
-                        }.bind(this);
-                        console.log(this.device_list.audioinput.length);
-                        if (this.device_list.audioinput.length >= 0) {
-                            navigator.mediaDevices.getUserMedia(userMediaOptions).then(function(stream) {
-                                this.audio_stream = stream;
-                                afterGetAudioStream();
-                            }.bind(this)).catch(function() {
-                                afterGetAudioStream()
-                            }.bind(this))
-                        } else {
-                            afterGetAudioStream()
-                        }
-                    } catch (e) {
-                        this.handleStreamCaptureError(e)
-                    }
-                },
-                stopCapture: function() {
-                    if (this.recorder) {
-                        this.submitRecording()
-                    } else {
-                        this.stopRecording();
-                        this.removeControls();
-                        this.reset();
-                        if (this.options.onCancel) {
-                            this.options.onCancel()
-                        }
-                    }
-                },
-                cancelCapture: function() {
-                    this.stopRecording();
-                    this.removeControls();
-                    this.reset();
-                    if (this.options.onCancel) {
-                        this.options.onCancel()
-                    }
-                },
-                handleStreamCaptureError: function(e) {
-                    if (typeof e.name !== "undefined" && e.name === "NotAllowedError") {
-                        this.stopCapture()
-                    } else {
-                        GigaTester_modal.modalConfirm('<div style="margin-bottom: 8px;"><b>Video recording is not supported in your browser</b></div><div class="gigatester-modal-info-text">Please download the latest version of <a href="https://www.google.com/chrome/">Chrome</a>, <a href="https://www.mozilla.org/firefox/download/thanks/">Firefox</a> or <a href="http://microsoft.com/en-us/edge">Microsoft Edge</a>.</div>', function() {
-                            GigaTester_modal.modalClose()
-                        }, "OK")
-                    }
-                },
-                getTimerText: function() {
-                    let min = Math.floor(this.timer / 60);
-                    let sec = this.timer - min * 60;
-                    if (min < 10) {
-                        min = "0" + min
-                    }
-                    if (sec < 10) {
-                        sec = "0" + sec
-                    }
-                    return min + ":" + sec
-                },
-                startTimer: function() {
-                    this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
-                    this.timer_timeout = setInterval(function() {
-                        let timer_text = this.getTimerText();
-                        this.timer_button.text(timer_text);
-                        this.timer--;
-                        if (timer_text === "00:00") {
-                            clearInterval(this.timer_timeout);
-                            this.submitRecording()
-                        }
-                    }.bind(this), 1e3)
-                },
-                stopTimer: function() {
-                    clearInterval(this.timer_timeout)
-                },
-                stopCountDown: function() {
-                    clearTimeout(this.count_down_timeout)
-                },
-                startRecording: function() {
-                    try {
-                        this.recorder = new MediaRecorder(this.combined_stream, {
-                            mimeType: this.mime_type
-                        })
-                    } catch (e) {
-                        return
-                    }
-                    this.toggleAudio();
-                    this.recorder.addEventListener("dataavailable", this.handleDataAvailable.bind(this));
-                    this.recorder.start(10);
-                    this.pause_button.removeAttr("disabled");
-                    // this.draw_btn.removeAttr("disabled");
-                    if (this.overlay) {
-                        this.overlay.attr("recording", this.recorder ? "true" : "false")
-                    }
-                    this.startTimer();
-                    window.addEventListener("beforeunload", function(e) {
-                        if (!this.recorder) {
-                            return
-                        }
-                        e.preventDefault();
-                        e.returnValue = ""
-                    }.bind(this))
-                },
-                stopRecording: function() {
-                    if (this.recorder) {
-                        this.recorder.stop()
-                    }
-                    if (this.combined_stream) {
-                        this.combined_stream.getTracks().forEach(function(track) {
-                            track.stop()
-                        })
-                    }
-                    else if(this.audio_stream){
-                        this.audio_stream.getTracks().forEach(function(track) {
-                            track.stop()
-                        })
-                    }
-                    console.log('stop recording')
-                    this.stopTimer();
-                    this.stopCountDown()
-                },
-                pauseRecording: function() {
-                    if (this.pause_button.attr("disabled")) {
-                        return
-                    }
-                    if (!this.recorder) {
-                        return
-                    }
-                    switch (this.recorder.state) {
-                        case "recording":
-                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_resume", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.play);
-                            this.recorder.pause();
-                            this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "paused");
-                            this.stopTimer();
-                            break;
-                        case "paused":
-                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause);
-                            this.recorder.resume();
-                            this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
-                            this.startTimer();
-                            break
-                    }
-                },
-                submitRecording: function() {
-                    this.stopRecording();
-                    if (this.options.onSubmit) {
-                        let video_blob = new Blob(this.recorded_blobs, {
-                            type: "video/webm"
-                        });
-                        this.options.onSubmit(video_blob)
-                    }
-                    this.removeControls();
-                    this.reset()
-                },
-                handleDataAvailable: function(e) {
-                    if (e.data && e.data.size > 0) {
-                        this.recorded_blobs.push(e.data)
-                    }
-                }
-            };
+
+
+
         let GigaTester_Api = {
             isLoaded: function() {
                 console.log('GigaTester: gigatester api call')
@@ -3168,15 +3089,16 @@
 }
 }
 function checkgigatester(){
-if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" ||  typeof window.Snap === "undefined"){
-setTimeout(() => {
-    checkgigatester();
-    console.log('GigaTester: inside giga timeout function')}, 200);
-}
-else{
-    console.log('inside giga timeout outside')
-    gigatester();
-}
+    if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" ||  typeof window.Snap === "undefined"){
+        setTimeout(() => {
+            checkgigatester();
+            console.log('GigaTester: inside giga timeout function')
+        }, 200);
+    }
+    else{
+        console.log('inside giga timeout outside')
+        gigatester();
+    }
 }
 checkgigatester()
 
