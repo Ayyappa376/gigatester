@@ -1693,6 +1693,13 @@ justify-content: center;
   border: 6px solid transparent;
   border-top-color: #042e5b;
 }
+
+#gigatester_ctrls_container
+.gigatester-ctrl-item
+.gigatester-ctrl-item-preview-placeholder {
+ display: block;
+}
+
 #gigatester_ctrls_container
   .gigatester-ctrl-item
   .gigatester-ctrl-item-screenshot-preview,
