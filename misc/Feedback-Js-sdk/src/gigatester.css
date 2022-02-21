@@ -20,11 +20,15 @@ gtspan {
 }*/
 #gigatester_screencapture_area{
   background: none;
+  outline: 5px solid black;
   position: fixed;
-  top: 0;
+  top: 65px;
+  /* bottom: 73px; */
+  left: 36px;
+  /* right: 30px; */
   z-index: 214567;
-  width: 100%;
-  height: 100%;
+  /* width: 80%; */
+  height: 85vh;
 }
 /*
 #gigatester-image-overlay .gigatester-image-overlay-hide{
@@ -146,26 +150,24 @@ gttoolbar {
   margin: 0;
   padding: 0;
   outline: none;
-  border: 1px solid #042e5b;
   border-radius: 0;
   background: none;
   position: fixed;
   z-index: 2147483645;
-  top: 40%;
-  right: -90px;
-  width: auto;
+  top: 2%;
+  left: 40px;
+  width: 880px;
   height: 44px;
-  padding: 0 0 0 10px;
+  padding: 0 0 0 347px;
   opacity: 1;
   box-sizing: border-box;
   white-space: nowrap;
   text-align: left;
   border-radius: 4px;
-  transform: rotate(270deg);
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
-  background-color: rgba(255, 255, 255, 0.253);
+  /* transform: rotate(1deg); */
+  box-shadow: 0 0 4px rgb(0 0 0 / 40%);
+  background-color: #e8e8e8;
   animation: feedbackToolbarIn 0.3s linear;
-  backdrop-filter: blur(3px);
   direction: ltr;
   -webkit-font-smoothing: antialiased;
   transition: right 0.2s linear;
@@ -177,7 +179,8 @@ gttoolbar {
   }
 }*/
 gttoolbar:hover {
-  background: rgba(255, 255, 255, 0.144);
+  outline: none;
+  /* rgba(255, 255, 255, 0.144); */
 }
 gttoolbar.gigatester-toolbar-slide-out {
   right: -90px;
@@ -202,7 +205,7 @@ gttoolbar .gigatester-toolbar-tool {
   gttoolbar .gigatester-toolbar-tool {
     width: 44px;
   }
-  gttoolbar .gigatester-toolbar-tool.gigatester-toolbar-tool-colour {
+  gttoolbar .gigatester-toolbar-tool.gigatester-toolbar-tool-color {
     display: none;
   }
 }*/
@@ -390,10 +393,10 @@ gttoolbar .gigatester-toolbar-help svg:hover * {
 gttoolbar .gigatester-toolbar-help svg * {
   fill: #8090a0;
 }
-gttoolbar .gigatester-toolbar-tool-colour:hover gtcolourpicker {
+gttoolbar .gigatester-toolbar-tool-color:hover gtcolorpicker {
   display: block;
 }
-gttoolbar .gigatester-toolbar-tool-colour .gigatester-toolbar-tool-colour-indicator {
+gttoolbar .gigatester-toolbar-tool-color .gigatester-toolbar-tool-color-indicator {
   display: block;
   position: absolute;
   top: 0;
@@ -408,11 +411,11 @@ gttoolbar .gigatester-toolbar-tool-colour .gigatester-toolbar-tool-colour-indica
   cursor: pointer;
 }
 gttoolbar
-  .gigatester-toolbar-tool-colour
-  .gigatester-toolbar-tool-colour-indicator[hasborder] {
+  .gigatester-toolbar-tool-color
+  .gigatester-toolbar-tool-color-indicator[hasborder] {
   box-shadow: 0 0 0 1px rgba(53, 76, 95, 0.2);
 }
-gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker {
+gttoolbar .gigatester-toolbar-tool-color gtcolorpicker {
   width: auto;
   height: auto;
   line-height: normal;
@@ -429,7 +432,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker {
   display: none;
   position: absolute;
   z-index: 2147483645;
-  top: -80px;
+  top: 15px;
   left: -60px;
   width: 124px;
   margin: 18px 0 0 0;
@@ -440,7 +443,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker {
   white-space: nowrap;
   animation: feedbackAnimationReset 0.1s linear forwards;
 }
-gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker:before {
+gttoolbar .gigatester-toolbar-tool-color gtcolorpicker:before {
   content: "";
   position: absolute;
   top: 100%;
@@ -448,7 +451,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker:before {
   right: 0;
   height: 20px;
 }
-gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv {
+gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv {
   width: auto;
   height: auto;
   line-height: normal;
@@ -467,10 +470,10 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv {
   cursor: pointer;
   box-sizing: border-box;
 }
-gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv:hover span {
+gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv:hover span {
   transform: scale(1.2);
 }
-gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span {
+gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   width: auto;
   height: auto;
   line-height: normal;
@@ -492,7 +495,7 @@ gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span {
   border-radius: 50%;
   transition: all 0.1s linear;
 }
-gttoolbar .gigatester-toolbar-tool-colour gtcolourpicker > gtdiv span[hasborder] {
+gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   border: 1px solid rgba(53, 76, 95, 0.2);
 }
 .gigatester-overlay {
@@ -1132,21 +1135,20 @@ popupbtn:hover popuptooltip {
   max-height: none;
   margin: 0;
   padding: 0;
-  outline: 2px solid #042e5b;
   border: none;
   background: none;
   overflow: visible;
   position: fixed;
-  z-index: 2147483645;
+  z-index: 2347483645;
   top: auto;
   bottom: 0;
-  width: 750px;
+  width: auto;
   max-width: 96%;
   height: auto;
   padding: 12px;
   margin: 0;
   border-radius: 4px;
-  background-color: #f4f9ff;
+  background-color: #e8e8e8;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
   font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
@@ -1159,7 +1161,8 @@ popupbtn:hover popuptooltip {
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item {
-    overflow: auto;
+    overflow-x: hidden;
+    overflow-y: auto;
     top: auto;
     left: 0;
     right: 0;
@@ -1525,7 +1528,8 @@ justify-content: center;
   min-width: 0;
   min-height: 0;
   max-width: none;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   /* max-height: calc(100vh - 27vh); */
   justify-content: center;
   display: flex;
@@ -1584,7 +1588,7 @@ justify-content: center;
   height: 42px;
   margin-left:30px;
   background: #fafbfd;
-  outline: 1px solid #042e5b;
+  outline: 2px solid #bebebe;
   border-radius: 50%;
   cursor: pointer;
   box-sizing: border-box;
@@ -2078,7 +2082,7 @@ justify-content: center;
   color: #042e5b;
   background: #fafbfd;
   box-shadow: none !important;
-  outline: 1px solid #042e5b;
+  outline: 1px solid #bfbfbf;
   box-sizing: border-box;
   animation: none;
   -webkit-user-select: auto;
@@ -2087,6 +2091,7 @@ justify-content: center;
   padding-bottom: 0;
   height: 40px;
   margin: 0 0 10px 0;
+  min-width: 305px;
   border-color: #e9f1fd;
   color: #042e5b;
 }
@@ -2146,7 +2151,7 @@ justify-content: center;
   color: #042e5b;
   background: #fafbfd;
   box-shadow: none !important;
-  outline: 1px solid #042e5b;
+  outline: 1px solid #bfbfbf;
   box-sizing: border-box;
   animation: none;
   -webkit-user-select: auto;
@@ -2206,7 +2211,7 @@ justify-content: center;
   color: #042e5b;
   background: #fafbfd;
   box-shadow: none !important;
-  outline: 1px solid #042e5b;
+  outline: 1px solid #bfbfbf;
   box-sizing: border-box;
   animation: none;
   -webkit-user-select: auto;
@@ -2785,7 +2790,6 @@ justify-content: center;
   margin: auto;
   opacity: 0;
   transform: none;
-  outline: 2px solid #042e5b;
   box-shadow: 0 0 70px rgba(0, 0, 0, 0.5);
   animation: feedbackFadeIn 0.1s linear 0.05s forwards;
 }
@@ -3264,7 +3268,7 @@ gtmodal > gtdiv .gigatester-modal-info-text {
 display: inline-block;
 padding: 5px;
 border-radius: 10px;
-border: 2px solid #2878f08c;
+border: 2px solid #042e5bd0;
 background: #fafbfd;
 }
 #gigatester_video_container {
@@ -3277,27 +3281,24 @@ background: #fafbfd;
   background-color: rgba(128, 144, 160, 0.3);
 }
 #gigatester_image_preview{
-/* width: 100%;
-height: 100%; */
-overflow: hidden;
-position: absolute;
-z-index: 100;
-top:0;
-bottom: 0;
+    /* overflow: hidden; */
+    position: relative;
+    z-index: 100;
+    /* top: 0; */
+    max-width: 100%;
+    max-height: 100%;
+    /* bottom: 0; */
 }
 .gigatester-footer{
   font-weight: 700;
 }
 #gigatester-popup-dialog-close{
   position: absolute;
-  top: -19px;
+  top: 0px;
   height: 20px;
   width: 20px;
   border-radius: 50px;
-  right: -9px;
-  border: 2px solid #042e5b;
-  background: #fefefebb;
-  backdrop-filter: blur(1px);
+  right: 0px;
 }
 #gigatester-popup-dialog-close svg{
   font-size: 10px;
@@ -3309,7 +3310,7 @@ bottom: 0;
 .gigatester-popup-dialog{
   height: auto;
   width: 70px;
-  background: #fefefebb;
+  background: #e8e8e8;
   position: absolute;
   border-radius: 6px;
   padding: 6px;
@@ -3318,8 +3319,6 @@ bottom: 0;
   left: 10px;
   transform: rotate( 270deg );
   bottom: -130px;
-  border: 2px solid #042e5b;
-  backdrop-filter: blur(1px);
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
   animation: feedbackFadeIn 0.2s linear;
 }
@@ -3331,9 +3330,7 @@ gtvideotoolbar {
   left: 40vw;
   margin: auto;
   padding: 0 10px 0 14px;
-  background-color: #ffffff63;
-  backdrop-filter: blur(1px);
-  outline: 2px solid #042e5b;
+  background-color: #e8e8e8;
   border-radius: 4px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
   animation: feedbackSlideUp 0.3s linear;
