@@ -3192,24 +3192,24 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   cursor: pointer;
 }
 #gigatester_audio_record_player {
-    position: fixed;
-    z-index: 2147483645;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    left: 0;
-    background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  z-index: 2147483645;
+  top: 16px;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: #e8e8e8;
   }
 #gigatester_audio_record_player #gigatester_audio_record_player_close {
-    position: absolute;
-    width: 80px;
-    height: 80px;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: rgb(255, 255, 255);
-    border-radius: 50%;
-    cursor: pointer;
+  position: absolute;
+  width: 80px;
+  height: 80px;
+  top: 45%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgb(255, 255, 255);
+  border-radius: 50%;
+  cursor: pointer;
     /* animation: animate 1.5s linear infinite; */
   }
   @keyframes animate{

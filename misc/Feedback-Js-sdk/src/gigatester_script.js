@@ -1500,11 +1500,11 @@ else{
                      + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + Svg_Icons.paperclip + "<gtdiv>" + Lang.get("attach_a_file") + "</gtdiv>"
                      + "<gttooltip>" + Lang.get("attach_a_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + Svg_Icons.checkmark + "</div>" + "</btn>" : "")
                      + "</gtdiv>" + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
-                     + '<gtdiv class="gigatester-ctrl-item-screenshot-preview">' + '<btn class="gigatester-ctrl-item-remove-screenshot">' + Svg_Icons.trash + "</btn>"
-                     + '<gtbadge class="gigatester-ctrl-item-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
-                     + '<gtdiv class="gigatester-ctrl-item-video-preview">' + '<btn class="gigatester-ctrl-item-remove-video">' + Svg_Icons.trash + "</btn>"
-                     + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>" + "</gtbadge>" + "</gtdiv>"
-                     + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + Svg_Icons.paperclip + "<span></span>" + '<btn class="gigatester-ctrl-item-remove-attachment">' + Svg_Icons.trash + "</btn>" + "</gtdiv>"
+                    //  + '<gtdiv class="gigatester-ctrl-item-screenshot-preview">' + '<btn class="gigatester-ctrl-item-remove-screenshot">' + Svg_Icons.trash + "</btn>"
+                    //  + '<gtbadge class="gigatester-ctrl-item-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
+                    //  + '<gtdiv class="gigatester-ctrl-item-video-preview">' + '<btn class="gigatester-ctrl-item-remove-video">' + Svg_Icons.trash + "</btn>"
+                    //  + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>" + "</gtbadge>" + "</gtdiv>"
+                    //  + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + Svg_Icons.paperclip + "<span></span>" + '<btn class="gigatester-ctrl-item-remove-attachment">' + Svg_Icons.trash + "</btn>" + "</gtdiv>"
                      + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
                      + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
                      + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + Svg_Icons.check + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
@@ -1818,7 +1818,7 @@ else{
                         audio_record_close.appendTo(audio_record_overlay);
                         timer_button.appendTo(audio_record_close);
                         audio_record_text.appendTo(audio_record_overlay)
-                        audio_record_overlay.appendTo($(document.body));
+                        audio_record_overlay.appendTo($(document.getElementsByClassName('gigatester-ctrl-item gigatester-ctrl-item-r')));
                         let mic_volume = $("<gtvideotoolbar id='gigatester-audio-volume-control'> <gtvolume class='hasvolume'>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume> </gtvideotoolbar>").appendTo(audio_record_close);
                         const recorder = new MediaRecorder(stream);
                         GigaTester_modal.startTimer();
