@@ -1,8 +1,7 @@
-@import "https://fonts.googleapis.com/css2?family=Merriweather Sans:wght@300;400;500;600;700&display=swap";
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 :root {
-  --main-btn-bg: #042e5b;
+  --main-btn-bg: #011348;
   --main-btn-text: #ffffff;
-  --main-outro-icon: #00c878;
 }
 
 gtdiv {
@@ -20,7 +19,7 @@ gtspan {
 }*/
 #gigatester_screencapture_area{
   background: none;
-  outline: 5px solid black;
+  outline: 5px solid #0259b6;
   position: fixed;
   top: 65px;
   /* bottom: 73px; */
@@ -40,7 +39,7 @@ gtspan {
   display: block;
   margin: 0;
   border: none;
-  border-radius: 5px;
+  border-radius: 4px;
   line-height: normal;
   font-size: 12px;
   font-weight: normal;
@@ -48,12 +47,12 @@ gtspan {
   word-spacing: normal;
   text-decoration: none;
   text-align: center;
-  background-color: #042e5b !important;
+  background-color: #011348 !important;
   color: #fff !important;
   background-color: var(--main-btn-bg) !important;
   color: var(--main-btn-text) !important;
   cursor: pointer;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px #5c6c7c;
   box-sizing: border-box;
   outline: none;
 }
@@ -62,49 +61,15 @@ gtspan {
   border: 0;
 }
 .gigatester-input-btn:focus {
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2) inset;
+  box-shadow: 1px 1px 4px #5c6c7c inset;
 }
 .gigatester-input-btn:disabled {
   box-shadow: none;
   cursor: not-allowed;
 }
 .gigatester-input-btn .gigatester-ctrl-item-send-text {
+  color: #fff !important;
   color: var(--main-btn-text) !important;
-}
-gtclose {
-  width: auto;
-  height: auto;
-  line-height: normal;
-  min-width: 0;
-  min-height: 0;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  outline: none;
-  border: none;
-  border-radius: 0;
-  background: none;
-  position: absolute;
-  top: -8px;
-  right: -8px;
-  bottom: auto;
-  left: auto;
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  box-sizing: border-box;
-  cursor: pointer;
-  background: #042e5b;
-  background: var(--main-btn-bg);
-}
-gtclose svg {
-  display: block !important;
-  margin: 5px auto;
-  width: 14px;
-  height: 14px;
-  fill: #fff;
-  fill: var(--main-btn-text);
 }
 .gigatester-mobile-only {
   display: none;
@@ -128,7 +93,7 @@ gtclose svg {
   padding: 0 25px;
   background: rgba(76, 84, 91, 0.8);
   color: #fff;
-  border-radius: 20px;
+  border-radius: 4px;
   cursor: pointer;
   box-sizing: border-box;
   opacity: 0;
@@ -136,12 +101,10 @@ gtclose svg {
   animation: feedbackSlideIn 0.2s linear 0.8s forwards;
   white-space: nowrap;
   font-size: 16px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased;
 }
 gttoolbar {
-  width: auto;
-  height: auto;
   line-height: normal;
   min-width: 0;
   min-height: 0;
@@ -150,7 +113,6 @@ gttoolbar {
   margin: 0;
   padding: 0;
   outline: none;
-  border-radius: 0;
   background: none;
   position: absolute;
   z-index: 2147483645;
@@ -167,7 +129,7 @@ gttoolbar {
   text-align: left;
   border-radius: 4px;
   /* transform: rotate(1deg); */
-  box-shadow: 0 0 4px rgb(0 0 0 / 40%);
+  box-shadow: 0 0 10px #5c6c7c;
   background-color: #e8e8e8;
   animation: feedbackToolbarIn 0.3s linear;
   direction: ltr;
@@ -213,7 +175,7 @@ gttoolbar .gigatester-toolbar-tool {
 }*/
 gttoolbar .gigatester-toolbar-tool:hover svg,
 gttoolbar .gigatester-toolbar-tool:hover svg * {
-  fill: #042e5b;
+  fill: #011348;
 }
 gttoolbar .gigatester-toolbar-tool.gigatester-toolbar-tool-square svg * {
   fill: rgba(255, 255, 255, 0.8);
@@ -253,15 +215,15 @@ gttoolbar .gigatester-toolbar-close {
 }*/
 gttoolbar .gigatester-toolbar-tool-active {
   background: #f4f9ff;
-  border: 1px solid #042e5b;
-  border-radius: 50%;
+  border: 1px solid #011348;
+  border-radius: 4px;
 }
 gttoolbar .gigatester-toolbar-tool-active:hover {
   background: #f4f4f4;
 }
 gttoolbar .gigatester-toolbar-tool-active svg,
 gttoolbar .gigatester-toolbar-tool-active svg * {
-  fill: #042e5b;
+  fill: #011348;
 }
 gttoolbar .gigatester-toolbar-tool-done {
   position: relative;
@@ -276,7 +238,7 @@ gttoolbar .gigatester-toolbar-tool-done {
   margin: 5px 5px 0 10px;
   border-radius: 4px;
   text-decoration: none;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   opacity: 1;
   right: 5px;
   cursor: default;
@@ -331,7 +293,7 @@ gttoolbar .gigatester-toolbar-close {
   margin: 5px 5px 0 10px;
   border-radius: 4px;
   text-decoration: none;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   right: 0px;
   opacity: 0.9;
   cursor: default;
@@ -344,10 +306,10 @@ gttoolbar .gigatester-toolbar-close {
     float: right;
   }
 }
-gttoolbar .gigatester-toolbar-close.gigatester-toolbar-close-active {
+gttoolbar .gigatester-toolbar-close .gigatester-toolbar-close-active {
   opacity: 1;
   cursor: pointer;
-  box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 1px 1px 2px #5c6c7c;
 }
 gttoolbar .gigatester-toolbar-close svg {
   position: relative !important;
@@ -394,7 +356,7 @@ gttoolbar .gigatester-toolbar-help svg {
   margin: 1px;
 }
 gttoolbar .gigatester-toolbar-help svg:hover * {
-  fill: #042e5b;
+  fill: #011348;
 }
 gttoolbar .gigatester-toolbar-help svg * {
   fill: #8090a0;
@@ -419,10 +381,10 @@ gttoolbar .gigatester-toolbar-tool-color .gigatester-toolbar-tool-color-indicato
 gttoolbar
   .gigatester-toolbar-tool-color
   .gigatester-toolbar-tool-color-indicator[hasborder] {
-  box-shadow: 0 0 0 1px rgba(53, 76, 95, 0.2);
+  box-shadow: 0 0 10px #5c6c7c;
 }
 gttoolbar .gigatester-toolbar-tool-color gtcolorpicker {
-  width: auto;
+  width: 124px;
   height: auto;
   line-height: normal;
   min-width: 0;
@@ -433,14 +395,12 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker {
   padding: 0;
   outline: none;
   border: none;
-  border-radius: 0;
   background: none;
   display: none;
   position: absolute;
   z-index: 2147483645;
   top: 15px;
   left: -60px;
-  width: 124px;
   margin: 18px 0 0 0;
   padding: 4px 8px;
   border-radius: 4px;
@@ -491,7 +451,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   padding: 0;
   outline: none;
   border: none;
-  border-radius: 0;
   background: none;
   display: block;
   width: 16px;
@@ -554,7 +513,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   left: 0;
   right: 0;
   height: 4px;
-  background: #042e5b;
+  background: #011348;
   background: var(--main-btn-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
@@ -574,7 +533,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   top: 0;
   bottom: 0;
   width: 4px;
-  background: #042e5b;
+  background: #011348;
   background: var(--main-btn-bg);
   opacity: 0;
   animation: feedbackFadeIn 0.2s linear 0.1s forwards;
@@ -639,11 +598,11 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   padding: 0 10px;
   color: #fff;
   background-color: rgba(0, 0, 0, 0.7);
-  border-radius: 15px;
+  border-radius: 4px;
   font-size: 12px;
   overflow: hidden;
   white-space: nowrap;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   pointer-events: none;
 }
 .gigatester-overlay[hidecursor="true"] .gigatester-overlay-hint-cursor {
@@ -692,8 +651,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   -webkit-font-smoothing: antialiased;
 }
 .gigatester-comment .gigatester-comment-pin {
-  width: auto;
-  height: auto;
   line-height: normal;
   min-width: 0;
   min-height: 0;
@@ -703,17 +660,15 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   padding: 0;
   outline: none;
   border: none;
-  border-radius: 0;
-  background: none;
   position: absolute;
   top: -16px;
   left: -20px;
   width: 35px;
   height: 35px;
   background: var(--main-btn-bg) !important;
-  border-radius: 5px;
+  border-radius: 4px;
   border: none;
-  box-shadow: 0px 0px 2px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0 10px #5c6c7c;
   cursor: pointer;
   transition: all 0.1s linear;
   animation: feedbackZoomIn 0.1s;
@@ -730,7 +685,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   color: #fff;
   font-size: 14px;
   text-align: center;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   letter-spacing: normal;
   word-spacing: normal;
@@ -744,7 +699,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   z-index: 90;
   content: "";
   position: absolute;
-  background-color: #042e5b;
+  background-color: #011348;
   top: 0;
   right: 0;
   bottom: 0;
@@ -765,8 +720,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   animation: feedbackPin 2s ease-in 1.5s infinite;
 }
 .gigatester-comment .gigatester-comment-form {
-  width: auto;
-  height: auto;
   line-height: normal;
   min-width: 0;
   min-height: 0;
@@ -776,7 +729,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   padding: 0;
   outline: none;
   border: none;
-  border-radius: 0;
   background: none;
   position: absolute;
   height: auto;
@@ -799,7 +751,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
     width: auto !important;
     padding: 15px;
     border-radius: 0;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 10px #5c6c7c;
     filter: none;
     opacity: 0;
     transform: translateY(-20px);
@@ -860,7 +812,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   font-size: 13px;
   outline: none;
   box-shadow: none;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   color: #000;
   background: none;
   box-sizing: border-box;
@@ -873,7 +825,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   background-color: transparent;
 }
 .gigatester-comment .gigatester-comment-form gtcomment::-webkit-scrollbar-thumb {
-  border-radius: 10px;
+  border-radius: 4px;
   background: rgba(0, 0, 0, 0.3);
 }
 @media (max-width: 800px) {
@@ -895,7 +847,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   height: 30px;
   line-height: 30px;
   padding: 0 14px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: 500;
   text-transform: none;
 
@@ -910,8 +862,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   border-radius: 4px;
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-delete svg {
-  width: auto;
-  height: auto;
   line-height: normal;
   min-width: 0;
   min-height: 0;
@@ -994,47 +944,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-close svg path {
   fill: rgba(53, 76, 95, 0.4);
 }
-
-@media print {
-  #gigatester_ctrls_container {
-    display: none;
-  }
-}
-/*.gigatester-modal-open #gigatester_ctrls_container {
-  filter: blur(5px);
-}*/
-#gigatester_ctrls_container .gigatester-btn {
-  display: block;
-  position: fixed;
-  z-index: 2147483644;
-  top: auto;
-  bottom: 0;
-  width: auto;
-  height: 40px;
-  line-height: 40px;
-  padding: 0 20px;
-  margin: 0;
-  border-radius: 3px 3px 0 0;
-  background-color: #042e5b;
-  color: #fff;
-  background-color: var(--main-btn-bg);
-  color: var(--main-btn-text);
-  background-image: none;
-  text-align: center;
-  font-size: 14px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
-  font-weight: 300;
-  letter-spacing: normal;
-  word-spacing: normal;
-  cursor: pointer;
-  transition: all 0.1s linear;
-  box-sizing: border-box;
-  user-select: none;
-  -webkit-font-smoothing: antialiased;
-}
-#gigatester_ctrls_container .gigatester-btn svg path {
-  fill: #000;
-}
 popupbtn {
   position: relative;
     top: 0px;
@@ -1058,7 +967,7 @@ popuptooltip {
   background-color: black;
   color: #fff;
   text-align: center;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 5px 0;
   font-size: 12px;
   /* Position the tooltip */
@@ -1067,11 +976,50 @@ popuptooltip {
   left: -136px;
   z-index: 1;
 }
-
 popupbtn:hover popuptooltip {
   visibility: visible;
 }
-#gigatester_ctrls_container .gigatester-btn[wstyle="text"],
+@media print {
+  #gigatester_ctrls_container {
+    display: none;
+  }
+}
+#gigatester_ctrls_container .gigatester-btn {
+  display: block;
+  position: fixed;
+  z-index: 2147483644;
+  top: auto;
+  bottom: 0;
+  width: auto;
+  height: 40px;
+  line-height: 40px;
+  padding: 0 20px;
+  margin: 0;
+  border-radius: 4px 4px 0 0;
+  background-color: #011348;
+  color: #fff;
+  background-color: var(--main-btn-bg);
+  color: var(--main-btn-text);
+  background-image: none;
+  text-align: center;
+  font-size: 14px;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  font-weight: 400;
+  letter-spacing: normal;
+  word-spacing: normal;
+  cursor: pointer;
+  transition: all 0.1s linear;
+  box-sizing: border-box;
+  user-select: none;
+/*  -webkit-font-smoothing: antialiased;*/
+}
+#gigatester_ctrls_container .gigatester-btn svg path {
+  fill: #000;
+}
+#gigatester_ctrls_container .gigatester-btn:hover {
+  box-shadow: 0 0 10px #5c6c7c;
+}
+/* #gigatester_ctrls_container .gigatester-btn[wstyle="text"],
 #gigatester_ctrls_container .gigatester-btn[wstyle="text_icon"] {
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
   white-space: nowrap !important;
@@ -1098,19 +1046,19 @@ popupbtn:hover popuptooltip {
   width: 16px;
   height: 16px;
   margin: 12px 4px 0 0;
-}
+} */
 
 #gigatester_ctrls_container .gigatester-btn-r {
   right: -35px;
   top: 50%;
   margin-top: -20px;
-  border-radius: 5px;
+  border-radius: 4px;
   bottom: auto;
   transform: rotate(90deg);
   animation: feedbackSlideLeft 0.2s linear;
   border-bottom: 2px solid transparent;
 }
-#gigatester_ctrls_container .gigatester-btn-r[wstyle="text"],
+/* #gigatester_ctrls_container .gigatester-btn-r[wstyle="text"],
 #gigatester_ctrls_container .gigatester-btn-r[wstyle="text_icon"] {
   transform: rotate(-90deg) translate(50%, -50%);
   transform-origin: 100% 50%;
@@ -1121,37 +1069,34 @@ popupbtn:hover popuptooltip {
 }
 #gigatester_ctrls_container .gigatester-btn-r[wstyle="text_icon"] svg {
   transform: rotate(90deg);
+} */
+#gigatester_ctrls_container[isopen=true] {
+  background: #5c6c7c56;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item {
-  width: auto;
+  width: 760px;
   height: auto;
   line-height: normal;
   min-width: 0;
   min-height: 0;
-  max-width: none;
-  max-height: none;
+  max-width: 96%;
+  max-height: 100vh;
   margin: 0;
-  padding: 0;
+  padding: 12px;
   border: none;
-  background: none;
   overflow: visible;
   position: fixed;
   z-index: 2347483645;
   top: auto;
   bottom: 0;
-  width: auto;
-  max-width: 96%;
-  height: auto;
-  padding: 12px;
-  margin: 0;
   border-radius: 4px;
-  background-color: #e8e8e8;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  background-color: #fff;
+  box-shadow: 0 0 10px #5c6c7c;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   letter-spacing: normal;
   word-spacing: normal;
-  color: #042e5b;
+  color: #011348;
   text-align: left;
   box-sizing: border-box;
   -webkit-font-smoothing: antialiased;
@@ -1165,7 +1110,6 @@ popupbtn:hover popuptooltip {
     right: 0;
     bottom: 0;
     width: auto;
-    padding: 24px;
     border: none;
     border-radius: 0;
     box-shadow: none;
@@ -1174,10 +1118,55 @@ popupbtn:hover popuptooltip {
     animation: feedbackControlsSlideUp 0.1s linear;
   }
 }
+gtclose {
+  line-height: normal;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: auto;
+  left: auto;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  box-sizing: border-box;
+  cursor: pointer;
+  background: #011348;
+  background: var(--main-btn-bg);
+}
+gtclose svg {
+  display: block !important;
+  margin: 5px auto;
+  width: 14px;
+  height: 14px;
+  fill: #fff;
+  fill: var(--main-btn-text);
+}
+#gigatester_ctrls_container .gigatester-ctrl-item gtclose {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 20px;
+  width: 20px;
+  background: none;
+}
+#gigatester_ctrls_container .gigatester-ctrl-item gtclose svg{
+  font-size: 10px;
+  height: 10px;
+  width: 10px;
+  fill: #011348;
+}
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item gtclose {
-    top: 8px;
-    right: 8px;
+    top: 10px;
+    right: 10px;
   }
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-logo {
@@ -1270,7 +1259,7 @@ popupbtn:hover popuptooltip {
   display: inline-block;
   margin: 0 8px 0 0;
   font-size: 12px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   color: rgba(53, 76, 95, 0.4);
 }
@@ -1278,7 +1267,7 @@ popupbtn:hover popuptooltip {
   display: inline-block;
   font-weight: 600;
   font-size: 12px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   color: rgba(53, 76, 95, 0.6);
   text-transform: uppercase;
   vertical-align: baseline;
@@ -1302,7 +1291,7 @@ popupbtn:hover popuptooltip {
   gtfooter
   > a:hover
   path:first-child {
-  fill: #042e5b;
+  fill: #011348;
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -1324,7 +1313,7 @@ popupbtn:hover popuptooltip {
 }
 .gigatester-ctrl-item-loader{
   border: 16px solid #f3f3f3; /* Light grey */
-  border-top: 16px solid #042e5b; /* Blue */
+  border-top: 16px solid #011348; /* Blue */
   border-radius: 50%;
   width: 12px;
   height: 12px;
@@ -1344,7 +1333,7 @@ popupbtn:hover popuptooltip {
     z-index: 214567;
     border: 5px solid rgb(247, 80, 80);
     background-color: rgba(255, 255, 255, 0.705);
-    border-radius: 50px;
+    border-radius: 50%;
     height: 35px;
     width: 35px;
 }
@@ -1352,7 +1341,7 @@ popupbtn:hover popuptooltip {
     color: white;
     background: rgba(0, 0, 0, 0.747);
     position: absolute;
-    border-radius: 5px;
+    border-radius: 4px;
     border: 1px;
     text-align: center;
     width: 155px;
@@ -1451,7 +1440,7 @@ justify-content: center;
   svg
   .star {
   fill: #ffffff;
-  stroke: #042e5b;
+  stroke: #011348;
   stroke-width: 1px;
 }
 #gigatester_ctrls_container
@@ -1470,7 +1459,7 @@ justify-content: center;
   position: relative;
   left: 20px;
   bottom: -25px;
-  color: #042e5b;
+  color: #011348;
 }
 .gigatester-audio-timer-label{
 position: absolute;
@@ -1616,7 +1605,7 @@ bottom: -23px;
   .gigatester-ctrl-item-attach-actions
   btn:hover:not([disabled])
   svg {
-  fill: #042e5b;
+  fill: #011348;
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -1688,7 +1677,7 @@ bottom: -23px;
   color: #fff;
   font-size: 12px;
   white-space: nowrap;
-  background-color: #042e5b;
+  background-color: #011348;
   transform: translateX(-50%);
 }
 #gigatester_ctrls_container
@@ -1704,7 +1693,7 @@ bottom: -23px;
   right: 0;
   margin: -1px auto auto auto;
   border: 6px solid transparent;
-  border-top-color: #042e5b;
+  border-top-color: #011348;
 }
 
 #gigatester_ctrls_container
@@ -1731,7 +1720,7 @@ bottom: -23px;
   line-height: 50px;
   margin: 0 0 10px 0;
   border: 1px solid #e9f1fd;
-  border-radius: 10px;
+  border-radius: 4px;
   background: #fafbfd;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1766,7 +1755,7 @@ bottom: -23px;
   width: 16px;
   height: 16px;
   margin: auto;
-  fill: #042e5b;
+  fill: #011348;
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -1854,7 +1843,7 @@ bottom: -23px;
   > btn
   svg
   path {
-  fill: #042e5b;
+  fill: #011348;
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -1973,7 +1962,7 @@ bottom: -23px;
   margin: 10px 0 0 10px;
   padding: 0 12px 0 4px;
   color: #fff;
-  background: #042e5b;
+  background: #011348;
   border-radius: 4px;
   user-select: none;
 }
@@ -2085,18 +2074,20 @@ bottom: -23px;
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"] {
   display: block;
   width: 100%;
-  height: auto;
+  height: 40px;
+  min-width: 300px;
   text-indent: 0px;
   line-height: normal;
   padding: 6px;
+  padding-top: 0;
+  padding-bottom: 0;
   border: 1px solid #e9f1fd;
   border-radius: 4px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   font-weight: 400;
   letter-spacing: normal;
   word-spacing: normal;
-  color: #042e5b;
   background: #fafbfd;
   box-shadow: none !important;
   outline: 1px solid #bfbfbf;
@@ -2104,13 +2095,9 @@ bottom: -23px;
   animation: none;
   -webkit-user-select: auto;
   user-select: auto;
-  padding-top: 0;
-  padding-bottom: 0;
-  height: 40px;
   margin: 0 0 10px 0;
-  min-width: 360px;
   border-color: #e9f1fd;
-  color: #042e5b;
+  color: #011348;
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"],
@@ -2120,7 +2107,7 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]::placeholder,
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]::placeholder {
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(88, 136, 175, 0.4);
   text-transform: none;
@@ -2151,7 +2138,7 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]:focus,
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]:focus {
-  border-color: #042e5b;
+  border-color: #011348;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item select {
   display: block;
@@ -2160,12 +2147,12 @@ bottom: -23px;
   line-height: normal;
   padding: 6px;
   border-radius: 4px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   font-weight: 400;
   letter-spacing: normal;
   word-spacing: normal;
-  color: #042e5b;
+  color: #011348;
   background: #fafbfd;
   box-shadow: none !important;
   outline: 1px solid #bfbfbf;
@@ -2194,7 +2181,7 @@ bottom: -23px;
   border-color: #eee;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item select::placeholder {
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(88, 136, 175, 0.4);
   text-transform: none;
@@ -2211,7 +2198,7 @@ bottom: -23px;
   color: #aaa;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item select:focus {
-  border-color: #042e5b;
+  border-color: #011348;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item textarea {
   display: block;
@@ -2220,12 +2207,12 @@ bottom: -23px;
   line-height: normal;
   padding: 6px;
   border-radius: 4px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   font-weight: 400;
   letter-spacing: normal;
   word-spacing: normal;
-  color: #042e5b;
+  color: #011348;
   background: #fafbfd;
   box-shadow: none !important;
   outline: 1px solid #bfbfbf;
@@ -2246,10 +2233,10 @@ bottom: -23px;
   }
 }
 #gigatester_ctrls_container .gigatester-ctrl-item textarea:focus {
-  border-color: #042e5b;
+  border-color: #011348;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item textarea::placeholder {
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(53, 76, 95, 0.4);
   text-transform: none;
@@ -2266,7 +2253,7 @@ bottom: -23px;
   color: #aaa;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item textarea:focus {
-  border-color: #042e5b;
+  border-color: #011348;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-checkbox-container {
   position: relative;
@@ -2283,7 +2270,7 @@ bottom: -23px;
 #gigatester-reason-label{
   font-size: 14px;
   font-weight: 400;
-  color: #042e5b;
+  color: #011348;
   font-family: inherit;
 }
 #gigatester_ctrls_container
@@ -2336,14 +2323,13 @@ bottom: -23px;
   padding: 0;
   outline: none;
   border: none;
-  border-radius: 0;
   background: none;
   float: left;
   width: 18px;
   height: 18px;
   margin: 0 4px 0 0;
   border: 1px solid #e9f1fd;
-  border-radius: 2px;
+  border-radius: 4px;
   box-sizing: border-box;
   transition: all 0.1s;
 }
@@ -2358,7 +2344,7 @@ bottom: -23px;
   margin: 3px;
   vertical-align: top !important;
   box-sizing: border-box;
-  fill: #042e5b;
+  fill: #011348;
   fill: var(--main-btn-bg);
 }
 #gigatester_ctrls_container
@@ -2390,7 +2376,7 @@ bottom: -23px;
   right: 0;
   bottom: 0;
   left: 0;
-  border-radius: 5px;
+  border-radius: 4px;
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -2415,7 +2401,7 @@ bottom: -23px;
   line-height: 64px;
   margin: auto;
   font-size: 64px;
-  animation: outro-icon-2 0.8s;
+  animation: anim-breathe 0.8s;
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -2488,9 +2474,8 @@ bottom: -23px;
   svg {
   width: 64px;
   height: 64px;
-  animation: outro-icon-2 0.8s;
-  fill: #042e5b;
-  fill: var(--main-outro-icon);
+  animation: anim-breathe 0.8s;
+  fill: #011348;
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -2507,12 +2492,13 @@ bottom: -23px;
   display: block;
   height: 40px;
   padding: 0 24px;
-  margin: 20px 0 12px 25%;
-  border-radius: 5px;
+  margin: 20px 0 0 25%;
+  border-radius: 4px;
   box-sizing: border-box;
-  font-weight: 600;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-weight: 400;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px;
+  box-shadow: none;
   white-space: nowrap;
   transition: all 0.2s linear;
 }
@@ -2648,7 +2634,7 @@ bottom: -23px;
   right: 0;
   bottom: 64px;
   text-align: center;
-  color: #042e5b;
+  color: #011348;
   font-size: 13px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item-br {
@@ -2812,7 +2798,7 @@ bottom: -23px;
   margin: auto;
   opacity: 0;
   transform: none;
-  box-shadow: 0 0 70px rgba(0, 0, 0, 0.5);
+  box-shadow: 0 0 10px #5c6c7c;
   animation: feedbackFadeIn 0.1s linear 0.05s forwards;
 }
 @media (max-width: 800px) {
@@ -2835,7 +2821,7 @@ bottom: -23px;
   right: auto;
   bottom: auto;
   left: auto;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0.5);
 }
 #gigatester_audio_player_close{
   float: right;
@@ -2912,39 +2898,34 @@ gtmodal .gigatester-modal-title {
   margin-bottom: 12px;
   font-size: 18px;
   font-weight: 600;
-  color: #042e5b;
+  color: #011348;
 }
 gtmodal > gtdiv {
-  width: auto;
+  width: 440px;
   height: auto;
   line-height: normal;
   min-width: 0;
   min-height: 0;
-  max-width: none;
+  max-width: 90%;
   max-height: none;
-  margin: 0;
-  padding: 0;
+  margin: 100px auto;
+  padding: 40px;
   outline: none;
   border: none;
-  border-radius: 0;
   background: none;
   position: relative;
   background: #fff;
-  width: 440px;
-  max-width: 90%;
-  margin: 100px auto;
-  padding: 40px;
   border-radius: 10px;
-  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 5px 20px #5c6c7c;
   line-height: 150%;
   color: #4c545b;
   animation: feedbackZoomIn 0.1s;
   font-size: 16px;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   box-sizing: border-box;
 }
 gtmodal > gtdiv a {
-  color: #042e5b;
+  color: #011348;
   text-decoration: underline;
 }
 gtmodal > gtdiv .gigatester-modal-btns {
@@ -2957,7 +2938,7 @@ gtmodal > gtdiv .gigatester-modal-btns btn {
   line-height: 40px;
   padding: 0 24px;
   margin: 0 0 0 5px;
-  border-radius: 20px;
+  border-radius: 5px;
   box-sizing: border-box;
   font-size: 14px;
   font-weight: 600;
@@ -3170,6 +3151,7 @@ gtmodal > gtdiv .gigatester-modal-info-text {
     opacity: 0;
   }
 }
+/*
 @keyframes feedbacOutroText {
   from {
     opacity: 0;
@@ -3186,7 +3168,7 @@ gtmodal > gtdiv .gigatester-modal-info-text {
     transform: none;
   }
 }
-
+*/
 #gigatester_video_capture {
   position: fixed;
   width: 1px;
@@ -3252,7 +3234,7 @@ gtmodal > gtdiv .gigatester-modal-info-text {
     font-weight: 700;
     position: relative;
     top: 20%;
-    color: #042e5b;
+    color: #011348;
   }
   #gigatester_audio_record_player #gigatester_audio_record_player_close > svg {
     display: block;
@@ -3287,13 +3269,13 @@ gtmodal > gtdiv .gigatester-modal-info-text {
   max-height: 100%;
   margin: auto;
   outline: none;
-  box-shadow: 0 0 80px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 80px #5c6c7c;
 }
 #gigatester_external_file_preview{
 display: inline-block;
 padding: 5px;
-border-radius: 10px;
-border: 2px solid #042e5bd0;
+border-radius: 4px;
+border: 2px solid #011348d0;
 background: #fafbfd;
 }
 #gigatester_video_container {
@@ -3320,32 +3302,30 @@ background: #fafbfd;
 }
 #gigatester-popup-dialog-close{
   position: absolute;
-  top: 0px;
+  top: 0;
+  right: 0;
   height: 20px;
   width: 20px;
-  border-radius: 50px;
-  right: 0px;
 }
 #gigatester-popup-dialog-close svg{
   font-size: 10px;
-    font-weight: 700;
-    height: 10px;
-    width: 10px;
-    color: white;
+  height: 10px;
+  width: 10px;
 }
 .gigatester-popup-dialog{
   height: auto;
   width: 70px;
-  background: #e8e8e8;
+  background: #fff;
   position: absolute;
-  border-radius: 6px;
+  border-radius: 4px;
   padding: 6px;
   line-height: 20px;
   color: black;
+  font-weight: 600;
   left: 10px;
   transform: rotate( 270deg );
-  bottom: -130px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+  bottom: -118px;
+  box-shadow: 0 0 10px #5c6c7c;
   animation: feedbackFadeIn 0.2s linear;
 }
 gtvideotoolbar {
@@ -3358,25 +3338,11 @@ gtvideotoolbar {
   padding: 0 10px 0 14px;
   background-color: #e8e8e8;
   border-radius: 4px;
-  box-shadow: 0 0 5px rgba(0, 0, 0, 0.4);
+  box-shadow: 0 0 10px #5c6c7c;
   animation: feedbackSlideUp 0.3s linear;
-  font-family: "Merriweather Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   cursor: move;
 }
-/* gtvideotoolbar:before {
-  content: "";
-  position: absolute;
-  top: 14px;
-  left: 4px;
-  width: 2px;
-  height: 2px;
-  background-color: rgba(128, 144, 160, 0.3);
-  box-shadow: 0 4px 0 0 rgba(128, 144, 160, 0.3),
-    0 8px 0 0 rgba(128, 144, 160, 0.3), 0 12px 0 0 rgba(128, 144, 160, 0.3),
-    0 16px 0 0 rgba(128, 144, 160, 0.3), 4px 0 0 0 rgba(128, 144, 160, 0.3),
-    4px 4px 0 0 rgba(128, 144, 160, 0.3), 4px 8px 0 0 rgba(128, 144, 160, 0.3),
-    4px 12px 0 0 rgba(128, 144, 160, 0.3), 4px 16px 0 0 rgba(128, 144, 160, 0.3);
-} */
 gtvideotoolbar btn {
   position: relative;
   float: left;
@@ -3406,7 +3372,6 @@ gtvideotoolbar btn > btn-tooltip {
   padding: 0;
   outline: none;
   border: none;
-  border-radius: 0;
   background: none;
   display: none;
   position: absolute;
@@ -3418,7 +3383,7 @@ gtvideotoolbar btn > btn-tooltip {
   color: #fff;
   font-size: 11px;
   white-space: nowrap;
-  background-color: #042e5b;
+  background-color: #011348;
   transform: translateX(-50%);
   user-select: none;
 }
@@ -3437,7 +3402,7 @@ gtvideotoolbar btn > btn-tooltip-arrow {
   right: 0;
   margin: -1px auto auto auto;
   border: 6px solid transparent;
-  border-top-color: #042e5b;
+  border-top-color: #011348;
 }
 gtvideotoolbar btn svg {
   display: block;
@@ -3488,7 +3453,7 @@ gtvideotoolbar btn.gigatester-video-controls-start btn-record {
   margin: 12px;
   border: 2px solid rgba(53, 76, 95, 0.8);
   border-radius: 4px;
-  background-color: #042e5b;
+  background-color: #011348;
   transition: all 0.2s;
 }
 
@@ -3513,7 +3478,7 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer {
   margin: auto;
   border-radius: 50%;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
-  background: linear-gradient(90deg, #08eeee 50%, #042e5b 50%);
+  background: linear-gradient(90deg, #08eeee 50%, #011348 50%);
   animation: gt-btnTimer 10s steps(360, start) forwards;
   animation-play-state: paused;
 }
@@ -3636,23 +3601,23 @@ gtmouseclick {
 }
 @keyframes gt-btnMask {
   0% {
-    background: #042e5b;
+    background: #011348;
     transform: rotate(0deg);
   }
   50% {
-    background: #042e5b;
+    background: #011348;
     transform: rotate(-180deg);
   }
   50.01% {
-    background: #042e5b75;
+    background: #01134875;
     transform: rotate(0deg);
   }
   100% {
-    background: #042e5b10;
+    background: #01134810;
     transform: rotate(-180deg);
   }
 }
-@keyframes outro-icon-2 {
+@keyframes anim-breathe {
   0% {
     transform: scale3d(1, 1, 1);
   }

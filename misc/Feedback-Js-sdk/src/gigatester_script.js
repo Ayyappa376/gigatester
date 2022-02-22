@@ -1764,7 +1764,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.events = null
                 },
                 setRoutings: function() {
-                    let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
+                    let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.close_icon + "</gtclose>";
                     html += '<form class="gigatester-ctrl-item-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
 //                    html += '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
