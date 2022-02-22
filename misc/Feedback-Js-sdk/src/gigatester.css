@@ -2750,7 +2750,7 @@ bottom: -23px;
 }
 
 @media (max-width: 800px) {
-  #gigatester_ctrls_container {
+  #gigatester_ctrls_container[isopen="true"] {
     position: fixed;
     z-index: 2147483642;
     top: 0;
@@ -2765,7 +2765,12 @@ bottom: -23px;
     display: none !important;
   }
 }
-#gigatester_ctrls_container {
+#gigatester_ctrls_container{
+  display: block;
+  height: auto;
+  width: auto;
+}
+#gigatester_ctrls_container[isopen="true"] {
   overflow-x: hidden;
   overflow-y: auto;
   display: flex;
