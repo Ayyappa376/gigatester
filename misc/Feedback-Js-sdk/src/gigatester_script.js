@@ -567,7 +567,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 default_category_callback: "",
 //                default_category_value: "",
                 canvas_mode: false,
-                canvas_target: false,
+//                canvas_target: false,
                 controls_step: 0,
 //                click_counter: 0,
                 form_type: "FEEDBACK",
@@ -816,11 +816,11 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.overlay = $("<gtdiv>").addClass("gigatester-overlay")
                     // .html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("lang", GigaTester_modal.configs.locale).attr("tooltype", this.Draw_Tools.type);
                     // .attr("data-html2canvas-ignore", "true");
-                    if (this.canvas_mode) {
-                        this.custom_ui.overlay.attr("canvas", "true")
-                    }
+//                    if (this.canvas_mode) { 
+//                        this.custom_ui.overlay.attr("canvas", "true")
+//                    }
                     this.custom_ui.overlay.appendTo($(document.getElementById('gigatester_screencapture_area')));
-                    this.setOverlaySize();
+//                    this.setOverlaySize();
                     this.custom_ui.overlay.append('<svg id="snap_svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>');
                     this.Draw_Tools.init();
                     this.custom_ui.overlay.on("click mouseup mousedown mouseout mousemove mouseenter mouseleave touchstart touchmove touchcancel touchend", $.proxy(function(e) {
@@ -872,15 +872,12 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if (!this.custom_ui.overlay) {
                         return
                     }
-                    let canvas_target = $(this.canvas_target);
-                    let canvas_target_offset = canvas_target.offset();
-                    let canvas_target_width = canvas_target.width();
-                    let canvas_target_height = canvas_target.height();
+                    let captureArea = $("gtdiv#gigatester_screencapture_area");
                     this.custom_ui.overlay.css({
-                        top: canvas_target_offset.top,
-                        left: canvas_target_offset.left,
-                        width: canvas_target_width,
-                        height: canvas_target_height
+                        top: captureArea.offset().top,
+                        left: captureArea.offset().left,
+                        width: canvas_target.width(),
+                        height: canvas_target.height()
                     })
                 },
                 removeOverlay: function() {
@@ -895,6 +892,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     this.custom_ui.overlay.remove();
                     this.custom_ui.overlay = null;
+                    this.canvas_mode = false;
+                    $(document.getElementById('gigatester_screencapture_dialog')).remove()
                     $(window).off("resize", $.proxy(this.windowResize, this))
                 },
                 Draw_Tools: {
@@ -911,7 +910,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     svg_user_draw: [],
                     type: "square",
                     color: {
-                        options: ["#E80000", "#FF7E42", "#042e5b", "#84FF42", "#42FFE6", "#2878F0", "#7828F0", "#FF42F9", "#FFFFFF", "#000000"],
+                        options: ["#ff0000", "#ff7700", "#ffff00", "#77ff00", "#00ff00", "#00ff77", "#00ffff", "#0077ff", "#0000ff",
+                         "#7700ff", "#ff00ff", "#ff0077", "#FFFFFF", "#000000"],
                         value:  "#042e5b"
                     },
                     svg_obj_initial: false,
@@ -934,14 +934,14 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             "fill-opacity": GigaTester_modal.canvas_mode ? 0 : .01,
                             "fill-rule": "evenodd"
                         });
-                        $(this.svg_obj_initial).css("outline","5px solid black");
-                        $(this.svg_obj_initial).css("outline-offset", "-5px");
+//                        $(this.svg_obj_initial).css("outline","5px solid black");
+//                        $(this.svg_obj_initial).css("outline-offset", "-5px");
                         this.setBasePathSize();
-                        this.snap.drag(this.onDragMove.bind(this), this.isDragStart.bind(this), this.onsDragStop.bind(this));
+                        this.snap.drag(this.onDragMove.bind(this), this.isDragStart.bind(this), this.onDragStop.bind(this));
                         this.snap.touchstart(this.isDragStart.bind(this));
                         this.snap.touchmove(this.onDragMove.bind(this));
-                        this.snap.touchcancel(this.onsDragStop.bind(this));
-                        this.snap.touchend(this.onsDragStop.bind(this));
+                        this.snap.touchcancel(this.onDragStop.bind(this));
+                        this.snap.touchend(this.onDragStop.bind(this));
                         this.addTools()
                     },
                     setBasePathSize: function() {
@@ -974,12 +974,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         let tools = '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-square" data-type="square" title="' + GigaTester_StringRes.get("rectangle") + '">' + GigaTester_Icons.square_outline_icon + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" title="' + GigaTester_StringRes.get("blackout") + '">' + GigaTester_Icons.square_filled_icon + "</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-color" data-type="color">' + tool_color_indicator + "</btn>"
-                         + '<btn class="gigatester-toolbar-tool-done' + (GigaTester_modal.canvas_mode ? " gigatester-toolbar-tool-done-active" : "") + '" title="' + GigaTester_StringRes.get("capture_screenshot") + '">' + GigaTester_StringRes.get("capture") + "</btn>"
-                         + (GigaTester_modal.canvas_mode ? "" : '<btn class="gigatester-toolbar-close" title="' + GigaTester_StringRes.get("cancel") + '">' +  GigaTester_Icons.close_icon + "</btn>");
+                         + '<btn class="gigatester-toolbar-tool-done gigatester-toolbar-tool-done-active" title="' + GigaTester_StringRes.get("capture_screenshot") + '">' + GigaTester_StringRes.get("capture") + "</btn>"
+                         + '<btn class="gigatester-toolbar-close" title="' + GigaTester_StringRes.get("cancel") + '">' +  GigaTester_Icons.close_icon + "</btn>";
                         this.toolbar = $("<gttoolbar>").attr("lang", GigaTester_modal.configs.locale).attr("data-html2canvas-ignore", "true");
                         this.toolbar.html(tools);
                         this.setToolsColor();
-                        this.toolbar.appendTo($(document.getElementsByClassName('gigatester-overlay')));
+//                        this.toolbar.appendTo($(document.getElementsByClassName('gigatester-overlay')));
+                        this.toolbar.insertBefore($('gtdiv#gigatester_screencapture_area'));
                         this.toolbar.on("mouseenter", $.proxy(function() {
                             if (this.draw_started || this.dragging_obj) {
                                 this.toolbar.css("opacity", "0.2")
@@ -1026,7 +1027,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (GigaTester_modal.controls_step) {
                             GigaTester_modal.form_data.rating = GigaTester_modal.form_data.rating;
                             GigaTester_modal.form_data.comment_field =  GigaTester_modal.form_data.comment_field;
-                            GigaTester_modal.form_data.category = GigaTester_modal.form_data.category
+                            GigaTester_modal.form_data.category = GigaTester_modal.form_data.category;
                             GigaTester_modal.set_screen_default_category = false;
                             GigaTester_modal.saveCheckedCategory();
                             GigaTester_modal.setDialogForm();
@@ -1044,9 +1045,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             this.removeTools();
                             GigaTester_modal.reset()
                         }
-                        if (GigaTester_modal.on_toolbar_close) {
-                            GigaTester_modal.on_toolbar_close()
-                        }
+                        // if (GigaTester_modal.on_toolbar_close) {
+                        //     GigaTester_modal.on_toolbar_close()
+                        // }
                     },
                     removeTools: function() {
                         GigaTester_modal.enableScroll();
@@ -1164,7 +1165,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.toolbar_top = this.toolbar.position().top - 30;
                         this.toolbar_bottom = this.toolbar_top + this.toolbar.outerHeight() + 60
                     },
-                    onsDragStop: function(event) {
+                    onDragStop: function(event) {
                         let x, y;
                             x = event.clientX;
                             y = event.clientY
@@ -1785,7 +1786,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     let display_screenshot = form_settings.allow_screenshot;
                     let display_audio = form_settings.allow_audio;
-                    let display_video = form_settings.allow_video && this.configs.has_video && !GigaTester_modal.is_mobile && !this.canvas_mode;
+                    let display_video = form_settings.allow_video && this.configs.has_video && !GigaTester_modal.is_mobile;
                     let display_attachment = form_settings.allow_attachment  && typeof FileReader !== "undefined";
                     let data_item = 0;
                     let details = navigator.userAgent;
@@ -1936,14 +1937,15 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 //     }
                 // },
                 overlayImage: function(){
+                    GigaTester_modal.canvas_mode = true;
                     this.recordImage();
                 },
                 recordImage: async function(e){
                     GigaTester_modal.saveCheckedCategory();
                     GigaTester_modal.set_screen_default_category = false;
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-                        console.log("This browser does not support the API yet");
-                        callback();
+                        console.log("GigaTester: This browser does not support media capture API");
+                        //callback();
                     } else {
                         GigaTester_modal.hideControls();
                         navigator.mediaDevices.getDisplayMedia({
@@ -1973,19 +1975,21 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 const videoTracks = stream.getVideoTracks();
                                 if (videoTracks && videoTracks[0]) {
                                     const track = videoTracks[0];
-                                    track.addEventListener('ended', () => console.log('screensharing has ended'))
+                                    track.addEventListener('ended', () => console.log('GigaTester: screensharing has ended'))
                                     // Wrapping in a try catch to preform most optimal solution first
                                     // before attempting less optimal solution
                                     try {
                                         const imageCapture = new ImageCapture(track);
                                         setTimeout(() => { imageCapture.grabFrame()
                                             .then((screenshot) => {
-                                                GigaTester_modal.screenshotVideo(screenshot);
+                                                GigaTester_modal.custom_ui.element.attr("drawing", "false");
+                                                GigaTester_modal.Draw_Tools.image_capture = 'false';
+                                                GigaTester_modal.screenshotImage(screenshot);
                                             })
                                             .catch((error) => console.error(error));
                                         },200);
                                     } catch(error) {
-                                        console.warn('ImageCapture not supported on this browser');
+                                        console.warn('GigaTester: ImageCapture not supported on this browser');
                                         recorder.onstop = e => {
                                             GigaTester_modal.custom_ui.element.attr("drawing", "false");
                                             const completeBlob = new Blob(chunks, { type: "video/mp4" });
@@ -1997,7 +2001,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                             const video_close = $('<btn id="gigatester_video_player_close">').html(GigaTester_Icons.close_icon);
                                             video_close.appendTo(image_overlay);
                                             video.insertAfter($(document.getElementsByClassName('gigatester-ctrl-item-attach-actions')));
-                                            setTimeout(()=> (GigaTester_modal.screenshotVideo(video.get(0))), 700);
+                                            setTimeout(()=> (GigaTester_modal.screenshotImage(video.get(0))), 700);
                                         };
                                     }
                                 } else {
@@ -2022,21 +2026,28 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         })
                     }
                 },
-                screenshotVideo: function(video){
+                screenshotImage: function(rawImage){
+                    const final_width = Math.round(window.innerWidth * 0.9); //90% of viewport width
+                    const final_height = Math.round(window.innerHeight * 0.9); //90% of viewport height
+                    console.log("image [width, height] = [" + final_width + ", " + final_height + "]" );
                     const canvas = document.createElement("canvas");
                     const context = canvas.getContext("2d");
-                    canvas.width= window.innerWidth;
-                    canvas.height = window.innerHeight;
-                    if(video && context){
-                        context.drawImage(video, 0, 0, window.innerWidth, window.innerHeight);
+                    canvas.width = final_width;
+                    canvas.height = final_height;
+                    if(rawImage && context){
+                        context.drawImage(rawImage, 0, 0, final_width, final_height);
                         const frame = canvas.toDataURL("image/jpeg");
-                        const image_overlay = $('<gtdiv id="gigatester_screencapture_area"></gtdiv>')
+                        console.log('GigaTester: [Info] Img base64 value ', frame);
+                        const image_overlay = $('<gtdiv id="gigatester_screencapture_area"></gtdiv>');
+                        image_overlay.css({width: final_width, height: final_height});
                         const image =  $('<image id="gigatester_image_preview" preload="auto" src="' + frame + '"></image>');
-                        image.appendTo(image_overlay)
-                        image_overlay.appendTo(document.body)
+                        image.appendTo(image_overlay);
+//                        this.canvas_target = canvas;
+                        const screencapture_dialog = $('<gtdiv id="gigatester_screencapture_dialog"></gtdiv>');
+                        image_overlay.appendTo(screencapture_dialog);
+                        screencapture_dialog.appendTo(document.body);
                         this.addCanvas();
                         GigaTester_modal.disableScroll();
-                        console.log('GigaTester: [Info] Img base64 value ', frame);
                     }
                 },
                 finalScreenshot: async function(){
@@ -2045,77 +2056,79 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     html2canvas(annoted , {
                         useCORS: true,
                         allowTaint : true,
-                        width: window.screen.availWidth,
-                        height: window.screen.availHeight,
+                        width: annoted.width,
+                        height: annoted.height,
+                        // width: window.screen.availWidth,
+                        // height: window.screen.availHeight,
                         // width: window.innerWidth,
                         // height: window.innerHeight,
-                        windowWidth: document.getElementsByClassName('gigatester-overlay').scrollWidth,
-                        windowHeight: document.getElementsByClassName('gigatester-overlay').scrollHeight,
+                        // windowWidth: document.getElementsByClassName('gigatester-overlay').scrollWidth,
+                        // windowHeight: document.getElementsByClassName('gigatester-overlay').scrollHeight,
                         // x:0,
                         // y:window.pageYOffset
                     } ).then(function(canvas) {
-
-                    if(canvas){
-                    const croppedCanvas = document.createElement('canvas')
-                    const croppedCanvasContext = croppedCanvas.getContext('2d')
-                    console.log(canvas, '2d');
-                    console.log(window.innerHeight, 'inHeight');
-                    console.log(window.innerWidth, 'inwidth');
-                    // init data
-                    const cropPositionTop = 0
-                    const cropPositionLeft = 0
-                    const cropWidth = window.innerWidth
-                    const cropHeight = window.innerHeight
-                    croppedCanvas.width = cropWidth
-                    croppedCanvas.height = cropHeight
-                    if(croppedCanvasContext){
-                    croppedCanvasContext.drawImage(
-                        canvas,
-                        cropPositionLeft,
-                        cropPositionTop,
-                    )
-                    }
-                    const image = new Image();
-                    const base64Image = canvas.toDataURL();
-                    image.onload = () => {
-                        GigaTester_modal.removeOverlay();
-                        GigaTester_modal.hideComments();
-                        GigaTester_modal.Draw_Tools.removeTools();
-                        GigaTester_modal.showControls();
-                        GigaTester_modal.recording = true;
-                        GigaTester_modal.form_data.categories = GigaTester_modal.form_data.categories;
-                        GigaTester_modal.form_data.rating =  GigaTester_modal.form_data.rating;
-                        GigaTester_modal.setDialogForm();
-                        GigaTester_modal.set_screen_default_category = true;
-                        if(GigaTester_modal.form_data.rating){
-                            GigaTester_modal.selectedRating();
+                        if(canvas){
+                            // const croppedCanvas = document.createElement('canvas')
+                            // const croppedCanvasContext = croppedCanvas.getContext('2d')
+                            // // console.log(canvas, '2d');
+                            // // console.log(window.innerHeight, 'inHeight');
+                            // // console.log(window.innerWidth, 'inwidth');
+                            // // init data
+                            // const cropPositionTop = 0
+                            // const cropPositionLeft = 0
+                            // const cropWidth = window.innerWidth
+                            // const cropHeight = window.innerHeight
+                            // croppedCanvas.width = cropWidth
+                            // croppedCanvas.height = cropHeight
+                            // if(croppedCanvasContext){
+                            // croppedCanvasContext.drawImage(
+                            //     canvas,
+                            //     cropPositionLeft,
+                            //     cropPositionTop,
+                            // )
+                            // }
+                            const image = new Image();
+                            const base64Image = canvas.toDataURL();
+                            image.onload = () => {
+                                GigaTester_modal.removeOverlay();
+                                GigaTester_modal.hideComments();
+                                GigaTester_modal.Draw_Tools.removeTools();
+                                GigaTester_modal.showControls();
+                                GigaTester_modal.recording = true;
+                                GigaTester_modal.form_data.categories = GigaTester_modal.form_data.categories;
+                                GigaTester_modal.form_data.rating =  GigaTester_modal.form_data.rating;
+                                GigaTester_modal.setDialogForm();
+                                GigaTester_modal.set_screen_default_category = true;
+                                if(GigaTester_modal.form_data.rating){
+                                    GigaTester_modal.selectedRating();
+                                }
+                                GigaTester_modal.clearNotifyStatus();
+                                const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
+                                const image = $('<image id="gigatester_images_preview_player" width=270 height=150 src="' + base64Image + '"></image>');
+                                const image_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
+                                $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
+                                image.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
+                                image_close.insertAfter(image);
+                                GigaTester_modal.loadImage(base64Image);
+                                image_close.on("click", function() {
+                                    image.remove();
+                                    GigaTester_modal.removeComments();
+                                    GigaTester_modal.image_file = '';
+                                    GigaTester_modal.set_screen_default_category = false;
+                                    GigaTester_modal.recording = false;
+                                    GigaTester_modal.saveCheckedCategory();
+                                    image_close.remove();
+                                    GigaTester_modal.setDialogForm();
+                                    GigaTester_modal.saveSubCategory();
+                                    if(GigaTester_modal.form_data.rating){
+                                        GigaTester_modal.selectedRating();
+                                    }
+                                })
+                                console.log(base64Image, 'final screenshot');
+                            };
+                            image.src = base64Image;
                         }
-                        GigaTester_modal.clearNotifyStatus();
-                        const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
-                        const image = $('<image id="gigatester_images_preview_player" width=300 height=225 src="' + base64Image + '"></image>');
-                        const image_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
-                        $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
-                        image.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
-                        image_close.insertAfter(image);
-                        GigaTester_modal.loadImage(base64Image);
-                        image_close.on("click", function() {
-                            image.remove();
-                            GigaTester_modal.removeComments();
-                            GigaTester_modal.image_file = '';
-                            GigaTester_modal.set_screen_default_category = false;
-                            GigaTester_modal.recording = false;
-                            GigaTester_modal.saveCheckedCategory();
-                            image_close.remove();
-                            GigaTester_modal.setDialogForm();
-                            GigaTester_modal.saveSubCategory();
-                            if(GigaTester_modal.form_data.rating){
-                                GigaTester_modal.selectedRating();
-                            }
-                        })
-                        console.log(base64Image, 'final screenshot');
-                    };
-                    image.src = base64Image;
-                }});
+                    });
                 },
                  getTimerText: function() {
                     console.log(GigaTester_modal.configs.audio_time)
@@ -2602,6 +2615,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
 //                        assignee: ""
                     };
                     this.recording = false;
+                    this.canvas_mode = false;
                     this.removeOverlay();
                     this.removeControls();
                     this.removeComments();
@@ -2893,14 +2907,11 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 canvasCommentStart: function(e) {
                     let pin_x, pin_y;
                     if (e.changedTouches && e.changedTouches.length) {
-                        pin_x = e.changedTouches[0].pageX;
-                        pin_y = e.changedTouches[0].pageY
+                        pin_x = e.changedTouches[0].offsetX; //e.changedTouches[0].pageX;
+                        pin_y = e.changedTouches[0].offsetX; //e.changedTouches[0].pageY
                     } else {
-                        pin_x = e.clientX;
-                        pin_y = e.clientY;
-                        console.log(e.clientX);
-                        console.log(e.clientY);
-                        console.log(e.pageX, e.pageY);
+                        pin_x = e.offsetX; //e.clientX;
+                        pin_y = e.offsetY; //e.clientY;
                     }
                     if (this.comments.length && this.comments[this.comments.length - 1].isOpen()) {
                         this.comments[this.comments.length - 1].saveCanvasComments();
