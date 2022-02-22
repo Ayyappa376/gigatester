@@ -295,12 +295,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 createNewControls: function() {
                     this.screen_recorder_overlay = $("<gtdiv>").attr("id", "gigatester_video_container").appendTo($(document.body));
                     this.controls = $("<gtvideotoolbar>").appendTo($(document.body));
-                    this.mute_button = $("<btn>").addClass("gigatester-video-controls-mute gigatester-video-controls-active").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_mute", true) + "</btn-name>" + "<btn-shortcut>Shift + M</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.mic_icon).appendTo(this.controls);
-                    this.pause_button = $("<btn>").addClass("gigatester-video-controls-pause").attr("disabled", true).html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name>" + "<btn-shortcut>Shift + P</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon).appendTo(this.controls);
-                    this.start_button = $("<btn>").addClass("gigatester-video-controls-start").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("start_recording", true) + "</btn-name>" + "<btn-shortcut>Shift + S</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-record></btn-record>").appendTo(this.controls);
-                    this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>" + "<btn-shortcut>Shift + S</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>" + GigaTester_Icons.stop).appendTo(this.controls);
+                    this.mute_button = $("<btn>").addClass("gigatester-video-controls-mute gigatester-video-controls-active").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_mute", true) + "</btn-name>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.mic_icon).appendTo(this.controls);
+                    this.pause_button = $("<btn>").addClass("gigatester-video-controls-pause").attr("disabled", true).html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name>" +  "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon).appendTo(this.controls);
+                    this.start_button = $("<btn>").addClass("gigatester-video-controls-start").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("start_recording", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-record></btn-record>").appendTo(this.controls);
+                    this.stp_btn = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>"  + "</btn-tooltip>" + GigaTester_Icons.stop_icon).appendTo(this.controls);
+                    this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("remaining_time", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>").appendTo(this.controls);
                     this.timer_button = $("<btn>").addClass("gigatester-video-controls-timer").text(this.getTimerText()).appendTo(this.controls);
-                    this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>" + "<btn-shortcut>Esc</btn-shortcut>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.cross_icon).appendTo(this.controls);
+                    this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.cross_icon).appendTo(this.controls);
                     this.mic_volume = $("<gtvolume>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume>").appendTo(this.mute_button);
                     if (!this.device_list.audioinput.length) {
                         this.is_muted = true;
@@ -308,7 +309,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     this.stop_button.find("btn-timer, btn-timer-mask").css("animation-duration", this.timer + "s");
                     this.start_button.on("click", this.startVideoCapture.bind(this));
-                    this.stop_button.on("click", this.stopCapture.bind(this));
+                    this.stp_btn.on("click", this.stopCapture.bind(this));
                     this.close_button.on("click", this.cancelCapture.bind(this));
                     this.pause_button.on("click", this.pauseRecording.bind(this));
                     this.mute_button.on("click", this.muteVoice.bind(this));
@@ -524,13 +525,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     switch (this.recorder.state) {
                         case "recording":
-                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_resume", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.play_icon);
+                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_resume", true) + "</btn-name></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.play_icon);
                             this.recorder.pause();
                             this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "paused");
                             this.stopTimer();
                             break;
                         case "paused":
-                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name><btn-shortcut>Shift + P</btn-shortcut></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon);
+                            this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon);
                             this.recorder.resume();
                             this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
                             this.startTimer();
@@ -557,10 +558,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
             
             //the main object that stores all the data and controls all the flow.
             let GigaTester_modal = {
-                audio_file: "",
-                video_file: "",
-                image_file:"",
-                external_file:"",
                 canvas_mode: false,
                 canvas_target: false,
                 controls_step: 0,
@@ -651,9 +648,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     feedback_view: null
                 },
                 overlay_hint_tooltip_added: false,
-                email: "",
                 categories: "",
-                screenshot_data_uri: [],
                 video_blob: null,
                 recording: false,
                 form_data: {
@@ -664,6 +659,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     description: "",
                     category: "",
                     severity: "",
+                    audio_file: "",
+                    video_file: "",
+                    image_file:"",
+                    external_file:"",
                 },
                 comments: [],
                 init: function() {
@@ -960,7 +959,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         })
                     },
                     cancelCapture: function() {
-                        if (GigaTester_modal.controls_step) {
                             GigaTester_modal.form_data.rating = GigaTester_modal.form_data.rating;
                             GigaTester_modal.form_data.comment_field =  GigaTester_modal.form_data.comment_field;
                             GigaTester_modal.form_data.category = GigaTester_modal.form_data.category
@@ -976,11 +974,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.saveSubCategory();
                             GigaTester_modal.removeOverlay();
                             this.removeTools()
-                        } else {
-                            GigaTester_modal.removeOverlay();
-                            this.removeTools();
-                            GigaTester_modal.reset()
-                        }
                         if (GigaTester_modal.on_toolbar_close) {
                             GigaTester_modal.on_toolbar_close()
                         }
@@ -1420,7 +1413,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 },
                 addCanvasComment: function(x, y) {
                     this.closeEmptyCanvasComment();
-                    let screenshot_num = this.screenshot_data_uri.length;
+                    let screenshot_num = 0;
                     let counter = 0;
                     $.each(this.comments, function(index, comment) {
                         if (comment.screenshot_num === screenshot_num) {
@@ -1438,7 +1431,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         screenshot_num: screenshot_num,
                         counter: counter,
                         onOpen: $.proxy(function(counter) {
-                            $.each(this.comments, function(index, comment) {
+                            $.each(this.comments, function(comment) {
                                 if (comment.screenshot_num === screenshot_num && comment.counter !== counter) {
                                     comment.hideForm()
                                     console.log('GigaTester: comment form open')
@@ -1482,7 +1475,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     })
                 },
                 removeComments: function() {
-                    let screenshot_num = this.screenshot_data_uri.length;
+                    let screenshot_num = 0;
                     let new_comments = [];
                     $.each(this.comments, function(index, comment) {
                         if (comment.screenshot_num === screenshot_num) {
@@ -1508,9 +1501,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
-//                    this.custom_ui.events.on("click", ".gigatester-feedback-type-draw", this.attachScreenshot.bind(this));
-//                    this.custom_ui.events.on("click", ".gigatester-feedback-type-video", this.startScreenRecorder.bind(this));
-//                    this.custom_ui.events.on("click", ".gigatester-feedback-type-form", this.menuItemClick.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-add-attachment", this.selectAttachment.bind(this));
                     this.custom_ui.events.on("click", "gtrating > gtdiv", this.selectRating.bind(this));
                     this.custom_ui.events.on("mouseenter", "gtrating > gtdiv", this.previewRating.bind(this));
@@ -1521,8 +1511,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.changeSeverity.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-audio", this.recordAudio.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.overlayImage.bind(this));
-//                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-add-screenshot", this.attachScreenshot.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.recordImage.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-checkbox-container > gtdiv", this.checkboxToggle.bind(this));
                     this.custom_ui.events.on("keyup", 'textarea[name="description"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("keyup", 'input[name="name"]', this.rememberFormData.bind(this));
@@ -1530,7 +1519,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.events.on("keyup", 'input[name="title"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.rememberFormData.bind(this));
-//                    this.custom_ui.events.on("change", 'select[name="assignee"]', this.rememberFormData.bind(this));
                     this.custom_ui.events.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
                     })
@@ -1692,7 +1680,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
                     html += '<form class="gigatester-ctrl-item-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
-//                    html += '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
                     html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
                     html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : "";
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
@@ -1726,7 +1713,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     data_item += display_audio ? 1 : 0;
                     data_item += display_attachment ? 1 : 0;
                     let default_name = this.form_data.name || GigaTester.name || GigaTester_modal.name 
-                    let default_email = this.form_data.email || GigaTester.email || GigaTester_modal.email 
+                    let default_email = this.form_data.email || GigaTester.email
                     let default_title = this.form_data.title || "";
                     let default_description = this.form_data.description || "";
                     let default_category = this.form_data.category || GigaTester.category || GigaTester_modal.categories || "";
@@ -1734,7 +1721,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     let default_rating = this.form_data.rating || 0;
                     let severity_options = '<option value="critical">Critical</option>' + '<option value="high">High</option>' + '<option value="medium">Medium</option>' + '<option value="low">Low</option>';
                     let category_options = "";
-//                    let reason_options = "";
                     if (form_settings.display_category) {
                         this.configs.categories.forEach(function(category) {
                             category_options += "<option>" + category + "</option>"
@@ -1789,7 +1775,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                      + '</gtdiv></gtdiv>'
                      + "</gtdiv>"
                      + "</form>";
-                   this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').html(html);
+                   this.custom_ui.events.find('.gigatester-ctrl-item-step').html(html);
                     if(GigaTester_modal.configs.rating_limit > 4){
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                         this.focusControls();
@@ -1798,70 +1784,34 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.custom_ui.events.find('gtrating gtdiv[data-rating="' + default_rating + '"]').click()
                     }
                     if (default_name) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('input[name="name"]').val(default_name)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="name"]').val(default_name)
                     }
                     if (default_email) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('input[name="email"]').val(default_email)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="email"]').val(default_email)
                     }
                     if (default_title) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('input[name="title"]').val(default_title)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="title"]').val(default_title)
                     }
                     if (default_description) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('textarea[name="description"]').val(default_description)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('textarea[name="description"]').val(default_description)
                     }
                     if (default_category) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('select[name="category"]').val(default_category)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category)
                     }
                     if (default_severity) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').find('select[name="severity"]').val(default_severity)
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
                     }
                     GigaTester_modal.saveSubCategory();
                 },
-                // menuItemClick: function(e) {
-                //     this.form_type = $(e.currentTarget).data("type");
-                //     let direct_to = "form";
-                //     if (this.form_type === "BUGS") {
-                //         direct_to = this.configs.direct_to_bug
-                //     } else if (this.form_type === "FEATURE") {
-                //         direct_to = this.configs.direct_to_feature_request
-                //     } else {
-                //         direct_to = this.configs.direct_to_general
-                //     }
-                //     if (direct_to === "screenshot") {
-                //         this.attachScreenshot()
-                //     } else if (direct_to === "video") {
-                //         this.startScreenRecorder()
-                //     } else {
-                //         this.openForm(this.form_type)
-                //     }
-                // },
                 openForm: function(form_type) {
                     this.form_type = form_type;
                     this.setDialogForm();
-                    this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').hide();
-                    this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').show();
+                    this.custom_ui.events.find('.gigatester-ctrl-item-step').show();
                     if(GigaTester_modal.configs.rating_limit > 4){
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                         this.focusControls();
                     }
                     this.focusControls();
-                    this.controls_step = 2
-                },
-                // attachScreenshot: function(e) {
-                //     console.log(e, 'screenshot')
-                //     console.log($(e.currentTarget).attr("disabled"))
-                //     console.log(this.screenshot_data_uri.length)
-                //     console.log(this.screenshot_limit)
-                //     if (typeof e !== "undefined" && $(e.currentTarget).attr("disabled")) {
-                //         console.log('non screenshot')
-                //         return
-                //     }
-                //     else {
-                //         console.log('overlay screenhsot')
-                //     }
-                // },
-                overlayImage: function(){
-                    this.recordImage();
                 },
                 recordImage: async function(e){
                     GigaTester_modal.saveCheckedCategory();
@@ -1937,9 +1887,11 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         })
                         .catch(function(err) {
                             console.log(err , 'err')
-                            GigaTester_modal.set_screen_default_category = true;
+                            GigaTester_modal.set_screen_default_category = false;
+                            GigaTester_modal.recording = false;
                             GigaTester_modal.showControls();
                             GigaTester_modal.setDialogForm();
+                            GigaTester_modal.saveCheckedCategory();
                             if(GigaTester_modal.form_data.rating){
                                 GigaTester_modal.selectedRating();
                             }
@@ -2026,7 +1978,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         image_close.on("click", function() {
                             image.remove();
                             GigaTester_modal.removeComments();
-                            GigaTester_modal.image_file = '';
+                            GigaTester_modal.form_data.image_file = '';
                             GigaTester_modal.set_screen_default_category = false;
                             GigaTester_modal.recording = false;
                             GigaTester_modal.saveCheckedCategory();
@@ -2136,7 +2088,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.loadAudio(src);
                             audio_close.on("click", function() {
                                 audio.remove();
-                                GigaTester_modal.audio_file = '';
+                                GigaTester_modal.form_data.audio_file = '';
                                 GigaTester_modal.recording = false;
                                 GigaTester_modal.set_screen_default_category = false;
                                 GigaTester_modal.saveCheckedCategory();
@@ -2162,20 +2114,29 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         });
                 },
                 loadAudio: async function(src) {
-                    GigaTester_modal.audio_file = await fetch(src)
+                    GigaTester_modal.form_data.audio_file = await fetch(src)
                     .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_audio_' + GigaTester_modal.UUIDv4() +'.wav', { type: 'audio/wav' }));
-                    console.log(GigaTester_modal.audio_file, 'audio file loaded');
+                    console.log(GigaTester_modal.form_dataaudio_file, 'audio file loaded');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-audio").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").attr('disabled', 'true');
                 },
                 loadImage: async function(src) {
-                    GigaTester_modal.image_file = await fetch(src)
+                    GigaTester_modal.form_data.image_file = await fetch(src)
                     .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_image_' + GigaTester_modal.UUIDv4() +'.jpeg', { type: 'image/jpeg' }));
-                    console.log(GigaTester_modal.image_file, 'image file loaded');
+                    console.log(GigaTester_modal.form_data.image_file, 'image file loaded');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-audio").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").attr('disabled', 'true');
                 },
                 submitVideoCapture: function(video_blob) {
                     GigaTester_modal.video_blob = video_blob;
                     let src = window.URL.createObjectURL(video_blob);
-                    GigaTester_modal.controls_step = 2;
-                    GigaTester_modal.showControls(true);
+                    GigaTester_modal.showControls();
                     setTimeout( function() {
                         GigaTester_modal.recording = true;
                         GigaTester_modal.form_data.rating =  GigaTester_modal.form_data.rating;
@@ -2193,7 +2154,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         video_close.on("click", function() {
                             video_overlay.remove()
                             video.remove();
-                            GigaTester_modal.video_file = '';
+                            GigaTester_modal.form_data.video_file = '';
                             GigaTester_modal.recording = false;
                             GigaTester_modal.saveCheckedCategory();
                             video_close.remove();
@@ -2222,9 +2183,14 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     })
                 },
                 loadVideo: async function(src) {
-                    GigaTester_modal.video_file = await fetch(src)
+                    GigaTester_modal.form_data.video_file = await fetch(src)
                     .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_video_' + GigaTester_modal.UUIDv4() +'.mp4', { type: 'video/mp4' }));
-                    console.log(GigaTester_modal.video_file, 'video file loaded');
+                    console.log(GigaTester_modal.form_data.video_file, 'video file loaded');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-audio").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").attr('disabled', 'true');
+                    this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").attr('disabled', 'true');
                 },
                 toggleAttachButtons: function() {
                     this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").toggle(this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn[disabled]").length !== this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn").length)
@@ -2274,14 +2240,11 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if (!this.autoHide()) {
                         this.custom_ui.button.show()
                     }
-                    if (this.controls_step === 2) {
                         this.setDialogForm();
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="1"]').hide();
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step[data-step="2"]').show();
+                        this.custom_ui.events.find('.gigatester-ctrl-item-step').show();
                         if (force_show_form) {
                             this.custom_ui.events.find(".gigatester-ctrl-item-form").show()
                         }
-                    }
                     this.custom_ui.events.show();
                     this.focusControls();
                     this.custom_ui.element.attr("isopen", "true")
@@ -2295,10 +2258,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.controls_step = 2;
                     if (!open_tool) {
                         this.custom_ui.element.attr("isopen", "true")
-                    }
-                    let page_jquery = window.$ || window.jQuery;
-                    if (page_jquery && page_jquery() && page_jquery().off) {
-                        page_jquery(document).off("focusin.bs.modal")
                     }
                 },
                 focusControls: function(e) {
@@ -2409,9 +2368,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if (!e.target.files || !e.target.files.length) {
                         return
                     }
-                    GigaTester_modal.external_file = e.target.files[0];
+                    GigaTester_modal.form_data.external_file = e.target.files[0];
                     let external_file_overlay = $('<div id="gigatester_external_file_loader"><div></div></div>');
-                    let external_file = $('<div id="gigatester_external_file_preview">' + GigaTester_modal.external_file.name + '</div>').html(GigaTester_modal.external_file.fileName);
+                    let external_file = $('<div id="gigatester_external_file_preview">' + GigaTester_modal.form_data.external_file.name + '</div>').html(GigaTester_modal.form_data.external_file.fileName);
                     let external_file_close = $('<button id="gigatester_external_file_close">').html(GigaTester_Icons.trash_bin_icon);
                     const size_limit = GigaTester_modal.configs.attachment_size || 1;
                     $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
@@ -2419,7 +2378,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     external_file_close.insertAfter(external_file);
                     external_file_close.on("click", function() {
                         external_file.remove();
-                        GigaTester_modal.external_file = '';
+                        GigaTester_modal.form_data.external_file = '';
                         GigaTester_modal.recording = false;
                         GigaTester_modal.saveCheckedCategory();
                         external_file_close.remove();
@@ -2429,18 +2388,18 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.selectedRating();
                         }
                         })
-                        const filesize = Math.round((GigaTester_modal.external_file.size / 1024));
+                        const filesize = Math.round((GigaTester_modal.form_data.external_file.size / 1024));
                         console.log(filesize + 'KB')
-                        if (GigaTester_modal.external_file.size > size_limit * 1024 * 1024) {
-                            console.log(Math.ceil(GigaTester_modal.external_file.size / 1024 / 1024) + 'MB')
+                        if (GigaTester_modal.form_data.external_file.size > size_limit * 1024 * 1024) {
+                            console.log(Math.ceil(GigaTester_modal.form_data.external_file.size / 1024 / 1024) + 'MB')
                             console.log( size_limit + "MB")
 
                         }
-                        this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").remove();
-                        this.custom_ui.events.find(".gigatester-ctrl-item-video").remove();
-                        this.custom_ui.events.find(".gigatester-ctrl-item-audio").remove();
-                        this.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").remove();
-                        this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
+                        this.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
+                        this.custom_ui.events.find(".gigatester-ctrl-item-audio").attr('disabled', 'true');
+                        this.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").attr('disabled', 'true');
+                        this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").attr('disabled', 'true');
                 },
                 closeDialog: function(e) {
                     let _doClose = function() {
@@ -2458,14 +2417,11 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     this.custom_ui.element.removeAttr("isopen");
                     this.comments = [];
-                    this.screenshot_data_uri = [];
                     this.video_blob = null;
-//                    this.video_url = "";
-//                    this.video_annotation = [];
-                    this.audio_file = '';
-                    this.video_file='';
-                    this.external_file='';
-                    this.image_file='';
+                    this.form_data.audio_file = '';
+                    this.form_data.video_file='';
+                    this.form_data.external_file='';
+                    this.form_data.image_file='';
                     this.form_data = {
                         rating: "",
                         name: "",
@@ -2474,7 +2430,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         description: "",
                         category: "",
                         severity: "",
-//                        assignee: ""
                     };
                     this.recording = false;
                     this.removeOverlay();
@@ -2507,16 +2462,15 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     reader.readAsDataURL(fileSelected);
                 },
                 validateFields: function(e){
+                    console.log(e);
                     e.preventDefault();
                     console.log(GigaTester_modal.form_type)
-                    // console.log(this.form_data['category'], 'category')
-                    if(GigaTester_modal.audio_file || GigaTester_modal.external_file || GigaTester_modal.video_file || GigaTester_modal.image_file){
+                    if(GigaTester_modal.form_data.audio_file || GigaTester_modal.form_data.external_file || GigaTester_modal.form_data.video_file || GigaTester_modal.form_data.image_file){
                         let size_limit = GigaTester_modal.configs.max_file_size;
-                        const file = GigaTester_modal.audio_file || GigaTester_modal.external_file || GigaTester_modal.video_file || GigaTester_modal.image_file;
+                        const file = GigaTester_modal.form_data.audio_file || GigaTester_modal.form_data.external_file || GigaTester_modal.form_data.video_file || GigaTester_modal.form_data.image_file;
                         const filesize = Math.round((file.size / 1024));
                         console.log('GigaTester: uploaded file size ', Math.ceil(file.size / 1024 / 1024) + 'MB')
                         if (file.size > size_limit * 1024 * 1024) {
-                            // error = GigaTester_StringRes.get("max") + ": " + size_limit + "MB"
                             console.log('GigaTester: Max upload file size ', size_limit + "MB")
                             GigaTester_modal.setNotifyStatus(`${'Media size is greater than ' + GigaTester_modal.configs.max_file_size + 'MB, Kindly delete and retry again'}`)
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
@@ -2537,7 +2491,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                     }
                     else{
-                        this.submitPost(e);
+                        // this.submitPost(e);
                         }
                 }
                  else if(GigaTester_modal.form_type === "FEEDBACK"){
@@ -2552,7 +2506,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                     }
                     else{
-                        this.submitPost(e);
+                        // this.submitPost(e);
                         }
                     }
                 },
@@ -2560,7 +2514,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if($('gtdiv').hasClass('gigatester-ctrl-item-send-error')){
                         $(document.getElementsByClassName('gigatester-ctrl-item-send-error')).remove();
                     }
-                    //qe1lgcnkwh.execute-api.us-east-1.amazonaws.com
                     let send_button = this.custom_ui.events.find(".gigatester-ctrl-item-send");
                     send_button.addClass("gigatester-ctrl-item-send-loading")
                     console.log(dataInfo, 'dataInfo');
@@ -2582,23 +2535,23 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 // send_button.addClass("gigatester-ctrl-item-send-loading")
                                 if(xhr.responseURL.slice(56,64) === 'gt_image'){
                                 // console.log(data.Key, "img");
-                                GigaTester_modal.image_file = xhr.responseURL.split('?')[0];
+                                GigaTester_modal.form_data.image_file = xhr.responseURL.split('?')[0];
                                 console.log(xhr.responseURL.split('?')[0], 'img data')
                                 GigaTester_modal.post();
                                 }
                                 else if(xhr.responseURL.slice(56,64) === 'gt_video'){
                                 // console.log(data.Key, "vid");
-                                GigaTester_modal.video_file = xhr.responseURL.split('?')[0]
+                                GigaTester_modal.form_data.video_file = xhr.responseURL.split('?')[0]
                                 GigaTester_modal.post();
                                 }
                                 else if(xhr.responseURL.slice(56,64) === 'gt_audio'){
                                 // console.log(data.Key, "vid");
-                                GigaTester_modal.audio_file = xhr.responseURL.split('?')[0]
+                                GigaTester_modal.form_data.audio_file = xhr.responseURL.split('?')[0]
                                 GigaTester_modal.post();
                                 }
                                 else{
                                 // console.log(data.Key, "file");
-                                GigaTester_modal.external_file = xhr.responseURL.split('?')[0]
+                                GigaTester_modal.form_data.external_file = xhr.responseURL.split('?')[0]
                                 GigaTester_modal.post();
                                 }
                               }
@@ -2695,10 +2648,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         platformVersion: platform.version,
                         platformOs: platform.os,
                         feedbackMedia: {
-                          image: GigaTester_modal.image_file,
-                          video: GigaTester_modal.video_file,
-                          file: GigaTester_modal.external_file,
-                          audio: GigaTester_modal.audio_file,
+                          image: GigaTester_modal.form_data.image_file,
+                          video: GigaTester_modal.form_data.video_file,
+                          file: GigaTester_modal.form_data.external_file,
+                          audio: GigaTester_modal.form_data.audio_file,
                         },
                           feedbackComments: { "generalComment" : this.form_data['description'], "standardFeedback" : standardFeedback , ...comments },
                           productKey: GigaTester.apiKey,
@@ -2743,17 +2696,17 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 submitPost: function(e){
                     e.preventDefault();
                     console.log('submit post')
-                    if(GigaTester_modal.video_file){
-                        GigaTester_modal.postMedia(GigaTester_modal.video_file);
+                    if(GigaTester_modal.form_data.video_file){
+                        GigaTester_modal.postMedia(GigaTester_modal.form_data.video_file);
                     }
-                    else if(GigaTester_modal.audio_file){
-                        GigaTester_modal.postMedia(GigaTester_modal.audio_file)
+                    else if(GigaTester_modal.form_data.audio_file){
+                        GigaTester_modal.postMedia(GigaTester_modal.form_data.audio_file)
                     }
-                    else if(GigaTester_modal.image_file){
-                        GigaTester_modal.postMedia(GigaTester_modal.image_file)
+                    else if(GigaTester_modal.form_data.image_file){
+                        GigaTester_modal.postMedia(GigaTester_modal.form_data.image_file)
                     }
-                    else if(GigaTester_modal.external_file){
-                        GigaTester_modal.postMedia(GigaTester_modal.external_file)
+                    else if(GigaTester_modal.form_data.external_file){
+                        GigaTester_modal.postMedia(GigaTester_modal.form_data.external_file)
                     }
                     else{
                         GigaTester_modal.post()
@@ -2890,7 +2843,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
             },
             setEmail: function(email) {
                 if (typeof email === "string") {
-                    GigaTester_modal.email = $.trim(email)
+                    GigaTester_modal.form_data.email = $.trim(email)
                     // GigaTester_modal.form_settings_default.BUGS.email_field_disable = true;
                     // GigaTester_modal.form_settings_default.FEEDBACK.email_field_disable = true;
                 }

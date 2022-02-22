@@ -36,6 +36,7 @@ const GigaTester_StringRes = {
         recording_pause: "Pause",
         recording_resume: "Resume",
         recording_finish: "Finish recording",
+        remaining_time: "Remaining Time",
         ok: "OK"
     },
     setLang: function(locale) {

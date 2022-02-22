@@ -2110,7 +2110,7 @@ bottom: -23px;
   -webkit-user-select: auto;
   user-select: auto;
   height: 40px;
-  margin: 0 0 10px 0;
+  margin: 5px 0 10px 0;
   -moz-appearance: none;
   -webkit-appearance: none;
   appearance: none;
@@ -3131,6 +3131,7 @@ bottom: -23px;
 display: inline-block;
 padding: 5px;
 border-radius: 4px;
+color: #011348d0;
 border: 2px solid #011348d0;
 background: #fafbfd;
 }
@@ -3192,12 +3193,12 @@ gtvideotoolbar {
   left: 40vw;
   margin: auto;
   padding: 0 10px 0 14px;
-  background-color: #e8e8e8;
+  background-color: #fff;
   border-radius: 4px;
   box-shadow: 0 0 10px #5c6c7c;
   animation: feedbackSlideUp 0.3s linear;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
-  cursor: move;
+  cursor: pointer;
 }
 gtvideotoolbar btn {
   position: relative;
@@ -3231,7 +3232,7 @@ gtvideotoolbar btn > btn-tooltip {
   background: none;
   display: none;
   position: absolute;
-  bottom: 100%;
+  bottom: -40px;
   left: 50%;
   padding: 4px 8px;
   margin: 0 0 12px 0;
@@ -3242,11 +3243,6 @@ gtvideotoolbar btn > btn-tooltip {
   background-color: #011348;
   transform: translateX(-50%);
   user-select: none;
-}
-gtvideotoolbar btn > btn-tooltip btn-shortcut {
-  margin-left: 4px;
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 9px;
 }
 gtvideotoolbar btn > btn-tooltip-arrow {
   display: none;
@@ -3268,13 +3264,15 @@ gtvideotoolbar btn svg {
   bottom: 0;
   left: 0;
   margin: auto;
-  fill: rgba(53, 76, 95, 0.8);
+  fill: rgba(53, 76, 95);
 }
 gtvideotoolbar btn:hover:not([disabled]) {
   background-color: #d9e9fc;
   border-radius: 50%;
 }
-
+gtvideotoolbar btn:hover btn-tooltip {
+  display: block;
+}
 gtvideotoolbar btn.gigatester-video-controls-mute svg {
   width: 22px;
   height: 22px;
@@ -3314,13 +3312,13 @@ gtvideotoolbar btn.gigatester-video-controls-start btn-record {
 }
 
 gtvideotoolbar btn.gigatester-video-controls-stop {
-  display: none;
+  display: block;
 }
 gtvideotoolbar btn.gigatester-video-controls-stop svg {
-  width: 10px;
-  height: 10px;
-  fill: #fff;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  width: 20px;
+  height: 20px;
+  fill: rgba(53, 76, 95);
+  box-shadow: 0 0 4px rgb(0 0 0 / 20%);
 }
 gtvideotoolbar btn.gigatester-video-controls-stop btn-timer {
   display: block;
