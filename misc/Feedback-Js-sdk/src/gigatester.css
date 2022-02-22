@@ -2866,96 +2866,6 @@ bottom: -23px;
   visibility: hidden;
   z-index: 1999;
 }
-gtmodal {
-  width: auto;
-  height: auto;
-  line-height: normal;
-  min-width: 0;
-  min-height: 0;
-  max-width: none;
-  max-height: none;
-  margin: 0;
-  padding: 0;
-  outline: none;
-  border: none;
-  border-radius: 0;
-  background: none;
-  position: fixed;
-  top: 0;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  overflow: hidden;
-  z-index: 2147483644;
-  width: auto;
-  height: auto;
-  border: none;
-  outline: none;
-  background: rgba(128, 144, 160, 0.7);
-  animation: feedbackFadeIn 0.1s linear;
-}
-gtmodal .gigatester-modal-title {
-  margin-bottom: 12px;
-  font-size: 18px;
-  font-weight: 600;
-  color: #011348;
-}
-gtmodal > gtdiv {
-  width: 440px;
-  height: auto;
-  line-height: normal;
-  min-width: 0;
-  min-height: 0;
-  max-width: 90%;
-  max-height: none;
-  margin: 100px auto;
-  padding: 40px;
-  outline: none;
-  border: none;
-  background: none;
-  position: relative;
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 5px 20px #5c6c7c;
-  line-height: 150%;
-  color: #4c545b;
-  animation: feedbackZoomIn 0.1s;
-  font-size: 16px;
-  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
-  box-sizing: border-box;
-}
-gtmodal > gtdiv a {
-  color: #011348;
-  text-decoration: underline;
-}
-gtmodal > gtdiv .gigatester-modal-btns {
-  margin-top: 20px;
-  text-align: right;
-}
-gtmodal > gtdiv .gigatester-modal-btns btn {
-  display: inline-block;
-  height: 40px;
-  line-height: 40px;
-  padding: 0 24px;
-  margin: 0 0 0 5px;
-  border-radius: 5px;
-  box-sizing: border-box;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-}
-gtmodal > gtdiv .gigatester-modal-btns btn:first-child {
-  background: none;
-  box-shadow: none;
-  color: #4c545b;
-}
-gtmodal > gtdiv .gigatester-modal-btns btn:first-child:hover {
-  background: rgba(0, 0, 0, 0.03);
-}
-gtmodal > gtdiv .gigatester-modal-info-text {
-  color: rgba(53, 76, 95, 0.8);
-  font-size: 14px;
-}
 @keyframes feedbackToolbarIn {
   from {
     opacity: 0;
@@ -3496,9 +3406,10 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer btn-timer-mask {
 gtvideotoolbar btn.gigatester-video-controls-timer {
   display: none;
   color: rgba(53, 76, 95, 0.8);
-  font-size: 10px;
-  font-weight: 500;
+  font-size: 14px;
+  font-weight: 700;
   cursor: default;
+  -webkit-font-smoothing: antialiased;
 }
 gtvideotoolbar btn.gigatester-video-controls-timer:hover {
   background-color: #fff;
@@ -3609,11 +3520,11 @@ gtmouseclick {
     transform: rotate(-180deg);
   }
   50.01% {
-    background: #01134875;
+    background: #08eeee;
     transform: rotate(0deg);
   }
   100% {
-    background: #01134810;
+    background: #08eeee;
     transform: rotate(-180deg);
   }
 }
