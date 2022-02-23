@@ -1828,14 +1828,13 @@ bottom: -23px;
   border: none;
   border-radius: 0;
   background: none;
-  display: inline-block;
+  display: block;
   line-height: auto;
   margin: 0 0 0 8px;
   color: #f80303;
-  vertical-align: middle;
   font-size: 13px;
 }
-#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-error-2 {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-msg {
   width: auto;
   height: auto;
   line-height: normal;
@@ -1849,12 +1848,9 @@ bottom: -23px;
   border: none;
   border-radius: 0;
   background: none;
-  position: absolute;
-  z-index: 10;
-  left: 0;
-  right: 0;
-  bottom: 64px;
-  text-align: center;
+  display: block;
+  line-height: auto;
+  margin: 0 0 0 8px;
   color: #011348;
   font-size: 13px;
 }

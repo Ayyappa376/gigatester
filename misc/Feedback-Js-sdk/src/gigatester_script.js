@@ -775,8 +775,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         }
                         if (this.canvas_mode) {
                             this.custom_ui.overlay_hint_tooltip.css({
-                                top: e.clientY,
-                                left: e.clientX - 10
+                                top: e.offsetY,
+                                left: e.offsetX - 10
                             })
                         } else {
                             this.custom_ui.overlay_hint_tooltip.css({
@@ -2214,9 +2214,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_StringRes.get('report_bug') + '</gtdiv></popupbtn>');
-                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('report_bug'));
+                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('report_bug_msg'));
                     let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_StringRes.get('give_feedback') + '</gtdiv></popupbtn>');
-                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('give_feedback'));
+                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('give_feedback_msg'));
                     popup_bug_icon.appendTo(popup_dialog);
                     popup_bug_icon_tooltip.appendTo(popup_bug_icon);
                     popup_feedback_icon.appendTo(popup_dialog);
@@ -2542,7 +2542,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             if (xhr.readyState === 4) {
                               if (xhr.status === 200) {
                                 console.log("UPLOAD SUCCESSFUL");
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("Media uploaded successfully, Submitting GigaTester_modal Form...").insertBefore(send_button)
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-msg").text(GigaTester_StringRes.get("media_upload_success") + " " + GigaTester_StringRes.get("submitting_feedback")).insertAfter(send_button);
                                 console.log('GigaTester: ', xhr.responseURL);
                                 // send_button.addClass("gigatester-ctrl-item-send-loading")
                                 if(xhr.responseURL.slice(56,64) === 'gt_image'){
@@ -2574,9 +2574,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                     send_button.removeClass("gigatester-ctrl-item-send-loading");
                                     send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                     send_button.prop("disabled", false);
-                                    $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertBefore(send_button)
-                                } else if (this.controls_step === 3) {
-                                    $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
+                                    $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                                 }
                             }
                           };
@@ -2586,9 +2584,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertBefore(send_button)
-                            } else if (this.controls_step === 3) {
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                             }
                           }
                           xhr.upload.addEventListener("progress", function(evt) {
@@ -2611,9 +2607,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertBefore(send_button)
-                            } else if (this.controls_step === 3) {
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                             }
                         })
                 },
@@ -2687,7 +2681,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
                             $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
                             setTimeout(function () {
-                                console.log(close_icon);
                                 // $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
                                 // close_icon.trigger("click")
@@ -2699,9 +2692,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertAfter(send_button);
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("form_submit_error")).insertAfter(send_button);
                             } else if (this.controls_step === 3) {
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester feedback submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-msg").text(GigaTester_StringRes.get("form_submit_error")).appendTo($('.gigatester-ctrl-item-send-success'));
                             }
                         })
                 },
