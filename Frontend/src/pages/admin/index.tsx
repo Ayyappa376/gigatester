@@ -60,6 +60,7 @@ import EditDevice from '../../components/admin/devices/edit';
 import ManageDevices from '../../components/admin/devices/manage';
 import EditProduct from '../../components/admin/products/edit';
 import EditProductFeedbackSettings from '../../components/admin/products/edit-feedback';
+import EditExternalSystemSettings from '../../components/admin/products/extSystemSettings';
 import ManageProducts from '../../components/admin/products/manage';
 import CreateQuestionnaire from '../../components/admin/questionnaire/create-questionnaire';
 import ManageAssessments from '../../components/admin/questionnaire/manage-questionnaire';
@@ -98,6 +99,7 @@ export const EDIT_DEVICE = 'edit-device';
 export const MANAGE_PRODUCTS = 'manageProducts';
 export const EDIT_PRODUCT = 'edit-product';
 export const EDIT_PRODUCT_FEEDBACK_SETTINGS = 'edit-product-feedback-settings';
+export const EDIT_EXTERNAL_SYSTEM_SETTINGS = 'edit-external-system-settings';
 export const CREATE_QUESTIONNAIRE = 'create-questionnaire';
 export const MANAGE_QUESTIONNAIRES = 'manageTestSuits';
 export const EDIT_QUESTIONNAIRE = 'edit-assessment';
@@ -379,6 +381,13 @@ export default function Admin() {
     setTitle('editProductFeedbackSettings');
   }
 
+  const editExternalSystemSettingsHandler = (productId: string, version: string) => {
+    setButtonValue(EDIT_EXTERNAL_SYSTEM_SETTINGS);
+    setFocusProductId(productId);
+    setFocusVersion(version);
+    setTitle('editExternalSystemSettings');
+  }
+
   const feedbackClickHandler = (productId: string, version: string) => {
     setButtonValue(FEEDBACK_COMMENTS);
     setFocusProductId(productId);
@@ -576,6 +585,7 @@ export default function Admin() {
             editClicked={editProductClickHandler}
             feedbackClicked={feedbackClickHandler}
             feedbackSettingsClicked={editProductFeedbackSettingsHandler}
+            extSystemSettingsClicked={editExternalSystemSettingsHandler}
             goBack={switchToAdminHome}
           />
         );
@@ -590,6 +600,14 @@ export default function Admin() {
       case EDIT_PRODUCT_FEEDBACK_SETTINGS:
         return (
           <EditProductFeedbackSettings
+            productId={focusProductId}
+            version={focusVersion}
+            goBack={switchPage}
+          />
+        );
+      case EDIT_EXTERNAL_SYSTEM_SETTINGS:
+        return (
+          <EditExternalSystemSettings
             productId={focusProductId}
             version={focusVersion}
             goBack={switchPage}

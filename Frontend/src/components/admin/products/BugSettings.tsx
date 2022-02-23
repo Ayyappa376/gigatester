@@ -126,7 +126,14 @@ const BugSettings = ({
               id={`category_$`}
               name={`category_$`}
               label='Message on the bug reporting window.'
-              value={productParams.products[0].feedbackAgentSettings.bugSettings.title}
+              value={
+                (productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.bugSettings &&
+                  productParams.products[0].feedbackAgentSettings.bugSettings.title)
+                  ? productParams.products[0].feedbackAgentSettings.bugSettings.title
+                  : ''
+              }
               fullWidth
               onChange={(event) => handleBugTitleChange()}
               autoComplete='off'

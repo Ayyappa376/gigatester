@@ -12,7 +12,7 @@ export interface ProductInfo {
     status: string;
     testers?: TesterStatus[];
     testSuite?: string[];
-    trackingSystemDetails?: TrackingSystemDetails;
+    trackingSystem?: TrackingSystem;
     version: string;
     [keyName: string]: any;
 }
@@ -62,12 +62,18 @@ export interface Category {
     name: string;
 }
 
-export interface TrackingSystemDetails {
+export interface TrackingSystem {
     auth: {
         [key: string]: string;
     };
+    type: TrackingSystemType;
     url: string;
+    [key: string]: any;
 }
+
+export const STATUS_PRODUCT_ACTIVE = 'active';
+export const STATUS_PRODUCT_DELETED = 'deleted';
+//export const STATUS_PRODUCT_ARCHIVED = 'archived';
 
 export type FeedbackType = 'FEEDBACK' | 'BUGS';
 export const FEEDBACK_TYPE_FEEDBACK: FeedbackType = 'FEEDBACK';
@@ -90,6 +96,6 @@ export const INVOKE_TYPE_AFTER_DELAY: InvokeType = 'AFTER_DELAY';
 export const INVOKE_TYPE_CONTEXT_CHANGE: InvokeType = 'CONTEXT_CHANGE';
 export const INVOKE_TYPE_IDLE: InvokeType = 'IDLE';
 
-export const STATUS_PRODUCT_ACTIVE = 'active';
-export const STATUS_PRODUCT_DELETED = 'deleted';
-//export const STATUS_PRODUCT_ARCHIVED = 'archived';
+export type TrackingSystemType = 'SELF' | 'JIRA';
+export const TRACKING_SYSTEM_SELF: TrackingSystemType = 'SELF';
+export const TRACKING_SYSTEM_JIRA: TrackingSystemType = 'JIRA';
