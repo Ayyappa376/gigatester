@@ -1933,35 +1933,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         allowTaint : true,
                         width: annoted.width,
                         height: annoted.height,
-                        // width: window.screen.availWidth,
-                        // height: window.screen.availHeight,
-                        // width: window.innerWidth,
-                        // height: window.innerHeight,
-                        // windowWidth: document.getElementsByClassName('gigatester-overlay').scrollWidth,
-                        // windowHeight: document.getElementsByClassName('gigatester-overlay').scrollHeight,
-                        // x:0,
-                        // y:window.pageYOffset
                     } ).then(function(canvas) {
                         if(canvas){
-                            // const croppedCanvas = document.createElement('canvas')
-                            // const croppedCanvasContext = croppedCanvas.getContext('2d')
-                            // // console.log(canvas, '2d');
-                            // // console.log(window.innerHeight, 'inHeight');
-                            // // console.log(window.innerWidth, 'inwidth');
-                            // // init data
-                            // const cropPositionTop = 0
-                            // const cropPositionLeft = 0
-                            // const cropWidth = window.innerWidth
-                            // const cropHeight = window.innerHeight
-                            // croppedCanvas.width = cropWidth
-                            // croppedCanvas.height = cropHeight
-                            // if(croppedCanvasContext){
-                            // croppedCanvasContext.drawImage(
-                            //     canvas,
-                            //     cropPositionLeft,
-                            //     cropPositionTop,
-                            // )
-                            // }
                             const image = new Image();
                             const base64Image = canvas.toDataURL();
                             image.onload = () => {
