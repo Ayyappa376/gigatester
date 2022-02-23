@@ -89,8 +89,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     element.find(".gigatester-comment-pin > span").text(counter + 1)
                 };
                 this.submit = function() {
-                    element.find(".gigatester-input-btn").click()
-                }, this.show = function() {
+                    element.find(".gigatester-input-btn").click();
+                };
+                this.show = function() {
                     element.show()
                 };
                 this.hide = function() {
@@ -1681,7 +1682,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 },
                 setRoutings: function() {
                     let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
-                    html += '<form class="gigatester-ctrl-item-options">';
                     html += '<gtdiv class="gigatester-dialog-scroll">';
                     html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
                     html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : "";
@@ -2478,7 +2478,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     reader.readAsDataURL(fileSelected);
                 },
                 validateFields: function(e){
-                    console.log(e);
+                    // console.log(e);
                     e.preventDefault();
                     console.log(GigaTester_modal.form_type)
                     if(GigaTester_modal.form_data.audio_file || GigaTester_modal.form_data.external_file || GigaTester_modal.form_data.video_file || GigaTester_modal.form_data.image_file){
@@ -2507,7 +2507,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                     }
                     else{
-                        // this.submitPost(e);
+                        this.submitPost(e);
                         }
                 }
                  else if(GigaTester_modal.form_type === "FEEDBACK"){
@@ -2522,7 +2522,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                     }
                     else{
-                        // this.submitPost(e);
+                        this.submitPost(e);
                         }
                     }
                 },
@@ -2687,12 +2687,12 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             send_button.find(".gigatester-ctrl-item-send-text").text('Send feedback');
                             send_button.removeClass("gigatester-ctrl-item-send-loading");
                             this.recording = false;
-                            $(document.getElementsByClassName('gigatester-ctrl-item-options')).css('display', 'none');
+                            $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
                             let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
                             $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
                             setTimeout(function () {
                                 console.log(close_icon);
-                                // $(document.getElementsByClassName('gigatester-ctrl-item-options')).css('display', 'block');
+                                // $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
                                 // close_icon.trigger("click")
                             }, 3000);
