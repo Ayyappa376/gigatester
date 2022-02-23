@@ -849,8 +849,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     svg_user_draw: [],
                     type: "square",
                     color: {
-                        options: ["#ff0000", "#ff7700", "#ffff00", "#77ff00", "#00ff00", "#00ff77", "#00ffff", "#0077ff", "#0000ff",
-                         "#7700ff", "#ff00ff", "#ff0077", "#FFFFFF", "#000000"],
+                        options: ["#cc0000", "#ff7700", "#ffdd00", "#66ee00", "#00aa00",
+                         "#00dddd", "#0077ff", "#0000aa", "#ff00dd", "#777777", "#000000"],
                         value:  "#ff7700"
                     },
                     svg_obj_initial: false,
@@ -1681,12 +1681,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.events = null
                 },
                 setRoutings: function() {
-                    let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</gtclose>";
+                    let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.close_icon + "</gtclose>";
                     html += '<gtdiv class="gigatester-dialog-scroll">';
                     html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
                     html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : "";
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
-                    html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>"
+                    html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>";
+                    html += '</gtdiv>';
                     this.custom_ui.events.html(html);
                     this.setDialogForm();
                 },
@@ -1766,11 +1767,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                      + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + GigaTester_Icons.paperclip_icon + "<gtdiv>" + GigaTester_StringRes.get("attach_file") + "</gtdiv>"
                      + "<gttooltip>" + GigaTester_StringRes.get("attach_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
                      + "</gtdiv>" + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
-                    //  + '<gtdiv class="gigatester-ctrl-item-screenshot-preview">' + '<btn class="gigatester-ctrl-item-remove-screenshot">' + Svg_Icons.trash + "</btn>"
-                    //  + '<gtbadge class="gigatester-ctrl-item-screenshot-thumbnail">' + Svg_Icons.photo + "<span>" + Lang.get("screenshot_attached") + "</span>" + '<div class="gigatester-screenshot-preview"></div>' + "</gtbadge>" +  "</gtdiv>"
-                    //  + '<gtdiv class="gigatester-ctrl-item-video-preview">' + '<btn class="gigatester-ctrl-item-remove-video">' + Svg_Icons.trash + "</btn>"
-                    //  + '<gtbadge class="gigatester-ctrl-item-video-thumbnail">' + Svg_Icons.play + "<span>" + Lang.get("screen_recording") + "</span>" + "</gtbadge>" + "</gtdiv>"
-                    //  + '<gtdiv class="gigatester-ctrl-item-attachment-name">' + Svg_Icons.paperclip + "<span></span>" + '<btn class="gigatester-ctrl-item-remove-attachment">' + Svg_Icons.trash + "</btn>" + "</gtdiv>"
                      + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
                      + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
                      + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + GigaTester_Icons.check_mark_icon + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
@@ -1906,8 +1902,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                 },
                 screenshotImage: function(rawImage){
-                    const final_width = Math.round(window.innerWidth * 0.9); //90% of viewport width
-                    const final_height = Math.round(window.innerHeight * 0.9); //90% of viewport height
+                    const final_width = Math.round(window.innerWidth * 0.95); //95% of viewport width
+                    const final_height = Math.round(window.innerHeight * 0.95); //95% of viewport height
                     console.log("image [width, height] = [" + final_width + ", " + final_height + "]" );
                     const canvas = document.createElement("canvas");
                     const context = canvas.getContext("2d");
@@ -2696,16 +2692,16 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
                                 // close_icon.trigger("click")
                             }, 3000);
-                                                   })
+                        })
                         .catch(error => {
                             console.log(error, 'post api error');
                             if (this.controls_step === 2) {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertAfter(send_button)
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text("Error, please try again.").insertAfter(send_button);
                             } else if (this.controls_step === 3) {
-                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester_modal submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
+                                $("<gtdiv>").addClass("gigatester-ctrl-item-send-error-2").text("GigaTester feedback submit error, please try again.").insertAfter($(".gigatester-ctrl-item-send-success"))
                             }
                         })
                 },
