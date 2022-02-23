@@ -2127,13 +2127,13 @@ gtvideotoolbar {
   display: block;
   position: fixed;
   z-index: 2641483645;
-  top: 22px;
+  top: 10px;
   left: 40vw;
   margin: auto;
   padding: 0 10px 0 14px;
   background: #011348;
   border-radius: 4px;
-  box-shadow: 0 0 10px #5c6c7c;
+  /* box-shadow: 0 0 10px #5c6c7c; */
   animation: animationMoveUp 0.3s linear;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   cursor: pointer;
