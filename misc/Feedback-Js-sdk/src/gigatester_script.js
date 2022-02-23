@@ -850,7 +850,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     color: {
                         options: ["#ff0000", "#ff7700", "#ffff00", "#77ff00", "#00ff00", "#00ff77", "#00ffff", "#0077ff", "#0000ff",
                          "#7700ff", "#ff00ff", "#ff0077", "#FFFFFF", "#000000"],
-                        value:  "#042e5b"
+                        value:  "#ff7700"
                     },
                     svg_obj_initial: false,
                     svg_obj_arrow_group: false,
@@ -977,9 +977,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.saveSubCategory();
                             GigaTester_modal.removeOverlay();
                             this.removeTools()
-                        if (GigaTester_modal.on_toolbar_close) {
-                            GigaTester_modal.on_toolbar_close()
-                        }
+                        // if (GigaTester_modal.on_toolbar_close) {
+                        //     GigaTester_modal.on_toolbar_close()
+                        // }
                     },
                     removeTools: function() {
                         GigaTester_modal.enableScroll();
@@ -1817,6 +1817,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.focusControls();
                 },
                 recordImage: async function(e){
+                    GigaTester_modal.canvas_mode = true;
                     GigaTester_modal.saveCheckedCategory();
                     GigaTester_modal.set_screen_default_category = false;
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
@@ -1980,32 +1981,33 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 if(GigaTester_modal.form_data.rating){
                                     GigaTester_modal.selectedRating();
                                 }
-                        GigaTester_modal.clearNotifyStatus();
-                        const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
-                        const image = $('<image id="gigatester_images_preview_player" width=300 height=225 src="' + base64Image + '"></image>');
-                        const image_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
-                        $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
-                        image.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
-                        image_close.insertAfter(image);
-                        GigaTester_modal.loadImage(base64Image);
-                        image_close.on("click", function() {
-                            image.remove();
-                            GigaTester_modal.removeComments();
-                            GigaTester_modal.form_data.image_file = '';
-                            GigaTester_modal.set_screen_default_category = false;
-                            GigaTester_modal.recording = false;
-                            GigaTester_modal.saveCheckedCategory();
-                            image_close.remove();
-                            GigaTester_modal.setDialogForm();
-                            GigaTester_modal.saveSubCategory();
-                            if(GigaTester_modal.form_data.rating){
-                                GigaTester_modal.selectedRating();
-                            }
-                        })
-                        console.log(base64Image, 'final screenshot');
-                    };
-                    image.src = base64Image;
-                }});
+                                GigaTester_modal.clearNotifyStatus();
+                                const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
+                                const image = $('<image id="gigatester_images_preview_player" width=300 height=225 src="' + base64Image + '"></image>');
+                                const image_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
+                                $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
+                                image.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
+                                image_close.insertAfter(image);
+                                GigaTester_modal.loadImage(base64Image);
+                                image_close.on("click", function() {
+                                    image.remove();
+                                    GigaTester_modal.removeComments();
+                                    GigaTester_modal.form_data.image_file = '';
+                                    GigaTester_modal.set_screen_default_category = false;
+                                    GigaTester_modal.recording = false;
+                                    GigaTester_modal.saveCheckedCategory();
+                                    image_close.remove();
+                                    GigaTester_modal.setDialogForm();
+                                    GigaTester_modal.saveSubCategory();
+                                    if(GigaTester_modal.form_data.rating){
+                                        GigaTester_modal.selectedRating();
+                                    }
+                                })
+                                console.log(base64Image, 'final screenshot');
+                            };
+                            image.src = base64Image;
+                        }
+                    });
                 },
                  getTimerText: function() {
                     console.log(GigaTester_modal.configs.audio_time)
@@ -2758,8 +2760,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                 },
             }
-
-
 
         let GigaTester_Api = {
             isLoaded: function() {

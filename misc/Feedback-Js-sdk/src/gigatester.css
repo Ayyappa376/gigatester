@@ -27,7 +27,7 @@ gtspan {
   background: #5c6c7c;
   border: 1px solid #5c6c7c;
   border-radius: 4px;
-  box-shadow: 0 0 10px #5c6c7c;
+  box-shadow: 0 0 100px 20px #5c6c7c;
 }
 #gigatester_screencapture_area{
   position: relative;
@@ -116,7 +116,7 @@ gttoolbar {
   margin: 0;
   padding: 0;
   outline: none;
-  background: none;
+  background: #5c6c7c;
   position: relative;
   display: flex;
   justify-content: center;
@@ -126,18 +126,20 @@ gttoolbar {
   box-sizing: border-box;
   white-space: nowrap;
   text-align: left;
-  background-color: #e8e8e8;
 }
 gttoolbar .gigatester-toolbar-tool {
   position: relative;
   display: block;
   float: left;
-  width: 44px;
-  height: 44px;
-  margin: 0;
+  width: 32px;
+  height: 32px;
+  margin: 12px;
   padding: 0;
   cursor: pointer;
   box-sizing: border-box;
+  background: #fafbfd;
+  border: 1px solid #bfbfbf;
+  border-radius: 4px;
 }
 /*@media (max-width: 800px) {
   gttoolbar .gigatester-toolbar-tool {
@@ -147,9 +149,8 @@ gttoolbar .gigatester-toolbar-tool {
     display: none;
   }
 }*/
-gttoolbar .gigatester-toolbar-tool:hover svg,
-gttoolbar .gigatester-toolbar-tool:hover svg * {
-  fill: #011348;
+gttoolbar .gigatester-toolbar-tool:hover {
+  border: 1px solid #011348;
 }
 gttoolbar .gigatester-toolbar-tool.gigatester-toolbar-tool-square svg * {
   fill: rgba(255, 255, 255, 0.8);
@@ -166,38 +167,19 @@ gttoolbar .gigatester-toolbar-tool svg {
   height: 16px !important;
   margin: auto !important;
   box-sizing: border-box !important;
-  fill: rgba(53, 76, 95, 0.8);
-}
-
-/* gttoolbar .gigatester-toolbar-tool svg * {
-  fill: rgba(53, 76, 95, 0.8);
-} */
-
-gttoolbar .gigatester-toolbar-tool-active {
-  cursor: default;
+  fill: #011348;
 }
 gttoolbar .gigatester-toolbar-tool-done,
 gttoolbar .gigatester-toolbar-close {
   box-sizing: border-box;
   cursor: pointer;
 }
-/*@media (max-width: 330px) {
-  gttoolbar .gigatester-toolbar-tool-line,
-  gttoolbar .gigatester-toolbar-tool-path {
-    display: none;
-  }
-}*/
 gttoolbar .gigatester-toolbar-tool-active {
-  background: #f4f9ff;
+  cursor: default;
   border: 1px solid #011348;
-  border-radius: 4px;
 }
 gttoolbar .gigatester-toolbar-tool-active:hover {
-  background: #f4f4f4;
-}
-gttoolbar .gigatester-toolbar-tool-active svg,
-gttoolbar .gigatester-toolbar-tool-active svg * {
-  fill: #011348;
+  border: 1px solid #011348;
 }
 gttoolbar .gigatester-toolbar-tool-done {
   position: relative;
@@ -450,10 +432,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   max-height: none;
   margin: 0;
   padding: 0;
-  outline: none;
-  border: none;
   border-radius: 0;
-  background: none;
   overflow: hidden !important;
   z-index: 2147483644 !important;
   margin: 0 !important;
@@ -574,7 +553,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
   left: 200px;
   padding: 0 10px;
   color: #fff;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: black;
   border-radius: 4px;
   font-size: 12px;
   overflow: hidden;
