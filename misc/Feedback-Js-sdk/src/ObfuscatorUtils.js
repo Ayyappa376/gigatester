@@ -5,7 +5,15 @@ fs.readFile('./dist/bundle.js', 'UTF-8', function(error, code){
 if(error){
     throw error;
 }
-var obfuscateResult = jsObfuscator.obfuscate(code)
+
+var options = {
+    ignoreRequireImports: true,
+    compact: true,
+    transformObjectKeys: true,
+    splitStrings: true,
+    unicodeEscapeSequence: true,
+}
+var obfuscateResult = jsObfuscator.obfuscate(code, options);
 
 fs.writeFile('./build/gigatester_script.js',obfuscateResult.getObfuscatedCode(), function(fsError){
     if(fsError){
