@@ -29,6 +29,7 @@ import { Link } from 'react-scroll';
 // import LanguageSelector from '../language-selection-dropdown/index';
 import { Text } from '../../common/Language';
 import SignInForm from '../signInForm';
+import SignupForm from '../signUpForm';
 import './style.css';
 
 const timeoutLength = 50;
@@ -150,8 +151,8 @@ const PageHeader = (props: any) => {
   });
   const url = window.location.href;
   const currentUrl = url.substring(url.length - 6, url.length);
-  const resetBothTexts = useActions(resetBothDisplayText);
-  const setDisplayTextRight = useActions(setAppBarRightText);
+  // const resetBothTexts = useActions(resetBothDisplayText);
+  // const setDisplayTextRight = useActions(setAppBarRightText);
   const [anchorEl, setAnchorEl] = useState(null);
   // const [anchorMetricsEl, setAnchorMetricsEl] = useState(null);
   const [anchorDashboardEl, setAnchorDashboardEl] = useState(null);
@@ -166,29 +167,33 @@ const PageHeader = (props: any) => {
     { type: '' }
   );
   const [openSignin, setOpenSignin] = useState(false);
+  const [openSignup, setOpenSignup] = useState(false);
   const [openUserMenu, setOpenUserMenu] = React.useState(false);
+  const stateVariable = useSelector((state: IRootState) => state);
+  const [superUserStateVariable, setSuperUserStateVariable] = useState(stateVariable);
   const anchorRef: any = React.useRef(null);
   // let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
   // redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
 
 
-  if (
-    props.location.pathname === '/' ||
-    systemDetails.mode === constantValues.TRIAL_MODE
-  ) {
-    resetBothTexts();
-  } else {
-    setDisplayTextRight(
-      userStatus && userStatus.userDetails && userStatus.userDetails.email
-        ? userStatus.userDetails.email
-        : ''
-    );
-  }
+  // if (props.location.pathname === '/' || systemDetails.mode === constantValues.TRIAL_MODE) {
+  //   resetBothTexts();
+  // } else {
+  //   setDisplayTextRight(
+  //     userStatus && userStatus.userDetails && userStatus.userDetails.email
+  //       ? userStatus.userDetails.email
+  //       : ''
+  //   );
+  // }
 
   const onLogin = () => {
     setOpenSignin(true)
   };
+
+  const onRegister = () => {
+    setOpenSignup(true)
+  }
 
   const handleProfileSetting = () => {
     setOpenUserMenu(false)
@@ -211,8 +216,7 @@ const PageHeader = (props: any) => {
 
   const renderUserStatus = () => {
     return (
-      <div className='header-item'>
-        {userStatus.idToken ? (
+        userStatus.idToken ? (
           <Button
             ref={anchorRef}
             aria-controls={openUserMenu ? 'menu-list-grow' : undefined}
@@ -230,14 +234,23 @@ const PageHeader = (props: any) => {
           //   </Typography>
           // </Tooltip>
         ) : (
-          <Typography onClick={onLogin} className={classes.headerItem}>
-            <Text tid='login' />
-          </Typography>
-        )}
-      </div>
+          <Fragment>
+            <div className='header-item'>
+              <Typography onClick={onLogin} className={classes.headerItem}>
+                <Text tid='login' />
+              </Typography>
+            </div>
+            <div className='header-item'>
+              <Typography onClick={onRegister} className={classes.headerItem}>
+                <Text tid='register' />
+              </Typography>
+            </div>
+          </Fragment>
+        )
     );
   };
 
+  
   const handleAssessment = (event: any) => {
     setAdminPageState(false);
     const { getMetricsType } = props;
@@ -811,6 +824,10 @@ const PageHeader = (props: any) => {
     setOpenSignin(state);
   }
 
+  const handleCloseSignup = (state: boolean) => {
+    setOpenSignup(state);
+  };
+
   const renderHomeButton = () => {
     return (
       <div className='header-item'>
@@ -890,20 +907,20 @@ const PageHeader = (props: any) => {
             <div className='header-container'>
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
-              {renderAboutUsButton()}
-              {renderFeedbackButton()}
+              {/* renderAboutUsButton() */}
+              {/* renderFeedbackButton() */}
               {renderContactUsButton()}
               {renderAdminPage()}
-              {renderManageSoftwareFiles()}
+              {/* renderManageSoftwareFiles() */}
               {/* {renderViewMetrics()} */}
               {/* {renderMetricsMenuItems()} */}
-              {renderDashboardPage()}
-              {renderDashboardMenuItems()}
-              {renderTrendsPage()}
-              {renderTrendsMenuItems()}
-              {renderViewAssessment()}
-              {renderMenuItems()}
-              <div className='header-item'>{renderUserStatus()}</div>
+              {/* renderDashboardPage() */}
+              {/* renderDashboardMenuItems() */}
+              {/* renderTrendsPage() */}
+              {/* renderTrendsMenuItems() */}
+              {/* renderViewAssessment() */}
+              {/* renderMenuItems() */}
+              {renderUserStatus()}
             </div>
           ) : (
             <div className='header-item'>
@@ -952,6 +969,13 @@ const PageHeader = (props: any) => {
       {openSignin &&
         <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
       }
+      {openSignup && (
+      <SignupForm
+        openSignup={openSignup}
+        handleCloseSignup={handleCloseSignup}
+        superUserStateVariable={superUserStateVariable}
+      />
+      )}
     </Fragment>
   );
 };

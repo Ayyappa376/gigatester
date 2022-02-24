@@ -8,28 +8,26 @@ const About = () => {
     <div>
       <p style={{padding: "50px"}}>
         <Typography variant="h4"><Text tid='aboutUs' /></Typography>
-        GigaTester is a one stop solution that enables high quality product to be launched quickly and confidently at scale.
+        GigaTester is a platform that empowers you to develop and launch great products with confidence.
       </p>
       <p style={{padding: "10px 50px"}}>
-        <Typography variant="h6">Become a Tester?</Typography>
+        <Typography variant="h6">GigaTester Feedbacks</Typography>
         <Typography>
-          Register as tester, search with the name of devices that you will test on,
-          choose from a wide range of products and provide valuable early feedback.
-          Earn for each successful tests completed.
-        </Typography>
-        <Typography>
-          Click <i>'Register as Tester'</i> on home page.
+        Customers give unbiased opinions. Get the feedback from them and build the product they love.
+        GigaTester enables Product teams to capture feedback and bugs reported by customers
+        directly without going through middle layer.
         </Typography>
       </p>
       <p style={{padding: "10px 50px"}}>
-        <Typography variant="h6">Test my Product?</Typography>
+        <Typography variant="h6">Contact Details</Typography>
         <Typography>
-          Register your company to get your products crowd tested by professional testers
-          and end users. Receive valuable feedback, bugs, recomendations; communicate with 
-          them and derive valuable insights.
+          Address:
         </Typography>
         <Typography>
-          Click <i>'Register your Company'</i> on home page.
+          Phone no.:
+        </Typography>
+        <Typography>
+          Email: contact@gigatester.io
         </Typography>
       </p>
     </div>
