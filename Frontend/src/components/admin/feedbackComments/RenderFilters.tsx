@@ -6,7 +6,7 @@ interface IProps {
     setFocusRating: Function;
     focusRating: number[];
     disableButtons: boolean;
-    disable: any;
+    rating: boolean;
     setDisable: Function;
 }
 
@@ -19,13 +19,14 @@ const ratingButtonValues=[
 ]
 
 const RenderRatingFilter = React.memo((props: IProps) => {
-    const {focusRating, setFocusRating, disable, setDisable} = props;
+    const {focusRating, setFocusRating, rating, setDisable } = props;
 
     const handleKeywordClick = (val: number) => {
         if(props.disableButtons) {
             return;
         }
         if(focusRating.indexOf(val) > -1) {
+            setDisable('rating');
             setFocusRating((prevValue: number[]) => {
                 const prevValCopy = [...prevValue]
                 prevValCopy.splice(prevValue.indexOf(val), 1);
@@ -37,6 +38,7 @@ const RenderRatingFilter = React.memo((props: IProps) => {
             setFocusRating((prevVal: number[]) => {
                 return [...prevVal, val]
             });
+            setDisable('rating');
         }
     }
 
@@ -48,7 +50,7 @@ const RenderRatingFilter = React.memo((props: IProps) => {
             <div id="RenderFilter-flexContainer">
                 {ratingButtonValues.map((el) => {
                     console.log()
-                    return <Button variant='outlined' disabled={disable}
+                    return <Button variant='outlined' disabled={rating}
                     key={el.value} onClick={() => {handleKeywordClick(el.value)}} id={focusRating.indexOf(el.value) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el.discription}</Button>
                 }
                 )}

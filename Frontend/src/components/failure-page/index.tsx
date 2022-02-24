@@ -18,6 +18,9 @@ const useStyles = makeStyles((theme) => ({
     minWidth: '40%',
     maxWidth: '50%',
     margin: 'auto',
+    border: '1px solid #D8D8D8',
+    borderRadius: '10px',
+    boxShadow: 'none',
   },
 }));
 

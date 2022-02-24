@@ -23,15 +23,11 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
     })
   }
 
-export const getFeedbackData = ({isBugReport, urlAppend}: any) => {
-  const customHeaders = {
-    "Access-Control-Allow-Origin": "*"
-  }
+export const getFeedbackData = ({ urlAppend}: any) => {
     return new Promise((resolve, reject) => {
-      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT : CONST_FEEDBACK}`+ urlAppend;
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK}`+ urlAppend;
       Http.get({
         url,
-        customHeaders,
       }).then((response: any) => {
         return resolve(response);
       })
@@ -40,8 +36,23 @@ export const getFeedbackData = ({isBugReport, urlAppend}: any) => {
       });
     })
   }
+
+  export const getBugData = ({urlAppend}: any) => {
+    return new Promise((resolve, reject) => {
+      let url = `/api/v2/userFeedback/${CONST_BUG_REPORT}`+ urlAppend;
+      Http.get({
+        url,
+      }).then((response: any) => {
+        return resolve(response);
+      })
+      .catch((error) => {
+        return reject(error);
+      });
+    })
+  }
+
+
 interface IGetChartData {
-  isBugReport: boolean,
   setFeedbackBarChartData: Function,
   setBugBarChartSeries: Function,
   setPieChartSeries: Function,
@@ -49,24 +60,33 @@ interface IGetChartData {
   prodVersion: string
 }
 
-export const getChartData = async({isBugReport, setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-      let url = `/api/v2/userFeedback/${isBugReport? CONST_BUG_REPORT_CHART : CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
+export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
       Http.get({
         url,
       }).then((response: any) => {
         const processedData = response.Items;
-        if(isBugReport) {
-          setBugBarChartSeries([{
-            name: 'Severity',
-            data: Object.values(processedData.barChartData)
-          }])
-          setPieChartSeries(processedData.pieChartData)
-        } else {
-          setFeedbackBarChartData(processedData.barChartData);
-          setPieChartSeries(processedData.pieChartData);
-        }
+        setFeedbackBarChartData(processedData.barChartData);
+        setPieChartSeries(processedData.pieChartData);
       })
       .catch((error) => {
         console.error(error)
       });
   }
+
+  export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
+    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
+    Http.get({
+      url,
+    }).then((response: any) => {
+      const processedData = response.Items;
+        setBugBarChartSeries([{
+          name: 'Severity',
+          data: Object.values(processedData.barChartData)
+        }])
+        setPieChartSeries(processedData.pieChartData)
+    })
+    .catch((error) => {
+      console.error(error)
+    });
+}

@@ -6,7 +6,7 @@ import './stylesRenderFilters.css'
 interface IKeywordFilterProps {
     onSubmit: Function;
     onClear: Function;
-    disable: any;
+    keys: boolean;
     setDisable: Function;
 }
 
@@ -17,11 +17,11 @@ const keywords = [
 
 export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
     const [keyword, setKeyword] = useState("");
-    const [show, setShow] = useState<boolean>(false);
 
     const handleKeywordClick = (val: string) => {
         if(keyword === val) {
             props.onClear();
+            props.setDisable('');
             setKeyword("");
         } else {
             props.onSubmit(val);
@@ -37,7 +37,7 @@ export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {keywords.map((el) =>
-                    <Button variant='outlined' disabled={props.disable} key={el} onClick={() => {handleKeywordClick(el)}} id={keyword === el ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
+                    <Button variant='outlined' disabled={props.keys} key={el} onClick={() => {handleKeywordClick(el)}} id={keyword === el ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
                 )}
             </div>
         </div>
