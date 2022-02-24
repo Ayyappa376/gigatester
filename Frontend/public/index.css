@@ -1,4 +1,5 @@
 html, body, #app, #root, #app>div {
     height: 100% !important;
     margin: auto;
+    background: "white";
 }

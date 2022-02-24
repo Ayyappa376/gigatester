@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Button } from '@material-ui/core';
-import { makeStyles } from '@material-ui/styles';
+import { Container, Grid, Typography, Button, makeStyles } from '@material-ui/core';
+//import { makeStyles } from '@material-ui/styles';
 import { useSelector } from 'react-redux';
 import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
 import { IRootState } from '../../reducers';
@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
     marginTop: '1.2em',
     padding: 0,
     overflow: 'hidden',
+    backgroundColor: 'white',
   },
   sectionTop: {
     background: '#618abb',
