@@ -5,8 +5,9 @@ import '../style.css';
 
 const useStyles = makeStyles((theme) => ({
     recordValue: {
-        color: '#F9F9F9',
-        textShadow: '1px 1px 1px #808080'
+        color: '#444444',
+        fontWeight: 'bold',
+        // textShadow: '1px 1px 1px #808080'
     },
 }));
 

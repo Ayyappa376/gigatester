@@ -4,7 +4,9 @@ const GigaTester_StringRes = {
     locale: "en",
     en: {
         report_bug: "Report Bug",
+        report_bug_msg: "Tell us what failed",
         give_feedback: "Give Feedback",
+        give_feedback_msg: "Tell what you liked or disliked",
         draw_hint: "Click & drag to draw or click to add a comment",
         capture_screen_recording: "Screen Recorder",
         capture_audio: "Capture audio",
@@ -37,7 +39,11 @@ const GigaTester_StringRes = {
         recording_resume: "Resume",
         recording_finish: "Finish recording",
         remaining_time: "Remaining Time",
-        ok: "OK"
+        ok: "OK",
+        media_upload_success: "Media uploaded successfuly.",
+        submitting_feedback: "Submitting feedback form.",
+        upload_media_error: "Error uploading media. Please try again.",
+        form_submit_error: "Error submitting feedback form. Please try again."
     },
     setLang: function(locale) {
         this.locale = locale
