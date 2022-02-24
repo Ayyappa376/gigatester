@@ -622,7 +622,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-delete {
   display: none;
-  float: right;
+  float: left;
   cursor: pointer;
   width: 24px;
   height: 24px;
@@ -661,7 +661,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   .gigatester-comment-form-delete:hover
   svg
   path {
-  fill: #2787f0;
+  fill: #011348;
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-close {
   position: absolute;
@@ -1623,7 +1623,7 @@ bottom: -23px;
   overflow: hidden;
   margin: 16px 0 4px 0;
 }
-#gigatester-reason-checkbox{
+.gigatester-reason-checkboxes{
   position: relative;
   opacity: 100;
   pointer-events: all;

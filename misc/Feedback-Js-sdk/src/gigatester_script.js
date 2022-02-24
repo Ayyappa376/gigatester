@@ -76,7 +76,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     e.stopPropagation()
                 });
                 this.setHTML = function() {
-                    return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + GigaTester_StringRes.get("add_comment") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-input-btn gigatester-btn-save">' + GigaTester_StringRes.get("save") + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</btn>" + "</form>"
+                    return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + GigaTester_StringRes.get("add_comment") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-input-btn gigatester-btn-save">' + GigaTester_StringRes.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + GigaTester_StringRes.get("delete") + '">' + GigaTester_Icons.trash_bin_icon + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</btn>" + "</form>"
                 };
                 this.isOpen = function() {
                     return element.find(".gigatester-comment-form").is(":visible")
@@ -99,9 +99,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 };
                 this.showForm = function() {
                     element.find(".gigatester-comment-form").show();
-                    element.find("gtcomment").html(Lib.htmlEntities(canvas_comment_message, true)).focus()
+                    element.find("gtcomment").html(GigaTester_StringUtils.escapeSpecialChars(canvas_comment_message, true)).focus()
                 };
                 this.hideForm = function() {
+                    element.find(".gigatester-comment-form-delete").show();
                     element.find(".gigatester-comment-form").hide()
                 };
                 this.saveComment = function(){
@@ -157,6 +158,11 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             return
                         }
                         this.hideForm()
+                    }.bind(this));
+                    element.find(".gigatester-comment-form-delete").on("click", function(e) {
+                        e.stopPropagation();
+                        this.destroy();
+                        this.onDelete(this.counter)
                     }.bind(this));
                     element.find("gtcomment").on("keydown", function(e) {
                         if (e.which === 13) {
@@ -754,7 +760,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.hideControls();
                     let dpr = typeof window.devicePixelRatio === "undefined" ? 1 : window.devicePixelRatio;
                     this.custom_ui.overlay = $("<gtdiv>").addClass("gigatester-overlay")
-                    // .html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("lang", GigaTester_modal.configs.locale).attr("tooltype", this.Draw_Tools.type);
+                    // .html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("GigaTester_StringRes", GigaTester_modal.configs.locale).attr("tooltype", this.Draw_Tools.type);
                     // .attr("data-html2canvas-ignore", "true");
 //                    if (this.canvas_mode) {
 //                        this.custom_ui.overlay.attr("canvas", "true")
@@ -1534,7 +1540,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.form_data[field_name] = $(e.currentTarget).val()
                         // console.log( field_name,  $(e.currentTarget).val())
                         if(field_name === 'category'){
-                        if($(document.getElementById('gigatester-reason-checkbox'))){
+                        if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
                             $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
                             $(document.getElementsByClassName('gigatester-reason-labels')).next().remove("br");
                             $(document.getElementsByClassName('gigatester-reason-labels')).remove();
@@ -1544,7 +1550,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
                                 if(items.name.trim() == $(e.currentTarget).val().trim()){
                                     items.feedbacks.forEach( function(value){
-                                    let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                                    let feedback_reason = ' <input id="'+ value +'" class="gigatester-reason-checkboxes" type="checkbox"> <label for="' + value +'" class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
                                     $(feedback_reason).insertAfter($(document.getElementById('category')))
                                     })
                                 }
@@ -1554,7 +1560,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
                                 if(items.name.trim() == $(e.currentTarget).val().trim()){
                                     items.feedbacks.forEach( function(value){
-                                    let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                                    let feedback_reason = ' <input id="'+ value +'" class="gigatester-reason-checkboxes" type="checkbox"> <label for="' + value + '"  class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
                                     $(feedback_reason).insertAfter($(document.getElementById('category')))
                                     })
                                 }
@@ -1593,6 +1599,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.form_data['category'] = 'category';
                         }
                     }
+                    this.showSubCategory();
                 },
                 saveCheckedCategory: function(){
                     GigaTester_modal.configs.selected_category = [];
@@ -1608,7 +1615,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             if($(document.getElementById('category')).val()){
                             if(items.name.trim() == $(document.getElementById('category')).val().trim()){
                             items.feedbacks.forEach( function(value){
-                            let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                            let feedback_reason = ' <input id="' + value + '" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
                             $(feedback_reason).insertAfter($(document.getElementById('category')))
                             })
                         }
@@ -1620,7 +1627,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                          if($(document.getElementById('category')).val()){
                             if(items.name.trim() == $(document.getElementById('category')).val().trim()){
                             items.feedbacks.forEach( function(value){
-                            let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                            let feedback_reason = ' <input id="' + value +'" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
                             $(feedback_reason).insertAfter($(document.getElementById('category')))
                             })
                         }
@@ -1629,7 +1636,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                 },
                 saveSubCategory: function() {
-                        if($(document.getElementById('gigatester-reason-checkbox'))){
+                        if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
                             $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
                             $(document.getElementsByClassName('gigatester-reason-labels')).next().remove("br");
                             $(document.getElementsByClassName('gigatester-reason-labels')).remove();
@@ -1639,7 +1646,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                              if($(document.getElementById('category')).val()){
                                 if(items.name.trim() == $(document.getElementById('category')).val().trim()){
                                 items.feedbacks.forEach( function(value){
-                                let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                                let feedback_reason = ' <input id="' + value + '" class="gigatester-reason-checkboxes" type="checkbox"> <label for="' + value + '"  class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
                                 $(feedback_reason).insertAfter($(document.getElementById('category')))
                                 })
                             }
@@ -1648,15 +1655,16 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         }
                         else if(GigaTester_modal.form_type === "FEEDBACK"){
                             GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
-                                // console.log(items.name)
-                                // console.log(GigaTester.category)
-                                // console.log($(document.getElementById('category')).val(), 'selected')
-                             if($(document.getElementById('category')).val()){
-                                if(items.name.trim() == $(document.getElementById('category')).val().trim()){
+                                console.log(items.name, "inside save sub")
+                                console.log((document.getElementById('category')))
+                                console.log(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(), 'selected')
+                             if(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val()){
+                                if(items.name.trim() == (this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val()).trim()){
                                 items.feedbacks.forEach( function(value){
-                                // console.log(value, 'value')
+                                console.log(value, 'value')
                                 // console.log($(document.getElementById('category')).val(), 'selected')
-                                let feedback_reason = ' <input id="gigatester-reason-checkbox" class="gigatester-reason-checkboxes" type="checkbox"> <label class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                                let feedback_reason = ' <input id="' + value + '" class="gigatester-reason-checkboxes" type="checkbox"> <label for="' + value +  '" class="gigatester-reason-labels" id="gigatester-reason-label">' + value + '</label> <br>'
+                                
                                 $(feedback_reason).insertAfter($(document.getElementById('category')))
                                 })
                             }
@@ -1694,11 +1702,12 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 },
                 setDialogForm: function() {
                     let form_settings = this.getFormSettings(this.form_type);
+                    this.checkSessionStorage();
                     console.log(this.form_type, 'form type')
                     console.log('GigaTester : form settings ', form_settings);
                     console.log('GigaTester : dialog refresh mode', GigaTester_modal.set_screen_default_category)
                     if(GigaTester_modal.set_screen_default_category){
-                    GigaTester_modal.setCategory();
+                        GigaTester_modal.setCategory();
                     }
                     let display_screenshot = form_settings.allow_screenshot;
                     let display_audio = form_settings.allow_audio;
@@ -1795,13 +1804,25 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if (default_description) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('textarea[name="description"]').val(default_description)
                     }
+
                     if (default_category) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category)
+                        console.log(default_category, "form defaults")
+                        var select = document.getElementById('category');
+                        console.log(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val())
+                        // var value = select.options[select.selectedIndex].value;
+                        // console.log(value);
                     }
                     if (default_severity) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
                     }
-                    GigaTester_modal.saveSubCategory();
+                    console.log(default_email, "default email");
+                    setTimeout(()=>{
+                        GigaTester_modal.saveSubCategory();
+                    },10);
+
+                    // GigaTester_modal.showSubCategory();
+
                 },
                 openForm: function(form_type) {
                     this.form_type = form_type;
@@ -2680,9 +2701,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
                             $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
                             setTimeout(function () {
-                                // $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
+                                $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
-                                // close_icon.trigger("click")
+                                close_icon.trigger("click")
                             }, 3000);
                         })
                         .catch(error => {
@@ -2827,22 +2848,23 @@ const GigaTester_StringUtils = require('./js/stringUtils');
             open: function(mode) {
                 console.log('js api open');
                 console.log(mode)
-                GigaTester_modal.reset();
                 GigaTester_modal.openControls();
             },
             close: function() {
                 GigaTester_modal.reset();
             },
             show: function() {
-                    GigaTester_modal.custom_ui.element.css("display", "")
+                GigaTester_modal.custom_ui.element.css("display", "")
             },
             hide: function() {
                 GigaTester_modal.reset();
                 GigaTester_modal.custom_ui.element.hide()
             },
             setEmail: function(email) {
+                console.log(email);
                 if (typeof email === "string") {
                     GigaTester_modal.form_data.email = $.trim(email)
+                    console.log(email);
                     // GigaTester_modal.form_settings_default.BUGS.email_field_disable = true;
                     // GigaTester_modal.form_settings_default.FEEDBACK.email_field_disable = true;
                 }
