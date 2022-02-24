@@ -17,12 +17,11 @@ import jwtDecode from 'jwt-decode';
 // import { LatestNews } from '../../components/home/rightPane';
 import SignupForm from '../../components/signUpForm';
 // import { CreateOrganization } from '../../components';
-import feedback_img from './feedback.jpg';
+import feedback_img from './feedback_bg.jpg';
 import feedbackagent_img from './feedback_agent.jpg';
 import feedbackdashboard_img from './feedback_dashboard.jpg';
 import feedbackconfigure_img from './feedback_configure.jpg';
 import { Loader } from '../../components';
-import { withTextFileResponse } from '../../utils/http';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -33,7 +32,7 @@ const useStyles = makeStyles((theme) => ({
   sectionTop: {
     background: '#618abb',
   },
-  section: {
+  pageSection: {
     margin: '50px',
   },
   // marginTopTen: {
@@ -46,14 +45,14 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 'normal',
     fontSize: '18px',
   },
-  paper: {
+  ImgContainer: {
     borderRadius: 0,
     padding: 0,
     textAlign: 'right',
     height: '100%',
     marginBottom: '-4px',
   },
-  img: {
+  homeImg: {
     width: '100%',
     objectFit: 'contain',
     height: '100%',
@@ -65,16 +64,16 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     width: '100%',
   },
-  title: {
+  sectionTitle: {
     padding: "10px 15px",
   },
-  text: {
+  sectionText: {
     padding: "5px 15px",
     fontSize: "14px",
     lineHeight: "20px",
     colour: '#999999',
   },
-  button: {
+  trialBtn: {
     marginLeft: '0px',
     backgroundColor: '#00235e',
     '&:hover, &:focus, &:active': {
@@ -307,16 +306,16 @@ const Home = (props: any) => {
             </Typography>
           </Grid>
           <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.paper}>
+            <Container component='div' className={classes.ImgContainer}>
               <img
-                className={classes.img}
+                className={classes.homeImg}
                 src={feedback_img}
                 alt='Seemlessly receive feedback from users'
               />
             </Container>
           </Grid>
         </Grid>
-        <Grid container className={classes.section}>
+        <Grid container className={classes.pageSection}>
           <Grid item xs={12}>
             <Typography className={classes.headerText}>
               GigaTester enables Product teams to capture feedback and bugs reported by customers
@@ -329,61 +328,61 @@ const Home = (props: any) => {
               size="large"
               // className="button buttonMarginTopPane"
               data-testid="signUp"
-              className={classes.button}
+              className={classes.trialBtn}
                 >
               Let's try it
             </Button>
           </Grid>
         </Grid>
-        <Grid container className={classes.section}>
+        <Grid container className={classes.pageSection}>
           <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
-            <Typography variant="h6" className={classes.title}>Feedback agent</Typography>
-            <Typography className={classes.text}>
+            <Typography variant="h6" className={classes.sectionTitle}>Feedback agent</Typography>
+            <Typography className={classes.sectionText}>
               Capture feedback or bugs with screenshots, marks and comments on particular sections of
               the app visually. Do a screen recording if user wants to explain different actions in the
               application. No time to type the feedback, no problem. Just leave your voice feedback.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.paper}>
+            <Container component='div' className={classes.ImgContainer}>
               <img
-                className={classes.img}
+                className={classes.homeImg}
                 src={feedbackagent_img}
                 alt='GigaTester Feedback Agent'
               />
             </Container>
           </Grid>
         </Grid>
-        <Grid container className={classes.section}>
+        <Grid container className={classes.pageSection}>
           <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.paper}>
+            <Container component='div' className={classes.ImgContainer}>
               <img
-                className={classes.img}
+                className={classes.homeImg}
                 src={feedbackdashboard_img}
                 alt='GigaTester Feedback Dashboard'
               />
             </Container>
           </Grid>
           <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
-            <Typography variant="h6" className={classes.title}>Feedback dashboard</Typography>
-            <Typography className={classes.text}>
+            <Typography variant="h6" className={classes.sectionTitle}>Feedback dashboard</Typography>
+            <Typography className={classes.sectionText}>
               Get consolidated report and listing of all the feedbacks and bugs submitted by your users.
             </Typography>
           </Grid>
         </Grid>
-        <Grid container className={classes.section}>
+        <Grid container className={classes.pageSection}>
           <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
-            <Typography variant="h6" className={classes.title}>Feedback agent configuration</Typography>
-            <Typography className={classes.text}>
+            <Typography variant="h6" className={classes.sectionTitle}>Feedback agent configuration</Typography>
+            <Typography className={classes.sectionText}>
               Customise the agent to behave according to your app. Customise how it looks, where it is
               placed, what and how you wish your user to submit as reviews, what information it collects
               and how it integrates with your tracking systems.
             </Typography>
           </Grid>
           <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.paper}>
+            <Container component='div' className={classes.ImgContainer}>
               <img
-                className={classes.img}
+                className={classes.homeImg}
                 src={feedbackconfigure_img}
                 alt='GigaTester Feedback configuration'
               />
