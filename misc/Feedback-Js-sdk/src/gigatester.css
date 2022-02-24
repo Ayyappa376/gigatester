@@ -155,6 +155,50 @@ gttoolbar .gigatester-toolbar-tool-active {
 gttoolbar btn.gigatester-toolbar-tool-done {
   padding: 8px 8px 8px 12px;
   width: auto;
+  color: #011348;
+}
+gttoolbar btn > btn-tooltip {
+  width: auto;
+  height: auto;
+  line-height: normal;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  background: none;
+  display: none;
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  padding: 4px 8px;
+  margin: 0 0 12px 0;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  white-space: nowrap;
+  background-color: #011348;
+  transform: translateX(-50%);
+  user-select: none;
+  z-index: 132843426723;
+}
+gttoolbar btn > btn-tooltip-arrow {
+  display: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin: -1px auto auto auto;
+  border: 6px solid transparent;
+  border-top-color: #011348;
+}
+gttoolbar btn:hover btn-tooltip {
+  display: block;
 }
 gttoolbar btn.gigatester-toolbar-close svg {
   width: 16px !important;
@@ -193,13 +237,16 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker {
   background: #fff;
   display: none;
   position: absolute;
-  z-index: 2147483645;
-  top: 8px;
-  left: -60px;
-  margin: 18px 0 0 0;
-  padding: 4px 8px;
+  z-index: 132843426723;
+  top: 6px;
+  left: -56px;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-bottom: 6px;
+  margin: 22px 0 0 0;
   border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding-top: 32px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 10%);
   white-space: nowrap;
   animation: animationReappear 0.1s linear forwards;
 }
@@ -561,6 +608,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
 .gigatester-comment .gigatester-comment-form gtcomment:empty + btn {
   opacity: 0.2;
   cursor: default;
+  float: right;
 }
 .gigatester-comment .gigatester-comment-form .gigatester-input-btn {
   height: 30px;
@@ -569,6 +617,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: 500;
   text-transform: none;
+  float: right;
 
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-delete {
@@ -1161,6 +1210,16 @@ width: 300px;
 left: -38px;
 bottom: -23px;
 }
+#gigatester_audio_record_player_close{
+  top: 5px;
+  float: right;
+  right: 5px;
+  position: relative;
+}
+#gigatester_audio_record_player_close svg{
+  height: 18px;
+  width: 18px;
+}
 .gigatester-bug-help-message{
   font-size: 13px;
   font-weight: 500;
@@ -1663,7 +1722,7 @@ bottom: -23px;
   right: 0;
   transform: translateY(-50%);
   padding: 0 48px;
-  margin-top: -48px;
+  margin-top: -38px;
   text-align: center;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv
@@ -1703,7 +1762,7 @@ bottom: -23px;
   border: none;
   border-radius: 0;
   background: none;
-  margin: 8px 0 0 0;
+  margin: 14px 0 0 0;
   font-size: 14px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv[data-icon="1"] svg {
@@ -1724,7 +1783,7 @@ bottom: -23px;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 32px;
+  bottom: 2px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send {
   overflow: hidden;
@@ -2014,7 +2073,7 @@ gigatester-audio-volume-control{
   left: 0;
   background-color: #e8e8e8;
   }
-#gigatester_audio_record_player #gigatester_audio_record_player_close {
+#gigatester_audio_record_player #gigatester_audio_record_player_stop {
   position: absolute;
   width: 80px;
   height: 80px;
@@ -2034,7 +2093,7 @@ gigatester-audio-volume-control{
   top: 20%;
   color: #011348;
 }
-#gigatester_audio_record_player #gigatester_audio_record_player_close > svg {
+#gigatester_audio_record_player #gigatester_audio_record_player_stop > svg {
   display: block;
   width: 50px;
   height: 50px;
@@ -2227,6 +2286,21 @@ gtvideotoolbar
   gtvolume {
   display: none;
 }
+gtvideotoolbar btn.gigatester-video-controls-mute:before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 26px;
+  margin: auto;
+  border-radius: 4px;
+  background-color: #f02727;
+  transform: rotate(45deg);
+}
 gtvideotoolbar btn.gigatester-video-controls-pause svg {
   width: 28px;
   height: 28px;
@@ -2239,7 +2313,11 @@ gtvideotoolbar btn.gigatester-video-controls-close svg {
   width: 18px;
   height: 18px;
 }
-gtvideotoolbar btn.gigatester-video-controls-start btn-record {
+gtvideotoolbar
+  btn.gigatester-video-controls-mute.gigatester-video-controls-active:before {
+  display: none;
+}
+/* gtvideotoolbar btn.gigatester-video-controls-start btn-record {
   position: relative;
   display: block;
   width: 20px;
@@ -2249,7 +2327,7 @@ gtvideotoolbar btn.gigatester-video-controls-start btn-record {
   border-radius: 4px;
   background-color: #011348;
   transition: all 0.2s;
-}
+} */
 
 gtvideotoolbar btn.gigatester-video-controls-stop {
   display: block;
@@ -2287,7 +2365,7 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer btn-timer-mask {
   animation: gt-btnMask 10s steps(180, start) forwards;
   animation-play-state: paused;
 }
-gtvideotoolbar btn.gigatester-video-controls-timer {
+gtvideotoolbar .gigatester-video-controls-timer {
   display: none;
   color: rgba(53, 76, 95, 0.8);
   font-size: 14px;
@@ -2295,8 +2373,9 @@ gtvideotoolbar btn.gigatester-video-controls-timer {
   cursor: default;
   -webkit-font-smoothing: antialiased;
 }
-gtvideotoolbar btn.gigatester-video-controls-timer:hover {
-  background-color: #fff;
+gtvideotoolbar .gigatester-video-controls-timer-show{
+  /* background-color: #fff; */
+  display: block;
 }
 gtvideotoolbar gtvolume {
   position: absolute;
