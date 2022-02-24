@@ -816,8 +816,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.overlay.css({
                         top: captureArea.offset().top,
                         left: captureArea.offset().left,
-                        width: canvas_target.width(),
-                        height: canvas_target.height()
+                        // width: canvas_target.width(),
+                        // height: canvas_target.height()
                     })
                 },
                 removeGToverlay: function() {
