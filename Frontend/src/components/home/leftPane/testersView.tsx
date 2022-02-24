@@ -14,8 +14,11 @@ import "../style.css";
 const useStyles = makeStyles((theme) => ({
   root: {
     display: "flex",
+    fontSize: '20px',
+    padding: '5px 2px 5px 15px',
+
     "& > *": {
-      margin: theme.spacing(2),
+      margin: theme.spacing(3),
     },
   },
   large: {

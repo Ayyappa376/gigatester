@@ -218,8 +218,8 @@ const Home = (props: any) => {
           getSignupDialog={getSignupDialog}
           getOrganizationSelectionDialog={getOrganizationSelectionDialog}
         />
-        <Grid item xs={12} sm={1} />
-        <Grid item xs={12} sm={7}>
+        <Grid item xs={12} sm={2} />
+        <Grid item xs={12} sm={8}>
           <Grid item xs={12} sm={12} className={classes.marginTopTen}>
             <RecordsCount records={records} />
           </Grid>
@@ -233,9 +233,9 @@ const Home = (props: any) => {
             <PlatformsView platformList={platformList} />
           </Grid>
         </Grid>
-        <Grid item xs={12} sm={3} className={classes.marginTopTen}>
+        {/* <Grid item xs={12} sm={3} className={classes.marginTopTen}>
           <LatestNews latestNews={latestNews} />
-        </Grid>
+        </Grid> */}
       </Grid>
       {openSignup && (
         <SignupForm
