@@ -1820,7 +1820,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
                     }
                     console.log(default_email, "default email");
-                    this.custom_ui.events.find('.gigatester-ctrl-item-step').find('.gigatester-ctrl-item-preview-placeholder').css('border', '1px solid black')
+                    this.custom_ui.events.find('.gigatester-ctrl-item-step').find('.gigatester-ctrl-item-preview-placeholder').css('border', '1px solid #bfbfbf')
                     setTimeout(()=>{
                         GigaTester_modal.saveSubCategory();
                     },10);
@@ -1978,7 +1978,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 }
                                 GigaTester_modal.clearNotifyStatus();
                                 const image_overlay = $('<gtdiv id="gigatester_images_player"><gtdiv></gtdiv></gtdiv>');
-                                const image = $('<image id="gigatester_images_preview_player" width=300 height=225 src="' + base64Image + '"></image>');
+                                const image = $('<image id="gigatester_images_preview_player" width=300 height=auto src="' + base64Image + '"></image>');
                                 const image_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
                                 $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
                                 $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
