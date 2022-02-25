@@ -76,7 +76,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     e.stopPropagation()
                 });
                 this.setHTML = function() {
-                    return '<div class="gigatester-comment-pin"><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + GigaTester_StringRes.get("add_comment") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-input-btn gigatester-btn-save">' + GigaTester_StringRes.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + GigaTester_StringRes.get("delete") + '">' + GigaTester_Icons.trash_bin_icon + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.cross_icon + "</btn>" + "</form>"
+                    return '<div class="gigatester-comment-pin" style="background-color:' + GigaTester_modal.Draw_Tools.color.value + ';" ><span>' + (this.counter + 1) + "</span></div>" + '<form class="gigatester-comment-form">' + '<gtcomment class="gtmousescroll" contenteditable="true" data-ph="' + GigaTester_StringRes.get("add_comment") + '" gramm_editor="false"></gtcomment>' + '<btn class="gigatester-input-btn gigatester-btn-save">' + GigaTester_StringRes.get("save") + "</btn>" + '<btn class="gigatester-comment-form-delete" title="' + GigaTester_StringRes.get("delete") + '">' + GigaTester_Icons.trash_bin_icon + "</btn>" + '<btn class="gigatester-comment-form-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.close_icon + "</btn>" + "</form>"
                 };
                 this.isOpen = function() {
                     return element.find(".gigatester-comment-form").is(":visible")
@@ -302,7 +302,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.stp_btn = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>"  + "</btn-tooltip>" + GigaTester_Icons.stop_icon).appendTo(this.controls);
                     this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("remaining_time", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>").appendTo(this.controls);
                     this.timer_button = $("<btn>").addClass("gigatester-video-controls-timer").text(this.getTimerStr()).appendTo(this.controls);
-                    this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.cross_icon).appendTo(this.controls);
+                    this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.close_icon).appendTo(this.controls);
                     // this.mic_volume = $("<gtvolume>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume>").appendTo(this.mute_button);
                     if (!this.device_list.audioinput.length) {
                         this.is_muted = true;
@@ -921,7 +921,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-blackout" data-type="blackout" ">' + GigaTester_Icons.square_filled_icon + "<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("blackout") + "</btn-name>" + "</btn-tooltip>" +"</btn>"
                          + '<btn class="gigatester-toolbar-tool gigatester-toolbar-tool-color" data-type="color">' + tool_color_indicator + "<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("color_palette") + "</btn-name>" + "</btn-tooltip>" + "</btn>"
                          + '<btn class="gigatester-toolbar-tool-done gigatester-toolbar-tool-done-active">' + GigaTester_StringRes.get("capture") + "<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("capture_screenshot") + "</btn-name>" + "</btn-tooltip>" + "</btn>"
-                         + '<btn class="gigatester-toolbar-close">' +  GigaTester_Icons.cross_icon + "<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("discard_screenshot") + "</btn-name>" + "</btn-tooltip>" + "</btn>";
+                         + '<btn class="gigatester-toolbar-close">' +  GigaTester_Icons.close_icon + "<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("discard_screenshot") + "</btn-name>" + "</btn-tooltip>" + "</btn>";
                         this.toolbar = $("<gttoolbar>").attr("lang", GigaTester_modal.configs.locale).attr("data-html2canvas-ignore", "true");
                         this.toolbar.html(tools);
                         this.setToolsColor();
@@ -1124,6 +1124,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             let movement_y = Math.abs(this.start_y - y);
                             if (!$(event.target).hasClass("gigatester-svg-delete") && movement_x <= 2 && movement_y <= 2) {
                                 GigaTester_modal.canvasCommentStart.call(GigaTester_modal, event)
+                                console.log('svg delete comment')
                             }
                             this.dragging_obj = false;
                             this.start_x = 0;
@@ -1153,6 +1154,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                     }
                                 }
                                 this.setBaseSize();
+                                console.log('comment at click')
                                 GigaTester_modal.canvasCommentStart.call(GigaTester_modal, event);
                                 GigaTester_modal.custom_ui.overlay.trigger("mouseleave")
                             } else {
@@ -1166,6 +1168,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                     cursor: "pointer",
                                 }).addClass("gigatester-svg-delete");
                                 this.svg_delete_icons.push(icon);
+                                console.log('comment_counter at drag');
                                 GigaTester_modal.canvasCommentStart.call(GigaTester_modal, event);
                                 switch (this.type) {
                                     case "square":
@@ -1817,6 +1820,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
                     }
                     console.log(default_email, "default email");
+                    this.custom_ui.events.find('.gigatester-ctrl-item-step').find('.gigatester-ctrl-item-preview-placeholder').css('border', '1px solid black')
                     setTimeout(()=>{
                         GigaTester_modal.saveSubCategory();
                     },10);
@@ -1977,6 +1981,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 const image = $('<image id="gigatester_images_preview_player" width=300 height=225 src="' + base64Image + '"></image>');
                                 const image_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
                                 $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
+                                $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
                                 image.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
                                 image_close.insertAfter(image);
                                 GigaTester_modal.loadImage(base64Image);
@@ -2111,9 +2116,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             console.log(src, 'audio blob')
                             let audio_overlay = $('<div id="gigatester_audio_player"><div></div></div>');
                             let audio = $('<audio id="gigatester_audio_preview_player" controls loop autoplay preload="auto" src="' + src + '"></audio>');
-                            let audio_close = $('<button id="gigatester_audio_player_close">').html(GigaTester_Icons.trash_bin_icon);
+                            let audio_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
                             $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
                             audio.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
+                            $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
                             audio_close.insertAfter(audio);
                             GigaTester_modal.loadAudio(src);
                             audio_close.on("click", function() {
@@ -2178,8 +2184,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         }
                         let video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                         let video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
-                        let video_close = $('<button id="gigatester_video_player_close">').html(GigaTester_Icons.trash_bin_icon);
+                        let video_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
                         $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
+                        $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
                         video.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
                         video_close.insertAfter(video);
                         video_close.on("click", function() {
@@ -2195,9 +2202,16 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 GigaTester_modal.selectedRating();
                             }
                             })
+                            GigaTester_modal.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
+                            GigaTester_modal.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
+                            GigaTester_modal.custom_ui.events.find(".gigatester-ctrl-item-audio").attr('disabled', 'true');
+                            GigaTester_modal.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").attr('disabled', 'true');
+                            GigaTester_modal.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").attr('disabled', 'true');
+
                         }, 100);
                         GigaTester_modal.showControls();
                         GigaTester_modal.loadVideo(src);
+
             },
 
                 startScreenRecorder: function(e) {
@@ -2214,14 +2228,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     })
                 },
                 loadVideo: async function(src) {
+                    console.log('loaded video')
                     GigaTester_modal.form_data.video_file = await fetch(src)
                     .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_video_' + GigaTester_modal.UUIDv4() +'.mp4', { type: 'video/mp4' }));
                     console.log(GigaTester_modal.form_data.video_file, 'video file loaded');
-                    this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
-                    this.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
-                    this.custom_ui.events.find(".gigatester-ctrl-item-audio").attr('disabled', 'true');
-                    this.custom_ui.events.find(".gigatester-ctrl-item-add-attachment").attr('disabled', 'true');
-                    this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").attr('disabled', 'true');
                 },
                 toggleAttachButtons: function() {
                     this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions").toggle(this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn[disabled]").length !== this.custom_ui.events.find(".gigatester-ctrl-item-attach-actions btn").length)
@@ -2402,7 +2412,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     GigaTester_modal.form_data.external_file = e.target.files[0];
                     let external_file_overlay = $('<div id="gigatester_external_file_loader"><div></div></div>');
                     let external_file = $('<div id="gigatester_external_file_preview">' + GigaTester_modal.form_data.external_file.name + '</div>').html(GigaTester_modal.form_data.external_file.fileName);
-                    let external_file_close = $('<button id="gigatester_external_file_close">').html(GigaTester_Icons.trash_bin_icon);
+                    let external_file_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
+                    $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
                     const size_limit = GigaTester_modal.configs.attachment_size || 1;
                     $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
                     external_file.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));

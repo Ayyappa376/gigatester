@@ -11,6 +11,9 @@ gtdiv {
 gtspan {
   all: unset;
 }
+gtdiv *{
+  box-sizing: border-box;
+}
 #gigatester_screencapture_dialog{
   position: fixed;
   top: 2%;
@@ -156,6 +159,7 @@ gttoolbar btn.gigatester-toolbar-tool-done {
   padding: 8px 8px 8px 12px;
   width: auto;
   color: #011348;
+  font-size: 16px;
 }
 gttoolbar btn > btn-tooltip {
   width: auto;
@@ -201,8 +205,8 @@ gttoolbar btn:hover btn-tooltip {
   display: block;
 }
 gttoolbar btn.gigatester-toolbar-close svg {
-  width: 16px !important;
-  height: 16px !important;
+  width: 14px !important;
+  height: 14px !important;
 }
 gttoolbar .gigatester-toolbar-tool-color:hover gtcolorpicker {
   display: block;
@@ -446,7 +450,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   left: -20px;
   width: 35px;
   height: 35px;
-  background: var(--main-btn-bg) !important;
+  /* background: var(--main-btn-bg) !important; */
   border-radius: 4px;
   border: none;
   box-shadow: 0 0 10px #5c6c7c;
@@ -1791,7 +1795,7 @@ bottom: -23px;
   display: block;
   height: 40px;
   padding: 0 24px;
-  margin: 20px 0 0 25%;
+  margin: 20px 0 0 103px;
   border-radius: 4px;
   box-sizing: border-box;
   font-weight: 400;
