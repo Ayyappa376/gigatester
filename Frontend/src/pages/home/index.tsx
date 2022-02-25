@@ -19,8 +19,8 @@ import SignupForm from '../../components/signUpForm';
 // import { CreateOrganization } from '../../components';
 import feedback_img from './feedback_bg.jpg';
 import feedbackagent_img from './feedback_agent.jpg';
-import feedbackdashboard_img from './feedback_dashboard.jpg';
-import feedbackconfigure_img from './feedback_configure.jpg';
+import feedbackdashboard_img from './updated_dashboard.png';
+import feedbackconfigure_img from './updated_feedbackConfig.png';
 import { Loader } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
@@ -36,17 +36,26 @@ const useStyles = makeStyles((theme) => ({
   pageSection: {
     margin: '50px',
   },
-  // marginTopTen: {
-  //   marginTop: '10px',
-  // },
-  // marginTopTwenty: {
-  //   marginTop: '20px',
-  // },
+  pageBlurbSection: {
+    margin: '50px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    width: '90%',
+  },
   headerText: {
     fontWeight: 'normal',
     fontSize: '18px',
   },
   ImgContainer: {
+    borderRadius: 0,
+    padding: 0,
+    textAlign: 'right',
+    height: '100%',
+    marginBottom: '-4px',
+    boxShadow: '0px 2px 5px 0px rgba(135,135,135,1)',
+  },
+  ImgHeader: {
     borderRadius: 0,
     padding: 0,
     textAlign: 'right',
@@ -70,7 +79,7 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionText: {
     padding: "5px 15px",
-    fontSize: "14px",
+    fontSize: "16px",
     lineHeight: "20px",
     colour: '#999999',
   },
@@ -307,7 +316,7 @@ const Home = (props: any) => {
             </Typography>
           </Grid>
           <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.ImgContainer}>
+            <Container component='div' className={classes.ImgHeader}>
               <img
                 className={classes.homeImg}
                 src={feedback_img}
@@ -316,6 +325,7 @@ const Home = (props: any) => {
             </Container>
           </Grid>
         </Grid>
+        <Container className={classes.pageBlurbSection}>
         <Grid container className={classes.pageSection}>
           <Grid item xs={12}>
             <Typography className={classes.headerText}>
@@ -367,7 +377,7 @@ const Home = (props: any) => {
           <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
             <Typography variant="h6" className={classes.sectionTitle}>Feedback dashboard</Typography>
             <Typography className={classes.sectionText}>
-              Get consolidated report and listing of all the feedbacks and bugs submitted by your users.
+              Get consolidated report and listing of all the feedbacks and bugs submitted by your users. Reports include bar and piecharts of feedback by category and a detailed list of individual-user submissions, which can be filtered for a more percise look.
             </Typography>
           </Grid>
         </Grid>
@@ -390,6 +400,7 @@ const Home = (props: any) => {
             </Container>
           </Grid>
         </Grid>
+      </Container>
       </Grid>
       {openSignup && (
       <SignupForm
