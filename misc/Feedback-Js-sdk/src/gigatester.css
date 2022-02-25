@@ -1627,7 +1627,7 @@ bottom: -23px;
   overflow: hidden;
   margin: 16px 0 4px 0;
 }
-#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-reason-checkboxes{
+#gigatester_ctrls_container .gigatester-ctrl-item input.gigatester-reason-checkboxes[type="checkbox"]{
   position: relative;
   opacity: 100;
   pointer-events: all;
@@ -2134,7 +2134,7 @@ gigatester-audio-volume-control{
 }
 #gigatester_external_file_preview{
 display: inline-block;
-padding: 5px;
+padding: 11px 5px;
 border-radius: 4px;
 color: #011348d0;
 border: 2px solid #011348d0;
@@ -2172,7 +2172,7 @@ background: #fafbfd;
 }
 .gigatester-popup-dialog{
   height: auto;
-  width: 70px;
+  width: 80px;
   background: #fff;
   position: absolute;
   border-radius: 4px;
