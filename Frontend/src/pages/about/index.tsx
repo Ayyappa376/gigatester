@@ -5,7 +5,7 @@ import { Button, Grid, Paper, Typography } from "@material-ui/core";
 
 const About = () => {
   return (
-    <div style={{backgroundColor: "white"}}>
+    <div>
       <p style={{padding: "50px"}}>
         <Typography variant="h4"><Text tid='aboutUs' /></Typography>
         GigaTester is a platform that empowers you to develop and launch great products with confidence.

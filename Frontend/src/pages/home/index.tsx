@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import { Container, Grid, Typography, Button, makeStyles, colors } from '@material-ui/core';
 //import { makeStyles } from '@material-ui/styles';
 import { useSelector } from 'react-redux';
 import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
@@ -18,9 +18,9 @@ import jwtDecode from 'jwt-decode';
 import SignupForm from '../../components/signUpForm';
 // import { CreateOrganization } from '../../components';
 import feedback_img from './feedback_bg.jpg';
-import feedbackagent_img from './feedback_agent.jpg';
-import feedbackdashboard_img from './updated_dashboard.png';
-import feedbackconfigure_img from './updated_feedbackConfig.png';
+import feedbackagent_img from './feedback_agent.png';
+import feedbackdashboard_img from './feedback_dashboard.png';
+import feedbackconfigure_img from './feedback_configure.png';
 import { Loader } from '../../components';
 
 const useStyles = makeStyles((theme) => ({
@@ -45,15 +45,15 @@ const useStyles = makeStyles((theme) => ({
   },
   headerText: {
     fontWeight: 'normal',
-    fontSize: '18px',
+    fontSize: '20px',
   },
   ImgContainer: {
-    borderRadius: 0,
+    borderRadius: '2px',
     padding: 0,
     textAlign: 'right',
     height: '100%',
     marginBottom: '-4px',
-    boxShadow: '0px 2px 5px 0px rgba(135,135,135,1)',
+    boxShadow: '0px 1px 6px 0px rgba(0,0,0,1)',
   },
   ImgHeader: {
     borderRadius: 0,
@@ -76,11 +76,12 @@ const useStyles = makeStyles((theme) => ({
   },
   sectionTitle: {
     padding: "10px 15px",
+    fontWeight: 'bold',
   },
   sectionText: {
     padding: "5px 15px",
-    fontSize: "16px",
-    lineHeight: "20px",
+    fontSize: "18px",
+    lineHeight: "22px",
     colour: '#999999',
   },
   trialBtn: {
@@ -90,6 +91,7 @@ const useStyles = makeStyles((theme) => ({
       backgroundColor: '#00235e',
     },
     color: 'white',
+    boxShadow: '0px 2px 5px 0px rgba(0,0,0,1)',
   },
 }));
 
@@ -307,7 +309,7 @@ const Home = (props: any) => {
           <LatestNews latestNews={latestNews} />
         </Grid> */}
         <Grid container className={classes.sectionTop}>
-          <Grid item xs={12} sm={7} style={{ padding: '50px', paddingTop: "150px" }}>
+          <Grid item xs={12} sm={7} style={{ padding: '50px', paddingTop: "170px" }}>
             <Typography variant='h4'>
               <strong>GigaTester Feedbacks</strong>
             </Typography>
@@ -326,81 +328,81 @@ const Home = (props: any) => {
           </Grid>
         </Grid>
         <Container className={classes.pageBlurbSection}>
-        <Grid container className={classes.pageSection}>
-          <Grid item xs={12}>
-            <Typography className={classes.headerText}>
-              GigaTester enables Product teams to capture feedback and bugs reported by customers
-              directly without going through middle layer.
-            </Typography>
-            <Button
-              variant="outlined"
-              onClick={() => getSignupDialog(true)}
-              color="primary"
-              size="large"
-              // className="button buttonMarginTopPane"
-              data-testid="signUp"
-              className={classes.trialBtn}
-                >
-              Let's try it
-            </Button>
+          <Grid container className={classes.pageSection}>
+            <Grid item xs={12}>
+              <Typography className={classes.headerText}>
+                GigaTester enables Product teams to capture feedback and bugs reported by customers
+                directly without going through middle layer.
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={() => getSignupDialog(true)}
+                color="primary"
+                size="large"
+                // className="button buttonMarginTopPane"
+                data-testid="signUp"
+                className={classes.trialBtn}
+                  >
+                Let's try out
+              </Button>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container className={classes.pageSection}>
-          <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
-            <Typography variant="h6" className={classes.sectionTitle}>Feedback agent</Typography>
-            <Typography className={classes.sectionText}>
-              Capture feedback or bugs with screenshots, marks and comments on particular sections of
-              the app visually. Do a screen recording if user wants to explain different actions in the
-              application. No time to type the feedback, no problem. Just leave your voice feedback.
-            </Typography>
+          <Grid container className={classes.pageSection}>
+            <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
+              <Typography variant="h5" className={classes.sectionTitle}>Feedback agent</Typography>
+              <Typography className={classes.sectionText}>
+                Capture feedback or bugs with screenshots, marks and comments on particular sections of
+                the app visually. Do a screen recording if user wants to explain different actions in the
+                application. No time to type the feedback, no problem. Just leave your voice feedback.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={5}>
+              <Container component='div' className={classes.ImgContainer}>
+                <img
+                  className={classes.homeImg}
+                  src={feedbackagent_img}
+                  alt='GigaTester Feedback Agent'
+                />
+              </Container>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.ImgContainer}>
-              <img
-                className={classes.homeImg}
-                src={feedbackagent_img}
-                alt='GigaTester Feedback Agent'
-              />
-            </Container>
+          <Grid container className={classes.pageSection}>
+            <Grid item xs={12} sm={5}>
+              <Container component='div' className={classes.ImgContainer}>
+                <img
+                  className={classes.homeImg}
+                  src={feedbackdashboard_img}
+                  alt='GigaTester Feedback Dashboard'
+                />
+              </Container>
+            </Grid>
+            <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
+              <Typography variant="h5" className={classes.sectionTitle}>Dashboard</Typography>
+              <Typography className={classes.sectionText}>
+                Get consolidated report and listing of all the feedbacks and bugs submitted by your users. Reports include bar and piecharts of feedback by category and a detailed list of individual-user submissions, which can be filtered for a more percise look.
+              </Typography>
+            </Grid>
           </Grid>
-        </Grid>
-        <Grid container className={classes.pageSection}>
-          <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.ImgContainer}>
-              <img
-                className={classes.homeImg}
-                src={feedbackdashboard_img}
-                alt='GigaTester Feedback Dashboard'
-              />
-            </Container>
+          <Grid container className={classes.pageSection}>
+            <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
+              <Typography variant="h5" className={classes.sectionTitle}>Easy configuration</Typography>
+              <Typography className={classes.sectionText}>
+                Customise the agent to behave according to your app. Customise how it looks, where it is
+                placed, what and how you wish your user to submit as reviews, what information it collects
+                and how it integrates with your tracking systems.
+              </Typography>
+            </Grid>
+            <Grid item xs={12} sm={5}>
+              <Container component='div' className={classes.ImgContainer}>
+                <img
+                  className={classes.homeImg}
+                  src={feedbackconfigure_img}
+                  alt='GigaTester Feedback configuration'
+                />
+              </Container>
+            </Grid>
           </Grid>
-          <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
-            <Typography variant="h6" className={classes.sectionTitle}>Feedback dashboard</Typography>
-            <Typography className={classes.sectionText}>
-              Get consolidated report and listing of all the feedbacks and bugs submitted by your users. Reports include bar and piecharts of feedback by category and a detailed list of individual-user submissions, which can be filtered for a more percise look.
-            </Typography>
-          </Grid>
-        </Grid>
-        <Grid container className={classes.pageSection}>
-          <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
-            <Typography variant="h6" className={classes.sectionTitle}>Feedback agent configuration</Typography>
-            <Typography className={classes.sectionText}>
-              Customise the agent to behave according to your app. Customise how it looks, where it is
-              placed, what and how you wish your user to submit as reviews, what information it collects
-              and how it integrates with your tracking systems.
-            </Typography>
-          </Grid>
-          <Grid item xs={12} sm={5}>
-            <Container component='div' className={classes.ImgContainer}>
-              <img
-                className={classes.homeImg}
-                src={feedbackconfigure_img}
-                alt='GigaTester Feedback configuration'
-              />
-            </Container>
-          </Grid>
-        </Grid>
-      </Container>
+        </Container>
       </Grid>
       {openSignup && (
       <SignupForm

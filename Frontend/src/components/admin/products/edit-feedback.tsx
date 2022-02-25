@@ -206,12 +206,14 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           response.products[0].feedbackAgentSettings = {
             categories: [],
             feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
+            bugSettings: {},
+            feedbackSettings: {},
             invokeDelay: 5,
             invokeOn: [INVOKE_TYPE_MANUAL],
             ratingIcon: RATING_ICON_TYPE_STAR,
             ratingLimit: 2,
             severities: [SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW],
-            title: 'GigaTester',
+            title: '',
             uploadFileMaxSize: '400',
             videoAudioMaxDuration: '1.5',
             widgetLookAndFeel: {

@@ -508,7 +508,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
             />
           </div>
           :
-          noDataError ? <div style={{marginTop: '3rem'}}><Failure message={`There is no feedback to show.`}/></div>:
+          noDataError ? <div style={{marginTop: '3rem'}}><Failure message={`There is no bugs to show.`}/></div>:
           <div>
             <ImageModal {...imagePayload}/>
             <div style={{marginTop: 50}}>
