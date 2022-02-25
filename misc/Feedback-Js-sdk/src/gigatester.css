@@ -1627,14 +1627,14 @@ bottom: -23px;
   overflow: hidden;
   margin: 16px 0 4px 0;
 }
-.gigatester-reason-checkboxes{
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-reason-checkboxes{
   position: relative;
   opacity: 100;
   pointer-events: all;
   height: 17px;
   width: 17px;
 }
-#gigatester-reason-label{
+#gigatester_ctrls_container .gigatester-ctrl-item #gigatester-reason-label{
   font-size: 14px;
   font-weight: 400;
   color: #011348;
