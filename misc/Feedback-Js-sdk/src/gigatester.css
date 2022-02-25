@@ -1627,7 +1627,11 @@ bottom: -23px;
   overflow: hidden;
   margin: 16px 0 4px 0;
 }
+<<<<<<< HEAD
 #gigatester_ctrls_container .gigatester-ctrl-item input.gigatester-reason-checkboxes[type="checkbox"]{
+=======
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-reason-checkboxes{
+>>>>>>> 3fa68b2e209dbc48667d286a694eca003986e1a4
   position: relative;
   opacity: 100;
   pointer-events: all;
