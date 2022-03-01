@@ -1,14 +1,17 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
 import Modal from 'react-native-modal';
-import ChoiceButton from './ChoiceButton';
+import ChoiceButton from './buttons/ChoiceButton';
 import FormModal from './FormModal';
+import ToolModal from './ToolModal';
+import CloseBtn from './buttons/CloseBtn';
 
 const ChoiceModal = props => {
   const [showForm, setShowForm] = useState(false);
-  const {show, setModalOpen} = props.props;
-  const options = [{name: 'Give Feedback'}, {name: 'Report Bug'}];
-  console.log(showForm);
+  const [showAttach, setShowAttach] = useState(false);
+  const [choice, setChoice] = useState('');
+  const {show, setModalOpen, setShowButton} = props.props;
+  const options = [ {name: 'Report Bug'}, {name: 'Give Feedback'}];
   const content = (
     <Modal
       isVisible={show}
@@ -22,14 +25,17 @@ const ChoiceModal = props => {
               <ChoiceButton
                 key={btn.name}
                 setShowForm={setShowForm}
+                setChoice={setChoice}
                 title={btn.name}
               />
             ))}
           </View>
         ) : null}
-        <Button onPress={() => setModalOpen(false)} title="close" />
+        {/* <Button onPress={() => {setModalOpen(false), setShowButton(true)}} title="close" /> */}
+        <CloseBtn setModalOpen={setModalOpen} setShowButton={setShowButton}/>
       </View>
-      {showForm ? <FormModal showForm={showForm} /> : null}
+      {showForm ? <FormModal type={choice} showForm={showForm} setShowForm={setShowForm} setShowAttach={setShowAttach} /> : null}
+      {showAttach ? <ToolModal showAttach={showAttach} setShowAttach={setShowAttach} /> : null}
     </Modal>
   );
 
@@ -45,7 +51,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: 300,
     padding: 10,
-    borderRadius: 5,
+    borderRadius: 15,
     shadowColor: '#171717',
     shadowOffset: {width: -2, height: 4},
     shadowOpacity: 0.3,

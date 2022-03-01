@@ -14,8 +14,7 @@ import {
   Dimensions,
   StatusBar,
 } from 'react-native';
-import FeedbackButton from './components/FeedbackButton';
-import ChoiceModal from './components/ChoiceModal';
+import Gigatester from './components/Gigatester';
 //import screen recorder
 import Video from 'react-native-video';
 import RecordScreen from 'react-native-record-screen';
@@ -36,7 +35,6 @@ const App = () => {
   const [savedImagePath, setSavedImagePath] = useState('');
   const [uri, setUri] = useState('');
   const [recording, setRecording] = useState(false);
-  const [showModal, setModalOpen] = useState(false);
   const [audioAttributes, setAudioAtrributes] = useState({
     isLoggingIn: false,
     recordSecs: 0,
@@ -126,24 +124,10 @@ const App = () => {
     );
   };
 
-  let modalProps = {
-    show: showModal,
-    setModalOpen: setModalOpen,
-  };
-
   return (
     <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      {!showModal ? (
-        <View>
-          <FeedbackButton onPress={() => setModalOpen(true)} />
-        </View>
-      ) : null}
-      {showModal ? (
-        <View>
-          <ChoiceModal props={modalProps} />
-        </View>
-      ) : null}
+      <Gigatester />
       {/* <View style={styles.navbar}>
         <View />
         {recording ? (
@@ -157,10 +141,10 @@ const App = () => {
           </View>
         )}
       </View> */}
-      {/* <SafeAreaView style={styles.container}>
-        <Button title="RECORD AUDIO" onPress={() => onStartRecord()} />
+      <SafeAreaView style={styles.container}>
+        {/* <Button title="RECORD AUDIO" onPress={() => onStartRecord()} />
         <Text style={styles.text}>{audioAttributes.recordTime}</Text>
-        <Button title="STOP AUDIO" onPress={() => onStopRecord()} />
+        <Button title="STOP AUDIO" onPress={() => onStopRecord()} /> */}
         <Image
           source={{uri: imageURI}}
           style={{
@@ -237,7 +221,7 @@ const App = () => {
             </Text>
           </View>
         </ScrollView>
-      </SafeAreaView> */}
+      </SafeAreaView>
       {/* <View style={styles.btnContainer}>
         <TouchableHighlight onPress={_handleOnRecording}>
           <View style={styles.btnWrapper}>

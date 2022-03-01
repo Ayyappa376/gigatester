@@ -14,7 +14,7 @@ const FeedbackButton = props => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: '#011348',
-    padding: 16,
+    padding: 13,
     width: 150,
     alignItems: 'center',
     borderRadius: 5,

@@ -1,27 +1,20 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {StyleSheet, Text, View, Button} from 'react-native';
 import Modal from 'react-native-modal';
-import Form from './Form';
+import ToolBar from './Toolbar';
+import SubmitButton from './buttons/SubmitFeedbck';
 
-const FormModal = props => {
-  const handleNext = () => {
-    props.setShowForm(false);
-    props.setShowAttach(true);
-  }
+const ToolModal = props => {
+  const [isAttached, setIsAttached] = useState(true);
   const content = (
     <Modal
-      isVisible={props.showForm}
+      isVisible={props.showAttach}
       coverScreen={true}
       backdropColor="gray"
       backdropOpacity={0.6}>
       <View style={styles.modalContent}>
-        <View style={styles.btnHolder}>
-          <Form type={props.type} />
-        </View>
-        <View style={styles.btnOrganize}>
-        <Button onPress={() => props.setShowForm(false)} title="back" />
-        <Button onPress={() => handleNext()} title="next" />
-        </View>
+        <ToolBar />
+        <SubmitButton />
       </View>
     </Modal>
   );
@@ -36,8 +29,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: 'white',
     width: '100%',
-    height: 450,
-    padding: 10,
+    height: 320,
+    padding: 20,
     borderRadius: 15,
     shadowColor: '#171717',
     shadowOffset: {width: -2, height: 4},
@@ -56,13 +49,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-evenly',
     alignItems: 'center',
   },
-  btnOrganize: {
-    width: '95%',
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  }
 });
 
-export default FormModal;
+export default ToolModal;

@@ -18,3 +18,7 @@ https://www.npmjs.com/package/react-native-audio-recorder-player
 
 Need to follow Post installation for IOS from above link
 
+
+For running IOS
+- install react-native globally
+- In root directory (screenshotApp), run npm run ios or react-native run-ios
