@@ -1,5 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
-
+import React, {useState, useMemo, useCallback} from 'react';
 
 // import all the components we are going to use
 import {
@@ -11,127 +10,141 @@ import {
   TouchableOpacity,
   ScrollView,
   TouchableHighlight,
-  Button, 
+  Button,
   Dimensions,
   StatusBar,
 } from 'react-native';
-
-//import screen recorder 
+import FeedbackButton from './components/FeedbackButton';
+import ChoiceModal from './components/ChoiceModal';
+//import screen recorder
 import Video from 'react-native-video';
 import RecordScreen from 'react-native-record-screen';
 // import CaptureScreen
 import {captureScreen} from 'react-native-view-shot';
 
 //import Audio recorder
-import AudioRecorderPlayer, { 
+import AudioRecorderPlayer, {
   AVEncoderAudioQualityIOSType,
-  AVEncodingOption, 
+  AVEncodingOption,
   AudioEncoderAndroidType,
   AudioSet,
-  AudioSourceAndroidType, 
- } from 'react-native-audio-recorder-player';
+  AudioSourceAndroidType,
+} from 'react-native-audio-recorder-player';
 
 const App = () => {
-  const [imageURI, setImageURI] = useState(
-    'https://i.imgur.com/rrIsXo6.jpeg',
-  );
+  const [imageURI, setImageURI] = useState('https://i.imgur.com/rrIsXo6.jpeg');
   const [savedImagePath, setSavedImagePath] = useState('');
   const [uri, setUri] = useState('');
   const [recording, setRecording] = useState(false);
-  const [audioAttributes, setAudioAtrributes] = useState({isLoggingIn: false,
+  const [showModal, setModalOpen] = useState(false);
+  const [audioAttributes, setAudioAtrributes] = useState({
+    isLoggingIn: false,
     recordSecs: 0,
     recordTime: '00:00:00',
     currentPositionSec: 0,
     currentDurationSec: 0,
     playTime: '00:00:00',
-    duration: '00:00:00',})
+    duration: '00:00:00',
+  });
   const audioRecorderPlayer = new AudioRecorderPlayer();
-    //To Record Screen
-    audioRecorderPlayer.setSubscriptionDuration(0.09);
+  //To Record Screen
+  audioRecorderPlayer.setSubscriptionDuration(0.09);
 
-    const onStartRecord = async () => {
-    
-      const path = 'hello.m4a';
-      const audioSet = {
-        AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
-        AudioSourceAndroid: AudioSourceAndroidType.MIC,
-        AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
-        AVNumberOfChannelsKeyIOS: 2,
-        AVFormatIDKeyIOS: AVEncodingOption.aac,
-      };
-      console.log('audioSet', audioSet);
-      const uri = await audioRecorderPlayer.startRecorder();
-      audioRecorderPlayer.addRecordBackListener((e) => {
-        setAudioAtrributes({
-          recordSecs: e.current_position,
-          recordTime: audioRecorderPlayer.mmssss(
-            Math.floor(e.current_position),
-          ),
-        });
-      });
-      console.log(`uri: ${uri}`);
+  const onStartRecord = async () => {
+    const path = 'hello.m4a';
+    const audioSet = {
+      AudioEncoderAndroid: AudioEncoderAndroidType.AAC,
+      AudioSourceAndroid: AudioSourceAndroidType.MIC,
+      AVEncoderAudioQualityKeyIOS: AVEncoderAudioQualityIOSType.high,
+      AVNumberOfChannelsKeyIOS: 2,
+      AVFormatIDKeyIOS: AVEncodingOption.aac,
     };
-
-    const onStopRecord = async () => {
-      const result = await audioRecorderPlayer.stopRecorder();
-      audioRecorderPlayer.removeRecordBackListener();
+    console.log('audioSet', audioSet);
+    const uri = await audioRecorderPlayer.startRecorder();
+    audioRecorderPlayer.addRecordBackListener(e => {
       setAudioAtrributes({
-        recordSecs: 0,
+        recordSecs: e.current_position,
+        recordTime: audioRecorderPlayer.mmssss(Math.floor(e.current_position)),
       });
-      console.log(result);
-    };
+    });
+    console.log(`uri: ${uri}`);
+  };
 
-    const _handleOnRecording = async () => {
-      if (recording) {
-        setRecording(false);
-        const res = await RecordScreen.stopRecording().catch((error) =>
-          console.warn(error)
-        );
-        console.log('res', res);
-        if (res) {
-          setUri(res.result.outputURL);
-        }
-      } else {
-        setUri('');
-        setRecording(true);
-        await RecordScreen.startRecording({ mic: false }).catch((error) => {
-          console.warn(error);
-          setRecording(false);
-          setUri('');
-        });
+  const onStopRecord = async () => {
+    const result = await audioRecorderPlayer.stopRecorder();
+    audioRecorderPlayer.removeRecordBackListener();
+    setAudioAtrributes({
+      recordSecs: 0,
+    });
+    console.log(result);
+  };
+
+  const _handleOnRecording = async () => {
+    if (recording) {
+      setRecording(false);
+      const res = await RecordScreen.stopRecording().catch(error =>
+        console.warn(error),
+      );
+      console.log('res', res);
+      if (res) {
+        setUri(res.result.outputURL);
       }
-    };
-  
-    const _handleOnCleanSandbox = useCallback(() => {
-      RecordScreen.clean();
-    }, []);
-  
-    const btnStyle = useMemo(() => {
-      return recording ? styles.btnActive : styles.btnDefault;
-    }, [recording]);
+    } else {
+      setUri('');
+      setRecording(true);
+      await RecordScreen.startRecording({mic: false}).catch(error => {
+        console.warn(error);
+        setRecording(false);
+        setUri('');
+      });
+    }
+  };
 
-    const takeScreenShot = () => {
+  const _handleOnCleanSandbox = useCallback(() => {
+    RecordScreen.clean();
+  }, []);
+
+  const btnStyle = useMemo(() => {
+    return recording ? styles.btnActive : styles.btnDefault;
+  }, [recording]);
+
+  const takeScreenShot = () => {
     // To capture Screenshot
     captureScreen({
       // Either png or jpg (or webm Android Only), Defaults: png
       format: 'jpg',
       // Quality 0.0 - 1.0 (only available for jpg)
-      quality: 1.0, 
+      quality: 1.0,
     }).then(
       //callback function to get the result URL of the screnshot
-      (uri) => {
+      uri => {
         setSavedImagePath(uri);
         setImageURI(uri);
         console.log(uri);
       },
-      (error) => console.error('Oops, Something Went Wrong', error),
+      error => console.error('Oops, Something Went Wrong', error),
     );
   };
 
+  let modalProps = {
+    show: showModal,
+    setModalOpen: setModalOpen,
+  };
+
   return (
-    <>
+    <View style={styles.container}>
       <StatusBar barStyle="light-content" />
-      <View style={styles.navbar}>
+      {!showModal ? (
+        <View>
+          <FeedbackButton onPress={() => setModalOpen(true)} />
+        </View>
+      ) : null}
+      {showModal ? (
+        <View>
+          <ChoiceModal props={modalProps} />
+        </View>
+      ) : null}
+      {/* <View style={styles.navbar}>
         <View />
         {recording ? (
           <View style={styles.recordingMark}>
@@ -141,26 +154,25 @@ const App = () => {
           <View>
             <Button onPress={_handleOnCleanSandbox} title="Clean Sandbox" />
             <Button onPress={takeScreenShot} title="Take Screenshot" />
-
           </View>
         )}
-      </View>
-      <SafeAreaView style={styles.container}>
-      <Button title="RECORD AUDIO" onPress={() => onStartRecord()} />
-            <Text style={styles.text}>{audioAttributes.recordTime}</Text>
-          <Button title="STOP AUDIO" onPress={() => onStopRecord()} />
-      <Image
+      </View> */}
+      {/* <SafeAreaView style={styles.container}>
+        <Button title="RECORD AUDIO" onPress={() => onStartRecord()} />
+        <Text style={styles.text}>{audioAttributes.recordTime}</Text>
+        <Button title="STOP AUDIO" onPress={() => onStopRecord()} />
+        <Image
           source={{uri: imageURI}}
           style={{
             width: 400,
             height: 300,
             resizeMode: 'contain',
-            marginTop: 5
+            marginTop: 5,
           }}
         />
         <View>
-            <Text style={styles.heading}>Screen Lorem ipsum dolor sit amet</Text>
-            </View>
+          <Text style={styles.heading}>Screen Lorem ipsum dolor sit amet</Text>
+        </View>
         <ScrollView>
           <View style={styles.scrollView}>
             <Text style={styles.heading}>Lorem ipsum dolor sit amet</Text>
@@ -225,15 +237,15 @@ const App = () => {
             </Text>
           </View>
         </ScrollView>
-      </SafeAreaView>
-      <View style={styles.btnContainer}>
+      </SafeAreaView> */}
+      {/* <View style={styles.btnContainer}>
         <TouchableHighlight onPress={_handleOnRecording}>
           <View style={styles.btnWrapper}>
             <View style={btnStyle} />
           </View>
         </TouchableHighlight>
-      </View>
-      {uri ? (
+      </View> */}
+      {/* {uri ? (
         <View style={styles.preview}>
           <Video
             source={{
@@ -242,14 +254,20 @@ const App = () => {
             style={styles.video}
           />
         </View>
-      ) : null}
-    </>
+      ) : null} */}
+    </View>
   );
 };
 
 export default App;
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'white',
+  },
   navbar: {
     height: 80,
     backgroundColor: '#212121',
@@ -267,9 +285,6 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: 'bold',
     color: '#fff',
-  },
-  container: {
-    flex: 1,
   },
   scrollView: {
     flex: 1,
@@ -361,32 +376,32 @@ const styles = StyleSheet.create({
 //   },
 // });
 
-    // <SafeAreaView style={{flex: 1}}>
-    //   <View style={styles.container}>
-    //     <Text style={styles.titleText}>
-    //       React Native Example to Take Screenshot Programmatically
-    //     </Text>
-    //     <Image
-    //       source={{uri: imageURI}}
-    //       style={{
-    //         width: 200,
-    //         height: 300,
-    //         resizeMode: 'contain',
-    //         marginTop: 5
-    //       }}
-    //     />
-    //     <TouchableOpacity
-    //       style={styles.buttonStyle}
-    //       onPress={takeScreenShot}>
-    //       <Text style={styles.buttonTextStyle}>
-    //         Take Screenshot
-    //       </Text>
-    //     </TouchableOpacity>
-    //     <Text style={styles.textStyle}>
-    //       {
-    //         savedImagePath ?
-    //         `Saved Image Path\n ${savedImagePath}` : ''
-    //       }
-    //     </Text>
-    //   </View>
-    // </SafeAreaView>
+// <SafeAreaView style={{flex: 1}}>
+//   <View style={styles.container}>
+//     <Text style={styles.titleText}>
+//       React Native Example to Take Screenshot Programmatically
+//     </Text>
+//     <Image
+//       source={{uri: imageURI}}
+//       style={{
+//         width: 200,
+//         height: 300,
+//         resizeMode: 'contain',
+//         marginTop: 5
+//       }}
+//     />
+//     <TouchableOpacity
+//       style={styles.buttonStyle}
+//       onPress={takeScreenShot}>
+//       <Text style={styles.buttonTextStyle}>
+//         Take Screenshot
+//       </Text>
+//     </TouchableOpacity>
+//     <Text style={styles.textStyle}>
+//       {
+//         savedImagePath ?
+//         `Saved Image Path\n ${savedImagePath}` : ''
+//       }
+//     </Text>
+//   </View>
+// </SafeAreaView>
