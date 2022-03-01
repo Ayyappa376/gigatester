@@ -736,7 +736,11 @@ export default function Admin() {
         </div> */}
         <Divider />
         <List disablePadding={true} style={{ padding: '-10px 0px' }}>
-          <ListItem button onClick={handleDashboard}>
+          <ListItem
+            button
+            onClick={handleDashboard}
+            disabled={!(user && user.roles && user.roles.includes('Admin'))}
+          >
             <Tooltip
               title={<Typography>{<Text tid='dashboard2' />}</Typography>}
               disableHoverListener={open ? true : false}
@@ -802,7 +806,11 @@ export default function Admin() {
           </ListItem>
         </List>*/}
         <List disablePadding={true}>
-          <ListItem button onClick={handleManageGroups}>
+          <ListItem
+            button
+            onClick={handleManageGroups}
+            disabled={!(user && user.roles && user.roles.includes('Admin'))}
+          >
             <Tooltip
               title={<Typography>{<Text tid='manageGroups2' />}</Typography>}
               disableHoverListener={open ? true : false}
@@ -817,7 +825,11 @@ export default function Admin() {
           </ListItem>
         </List>
         <List disablePadding={true}>
-          <ListItem button onClick={handleManagePlatforms}>
+          <ListItem
+            button
+            onClick={handleManagePlatforms}
+            disabled={!(user && user.roles && user.roles.includes('Admin'))}
+          >
             <Tooltip
               title={<Typography>{<Text tid='managePlatforms2' />}</Typography>}
               disableHoverListener={open ? true : false}
@@ -832,7 +844,11 @@ export default function Admin() {
           </ListItem>
         </List>
         <List disablePadding={true}>
-          <ListItem button onClick={handleManageDevices}>
+          <ListItem
+            button
+            onClick={handleManageDevices}
+            disabled={!(user && user.roles && user.roles.includes('Admin'))}
+          >
             <Tooltip
               title={<Typography>{<Text tid='manageDevices2' />}</Typography>}
               disableHoverListener={open ? true : false}
@@ -863,7 +879,11 @@ export default function Admin() {
         </List>
         <Divider />
         <List disablePadding={true}>
-          <ListItem button onClick={handleManageCampaigns}>
+          <ListItem
+            button
+            onClick={handleManageCampaigns}
+            disabled={!(user && user.roles && user.roles.includes('Admin'))}
+          >
             <Tooltip
               title={<Typography>{<Text tid='manageCampaigns2' />}</Typography>}
               disableHoverListener={open ? true : false}
@@ -980,7 +1000,6 @@ export default function Admin() {
           <ListItem
             button
             onClick={feedbackCommentsClickHandler}
-            disabled={false}
           >
             <Tooltip
               title={<Typography>{<Text tid="viewFeedback" />}</Typography>}

@@ -2,7 +2,7 @@ import React, { useState, Fragment } from 'react';
 import {
   makeStyles,
   MuiThemeProvider,
-  createMuiTheme,
+  createTheme,
 } from '@material-ui/core/styles';
 import {
   IAssessmentDetailItem,
@@ -72,7 +72,7 @@ interface IActionCreate {
   action: string;
 }
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#555',

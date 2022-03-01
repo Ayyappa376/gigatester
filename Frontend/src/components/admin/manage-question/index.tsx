@@ -1,6 +1,5 @@
 import React, { useState, useEffect, Fragment } from "react";
 import {
-  createMuiTheme,
   Typography,
   Grid,
   makeStyles,
@@ -20,6 +19,7 @@ import {
   Select,
   MenuItem,
 } from "@material-ui/core";
+import { createTheme } from '@material-ui/core/styles';
 import "./style.css";
 import { useSelector } from "react-redux";
 import { IRootState } from "../../../reducers";
@@ -36,7 +36,7 @@ import ArrowForwardIcon from "@material-ui/icons/ArrowForward";
 import { Text } from "../../../common/Language";
 import "../../../css/assessments/style.css";
 
-const theme = createMuiTheme({
+const theme = createTheme({
   overrides: {
     MuiTableCell: {
       root: {

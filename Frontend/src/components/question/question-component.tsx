@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, Fragment } from 'react';
 import {
   makeStyles,
   MuiThemeProvider,
-  createMuiTheme,
+  createTheme,
 } from '@material-ui/core/styles';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -16,7 +16,7 @@ import Container from '@material-ui/core/Container';
 import _ from 'lodash';
 import ReactGA from 'react-ga';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#555',
