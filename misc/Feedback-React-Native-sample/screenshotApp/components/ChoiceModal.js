@@ -12,6 +12,14 @@ const ChoiceModal = props => {
   const [choice, setChoice] = useState('');
   const {show, setModalOpen, setShowButton} = props.props;
   const options = [ {name: 'Report Bug'}, {name: 'Give Feedback'}];
+
+  let closeProps = {
+    firstModa: setModalOpen,
+    secondModal: setShowButton,
+    thirdModal: setShowForm,
+    fourthModal: setShowAttach,
+  }
+
   const content = (
     <Modal
       isVisible={show}
@@ -35,7 +43,7 @@ const ChoiceModal = props => {
         <CloseBtn setModalOpen={setModalOpen} setShowButton={setShowButton}/>
       </View>
       {showForm ? <FormModal type={choice} showForm={showForm} setShowForm={setShowForm} setShowAttach={setShowAttach} /> : null}
-      {showAttach ? <ToolModal showAttach={showAttach} setShowAttach={setShowAttach} /> : null}
+      {showAttach ? <ToolModal closepP={closeProps} showAttach={showAttach} setShowAttach={setShowAttach} /> : null}
     </Modal>
   );
 

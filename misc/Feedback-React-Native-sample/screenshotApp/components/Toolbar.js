@@ -8,28 +8,26 @@ import ScreenCapture from './buttons/ScreenshotBtn';
 
 const numColumns = 2;
 
-const ToolBar = () => {
-  const buttons = ['screenshot', 'audio', 'video', 'attachment'];
-
+const ToolBar = (props) => {
   return (
     <View style={styles.mainCont}>
       <Text style={styles.title}>
         Click the buttons to include an attachment
       </Text>
       <View style={styles.btnRow}>
-        <ScreenCapture />
+        <ScreenCapture setShow={props.setTool} />
         <TouchableOpacity style={styles.btn}>
-          <Text>audio</Text>
+          <Text style={styles.btnText}>audio</Text>
           <AudioIcon />
         </TouchableOpacity>
       </View>
       <View style={styles.btnRow}>
         <TouchableOpacity style={styles.btn}>
-          <Text>video</Text>
+          <Text style={styles.btnText}>video</Text>
           <VideoIcon />
         </TouchableOpacity>
         <TouchableOpacity style={styles.btn}>
-          <Text>attachment</Text>
+          <Text style={styles.btnText}>attachment</Text>
           <AttachmentIcon />
         </TouchableOpacity>
       </View>
@@ -47,7 +45,7 @@ const styles = StyleSheet.create({
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'flex-start',
-    marginBottom: 20,
+    marginBottom: 0,
   },
   btnRow: {
     width: '100%',
@@ -71,11 +69,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   btnText: {
-    color: 'black',
+    color: 'gray',
+    fontSize: 11,
+    marginBottom: 2,
   },
   title: {
     color: 'black',
-    fontSize: 15,
+    fontSize: 12,
     margin: 5,
     textAlign: 'center',
   },

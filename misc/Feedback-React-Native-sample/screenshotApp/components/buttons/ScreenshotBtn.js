@@ -1,13 +1,19 @@
 import React, {useState} from 'react';
 import {StyleSheet, Text, View, Button, TouchableOpacity} from 'react-native';
 import ScreenshotIcon from './../../icons/Screenshot';
-import {captureScreen} from 'react-native-view-shot';
 
 const ScreenCapture = (props) => {
-  
+
+  // const handleClose = () => {
+  //   props.closeProps.firstModal(false);
+  //   props.closeProps.secondModal(false);
+  //   props.closeProps.thirdModal(false);
+  //   props.closeProps.fourthModal(false);
+  // }
+
   return (
-    <TouchableOpacity style={styles.btn}>
-      <Text>screenshot</Text>
+    <TouchableOpacity style={styles.btn} onPress={() => console.log('screenshot')}>
+      <Text style={styles.btnText}>screenshot</Text>
       <ScreenshotIcon />
     </TouchableOpacity>
   );
@@ -30,4 +36,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  btnText: {
+    color: 'gray',
+    fontSize: 11,
+    marginBottom: 2,
+  }
 });

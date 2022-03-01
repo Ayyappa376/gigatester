@@ -5,7 +5,6 @@ import ToolBar from './Toolbar';
 import SubmitButton from './buttons/SubmitFeedbck';
 
 const ToolModal = props => {
-  const [isAttached, setIsAttached] = useState(true);
   const content = (
     <Modal
       isVisible={props.showAttach}
@@ -13,7 +12,8 @@ const ToolModal = props => {
       backdropColor="gray"
       backdropOpacity={0.6}>
       <View style={styles.modalContent}>
-        <ToolBar />
+        <Text style={styles.title}>Gigatester</Text>
+        <ToolBar showTool={props.showAttach} setTool={props.setShowAttach} />
         <SubmitButton />
       </View>
     </Modal>
@@ -25,11 +25,12 @@ const ToolModal = props => {
 const styles = StyleSheet.create({
   modalContent: {
     display: 'flex',
-    justifyContent: 'center',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
     alignItems: 'center',
     backgroundColor: 'white',
     width: '100%',
-    height: 320,
+    height: 360,
     padding: 20,
     borderRadius: 15,
     shadowColor: '#171717',
@@ -48,6 +49,13 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     justifyContent: 'space-evenly',
     alignItems: 'center',
+  },
+  title: {
+    color: '#011348',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 0,
+    marginTop: 0,
   },
 });
 

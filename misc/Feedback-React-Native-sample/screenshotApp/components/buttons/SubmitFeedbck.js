@@ -17,12 +17,10 @@ const styles = StyleSheet.create({
     width: 150,
     alignItems: 'center',
     borderRadius: 5,
-    marginBottom: 5,
-    marginTop: 2,
   },
   text: {
     color: 'white',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: 'bold',
   },
 });
