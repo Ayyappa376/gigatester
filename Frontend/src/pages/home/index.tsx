@@ -311,7 +311,7 @@ const Home = (props: any) => {
         <Grid container className={classes.sectionTop}>
           <Grid item xs={12} sm={7} style={{ padding: '50px', paddingTop: "170px" }}>
             <Typography variant='h4'>
-              <strong>GigaTester Feedbacks</strong>
+              <strong>GigaTester Feedback</strong>
             </Typography>
             <Typography variant='h5'>
               Customers give unbiased opinions. Get the feedback from them and build the product they love.
