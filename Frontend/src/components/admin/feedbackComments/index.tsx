@@ -15,18 +15,20 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
   const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
   const [prodNameIdMappingBugCopy, setProdNameIdMappingBugs] = useState<IProductNameIdMapping>({})
-  const [selectedProdId, setSelectedProdId] = useState<string>(() => {
-    if (props.productId) {
-      return props.productId;
-    }
-    return ''
-  })
-  const [productVersion, setProductVersion] = useState(() => {
-    if (props.prodVersion) {
-      return props.prodVersion;
-    }
-    return ''
-  });
+  // const [selectedProdId, setSelectedProdId] = useState<string>(() => {
+  //   if (props.productId) {
+  //     return props.productId;
+  //   }
+  //   return ''
+  // })
+  const [selectedProdId, setSelectedProdId] = useState<string>("")
+  // const [productVersion, setProductVersion] = useState(() => {
+  //   if (props.prodVersion) {
+  //     return props.prodVersion;
+  //   }
+  //   return ''
+  // });
+  const [productVersion, setProductVersion] = useState("");
 
   const setProduct = (val: string) => {
     if (val) {

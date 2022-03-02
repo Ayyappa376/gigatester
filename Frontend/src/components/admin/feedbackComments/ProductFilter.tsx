@@ -36,6 +36,9 @@ const ProductFilter = (props : IProps) => {
                     value={selectedProdId}
                     onChange={handleChange}
                 >
+                 <MenuItem disabled value="">
+                    <em>Please Select</em>
+                 </MenuItem>
                 {Object.keys(productNameIdMapping).map((id) => (
                     <MenuItem key={id} value={id} >
                         {productNameIdMapping[id].name}
@@ -73,6 +76,9 @@ export const VersionFilter = (props : IVersionFilterProps) => {
                 value={productVersion}
                 onChange={handleChange}
                 >
+                <MenuItem key={0} value={""} >
+                    <em>Please Select</em>
+                </MenuItem>
                 {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
                 </Select>
             </FormControl>

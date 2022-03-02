@@ -162,6 +162,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
 
   useEffect(() => {
     if(selectedProdId && productVersion) {
+      setBackdropOpen(true);
       fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
       getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
     }
@@ -284,6 +285,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     })
     setResultsFetched(true);
     if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
+      setBackdropOpen(false);
       if(searchInitiated && searchWord) {
         setSearchedData((dataObj) => {
           const dataCopy = new Set([...dataObj].concat(response.Items.Items));
@@ -296,6 +298,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
         return Array.from(dataCopy)
       });
       if(!noRawDataUpdate) {          // This if check is useful for the cases where filtering is done. If filtering returns 0 elements, the presence of the raw data,
+        setBackdropOpen(false);
         setRawData((rawDataObj) => {  // clear filter will get the idea that the data has already been fetched.
           const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
           return Array.from(rawDataCopy)
@@ -310,6 +313,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
       }
     } else {
       if(!showNoEmptyError) {
+        setBackdropOpen(false);
         setNoDataError(true);
       }
     }
@@ -322,9 +326,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   }
 
   useEffect(() => {
-    if(error || noDataError) {
-      setBackdropOpen(false);
-    }
+    // if(error || noDataError) {
+    //   setBackdropOpen(false);
+    // }
     if(rawData.length > 0 && selectedProdId) {
       setNoDataError(false);
         if(Object.keys(feedbackBarChartData).length > 0) {
@@ -499,7 +503,13 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
             </div>
 
           </div>
-          {searchInitiated ? <div>
+          {backdropOpen ? (
+            <Backdrop className={classes.backdrop} open={backdropOpen}>
+                <CircularProgress color='inherit' />
+            </Backdrop>
+          ): (
+            <div>
+               {searchInitiated ? <div>
             <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
@@ -529,6 +539,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
             focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
             />
           </div>}
+            </div>
+          )}
         </Container>
     </div>
   )
