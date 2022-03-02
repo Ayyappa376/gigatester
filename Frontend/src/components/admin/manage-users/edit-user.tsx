@@ -84,7 +84,7 @@ const EditUser = (props: any) => {
   const [userDeleted, setUserDeleted] = useState(false);
   const [failure, setFailure] = useState(false);
   const [userDataFetched, setUserDataFetched] = useState(false);
-  const [teamDataFetched, setTeamDataFetched] = useState(false);
+//  const [teamDataFetched, setTeamDataFetched] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
@@ -94,7 +94,7 @@ const EditUser = (props: any) => {
   const userRoles = useSelector((state: IRootState) => {
     return state.user.roles;
   });
-  const [teams, setTeams] = React.useState<ITeamInfo[]>([]);
+//  const [teams, setTeams] = React.useState<ITeamInfo[]>([]);
   const [userState, setUserState] = React.useState<IUserParams | undefined>();
   const [openModal, setOpenModal] = useState(false);
   const [openMakeAdminModal, setOpenMakeAdminModal] = useState(false);
@@ -105,40 +105,40 @@ const EditUser = (props: any) => {
   let msgSuccess = successMessage;
 
   useEffect(() => {
-    fetchTeamList();
+//    fetchTeamList();
     fetchUserDetails();
   }, []);
 
-  const fetchTeamList = () => {
-    Http.get({
-      url: `/api/v2/teamlist`,
-      state: stateVariable,
-    })
-    .then((response: any) => {
-      response.sort((a: any, b: any) => {
-        if (a.active === b.active) {
-          return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
-            ? -1
-            : 1;
-        }
-        return a.active === 'true' ? -1 : 1;
-      });
-      setTeams(response);
-      setTeamDataFetched(true);
-    })
-    .catch((error: any) => {
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 400) {
-        setFailureMessage(object.apiError.msg);
-        setFailure(true);
-      } else if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        props.history.push('/error');
-      }
-    })
-  };
+  // const fetchTeamList = () => {
+  //   Http.get({
+  //     url: `/api/v2/teamlist`,
+  //     state: stateVariable,
+  //   })
+  //   .then((response: any) => {
+  //     response.sort((a: any, b: any) => {
+  //       if (a.active === b.active) {
+  //         return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
+  //           ? -1
+  //           : 1;
+  //       }
+  //       return a.active === 'true' ? -1 : 1;
+  //     });
+  //     setTeams(response);
+  //     setTeamDataFetched(true);
+  //   })
+  //   .catch((error: any) => {
+  //     const perror = JSON.stringify(error);
+  //     const object = JSON.parse(perror);
+  //     if (object.code === 400) {
+  //       setFailureMessage(object.apiError.msg);
+  //       setFailure(true);
+  //     } else if (object.code === 401) {
+  //       props.history.push('/relogin');
+  //     } else {
+  //       props.history.push('/error');
+  //     }
+  //   })
+  // };
 
   const fetchUserDetails = () => {
     Http.get({
@@ -261,7 +261,7 @@ const EditUser = (props: any) => {
       return false;
     }
     Object.keys(userState.config).map((el) => {
-      if (userState.config[el].Mandatory) {
+      if (userState.config[el].mandatory) {
         if (userState && userState.values[el]) {
           if (userState.config[el].type === 'multi-list') {
             if (userState.values[el].length > 0) {
@@ -304,7 +304,7 @@ const EditUser = (props: any) => {
         {(selected as string[]).map((value) => (
           <Chip
             key={value}
-            label={el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName : value}
+            label={/*el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName :*/ value}
             className={classes.chip}
           />
         ))}
@@ -313,13 +313,16 @@ const EditUser = (props: any) => {
   };
 
   const renderElements = (el: string) => {
+    if(el === "teams") {
+      return (<div/>);
+    }
     const element: IUserAttributes = userState!.config[el];
     const values = userState ? userState.values : null;
     switch (element.type) {
       case 'string':
         return (
           <TextField
-            required={element.Mandatory}
+            required={element.mandatory}
             type='string'
             id={el}
             name={el}
@@ -336,7 +339,7 @@ const EditUser = (props: any) => {
         return (
           <div className='numberInput'>
             <TextField
-              required={element.Mandatory}
+              required={element.mandatory}
               type='number'
               id={el}
               name={el}
@@ -356,7 +359,7 @@ const EditUser = (props: any) => {
           <FormControl className={classes.formControl}>
             <InputLabel
               id='demo-simple-select-label'
-              required={element.Mandatory}
+              required={element.mandatory}
             >
               {element.displayName}
             </InputLabel>
@@ -368,11 +371,7 @@ const EditUser = (props: any) => {
               {element.options.map((opt: string) => {
                 return (
                   <MenuItem key={opt} value={opt}>
-                  {
-                    el === 'teams'
-                    ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-                    : opt
-                  }
+                    { /*el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName :*/ opt }
                   </MenuItem>
                 );
               })}
@@ -384,7 +383,7 @@ const EditUser = (props: any) => {
           <FormControl className={classes.formControl}>
             <InputLabel
               id='demo-mutiple-chip-label'
-              required={element.Mandatory}
+              required={element.mandatory}
             >
               {element.displayName}
             </InputLabel>
@@ -408,11 +407,7 @@ const EditUser = (props: any) => {
             >
               {element.options.map((opt: any) => (
                 <MenuItem key={opt} value={opt}>
-                  {
-                    el === 'teams'
-                    ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-                    : opt
-                  }
+                  { /*el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName :*/ opt }
                 </MenuItem>
               ))}
             </Select>
@@ -560,7 +555,7 @@ const EditUser = (props: any) => {
 
   return (
     <Fragment>
-      {userDataFetched && teamDataFetched ? (
+      {userDataFetched/* && teamDataFetched*/ ? (
         renderForm()
       ) : (
         <Container className='loaderStyle'>

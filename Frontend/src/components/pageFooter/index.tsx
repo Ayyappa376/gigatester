@@ -22,7 +22,7 @@ const PageFooter = () => {
 
   return (
     <footer className={classes.root}>
-      <Typography variant="body2" >&copy; COPYRIGHT 2021 - GIGATESTER</Typography>
+      <Typography variant="body2" >&copy; COPYRIGHT 2021 - GIGATESTER. All rights reserved. | Privacy Policy | Disclaimer | Terms &amp; Conditions</Typography>
     </footer>
   );
 }

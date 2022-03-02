@@ -102,7 +102,7 @@ const ManageUsers = (props: any) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
   const [numberOfUsers, setNumberOfUsers] = useState(0);
-  const [teams, setTeams] = useState<ITeamInfo[]>([]);
+//  const [teams, setTeams] = useState<ITeamInfo[]>([]);
   const [focusTeamId, setFocusTeamId] = useState('0');
   const [itemLimit, setItemLimit] = useState({
     lowerLimit: 0,
@@ -118,33 +118,33 @@ const ManageUsers = (props: any) => {
   const [order, setOrder] = useState<'asc' | 'desc'>('desc');
   const [orderBy, setOrderBy] = useState('name');
 
-  const fetchTeamList = () => {
-    Http.get({
-      url: `/api/v2/teamlist`,
-      state: stateVariable,
-    })
-      .then((response: any) => {
-        response.sort((a: any, b: any) => {
-          if (a.active === 'true' && b.active === 'true') {
-            return a.teamName <= b.teamName ? -1 : 1;
-          }
-          if (a.active === 'false' && b.active === 'false') {
-            return a.teamName <= b.teamName ? -1 : 1;
-          }
-          return a.active === 'true' ? -1 : 1;
-        });
-        setTeams(response);
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          props.history.push('/error');
-        }
-      });
-  };
+  // const fetchTeamList = () => {
+  //   Http.get({
+  //     url: `/api/v2/teamlist`,
+  //     state: stateVariable,
+  //   })
+  //     .then((response: any) => {
+  //       response.sort((a: any, b: any) => {
+  //         if (a.active === 'true' && b.active === 'true') {
+  //           return a.teamName <= b.teamName ? -1 : 1;
+  //         }
+  //         if (a.active === 'false' && b.active === 'false') {
+  //           return a.teamName <= b.teamName ? -1 : 1;
+  //         }
+  //         return a.active === 'true' ? -1 : 1;
+  //       });
+  //       setTeams(response);
+  //     })
+  //     .catch((error) => {
+  //       const perror = JSON.stringify(error);
+  //       const object = JSON.parse(perror);
+  //       if (object.code === 401) {
+  //         props.history.push('/relogin');
+  //       } else {
+  //         props.history.push('/error');
+  //       }
+  //     });
+  // };
 
   const fetchUserList = () => {
     setBackdropOpen(true);
@@ -257,7 +257,7 @@ const ManageUsers = (props: any) => {
   }
 
   useEffect(() => {
-    fetchTeamList();
+//    fetchTeamList();
     fetchUserList();
     setSearchString('');
     setCurrentPage(1);
@@ -365,31 +365,27 @@ const ManageUsers = (props: any) => {
     return 0;
   }
 
-  function compareTeam(a: any, b: any) {
-    //    const teamsA = commaSeparators(a.teams);
-    //    const teamsB = commaSeparators(b.teams);
-    const teamsA = a.teams.map((teamId: string) => {
-      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
-      return team ? team.teamName : teamId;
-    }).join(', ');
+  // function compareTeam(a: any, b: any) {
+  //   const teamsA = a.teams.map((teamId: string) => {
+  //     const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+  //     return team ? team.teamName : teamId;
+  //   }).join(', ');
 
-    const teamsB = b.teams.map((teamId: string) => {
-      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
-      return team ? team.teamName : teamId;
-    }).join(', ');
+  //   const teamsB = b.teams.map((teamId: string) => {
+  //     const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+  //     return team ? team.teamName : teamId;
+  //   }).join(', ');
 
-    if (teamsA.toLowerCase() < teamsB.toLowerCase()) {
-      return -1;
-    }
-    if (teamsA.toLowerCase() > teamsB.toLowerCase()) {
-      return 1;
-    }
-    return 0;
-  }
+  //   if (teamsA.toLowerCase() < teamsB.toLowerCase()) {
+  //     return -1;
+  //   }
+  //   if (teamsA.toLowerCase() > teamsB.toLowerCase()) {
+  //     return 1;
+  //   }
+  //   return 0;
+  // }
 
   function compareRoles(a: any, b: any) {
-    //    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
-    //    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
     const rolesA = a.roles ? a.roles.join(', ') : 'Member';
     const rolesB = b.roles ? b.roles.join(', ') : 'Member';
 
@@ -434,31 +430,27 @@ const ManageUsers = (props: any) => {
     return 0;
   }
 
-  function compareTeamD(a: any, b: any) {
-    //    const teamsA = commaSeparators(a.teams);
-    //    const teamsB = commaSeparators(b.teams);
-    const teamsA = a.teams.map((teamId: string) => {
-      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
-      return team ? team.teamName : teamId;
-    }).join(', ');
+  // function compareTeamD(a: any, b: any) {
+  //   const teamsA = a.teams.map((teamId: string) => {
+  //     const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+  //     return team ? team.teamName : teamId;
+  //   }).join(', ');
 
-    const teamsB = b.teams.map((teamId: string) => {
-      const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
-      return team ? team.teamName : teamId;
-    }).join(', ');
+  //   const teamsB = b.teams.map((teamId: string) => {
+  //     const team = teams.find((t: ITeamInfo) => t.teamId === teamId);
+  //     return team ? team.teamName : teamId;
+  //   }).join(', ');
 
-    if (teamsA.toLowerCase() < teamsB.toLowerCase()) {
-      return 1;
-    }
-    if (teamsA.toLowerCase() > teamsB.toLowerCase()) {
-      return -1;
-    }
-    return 0;
-  }
+  //   if (teamsA.toLowerCase() < teamsB.toLowerCase()) {
+  //     return 1;
+  //   }
+  //   if (teamsA.toLowerCase() > teamsB.toLowerCase()) {
+  //     return -1;
+  //   }
+  //   return 0;
+  // }
 
   function compareRolesD(a: any, b: any) {
-    //    const rolesA = a.roles ? commaSeparators(a.roles) : 'Member';
-    //    const rolesB = b.roles ? commaSeparators(b.roles) : 'Member';
     const rolesA = a.roles ? a.roles.join(', ') : 'Member';
     const rolesB = b.roles ? b.roles.join(', ') : 'Member';
 
@@ -505,24 +497,6 @@ const ManageUsers = (props: any) => {
   const handleChangeTeam = (event: any) => {
     setFocusTeamId(event.target.value);
   };
-
-  /*
-    const commaSeparators = (strArray: string[]) => {
-      let rolesStr = '';
-      if (Array.isArray(strArray)) {
-        strArray.map((el: string, index: number) => {
-          if (index === 0) {
-            rolesStr = el;
-          } else {
-            rolesStr = `${rolesStr}, ${el}`;
-          }
-        });
-      } else {
-        return strArray;
-      }
-      return rolesStr;
-    };
-  */
 
   const handleDialogClose = () => {
     setDialogOpen(false);

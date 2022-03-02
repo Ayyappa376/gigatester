@@ -137,7 +137,7 @@ const FeedbackSettings = ({
                   : ''
               }
               fullWidth
-              onChange={(event) => handleFeedbackTitleChange()}
+              onChange={(event) => handleFeedbackTitleChange(event)}
               autoComplete='off'
               className='textFieldStyle'
             />
@@ -187,6 +187,7 @@ const FeedbackSettings = ({
         {productParams && productParams.products && productParams.products[0] &&
           productParams.products[0].feedbackAgentSettings &&
           productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+          productParams.products[0].feedbackAgentSettings.feedbackSettings.categories &&
           productParams.products[0].feedbackAgentSettings.feedbackSettings.categories.map((category: ICategory, index: number) => {
             return renderCategoryDetails(category,
               index,

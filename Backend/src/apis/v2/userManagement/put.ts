@@ -76,26 +76,34 @@ async function handler(request: UpdateUser, response: Response) {
         removeRoles.push(role);
       }
     }
+    appLogger.info({ removingRoles: removeRoles });
     for (const role of removeRoles) {
-      removeUserFromCognitoGroup(userDetails.id, role)
-        .then((res: any) => {
+      try {
+        const res = await removeUserFromCognitoGroup(userDetails.id, role);
+//        .then((res: any) => {
           //result
           appLogger.info({ removeUserFromCognitoGroup: res });
-        })
-        .catch((e) => {
+//        })
+//        .catch((e) => {
+      } catch(e) {
           appLogger.error({ err: e }, 'Error while adding  user to group');
-        });
+      }
+//        });
     }
   }
+  appLogger.info({ addingRoles: body.roles });
   for (const role of body.roles) {
-    addUserToCognitoGroup(userDetails.id, role)
-      .then((res: any) => {
+    try {
+      const res = await addUserToCognitoGroup(userDetails.id, role);
+//      .then((res: any) => {
         //result
         appLogger.info({ addUserToCognitoGroup: res });
-      })
-      .catch((e) => {
+//      })
+//      .catch((e) => {
+    } catch(e) {
         appLogger.error({ err: e }, 'Error while adding  user to group');
-      });
+    }
+//      });
   }
   appLogger.info({ resetPasswordStatus: body.resetPassword });
   body.resetPassword ? await resetUserPassword(userDetails.id, userDetails.emailId) : await updateDynamoUser(userDetails.id, managerDetails, body);

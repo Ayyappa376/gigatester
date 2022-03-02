@@ -7,7 +7,7 @@ export interface IUserConfig {
 export interface IUserAttributes {
     value?: any;
     options?: any;
-    Mandatory: boolean;
+    mandatory: boolean;
     displayName: string;
     type: string;
 }

@@ -72,46 +72,46 @@ const CreateUser = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [teams, setTeams] = React.useState<ITeamInfo[]>([]);
+//  const [teams, setTeams] = React.useState<ITeamInfo[]>([]);
   const [createUserParams, setCreateUserParams] = React.useState<IUserParams | null>(null);
   const [userParamState, setUserParamState] = React.useState<any>({});
-  const [teamDataFetched, setTeamDataFetched] = useState(false);
+//  const [teamDataFetched, setTeamDataFetched] = useState(false);
 
   let msgFailure = failureMessage;
   let msgSuccess = <Text tid='userProfileIsCreated' />;
 
   useEffect(() => {
-    fetchTeamList();
+//    fetchTeamList();
     fetchUserConfig();
   }, []);
 
-  const fetchTeamList = () => {
-    Http.get({
-      url: `/api/v2/teamlist`,
-      state: stateVariable,
-    })
-    .then((response: any) => {
-      response.sort((a: any, b: any) => {
-        if (a.active === b.active) {
-          return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
-            ? -1
-            : 1;
-        }
-        return a.active === 'true' ? -1 : 1;
-      });
-      setTeams(response);
-      setTeamDataFetched(true);
-    })
-    .catch((error: any) => {
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        props.history.push('/error');
-      }
-    })
-  };
+  // const fetchTeamList = () => {
+  //   Http.get({
+  //     url: `/api/v2/teamlist`,
+  //     state: stateVariable,
+  //   })
+  //   .then((response: any) => {
+  //     response.sort((a: any, b: any) => {
+  //       if (a.active === b.active) {
+  //         return a.teamName.toLowerCase() <= b.teamName.toLowerCase()
+  //           ? -1
+  //           : 1;
+  //       }
+  //       return a.active === 'true' ? -1 : 1;
+  //     });
+  //     setTeams(response);
+  //     setTeamDataFetched(true);
+  //   })
+  //   .catch((error: any) => {
+  //     const perror = JSON.stringify(error);
+  //     const object = JSON.parse(perror);
+  //     if (object.code === 401) {
+  //       props.history.push('/relogin');
+  //     } else {
+  //       props.history.push('/error');
+  //     }
+  //   })
+  // };
 
   const fetchUserConfig = () => {
     Http.get({
@@ -148,6 +148,7 @@ const CreateUser = (props: any) => {
   const handleSubmit = () => {
     const postData = userParamState;
     postData['orgId'] = createUserParams ? createUserParams['orgId'] : '';
+    postData['teams'] = 'Others';
     Http.post({
       url: `/api/v2/admin/users`,
       body: {
@@ -178,7 +179,7 @@ const CreateUser = (props: any) => {
     let totalCount = 0;
     // tslint:disable-next-line: ter-arrow-parens
     Object.keys(createUserParams!.config).forEach((el) => {
-      if (createUserParams!.config[el].Mandatory) {
+      if ((el !== "teams") && createUserParams!.config[el].mandatory) {
         if (userParamState && userParamState[el]) {
           countFilledElements = countFilledElements + 1;
         }
@@ -215,7 +216,7 @@ const CreateUser = (props: any) => {
         {(selected as string[]).map((value) => (
           <Chip
             key={value}
-            label={el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName : value}
+            label={/*el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === value)!.teamName :*/ value}
             className={classes.chip}
           />
         ))}
@@ -233,13 +234,16 @@ const CreateUser = (props: any) => {
   }
 
   const renderElements = (el: string) => {
+    if(el === "teams") {
+      return (<div/>);
+    }
     const element: IUserAttributes = createUserParams!.config[el];
     const values = userParamState ? userParamState : null;
     switch (element.type) {
       case 'string':
         return (
           <TextField
-            required={element.Mandatory}
+            required={element.mandatory}
             type='string'
             id={el}
             name={el}
@@ -255,7 +259,7 @@ const CreateUser = (props: any) => {
         return (
           <div className='numberInput'>
             <TextField
-              required={element.Mandatory}
+              required={element.mandatory}
               type='number'
               id={el}
               name={el}
@@ -274,7 +278,7 @@ const CreateUser = (props: any) => {
           <FormControl className={classes.formControl}>
             <InputLabel
               id='demo-simple-select-label'
-              required={element.Mandatory}
+              required={element.mandatory}
             >
               {element.displayName}
             </InputLabel>
@@ -294,11 +298,7 @@ const CreateUser = (props: any) => {
               {element.options.map((opt: string) => {
                 return (
                   <MenuItem key={opt} value={opt}>
-                    {
-                      el === 'teams'
-                      ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-                      : opt
-                    }
+                    {/* el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName :*/ opt }
                   </MenuItem>
                 );
               })}
@@ -310,7 +310,7 @@ const CreateUser = (props: any) => {
           <FormControl className={classes.formControl}>
             <InputLabel
               id='demo-mutiple-chip-label'
-              required={element.Mandatory}
+              required={element.mandatory}
             >
               {element.displayName}
             </InputLabel>
@@ -338,11 +338,7 @@ const CreateUser = (props: any) => {
                   value={opt}
                   style={getStyles(values, opt, el)}
                 >
-                  {
-                    el === 'teams'
-                    ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName
-                    : opt
-                  }
+                  {/* el === 'teams' ? teams.find((t: ITeamInfo) => t.teamId === opt)!.teamName :*/ opt }
                 </MenuItem>
               ))}
             </Select>
@@ -431,7 +427,7 @@ const CreateUser = (props: any) => {
 
   return (
     <Fragment>
-      {(createUserParams !== null && teamDataFetched) ? (
+      {(createUserParams !== null/* && teamDataFetched*/) ? (
         renderForm()
       ) : (
         <Container className='loaderStyle'>

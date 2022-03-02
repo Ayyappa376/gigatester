@@ -11,6 +11,9 @@ gtdiv {
 gtspan {
   all: unset;
 }
+gtdiv *{
+  box-sizing: border-box;
+}
 #gigatester_screencapture_dialog{
   position: fixed;
   top: 2%;
@@ -155,10 +158,55 @@ gttoolbar .gigatester-toolbar-tool-active {
 gttoolbar btn.gigatester-toolbar-tool-done {
   padding: 8px 8px 8px 12px;
   width: auto;
+  color: #011348;
+  font-size: 16px;
+}
+gttoolbar btn > btn-tooltip {
+  width: auto;
+  height: auto;
+  line-height: normal;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  outline: none;
+  border: none;
+  background: none;
+  display: none;
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  padding: 4px 8px;
+  margin: 0 0 12px 0;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 11px;
+  white-space: nowrap;
+  background-color: #011348;
+  transform: translateX(-50%);
+  user-select: none;
+  z-index: 132843426723;
+}
+gttoolbar btn > btn-tooltip-arrow {
+  display: none;
+  position: absolute;
+  width: 0;
+  height: 0;
+  bottom: 100%;
+  left: 0;
+  right: 0;
+  margin: -1px auto auto auto;
+  border: 6px solid transparent;
+  border-top-color: #011348;
+}
+gttoolbar btn:hover btn-tooltip {
+  display: block;
 }
 gttoolbar btn.gigatester-toolbar-close svg {
-  width: 16px !important;
-  height: 16px !important;
+  width: 14px !important;
+  height: 14px !important;
 }
 gttoolbar .gigatester-toolbar-tool-color:hover gtcolorpicker {
   display: block;
@@ -193,13 +241,16 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker {
   background: #fff;
   display: none;
   position: absolute;
-  z-index: 2147483645;
-  top: 8px;
-  left: -60px;
-  margin: 18px 0 0 0;
-  padding: 4px 8px;
+  z-index: 132843426723;
+  top: 6px;
+  left: -56px;
+  padding-right: 5px;
+  padding-left: 5px;
+  padding-bottom: 6px;
+  margin: 22px 0 0 0;
   border-radius: 4px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding-top: 32px;
+  box-shadow: 0 0 10px rgb(0 0 0 / 10%);
   white-space: nowrap;
   animation: animationReappear 0.1s linear forwards;
 }
@@ -254,9 +305,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   border-radius: 50%;
   transition: all 0.1s linear;
 }
-/* gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span[hasborder] {
-  border: 1px solid rgba(53, 76, 95, 0.2);
-} */
 .gigatester-overlay {
   position: absolute !important;
   top: 0 !important;
@@ -399,7 +447,6 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   left: -20px;
   width: 35px;
   height: 35px;
-  background: var(--main-btn-bg) !important;
   border-radius: 4px;
   border: none;
   box-shadow: 0 0 10px #5c6c7c;
@@ -561,6 +608,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
 .gigatester-comment .gigatester-comment-form gtcomment:empty + btn {
   opacity: 0.2;
   cursor: default;
+  float: right;
 }
 .gigatester-comment .gigatester-comment-form .gigatester-input-btn {
   height: 30px;
@@ -569,11 +617,12 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: 500;
   text-transform: none;
+  float: right;
 
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-delete {
   display: none;
-  float: right;
+  float: left;
   cursor: pointer;
   width: 24px;
   height: 24px;
@@ -612,7 +661,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   .gigatester-comment-form-delete:hover
   svg
   path {
-  fill: #2787f0;
+  fill: #011348;
 }
 .gigatester-comment .gigatester-comment-form .gigatester-comment-form-close {
   position: absolute;
@@ -689,7 +738,6 @@ popuptooltip {
   border-radius: 4px;
   padding: 5px 0;
   font-size: 12px;
-  /* Position the tooltip */
   position: absolute;
   top: 0px;
   left: -136px;
@@ -1161,6 +1209,16 @@ width: 300px;
 left: -38px;
 bottom: -23px;
 }
+#gigatester_audio_record_player_close{
+  top: 5px;
+  float: right;
+  right: 5px;
+  position: relative;
+}
+#gigatester_audio_record_player_close svg{
+  height: 18px;
+  width: 18px;
+}
 .gigatester-bug-help-message{
   font-size: 13px;
   font-weight: 500;
@@ -1177,8 +1235,6 @@ bottom: -23px;
   min-width: 0;
   min-height: 0;
   max-width: none;
-/*  overflow-y: auto;*/
-  /* max-height: calc(100vh - 27vh); */
   margin: 0;
   padding: 0;
   outline: none;
@@ -1190,25 +1246,21 @@ bottom: -23px;
 }
 
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options::-webkit-scrollbar {
-  /* height: calc(100vh - 230px); */
   width: 7px;
   margin-left: 3px;
-  }
+}
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options::-webkit-scrollbar-track  {
-  /* height: calc(100vh - 230px); */
   background: transparent;
   border-radius: 1px;
   box-shadow: inset 0 0 6px rgba(94, 94, 94, 0.3);
   border: none;
-  }
+}
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options::-webkit-scrollbar-thumb  {
-    /* height: calc(100vh - 230px); */
-    background: #a7a7a7;
-    border-radius: 5px;
-    }
+  background: #a7a7a7;
+  border-radius: 5px;
+}
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form {
-    /* height: calc(100vh - 230px); */
-    color: rgb(50, 50, 50);
+  color: rgb(50, 50, 50);
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form .gigatester-ctrl-item-form-full {
   min-width: 0;
@@ -1216,7 +1268,6 @@ bottom: -23px;
   max-width: none;
   overflow-y: auto;
   overflow-x: hidden;
-  /* max-height: calc(100vh - 27vh); */
   justify-content: center;
   display: flex;
 }
@@ -1282,7 +1333,6 @@ bottom: -23px;
   width: 24px;
   height: 24px;
   margin: 8px auto;
-  /* fill: rgba(53, 76, 95, 0.8); */
   fill: #011348;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-attach-actions btn:hover:not([disabled]) {
@@ -1291,9 +1341,6 @@ bottom: -23px;
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-attach-actions btn:hover:not([disabled]) gttooltip {
   display: block;
 }
-/* #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-attach-actions btn:hover:not([disabled]) svg {
-  fill: #011348;
-} */
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-attach-actions btn[disabled] {
   cursor: not-allowed;
   border: 1px solid #e9f1fd;
@@ -1351,7 +1398,6 @@ bottom: -23px;
   justify-content: center;
   align-items: center;
   align-content: center;
-  /* width: 360px; */
   width: 100%;
   height: auto;
   min-height: 154px;
@@ -1564,14 +1610,14 @@ bottom: -23px;
   overflow: hidden;
   margin: 16px 0 4px 0;
 }
-#gigatester-reason-checkbox{
+#gigatester_ctrls_container .gigatester-ctrl-item input.gigatester-reason-checkboxes[type="checkbox"]{
   position: relative;
   opacity: 100;
   pointer-events: all;
   height: 17px;
   width: 17px;
 }
-#gigatester-reason-label{
+#gigatester_ctrls_container .gigatester-ctrl-item #gigatester-reason-label{
   font-size: 14px;
   font-weight: 400;
   color: #011348;
@@ -1663,7 +1709,7 @@ bottom: -23px;
   right: 0;
   transform: translateY(-50%);
   padding: 0 48px;
-  margin-top: -48px;
+  margin-top: -38px;
   text-align: center;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv
@@ -1703,7 +1749,7 @@ bottom: -23px;
   border: none;
   border-radius: 0;
   background: none;
-  margin: 8px 0 0 0;
+  margin: 14px 0 0 0;
   font-size: 14px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv[data-icon="1"] svg {
@@ -1724,7 +1770,7 @@ bottom: -23px;
   position: absolute;
   left: 0;
   right: 0;
-  bottom: 32px;
+  bottom: 2px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send {
   overflow: hidden;
@@ -1732,7 +1778,7 @@ bottom: -23px;
   display: block;
   height: 40px;
   padding: 0 24px;
-  margin: 20px 0 0 25%;
+  margin: 20px 0 0 103px;
   border-radius: 4px;
   box-sizing: border-box;
   font-weight: 400;
@@ -1969,10 +2015,6 @@ bottom: -23px;
   background: none;
   border: none;
 }
-gigatester-audio-volume-control{
-  position: relative;
-  left: 0px;
-}
 .gigatester-load-detector {
   position: absolute;
   display: none;
@@ -2014,7 +2056,7 @@ gigatester-audio-volume-control{
   left: 0;
   background-color: #e8e8e8;
   }
-#gigatester_audio_record_player #gigatester_audio_record_player_close {
+#gigatester_audio_record_player #gigatester_audio_record_player_stop {
   position: absolute;
   width: 80px;
   height: 80px;
@@ -2034,7 +2076,7 @@ gigatester-audio-volume-control{
   top: 20%;
   color: #011348;
 }
-#gigatester_audio_record_player #gigatester_audio_record_player_close > svg {
+#gigatester_audio_record_player #gigatester_audio_record_player_stop > svg {
   display: block;
   width: 50px;
   height: 50px;
@@ -2071,7 +2113,7 @@ gigatester-audio-volume-control{
 }
 #gigatester_external_file_preview{
 display: inline-block;
-padding: 5px;
+padding: 11px 5px;
 border-radius: 4px;
 color: #011348d0;
 border: 2px solid #011348d0;
@@ -2086,12 +2128,6 @@ background: #fafbfd;
   left: 0;
   background-color: rgba(128, 144, 160, 0.3);
 }
-/* #gigatester_image_preview{
-    position: relative;
-    z-index: 100;
-    max-width: 100%;
-    max-height: 100%;
-} */
 .gigatester-footer{
   font-weight: 700;
 }
@@ -2109,7 +2145,7 @@ background: #fafbfd;
 }
 .gigatester-popup-dialog{
   height: auto;
-  width: 70px;
+  width: 80px;
   background: #fff;
   position: absolute;
   border-radius: 4px;
@@ -2133,7 +2169,6 @@ gtvideotoolbar {
   padding: 0 10px 0 14px;
   background: #011348;
   border-radius: 4px;
-  /* box-shadow: 0 0 10px #5c6c7c; */
   animation: animationMoveUp 0.3s linear;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   cursor: pointer;
@@ -2227,6 +2262,21 @@ gtvideotoolbar
   gtvolume {
   display: none;
 }
+gtvideotoolbar btn.gigatester-video-controls-mute:before {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  width: 26px;
+  margin: auto;
+  border-radius: 4px;
+  background-color: #f02727;
+  transform: rotate(45deg);
+}
 gtvideotoolbar btn.gigatester-video-controls-pause svg {
   width: 28px;
   height: 28px;
@@ -2239,18 +2289,10 @@ gtvideotoolbar btn.gigatester-video-controls-close svg {
   width: 18px;
   height: 18px;
 }
-gtvideotoolbar btn.gigatester-video-controls-start btn-record {
-  position: relative;
-  display: block;
-  width: 20px;
-  height: 20px;
-  margin: 12px;
-  border: 2px solid rgba(53, 76, 95, 0.8);
-  border-radius: 4px;
-  background-color: #011348;
-  transition: all 0.2s;
+gtvideotoolbar
+  btn.gigatester-video-controls-mute.gigatester-video-controls-active:before {
+  display: none;
 }
-
 gtvideotoolbar btn.gigatester-video-controls-stop {
   display: block;
 }
@@ -2258,7 +2300,6 @@ gtvideotoolbar btn.gigatester-video-controls-stop svg {
   width: 18px;
   height: 18px;
   fill: red;
-  /* box-shadow: 0 0 4px rgb(0 0 0 / 20%); */
 }
 gtvideotoolbar btn.gigatester-video-controls-stop btn-timer {
   display: block;
@@ -2287,7 +2328,7 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer btn-timer-mask {
   animation: gt-btnMask 10s steps(180, start) forwards;
   animation-play-state: paused;
 }
-gtvideotoolbar btn.gigatester-video-controls-timer {
+gtvideotoolbar .gigatester-video-controls-timer {
   display: none;
   color: rgba(53, 76, 95, 0.8);
   font-size: 14px;
@@ -2295,8 +2336,8 @@ gtvideotoolbar btn.gigatester-video-controls-timer {
   cursor: default;
   -webkit-font-smoothing: antialiased;
 }
-gtvideotoolbar btn.gigatester-video-controls-timer:hover {
-  background-color: #fff;
+gtvideotoolbar .gigatester-video-controls-timer-show{
+  display: block;
 }
 gtvideotoolbar gtvolume {
   position: absolute;

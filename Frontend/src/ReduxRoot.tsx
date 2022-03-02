@@ -3,9 +3,10 @@ import { Provider } from 'react-redux';
 import Gigatester from './App';
 import configureStore from './configureStore';
 import { PersistGate } from 'redux-persist/integration/react';
-import { createMuiTheme, MuiThemeProvider } from '@material-ui/core';
+import { MuiThemeProvider } from '@material-ui/core';
+import { createTheme } from '@material-ui/core/styles';
 
-const theme = createMuiTheme({
+const theme = createTheme({
   palette: {
     primary: {
       main: '#042E5B',

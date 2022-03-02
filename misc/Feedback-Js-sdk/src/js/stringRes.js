@@ -20,10 +20,12 @@ const GigaTester_StringRes = {
         screenshot_attached: "Screenshot attached",
         send: "Send feedback",
         close: "Close",
-        rectangle: "Draw Rectangle",
-        blackout: "Blackout",
+        rectangle: "Highlight an area in screenshot",
+        blackout: "Hide an area in screenshot",
+        color_palette: "choose color",
         capture: "Capture",
-        capture_screenshot: "Capture screenshot",
+        capture_screenshot: "Attach annoted screenshot to feedback",
+        discard_screenshot: "Discard screenshot",
         save: "Save",
         delete: "Delete",
         add_comment: "Type your comment",
@@ -45,7 +47,7 @@ const GigaTester_StringRes = {
         upload_media_error: "Error uploading media. Please try again.",
         form_submit_error: "Error submitting feedback form. Please try again."
     },
-    setLang: function(locale) {
+    setLocale: function(locale) {
         this.locale = locale
     },
     get: function(key, include_fallback) {

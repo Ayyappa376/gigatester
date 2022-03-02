@@ -135,7 +135,7 @@ const BugSettings = ({
                   : ''
               }
               fullWidth
-              onChange={(event) => handleBugTitleChange()}
+              onChange={(event) => handleBugTitleChange(event)}
               autoComplete='off'
               className='textFieldStyle'
             />
@@ -161,6 +161,7 @@ const BugSettings = ({
         {productParams && productParams.products && productParams.products[0] &&
           productParams.products[0].feedbackAgentSettings &&
           productParams.products[0].feedbackAgentSettings.bugSettings &&
+          productParams.products[0].feedbackAgentSettings.bugSettings.categories &&
           productParams.products[0].feedbackAgentSettings.bugSettings.categories.map((category: ICategory, index: number) => {
             return renderCategoryDetails(category,
               index,

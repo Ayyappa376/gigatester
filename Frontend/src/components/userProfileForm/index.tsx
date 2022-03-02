@@ -156,7 +156,7 @@ export default function ProfileForm(props: any) {
       case "string":
         return (
           <TextField
-            required={element.Mandatory}
+            required={element.mandatory}
             type="string"
             id={el}
             name={el}
@@ -173,7 +173,7 @@ export default function ProfileForm(props: any) {
         return (
           // <div className='numberInput'>
           <TextField
-            required={element.Mandatory}
+            required={element.mandatory}
             type="number"
             id={el}
             name={el}
