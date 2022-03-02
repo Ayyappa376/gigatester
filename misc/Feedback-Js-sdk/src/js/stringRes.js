@@ -47,7 +47,7 @@ const GigaTester_StringRes = {
         upload_media_error: "Error uploading media. Please try again.",
         form_submit_error: "Error submitting feedback form. Please try again."
     },
-    setLang: function(locale) {
+    setLocale: function(locale) {
         this.locale = locale
     },
     get: function(key, include_fallback) {

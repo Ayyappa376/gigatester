@@ -298,18 +298,15 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.controls = $("<gtvideotoolbar>").appendTo($(document.body));
                     this.mute_button = $("<btn>").addClass("gigatester-video-controls-mute gigatester-video-controls-active").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_mute", true) + "</btn-name>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.mic_icon).appendTo(this.controls);
                     this.pause_button = $("<btn>").addClass("gigatester-video-controls-pause").attr("disabled", true).html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name>" +  "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon).appendTo(this.controls);
-                    // this.start_button = $("<btn>").addClass("gigatester-video-controls-start").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("start_recording", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-record></btn-record>").appendTo(this.controls);
                     this.stp_btn = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>"  + "</btn-tooltip>" + GigaTester_Icons.stop_icon).appendTo(this.controls);
                     this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("remaining_time", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>").appendTo(this.controls);
                     this.timer_button = $("<btn>").addClass("gigatester-video-controls-timer").text(this.getTimerStr()).appendTo(this.controls);
                     this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.close_icon).appendTo(this.controls);
-                    // this.mic_volume = $("<gtvolume>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume>").appendTo(this.mute_button);
                     if (!this.device_list.audioinput.length) {
                         this.is_muted = true;
                         this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true)
                     }
                     this.stop_button.find("btn-timer, btn-timer-mask").css("animation-duration", this.timer + "s");
-                    // this.start_button.on("click", this.startVideoCapture.bind(this));
                     this.stp_btn.on("click", this.stopGTcapture.bind(this));
                     this.close_button.on("click", this.cancelGTcapture.bind(this));
                     this.pause_button.on("click", this.recordingPause.bind(this));
@@ -385,8 +382,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             };
                             timer.call(this);
                             this.stop_button.show();
-                            // this.timer_button.show();
-                            // this.start_button.hide();
                             this.close_button.show()
                         }.bind(this);
                         let afterGetAudioStream = function() {
@@ -493,7 +488,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.recorder.addEventListener("dataavailable", this.dataHandler.bind(this));
                     this.recorder.start(10);
                     this.pause_button.removeAttr("disabled");
-                    // this.draw_btn.removeAttr("disabled");
                     if (this.overlay) {
                         this.overlay.attr("recording", this.recorder ? "true" : "false")
                     }
@@ -567,7 +561,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
             //the main object that stores all the data and controls all the flow.
             let GigaTester_modal = {
                 canvas_mode: false,
-//                canvas_target: false,
                 controls_step: 0,
                 form_type: "FEEDBACK",
                 timer: 180,
@@ -628,7 +621,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         rating_type: "STAR",
                         rating_title_message: "Provide your rating",
                         rating_mandatory: true,
-//                        send_button_text: "",
                         name_field: false,
                         name_field_mandatory: false,
                         email_field: true,
@@ -692,7 +684,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     this.custom_ui.element = $("<gtdiv>").addClass("gigatester-ctrls-container").attr({
                         id: "gigatester_ctrls_container",
-                        // "data-html2canvas-ignore": "true"
                     }).appendTo($(document.body));
                     this.configs.position = 'r';
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
@@ -700,7 +691,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.button.appendTo(this.custom_ui.element);
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
-                        // console.log(e,'mouse event')
                         e.stopPropagation()
                     });
                     this.custom_ui.element.on("keydown keyup", (e) => {
@@ -760,13 +750,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.hideControls();
                     let dpr = typeof window.devicePixelRatio === "undefined" ? 1 : window.devicePixelRatio;
                     this.custom_ui.overlay = $("<gtdiv>").addClass("gigatester-overlay")
-                    // .html('<gtdiv class="gigatester-overlay-boundary-top"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-bottom"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-left"></gtdiv>' + '<gtdiv class="gigatester-overlay-boundary-right"></gtdiv>').attr("dpr", dpr.toFixed(2)).attr("GigaTester_StringRes", GigaTester_modal.configs.locale).attr("tooltype", this.Draw_Tools.type);
-                    // .attr("data-html2canvas-ignore", "true");
-//                    if (this.canvas_mode) {
-//                        this.custom_ui.overlay.attr("canvas", "true")
-//                    }
                     this.custom_ui.overlay.appendTo($(document.getElementById('gigatester_screencapture_area')));
-//                    this.setGToverlaySize();
                     this.custom_ui.overlay.append('<svg id="snap_svg" xmlns="http://www.w3.org/2000/svg" width="100%" height="100%"></svg>');
                     this.Draw_Tools.init();
                     this.custom_ui.overlay.on("click mouseup mousedown mouseout mousemove mouseenter mouseleave touchstart touchmove touchcancel touchend", $.proxy(function(e) {
@@ -822,8 +806,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.overlay.css({
                         top: captureArea.offset().top,
                         left: captureArea.offset().left,
-                        // width: canvas_target.width(),
-                        // height: canvas_target.height()
                     })
                 },
                 removeGToverlay: function() {
@@ -880,8 +862,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             "fill-opacity": GigaTester_modal.canvas_mode ? 0 : .01,
                             "fill-rule": "evenodd"
                         });
-//                        $(this.svg_obj_initial).css("outline","5px solid black");
-//                        $(this.svg_obj_initial).css("outline-offset", "-5px");
                         this.setBaseSize();
                         this.snap.drag(this.onDragMove.bind(this), this.isDragStart.bind(this), this.onDragStop.bind(this));
                         this.snap.touchstart(this.isDragStart.bind(this));
@@ -925,7 +905,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.toolbar = $("<gttoolbar>").attr("lang", GigaTester_modal.configs.locale).attr("data-html2canvas-ignore", "true");
                         this.toolbar.html(tools);
                         this.setToolsColor();
-//                        this.toolbar.appendTo($(document.getElementsByClassName('gigatester-overlay')));
                         this.toolbar.insertBefore($('gtdiv#gigatester_screencapture_area'));
                         this.toolbar.on("mouseenter", $.proxy(function() {
                             if (this.draw_started || this.dragging_obj) {
@@ -985,9 +964,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.saveSubCategory();
                             GigaTester_modal.removeGToverlay();
                             this.removeTools()
-                        // if (GigaTester_modal.on_toolbar_close) {
-                        //     GigaTester_modal.on_toolbar_close()
-                        // }
                     },
                     removeTools: function() {
                         GigaTester_modal.scrollEnable();
@@ -1118,8 +1094,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 return
                             }
                             this.dragging_obj.data("drag_started", false);
-                            // this.dragging_obj.data("transform_x", this.dragging_obj.data("transform_x_temp"));
-                            // this.dragging_obj.data("transform_y", this.dragging_obj.data("transform_y_temp"));
                             let movement_x = Math.abs(this.start_x - x);
                             let movement_y = Math.abs(this.start_y - y);
                             if (!$(event.target).hasClass("gigatester-svg-delete") && movement_x <= 2 && movement_y <= 2) {
@@ -1480,7 +1454,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     })
                 },
                 hideCommentForm: function() {
-                    // console.log(GigaTester_modal.comments[])
                     $.each(this.comments, function(index, comment) {
                         comment.saveComment()
                     })
@@ -1677,9 +1650,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     GigaTester_modal.configs.selected_category.map(function (value){
                                 $('.gigatester-reason-checkboxes').each(function () {
                                 if($(this).next("label").text() == value){
-                                // console.log($(this).next("label").text(), 'label');
                                 $(this).attr('checked', 'true')
-                                // console.log(GigaTester_modal.configs.selected_category, 'data publish')
                                 }
                             })
                         });
@@ -1769,7 +1740,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                      + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
                      + '<gtdiv class="gigatester-ctrl-item-preview-placeholder">' + GigaTester_StringRes.get("attachment_msg") + '</gtdiv>'
                      + (display_screenshot || display_audio || display_video || display_attachment ?
-                        //  GigaTester_modal.recording ? '<gtdiv class="gigatester-ctrl-item-attach-actions" >' + "<gtdiv>" :
                         '<gtdiv class="gigatester-ctrl-item-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
                      + (display_screenshot ? '<btn class="gigatester-ctrl-item-screenshot">' + GigaTester_Icons.screenshot_icon + "<gtdiv>" + GigaTester_StringRes.get("attach_screenshot") + "</gtdiv>"
                      + "<gttooltip>" + GigaTester_StringRes.get("attach_screenshot") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
@@ -1813,8 +1783,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         console.log(default_category, "form defaults")
                         var select = document.getElementById('category');
                         console.log(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val())
-                        // var value = select.options[select.selectedIndex].value;
-                        // console.log(value);
                     }
                     if (default_severity) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
@@ -1824,9 +1792,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     setTimeout(()=>{
                         GigaTester_modal.saveSubCategory();
                     },10);
-
-                    // GigaTester_modal.showSubCategory();
-
                 },
                 openForm: function(form_type) {
                     this.form_type = form_type;
@@ -1844,7 +1809,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     GigaTester_modal.set_screen_default_category = false;
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                         console.log("GigaTester: This browser does not support media capture API");
-                        //callback();
                     } else {
                         GigaTester_modal.hideControls();
                         navigator.mediaDevices.getDisplayMedia({
@@ -1943,7 +1907,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         image_overlay.css({width: final_width, height: final_height});
                         const image =  $('<image id="gigatester_image_preview" preload="auto" src="' + frame + '"></image>');
                         image.appendTo(image_overlay);
-//                        this.canvas_target = canvas;
                         const screencapture_dialog = $('<gtdiv id="gigatester_screencapture_dialog"></gtdiv>');
                         image_overlay.appendTo(screencapture_dialog);
                         screencapture_dialog.appendTo(document.body);
@@ -2062,7 +2025,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         timer_info_text.appendTo(audio_record_stop);
                         audio_record_text.appendTo(audio_record_overlay);
                         audio_record_overlay.appendTo($(document.getElementsByClassName('gigatester-ctrl-item gigatester-ctrl-item-r')));
-                        // let mic_volume = $("<gtvideotoolbar id='gigatester-audio-volume-control'> <gtvolume class='hasvolume'>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "<gtdiv></gtdiv>" + "</gtvolume> </gtvideotoolbar>").appendTo(audio_record_stop);
                         const recorder = new MediaRecorder(stream);
                         GigaTester_modal.startTimer();
                         const chunks = [];
@@ -2505,7 +2467,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     reader.readAsDataURL(fileSelected);
                 },
                 validateFields: function(e){
-                    // console.log(e);
                     e.preventDefault();
                     console.log(GigaTester_modal.form_type)
                     if(GigaTester_modal.form_data.audio_file || GigaTester_modal.form_data.external_file || GigaTester_modal.form_data.video_file || GigaTester_modal.form_data.image_file){
@@ -2757,11 +2718,11 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 canvasCommentStart: function(e) {
                     let pin_x, pin_y;
                     if (e.changedTouches && e.changedTouches.length) {
-                        pin_x = e.changedTouches[0].offsetX; //e.changedTouches[0].pageX;
-                        pin_y = e.changedTouches[0].offsetX; //e.changedTouches[0].pageY
+                        pin_x = e.changedTouches[0].offsetX;
+                        pin_y = e.changedTouches[0].offsetX;
                     } else {
-                        pin_x = e.offsetX; //e.clientX;
-                        pin_y = e.offsetY; //e.clientY;
+                        pin_x = e.offsetX;
+                        pin_y = e.offsetY;
                     }
                     if (this.comments.length && this.comments[this.comments.length - 1].isOpen()) {
                         this.comments[this.comments.length - 1].saveCanvasComments();
@@ -2769,7 +2730,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             comment.hideForm()
                         });
                         this.addCanvasComment(pin_x, pin_y);
-                        // console.log('add new comment')
                         GigaTester_modal.scrollDisable();
                     } else {
                         $.each(this.comments, function(index, comment) {
@@ -2804,11 +2764,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         GigaTester_modal.configs.screen_record_time = data[0].videoAudioMaxDuration * 60;
                         GigaTester_modal.configs.audio_time = data[0].videoAudioMaxDuration * 60;
                         GigaTester_modal.configs.max_file_size = data[0].uploadFileMaxSize;
-                        // data[0].feedbackTypes.map(item => {
-                        //         GigaTester_modal.configs.workflow_type += item
-                        //         GigaTester_modal.configs.workflow_type + ','
-
-                        // })
                         if(data[0].invokeOn[0] === "AFTER_DELAY"){
                             setTimeout(() => {
                                 GigaTester_modal.popOutDialog();
@@ -2820,15 +2775,12 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             category.map(item => {
                                 console.log(item.name)
                             GigaTester_modal.configs.categories.push(item.name.trim())
-                            // console.log(item.feedbacks)
                             })
                         }
                         else if(GigaTester_modal.form_type === "FEEDBACK"){
                             let category = data[0].feedbackSettings.categories;
                             category.map(item => {
-                                // console.log(item.name)
                             GigaTester_modal.configs.categories.push(item.name.trim());
-                            // console.log(item.feedbacks)
                             })
                         }
                         data[0].bugSettings.severities.map(item => {
@@ -2875,9 +2827,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 console.log(email);
                 if (typeof email === "string") {
                     GigaTester_modal.form_data.email = $.trim(email)
-                    console.log(email);
-                    // GigaTester_modal.form_settings_default.BUGS.email_field_disable = true;
-                    // GigaTester_modal.form_settings_default.FEEDBACK.email_field_disable = true;
                 }
             },
             setUserDetails: function(userData){
@@ -2908,7 +2857,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     let category_bug_counter = false;
                     if(params.trim().toUpperCase() === "BUGS"){
                         GigaTester_modal.configs.config_data[0].bugSettings.categories.map(value => {
-                            // console.log('GigaTester: bug category api value', value)
                             if(value.name.trim() === defaultCategory.trim()){
                                 category_feedback_counter = true;
                                 console.log('GigaTester: category selected ' + defaultCategory);
@@ -2941,16 +2889,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         }
                 }
             },
-            // unSavedChanges: function() {
-            //     return GigaTester_modal.unSavedChanges()
-            // },
-            }
+        }
         window.GigaTester = $.extend(window.GigaTester, GigaTester_Api);
         $(document).ready($.proxy(GigaTester_modal.init, GigaTester_modal))
     })(JQ);
     }catch(err){
             console.log(err, 'err')
-        }
+    }
 }
 }
 function checkgigatester(){
