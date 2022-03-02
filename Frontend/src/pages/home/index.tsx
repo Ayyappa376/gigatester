@@ -377,7 +377,7 @@ const Home = (props: any) => {
             <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
               <Typography variant="h5" className={classes.sectionTitle}>Dashboard</Typography>
               <Typography className={classes.sectionText}>
-                Get a consolidated report and listing of all the feedback and bugs submitted by your users. Reports include bar and piecharts of feedback by category and a detailed list of individual-user submissions, which can be filtered for a more percise look.
+                Get a consolidated report and listing of all the feedback and bugs submitted by your users. Reports include bar and piecharts of feedback by category and a detailed list of individual-user submissions, which can be filtered for a more focused look.
               </Typography>
             </Grid>
           </Grid>
