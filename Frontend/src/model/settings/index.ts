@@ -1,8 +1,9 @@
 export interface ISystemDetails {
   appClientId: string;
   appClientURL: string;
-  mode: string; // regular or trial
+//  mode: string; // regular or trial
   userpoolId: string;
+  userpoolRegion: string;
   systemUser: string;
   systemPassword: string;
 }

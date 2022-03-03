@@ -14,8 +14,8 @@ import TeamSelect from './team-select';
 import AssessmentSelect from './assessment-select';
 import ErrorPage from './error_page';
 import Admin from './admin';
-import TrialHome from './trial-home';
-import TrialClose from './trial-close';
+// import TrialHome from './trial-home';
+// import TrialClose from './trial-close';
 import Trends from './trends';
 import MetricSelect from './metrics/metric-select';
 import UserProfile from './user-profile';
@@ -38,8 +38,8 @@ export {
   Result,
   TeamAssessments,
   TeamSelect,
-  TrialClose,
-  TrialHome,
+  // TrialClose,
+  // TrialHome,
   Trends,
   UserProfile,
   ViewAssessment,

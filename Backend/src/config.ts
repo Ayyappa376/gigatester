@@ -7,6 +7,7 @@ export interface Config {
     systemPassword: string;
     systemUser: string;
     userPoolId: string;
+    userPoolRegion: string;
   };
   cors: CorsOptions;
   defaults: {
@@ -55,6 +56,7 @@ export const config: Config = {
     systemPassword: '',
     systemUser: '',
     userPoolId: '',
+    userPoolRegion: '',
   },
   cors: {
     origin: true,

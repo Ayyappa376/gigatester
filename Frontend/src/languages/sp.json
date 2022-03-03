@@ -231,8 +231,6 @@
   "averagePercent": "Porcentaje medio",
   "averageLevel": "Nivel promedio",
   "assessmentType": "Tipo de evaluación",
-  "thankYouForTakingTheTrialAssessment": 
-      "Gracias por realizar la evaluación de prueba. Gigatester es capaz de mucho más. Contáctenos para evaluar la plataforma completa haciendo clic en el botón sobre el área de esta aplicación.",
   "errorConnectingWithServer": "Error al conectar con el servidor.",
   "notGivenAssessmentYet": "Aún no ha realizado ninguna evaluación.",
   "myAssessments": "Mis Evaluaciones",
@@ -394,8 +392,6 @@
     "La puntuación de referencia debe tener un valor entre 50 y 100",
   "mapQuestionsBeforeProceeding": "Por favor mapee las preguntas antes de continuar",
   "cannotDeleteCategoryMappedToQuestion":
-    "No puede eliminar una categoría asignada a una pregunta",
-  "enterValidEmailToStartTrial":
-    "Ingrese un correo electrónico válido para comenzar su evaluación de prueba"
+    "No puede eliminar una categoría asignada a una pregunta"
 }
     

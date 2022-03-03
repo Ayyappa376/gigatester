@@ -69,16 +69,16 @@ export const getTeamConfig = async (orgId: string): Promise<ConfigItem> =>
   getConfig(orgId, TEAM_CONFIG);
 
 export const getCampaignConfig = async (orgId: string): Promise<ConfigItem> =>
-getConfig(orgId, CAMPAIGN_CONFIG);
+  getConfig(orgId, CAMPAIGN_CONFIG);
 
 export const getDeviceConfig = async (orgId: string): Promise<ConfigItem> =>
-getConfig(orgId, DEVICE_CONFIG);
+  getConfig(orgId, DEVICE_CONFIG);
 
 export const getPlatformConfig = async (orgId: string): Promise<ConfigItem> =>
-getConfig(orgId, PLATFORM_CONFIG);
+  getConfig(orgId, PLATFORM_CONFIG);
 
 export const getProductConfig = async (orgId: string): Promise<ConfigItem> =>
-getConfig(orgId, PRODUCT_CONFIG);
+  getConfig(orgId, PRODUCT_CONFIG);
 
 export const getServiceConfig = async (orgId: string): Promise<ConfigItem> =>
   getConfig(orgId, SERVICE_CONFIG);
@@ -94,9 +94,6 @@ const setConfig = async (
   type: string,
   configDetails:
   ObjectConfigDetails
-//    | UserConfigDetails
-//    | TeamConfigDetails
-//    | ServiceConfigDetails
     | GeneralConfigDetails
     | CollectorConfigDetails
 ): Promise<ConfigItem> => {

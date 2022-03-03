@@ -2,8 +2,7 @@ import { config } from '@root/config';
 import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
 import { sendResetPasswordMessage } from './sendEmail';
-// var ses = new aws.SES({ region: "us-east-1" });
-aws.config.update({ region: config.region });
+aws.config.update({ region: config.cognito.userPoolRegion });
 const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
 
 //This file contains cognitoIdentityServices API calls

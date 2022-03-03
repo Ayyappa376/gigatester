@@ -228,8 +228,6 @@
   "averagePercent": "Durchschnittlicher Prozentsatz",
   "averageLevel": "Durchschnittsniveau",
   "assessmentType": "Bewertungstyp",
-  "thankYouForTakingTheTrialAssessment": 
-      "Vielen Dank, dass Sie die Testbewertung vorgenommen haben. Gigatester kann noch viel mehr. Kontaktieren Sie uns, um die gesamte Plattform zu bewerten, indem Sie auf die Schaltfläche über diesem App-Bereich klicken.",
   "errorConnectingWithServer": "Fehler beim Verbinden mit dem Server.",
   "notGivenAssessmentYet": "Sie haben noch keine Bewertung abgegeben.",
   "myAssessments": "Meine Einschätzungen",
@@ -391,7 +389,5 @@
     "Der Benchmark-Score sollte einen Wert zwischen 50 und 100 haben",
   "mapQuestionsBeforeProceeding": "Bitte ordnen Sie Fragen zu, bevor Sie fortfahren",
   "cannotDeleteCategoryMappedToQuestion":
-    "Sie können eine einer Frage zugeordnete Kategorie nicht löschen",
-  "enterValidEmailToStartTrial":
-    "Bitte geben Sie eine gültige E-Mail-Adresse ein, um Ihre Testbewertung zu starten"
+    "Sie können eine einer Frage zugeordnete Kategorie nicht löschen"
 }

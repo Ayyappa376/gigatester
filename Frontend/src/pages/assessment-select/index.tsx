@@ -91,12 +91,12 @@ const AssessmentSelect = (props: any) => {
           setQuestionnaire(response);
           setQuestionnaireFetched(true);
           setAssessmentDataSuccess(response);
-          if (systemDetails.mode === constantValues.TRIAL_MODE) {
-            linkClicked(
-              constantValues.TRIAL_QUESTIONNAIRE_ID,
-              constantValues.TRIAL_QUESTIONNAIRE_VERSION
-            );
-          }
+          // if (systemDetails.mode === constantValues.TRIAL_MODE) {
+          //   linkClicked(
+          //     constantValues.TRIAL_QUESTIONNAIRE_ID,
+          //     constantValues.TRIAL_QUESTIONNAIRE_VERSION
+          //   );
+          // }
         })
         .catch((error: any) => {
           setAssessmentDataFail(error);
@@ -109,10 +109,9 @@ const AssessmentSelect = (props: any) => {
           }
         });
     } else {
-      if (systemDetails.mode === constantValues.TRIAL_MODE) {
+      // if (systemDetails.mode === constantValues.TRIAL_MODE) {
         props.history.push('/error');
-      }
-      //  else {
+      // } else {
       //   window.open(
       //     signUpUrl,
       //     '_self',

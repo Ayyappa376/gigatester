@@ -27,7 +27,7 @@ const Gigatester = (props: IGigatesterProps) => {
   const env = process.env.REACT_APP_STAGE;
 
   Amplify.configure({
-    aws_cognito_region: 'us-east-1',
+    aws_cognito_region: systemDetails.userpoolRegion,
     aws_user_pools_id: systemDetails.userpoolId,
     aws_user_pools_web_client_id: systemDetails.appClientId,
   });

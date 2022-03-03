@@ -45,6 +45,7 @@ async function handler(request: GetSettings, response: Response) {
         systemPassword: config.cognito.systemPassword,
         systemUser: config.cognito.systemUser,
         userpoolId: config.cognito.userPoolId,
+        userpoolRegion: config.cognito.userPoolRegion,
       };
       break;
     }

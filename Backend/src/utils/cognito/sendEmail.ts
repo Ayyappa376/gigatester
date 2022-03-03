@@ -1,6 +1,7 @@
+import { config } from '@root/config';
 import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
-const ses = new aws.SES({ region: 'us-east-1' });
+const ses = new aws.SES({ region: config.region });
 
 export const sendResetPasswordMessage = async (
     email: string,

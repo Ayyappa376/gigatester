@@ -23,7 +23,7 @@ import {
   useActions,
   setAppBarRightText,
 } from '../../actions';
-import * as constantValues from '../../common/constantValues';
+import { QUESTION_PAGE_NOT_TIMED, QUESTION_PAGE_TIMED } from '../question';
 import { buttonStyle } from '../../common/common';
 import { Link } from 'react-scroll';
 // import LanguageSelector from '../language-selection-dropdown/index';
@@ -316,7 +316,7 @@ const PageHeader = (props: any) => {
     const { getMetricsType } = props;
     getMetricsType('doraMetrics');
     setAdminPageState(true);
-    if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
+    if (currentPage === QUESTION_PAGE_NOT_TIMED) {
       setOpenModalLeavePage(true);
       setFocusURL('/admin');
     } else {
@@ -376,7 +376,7 @@ const PageHeader = (props: any) => {
     if (!userStatus.idToken) {
       return <div />;
     }
-    if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
+    if (currentPage === QUESTION_PAGE_TIMED) {
       return (
         <div className='header-item'>
           <Tooltip
@@ -403,9 +403,9 @@ const PageHeader = (props: any) => {
     );
   };
 
-  const handleTrialClose = () => {
-    props.history.push('/trial/close');
-  };
+  // const handleTrialClose = () => {
+  //   props.history.push('/trial/close');
+  // };
 
   const renderManageSoftwareFiles = () => {
     if (!userStatus.idToken) {
@@ -482,7 +482,7 @@ const PageHeader = (props: any) => {
       userStatus.roles!.indexOf('Admin') === -1 &&
       userStatus.roles!.indexOf('Manager') !== -1
     ) {
-      if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
+      if (currentPage === QUESTION_PAGE_TIMED) {
         return (
           <div className='header-item'>
             <Tooltip
@@ -511,7 +511,7 @@ const PageHeader = (props: any) => {
       );
     }
     if (userStatus.roles!.indexOf('Admin') !== -1) {
-      if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
+      if (currentPage === QUESTION_PAGE_TIMED) {
         return (
           <div className='header-item'>
             <Tooltip
@@ -550,7 +550,7 @@ const PageHeader = (props: any) => {
       userStatus.roles!.indexOf('Admin') !== -1 ||
       userStatus.roles!.indexOf('Manager') !== -1
     ) {
-      if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
+      if (currentPage === QUESTION_PAGE_TIMED) {
         return (
           <div className='header-item'>
             <Tooltip
@@ -630,7 +630,7 @@ const PageHeader = (props: any) => {
       userStatus.roles!.indexOf('Admin') !== -1 ||
       userStatus.roles!.indexOf('Manager') !== -1
     ) {
-      if (currentPage === constantValues.QUESTION_PAGE_TIMED) {
+      if (currentPage === QUESTION_PAGE_TIMED) {
         return (
           <div className='header-item'>
             <Tooltip
@@ -704,7 +704,7 @@ const PageHeader = (props: any) => {
 
   const handleMyAssessments = () => {
     setAdminPageState(false);
-    if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
+    if (currentPage === QUESTION_PAGE_NOT_TIMED) {
       handleClose();
       setOpenModalLeavePage(true);
       setFocusURL('/assessment/history');
@@ -716,7 +716,7 @@ const PageHeader = (props: any) => {
 
   const handleTeamAssessments = () => {
     setAdminPageState(false);
-    if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
+    if (currentPage === QUESTION_PAGE_NOT_TIMED) {
       handleClose();
       setOpenModalLeavePage(true);
       setFocusURL('/assessment/teams');
@@ -728,7 +728,7 @@ const PageHeader = (props: any) => {
 
   const handleTakeAssessment = () => {
     setAdminPageState(false);
-    if (currentPage === constantValues.QUESTION_PAGE_NOT_TIMED) {
+    if (currentPage === QUESTION_PAGE_NOT_TIMED) {
       handleClose();
       setOpenModalLeavePage(true);
       setFocusURL('/assessmentselect');
@@ -901,7 +901,7 @@ const PageHeader = (props: any) => {
       <div className={classes.topBar}>
         {renderLogo()}
         <div className='topbar-header-links'>
-          {systemDetails.mode !== constantValues.TRIAL_MODE ? (
+          {/*systemDetails.mode !== constantValues.TRIAL_MODE ? (*/
             <div className='header-container'>
               {/* {<LanguageSelector />} */}
               {renderHomeButton()}
@@ -920,7 +920,7 @@ const PageHeader = (props: any) => {
               {/* renderMenuItems() */}
               {renderUserStatus()}
             </div>
-          ) : (
+          /*) : (
             <div className='header-item'>
               <Button
                 onClick={handleTrialClose}
@@ -930,7 +930,7 @@ const PageHeader = (props: any) => {
                 <Text tid='close' />
               </Button>
             </div>
-          )}
+          )*/}
         </div>
         <Popper open={openUserMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (

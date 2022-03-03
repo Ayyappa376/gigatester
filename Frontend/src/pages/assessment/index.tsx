@@ -127,7 +127,7 @@ function Assessment(props: IAssessmentProps) {
   );
   const startTimers = useActions(setAssessmentStartTime);
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
-  const [trialUserEmail, setTrialUserEmail] = useState<string>('');
+  // const [trialUserEmail, setTrialUserEmail] = useState<string>('');
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
@@ -200,9 +200,9 @@ function Assessment(props: IAssessmentProps) {
     setFailure(false);
   };
 
-  const handleEmailChange = (event: any) => {
-    setTrialUserEmail(event.target.value);
-  };
+  // const handleEmailChange = (event: any) => {
+  //   setTrialUserEmail(event.target.value);
+  // };
 
   const getAssessmentDataAndRedirect = () => {
     ReactGA.event({
@@ -210,17 +210,17 @@ function Assessment(props: IAssessmentProps) {
       action: 'Assessment started',
       label: assessmentId ? assessmentId : '',
     });
-    if (systemDetails.mode === constantValues.TRIAL_MODE) {
-      if (trialUserEmail === '') {
-        setFailureMessage(<Text tid='enterValidEmailToStartTrial' />);
-        setFailure(true);
-      } else {
-        //TODO: overwrite the email in user state object to this email
-        setStartAssessment(true);
-      }
-    } else {
+    // if (systemDetails.mode === constantValues.TRIAL_MODE) {
+    //   if (trialUserEmail === '') {
+    //     setFailureMessage(<Text tid='enterValidEmailToStartTrial' />);
+    //     setFailure(true);
+    //   } else {
+    //     //TODO: overwrite the email in user state object to this email
+    //     setStartAssessment(true);
+    //   }
+    // } else {
       setStartAssessment(true);
-    }
+    // }
   };
 
   const renderStartAssessmentComponent = () => {
@@ -280,7 +280,7 @@ function Assessment(props: IAssessmentProps) {
                 )}
               </div>
             )}
-            {systemDetails.mode === constantValues.TRIAL_MODE ? (
+            {/*systemDetails.mode === constantValues.TRIAL_MODE ? (
               <div>
                 <Typography className={classes.info3} variant='body1'>
                   <Text tid='enterEmailAndClickStartButton' />
@@ -297,9 +297,9 @@ function Assessment(props: IAssessmentProps) {
                   className={classes.textField}
                 />
               </div>
-            ) : (
+            ) : (*/
               <div />
-            )}
+            /*)*/}
             <Button
               onClick={getAssessmentDataAndRedirect}
               variant='outlined'

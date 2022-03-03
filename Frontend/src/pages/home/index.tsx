@@ -101,44 +101,44 @@ const Home = (props: any) => {
         state: { stateVariable },
         customHeaders: { noauthvalidate: 'true' },
       })
-        .then((response: any) => {
-          const user = response.systemUser;
-          const pwd = response.systemPassword;
-          setSysDetails({ ...response, systemUser: '', systemPassword: '' });
-            Auth.signIn(user, pwd)
-            .then((user: any) => {
-              if (
-                user &&
-                user.signInUserSession.idToken &&
-                user.signInUserSession.accessToken
-              ) {
-                const tokenInfo: any = jwtDecode(
-                  user.signInUserSession.idToken.jwtToken
-                );
-              superUserStateVariable['user'] = {
-                idToken: user.signInUserSession.idToken.jwtToken,
-                accessToken: user.signInUserSession.accessToken,
-                userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
-                team:
-                  tokenInfo['custom:teamName'] && tokenInfo['custom:teamName'] !== ''
-                    ? tokenInfo['custom:teamName']
-                    : 'Others',
-                teams: [],
-                roles: ['Admin'],
-              };
-              setSuperUserStateVariable(superUserStateVariable);
-            }
-            setIsFetching(false);
-          })
-          .catch((error) => {
-            console.log(error);
-            setIsFetching(false);
-          })
-        })
-        .catch((error: any) => {
+      .then((response: any) => {
+        const user = response.systemUser;
+        const pwd = response.systemPassword;
+        setSysDetails({ ...response, systemUser: '', systemPassword: '' });
+          Auth.signIn(user, pwd)
+          .then((user: any) => {
+            if (
+              user &&
+              user.signInUserSession.idToken &&
+              user.signInUserSession.accessToken
+            ) {
+              const tokenInfo: any = jwtDecode(
+                user.signInUserSession.idToken.jwtToken
+              );
+            superUserStateVariable['user'] = {
+              idToken: user.signInUserSession.idToken.jwtToken,
+              accessToken: user.signInUserSession.accessToken,
+              userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+              team:
+                tokenInfo['custom:teamName'] && tokenInfo['custom:teamName'] !== ''
+                  ? tokenInfo['custom:teamName']
+                  : 'Others',
+              teams: [],
+              roles: ['Admin'],
+            };
+            setSuperUserStateVariable(superUserStateVariable);
+          }
           setIsFetching(false);
-          props.history.push('/error');
-        });
+        })
+        .catch((error) => {
+          console.log(error);
+          setIsFetching(false);
+        })
+      })
+      .catch((error: any) => {
+        setIsFetching(false);
+        props.history.push('/error');
+      });
   }, []);
 
   const getSignupDialog = (state: boolean) => {

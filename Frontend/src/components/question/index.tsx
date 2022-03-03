@@ -39,9 +39,11 @@ import EmojiObjectsIcon from '@material-ui/icons/EmojiObjects';
 import { getQuestionIdFromCompositeQuestionId } from '../../utils/data';
 import { QontoStepIcon, QontoConnector } from './qontoStepIcon';
 import SnackbarBottomLeft from '../snackbar';
-import * as constantValues from '../../common/constantValues';
 import ReactPlayer from 'react-player';
 import { Text } from '../../common/Language';
+
+export const QUESTION_PAGE_NOT_TIMED = 'question';
+export const QUESTION_PAGE_TIMED = 'question-timed';
 
 let timeLeftTimer: NodeJS.Timeout;
 
@@ -502,9 +504,9 @@ function QuestionRender(props: IQuestionProps) {
   const handleSubmit = (event?: any, notify?: boolean) => {
     const isUserResponseValid = validateSelectedOption(selectedOption);
     if (isUserResponseValid) {
-      if (!notify || systemDetails.mode === constantValues.TRIAL_MODE) {
-        return processSubmit(event);
-      }
+      // if (!notify || systemDetails.mode === constantValues.TRIAL_MODE) {
+      //   return processSubmit(event);
+      // }
       setFocusClickEvent(event);
       setSubmitNotifyModal(true);
       return true;
@@ -820,7 +822,7 @@ function QuestionRender(props: IQuestionProps) {
                 }}
               >
                 {renderPreviousButton(hasSelectionChanged, index)}
-                {systemDetails.mode !== constantValues.TRIAL_MODE &&
+                {/*systemDetails.mode !== constantValues.TRIAL_MODE &&*/
                   !timeOut &&
                   renderSaveAndCloseButton(hasSelectionChanged)}
                 {renderActionButton(hasSelectionChanged)}
@@ -956,9 +958,9 @@ function QuestionRender(props: IQuestionProps) {
 
   useEffect(() => {
     if (timeOut) {
-      setCurrentPageValue(constantValues.QUESTION_PAGE_TIMED);
+      setCurrentPageValue(QUESTION_PAGE_TIMED);
     } else {
-      setCurrentPageValue(constantValues.QUESTION_PAGE_NOT_TIMED);
+      setCurrentPageValue(QUESTION_PAGE_NOT_TIMED);
     }
     setActiveStep(Math.floor(parseInt(index, 10) / 5));
     setCompletedStep(-1);
