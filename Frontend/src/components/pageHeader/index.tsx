@@ -174,8 +174,6 @@ const PageHeader = (props: any) => {
   const anchorRef: any = React.useRef(null);
   // let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
-  // redirectUrl = `https://${systemDetails.appClientURL}/login?response_type=token&client_id=${systemDetails.appClientId}&redirect_uri=https://${window.location.host}/auth`;
-
 
   // if (props.location.pathname === '/' || systemDetails.mode === constantValues.TRIAL_MODE) {
   //   resetBothTexts();
