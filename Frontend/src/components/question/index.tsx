@@ -504,9 +504,6 @@ function QuestionRender(props: IQuestionProps) {
   const handleSubmit = (event?: any, notify?: boolean) => {
     const isUserResponseValid = validateSelectedOption(selectedOption);
     if (isUserResponseValid) {
-      // if (!notify || systemDetails.mode === constantValues.TRIAL_MODE) {
-      //   return processSubmit(event);
-      // }
       setFocusClickEvent(event);
       setSubmitNotifyModal(true);
       return true;
@@ -822,8 +819,7 @@ function QuestionRender(props: IQuestionProps) {
                 }}
               >
                 {renderPreviousButton(hasSelectionChanged, index)}
-                {/*systemDetails.mode !== constantValues.TRIAL_MODE &&*/
-                  !timeOut &&
+                {!timeOut &&
                   renderSaveAndCloseButton(hasSelectionChanged)}
                 {renderActionButton(hasSelectionChanged)}
               </Container>

@@ -1,5 +1,4 @@
 import { IRootState } from '../reducers';
-//import * as constantvalues from '../common/constantValues';
 
 export const initialState: IRootState = {
     user: {
@@ -76,7 +75,6 @@ export const initialState: IRootState = {
     systemDetails: {
         appClientId: '',
         appClientURL: '',
-//        mode: constantvalues.NORMAL_MODE,
         userpoolId:'',
         userpoolRegion:'',
         systemUser: '',

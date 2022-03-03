@@ -175,15 +175,11 @@ const PageHeader = (props: any) => {
   // let redirectUrl: string;
   const systemDetails = useSelector((state: IRootState) => state.systemDetails);
 
-  // if (props.location.pathname === '/' || systemDetails.mode === constantValues.TRIAL_MODE) {
-  //   resetBothTexts();
-  // } else {
-  //   setDisplayTextRight(
-  //     userStatus && userStatus.userDetails && userStatus.userDetails.email
-  //       ? userStatus.userDetails.email
-  //       : ''
-  //   );
-  // }
+  // setDisplayTextRight(
+  //   userStatus && userStatus.userDetails && userStatus.userDetails.email
+  //     ? userStatus.userDetails.email
+  //     : ''
+  // );
 
   const onLogin = () => {
     setOpenSignin(true)
@@ -901,36 +897,24 @@ const PageHeader = (props: any) => {
       <div className={classes.topBar}>
         {renderLogo()}
         <div className='topbar-header-links'>
-          {/*systemDetails.mode !== constantValues.TRIAL_MODE ? (*/
-            <div className='header-container'>
-              {/* {<LanguageSelector />} */}
-              {renderHomeButton()}
-              {/* renderAboutUsButton() */}
-              {/* renderFeedbackButton() */}
-              {renderContactUsButton()}
-              {renderAdminPage()}
-              {/* renderManageSoftwareFiles() */}
-              {/* {renderViewMetrics()} */}
-              {/* {renderMetricsMenuItems()} */}
-              {/* renderDashboardPage() */}
-              {/* renderDashboardMenuItems() */}
-              {/* renderTrendsPage() */}
-              {/* renderTrendsMenuItems() */}
-              {/* renderViewAssessment() */}
-              {/* renderMenuItems() */}
-              {renderUserStatus()}
-            </div>
-          /*) : (
-            <div className='header-item'>
-              <Button
-                onClick={handleTrialClose}
-                className={classes.headerButton}
-                variant='outlined'
-              >
-                <Text tid='close' />
-              </Button>
-            </div>
-          )*/}
+          <div className='header-container'>
+            {/* {<LanguageSelector />} */}
+            {renderHomeButton()}
+            {/* renderAboutUsButton() */}
+            {/* renderFeedbackButton() */}
+            {renderContactUsButton()}
+            {renderAdminPage()}
+            {/* renderManageSoftwareFiles() */}
+            {/* {renderViewMetrics()} */}
+            {/* {renderMetricsMenuItems()} */}
+            {/* renderDashboardPage() */}
+            {/* renderDashboardMenuItems() */}
+            {/* renderTrendsPage() */}
+            {/* renderTrendsMenuItems() */}
+            {/* renderViewAssessment() */}
+            {/* renderMenuItems() */}
+            {renderUserStatus()}
+          </div>
         </div>
         <Popper open={openUserMenu} anchorEl={anchorRef.current} role={undefined} transition disablePortal>
           {({ TransitionProps, placement }) => (

@@ -29,7 +29,6 @@ import {
 import './style.css';
 import { buttonStyle } from '../../common/common';
 import { setAssessmentStartTime } from '../../actions/assessment/assessment-time';
-import * as constantValues from '../../common/constantValues';
 import { Text } from '../../common/Language';
 import { ITeamInfo } from '../../model';
 
@@ -210,17 +209,7 @@ function Assessment(props: IAssessmentProps) {
       action: 'Assessment started',
       label: assessmentId ? assessmentId : '',
     });
-    // if (systemDetails.mode === constantValues.TRIAL_MODE) {
-    //   if (trialUserEmail === '') {
-    //     setFailureMessage(<Text tid='enterValidEmailToStartTrial' />);
-    //     setFailure(true);
-    //   } else {
-    //     //TODO: overwrite the email in user state object to this email
-    //     setStartAssessment(true);
-    //   }
-    // } else {
-      setStartAssessment(true);
-    // }
+    setStartAssessment(true);
   };
 
   const renderStartAssessmentComponent = () => {
@@ -280,26 +269,6 @@ function Assessment(props: IAssessmentProps) {
                 )}
               </div>
             )}
-            {/*systemDetails.mode === constantValues.TRIAL_MODE ? (
-              <div>
-                <Typography className={classes.info3} variant='body1'>
-                  <Text tid='enterEmailAndClickStartButton' />
-                </Typography>
-                <TextField
-                  required={true}
-                  type='string'
-                  id='email'
-                  name='email'
-                  value={trialUserEmail}
-                  label='Your Email'
-                  onChange={handleEmailChange}
-                  autoComplete='off'
-                  className={classes.textField}
-                />
-              </div>
-            ) : (*/
-              <div />
-            /*)*/}
             <Button
               onClick={getAssessmentDataAndRedirect}
               variant='outlined'

@@ -29,7 +29,6 @@ import ReactGA from 'react-ga';
 import ArrowForwardIcon from '@material-ui/icons/ArrowForward';
 import { buttonStyle } from '../../common/common';
 import TeamSelectionDropDown from '../../components/team-selection-dropdown';
-import * as constantValues from '../../common/constantValues';
 import { Text } from '../../common/Language';
 
 const useStyles = makeStyles((theme) => ({
@@ -91,12 +90,6 @@ const AssessmentSelect = (props: any) => {
           setQuestionnaire(response);
           setQuestionnaireFetched(true);
           setAssessmentDataSuccess(response);
-          // if (systemDetails.mode === constantValues.TRIAL_MODE) {
-          //   linkClicked(
-          //     constantValues.TRIAL_QUESTIONNAIRE_ID,
-          //     constantValues.TRIAL_QUESTIONNAIRE_VERSION
-          //   );
-          // }
         })
         .catch((error: any) => {
           setAssessmentDataFail(error);
@@ -109,16 +102,7 @@ const AssessmentSelect = (props: any) => {
           }
         });
     } else {
-      // if (systemDetails.mode === constantValues.TRIAL_MODE) {
         props.history.push('/error');
-      // } else {
-      //   window.open(
-      //     signUpUrl,
-      //     '_self',
-      //     `toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no,
-      //               resizable=no, copyhistory=no, width=${500}, height=${5000}, top=${300}, left=${300}`
-      //   );
-      // }
     }
   }, [teamId]);
 
