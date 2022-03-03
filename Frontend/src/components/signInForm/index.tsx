@@ -319,7 +319,6 @@ export default function SignInForm(props: any) {
                       autoFocus
                     />
                     <TextField
-                      // required={!forgotPassword}
                       margin="dense"
                       fullWidth
                       label="Password"

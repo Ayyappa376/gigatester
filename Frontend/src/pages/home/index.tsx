@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Button, makeStyles } from '@material-ui/core';
+import { Container, Grid, Typography, Button, makeStyles, colors } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
 import { IRootState } from '../../reducers';
@@ -175,7 +175,7 @@ const Home = (props: any) => {
         <Grid container className={classes.sectionTop}>
           <Grid item xs={12} sm={7} style={{ padding: '50px', paddingTop: "170px" }}>
             <Typography variant='h4'>
-              <strong>GigaTester Feedbacks</strong>
+              <strong>GigaTester Feedback</strong>
             </Typography>
             <Typography variant='h5'>
               Customers give unbiased opinions. Get the feedback from them and build the product they love.
@@ -214,9 +214,7 @@ const Home = (props: any) => {
             <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
               <Typography variant="h5" className={classes.sectionTitle}>Feedback agent</Typography>
               <Typography className={classes.sectionText}>
-                Capture feedback or bugs with screenshots, marks and comments on particular sections of
-                the app visually. Do a screen recording if user wants to explain different actions in the
-                application. No time to type the feedback, no problem. Just leave your voice feedback.
+              Allows users to capture feedback or bugs instantly while simultaneously not interrupting their experience on your site or application. Because some ideas can be hard to communicate, we simplified the process by allowing users to submit a screenshot, an audio recording, a video recording, or add an attachment - all to give the most precise feedback possible.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={5}>
@@ -242,7 +240,7 @@ const Home = (props: any) => {
             <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
               <Typography variant="h5" className={classes.sectionTitle}>Dashboard</Typography>
               <Typography className={classes.sectionText}>
-                Get consolidated report and listing of all the feedbacks and bugs submitted by your users. Reports include bar and piecharts of feedback by category and a detailed list of individual-user submissions, which can be filtered for a more percise look.
+                Get a consolidated report and listing of all the feedback and bugs submitted by your users. Reports include bar and piecharts of feedback by category and a detailed list of individual-user submissions, which can be filtered for a more focused look.
               </Typography>
             </Grid>
           </Grid>
@@ -250,9 +248,7 @@ const Home = (props: any) => {
             <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
               <Typography variant="h5" className={classes.sectionTitle}>Easy configuration</Typography>
               <Typography className={classes.sectionText}>
-                Customise the agent to behave according to your app. Customise how it looks, where it is
-                placed, what and how you wish your user to submit as reviews, what information it collects
-                and how it integrates with your tracking systems.
+                We recognize that one size does not fit all. So for the best reporting possible, you can customize the agent to behave according to your app, customize how it looks, where it is placed, and what users can submit as reviews. Additionally, you can also customize what information it collects and how it integrates with your tracking systems.
               </Typography>
             </Grid>
             <Grid item xs={12} sm={5}>
