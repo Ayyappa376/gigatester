@@ -142,7 +142,7 @@ function getUserConfig(tablePrefix) {
 		"type": { S: "UserConfig" },
 		"config": { M: {
 				"emailId": { M: {
-					"custom": {BOOL: false },
+					"custom": {BOOL: false }, 
 					"displayName": { S: "Email" },
 					"mandatory": { BOOL: true },
 					"type": { S: "string" }
@@ -152,7 +152,7 @@ function getUserConfig(tablePrefix) {
 					"displayName": { S: "Roles" },
 					"mandatory": { BOOL: true },
 					"type": { S: "multi-list" },
-					"options": { M: { "customFixed": { S: "Manager,Member" } } }
+					"options": { M: { "customFixed": { S: "Manager,Executive" } } }
 				} },
 				"teams": { M: {
 					"custom": {BOOL: false },
@@ -351,7 +351,7 @@ function getUserConfig(tablePrefix) {
 				displayName: 'Roles',
 				mandatory: true,
 				type: 'multi-list',
-				options: { customFixed: 'Manager,Member' }
+				options: { customFixed: 'Executive,Manager' }
 			},
 			teams: {
 				custom: false,

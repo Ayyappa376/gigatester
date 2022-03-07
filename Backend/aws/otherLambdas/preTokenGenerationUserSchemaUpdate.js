@@ -31,7 +31,7 @@ exports.handler = (event,context,callback) => {
               id: event.request.userAttributes.sub,
               emailId: event.request.userAttributes.email,
               emailVerified: event.request.userAttributes.email_verified,
-              roles: event.request.groupConfiguration.groupsToOverride ? event.request.groupConfiguration.groupsToOverride : ['Member'],
+              roles: event.request.groupConfiguration.groupsToOverride ? event.request.groupConfiguration.groupsToOverride : ['Tester'],
           }
           
           const teams = [{
@@ -47,7 +47,7 @@ exports.handler = (event,context,callback) => {
             item["teams"] = teams;
             item["manages"] = [];
             item['order'] = ['admin'];
-            item['roles'] = ['Member']
+            item['roles'] = ['Tester']
           }
           /*if(event.request.userAttributes['custom:teamName']) {
             const teamF = [{

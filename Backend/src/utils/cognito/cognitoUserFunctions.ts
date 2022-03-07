@@ -2,7 +2,7 @@ import { config } from '@root/config';
 import { appLogger } from '@utils/index';
 import aws from 'aws-sdk';
 import { sendResetPasswordMessage } from './sendEmail';
-aws.config.update({ region: config.cognito.userPoolRegion });
+//aws.config.update({ region: config.cognito.userPoolRegion });
 const cognitoidentityserviceprovider = new aws.CognitoIdentityServiceProvider();
 
 //This file contains cognitoIdentityServices API calls
@@ -23,6 +23,7 @@ export const addUserToCognitoGroup = async (
   groupName: string
 ): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       GroupName: groupName,
       UserPoolId: config.cognito.userPoolId,
@@ -45,6 +46,7 @@ export const removeUserFromCognitoGroup = async (
   groupName: string
 ): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       GroupName: groupName,
       UserPoolId: config.cognito.userPoolId,
@@ -66,6 +68,7 @@ export const addCognitoUser = async (
   email: string,
 ): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       DesiredDeliveryMediums: ['EMAIL'],
       TemporaryPassword: generatePassword(),
@@ -96,6 +99,7 @@ export const addCognitoUser = async (
 
 export const deleteCognitoUser = async (cognitoUser: string): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       UserPoolId: config.cognito.userPoolId,
       Username: cognitoUser,
@@ -114,6 +118,7 @@ export const deleteCognitoUser = async (cognitoUser: string): Promise<any> =>
 
 export const disableCognitoUser = async (cognitoUser: string): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       UserPoolId: config.cognito.userPoolId,
       Username: cognitoUser,
@@ -132,6 +137,7 @@ export const disableCognitoUser = async (cognitoUser: string): Promise<any> =>
 
 export const getCognitoUser = async (cognitoUser: string): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       UserPoolId: config.cognito.userPoolId,
       Username: cognitoUser,
@@ -153,6 +159,7 @@ export const updateCognitoUserToLowerCase = async (
   email: string
 ): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       UserAttributes: [
         {
@@ -184,6 +191,7 @@ export const resetUserPassword = async (
   email: string
 ): Promise<any> =>
   new Promise<any>((resolve, reject) => {
+    aws.config.update({ region: config.cognito.userPoolRegion });
     const params = {
       Password: generatePassword(), /* required */
       Permanent: false,
@@ -210,7 +218,7 @@ function generatePassword() {
   let retVal = '';
   for (let i = 0; i < length; i += 1) {
     retVal += charset.charAt(Math.floor(Math.random() * n));
-    retVal += '1!K';
   }
+  retVal += '1!K';
   return retVal;
 }

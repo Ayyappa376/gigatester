@@ -62,7 +62,7 @@ export const config: Config = {
     origin: true,
   },
   defaults: {
-    groups: ['Member'],
+    groups: ['Manager'],
     orgId: 'www', // default should be 'www' //nomiso - dev env
     quesType: '1234',
     restApiId: {
@@ -97,9 +97,11 @@ export const config: Config = {
     reqTable: 'req-data',
   },
   precedenceOrder: {
-    Admin: 1,
-    Manager: 2,
-    Member: 3,
+    Admin: 2,
+    Executive: 4,
+    Manager: 3,
+    SuperAdmin: 1,
+    Tester: 5,
   },
   region: 'us-east-1', //nomiso - dev env //change based on where to deploy
   s3Bucket: {

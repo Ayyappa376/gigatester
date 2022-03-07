@@ -386,8 +386,10 @@ const ManageUsers = (props: any) => {
   // }
 
   function compareRoles(a: any, b: any) {
-    const rolesA = a.roles ? a.roles.join(', ') : 'Member';
-    const rolesB = b.roles ? b.roles.join(', ') : 'Member';
+    // const rolesA = a.roles ? a.roles.join(', ') : 'Manager';
+    // const rolesB = b.roles ? b.roles.join(', ') : 'Manager';
+    const rolesA = a.roles ? a.roles.join(', ') : '';
+    const rolesB = b.roles ? b.roles.join(', ') : '';
 
     if (rolesA.toLowerCase() < rolesB.toLowerCase()) {
       return -1;
@@ -451,8 +453,10 @@ const ManageUsers = (props: any) => {
   // }
 
   function compareRolesD(a: any, b: any) {
-    const rolesA = a.roles ? a.roles.join(', ') : 'Member';
-    const rolesB = b.roles ? b.roles.join(', ') : 'Member';
+    // const rolesA = a.roles ? a.roles.join(', ') : 'Manager';
+    // const rolesB = b.roles ? b.roles.join(', ') : 'Manager';
+    const rolesA = a.roles ? a.roles.join(', ') : '';
+    const rolesB = b.roles ? b.roles.join(', ') : '';
 
     if (rolesA.toLowerCase() < rolesB.toLowerCase()) {
       return 1;
@@ -658,7 +662,7 @@ const ManageUsers = (props: any) => {
                           className={classes.rolesColumn}
                         >
                           <Typography className='tableBodyText'>
-                            {row.roles ? row.roles.join(', ')/*commaSeparators(row.roles)*/ : 'Member'}
+                            {row.roles ? row.roles.join(', ') : ''}
                           </Typography>
                         </TableCell>
                         {/* <TableCell

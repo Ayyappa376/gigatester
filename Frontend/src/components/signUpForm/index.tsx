@@ -125,7 +125,7 @@ export default function SignupForm(props: any) {
     if (validateEmail(emailId)) {
       if (checkBox) {
         const postData = userParamState;
-        postData["roles"] = ["Member"];
+//        postData["roles"] = ["Manager"];
         try {
           Http.post({
             url: `/api/v2/admin/users`,
@@ -143,7 +143,7 @@ export default function SignupForm(props: any) {
             // console.log(error);
             setLoading(false);
             setErrorMessage(
-              "An account with the given email already exists."
+              "Internal error occurred while registering user."
             );
             setSnackbarOpen(true);
           });

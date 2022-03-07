@@ -1,18 +1,36 @@
 export interface OrganizationInfo {
-    addressLine1: string;
+    addressLine1?: string;
     addressLine2?: string;
-    city: string;
+    city?: string;
     country: string;
     email: string;
     id: string;
     name: string;
     orgPrefix?: string;
     phone: string;
-    state: string;
+    resourceDetails: ResourceDetails;
+    state?: string;
     status: string;
     subdomainURL?: string;
     website?: string;
-    zipCode: string;
+    zipCode?: string;
+}
+
+export interface ResourceDetails {
+    cognito: {
+        appClientId: string;
+        appClientURL: string;
+        systemPassword: string;
+        systemUser: string;
+        userPoolId: string;
+        userPoolRegion: string;
+    };
+    dynamoDB: {
+        dbRegion: string;
+    }
+    s3: {
+        bucketRegion: string;
+    }
 }
 
 export const STATUS_VERIFY_ORG_PENDING = 'Pending';

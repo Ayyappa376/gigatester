@@ -1,5 +1,6 @@
 import { API, Handler } from '@apis/index';
 import { UserDocument } from '@models/index';
+import { config } from '@root/config';
 import {
   addCognitoUser,
   addDynamoUser,
@@ -13,7 +14,7 @@ import { Response } from 'express';
 interface AddUser {
   body: {
     emailId: string;
-    roles: string[];
+    roles?: string[];
     supervisor?: string;
     teams?: any[];
     temporaryPassword?: string;
@@ -28,7 +29,7 @@ interface AddUser {
 }
 
 async function handler(request: AddUser, response: Response) {
-  appLogger.info({ AddTeams: request }, 'Inside Handler');
+  appLogger.info({ AddUser: request }, 'Inside Handler');
   const { headers, body } = request;
   if (
     headers.user['cognito:groups'][0] !== 'Manager' &&
@@ -51,6 +52,10 @@ async function handler(request: AddUser, response: Response) {
     const err = new Error('InvalidUser');
     appLogger.error(err, 'Forbidden');
     return responseBuilder.forbidden(err, response);
+  }
+
+  if(! body.roles) {
+    body.roles = config.defaults.groups;
   }
   const userDetails: any = await addCognitoUser(body.emailId).catch(
     (e) => {

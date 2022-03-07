@@ -11,14 +11,14 @@ exports.handler = (event, context, callback) => {
     id: event.request.userAttributes.sub,
     emailId: event.request.userAttributes.email,
     emailVerified: event.request.userAttributes.email_verified,
-    //    roles: event.request.groupConfiguration.groupsToOverride ? event.request.groupConfiguration.groupsToOverride : ['Member'],
+    //    roles: event.request.groupConfiguration.groupsToOverride ? event.request.groupConfiguration.groupsToOverride : ['Tester'],
     teams: [{
       "name": 'Others',
       "isLead": false,
     }],
     manages: [],
     order: ['admin'],
-    roles: ['Member']
+    roles: ['Tester']
   }
 
   const params = {
