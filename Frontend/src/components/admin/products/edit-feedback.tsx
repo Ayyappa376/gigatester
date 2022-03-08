@@ -206,8 +206,15 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           response.products[0].feedbackAgentSettings = {
             categories: [],
             feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
-            bugSettings: {},
-            feedbackSettings: {},
+            bugSettings: {
+              categories: [],
+              severities: [ SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_LOW ]
+            },
+            feedbackSettings: {
+              categories: [],
+              ratingIcon: RATING_ICON_TYPE_STAR,
+              ratingLimit: 2,
+            },
             invokeDelay: 5,
             invokeOn: [INVOKE_TYPE_MANUAL],
             ratingIcon: RATING_ICON_TYPE_STAR,
