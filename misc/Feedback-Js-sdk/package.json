@@ -6,6 +6,7 @@
     "scripts": {
         "clean": "rimraf build/* dist/*",
         "build": "webpack && node ./src/ObfuscatorUtils.js",
+        "deploy": "npm run build && aws s3 sync build/ s3://dist.gigatester.io/dist/feedback-agent/browser",
         "deploy:dev": "npm run build && aws s3 sync build/ s3://dev.gigatester.io/dist/feedback-agent/browser",
         "deploy:beta": "npm run build && aws s3 sync build/ s3://beta.gigatester.io/dist/feedback-agent/browser"
     },

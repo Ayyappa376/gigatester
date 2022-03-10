@@ -1605,10 +1605,12 @@ bottom: -23px;
 #gigatester_ctrls_container .gigatester-ctrl-item textarea::-ms-input-placeholder {
   color: #aaa;
 }
-#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-checkbox-container {
+#gigatester_ctrls_container .gigatester-ctrl-item gtdiv#gigatester_category_standard_feedback {
   position: relative;
-  overflow: hidden;
-  margin: 16px 0 4px 0;
+  display: block;
+  height: auto;
+  width: auto;
+  margin: 6px 0 10px 0;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item input.gigatester-reason-checkboxes[type="checkbox"]{
   position: relative;
@@ -1616,12 +1618,18 @@ bottom: -23px;
   pointer-events: all;
   height: 17px;
   width: 17px;
+  margin-left: 0;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item #gigatester-reason-label{
   font-size: 14px;
   font-weight: 400;
   color: #011348;
   font-family: inherit;
+}
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-checkbox-container {
+  position: relative;
+  overflow: hidden;
+  margin: 16px 0 4px 0;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-checkbox-container > gtdiv {
   display: inline-block;

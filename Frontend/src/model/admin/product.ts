@@ -24,6 +24,7 @@ export interface ITesterStatus {
 }
 
 export interface IFeedbackAgentSettings {
+  platform: IPlatformType;
   feedbackTypes: IFeedbackType[];
   logo?: string;
   invokeDelay?: number; //in minutes
@@ -80,6 +81,10 @@ export interface IProductParams {
 export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
 //export const STATUS_PRODUCT_ARCHIVED = 'archived';
+
+export type IPlatformType = 'Browser' | 'React Native';
+export const PLATFORM_TYPE_BROWSER: IPlatformType = 'Browser';
+export const PLATFORM_TYPE_NATIVE_REACT: IPlatformType = 'React Native';
 
 export type IFeedbackType = 'FEEDBACK' | 'BUGS';
 export const FEEDBACK_TYPE_FEEDBACK: IFeedbackType = 'FEEDBACK';

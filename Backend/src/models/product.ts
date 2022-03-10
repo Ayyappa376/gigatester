@@ -29,6 +29,7 @@ export interface FeedbackAgentSettings {
     invokeDelay?: number; //in seconds
     invokeOn: InvokeType[];
     logo?: string;
+    platform: PlatformType;
     title: string;
     uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
     videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
@@ -74,6 +75,10 @@ export interface TrackingSystem {
 export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
 //export const STATUS_PRODUCT_ARCHIVED = 'archived';
+
+export type PlatformType = 'Browser' | 'React Native';
+export const PLATFORM_TYPE_BROWSER: PlatformType = 'Browser';
+export const PLATFORM_TYPE_NATIVE_REACT: PlatformType = 'React Native';
 
 export type FeedbackType = 'FEEDBACK' | 'BUGS';
 export const FEEDBACK_TYPE_FEEDBACK: FeedbackType = 'FEEDBACK';

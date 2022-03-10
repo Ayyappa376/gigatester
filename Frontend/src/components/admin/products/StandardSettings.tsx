@@ -2,16 +2,20 @@ import * as React from 'react';
 import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, makeStyles } from "@material-ui/core";
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
-  INVOKE_TYPE_MANUAL, } from '../../../model';
+  INVOKE_TYPE_MANUAL,
+  IProductParams,
+  PLATFORM_TYPE_BROWSER,
+  PLATFORM_TYPE_NATIVE_REACT, } from '../../../model';
 
 interface SettingsProps {
-  productParams: any,
+  productParams: IProductParams,
   handleTitleChange: any,
   handleVideoAudioMaxDurationChange: any,
   handleInvokeOnChange: any,
   handleInvokeDelayChange: any,
   handleUploadFileMaxSizeChange: any,
   handleFeedbackTypesChange: any,
+  handlePlatformTypeChange: any,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -65,7 +69,8 @@ const StandardSettings = ({
   handleVideoAudioMaxDurationChange,
   handleInvokeOnChange,
   handleFeedbackTypesChange,
-  handleUploadFileMaxSizeChange
+  handleUploadFileMaxSizeChange,
+  handlePlatformTypeChange
 }: SettingsProps) => {
   const classes = useStyles();
 
@@ -74,6 +79,27 @@ const StandardSettings = ({
       <Grid item xs={12}>
         <Typography variant="h6">General Widget Settings:</Typography>
       </Grid>
+
+      <FormControl className={classes.formControl}>
+        <InputLabel id={`platformType`} required={true}>
+          {'Choose the platform of your product:'}
+        </InputLabel>
+        <Select
+          name={`select_platformType`}
+          value={
+            (productParams && productParams.products && productParams.products[0] &&
+            productParams.products[0].feedbackAgentSettings &&
+            productParams.products[0].feedbackAgentSettings.platform)
+            ? productParams.products[0].feedbackAgentSettings.platform
+            : ''
+          }
+          onChange={(event) => handlePlatformTypeChange(event)}
+        >
+          <MenuItem key={PLATFORM_TYPE_BROWSER} value={PLATFORM_TYPE_BROWSER}>{PLATFORM_TYPE_BROWSER}</MenuItem>
+          <MenuItem key={PLATFORM_TYPE_NATIVE_REACT} value={PLATFORM_TYPE_NATIVE_REACT}>{PLATFORM_TYPE_NATIVE_REACT}</MenuItem>
+        </Select>
+      </FormControl>
+
       <TextField
         required={true}
         type='string'

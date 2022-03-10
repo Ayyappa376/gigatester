@@ -26,7 +26,7 @@ import {
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
-  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI
+  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -44,6 +44,15 @@ GigaTester.endpoint = \'${hostUrl}\';
     (d.head || d.body).appendChild(s);
 })(document);
 </script>
+`;
+
+const reactCode: string = `import GigaTester from \'GigaTesterFeedback\';
+
+<GigaTester
+  apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\'
+  productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\'
+  endpoint = \'${hostUrl}\'
+/>
 `;
 
 // const scriptHelpText: string = `GigaTester.selectDefaultCategory( YOUR_CONTEXT_CATEGORY_CALLBACK_FUNCTION );
@@ -133,6 +142,24 @@ GigaTester.setDefaultCategory("Category Name", "BUGS") => To set the default cat
 GigaTester.setDefaultCategory("Category Name", "FEEDBACK") => To set the default category to show in Feedback form depending on context.
 `;
 
+const reactHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.
+
+GigaTester.hide() => to hide the Feedback button for full screen video
+GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
+GigaTester.open() => to open GigaTester form dialog
+GigaTester.open("BUGS") => to show Bug report form dialog
+GigaTester.open("FEEDBACK") => to show Feedback form dialog
+GigaTester.close() => to close GigaTester dialog
+GigaTester.setUserDetails({
+    email: 'somebody@somewhere.com',
+    id: 'user_1234567890',
+    guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
+    name: 'Some Person'
+  }) => to set details of the user including the email in GigaTester.
+GigaTester.setDefaultCategory("Category Name", "BUGS") => To set the default category to show in Bug report form depending on context.
+GigaTester.setDefaultCategory("Category Name", "FEEDBACK") => To set the default category to show in Feedback form depending on context.
+`;
+
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
     display: 'flex',
@@ -191,8 +218,10 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   const [failureMessage, setFailureMessage] = useState('Something went wrong');
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('Saved successfully');
+//  const [showScriptHelp, setShowScriptHelp] = useState(false);
+//  const [showReactHelp, setShowReactHelp] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-
+  
   let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
 
   useEffect(() => {
@@ -204,7 +233,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         //      fixMultiSelectValuesAndSave(response);
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
-            categories: [],
+            platform: PLATFORM_TYPE_BROWSER,
             feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
             bugSettings: {
               categories: [],
@@ -217,9 +246,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             },
             invokeDelay: 5,
             invokeOn: [INVOKE_TYPE_MANUAL],
-            ratingIcon: RATING_ICON_TYPE_STAR,
-            ratingLimit: 2,
-            severities: [SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW],
+
             title: '',
             uploadFileMaxSize: '400',
             videoAudioMaxDuration: '1.5',
@@ -664,13 +691,110 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
-  const copyToClipboard = () => {
-    const textArea = document.querySelector('#widgetScript');
+  const handlePlatformTypeChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.platform = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const copyToClipboard = (textAreaId: string) => {
+    const textArea = document.querySelector(`#${textAreaId}`);
     const textToCopy = (textArea && textArea.textContent) ? textArea.textContent : '';
     navigator.clipboard.writeText(textToCopy);
   }
 
-  const renderfeedbackAgentSettingsPage = () => {
+  const renderCodeSnippetArea = () => {
+    let title = '';
+    let codeSnippet = '';
+    let instructions = '';
+    let helpText = '';
+
+    if (productParams && productParams.products && productParams.products[0] &&
+      productParams.products[0].feedbackAgentSettings &&
+      productParams.products[0].feedbackAgentSettings.platform &&
+      productParams.products[0].feedbackAgentSettings.platform === PLATFORM_TYPE_NATIVE_REACT) {
+
+      instructions = 'To use the react native GigaTester Feedback agent install the module using the command<br/>' +
+        '<i>npm run GigaTesterFeedback</i><br/>' +
+        'Once installed copy the code below and paste in your main App module.' +
+        'Put the import statement at the top of your file.' +
+        'Include the GigaTester component at the begining of your App module.' +
+        'Check detailed help on other intergration options.';
+        codeSnippet = reactCode;
+        helpText = reactHelpText;
+    } else {
+      instructions = 'Copy the below script and paste it in the head tag of your html page.' +
+        'Check detailed help on other intergration options.';
+      codeSnippet = widgetScript;
+      helpText = scriptHelpText;
+    }
+    
+    return (
+    <Paper className={classes.sections}>
+      <Grid container spacing={1}>
+        <Grid item xs={12}>
+          <Typography variant="h6">{'Agent Integration Details'}</Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <div>{instructions}</div><br/>
+          <TextField
+            multiline
+            rows={12}
+            disabled
+            variant='outlined'
+            type='string'
+            id={'codeTextField'}
+            name={'codeTextField'}
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].apiKey)
+                ? (codeSnippet.replace(
+                  'YOUR_PRODUCT_API_KEY_GOES_HERE',
+                  productParams.products[0].apiKey
+                ).replace(
+                  'YOUR_PRODUCT_VERSION_GOES_HERE',
+                  productParams.products[0].version
+                ))
+                : ''
+            }
+            fullWidth
+            label='Code Snippet'
+          />
+        </Grid>
+        <Button
+          size='small' variant="outlined" style={{margin: '2px'}}
+          onClick={(event: any) => copyToClipboard('codeTextField')}
+        >
+          Copy to clipboard
+        </Button>
+        <Button
+          size='small' variant="outlined" style={{margin: '2px'}}
+          onClick={(event: any) => setShowHelp(!showHelp)}
+        >
+          {showHelp ? 'Hide detailed help' : 'Show detailed help'}
+        </Button>
+        <TextField
+          multiline
+          variant="filled"
+          type='string'
+          id={`helpTextField`}
+          name={`helpTextField`}
+          value={helpText}
+          fullWidth
+          label=''
+          InputProps={{ disableUnderline: true }}
+          style={showHelp ? {display: 'block'} : { display: 'none'}}
+        />
+      </Grid>
+    </Paper>
+    );
+  }
+
+  const renderFeedbackAgentSettingsPage = () => {
     if (feedbackAgentSettingsPosted) {
       return (
         <Fragment>
@@ -692,6 +816,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
 
     const payLoad = {
       productParams: productParams,
+      handlePlatformTypeChange: handlePlatformTypeChange,
       handleInvokeDelayChange: handleInvokeDelayChange,
       handleTitleChange: handleTitleChange,
       handleVideoAudioMaxDurationChange: handleVideoAudioMaxDurationChange,
@@ -792,63 +917,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               )}
             </Grid>
           </Paper>
-          <Paper className={classes.sections}>
-            <Grid container spacing={1}>
-              <Grid item xs={12}>
-                <Typography variant="h6">Widget Script:</Typography>
-              </Grid>
-              <Grid item xs={12}>
-                <TextField
-                  multiline
-                  rows={12}
-                  disabled
-                  variant='outlined'
-                  type='string'
-                  id={`widgetScript`}
-                  name={`widgetScript`}
-                  value={
-                    (productParams && productParams.products && productParams.products[0] &&
-                      productParams.products[0].apiKey)
-                      ? (widgetScript.replace(
-                        'YOUR_PRODUCT_API_KEY_GOES_HERE',
-                        productParams.products[0].apiKey
-                      ).replace(
-                        'YOUR_PRODUCT_VERSION_GOES_HERE',
-                        productParams.products[0].version
-                      ))
-                      : ''
-                  }
-                  fullWidth
-                  label='Widget Script'
-                  helperText='Copy the above script and paste it in the head tag of your html page. Check detailed help on other intergration options.'
-                />
-              </Grid>
-              <Button
-                size='small' variant="outlined" style={{margin: '2px'}}
-                onClick={(event: any) => copyToClipboard()}
-              >
-                Copy to clipboard
-              </Button>
-              <Button
-                size='small' variant="outlined" style={{margin: '2px'}}
-                onClick={(event: any) => setShowHelp(!showHelp)}
-              >
-                {showHelp ? 'Hide detailed help' : 'Show detailed help'}
-              </Button>
-              <TextField
-                multiline
-                variant="filled"
-                type='string'
-                id={`helpText`}
-                name={`helpText`}
-                value={scriptHelpText}
-                fullWidth
-                label=''
-                InputProps={{ disableUnderline: true }}
-                style={showHelp ? {display: 'block'} : { display: 'none'}}
-              />
-            </Grid>
-          </Paper>
+          { renderCodeSnippetArea() }
           <div className='bottomButtonsContainer'>
             <Button
               className={classes.button}
@@ -894,7 +963,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   return (
     <Fragment>
       {feedbackAgentSettingsFetched && productParams ? (
-        renderfeedbackAgentSettingsPage()
+        renderFeedbackAgentSettingsPage()
       ) : (
         <Container className='loaderStyle'>
           <Loader />
