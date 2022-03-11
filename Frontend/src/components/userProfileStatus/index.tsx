@@ -99,7 +99,7 @@ export default function UserProfileStatus(props: any) {
           style={{ paddingTop: "20px", paddingBottom: "20px" }}
         >
           <Avatar
-            alt="Tester"
+            alt="Member"
             src="https://cdn.pixabay.com/photo/2013/07/13/12/07/avatar-159236_960_720.png"
             className={classes.large}
             style={{

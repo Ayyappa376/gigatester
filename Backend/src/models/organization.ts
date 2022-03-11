@@ -8,7 +8,7 @@ export interface OrganizationInfo {
     name: string;
     orgPrefix?: string;
     phone: string;
-    resourceDetails: ResourceDetails;
+    resourceDetails?: ResourceDetails;
     state?: string;
     status: string;
     subdomainURL?: string;
@@ -27,10 +27,10 @@ export interface ResourceDetails {
     };
     dynamoDB: {
         dbRegion: string;
-    }
+    };
     s3: {
         bucketRegion: string;
-    }
+    };
 }
 
 export const STATUS_VERIFY_ORG_PENDING = 'Pending';

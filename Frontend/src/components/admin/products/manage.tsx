@@ -627,11 +627,11 @@ const ManageProducts = (props: any) => {
                       <Text tid='version' />
                     </Typography>
                   </TableCell>
-                  <TableCell align='center' className='tableHeadCell'>
+                  {/* <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
                       <Text tid='software' />
                     </Typography>
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
                       Feedback Component
@@ -684,17 +684,12 @@ const ManageProducts = (props: any) => {
                           {product.version}
                         </Typography>
                       </TableCell>
-                      <TableCell
+                      {/* <TableCell
                         component='th'
                         scope='row'
                         align='center'
                         className='tableCell'
                       >
-                        {/*<button
-                          onClick={() => showManageSoftwarePage(product)}
-                        >
-                          <Typography>Manage Software</Typography>
-                        </button>*/}
                         {product.software ? (
                           <>
                             <Link href={product.software}>
@@ -704,9 +699,6 @@ const ManageProducts = (props: any) => {
                                 id={`productSoftware_${index}`}
                                 name={`productSoftware_${index}`}
                                 value={product.software ? product.software : ''}
-                                // onChange={(event) =>
-                                //   handleChangeProductName(event, index)
-                                // }
                                 fullWidth
                                 autoComplete='off'
                                 className='textFieldStyle'
@@ -722,13 +714,12 @@ const ManageProducts = (props: any) => {
                           </>
                         ) : (
                           <button
-                            // onClick={handleUploadButton(index)}
                             onClick={() => handleUploadButton(product)}
                           >
                             <Typography>Upload</Typography>
                           </button>
                         )}
-                      </TableCell>
+                      </TableCell> */}
                       <TableCell
                         component='th'
                         scope='row'
@@ -746,7 +737,7 @@ const ManageProducts = (props: any) => {
                         className='tableCell'
                       >
                         <button onClick={() => props.extSystemSettingsClicked(product.id, product.version)} >
-                          <Typography>External System Settings</Typography>
+                          <Typography>Configure</Typography>
                         </button>
                       </TableCell>
                       <TableCell align='center' className='tableCell'>

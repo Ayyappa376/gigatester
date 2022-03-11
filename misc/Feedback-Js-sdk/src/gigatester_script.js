@@ -595,13 +595,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         rating_title_message: "",
                         bug_title_message: "",
                         rating_mandatory: false,
-                        name_field: false,
-                        name_field_mandatory: false,
+//                        name_field: false,
+//                        name_field_mandatory: false,
                         email_field: true,
                         email_field_mandatory: false,
-                        title_field: false,
-                        title_field_mandatory: false,
-                        title_field_placeholder: "",
+//                        title_field: false,
+//                        title_field_mandatory: false,
+//                        title_field_placeholder: "",
                         comment_field: true,
                         comment_field_mandatory: true,
                         comment_field_placeholder: "",
@@ -621,13 +621,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         rating_type: "STAR",
                         rating_title_message: "Provide your rating",
                         rating_mandatory: true,
-                        name_field: false,
-                        name_field_mandatory: false,
+//                        name_field: false,
+//                        name_field_mandatory: false,
                         email_field: true,
                         email_field_mandatory: false,
-                        title_field: false,
-                        title_field_mandatory: false,
-                        title_field_placeholder: "",
+//                        title_field: false,
+//                        title_field_mandatory: false,
+//                        title_field_placeholder: "",
                         comment_field: true,
                         comment_field_mandatory: true,
                         comment_field_placeholder: "",
@@ -653,9 +653,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 recording: false,
                 form_data: {
                     rating: 0,
-                    name: "",
+//                    name: "",
                     email: "",
-                    title: "",
+//                    title: "",
                     description: "",
                     category: "",
                     severity: "",
@@ -1501,9 +1501,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.recordImage.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-checkbox-container > gtdiv", this.toggleCheckbox.bind(this));
                     this.custom_ui.events.on("keyup", 'textarea[name="description"]', this.storeFormData.bind(this));
-                    this.custom_ui.events.on("keyup", 'input[name="name"]', this.storeFormData.bind(this));
+//                    this.custom_ui.events.on("keyup", 'input[name="name"]', this.storeFormData.bind(this));
                     this.custom_ui.events.on("keyup", 'input[name="email"]', this.storeFormData.bind(this));
-                    this.custom_ui.events.on("keyup", 'input[name="title"]', this.storeFormData.bind(this));
+//                    this.custom_ui.events.on("keyup", 'input[name="title"]', this.storeFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.storeFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.storeFormData.bind(this));
                     this.custom_ui.events.on("click mouseup mousedown", function(e) {
@@ -1690,7 +1690,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     let regexp = /android|iphone|kindle|ipad/i;
                     let isMobileDevice = regexp.test(details);
                     if (isMobileDevice) {
-                        console.log("You are using a Mobile Device : " + navigator.userAgent);
+                        console.log("GigaTester: a Mobile Device : " + navigator.userAgent);
                         display_screenshot = false;
                         display_video = false;
                     }
@@ -1698,9 +1698,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     data_item += display_video ? 1 : 0;
                     data_item += display_audio ? 1 : 0;
                     data_item += display_attachment ? 1 : 0;
-                    let default_name = this.form_data.name || GigaTester.name || GigaTester_modal.name
+//                    let default_name = this.form_data.name || GigaTester.name || GigaTester_modal.name
                     let default_email = this.form_data.email || GigaTester.email
-                    let default_title = this.form_data.title || "";
+//                    let default_title = this.form_data.title || "";
                     let default_description = this.form_data.description || "";
                     let default_category = this.form_data.category || GigaTester.category || GigaTester_modal.categories || "";
                     let default_severity = this.form_data.severity || GigaTester.severity || GigaTester_modal.severity || "";
@@ -1726,14 +1726,14 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                      + '<gtdiv class="gigatester-ctrl-item-form"' + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
                      + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
                      + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
-                     + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + GigaTester_StringRes.get("your_name") + '"' + (form_settings.name_field_mandatory ? " required" : "") + ">" : "")
+//                     + (form_settings.name_field ? '<input type="text" name="name" placeholder="' + GigaTester_StringRes.get("your_name") + '"' + (form_settings.name_field_mandatory ? " required" : "") + ">" : "")
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
                      + (form_settings.display_category ? '<select id="category" name="category"' + (form_settings.category_field_mandatory ? " required" : "") + ">"
                      + '<option id="category" value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>" + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '')
                      + (form_settings.display_severity ? '<select id="severity" name="severity"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
                      + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>" + severity_options + "</select>" : "")
-                     + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.title_field_placeholder) || GigaTester_StringRes.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
+//                     + (form_settings.title_field ? '<input type="text" name="title" maxlength="80" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.title_field_placeholder) || GigaTester_StringRes.get("feedback_title", true)) + '"' + (form_settings.title_field_mandatory ? " required" : "") + ">" : "")
                      + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
                      + '<gtdiv class="gigatester-ctrl-item-preview-placeholder">' + GigaTester_StringRes.get("attachment_msg") + '</gtdiv>'
@@ -1748,9 +1748,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                      + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + GigaTester_Icons.paperclip_icon + "<gtdiv>" + GigaTester_StringRes.get("attach_file") + "</gtdiv>"
                      + "<gttooltip>" + GigaTester_StringRes.get("attach_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
                      + "</gtdiv>" + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
-                     + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
-                     + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
-                     + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + GigaTester_Icons.check_mark_icon + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
+//                     + (form_settings.custom_field_1_type === "disclaimer" && form_settings.custom_field_1_label ? '<gtdiv class="gigatester-disclaimer">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" : "")
+//                     + (form_settings.custom_field_1_type === "checkbox" ? '<gtdiv class="gigatester-checkbox-container">' + '<input type="checkbox"' + (form_settings.custom_field_1_mandatory ? " required" : "") + ">"
+//                     + "<gtdiv>" + '<gtdiv class="gigatester-checkbox">' + GigaTester_Icons.check_mark_icon + "</gtdiv>" + '<gtdiv class="gigatester-checkbox-label">' + Lib.htmlEntitiesWithA(form_settings.custom_field_1_label, true) + "</gtdiv>" + "</gtdiv>" + "</gtdiv>" : "")
                      + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("send") + "</span>" + "</button>"
                      + '</gtdiv></gtdiv>'
                      + "</gtdiv>"
@@ -1763,15 +1763,15 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if (default_rating) {
                         this.custom_ui.events.find('gtrating gtdiv[data-rating="' + default_rating + '"]').click()
                     }
-                    if (default_name) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="name"]').val(default_name)
-                    }
+                    // if (default_name) {
+                    //     this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="name"]').val(default_name)
+                    // }
                     if (default_email) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="email"]').val(default_email)
                     }
-                    if (default_title) {
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="title"]').val(default_title)
-                    }
+                    // if (default_title) {
+                    //     this.custom_ui.events.find('.gigatester-ctrl-item-step').find('input[name="title"]').val(default_title)
+                    // }
                     if (default_description) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('textarea[name="description"]').val(default_description)
                     }
@@ -2426,9 +2426,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.form_data.image_file='';
                     this.form_data = {
                         rating: "",
-                        name: "",
+    //                    name: "",
                         email: "",
-                        title: "",
+    //                    title: "",
                         description: "",
                         category: "",
                         severity: "",

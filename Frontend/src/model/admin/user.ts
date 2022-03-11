@@ -38,4 +38,5 @@ export const ROLE_USER_SUPERADMIN = 'SuperAdmin';
 export const ROLE_USER_ADMIN = 'Admin';
 export const ROLE_USER_EXECUTIVE = 'Executive';
 export const ROLE_USER_MANAGER = 'Manager';
+export const ROLE_USER_MEMBER = 'Member';
 export const ROLE_USER_TESTER = 'Tester';

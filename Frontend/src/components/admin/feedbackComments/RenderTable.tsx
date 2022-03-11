@@ -224,7 +224,7 @@ const RenderTable = (props: IProps) => {
           order={props.order}
           onRequestSort={(property: string) => { props.handleRequestSort()}}
           rowCount={tableData.length}
-          // isBugReport={isBugReport}
+          isBugReport={isBugReport}
           searchInitiated={props.searchInitiated}
         />{tableData.length > 0 ?
         <TableBody>

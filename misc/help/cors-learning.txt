@@ -1,5 +1,0 @@
-https://livebook.manning.com/book/cors-in-action/chapter-4/7
-
-https://cloudonaut.io/how-to-enable-cors-on-api-gateway-with-lambda-proxy-integration/
-
-https://www.serverless.com/blog/cors-api-gateway-survival-guide/

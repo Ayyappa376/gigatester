@@ -76,9 +76,9 @@ export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
 //export const STATUS_PRODUCT_ARCHIVED = 'archived';
 
-export type PlatformType = 'Browser' | 'React Native';
-export const PLATFORM_TYPE_BROWSER: PlatformType = 'Browser';
-export const PLATFORM_TYPE_NATIVE_REACT: PlatformType = 'React Native';
+export type PlatformType = 'Web' | 'Mobile';
+export const PLATFORM_TYPE_BROWSER: PlatformType = 'Web';
+export const PLATFORM_TYPE_NATIVE_REACT: PlatformType = 'Mobile';
 
 export type FeedbackType = 'FEEDBACK' | 'BUGS';
 export const FEEDBACK_TYPE_FEEDBACK: FeedbackType = 'FEEDBACK';

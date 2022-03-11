@@ -15,7 +15,7 @@ interface EnhancedTableProps {
   onRequestSort: (property: string) => void;
   order: Order;
   rowCount: number;
-  // isBugReport: boolean;
+  isBugReport: boolean;
   searchInitiated: boolean;
 }
 
@@ -57,12 +57,12 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
       <TableHead>
         <TableRow>
           {headCells.map((headCell) => {
-            if(headCell.headType === FEEDBACK) {
+            if(props.isBugReport && headCell.headType === FEEDBACK) {
               return;
             }
-            // if(!isBugReport && headCell.headType === BUG_REPORT) {
-            //   return;
-            // }
+            if(!props.isBugReport && headCell.headType === BUG_REPORT) {
+              return;
+            }
             return(
             <TableCell
               key={headCell.id}

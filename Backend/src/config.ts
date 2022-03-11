@@ -100,8 +100,9 @@ export const config: Config = {
     Admin: 2,
     Executive: 4,
     Manager: 3,
+    Member: 5,
     SuperAdmin: 1,
-    Tester: 5,
+    Tester: 6,
   },
   region: 'us-east-1', //nomiso - dev env //change based on where to deploy
   s3Bucket: {
