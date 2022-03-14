@@ -9,7 +9,7 @@ import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import { ILimitedProductDetails,
   IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getBugChartData, getBugData } from './methods';
 import Failure from '../../failure-page';
@@ -87,7 +87,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   useEffect(() => {
     if(feedbackBarChartData) {
       const series = [{
-        name: 'Ratings',
+        name: 'Severity',
         data: Object.values(feedbackBarChartData)
       }];
       setBarChartSeries(series);
@@ -130,7 +130,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   }, [currentDisable])
 
   useEffect(() => {
-    const rateMap: IRatingMapping = {};
+//    const rateMap: IRatingMapping = {};
     const bugMap: IBugDataMapping = {};
     const urls: string[] = [];
 
@@ -492,57 +492,55 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   }
 
   return (
-    <div>
-        <Container>
-          <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
+      <div>
+        <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
           <Close htmlColor='#fff' style={{position: 'absolute', cursor: 'pointer',
                     top: 10, right: 10, fontSize: '2.5rem'
                   }} onClick={() => {setSlideShowImageUrl('')}}/>
-            <div style={{ width: '80vw', marginLeft: '10vw',  marginTop: '2vh'}}>
-              <Image aspectRatio={16/9} width='90%' height='90%'   src={slideShowImageUrl} />
-            </div>
+          <div style={{ width: '80vw', marginLeft: '10vw',  marginTop: '2vh'}}>
+            <Image aspectRatio={16/9} width='90%' height='90%'   src={slideShowImageUrl} />
+          </div>
+        </div>
 
-          </div>
-          {backdropOpen ? (
-            <Backdrop className={classes.backdrop} open={backdropOpen}>
-                <CircularProgress color='inherit' />
-            </Backdrop>
-          ): (
-            <div>
-               {searchInitiated ? <div>
-            <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
-            order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
-            focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
-            />
-          </div>
-          :
-          noDataError ? <div style={{marginTop: '3rem'}}><Failure message={`There is no bugs to show.`}/></div>:
+        {backdropOpen ? (
+          <Backdrop className={classes.backdrop} open={backdropOpen}>
+              <CircularProgress color='inherit' />
+          </Backdrop>
+        ): (
           <div>
-            <ImageModal {...imagePayload}/>
-            <div style={{marginTop: 50}}>
-              <Grid container style={{marginTop: '5rem'}}>
-                <Grid item lg={5}>
-                  <ReactApexChart options={feedbackBarChartOptions} series={bugBarChartSeries} type="bar" width={500} height={320} />
-                </Grid>
-                <Grid item lg={2}></Grid>
-                <Grid item lg={5}>
-                  <ReactApexChart options={pieChartOptions} series={Object.values(pieChartSeries)} type="pie" width={500} height={320} />
-                </Grid>
+              {searchInitiated ? <div>
+          <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
+          order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+          searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
+          focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
+          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+          />
+        </div>
+        :
+        noDataError ? <div style={{marginTop: '3rem'}}><Failure message={`There is no bugs to show.`}/></div>:
+        <div>
+          <ImageModal {...imagePayload}/>
+          <div style={{marginTop: 50}}>
+            <Grid container style={{marginTop: '5rem'}}>
+              <Grid item lg={5}>
+                <ReactApexChart options={bugBarChartOtions} series={bugBarChartSeries} type="bar" width={500} height={320} />
               </Grid>
-            </div>
-            <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
-            order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-            searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
-            focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
-            />
-          </div>}
-            </div>
-          )}
-        </Container>
-    </div>
+              <Grid item lg={2}></Grid>
+              <Grid item lg={5}>
+                <ReactApexChart options={pieChartOptions} series={Object.values(pieChartSeries)} type="pie" width={500} height={320} />
+              </Grid>
+            </Grid>
+          </div>
+          <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
+          order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
+          searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
+          focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
+          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+          />
+        </div>}
+          </div>
+        )}
+      </div>
   )
 }
 

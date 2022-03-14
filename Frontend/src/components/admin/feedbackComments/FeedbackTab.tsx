@@ -508,8 +508,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }
 
   return (
-    <div>
-      <Container>
+      <div>
         <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
           <Close htmlColor='#fff' style={{
             position: 'absolute', cursor: 'pointer',
@@ -557,8 +556,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
             </div>}
           </div>
         )}
-      </Container>
-    </div>
+      </div>
   )
 }
 

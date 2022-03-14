@@ -24,11 +24,11 @@ const ProductFilter = (props : IProps) => {
         props.setSelectedProdId(event.target.value as string);
       };
 
-    const label = 'Choose Product';
+//    const label = 'Choose Product';
 
     return (
-        <div style={{paddingLeft: '2rem'}}>
-            <FormControl style={{ width: label.length * 9}} className={classes.formControl}>
+        <div>
+            <FormControl className={classes.formControlBig}>
                 <InputLabel id="product-select-label">Choose Product</InputLabel>
                 <Select
                     labelId="product-select-label"
@@ -67,8 +67,8 @@ export const VersionFilter = (props : IVersionFilterProps) => {
     };
 
     return (
-        <div style={{paddingLeft: '1rem', position: 'absolute', bottom: 0 }}>
-            <FormControl style={{minWidth: '5rem'}}>
+        <div style={{paddingLeft: '1rem'}}>
+            <FormControl className={classes.formControlSmall}>
                 <InputLabel id="demo-customized-select-label">Version</InputLabel>
                 <Select
                 labelId="demo-customized-select-label"
@@ -88,8 +88,11 @@ export const VersionFilter = (props : IVersionFilterProps) => {
 
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
-    formControl: {
-        width: "100%"
+    formControlBig: {
+        width: "250px",
+      },
+      formControlSmall: {
+        width: "150px",
       },
       chips: {
         display: 'flex',

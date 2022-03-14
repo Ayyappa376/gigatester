@@ -150,10 +150,10 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     }
 
     return (
-      <Box sx={{ width: '97%' }}>
+      <Box sx={{ width: '100%' }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
           <Tabs value={value} className={classes.tabs} onChange={handleChange} aria-label="view-feedback-tabs">
-            <Tab  label="Feedback" {...a11yProps(0)} />
+            <Tab label="Feedback" {...a11yProps(0)} />
             <Tab label="Bugs" {...a11yProps(1)} />
           </Tabs>
         </Box>
@@ -169,16 +169,13 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 
   return (
     <Container>
-      <Paper>
         <Grid className={classes.selectors} container>
           <Grid item xl={2} style={{ position: 'relative' }}>
-            <div >
-              <ProductFilter selectedProdId={selectedProdId}
-                setSelectedProdId={setProduct}
-                productNameIdMapping={prodNameIdMapping}
-                productInfo={productInfo}
-              />
-            </div>
+            <ProductFilter selectedProdId={selectedProdId}
+              setSelectedProdId={setProduct}
+              productNameIdMapping={prodNameIdMapping}
+              productInfo={productInfo}
+            />
           </Grid>
           <Grid item xl={2} style={{ position: 'relative' }}>
             <VersionFilter productVersion={productVersion}
@@ -188,10 +185,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
             />
           </Grid>
         </Grid>
-        <Box sx={{ padding: '2em' }}>
-          <BasicTabs productInfoProp={productInfoProp} />
-        </Box>
-      </Paper>
+        <BasicTabs productInfoProp={productInfoProp} />
     </Container>
   )
 
@@ -209,19 +203,17 @@ const useStyles = makeStyles({
       height: 2.5,
     },
     "& .MuiTab-root.Mui-selected": {
-      color: 'white',
-      backgroundColor: '#042E5B',
+      color: 'black',
+      backgroundColor: 'transparent',
     },
   },
-  tab: {
-    border: '1px solid gray',
-  },
   selectors: {
-    padding: '10px',
-    marginBottom: '10px',
+    position: 'relative',
+//    padding: '10px',
+    marginBottom: '20px',
     marginTop: '20px',
     width: '100%',
-    backgroundColor: '#E9E9E9',
+//    backgroundColor: '#E9E9E9',
     color: 'black',
   }
 })
