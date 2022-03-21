@@ -5,7 +5,10 @@ import { FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   INVOKE_TYPE_MANUAL,
   IProductParams,
   PLATFORM_TYPE_BROWSER,
-  PLATFORM_TYPE_NATIVE_REACT, } from '../../../model';
+  PLATFORM_TYPE_NATIVE_REACT,
+  EMAIL_MANDATORY,
+  EMAIL_OPTIONAL,
+} from '../../../model';
 
 interface SettingsProps {
   productParams: IProductParams,
@@ -16,6 +19,7 @@ interface SettingsProps {
   handleUploadFileMaxSizeChange: any,
   handleFeedbackTypesChange: any,
   handlePlatformTypeChange: any,
+  handleEmailOption: Function,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -70,7 +74,8 @@ const StandardSettings = ({
   handleInvokeOnChange,
   handleFeedbackTypesChange,
   handleUploadFileMaxSizeChange,
-  handlePlatformTypeChange
+  handlePlatformTypeChange,
+  handleEmailOption,
 }: SettingsProps) => {
   const classes = useStyles();
 
@@ -160,6 +165,26 @@ const StandardSettings = ({
           <MenuItem key={600} value={600}>{'600 MB'}</MenuItem>
           <MenuItem key={800} value={800}>{'800 MB'}</MenuItem>
           <MenuItem key={1024} value={1024}>{'1 GB'}</MenuItem>
+        </Select>
+      </FormControl>
+
+      <FormControl className={classes.formControl}>
+        <InputLabel id={`mandatoryEmail`} required={true}>
+          {"Require user's email field on form submission:"}
+        </InputLabel>
+        <Select
+          name={`select_emailMandatory`}
+          value={
+            (productParams && productParams.products && productParams.products[0] &&
+            productParams.products[0].feedbackAgentSettings &&
+            productParams.products[0].feedbackAgentSettings.requireEmail)
+            ? productParams.products[0].feedbackAgentSettings.requireEmail
+            : 'OPTIONAL'
+          }
+          onChange={(event) => handleEmailOption(event)}
+        >
+          <MenuItem key={EMAIL_OPTIONAL} value={EMAIL_OPTIONAL}>{'Optional'}</MenuItem>
+          <MenuItem key={EMAIL_MANDATORY} value={EMAIL_MANDATORY}>{'Mandatory'}</MenuItem>
         </Select>
       </FormControl>
 

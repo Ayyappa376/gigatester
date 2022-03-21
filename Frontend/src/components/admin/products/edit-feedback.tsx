@@ -26,7 +26,7 @@ import {
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
-  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT
+  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT, EMAIL_MANDATORY, EMAIL_OPTIONAL
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -136,7 +136,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
 //  const [showScriptHelp, setShowScriptHelp] = useState(false);
 //  const [showReactHelp, setShowReactHelp] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
-  
+
   let msgSuccess = <Text tid='productDetailsSavedSuccessfully' />;
 
   useEffect(() => {
@@ -165,6 +165,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             title: '',
             uploadFileMaxSize: '400',
             videoAudioMaxDuration: '1.5',
+            requireEmail: EMAIL_OPTIONAL,
             widgetLookAndFeel: {
               bgColor: '#042e5b',
               fgColor: '#ffffff',
@@ -585,6 +586,10 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleEmailOption = (event: any) => {
+    console.log('seleting email requirement', event.target.value);
+  };
+
   const handleInvokeDelayChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -647,7 +652,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       codeSnippet = widgetScript;
       helpText = scriptHelpText;
     }
-    
+
     return (
     <Paper className={classes.sections}>
       <Grid container spacing={1}>
@@ -753,6 +758,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,
       handleBugTitleChange: handleBugTitleChange,
+      handleEmailOption: handleEmailOption,
     }
 
     return (

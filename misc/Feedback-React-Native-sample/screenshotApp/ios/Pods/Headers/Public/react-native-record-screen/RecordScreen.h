@@ -1,0 +1,1 @@
+../../../../../node_modules/react-native-record-screen/ios/RecordScreen.h
