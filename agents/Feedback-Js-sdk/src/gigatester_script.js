@@ -584,6 +584,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     feedback_default_category: "",
                     bugs_default_category:"",
                     max_file_size: 20,
+                    // emailRequire: "OPTIONAL",
                 },
                 form_settings_default: {
                     BUGS: {
@@ -2755,6 +2756,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if(data[0].uploadFileMaxSize && data[0].uploadFileMaxSize > 0) {
                         GigaTester_modal.configs.max_file_size = data[0].uploadFileMaxSize;
                     }
+                    // if (data[0].requireEmail) {
+                    //     GigaTester_modal.configs.emailRequire = data[0].requireEmail;
+                    // }
                     if(data[0].invokeOn[0] === "AFTER_DELAY"){
                         const delay = (data[0].invokeDelay && data[0].invokeDelay > 0) ? data[0].invokeDelay * 60 * 1000 : 120000;
                         setTimeout(() => {

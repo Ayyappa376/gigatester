@@ -12,7 +12,7 @@ var options = {
     transformObjectKeys: true,
     splitStrings: true,
     unicodeEscapeSequence: true,
-    disableConsoleOutput: false,
+    disableConsoleOutput: true,
 }
 var obfuscateResult = jsObfuscator.obfuscate(code, options);
 

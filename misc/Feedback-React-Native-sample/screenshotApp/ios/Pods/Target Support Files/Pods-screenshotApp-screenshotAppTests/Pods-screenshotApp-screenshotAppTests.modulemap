@@ -1,6 +1,0 @@
-module Pods_screenshotApp_screenshotAppTests {
-  umbrella header "Pods-screenshotApp-screenshotAppTests-umbrella.h"
-
-  export *
-  module * { export * }
-}
