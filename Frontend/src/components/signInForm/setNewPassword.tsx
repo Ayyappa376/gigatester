@@ -8,7 +8,9 @@ export default function SetNewPassword(props: any) {
         {props.forgotPassword ? 'Reset Password' : 'Change Password'}
       </Typography>
       <Typography variant="subtitle1">
-        {props.forgotPassword ? 'We have sent a password reset code by email. Enter it below to reset your password' : 'Please enter your new password below'}
+        {props.forgotPassword ? 'We have sent a password reset code by email. Enter it below to reset your password'
+         : props.changePasswordState ? 'Enter your current password and the new password below'
+         : 'Enter your new password below'}
       </Typography>
       <br />
       {props.forgotPassword &&
@@ -22,6 +24,17 @@ export default function SetNewPassword(props: any) {
           {...props.bindVerificationCode}
         />
       }
+      {props.changePasswordState &&
+        <TextField
+        required
+        margin="dense"
+        fullWidth
+        label="Current Password"
+        type="string"
+        id="oldPassword"
+        {...props.bindOldPassword}
+      />
+    }
       <TextField
         required
         margin="dense"

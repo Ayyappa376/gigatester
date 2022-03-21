@@ -331,7 +331,7 @@ export default function SignupForm(props: any) {
   };
 
   return openSignin ? (
-    <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
+    <SignInForm openSignin={openSignin} getSignInState={getSignInState} changePassword={false} />
   ) : (
     <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
       {signUpDialog()}
