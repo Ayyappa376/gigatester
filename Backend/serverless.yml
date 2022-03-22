@@ -59,7 +59,7 @@ custom:
     file: .serverless/output.json
   loglevel:
     development: 'info' # error/warn/info/debug
-    qa: 'info' # error/warn/info/debug
+    beta: 'info' # error/warn/info/debug
     production: 'info' # error/warn/info/debug
 
 # https://serverless.readme.io/docs/best-practices
