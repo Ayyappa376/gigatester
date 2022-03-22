@@ -587,7 +587,13 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   }
 
   const handleEmailOption = (event: any) => {
-    console.log('seleting email requirement', event.target.value);
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.requireEmail = event.target.value;
+        setProductParams(temp);
+      }
+    }
   };
 
   const handleInvokeDelayChange = (event: any) => {

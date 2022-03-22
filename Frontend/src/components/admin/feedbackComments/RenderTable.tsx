@@ -343,7 +343,7 @@ const RenderTable = (props: IProps) => {
                       {
                         row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
                           <a href={signedUrlMapping[row.feedbackMedia.file] ? signedUrlMapping[row.feedbackMedia.file].signedUrl ?
-                            signedUrlMapping[row.feedbackMedia.file].signedUrl : '' : ''} download>
+                            signedUrlMapping[row.feedbackMedia.file].signedUrl : '' : ''} download target="_blank">
                             <Link
                               component="button"
                               variant="body2"
