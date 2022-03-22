@@ -59,6 +59,7 @@ export default function SignInForm(props: any) {
     message: "",
     type: "",
   });
+  const [newSignInUser, setNewSignInUser] = useState(undefined);
   const history = useHistory();
 
   const { value: email, bind: bindEmail } = useInput("");
@@ -115,6 +116,20 @@ export default function SignInForm(props: any) {
     }
   };
 
+  const notifyError = (message: string) => {
+    if(message.includes("auth lambda trigger is not configured")) {
+      message = "User does not exist";
+    }
+    if(message.includes("Username/Custom")) {
+      message = "User does not exist";
+    }
+    setNotify({
+      isOpen: true,
+      message: message,
+      type: "error",
+    });
+  };
+
   const validatePassword = (password: string) => {
     const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/; //any of these should be allowed ^$*.[]{}()?-"!@#%&/\,><':;|_~`+=
     return re.test(password);
@@ -122,20 +137,11 @@ export default function SignInForm(props: any) {
 
   const validateNewPasswords = (password: string, confirmPassword: string) => {
     if (password !== confirmPassword) {
-      setNotify({
-        isOpen: true,
-        message: "Password and Confirm Password should be same",
-        type: "error",
-      });
+      notifyError("Password and Confirm Password should be same");
       return false;
     }
     if (!validatePassword(confirmPassword)) {
-      setNotify({
-        isOpen: true,
-        message:
-          "A password must contain at least 8 characters including a lower and an upper-case letter, special character, number.",
-        type: "error",
-      });
+      notifyError("Password must contain 8 to 20 characters including a lower-case letter, an upper-case letter, a number and a special character.");
       return false;
     }
     return true;
@@ -151,7 +157,7 @@ export default function SignInForm(props: any) {
         setLoading(false);
         setNotify({
           isOpen: true,
-          message: "Reset Password has been successful",
+          message: "Password reset successfully",
           type: "success",
         });
         setTimeout(() => {
@@ -159,11 +165,7 @@ export default function SignInForm(props: any) {
         }, 2000);
       })
       .catch((e) => {
-        setNotify({
-          isOpen: true,
-          message: "Password reset failed. Please try again",
-          type: "error",
-        });
+        notifyError(e.message);
         setLoading(false);
       });
   };
@@ -189,58 +191,50 @@ export default function SignInForm(props: any) {
       }, 2000);
     })
     .catch((e) => {
-      setNotify({
-        isOpen: true,
-        message: "Password change failed. Please try again",
-        type: "error",
-      });
+      notifyError(e.message);
       setLoading(false);
     });
   };
 
   const submitNewPasswordRequest = async (user: any) => {
-    setLoading(false);
-    setNewPasswordState(true);
     if(!validateNewPasswords(newPassword, confirmNewpassword)) {
+      setLoading(false);
       return;
     }
 //    if (confirmNewpassword && newPassword === confirmNewpassword) {
-      Auth.completeNewPassword(
-        user, // the Cognito User Object
-        confirmNewpassword, // the new password
-        { email: email }
-      )
+      Auth.completeNewPassword(user, confirmNewpassword, { email: email })
       .then((newUser) => {
-        if (
-          newUser &&
-          newUser.signInUserSession.idToken &&
-          newUser.signInUserSession.accessToken
-        ) {
+        if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
             handleSuccessfulSignIn(newUser);
+        } else {
+          notifyError("Set password failed. Please try again");
         }
+        setLoading(false);
       })
       .catch((e) => {
-        setNotify({
-          isOpen: true,
-          message: "Set password failed. Please try again",
-          type: "error",
-        });
+        notifyError(e.message);
         setLoading(false);
       });
 //    }
   };
 
   const submitSignInRequest = async () => {
-    console.log("In submitSignInRequest");
-    const user = await Auth.signIn(email, password);
-    if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
-      submitNewPasswordRequest(user);
-    } else if (
-      user &&
-      user.signInUserSession.idToken &&
-      user.signInUserSession.accessToken
-    ) {
-      handleSuccessfulSignIn(user);
+    try {
+      const user = await Auth.signIn(email, password);
+      if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
+        setNewSignInUser(user);
+        setNewPasswordState(true);
+//        submitNewPasswordRequest(user);
+      } else if (user && user.signInUserSession.idToken && user.signInUserSession.accessToken) {
+        handleSuccessfulSignIn(user);
+      } else {
+        notifyError("Login failed. Please try again.");
+      }
+      setLoading(false);
+    } catch (error) {
+      let e: any = error;
+      notifyError(e.message);
+      setLoading(false);
     }
   };
 
@@ -252,18 +246,10 @@ export default function SignInForm(props: any) {
       submitForgotPassword();
     } else if (changePasswordState) {
       submitChangePassword();
+    } else if (newPasswordState && newSignInUser) {
+      submitNewPasswordRequest(newSignInUser);
     } else {
-      try {
-        submitSignInRequest();
-      } catch (error) {
-        let errResponse: any = error;
-        setNotify({
-          isOpen: true,
-          message: errResponse.message,
-          type: "error",
-        });
-        setLoading(false);
-      }
+      submitSignInRequest();
     }
   };
 
@@ -289,28 +275,16 @@ export default function SignInForm(props: any) {
     });
     if (email) {
       Auth.forgotPassword(email)
-        .then((data) => {
-          setNewPasswordState(true);
-          setForgotPassword(true);
-        })
-        .catch((error) => {
-          let errResponse: any = error;
-          setNotify({
-            isOpen: true,
-            message: errResponse.message,
-            type: "error",
-          });
-          // setErrorMessage(errResponse.message);
-          setLoading(false);
-          // setSnackbarOpen(true);
-        });
-    } else {
-      setNotify({
-        isOpen: true,
-        message:
-          "Please enter email id. We will send a verification code to reset a password",
-        type: "info",
+      .then((data) => {
+        setNewPasswordState(true);
+        setForgotPassword(true);
+      })
+      .catch((e) => {
+        notifyError(e.message);
+        setLoading(false);
       });
+    } else {
+      notifyError("Please enter email id. We will send a verification code to reset your password");
       setLoading(false);
     }
   };

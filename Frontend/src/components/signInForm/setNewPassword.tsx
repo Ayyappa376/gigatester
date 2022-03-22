@@ -30,7 +30,7 @@ export default function SetNewPassword(props: any) {
         margin="dense"
         fullWidth
         label="Current Password"
-        type="string"
+        type="password"
         id="oldPassword"
         {...props.bindOldPassword}
       />
