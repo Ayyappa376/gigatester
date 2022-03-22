@@ -212,13 +212,13 @@ export const resetUserPassword = async (
   });
 
 function generatePassword() {
-  const length = 12;
-  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!#$*';
+  const length = 10;
+  const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*';
   const n = charset.length;
-  let retVal = '';
+  let retVal = 'g5';
   for (let i = 0; i < length; i += 1) {
     retVal += charset.charAt(Math.floor(Math.random() * n));
   }
-  retVal += '1!K';
+  retVal += '!K';
   return retVal;
 }
