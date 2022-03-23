@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Fragment } from 'react';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';
 import { Redirect } from 'react-router';
@@ -734,26 +734,29 @@ export default function Admin() {
             <ChevronLeftIcon />
           </IconButton>
         </div> */}
-        <Divider />
-        <List disablePadding={true} style={{ padding: '-10px 0px' }}>
-          <ListItem
-            button
-            onClick={handleDashboard}
-            disabled={!(user && user.roles && user.roles.includes('Admin'))}
-          >
-            <Tooltip
-              title={<Typography>{<Text tid='dashboard2' />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement='right'
-              arrow={true}
+        {(user && user.roles && user.roles.includes('Admin')) &&
+        <Fragment>
+          <Divider />
+          <List disablePadding={true} style={{ padding: '-10px 0px' }}>
+            <ListItem
+              button
+              onClick={handleDashboard}
             >
-              <ListItemIcon className={classes.iconWidth}>
-                <DashboardIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid='dashboard2' />} />
-          </ListItem>
-        </List>
+              <Tooltip
+                title={<Typography>{<Text tid='dashboard2' />}</Typography>}
+                disableHoverListener={open ? true : false}
+                placement='right'
+                arrow={true}
+              >
+                <ListItemIcon className={classes.iconWidth}>
+                  <DashboardIcon />
+                </ListItemIcon>
+              </Tooltip>
+              <ListItemText primary={<Text tid='dashboard2' />} />
+            </ListItem>
+          </List>
+        </Fragment>
+        }
         <Divider />
         <List disablePadding={true}>
           <ListItem button onClick={handleCreateUser}>
@@ -805,6 +808,7 @@ export default function Admin() {
             <ListItemText primary={<Text tid="createTeam2" />} />
           </ListItem>
         </List>*/}
+        {(user && user.roles && user.roles.includes('Admin')) &&
         <List disablePadding={true}>
           <ListItem
             button
@@ -824,6 +828,8 @@ export default function Admin() {
             <ListItemText primary={<Text tid='manageGroups2' />} />
           </ListItem>
         </List>
+        }
+        {(user && user.roles && user.roles.includes('Admin')) &&
         <List disablePadding={true}>
           <ListItem
             button
@@ -843,6 +849,8 @@ export default function Admin() {
             <ListItemText primary={<Text tid='managePlatforms2' />} />
           </ListItem>
         </List>
+        }
+        {(user && user.roles && user.roles.includes('Admin')) &&
         <List disablePadding={true}>
           <ListItem
             button
@@ -862,42 +870,51 @@ export default function Admin() {
             <ListItemText primary={<Text tid='manageDevices2' />} />
           </ListItem>
         </List>
-        <List disablePadding={true}>
-          <ListItem button onClick={handleManageProducts}>
-            <Tooltip
-              title={<Typography>{<Text tid='manageProducts2' />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement='right'
-              arrow={true}
+        }
+        {(user && user.roles && (user.roles.includes('Admin') || user.roles.includes('Manager'))) &&
+        <Fragment>
+          <List disablePadding={true}>
+            <ListItem button onClick={handleManageProducts}>
+              <Tooltip
+                title={<Typography>{<Text tid='manageProducts2' />}</Typography>}
+                disableHoverListener={open ? true : false}
+                placement='right'
+                arrow={true}
+              >
+                <ListItemIcon className={classes.iconWidth}>
+                  <PhonelinkIcon />
+                </ListItemIcon>
+              </Tooltip>
+              <ListItemText primary={<Text tid='manageProducts2' />} />
+            </ListItem>
+          </List>
+          <Divider />
+        </Fragment>
+        }
+        {(user && user.roles && user.roles.includes('Admin')) &&
+        <Fragment>
+          <List disablePadding={true}>
+            <ListItem
+              button
+              onClick={handleManageCampaigns}
+              disabled={!(user && user.roles && user.roles.includes('Admin'))}
             >
-              <ListItemIcon className={classes.iconWidth}>
-                <PhonelinkIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid='manageProducts2' />} />
-          </ListItem>
-        </List>
-        <Divider />
-        <List disablePadding={true}>
-          <ListItem
-            button
-            onClick={handleManageCampaigns}
-            disabled={!(user && user.roles && user.roles.includes('Admin'))}
-          >
-            <Tooltip
-              title={<Typography>{<Text tid='manageCampaigns2' />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement='right'
-              arrow={true}
-            >
-              <ListItemIcon className={classes.iconWidth}>
-                <AssessmentIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid='manageCampaigns2' />} />
-          </ListItem>
-        </List>
-        <Divider />
+              <Tooltip
+                title={<Typography>{<Text tid='manageCampaigns2' />}</Typography>}
+                disableHoverListener={open ? true : false}
+                placement='right'
+                arrow={true}
+              >
+                <ListItemIcon className={classes.iconWidth}>
+                  <AssessmentIcon />
+                </ListItemIcon>
+              </Tooltip>
+              <ListItemText primary={<Text tid='manageCampaigns2' />} />
+            </ListItem>
+          </List>
+          <Divider />
+        </Fragment>
+        }
         {/* <List disablePadding={true}>
           <ListItem
             button
@@ -917,6 +934,7 @@ export default function Admin() {
             <ListItemText primary={<Text tid="addTestSuit2" />} />
           </ListItem>
         </List> */}
+        {(user && user.roles && user.roles.includes('Admin')) &&
         <List disablePadding={true}>
           <ListItem
             button
@@ -936,7 +954,7 @@ export default function Admin() {
             <ListItemText primary={<Text tid='manageTestSuits2' />} />
           </ListItem>
         </List>
-        <Divider />
+        }
         {/* <List disablePadding={true}>
           <ListItem
             button
@@ -956,26 +974,30 @@ export default function Admin() {
             <ListItemText primary={<Text tid="addTestCase2" />} />
           </ListItem>
         </List> */}
-        <List disablePadding={true}>
-          <ListItem
-            button
-            onClick={handleManageQuestion}
-            disabled={!(user && user.roles && user.roles.includes('Admin'))}
-          >
-            <Tooltip
-              title={<Typography>{<Text tid='manageTestCases2' />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement='right'
-              arrow={true}
+        {(user && user.roles && user.roles.includes('Admin')) &&
+        <Fragment>
+          <List disablePadding={true}>
+            <ListItem
+              button
+              onClick={handleManageQuestion}
+              disabled={!(user && user.roles && user.roles.includes('Admin'))}
             >
-              <ListItemIcon className={classes.iconWidth}>
-                <BallotOutlinedIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid='manageTestCases2' />} />
-          </ListItem>
-        </List>
-        <Divider />
+              <Tooltip
+                title={<Typography>{<Text tid='manageTestCases2' />}</Typography>}
+                disableHoverListener={open ? true : false}
+                placement='right'
+                arrow={true}
+              >
+                <ListItemIcon className={classes.iconWidth}>
+                  <BallotOutlinedIcon />
+                </ListItemIcon>
+              </Tooltip>
+              <ListItemText primary={<Text tid='manageTestCases2' />} />
+            </ListItem>
+          </List>
+          <Divider />
+        </Fragment>
+        }
         {/*<List disablePadding={true}>
           <ListItem
             button
@@ -1014,26 +1036,30 @@ export default function Admin() {
             <ListItemText primary={<Text tid="viewFeedback" />} />
           </ListItem>
         </List>
-        <Divider />
-        <List disablePadding={true}>
-          <ListItem
-            button
-            onClick={handleManageSettings}
-            disabled={!(user && user.roles && user.roles.includes('Admin'))}
-          >
-            <Tooltip
-              title={<Typography>{<Text tid='settings' />}</Typography>}
-              disableHoverListener={open ? true : false}
-              placement='right'
-              arrow={true}
+        {(user && user.roles && user.roles.includes('Admin')) &&
+        <Fragment>
+          <Divider />
+          <List disablePadding={true}>
+            <ListItem
+              button
+              onClick={handleManageSettings}
+              disabled={!(user && user.roles && user.roles.includes('Admin'))}
             >
-              <ListItemIcon className={classes.iconWidth}>
-                <SettingsIcon />
-              </ListItemIcon>
-            </Tooltip>
-            <ListItemText primary={<Text tid='settings' />} />
-          </ListItem>
-        </List>
+              <Tooltip
+                title={<Typography>{<Text tid='settings' />}</Typography>}
+                disableHoverListener={open ? true : false}
+                placement='right'
+                arrow={true}
+              >
+                <ListItemIcon className={classes.iconWidth}>
+                  <SettingsIcon />
+                </ListItemIcon>
+              </Tooltip>
+              <ListItemText primary={<Text tid='settings' />} />
+            </ListItem>
+          </List>
+        </Fragment>
+        }
       </Drawer>
       <main
         className={clsx(classes.content, {

@@ -48,6 +48,7 @@ export default function SignInForm(props: any) {
 
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(props.openSignin);
+  const [changePasswordState, setChangePasswordState] = useState(props.changePassword);
   const saveUserData = useActions(saveUserDetails);
   const [dialogPage, setDialogPage] = useState("login");
   const [newPasswordState, setNewPasswordState] = useState(false);
@@ -58,19 +59,16 @@ export default function SignInForm(props: any) {
     message: "",
     type: "",
   });
+  const [newSignInUser, setNewSignInUser] = useState(undefined);
   const history = useHistory();
 
   const { value: email, bind: bindEmail } = useInput("");
   const { value: password, bind: bindPassword } = useInput("");
   const { value: verificationCode, bind: bindVerificationCode } = useInput("");
+  const { value: oldPassword, bind: bindOldPassword } = useInput("");
   const { value: newPassword, bind: bindNewPassword } = useInput("");
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
   let userData: any = {}
-
-  const validatePassword = (password: string) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/;
-    return re.test(password);
-  };
 
   const handleSuccessfulSignIn = (user: any) => {
     const tokenInfo: any = jwtDecode(
@@ -90,6 +88,7 @@ export default function SignInForm(props: any) {
       roles: tokenInfo["cognito:groups"],
     });
 
+    //set the feedback component's context
     userData.email = tokenInfo['email']
     if(typeof window.GigaTester !== 'undefined'){
       window.GigaTester.setUserDetails(userData);
@@ -104,35 +103,56 @@ export default function SignInForm(props: any) {
       ) {
         return (
           history.push("/admin"),
-          setDialogOpen(false),
-          setLoading(true)
+          setLoading(true),
+          closeDialog()
+//          setDialogOpen(false),
+//          props.setSignInState(false),
         );
       } else {
         return (
           history.push("/profile"),
-          setDialogOpen(false),
-          setLoading(true)
+          setLoading(true),
+          closeDialog()
+//          setDialogOpen(false),
+//          props.setSignInState(false),
         );
       }
     }
   };
 
+  const notifyError = (message: string) => {
+    if(message.includes("auth lambda trigger is not configured")) {
+      message = "User does not exist";
+    }
+    if(message.includes("Username/Custom")) {
+      message = "User does not exist";
+    }
+    setNotify({
+      isOpen: true,
+      message: message,
+      type: "error",
+    });
+  };
+
+  const validatePassword = (password: string) => {
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$^*.\[\]{}\(\)\?\-\"\!@#%&\/\\,><\':;|_~`+\=])(?=.{8,20})/; //any of these should be allowed ^$*.[]{}()?-"!@#%&/\,><':;|_~`+=
+    return re.test(password);
+  };
+
+  const validateNewPasswords = (password: string, confirmPassword: string) => {
+    if (password !== confirmPassword) {
+      notifyError("Password and Confirm Password should be same");
+      return false;
+    }
+    if (!validatePassword(confirmPassword)) {
+      notifyError("Password must contain 8 to 20 characters including a lower-case letter, an upper-case letter, a number and a special character.");
+      return false;
+    }
+    return true;
+  };
+
   const submitForgotPassword = async () => {
-    if (newPassword !== confirmNewpassword) {
-      setNotify({
-        isOpen: true,
-        message: "Password and Confirmation Password should be the same",
-        type: "error",
-      });
-      setLoading(false);
-      return;
-    } else if (!validatePassword(confirmNewpassword)) {
-      setNotify({
-        isOpen: true,
-        message:
-          "A password must contain at least 8 characters including a lower and an upper-case letter, special character, number.",
-        type: "error",
-      });
+    if(!validateNewPasswords(newPassword, confirmNewpassword)) {
       setLoading(false);
       return;
     }
@@ -141,7 +161,7 @@ export default function SignInForm(props: any) {
         setLoading(false);
         setNotify({
           isOpen: true,
-          message: "Reset Password has been successful",
+          message: "Password reset successfully",
           type: "success",
         });
         setTimeout(() => {
@@ -149,63 +169,76 @@ export default function SignInForm(props: any) {
         }, 2000);
       })
       .catch((e) => {
-        setNotify({
-          isOpen: true,
-          message: "Something Went Wrong. Please try again",
-          type: "error",
-        });
+        notifyError(e.message);
         setLoading(false);
       });
+  };
+
+  const submitChangePassword = async () => {
+    if(!validateNewPasswords(newPassword, confirmNewpassword)) {
+      setLoading(false);
+      return;
+    }
+    Auth.currentAuthenticatedUser()
+    .then(user => {
+        return Auth.changePassword(user, oldPassword, confirmNewpassword);
+    })
+    .then((response) => {
+      setLoading(false);
+      setNotify({
+        isOpen: true,
+        message: "Password changed successfully",
+        type: "success",
+      });
+      setTimeout(() => {
+        closeDialog();
+      }, 2000);
+    })
+    .catch((e) => {
+      notifyError(e.message);
+      setLoading(false);
+    });
   };
 
   const submitNewPasswordRequest = async (user: any) => {
-    setLoading(false);
-    setNewPasswordState(true);
-    if (newPassword !== confirmNewpassword) {
-      setNotify({
-        isOpen: true,
-        message: "Password and Confirm Password should be same",
-        type: "error",
-      });
+    if(!validateNewPasswords(newPassword, confirmNewpassword)) {
+      setLoading(false);
       return;
     }
-    if (confirmNewpassword && newPassword === confirmNewpassword) {
-      Auth.completeNewPassword(
-        user, // the Cognito User Object
-        confirmNewpassword, // the new password
-        { email: email }
-      )
+//    if (confirmNewpassword && newPassword === confirmNewpassword) {
+      Auth.completeNewPassword(user, confirmNewpassword, { email: email })
       .then((newUser) => {
-        if (
-          newUser &&
-          newUser.signInUserSession.idToken &&
-          newUser.signInUserSession.accessToken
-        ) {
-            handleSuccessfulSignIn(newUser);
+        if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
+          handleSuccessfulSignIn(newUser);
+        } else {
+          notifyError("Set password failed. Please try again");
         }
+        setLoading(false);
       })
       .catch((e) => {
-        setNotify({
-          isOpen: true,
-          message: "Something Went Wrong. Please try again",
-          type: "error",
-        });
+        notifyError(e.message);
         setLoading(false);
       });
-    }
+//    }
   };
 
   const submitSignInRequest = async () => {
-    console.log("In submitSignInRequest");
-    const user = await Auth.signIn(email, password);
-    if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
-      submitNewPasswordRequest(user);
-    } else if (
-      user &&
-      user.signInUserSession.idToken &&
-      user.signInUserSession.accessToken
-    ) {
-      handleSuccessfulSignIn(user);
+    try {
+      const user = await Auth.signIn(email, password);
+      if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
+        setNewSignInUser(user);
+        setNewPasswordState(true);
+//        submitNewPasswordRequest(user);
+      } else if (user && user.signInUserSession.idToken && user.signInUserSession.accessToken) {
+        handleSuccessfulSignIn(user);
+      } else {
+        notifyError("Login failed. Please try again.");
+      }
+      setLoading(false);
+    } catch (error) {
+      let e: any = error;
+      notifyError(e.message);
+      setLoading(false);
     }
   };
 
@@ -215,24 +248,18 @@ export default function SignInForm(props: any) {
     setLoading(true);
     if (verificationCode) {
       submitForgotPassword();
+    } else if (changePasswordState) {
+      submitChangePassword();
+    } else if (newPasswordState && newSignInUser) {
+      submitNewPasswordRequest(newSignInUser);
     } else {
-      try {
-        submitSignInRequest();
-      } catch (error) {
-        let errResponse: any = error;
-        setNotify({
-          isOpen: true,
-          message: errResponse.message,
-          type: "error",
-        });
-        setLoading(false);
-      }
+      submitSignInRequest();
     }
   };
 
   const closeDialog = () => {
     setDialogOpen(false);
-    props.getSignInState(false);
+    props.setSignInState(false);
   };
 
   const onSignUp = () => {
@@ -252,28 +279,16 @@ export default function SignInForm(props: any) {
     });
     if (email) {
       Auth.forgotPassword(email)
-        .then((data) => {
-          setNewPasswordState(true);
-          setForgotPassword(true);
-        })
-        .catch((error) => {
-          let errResponse: any = error;
-          setNotify({
-            isOpen: true,
-            message: errResponse.message,
-            type: "error",
-          });
-          // setErrorMessage(errResponse.message);
-          setLoading(false);
-          // setSnackbarOpen(true);
-        });
-    } else {
-      setNotify({
-        isOpen: true,
-        message:
-          "Please enter email id. We will send a verification code to reset a password",
-        type: "info",
+      .then((data) => {
+        setNewPasswordState(true);
+        setForgotPassword(true);
+      })
+      .catch((e) => {
+        notifyError(e.message);
+        setLoading(false);
       });
+    } else {
+      notifyError("Please enter email id. We will send a verification code to reset your password");
       setLoading(false);
     }
   };
@@ -291,7 +306,7 @@ export default function SignInForm(props: any) {
           id="form-dialog-title"
           style={{ textAlign: "center", padding: "30px 0px" }}
         >
-          <Typography variant="h4">
+          <Typography style={{ fontSize: "26px" }}>
             <Text tid={"gigaTester"} />
           </Typography>
           <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
@@ -301,12 +316,16 @@ export default function SignInForm(props: any) {
         <DialogContent>
           {dialogPage === "login" ? (
             <Container component="main" maxWidth="xs">
-              <Typography variant="h6">
-                <Text tid={dialogPage} />
-              </Typography>
+              {!newPasswordState && !changePasswordState ? (
+                <Typography variant="h6">
+                  <Text tid={dialogPage} />
+                </Typography>
+              ) : (
+                <div/>
+              )}
               <CssBaseline />
               <Box component="form" onSubmit={handleSubmit}>
-                {!newPasswordState ? (
+                {!newPasswordState && !changePasswordState ? (
                   <Fragment>
                     <TextField
                       required
@@ -333,6 +352,8 @@ export default function SignInForm(props: any) {
                     bindConfirmNewPassword={bindConfirmNewPassword}
                     bindVerificationCode={bindVerificationCode}
                     forgotPassword={forgotPassword}
+                    bindOldPassword={bindOldPassword}
+                    changePasswordState={changePasswordState}
                   />
                 )}
                 <br />
@@ -349,11 +370,11 @@ export default function SignInForm(props: any) {
                   {loading && (
                     <CircularProgress size={20} style={{ marginRight: 20 }} />
                   )}
-                  {!newPasswordState ? "Login" : "Send"}
+                  {!newPasswordState && !changePasswordState ? "Login" : "Send"}
                 </Button>
               </Box>
               <br />
-              {!newPasswordState && (
+              {!newPasswordState && !changePasswordState && (
                 <Fragment>
                   <Grid container>
                     <Grid item xs>

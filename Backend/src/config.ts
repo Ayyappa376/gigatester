@@ -63,21 +63,24 @@ export const config: Config = {
   },
   defaults: {
     groups: ['Manager'],
-    orgId: 'www', // default should be 'www' //nomiso - dev env
+    orgId: 'dish', // default should be 'www' //nomiso - dev env
     quesType: '1234',
     restApiId: {
+      beta: 'hq6w582al7',
       development: 'qe1lgcnkwh',
       local: 'qe1lgcnkwh',
       production: 'gm97bmv2v7',
     },
     scoreCoeff: 10,
     subDomain: {
+      beta: 'beta',
       development: 'dev',
       local: 'dev',
-      production: 'beta', //change to 'beta' for beta-deploy, change based on where to deploy
+      production: 'dish', //change to 'prod' for prod-deploy, change based on where to deploy
     },
     teamName: 'Others',
     usagePlanId: {
+      beta: 'v7z5d7',
       development: 'v7z5d7',
       local: 'v7z5d7',
       production: 'v7z5d7',

@@ -168,6 +168,7 @@ const PageHeader = (props: any) => {
   );
   const [openSignin, setOpenSignin] = useState(false);
   const [openSignup, setOpenSignup] = useState(false);
+  const [changePassword, setChangePassword] = useState(false);
   const [openUserMenu, setOpenUserMenu] = React.useState(false);
   const stateVariable = useSelector((state: IRootState) => state);
   const [superUserStateVariable, setSuperUserStateVariable] = useState(stateVariable);
@@ -244,6 +245,10 @@ const PageHeader = (props: any) => {
     );
   };
 
+  const handleChangePassword = () => {
+    setChangePassword(true);
+    setOpenSignin(true);
+  }
   
   const handleAssessment = (event: any) => {
     setAdminPageState(false);
@@ -814,8 +819,11 @@ const PageHeader = (props: any) => {
     setOpenModalLeavePage(false);
   };
 
-  const getSignInState = (state: boolean) => {
+  const setSignInState = (state: boolean) => {
     setOpenSignin(state);
+    if(!state) {
+      setChangePassword(false);
+    }
   }
 
   const handleCloseSignup = (state: boolean) => {
@@ -925,8 +933,8 @@ const PageHeader = (props: any) => {
               <Paper>
                 <ClickAwayListener onClickAway={handleCloseUserMenu}>
                   <MenuList autoFocusItem={openUserMenu} id="menu-list-grow" onKeyDown={handleListKeyDown}>
-                    <MenuItem onClick={handleProfileSetting}>Profile Settings</MenuItem>
-                    <MenuItem onClick={handleCloseUserMenu}>Change Password</MenuItem>
+                    {/* <MenuItem onClick={handleProfileSetting}>Profile Settings</MenuItem> */}
+                    <MenuItem onClick={handleChangePassword}>Change Password</MenuItem>
                     <MenuItem onClick={logoutModalActivate}>Logout</MenuItem>
                   </MenuList>
                 </ClickAwayListener>
@@ -949,7 +957,11 @@ const PageHeader = (props: any) => {
         handleModalNoClicked={modalNoClickedLeavePage}
       />
       {openSignin &&
-        <SignInForm openSignin={openSignin} getSignInState={getSignInState} />
+        <SignInForm
+          openSignin={openSignin}
+          setSignInState={setSignInState}
+          changePassword={changePassword}
+        />
       }
       {openSignup && (
       <SignupForm

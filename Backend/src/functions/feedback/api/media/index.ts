@@ -31,7 +31,7 @@ exports.handler = async (event: any) => {
                 // const buff = Buffer.from (base64String, 'base64');
                 try {
                     const params = {
-                        Bucket: getBucketName(),
+                        Bucket: getBucketNameFor('gigatester-manage-feedback'),
                         ContentType: fileType,
                         Expires: 60*24,
                         Key: fileName,
@@ -65,6 +65,12 @@ exports.handler = async (event: any) => {
     };
 };
 
-function getBucketName(): string {
-    return (process.env.DB_ENV === 'development') ? 'dev-gigatester-manage-feedback' : 'beta-gigatester-manage-feedback';
+function getBucketNameFor(baseBucketName: string): string {
+    if(process.env.DB_ENV === 'development') {
+        return `dev-${baseBucketName}`;
+    }
+    if(process.env.DB_ENV === 'beta') {
+        return `beta-${baseBucketName}`;
+    }
+    return `dish-${baseBucketName}`;
 }
