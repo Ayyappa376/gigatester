@@ -103,14 +103,18 @@ export default function SignInForm(props: any) {
       ) {
         return (
           history.push("/admin"),
-          setDialogOpen(false),
-          setLoading(true)
+          setLoading(true),
+          closeDialog()
+//          setDialogOpen(false),
+//          props.setSignInState(false),
         );
       } else {
         return (
           history.push("/profile"),
-          setDialogOpen(false),
-          setLoading(true)
+          setLoading(true),
+          closeDialog()
+//          setDialogOpen(false),
+//          props.setSignInState(false),
         );
       }
     }
@@ -131,7 +135,7 @@ export default function SignInForm(props: any) {
   };
 
   const validatePassword = (password: string) => {
-    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,20})/; //any of these should be allowed ^$*.[]{}()?-"!@#%&/\,><':;|_~`+=
+    const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$^*.\[\]{}\(\)\?\-\"\!@#%&\/\\,><\':;|_~`+\=])(?=.{8,20})/; //any of these should be allowed ^$*.[]{}()?-"!@#%&/\,><':;|_~`+=
     return re.test(password);
   };
 
@@ -205,7 +209,7 @@ export default function SignInForm(props: any) {
       Auth.completeNewPassword(user, confirmNewpassword, { email: email })
       .then((newUser) => {
         if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
-            handleSuccessfulSignIn(newUser);
+          handleSuccessfulSignIn(newUser);
         } else {
           notifyError("Set password failed. Please try again");
         }
@@ -302,7 +306,7 @@ export default function SignInForm(props: any) {
           id="form-dialog-title"
           style={{ textAlign: "center", padding: "30px 0px" }}
         >
-          <Typography variant="h4">
+          <Typography style={{ fontSize: "26px" }}>
             <Text tid={"gigaTester"} />
           </Typography>
           <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>

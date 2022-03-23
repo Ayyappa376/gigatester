@@ -821,6 +821,9 @@ const PageHeader = (props: any) => {
 
   const setSignInState = (state: boolean) => {
     setOpenSignin(state);
+    if(!state) {
+      setChangePassword(false);
+    }
   }
 
   const handleCloseSignup = (state: boolean) => {
@@ -954,7 +957,11 @@ const PageHeader = (props: any) => {
         handleModalNoClicked={modalNoClickedLeavePage}
       />
       {openSignin &&
-        <SignInForm openSignin={openSignin} setSignInState={setSignInState} changePassword={changePassword} />
+        <SignInForm
+          openSignin={openSignin}
+          setSignInState={setSignInState}
+          changePassword={changePassword}
+        />
       }
       {openSignup && (
       <SignupForm
