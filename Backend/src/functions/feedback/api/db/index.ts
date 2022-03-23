@@ -97,5 +97,11 @@ async function getproductIdForKey(productKey: string): Promise<string> {
 }
 
 function getTableNameFor(baseTableName: string): string {
-  return (process.env.DB_ENV === 'development') ? `dev_${baseTableName}` : `beta_${baseTableName}`;
+  if(process.env.DB_ENV === 'development') {
+    return `dev_${baseTableName}`;
+  }
+  if(process.env.DB_ENV === 'beta') {
+    return `beta_${baseTableName}`;
+  }
+  return `dish_${baseTableName}`;
 }
