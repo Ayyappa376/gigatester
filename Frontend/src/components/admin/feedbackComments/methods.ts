@@ -9,7 +9,6 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
       }
       const urlSplit = url.split('/')
       let name = urlSplit[urlSplit.length - 1]
-
       Http.get({
         url: `/api/v2/signedurl/${name}`,
       }).then((response: any) => {
@@ -43,6 +42,7 @@ export const getFeedbackData = ({ urlAppend}: any) => {
       Http.get({
         url,
       }).then((response: any) => {
+        console.log(response, 'bug data')
         return resolve(response);
       })
       .catch((error) => {

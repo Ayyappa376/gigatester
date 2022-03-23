@@ -22,6 +22,7 @@ import { useInView } from 'react-intersection-observer';
 import { TailSpin } from 'react-loader-spinner'
 import RenderComments from './RenderComments';
 import Failure from '../../failure-page';
+import { table } from 'console';
 
 interface IProps {
   tableData: IAppFeedback[],
@@ -64,7 +65,7 @@ export const ALROUND = 'alround'
 
 const RenderTable = (props: IProps) => {
   const classes = useStyles();
-  const { tableData, resultsFetched, category, severity, keys, rating, setDisable, disable } = props;
+  const { tableData, resultsFetched, category, severity, keys, rating, setDisable, disable, urls } = props;
   const [fetchAllUrls, setFetchAllUrls] = useState(false);
   const [isBugReport, setBugReport] = useState<boolean>(false);
   const { ref, inView, entry } = useInView();
@@ -98,15 +99,11 @@ const RenderTable = (props: IProps) => {
     }
   }, [type])
 
-  const initiateFetchAllUrls = useCallback(() => {
+  useEffect(() => {
     if (!fetchAllUrls && tableData.length > 0) {
       fetchSignedUrls(props.urls)
     }
-  }, [tableData])
-
-  useEffect(() => {
-    initiateFetchAllUrls();
-  }, [])
+  }, [urls])
 
   const updateSignedUrlData = useActions(updateSignedUrls);
   const signedUrlMapping = useSelector(
@@ -114,6 +111,7 @@ const RenderTable = (props: IProps) => {
   );
 
   const fetchSignedUrls = (urls: string[]) => {
+    // console.log(urls, 'inital url load')
     if (urls.length === 0) {
       return;
     }
@@ -136,7 +134,7 @@ const RenderTable = (props: IProps) => {
             });
             if (signedUrl) {
               const now = new Date();
-              signedUrlMappingCopy[url] = { signedUrl, date: now.getTime() };
+              signedUrlMappingCopy[url] = { signedUrl, date: now.getTime()};
               return resolve({});
             } else {
               return resolve({})
@@ -293,7 +291,7 @@ const RenderTable = (props: IProps) => {
                       >
                         {
                           signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] && signedUrlMapping[row.feedbackMedia.image].signedUrl ?
-                            <img src={signedUrlMapping[row.feedbackMedia.image].signedUrl} style={{width: 150, marginTop: 20}}></img> : <div/>
+                            <img src={signedUrlMapping[row.feedbackMedia.image].signedUrl} style={{width: 150, marginTop: 10}}></img> : <div/>
                         }
                       </Link> : <div/> : <div/>
                       }
@@ -343,7 +341,7 @@ const RenderTable = (props: IProps) => {
                       {
                         row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
                           <a href={signedUrlMapping[row.feedbackMedia.file] ? signedUrlMapping[row.feedbackMedia.file].signedUrl ?
-                            signedUrlMapping[row.feedbackMedia.file].signedUrl : '' : ''} download>
+                            signedUrlMapping[row.feedbackMedia.file].signedUrl : '' : ''} download target="_blank">
                             <Link
                               component="button"
                               variant="body2"
@@ -359,7 +357,7 @@ const RenderTable = (props: IProps) => {
             }
           )}
         </TableBody>
-        : <div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}>
+        :  <TableBody><TableRow><TableCell><div style={{width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0'}}>
             {
               props.resultsFetched ? <div style={{marginLeft: "62%", transform: 'translateX: "-50%'}}>{`There are no ${isBugReport? 'bugs' : 'feedbacks'} to show.`}</div> :
               <TailSpin wrapperStyle={{marginLeft: "62%", transform: 'translateX: "-50%'}} height="60"
@@ -368,6 +366,9 @@ const RenderTable = (props: IProps) => {
               ariaLabel='loading'/>
             }
             </div>
+            </TableCell>
+            </TableRow>
+            </TableBody>
       }
         </Table>
       </TableContainer>
