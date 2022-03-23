@@ -11,7 +11,7 @@ import { getDate } from '../../../utils/data';
 import {
   ILimitedProductDetails,
   IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, feedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getFeedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments
 } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getFeedbckChartData, getFeedbackData } from './methods';
@@ -100,7 +100,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }, [feedbackBarChartData])
 
   const pieChartOptions = getPieChartOptions(pieChartSeries);
-
+  const feedbackBarChartOptions = getFeedbackBarChartOptions(feedbackBarChartData);
   const disbaleFilterButtons = (filter: string) => {
     if (filter === '') {
       setCat(false);

@@ -9,7 +9,7 @@ import Image from 'material-ui-image'
 import { getDate } from '../../../utils/data';
 import { ILimitedProductDetails,
   IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, bugBarChartOtions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getBugBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getBugChartData, getBugData } from './methods';
 import Failure from '../../failure-page';
@@ -94,7 +94,39 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     }
   }, [feedbackBarChartData])
 
+
+  useEffect(() => {
+    const rateMap: IRatingMapping = {};
+     const bugMap: IBugDataMapping = {};
+     const urls: string[] = [];
+ 
+       data.forEach((item: IAppFeedback) => {
+         if (item.feedbackType === "BUG_REPORT") {
+           bugMap[item.id] = {
+             userId: item.userId ? item.userId : 'Anonymous',
+             userIp: item.sourceIP? item.sourceIP : '',
+             severity : item.bugPriority,
+             category: item.feedbackCategory,
+             date : item.createdOn,
+             comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
+             productId: item.productId,
+             productVersion: item.productVersion
+           }
+           if(item.feedbackMedia ) {
+             const links: any = Object.values(item.feedbackMedia);
+             const linksFiltered = links.filter((key: string) => key !== '')
+             urls.push(...linksFiltered);
+           }
+           setBugDataMapping(bugMap);
+         }
+       });
+ 
+     const urlArrayCopy = [...urlArray];
+     urlArrayCopy.push(...urls);
+     setUrlArray(urlArrayCopy)
+   }, [data])
   const pieChartOptions = getPieChartOptions(pieChartSeries);
+  const bugBarChartOptions = getBugBarChartOptions(bugBarChartSeries);
 
   const disbaleFilterButtons = (filter: string) => {
     if (filter === '') {
@@ -130,42 +162,12 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   }, [currentDisable])
 
   useEffect(() => {
-//    const rateMap: IRatingMapping = {};
-    const bugMap: IBugDataMapping = {};
-    const urls: string[] = [];
-
-      data.forEach((item: IAppFeedback) => {
-        if (item.feedbackType === "BUG_REPORT") {
-          bugMap[item.id] = {
-            userId: item.userId ? item.userId : 'Anonymous',
-            userIp: item.sourceIP? item.sourceIP : '',
-            severity : item.bugPriority,
-            category: item.feedbackCategory,
-            date : item.createdOn,
-            comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
-            productId: item.productId,
-            productVersion: item.productVersion
-          }
-          if(item.feedbackMedia ) {
-            const links: any = Object.values(item.feedbackMedia);
-            const linksFiltered = links.filter((key: string) => key !== '')
-            urls.push(...linksFiltered);
-          }
-          setBugDataMapping(bugMap);
-        }
-      });
-
-    const urlArrayCopy = [...urlArray];
-    urlArrayCopy.push(...urls);
-    setUrlArray(urlArrayCopy)
-  }, [data])
-
-  useEffect(() => {
     if(selectedProdId && productVersion) {
       setBackdropOpen(true);
       fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
       getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
     }
+
   }, [selectedProdId, productVersion])
 
   useEffect(() => {
@@ -186,7 +188,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     if(rawData.length === 0) {
       return;
     }
-    console.log(focusRating)
     if(focusRating.length === 0) {
       setCurrentDisable('');
       setData(rawData);
@@ -203,7 +204,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     if(rawData.length === 0) {
       return;
     }
-    console.log(focusSeverity)
     if(focusSeverity.length <= 0) {
       setCurrentDisable('');
       setData(rawData);
@@ -220,7 +220,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     if(rawData.length === 0) {
       return;
     }
-    console.log(focusCategory)
     if(focusCategory.length <= 0) {
       setCurrentDisable('');
       setData(rawData);
@@ -280,7 +279,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
       } else {
         setError(true)
       }
-      console.error('getFeedbackData failed to fetch data with Error code:', object.code)
+      console.error('getBugData failed to fetch data with Error code:', object.code)
       return;
     })
     setResultsFetched(true);
@@ -509,7 +508,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
         ): (
           <div>
               {searchInitiated ? <div>
-          <RenderTable key="renderTable2" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
+          <RenderTable key="renderTable4" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
           order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
           searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
           focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
@@ -523,7 +522,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
           <div style={{marginTop: 50}}>
             <Grid container style={{marginTop: '5rem'}}>
               <Grid item lg={5}>
-                <ReactApexChart options={bugBarChartOtions} series={bugBarChartSeries} type="bar" width={500} height={320} />
+                <ReactApexChart options={bugBarChartOptions} series={bugBarChartSeries} type="bar" width={500} height={320} />
               </Grid>
               <Grid item lg={2}></Grid>
               <Grid item lg={5}>
@@ -531,7 +530,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
               </Grid>
             </Grid>
           </div>
-          <RenderTable key="renderTable1" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
+          <RenderTable key="renderTable3" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
           order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
           searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
           focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
