@@ -1656,7 +1656,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
                     html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : "";
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
-                    html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " GigaTester" + "</span>" + "</a>" + "</gtfooter>";
+                    html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " Cuvo" + "</span>" + "</a>" + "</gtfooter>";
                     html += '</gtdiv>';
                     this.custom_ui.events.html(html);
                     this.setDialogForm();
@@ -2628,7 +2628,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                       })
                         .then(res => res.json())
                         .then(data => {console.log(data)
-                            let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html('<gtdiv>' + "<gtspan>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Gigatester" + "</span>"  + "</gtfooter>" : ""));
+                            let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html('<gtdiv>' + "<gtspan>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Cuvo" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
                             send_button.find(".gigatester-ctrl-item-send-text").text('Send feedback');
