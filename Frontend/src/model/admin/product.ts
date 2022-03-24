@@ -29,10 +29,12 @@ export interface IFeedbackAgentSettings {
   logo?: string;
   invokeDelay?: number; //in minutes
   invokeOn: IInvokeType[];
-  requireEmail: IRequireEmail;
+  thanksStr?: string;
   title: string;
   uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1024
   videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
+  requireEmail?: IRequireEmail;
+  captureSystemDetails?: boolean;
   widgetLookAndFeel: IWidgetLAF;
   bugSettings?: IBugSettings;
   feedbackSettings?: IFeedbackSettings;
@@ -41,14 +43,18 @@ export interface IFeedbackAgentSettings {
 export interface IBugSettings {
   categories: ICategory[];
   severities: ISeverityType[];
+  thanksMsg?: string;
   title?: string;
+  tooltip?: string;
 }
 
 export interface IFeedbackSettings {
   categories: ICategory[];
   ratingIcon: IRatingIconType;
   ratingLimit: number; //values 1,2,3,4,5
+  thanksMsg?: string;
   title?: string;
+  tooltip?: string;
 }
 
 export interface IWidgetLAF {

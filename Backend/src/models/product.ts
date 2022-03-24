@@ -24,30 +24,36 @@ export interface TesterStatus {
 
 export interface FeedbackAgentSettings {
     bugSettings?: BugSettings;
+    captureSystemDetails?: boolean;
+    requireEmail?: RequireEmail; // make email optional or mandatory
     feedbackSettings?: FeedbackSettings;
     feedbackTypes: FeedbackType[];
     invokeDelay?: number; //in seconds
     invokeOn: InvokeType[];
     logo?: string;
     platform: PlatformType;
+    thanksStr?: string;
     title: string;
     uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
     videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
-    emailRequired: RequireEmail; // make email optional or mandatory 
     widgetLookAndFeel: WidgetLAF;
 }
 
 export interface BugSettings {
     categories: Category[];
     severities: SeverityType[];
+    thanksMsg?: string;
     title?: string;
+    tooltip?: string;
 }
 
 export interface FeedbackSettings {
     categories: Category[];
     ratingIcon: RatingIconType;
     ratingLimit: number; //values 1,2,3,4,5
+    thanksMsg?: string;
     title?: string;
+    tooltip?: string;
 }
 
 export interface WidgetLAF {

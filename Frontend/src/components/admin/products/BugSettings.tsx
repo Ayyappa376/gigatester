@@ -1,29 +1,31 @@
 import React, { Fragment } from 'react';
-import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, makeStyles, Button, IconButton, Box } from "@material-ui/core";
+import { Grid, Typography, TextField, Button, IconButton } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { ICategory, } from '../../../model';
+import { ICategory, IProductParams } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
 
 interface CategoryProps {
-  productParams: any,
-  addBugCategory: any,
-  handleChangeBugCategoryName: any,
-  deleteBugCategory: any,
-  addBugStdFeedbackText: any,
-  handleChangeBugStdFeedbackText: any,
-  deleteBugStdFeedbackText: any,
-  handleBugTitleChange: any,
+  productParams: IProductParams,
+  addBugCategory: Function,
+  handleChangeBugCategoryName: Function,
+  deleteBugCategory: Function,
+  addBugStdFeedbackText: Function,
+  handleChangeBugStdFeedbackText: Function,
+  deleteBugStdFeedbackText: Function,
+  handleBugTitleChange: Function,
+  handleBugTooltipChange: Function,
+  handleBugThanksMsgChange: Function,
 }
 
 const renderCategoryDetails = (
   category: ICategory,
   catIndex: number,
-  handleChangeBugCategoryName: any,
-  deleteBugCategory: any,
-  addBugStdFeedbackText: any,
-  handleChangeBugStdFeedbackText: any,
-  deleteBugStdFeedbackText: any
+  handleChangeBugCategoryName: Function,
+  deleteBugCategory: Function,
+  addBugStdFeedbackText: Function,
+  handleChangeBugStdFeedbackText: Function,
+  deleteBugStdFeedbackText: Function
 ) => {
   return (
     <Fragment key={catIndex}>
@@ -113,37 +115,80 @@ const BugSettings = ({
   addBugStdFeedbackText,
   handleChangeBugStdFeedbackText,
   deleteBugStdFeedbackText,
-  handleBugTitleChange
+  handleBugTitleChange,
+  handleBugTooltipChange,
+  handleBugThanksMsgChange
 }: CategoryProps) => {
   return (
     <Fragment>
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
-        <Grid item xs={10} sm={10}>
-          <Box>
-            <TextField
-              required
-              type='string'
-              id={`category_$`}
-              name={`category_$`}
-              label='Message on the bug reporting window.'
-              value={
-                (productParams && productParams.products && productParams.products[0] &&
-                  productParams.products[0].feedbackAgentSettings &&
-                  productParams.products[0].feedbackAgentSettings.bugSettings &&
-                  productParams.products[0].feedbackAgentSettings.bugSettings.title)
-                  ? productParams.products[0].feedbackAgentSettings.bugSettings.title
-                  : ''
-              }
-              fullWidth
-              onChange={(event) => handleBugTitleChange(event)}
-              autoComplete='off'
-              className='textFieldStyle'
-            />
-          </Box>
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_title`}
+            name={`bug_title`}
+            label='Message displayed on top of the bugs dialog'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.title)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.title
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugTitleChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
         </Grid>
-        <Grid item xs={2} sm={2}>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_tooltip`}
+            name={`bug_tooltip`}
+            label='Tooltip/Additional message with the Report Bug option'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.tooltip)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.tooltip
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugTooltipChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_thanksMsg`}
+            name={`bug_thanksMsg`}
+            label='Message to be displayed after the user submits a bug'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugThanksMsgChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
         </Grid>
       </Grid>
+
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
         <Grid item xs={10}>
           <Typography variant="h6">Categories:</Typography>

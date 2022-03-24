@@ -1,30 +1,32 @@
 import React, { Fragment } from 'react';
-import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, makeStyles, Button, IconButton, Box } from "@material-ui/core";
+import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, Button, IconButton } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { ICategory, } from '../../../model';
+import { ICategory, IProductParams } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
 
 interface CategoryProps {
-  productParams: any,
-  addFeedbackCategory: any,
-  handleChangeFeedbackCategoryName: any,
-  deleteFeedbackCategory: any,
-  addFeedbackStdFeedbackText: any,
-  handleChangeFeedbackStdFeedbackText: any,
-  deleteFeedbackStdFeedbackText: any,
-  handleFeedbackTitleChange: any,
-  handleRatingLimitChange: any,
+  productParams: IProductParams,
+  addFeedbackCategory: Function,
+  handleChangeFeedbackCategoryName: Function,
+  deleteFeedbackCategory: Function,
+  addFeedbackStdFeedbackText: Function,
+  handleChangeFeedbackStdFeedbackText: Function,
+  deleteFeedbackStdFeedbackText: Function,
+  handleFeedbackTitleChange: Function,
+  handleFeedbackTooltipChange: Function,
+  handleFeedbackThanksMsgChange: Function,
+  handleRatingLimitChange: Function,
 }
 
 const renderCategoryDetails = (
   category: ICategory,
   catIndex: number,
-  handleChangeFeedbackCategoryName: any,
-  deleteFeedbackCategory: any,
-  addFeedbackStdFeedbackText: any,
-  handleChangeFeedbackStdFeedbackText: any,
-  deleteFeedbackStdFeedbackText: any
+  handleChangeFeedbackCategoryName: Function,
+  deleteFeedbackCategory: Function,
+  addFeedbackStdFeedbackText: Function,
+  handleChangeFeedbackStdFeedbackText: Function,
+  deleteFeedbackStdFeedbackText: Function
 ) => {
   return (
     <Fragment key={catIndex}>
@@ -115,39 +117,83 @@ const FeedbackSettings = ({
   handleChangeFeedbackStdFeedbackText,
   deleteFeedbackStdFeedbackText,
   handleFeedbackTitleChange,
+  handleFeedbackTooltipChange,
+  handleFeedbackThanksMsgChange,
   handleRatingLimitChange,
 }: CategoryProps) => {
   return (
     <Fragment>
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
         <Grid item xs={12} sm={12}>
-          <Box>
-            <TextField
-              required
-              type='string'
-              id={`category_$`}
-              name={`category_$`}
-              label='Message on the feedbacks window.'
-              value={
-                (productParams && productParams.products && productParams.products[0] &&
-                  productParams.products[0].feedbackAgentSettings &&
-                  productParams.products[0].feedbackAgentSettings.feedbackSettings &&
-                  productParams.products[0].feedbackAgentSettings.feedbackSettings.title)
-                  ? productParams.products[0].feedbackAgentSettings.feedbackSettings.title
-                  : ''
-              }
-              fullWidth
-              onChange={(event) => handleFeedbackTitleChange(event)}
-              autoComplete='off'
-              className='textFieldStyle'
-            />
-          </Box>
+          <TextField
+            required
+            type='string'
+            id={`feedback_title`}
+            name={`feedback_title`}
+            label='Message displayed on top of the feedback dialog'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.title)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.title
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackTitleChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`feedback_tooltip`}
+            name={`feedback_tooltip`}
+            label='Tooltip/Additional message with the Give Feedback option'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackTooltipChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`feedback_thanksMsg`}
+            name={`feedback_thanksMsg`}
+            label='Message to be displayed after the user submits a feedback'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackThanksMsgChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
         </Grid>
 
         <Grid item xs={12} sm={12}>
           <FormControl style={{ minWidth: '100%' }}>
             <InputLabel id={`ratingLimit`} required={true}>
-              {'The star rating till which detailed feedback will requested:'}
+              {'The star rating till which detailed feedback will be requested'}
             </InputLabel>
             <Select
               name={`select_ratingLimit`}
@@ -170,6 +216,7 @@ const FeedbackSettings = ({
           </FormControl>
          </Grid>
       </Grid>
+
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
         <Grid item xs={10}>
           <Typography variant="h6">Categories:</Typography>
