@@ -25,13 +25,13 @@ export interface TesterStatus {
 export interface FeedbackAgentSettings {
     bugSettings?: BugSettings;
     captureSystemDetails?: boolean;
-    requireEmail?: RequireEmail; // make email optional or mandatory
     feedbackSettings?: FeedbackSettings;
     feedbackTypes: FeedbackType[];
     invokeDelay?: number; //in seconds
     invokeOn: InvokeType[];
     logo?: string;
     platform: PlatformType;
+    requireEmail?: RequireEmail; // make email optional or mandatory
     thanksStr?: string;
     title: string;
     uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
