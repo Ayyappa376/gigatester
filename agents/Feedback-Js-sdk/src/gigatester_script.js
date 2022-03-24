@@ -575,7 +575,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     config_data: [],
                     selected_category: [],
                     rating_limit: 2,
-                    title: "GigaTester",
+                    title: "Cuvo",
                     screen_record_time: 120,
                     main_button_text: "FEEDBACK",
                     main_button_text_color: "#FFFFFF",
@@ -584,6 +584,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     feedback_default_category: "",
                     bugs_default_category:"",
                     max_file_size: 20,
+                    feedback_tooltip_msg: GigaTester_StringRes.get("give_feedback_msg"),
+                    bugs_tooltip_msg: GigaTester_StringRes.get("report_bug_msg"),
                 },
                 form_settings_default: {
                     BUGS: {
@@ -724,7 +726,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 if(key.trim().toLowerCase() == "email"){
                                     GigaTester.setEmail(val)
                                 }
-                                console.log('GigaTester : userDetails ', key, val);
+                                // console.log('GigaTester : userDetails ', key, val);
                               });
                         }
                     }
@@ -2181,9 +2183,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_StringRes.get('report_bug') + '</gtdiv></popupbtn>');
-                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('report_bug_msg'));
+                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
                     let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_StringRes.get('give_feedback') + '</gtdiv></popupbtn>');
-                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_StringRes.get('give_feedback_msg'));
+                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feedback_tooltip_msg);
                     popup_bug_icon.appendTo(popup_dialog);
                     popup_bug_icon_tooltip.appendTo(popup_bug_icon);
                     popup_feedback_icon.appendTo(popup_dialog);
@@ -2274,7 +2276,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 selectedRating: function(){
                     let form_settings = this.getFormSettings(this.form_type);
                     let rating = this.form_data.rating || 0;
-                    console.log('ratings', rating)
+                    // console.log('ratings', rating)
                     if (form_settings.rating_type) {
                         let selected_icon = this.custom_ui.events.find("gtrating > gtdiv:not(.inactive):last");
                         for(let i=0; i<rating; i++){
@@ -2708,7 +2710,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
 
         let GigaTester_Api = {
             isLoaded: function() {
-                console.log('GigaTester: gigatester api call')
+                // console.log('GigaTester: gigatester api call')
                 fetch(`${GigaTester.endpoint}/feedbackConfig?apiKey=${GigaTester.apiKey}&version=${GigaTester.productVersion}`, {
                     method: 'GET',
                   })
@@ -2728,10 +2730,22 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if(data[0].feedbackSettings.title && data[0].feedbackSettings.title.trim().length > 0) {
                             GigaTester_modal.form_settings_default['FEEDBACK'].rating_title_message = data[0].feedbackSettings.title.trim();
                         }
+                        if (data[0].feedbackSettings.thanksMsg) {
+                            GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_paragraph = data[0].feedbackSettings.thanksMsg;
+                        }
+                        if (data[0].feedbackSettings.tooltip) {
+                            GigaTester_modal.configs.feedback_tooltip_msg = data[0].feedbackSettings.tooltip;
+                        }
                     }
                     if(data[0].bugSettings) {
                         if(data[0].bugSettings.title && data[0].bugSettings.title.trim().length > 0) {
                             GigaTester_modal.form_settings_default['BUGS'].bug_title_message = data[0].bugSettings.title.trim();
+                        }
+                        if (data[0].bugSettings.thanksMsg) {
+                            GigaTester_modal.form_settings_default['BUGS'].completed_dialog_paragraph = data[0].bugSettings.thanksMsg;
+                        }
+                        if (data[0].bugSettings.tooltip) {
+                            GigaTester_modal.configs.bugs_tooltip_msg = data[0].bugSettings.tooltip;
                         }
                     }
                     if(data[0].widgetLookAndFeel) {
@@ -2755,12 +2769,15 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if(data[0].uploadFileMaxSize && data[0].uploadFileMaxSize > 0) {
                         GigaTester_modal.configs.max_file_size = data[0].uploadFileMaxSize;
                     }
-                    if (data[0].requireEmail) {
+                    if(data[0].requireEmail) {
                         if (data[0].requireEmail === "MANDATORY") {
-                            GigaTester_modal.form_settings_default.FEEDBACK.email_field_mandatory = true
-                            GigaTester_modal.form_settings_default.BUGS.email_field_mandatory = true
-                            // console.log('is email required?', GigaTester_modal.form_settings_default.BUGS.email_field_mandatory);
+                            GigaTester_modal.form_settings_default['FEEDBACK'].email_field_mandatory = true
+                            GigaTester_modal.form_settings_default['BUGS'].email_field_mandatory = true
                         }
+                    }
+                    if(data[0].thanksStr) {
+                        GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_headline = data[0].thanksStr
+                        GigaTester_modal.form_settings_default['BUGS'].completed_dialog_headline = data[0].thanksStr
                     }
                     if(data[0].invokeOn[0] === "AFTER_DELAY"){
                         const delay = (data[0].invokeDelay && data[0].invokeDelay > 0) ? data[0].invokeDelay * 60 * 1000 : 120000;
@@ -2830,7 +2847,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 GigaTester_modal.custom_ui.element.hide()
             },
             setEmail: function(email) {
-                console.log(email);
+                // console.log(email);
                 if (typeof email === "string") {
                     GigaTester_modal.form_data.email = $.trim(email)
                 }
@@ -2907,7 +2924,7 @@ function checkgigatester(){
     if(typeof window.jQuery === "undefined" || typeof window.html2canvas === "undefined" || typeof window.platform === "undefined" ||  typeof window.Snap === "undefined"){
         setTimeout(() => {
             checkgigatester();
-            console.log('GigaTester: inside giga timeout function')
+            // console.log('GigaTester: inside giga timeout function')
         }, 200);
     }
     else{

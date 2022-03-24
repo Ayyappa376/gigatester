@@ -143,7 +143,7 @@ const StandardSettings = ({
             ? productParams.products[0].feedbackAgentSettings.thanksStr
             : ''
           }
-          label={'A short thank caption to display after Feedback or Bug is submitted'}
+          label={'A short thank you caption to display after Feedback or Bug is submitted'}
           onChange={(event) => handleThanksStrChange(event)}
           fullWidth
           autoComplete='off'

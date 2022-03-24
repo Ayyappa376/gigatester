@@ -9,9 +9,9 @@ if(error){
 var options = {
     ignoreRequireImports: true,
     compact: true,
-    transformObjectKeys: true,
-    splitStrings: true,
-    unicodeEscapeSequence: true,
+    transformObjectKeys: false,
+    splitStrings: false,
+    unicodeEscapeSequence: false,
     disableConsoleOutput: false,
 }
 var obfuscateResult = jsObfuscator.obfuscate(code, options);
