@@ -581,6 +581,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     main_button_text: "FEEDBACK",
                     main_button_text_color: "#FFFFFF",
                     main_button_background_color: "#042e5b",
+                    main_button_font: "inherit",
                     audio_time: 10,
                     feedback_default_category: "",
                     bugs_default_category:"",
@@ -682,6 +683,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
                     this.custom_ui.button.text(this.configs.main_button_text)
                     this.custom_ui.button.appendTo(this.custom_ui.element);
+                    this.custom_ui.button[0].style.fontFamily = this.configs.main_button_font;
+                    this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
+                    this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
@@ -2761,14 +2765,17 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         }
                     }
                     if(data[0].widgetLookAndFeel) {
-                        if(data[0].widgetLookAndFeel.bgColor && data[0].widgetLookAndFeel.bgColor.trim().length > 0) {
+                        if(data[0].widgetLookAndFeel.bgColor) {
                             GigaTester_modal.configs.main_button_background_color = data[0].widgetLookAndFeel.bgColor;
                         }
-                        if(data[0].widgetLookAndFeel.fgColor && data[0].widgetLookAndFeel.fgColor.trim().length > 0) {
+                        if(data[0].widgetLookAndFeel.fgColor) {
                             GigaTester_modal.configs.main_button_text_color = data[0].widgetLookAndFeel.fgColor;
                         }
                         if(data[0].widgetLookAndFeel.text && data[0].widgetLookAndFeel.text.trim().length > 0) {
                             GigaTester_modal.configs.main_button_text = data[0].widgetLookAndFeel.text.trim();
+                        }
+                        if(data[0].widgetLookAndFeel.font) {
+                            GigaTester_modal.configs.main_button_font = data[0].widgetLookAndFeel.font;
                         }
                     }
                     if(data[0].title && data[0].title.trim().length > 0) {

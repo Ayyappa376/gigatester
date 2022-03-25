@@ -853,7 +853,7 @@ popupbtn:hover popuptooltip {
   border-radius: 4px;
   background-color: #fff;
   box-shadow: 0 0 10px #5c6c7c;
-  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  /* font-family: "Open Sans", Helvetica, Arial, sans-serif; */
   font-weight: normal;
   letter-spacing: normal;
   word-spacing: normal;
@@ -1228,7 +1228,7 @@ bottom: -23px;
   text-align: center;
 }
 
-#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options { 
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options {
   width: auto;
   height: auto;
   line-height: normal;
