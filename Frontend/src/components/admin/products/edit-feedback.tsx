@@ -153,16 +153,18 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             bugSettings: {
               categories: [],
               severities: [ SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_LOW ],
+              dialogMsg: 'Tell us more about the issue you faced',
               thanksMsg: 'We will remove your concern soon',
-              title: 'Tell us more about the issue you faced',
+              title: 'Report Bug',
               tooltip: 'Tell us your concern'
             },
             feedbackSettings: {
               categories: [],
               ratingIcon: RATING_ICON_TYPE_STAR,
               ratingLimit: 2,
+              dialogMsg: 'Tell us how much you like our app',
               thanksMsg: 'We appriciate your feedback',
-              title: 'Tell us how much you like our app',
+              title: 'Give Feedback',
               tooltip: 'Tell us your experience'
             },
             invokeDelay: 5,
@@ -559,6 +561,17 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleFeedbackDialogMsgChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
   const handleFeedbackThanksMsgChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -587,6 +600,17 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
         temp.products[0].feedbackAgentSettings.bugSettings) {
         temp.products[0].feedbackAgentSettings.bugSettings.tooltip = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleBugDialogMsgChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.dialogMsg = event.target.value;
         setProductParams(temp);
       }
     }
@@ -831,6 +855,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       deleteFeedbackStdFeedbackText: deleteFeedbackStdFeedbackText,
       handleFeedbackTitleChange: handleFeedbackTitleChange,
       handleFeedbackTooltipChange: handleFeedbackTooltipChange,
+      handleFeedbackDialogMsgChange: handleFeedbackDialogMsgChange,
       handleFeedbackThanksMsgChange: handleFeedbackThanksMsgChange,
       handleRatingLimitChange: handleRatingLimitChange,
       addBugCategory: addBugCategory,
@@ -841,6 +866,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,
       handleBugTitleChange: handleBugTitleChange,
       handleBugTooltipChange: handleBugTooltipChange,
+      handleBugDialogMsgChange: handleBugDialogMsgChange,
       handleBugThanksMsgChange: handleBugThanksMsgChange,
     }
 

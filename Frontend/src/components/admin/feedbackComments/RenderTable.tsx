@@ -228,9 +228,8 @@ const RenderTable = (props: IProps) => {
         <TableBody>
           {props.tableData.map(
             (row: IAppFeedback, index: number) => {
-              const labelId = `enhanced-table-checkbox-${index}`;
-
-              let sourceDetails = '-';
+//              const labelId = `enhanced-table-checkbox-${index}`;
+/*              let sourceDetails = '-';
               let osInfo = '-';
 
               if(row.userId) sourceDetails = row.userId;
@@ -244,11 +243,14 @@ const RenderTable = (props: IProps) => {
                 } else {
                   platformInfo = row.platformName;
                 }
-                sourceDetails = sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
+                sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
               }
-
               if(row.platformOs) osInfo = osInfo  === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
-
+*/
+              const platformInfo = row.platformName ?
+                (row.platformVersion ? `${row.platformName} - ${row.platformVersion}`: row.platformName) :
+                '-';
+              const osInfo = row.platformOs ? Object.values(row.platformOs).join('  - ') : '-';
               return (
                 <TableRow
                   innerRef={index === tableData.length - 1 ? ref : null}
@@ -256,7 +258,7 @@ const RenderTable = (props: IProps) => {
                   key={row.id}
                 >
                   <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
-                        <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} platformName={row.platformName} platformVersion={osInfo} />
+                        <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} osInfo={osInfo} />
                   </TableCell>
                   <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
                         {row.createdOn ? getDateTime(row.createdOn) : '-'}

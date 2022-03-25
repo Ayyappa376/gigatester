@@ -15,6 +15,7 @@ interface CategoryProps {
   deleteBugStdFeedbackText: Function,
   handleBugTitleChange: Function,
   handleBugTooltipChange: Function,
+  handleBugDialogMsgChange: Function,
   handleBugThanksMsgChange: Function,
 }
 
@@ -117,6 +118,7 @@ const BugSettings = ({
   deleteBugStdFeedbackText,
   handleBugTitleChange,
   handleBugTooltipChange,
+  handleBugDialogMsgChange,
   handleBugThanksMsgChange
 }: CategoryProps) => {
   return (
@@ -128,7 +130,7 @@ const BugSettings = ({
             type='string'
             id={`bug_title`}
             name={`bug_title`}
-            label='Message displayed on top of the bugs dialog'
+            label='Text for the bug option'
             value={
               (productParams && productParams.products && productParams.products[0] &&
                 productParams.products[0].feedbackAgentSettings &&
@@ -150,7 +152,7 @@ const BugSettings = ({
             type='string'
             id={`bug_tooltip`}
             name={`bug_tooltip`}
-            label='Tooltip/Additional message with the Report Bug option'
+            label='Tooltip or additional message with the bug option'
             value={
               (productParams && productParams.products && productParams.products[0] &&
                 productParams.products[0].feedbackAgentSettings &&
@@ -161,6 +163,28 @@ const BugSettings = ({
             }
             fullWidth
             onChange={(event) => handleBugTooltipChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_dialogMsg`}
+            name={`bug_dialogMsg`}
+            label='Message displayed on top of the bugs dialog'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
           />

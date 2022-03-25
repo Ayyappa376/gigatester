@@ -572,6 +572,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     severities: ['Critical', 'High', 'Medium', 'Low'],
                     locale: 'en',
                     display_powered_by: true,
+                    capture_system_details: true,
                     config_data: [],
                     selected_category: [],
                     rating_limit: 2,
@@ -584,6 +585,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     feedback_default_category: "",
                     bugs_default_category:"",
                     max_file_size: 20,
+                    feedback_title: GigaTester_StringRes.get("give_feedback"),
+                    bugs_title: GigaTester_StringRes.get("report_bug"),
                     feedback_tooltip_msg: GigaTester_StringRes.get("give_feedback_msg"),
                     bugs_tooltip_msg: GigaTester_StringRes.get("report_bug_msg"),
                 },
@@ -2182,9 +2185,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     let popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>')
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
-                    let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_StringRes.get('report_bug') + '</gtdiv></popupbtn>');
+                    let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
                     let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
-                    let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_StringRes.get('give_feedback') + '</gtdiv></popupbtn>');
+                    let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_modal.configs.feedback_title + '</gtdiv></popupbtn>');
                     let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feedback_tooltip_msg);
                     popup_bug_icon.appendTo(popup_dialog);
                     popup_bug_icon_tooltip.appendTo(popup_bug_icon);
@@ -2609,9 +2612,12 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         feedbackCategory: this.form_data['category'],
                         bugPriority: this.form_data['severity'],
                         productVersion: GigaTester.productVersion,
-                        platformName: platform.name,
-                        platformVersion: platform.version,
-                        platformOs: platform.os,
+                        platformName: GigaTester_modal.configs.capture_system_details ? platform.name : '',
+                        platformVersion: GigaTester_modal.configs.capture_system_details ? platform.version : '',
+                        platformOs: GigaTester_modal.configs.capture_system_details ? platform.os : '',
+                        //more like this: platform.layout, platform.manafacturer, platform.product, platform.prerelease, platform.ua(user agent),
+                        // window.devicePixelRatio, window.screen.width, window.screen.height, window.orientation,
+                        // window.location
                         feedbackMedia: {
                           image: GigaTester_modal.form_data.image_file,
                           video: GigaTester_modal.form_data.video_file,
@@ -2728,24 +2734,30 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.form_settings_default['FEEDBACK'].rating_type= data[0].feedbackSettings.ratingIcon;
                         }
                         if(data[0].feedbackSettings.title && data[0].feedbackSettings.title.trim().length > 0) {
-                            GigaTester_modal.form_settings_default['FEEDBACK'].rating_title_message = data[0].feedbackSettings.title.trim();
+                            GigaTester_modal.configs.feedback_title = data[0].feedbackSettings.title.trim();
                         }
-                        if (data[0].feedbackSettings.thanksMsg) {
-                            GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_paragraph = data[0].feedbackSettings.thanksMsg;
+                        if(data[0].feedbackSettings.dialogMsg && data[0].feedbackSettings.dialogMsg.trim().length > 0) {
+                            GigaTester_modal.form_settings_default['FEEDBACK'].rating_title_message = data[0].feedbackSettings.dialogMsg.trim();
                         }
-                        if (data[0].feedbackSettings.tooltip) {
-                            GigaTester_modal.configs.feedback_tooltip_msg = data[0].feedbackSettings.tooltip;
+                        if (data[0].feedbackSettings.thanksMsg && data[0].feedbackSettings.thanksMsg.trim().length > 0) {
+                            GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_paragraph = data[0].feedbackSettings.thanksMsg.trim();
+                        }
+                        if (data[0].feedbackSettings.tooltip && data[0].feedbackSettings.tooltip.trim().length > 0) {
+                            GigaTester_modal.configs.feedback_tooltip_msg = data[0].feedbackSettings.tooltip.trim();
                         }
                     }
                     if(data[0].bugSettings) {
                         if(data[0].bugSettings.title && data[0].bugSettings.title.trim().length > 0) {
-                            GigaTester_modal.form_settings_default['BUGS'].bug_title_message = data[0].bugSettings.title.trim();
+                            GigaTester_modal.configs.bugs_title = data[0].bugSettings.title.trim();
                         }
-                        if (data[0].bugSettings.thanksMsg) {
-                            GigaTester_modal.form_settings_default['BUGS'].completed_dialog_paragraph = data[0].bugSettings.thanksMsg;
+                        if(data[0].bugSettings.dialogMsg && data[0].bugSettings.dialogMsg.trim().length > 0) {
+                            GigaTester_modal.form_settings_default['BUGS'].bug_title_message = data[0].bugSettings.dialogMsg.trim();
                         }
-                        if (data[0].bugSettings.tooltip) {
-                            GigaTester_modal.configs.bugs_tooltip_msg = data[0].bugSettings.tooltip;
+                        if (data[0].bugSettings.thanksMsg && data[0].bugSettings.thanksMsg.trim().length > 0) {
+                            GigaTester_modal.form_settings_default['BUGS'].completed_dialog_paragraph = data[0].bugSettings.thanksMsg.trim();
+                        }
+                        if (data[0].bugSettings.tooltip && data[0].bugSettings.tooltip.trim().length > 0) {
+                            GigaTester_modal.configs.bugs_tooltip_msg = data[0].bugSettings.tooltip.trim();
                         }
                     }
                     if(data[0].widgetLookAndFeel) {
@@ -2769,15 +2781,16 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if(data[0].uploadFileMaxSize && data[0].uploadFileMaxSize > 0) {
                         GigaTester_modal.configs.max_file_size = data[0].uploadFileMaxSize;
                     }
-                    if(data[0].requireEmail) {
-                        if (data[0].requireEmail === "MANDATORY") {
-                            GigaTester_modal.form_settings_default['FEEDBACK'].email_field_mandatory = true
-                            GigaTester_modal.form_settings_default['BUGS'].email_field_mandatory = true
-                        }
+                    if(data[0].requireEmail && data[0].requireEmail === "MANDATORY") {
+                        GigaTester_modal.form_settings_default['FEEDBACK'].email_field_mandatory = true
+                        GigaTester_modal.form_settings_default['BUGS'].email_field_mandatory = true
                     }
-                    if(data[0].thanksStr) {
-                        GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_headline = data[0].thanksStr
-                        GigaTester_modal.form_settings_default['BUGS'].completed_dialog_headline = data[0].thanksStr
+                    if(data[0].thanksStr && data[0].thanksStr.trim().length > 0) {
+                        GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_headline = data[0].thanksStr.trim();
+                        GigaTester_modal.form_settings_default['BUGS'].completed_dialog_headline = data[0].thanksStr.trim();
+                    }
+                    if(data[0].captureSystemDetails != undefined && data[0].captureSystemDetails === false) {
+                        GigaTester_modal.configs.capture_system_details = false;
                     }
                     if(data[0].invokeOn[0] === "AFTER_DELAY"){
                         const delay = (data[0].invokeDelay && data[0].invokeDelay > 0) ? data[0].invokeDelay * 60 * 1000 : 120000;

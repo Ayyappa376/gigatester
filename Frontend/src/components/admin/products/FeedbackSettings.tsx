@@ -15,6 +15,7 @@ interface CategoryProps {
   deleteFeedbackStdFeedbackText: Function,
   handleFeedbackTitleChange: Function,
   handleFeedbackTooltipChange: Function,
+  handleFeedbackDialogMsgChange: Function,
   handleFeedbackThanksMsgChange: Function,
   handleRatingLimitChange: Function,
 }
@@ -118,6 +119,7 @@ const FeedbackSettings = ({
   deleteFeedbackStdFeedbackText,
   handleFeedbackTitleChange,
   handleFeedbackTooltipChange,
+  handleFeedbackDialogMsgChange,
   handleFeedbackThanksMsgChange,
   handleRatingLimitChange,
 }: CategoryProps) => {
@@ -130,7 +132,7 @@ const FeedbackSettings = ({
             type='string'
             id={`feedback_title`}
             name={`feedback_title`}
-            label='Message displayed on top of the feedback dialog'
+            label='Text for the feedback option'
             value={
               (productParams && productParams.products && productParams.products[0] &&
                 productParams.products[0].feedbackAgentSettings &&
@@ -152,7 +154,7 @@ const FeedbackSettings = ({
             type='string'
             id={`feedback_tooltip`}
             name={`feedback_tooltip`}
-            label='Tooltip/Additional message with the Give Feedback option'
+            label='Tooltip or additional message with the feedback option'
             value={
               (productParams && productParams.products && productParams.products[0] &&
                 productParams.products[0].feedbackAgentSettings &&
@@ -163,6 +165,28 @@ const FeedbackSettings = ({
             }
             fullWidth
             onChange={(event) => handleFeedbackTooltipChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`feedback_dialogMsg`}
+            name={`feedback_dialogMsg`}
+            label='Message displayed on top of the feedback dialog'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
           />

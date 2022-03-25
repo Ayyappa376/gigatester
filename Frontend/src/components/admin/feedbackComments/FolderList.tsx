@@ -6,10 +6,9 @@ import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 
 interface userInfoProps {
   userId: string | undefined,
+  platformInfo: string | undefined,
   sourceIp: string | undefined,
-  platformName: string | undefined,
-  platformInfo: string | undefined
-  platformVersion: any,
+  osInfo: string | undefined
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -22,7 +21,7 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     alignItems: 'flex-start',
-    padding: '1px 1px',
+    padding: '1px 1px !important',
   },
   list: {
     height: '95%',
@@ -36,29 +35,25 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function FolderList({ userId, sourceIp, platformName, platformInfo, platformVersion }: userInfoProps) {
+export default function FolderList({ userId, platformInfo, sourceIp, osInfo }: userInfoProps) {
   const classes = useStyles();
   return (
     <List className={classes.list}>
       <ListItem className={classes.listItems}>
-        {userId && userId.length > 0 ?
-        <div>
         <Typography className={classes.labels}>email</Typography>
-        <ListItemText className={classes.listText} primary={userId} />
-        </div> : null
-      }
+        <ListItemText className={classes.listText} primary={userId && userId.length > 0 ? userId : '-'} />
       </ListItem>
       <ListItem className={classes.listItems}>
-      <Typography className={classes.labels}>source IP</Typography>
-        <ListItemText className={classes.listText}  primary={sourceIp}/>
+        <Typography className={classes.labels}>source IP</Typography>
+        <ListItemText className={classes.listText}  primary={sourceIp && sourceIp.length > 0 ? sourceIp : '-'}/>
       </ListItem>
       <ListItem className={classes.listItems}>
-      <Typography className={classes.labels}>platform</Typography>
-        <ListItemText className={classes.listText}  primary={platformInfo} />
+        <Typography className={classes.labels}>platform</Typography>
+        <ListItemText className={classes.listText}  primary={platformInfo && platformInfo.length > 0 ? platformInfo : '-'} />
       </ListItem>
       <ListItem className={classes.listItems}>
-      <Typography className={classes.labels}>OS version</Typography>
-        <ListItemText className={classes.listText}  primary={platformVersion} />
+        <Typography className={classes.labels}>OS</Typography>
+        <ListItemText className={classes.listText}  primary={osInfo && osInfo.length > 0 ? osInfo : '-'} />
       </ListItem>
     </List>
   );

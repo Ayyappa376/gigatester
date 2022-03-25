@@ -3,7 +3,7 @@
 const GigaTester_StringRes = {
     locale: "en",
     en: {
-        report_bug: "Report Bug",
+        report_bug: "Report Issue",
         report_bug_msg: "Tell us your concern",
         give_feedback: "Give Feedback",
         give_feedback_msg: "Tell us your experience",
@@ -20,7 +20,7 @@ const GigaTester_StringRes = {
         screenshot_attached: "Screenshot attached",
         send: "Send feedback",
         close: "Close",
-        rectangle: "Highlight an area in screenshot",
+        rectangle: "Mark an area in screenshot",
         blackout: "Hide an area in screenshot",
         color_palette: "choose color",
         capture: "Capture",

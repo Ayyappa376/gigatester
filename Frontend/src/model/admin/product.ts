@@ -43,6 +43,7 @@ export interface IFeedbackAgentSettings {
 export interface IBugSettings {
   categories: ICategory[];
   severities: ISeverityType[];
+  dialogMsg?: string;
   thanksMsg?: string;
   title?: string;
   tooltip?: string;
@@ -52,6 +53,7 @@ export interface IFeedbackSettings {
   categories: ICategory[];
   ratingIcon: IRatingIconType;
   ratingLimit: number; //values 1,2,3,4,5
+  dialogMsg?: string;
   thanksMsg?: string;
   title?: string;
   tooltip?: string;
