@@ -183,7 +183,8 @@ const LookAndFeel = ({
 			handleMainBtnRotation('0');
 			setBtnPosition(event.target.value);
 			handleMainBtnPosition(event);
-		} else {
+		} else if (selectedPosition === 'right') {
+			handleMainBtnRotation('90');
 			setBtnPosition(event.target.value);
 			handleMainBtnPosition(event);
 		}
