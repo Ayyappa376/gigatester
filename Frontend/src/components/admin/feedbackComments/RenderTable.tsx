@@ -21,6 +21,7 @@ import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from 'react-loader-spinner'
 import RenderComments from './RenderComments';
+import ExtraInfo from './ExtraInfo';
 import Failure from '../../failure-page';
 import { table } from 'console';
 
@@ -225,7 +226,10 @@ const RenderTable = (props: IProps) => {
           isBugReport={isBugReport}
           searchInitiated={props.searchInitiated}
         />{tableData.length > 0 ?
-        <TableBody>
+              <TableBody>
+                {/* <TableRow>
+                  <ExtraInfo />
+                </TableRow> */}
           {props.tableData.map(
             (row: IAppFeedback, index: number) => {
 //              const labelId = `enhanced-table-checkbox-${index}`;
