@@ -586,6 +586,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     main_button_rotation: '90',
                     main_button_position: 'center right',
                     main_button_width: 'auto',
+                    main_button_height: 40,
                     pop_up_rotate: '270',
                     audio_time: 10,
                     feedback_default_category: "",
@@ -692,8 +693,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.button[0].style.fontWeight = this.configs.main_button_fontWeight;
                     this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
                     this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
-                    // this.custom_ui.button[0].style.width = `${this.configs.main_button_width}px`;
+                    this.custom_ui.button[0].style.width = `${this.configs.main_button_width}px`;
                     this.custom_ui.button[0].style.transform = `rotate(${this.configs.main_button_rotation}deg)`;
+                    // this.custom_ui.button[0].style.left = `${(window.innerWidth - this.configs.main_button_height)}`
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
@@ -2790,7 +2792,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.configs.main_button_fontWeight = data[0].widgetLookAndFeel.fontWeight;
                         }
                         if (data[0].widgetLookAndFeel.rotation) {
-                            // const degNum = parseInt(data[0].widgetLookAndFeel.rotation);
                             GigaTester_modal.configs.main_button_rotation = data[0].widgetLookAndFeel.rotation;
                             if (data[0].widgetLookAndFeel.rotation === '180') {
                                 GigaTester_modal.configs.pop_up_rotate = '180'
@@ -2801,13 +2802,13 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (data[0].widgetLookAndFeel.position) {
                             GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
                         }
-                        console.log('inner width', window.innerWidth);
+                        // console.log('inner width', window.innerWidth);
                         // if (data[0].widgetLookAndFeel.btnWidth) {
                         //     if (data[0].widgetLookAndFeel.btnWidth !== 'auto') {
                         //         console.log('curent width', data[0].widgetLookAndFeel.btnWidth)
                         //         const newWidth = parseInt(data[0].widgetLookAndFeel.btnWidth);
                         //         console.log('newWidtgh', newWidth);
-                        //         GigaTester_modal.configs.main_button_width = newWidth;
+                        //         GigaTester_modal.configs.main_button_width = newWidth + 25;
                         //     }
                         // }
                     }
