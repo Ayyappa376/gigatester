@@ -31,6 +31,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   const classes = useStyles();
   const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
   const [pieChartSeries, setPieChartSeries] = useState({})
+  // const [bugBarChartData, setBugBarChartData] = useState({})
   const [showImageModal, setShowImageModal] = useState(false);
   const [signedImageUrl, setSignedImageUrl] = useState('');
   const [attachmentType, setAttachmentType] = useState('')
@@ -91,6 +92,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
         data: Object.values(feedbackBarChartData)
       }];
       setBarChartSeries(series);
+      console.log(feedbackBarChartData, 'fbcdd')
     }
   }, [feedbackBarChartData])
 
@@ -126,7 +128,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
      setUrlArray(urlArrayCopy)
    }, [data])
   const pieChartOptions = getPieChartOptions(pieChartSeries);
-  const bugBarChartOptions = getBugBarChartOptions(bugBarChartSeries);
+  console.log(feedbackBarChartData, 'fbcd');
+  const bugBarChartOptions = getBugBarChartOptions(bugBarChartSeries, feedbackBarChartData);
 
   const disbaleFilterButtons = (filter: string) => {
     if (filter === '') {

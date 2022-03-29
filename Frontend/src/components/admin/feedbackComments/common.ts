@@ -1,6 +1,5 @@
 import { Order } from "./RenderTable";
-import { IProductInfo, ICategory, ISeverityType, IFeedbackType,
-  SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_LOW } from "../../../model/admin/product";
+import { IProductInfo, ICategory, ISeverity, IFeedbackType} from "../../../model/admin/product";
 
 // export const SEVERITY_CRITICAL = 'Critical';
 // export const SEVERITY_HIGH = 'High';
@@ -27,7 +26,7 @@ export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
 
-//export type BudPriority = 'Low' | 'Medium' | 'High' | 'Critical';
+export type BugSeverity = 'Low' | 'Medium' | 'High' | 'Critical';
 
 export const CONST_FEEDBACK = 'FEEDBACK';
 export const CONST_FEEDBACK_CHART = 'FEEDBACK-CHART';
@@ -89,7 +88,7 @@ export interface IAppFeedback {
     userId ? : string;
     sourceIP?: string;
     feedbackCategory?: FeedbackCategory;
-    bugPriority: ISeverityType;
+    bugPriority: BugSeverity;
     feedbackMedia: {
       image?: string,
       video?: string,
@@ -143,7 +142,7 @@ export interface IRatingMapData {
 export interface IBugMapData {
     userId: string,
     userIp: string,
-    severity?: ISeverityType,
+    severity?: BugSeverity,
     category?: FeedbackCategory;
     date: number,
     comments: ICommentObject | undefined,
@@ -268,13 +267,13 @@ export const getFeedbackBarChartOptions = (feedbackBarChartSeries: any) => {
   };
 };
 
-export const getBugBarChartOptions = (bugBarChartSeries: any) => {
+export const getBugBarChartOptions = (bugBarChartSeries: any, FeedbackBarChartData: any) => {
    return { 
     chart: {
       id: 'severity-chart'
     },
     xaxis: {
-      categories: [SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_LOW],
+      categories: Object.keys(FeedbackBarChartData), //hard coded severity value
     },
     title: {
       text: 'Total - ' + bugBarChartSeries[0].data.reduce((a : any, b: any) => a + b, 0),

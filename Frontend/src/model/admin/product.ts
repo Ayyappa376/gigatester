@@ -42,7 +42,7 @@ export interface IFeedbackAgentSettings {
 
 export interface IBugSettings {
   categories: ICategory[];
-  severities: ISeverityType[];
+  severities: ISeverity[];
   dialogMsg?: string;
   thanksMsg?: string;
   title?: string;
@@ -91,6 +91,8 @@ export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
 //export const STATUS_PRODUCT_ARCHIVED = 'archived';
 
+export type ISeverity = string[];
+
 export type IPlatformType = 'Web' | 'Mobile';
 export const PLATFORM_TYPE_BROWSER: IPlatformType = 'Web';
 export const PLATFORM_TYPE_NATIVE_REACT: IPlatformType = 'Mobile';
@@ -103,12 +105,6 @@ export type IRatingIconType = 'STAR' | 'HEART' | 'EMOJI';
 export const RATING_ICON_TYPE_STAR: IRatingIconType = 'STAR';
 export const RATING_ICON_TYPE_HEART: IRatingIconType = 'HEART';
 export const RATING_ICON_TYPE_EMOJI: IRatingIconType = 'EMOJI';
-
-export type ISeverityType = 'Critical' | 'High' | 'Medium' | 'Low';
-export const SEVERITY_TYPE_CRITICAL: ISeverityType = 'Critical';
-export const SEVERITY_TYPE_HIGH: ISeverityType = 'High';
-export const SEVERITY_TYPE_MEDIUM: ISeverityType = 'Medium';
-export const SEVERITY_TYPE_LOW: ISeverityType = 'Low';
 
 export type IInvokeType = 'MANUAL' | 'AFTER_DELAY' | 'CONTEXT_CHANGE' | 'IDLE';
 export const INVOKE_TYPE_MANUAL: IInvokeType = 'MANUAL';

@@ -24,7 +24,6 @@ import '../../../css/assessments/style.css';
 import {
   IProductParams, ICategory,
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
-  SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
   RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT, EMAIL_MANDATORY, EMAIL_OPTIONAL
 } from '../../../model';
@@ -152,7 +151,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
             bugSettings: {
               categories: [],
-              severities: [ SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_LOW ],
+              severities: [],
               dialogMsg: 'Tell us more about the issue you faced',
               thanksMsg: 'We will remove your concern soon',
               title: 'Report Bug',
@@ -468,6 +467,39 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           name: '',
           feedbacks: [],
         });
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const handleChangeBugSeverityName = (event: any, catIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.severities[catIndex] = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const deleteBugSeverity = (catIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.severities.splice(catIndex, 1);
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const addBugSeverity = () => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.severities.push([]);
         setProductParams(temp);
       }
     }
@@ -861,6 +893,9 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       addBugCategory: addBugCategory,
       handleChangeBugCategoryName: handleChangeBugCategoryName,
       deleteBugCategory: deleteBugCategory,
+      addBugSeverity: addBugSeverity,
+      handleChangeBugSeverityName: handleChangeBugSeverityName,
+      deleteBugSeverity: deleteBugSeverity,
       addBugStdFeedbackText: addBugStdFeedbackText,
       handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,
