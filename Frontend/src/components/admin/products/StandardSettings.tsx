@@ -127,6 +127,7 @@ const StandardSettings = ({
           fullWidth
           autoComplete='off'
           className='textFieldStyle'
+          inputProps={{maxLength: 15}}
         />
       </Grid>
 
@@ -148,6 +149,7 @@ const StandardSettings = ({
           fullWidth
           autoComplete='off'
           className='textFieldStyle'
+          inputProps={{maxLength: 60}}
         />
       </Grid>
 

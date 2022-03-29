@@ -66,6 +66,9 @@ export interface IWidgetLAF {
   icon: string;
   position: string;
   text: string;
+  fontWeight: number;
+  rotation: string;
+  btnWidth: string | number;
 }
 
 export interface ICategory {

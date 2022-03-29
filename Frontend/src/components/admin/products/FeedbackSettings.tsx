@@ -145,6 +145,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackTitleChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 15}}
           />
         </Grid>
 
@@ -167,6 +168,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackTooltipChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 45}}
           />
         </Grid>
 
@@ -189,6 +191,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 80}}
           />
         </Grid>
 
@@ -211,6 +214,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackThanksMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 85}}
           />
         </Grid>
 

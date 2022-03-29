@@ -4,6 +4,7 @@ import {Tabs, Tab, Box, makeStyles } from '@material-ui/core';
 import StandardSettings from './StandardSettings';
 import FeedbackSettings from './FeedbackSettings';
 import BugSettings from './BugSettings';
+import LookAndFeel from './LooknFeel';
 
 const useStyles = makeStyles({
   tabs: {
@@ -66,6 +67,7 @@ export default function EditFeedbackTabs(props: any) {
           <Tab label="General Widget Settings" {...a11yProps(0)} />
           <Tab label="Feedback Settings" {...a11yProps(1)} />
           <Tab label="Bugs Settings" {...a11yProps(2)} />
+          <Tab label="Widget Appearance" {...a11yProps(3)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -76,6 +78,9 @@ export default function EditFeedbackTabs(props: any) {
       </TabPanel>
       <TabPanel value={value} index={2}>
         <BugSettings {...props.settingsProps}/>
+      </TabPanel>
+      <TabPanel value={value} index={3}>
+        <LookAndFeel {...props.settingsProps}/>
       </TabPanel>
     </Box>
   );
