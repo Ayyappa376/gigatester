@@ -182,6 +182,9 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               icon: '',
               position: 'center right',
               text: 'Feedback',
+              fontWeight: 400,
+              rotation: '90',
+              width: 'auto',
             }
           };
         }
@@ -539,6 +542,17 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleMaintButtonLength = (event: any) => {
+    console.log('in main btn length', event);
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.btnWidth = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
   const handleMainBtnColor = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -570,10 +584,40 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   }
 
   const handleMainBtnFont = (event: any) => {
+    if (typeof (event) === 'string') {
+      if (productParams) {
+        const temp: IProductParams | undefined = { ...productParams };
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.font = event;
+          setProductParams(temp);
+        }
+      }
+    } else {
+      if (productParams) {
+        const temp: IProductParams | undefined = { ...productParams };
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.font = event.target.value;
+          setProductParams(temp);
+        }
+      }
+    }
+  }
+
+  const handleMainBtnFontWeight = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.font = event.target.value;
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fontWeight = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnRotation = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.rotation = event;
         setProductParams(temp);
       }
     }
@@ -583,7 +627,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event.target.value;
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event;
         setProductParams(temp);
       }
     }
@@ -905,6 +949,9 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleMainBtnTextColor: handleMainBtnTextColor,
       handleMainBtnFont: handleMainBtnFont,
       handleMainBtnPosition: handleMainBtnPosition,
+      handleMainBtnFontWeight: handleMainBtnFontWeight,
+      handleMainBtnRotation: handleMainBtnRotation,
+      handleMaintButtonLength: handleMaintButtonLength,
       handleThanksStrChange: handleThanksStrChange,
       handleVideoAudioMaxDurationChange: handleVideoAudioMaxDurationChange,
       handleInvokeOnChange: handleInvokeOnChange,

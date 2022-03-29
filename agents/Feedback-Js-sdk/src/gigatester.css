@@ -791,7 +791,10 @@ popupbtn:hover popuptooltip {
   background: transparent;
 }
 #gigatester_ctrls_container .gigatester-btn {
-  display: block;
+  /* display: block; */
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   position: fixed;
   z-index: 2147483644;
   top: auto;
@@ -809,7 +812,7 @@ popupbtn:hover popuptooltip {
   background-image: none;
   text-align: center;
   font-size: 14px;
-  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   font-weight: 400;
   letter-spacing: normal;
   word-spacing: normal;
@@ -853,7 +856,7 @@ popupbtn:hover popuptooltip {
   border-radius: 4px;
   background-color: #fff;
   box-shadow: 0 0 10px #5c6c7c;
-  /* font-family: "Open Sans", Helvetica, Arial, sans-serif; */
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   font-weight: normal;
   letter-spacing: normal;
   word-spacing: normal;

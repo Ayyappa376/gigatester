@@ -143,6 +143,7 @@ const BugSettings = ({
             onChange={(event) => handleBugTitleChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 15}}
           />
         </Grid>
 
@@ -165,6 +166,7 @@ const BugSettings = ({
             onChange={(event) => handleBugTooltipChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 45}}
           />
         </Grid>
 
@@ -187,6 +189,7 @@ const BugSettings = ({
             onChange={(event) => handleBugDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 80}}
           />
         </Grid>
 
@@ -209,6 +212,7 @@ const BugSettings = ({
             onChange={(event) => handleBugThanksMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
+            inputProps={{maxLength: 85}}
           />
         </Grid>
       </Grid>
