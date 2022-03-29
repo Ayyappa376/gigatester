@@ -187,7 +187,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.title ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.title.length)}/15 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.title.length)}/15 characters` : null}
           />
         </Grid>
 
@@ -218,7 +218,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip.length)}/45 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip.length)}/45 characters` : null}
           />
         </Grid>
 
@@ -249,7 +249,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg.length)}/80 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg.length)}/80 characters` : null}
           />
         </Grid>
 
@@ -280,7 +280,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg.length)}/85 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg.length)}/85 characters` : null}
           />
         </Grid>
 

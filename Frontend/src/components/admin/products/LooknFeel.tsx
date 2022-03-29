@@ -171,7 +171,7 @@ const LookAndFeel = ({
   const handleTitle = (event: any) => {
     handleMainButtonTitleChange(event);
     let newLength = convertTitleWidth(event.target.value);
-    console.log('new length', newLength);
+    // console.log('new length', newLength);
     handleMaintButtonLength(newLength);
   }
 
@@ -219,7 +219,7 @@ const LookAndFeel = ({
 							productParams.products[0].feedbackAgentSettings &&
 							productParams.products[0].feedbackAgentSettings.widgetLookAndFeel ?
               `${(productParams.products[0].feedbackAgentSettings
-								.widgetLookAndFeel.text.length)}/20 chars` : null}
+								.widgetLookAndFeel.text.length)}/20 characters` : null}
           />
 				</Grid>
 
@@ -335,7 +335,7 @@ const LookAndFeel = ({
         <Grid item xs={12} sm={12}>
           	<FormControl className={classes.formControl}>
 						<InputLabel style={{ marginTop: 5}} id={`rotation`} required={true}>
-							{'Choose Widget Rotation:'}
+							{'Choose Widget Rotation (please be aware this may effect other styling):'}
 						</InputLabel>
 						<Select
 							name={`select_rotation`}
@@ -495,6 +495,7 @@ const LookAndFeel = ({
         >
           <p style={{ fontSize: 13, textAlign: 'center', color: 'gray', marginBottom: 50}}>Widget Preview</p>
 					<Button
+						disableRipple
 						style={{
 							width: 'auto',
 							height: 40,

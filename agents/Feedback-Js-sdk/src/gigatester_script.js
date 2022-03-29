@@ -587,6 +587,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     main_button_position: 'center right',
                     main_button_width: 'auto',
                     main_button_height: 40,
+                    main_button_rightCSS: 36,
                     pop_up_rotate: '270',
                     audio_time: 10,
                     feedback_default_category: "",
@@ -674,6 +675,26 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     window.GigaTester.isLoaded();
                     this.checkSessionStorage();
                 },
+                adjustRightCSS: function(element) {
+                    const styleCheck = window.getComputedStyle(element);
+                    const styleCheckWidth = parseInt(styleCheck.width, 10);
+                    let adjustedRight;
+                    let currentRight = this.configs.main_button_rightCSS || 36;
+                    let newRight = '-';
+                    if (styleCheckWidth > 113) {
+                        let newRightPosition = ((styleCheckWidth - 114) / 2) + currentRight;
+                        // console.log('result 1', newRightPosition);
+                        newRight += newRightPosition.toString();
+                        // console.log('new position', newRight);
+                        adjustedRight = `${newRight}px`;
+                    } else if (styleCheckWidth < 90) {
+                        let newRightPosition = 35 - 10;
+                        newRight += newRightPosition.toString();
+                        // console.log('small new position', newRight);
+                        adjustedRight = `${newRight}px`;
+                    }
+                    return adjustedRight;
+                },
                 addFeedbackButton: function() {
                     if (this.custom_ui.button) {
                         return
@@ -693,9 +714,27 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.button[0].style.fontWeight = this.configs.main_button_fontWeight;
                     this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
                     this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
-                    this.custom_ui.button[0].style.width = `${this.configs.main_button_width}px`;
                     this.custom_ui.button[0].style.transform = `rotate(${this.configs.main_button_rotation}deg)`;
+                    const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn-r")[0];
+                    this.custom_ui.button[0].style.right = this.adjustRightCSS(button);
+                    // this.custom_ui.button[0].style.width = `${this.configs.main_button_width}px`;
                     // this.custom_ui.button[0].style.left = `${(window.innerWidth - this.configs.main_button_height)}`
+                    // const styleCheck = window.getComputedStyle(button);
+                    // const styleCheckWidth = parseInt(styleCheck.width, 10);
+                    // let newRight = '-';
+                    // if (styleCheckWidth > 113) {
+                    //     let newRightPosition = ((styleCheckWidth - 114) / 2) + 36;
+                    //     console.log('result 1', newRightPosition);
+                    //     newRight += newRightPosition.toString();
+                    //     console.log('new position', newRight);
+                    //     this.custom_ui.button[0].style.right = `${newRight}px`;
+                    // } else if (styleCheckWidth < 90) {
+                    //     let newRightPosition = 35 - 10;
+                    //     newRight += newRightPosition.toString();
+                    //     console.log('small new position', newRight);
+                    //     this.custom_ui.button[0].style.right = `${newRight}px`;
+                    // }
+                    // console.log('offset width', buttonWidth);
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
@@ -2778,7 +2817,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             GigaTester_modal.configs.bugs_tooltip_msg = data[0].bugSettings.tooltip.trim();
                         }
                         if (data[0].bugSettings.reqComments) {
-                            GigaTester_modal.configs.form_settings_default['BUGS'].comment_field_mandatory = data[0].bugSettings.reqComments;
+                            GigaTester_modal.form_settings_default['BUGS'].comment_field_mandatory = data[0].bugSettings.reqComments;
                         }
                     }
                     if(data[0].widgetLookAndFeel) {

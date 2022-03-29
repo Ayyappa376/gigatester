@@ -138,7 +138,7 @@ const StandardSettings = ({
           }}
           helperText={`${(productParams && productParams.products && productParams.products[0] &&
             productParams.products[0].feedbackAgentSettings &&
-            productParams.products[0].feedbackAgentSettings.title.length)}/15 chars`}
+            productParams.products[0].feedbackAgentSettings.title.length)}/15 characters`}
           inputProps={{maxLength: 15}}
         />
       </Grid>
@@ -168,7 +168,7 @@ const StandardSettings = ({
           helperText={productParams && productParams.products && productParams.products[0] &&
             productParams.products[0].feedbackAgentSettings &&
             productParams.products[0].feedbackAgentSettings.thanksStr ?
-            `${(productParams.products[0].feedbackAgentSettings.thanksStr.length)}/60 chars` : null}
+            `${(productParams.products[0].feedbackAgentSettings.thanksStr.length)}/60 characters` : null}
         />
       </Grid>
 

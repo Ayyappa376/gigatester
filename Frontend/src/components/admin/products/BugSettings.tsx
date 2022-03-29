@@ -175,7 +175,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.title ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.title.length)}/15 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.title.length)}/15 characters` : null}
           />
         </Grid>
 
@@ -206,7 +206,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.tooltip ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.tooltip.length)}/45 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.tooltip.length)}/45 characters` : null}
           />
         </Grid>
 
@@ -237,7 +237,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg.length)}/80 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg.length)}/80 characters` : null}
           />
         </Grid>
 
@@ -268,7 +268,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg.length)}/85 chars` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg.length)}/85 characters` : null}
           />
         </Grid>
 

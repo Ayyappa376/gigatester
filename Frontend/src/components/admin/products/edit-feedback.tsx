@@ -544,7 +544,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   }
 
   const handleMaintButtonLength = (event: any) => {
-    console.log('in main btn length', event);
+    // console.log('in main btn length', event);
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {

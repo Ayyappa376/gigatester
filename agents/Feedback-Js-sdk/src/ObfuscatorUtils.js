@@ -8,7 +8,7 @@ if(error){
 
 var options = {
     ignoreRequireImports: true,
-    compact: true,
+    compact: false,
     transformObjectKeys: false,
     splitStrings: false,
     unicodeEscapeSequence: false,
