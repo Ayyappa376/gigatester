@@ -103,7 +103,8 @@ const LookAndFeel = ({
   const [isCustom, setIsCustom] = useState(false);
   const [customFont, setCustomFont] = useState('');
   const [fWeight, setFontWeight] = useState(400);
-  const [buttonText, setButtonText] = useState('Feedback');
+	const [buttonText, setButtonText] = useState('Feedback');
+	const [btnPosition, setBtnPosition] = useState('right');
   const [rotation, setRotation] = useState('0');
   const [showColor, setShowColor] = useState(false);
 
@@ -135,9 +136,18 @@ const LookAndFeel = ({
       )
       setFontWeight(
         productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.fontWeight
-      )
+			)
+			setBtnPosition(
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.position
+			)
 		}
 	}, [productParams]);
+
+	// useEffect(() => {
+	// 	if (rotation) {
+	// 		handleMainBtnRotation(rotation)
+	// 	}
+	// }, [rotation])
 
 	const handleChange = (event: any) => {
 		setColorSelect(event.target.value);
@@ -161,7 +171,23 @@ const LookAndFeel = ({
   const handleDegChange = (event: any) => {
     setRotation(event.target.value)
     handleMainBtnRotation(event.target.value);
-  }
+	}
+
+	const handleBtnPosition = (event: any) => {
+		const selectedPosition = event.target.value;
+		if (selectedPosition === 'left') {
+			handleMainBtnRotation('270');
+			setBtnPosition(event.target.value);
+			handleMainBtnPosition(event);
+		} else if (selectedPosition === 'bottom') {
+			handleMainBtnRotation('0');
+			setBtnPosition(event.target.value);
+			handleMainBtnPosition(event);
+		} else {
+			setBtnPosition(event.target.value);
+			handleMainBtnPosition(event);
+		}
+	}
 
   const convertTitleWidth = (title: string) => {
     const newWidth = title.length * 10;
@@ -171,7 +197,6 @@ const LookAndFeel = ({
   const handleTitle = (event: any) => {
     handleMainButtonTitleChange(event);
     let newLength = convertTitleWidth(event.target.value);
-    // console.log('new length', newLength);
     handleMaintButtonLength(newLength);
   }
 
@@ -310,7 +335,7 @@ const LookAndFeel = ({
 							{'Choose font weight:'}
 						</InputLabel>
 						<Select
-							name={`select_rotation`}
+							name={`select_fontWeight`}
 							value={fWeight}
               onChange={(event) => {
                 handleFontWeight(event);
@@ -358,6 +383,31 @@ const LookAndFeel = ({
               </MenuItem>
               <MenuItem key={5} value={'360'}>
 								{'360 degrees'}
+							</MenuItem>
+						</Select>
+					</FormControl>
+				</Grid>
+
+				<Grid item xs={12} sm={12}>
+          	<FormControl className={classes.formControl}>
+						<InputLabel style={{ marginTop: 5}} id={`position`} required={true}>
+							{'Choose Widget position on site: (will affect widget rotation)'}
+						</InputLabel>
+						<Select
+							name={`select_position`}
+							value={btnPosition}
+              onChange={(event) => {
+                handleBtnPosition(event);
+							}}
+						>
+							<MenuItem key={1} value={'right'}>
+								{'Right'}
+							</MenuItem>
+							<MenuItem key={2} value={'left'}>
+								{'Left'}
+							</MenuItem>
+							<MenuItem key={3} value={'bottom'}>
+								{'Bottom'}
 							</MenuItem>
 						</Select>
 					</FormControl>

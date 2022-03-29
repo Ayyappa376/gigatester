@@ -628,7 +628,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event;
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event.target.value;
         setProductParams(temp);
       }
     }
