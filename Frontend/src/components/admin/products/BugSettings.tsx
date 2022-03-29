@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Grid, Typography, TextField, Button, IconButton } from "@material-ui/core";
+import { Grid, Typography, TextField, Button, IconButton, FormControl,  InputLabel, Select, MenuItem, makeStyles } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { ICategory, IProductParams } from '../../../model';
@@ -17,7 +17,20 @@ interface CategoryProps {
   handleBugTooltipChange: Function,
   handleBugDialogMsgChange: Function,
   handleBugThanksMsgChange: Function,
+  handleReqComments: Function,
 }
+
+const useStyles = makeStyles((theme) => ({
+  formControl: {
+    minWidth: '100%',
+  },
+  helperText: {
+    textAlign: 'right',
+    margin: 0,
+    position: 'absolute',
+    right: 0,
+  },
+}));
 
 const renderCategoryDetails = (
   category: ICategory,
@@ -119,8 +132,19 @@ const BugSettings = ({
   handleBugTitleChange,
   handleBugTooltipChange,
   handleBugDialogMsgChange,
-  handleBugThanksMsgChange
+  handleBugThanksMsgChange,
+  handleReqComments,
 }: CategoryProps) => {
+  const classes = useStyles();
+
+  const handleRequireComments = (event: any) => {
+    if (event.target.value === 'true') {
+      handleReqComments(true, 'Bugs');
+    } else if (event.target.value === 'false') {
+      handleReqComments(false, 'Bugs');
+    }
+  }
+
   return (
     <Fragment>
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
@@ -143,7 +167,15 @@ const BugSettings = ({
             onChange={(event) => handleBugTitleChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 15}}
+            inputProps={{ maxLength: 15 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.title ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.title.length)}/15 chars` : null}
           />
         </Grid>
 
@@ -166,7 +198,15 @@ const BugSettings = ({
             onChange={(event) => handleBugTooltipChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 45}}
+            inputProps={{ maxLength: 45 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.tooltip ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.tooltip.length)}/45 chars` : null}
           />
         </Grid>
 
@@ -189,7 +229,15 @@ const BugSettings = ({
             onChange={(event) => handleBugDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 80}}
+            inputProps={{ maxLength: 80 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg.length)}/80 chars` : null}
           />
         </Grid>
 
@@ -212,9 +260,40 @@ const BugSettings = ({
             onChange={(event) => handleBugThanksMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 85}}
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg.length)}/85 chars` : null}
           />
         </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <FormControl style={{ width: '100%'}}>
+          <InputLabel id={`mandatoryComments`} required={true}>
+            {"Require comments/text when submitting bugs or incidents:"}
+          </InputLabel>
+          <Select
+            name={`select_CommentsMandatory`}
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.reqComments)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.reqComments
+                : 'false'
+            }
+            onChange={(event) => handleRequireComments(event)}
+          >
+            <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
+            <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
       </Grid>
 
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >

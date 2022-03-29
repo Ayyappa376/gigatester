@@ -1,9 +1,10 @@
 import React, { Fragment } from 'react';
-import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, Button, IconButton } from "@material-ui/core";
+import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, Button, IconButton, makeStyles } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { ICategory, IProductParams } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
+import { eventNames } from 'cluster';
 
 interface CategoryProps {
   productParams: IProductParams,
@@ -18,7 +19,29 @@ interface CategoryProps {
   handleFeedbackDialogMsgChange: Function,
   handleFeedbackThanksMsgChange: Function,
   handleRatingLimitChange: Function,
+  handleReqComments: Function,
 }
+
+const useStyles = makeStyles((theme) => ({
+  actionsBlock: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginLeft: '20%',
+  },
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
+  formControl: {
+    minWidth: '100%',
+  },
+  helperText: {
+    textAlign: 'right',
+    margin: 0,
+    position: 'absolute',
+    right: 0,
+  },
+}));
 
 const renderCategoryDetails = (
   category: ICategory,
@@ -122,7 +145,18 @@ const FeedbackSettings = ({
   handleFeedbackDialogMsgChange,
   handleFeedbackThanksMsgChange,
   handleRatingLimitChange,
+  handleReqComments,
 }: CategoryProps) => {
+  const classes = useStyles();
+
+  const handleRequireComments = (event: any) => {
+    if (event.target.value === 'true') {
+      handleReqComments(true, 'Feedback');
+    } else if (event.target.value === 'false') {
+      handleReqComments(false, 'Feedback');
+    }
+  }
+
   return (
     <Fragment>
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
@@ -145,7 +179,15 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackTitleChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 15}}
+            inputProps={{ maxLength: 15 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.title ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.title.length)}/15 chars` : null}
           />
         </Grid>
 
@@ -168,7 +210,15 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackTooltipChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 45}}
+            inputProps={{ maxLength: 45 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip.length)}/45 chars` : null}
           />
         </Grid>
 
@@ -191,7 +241,15 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 80}}
+            inputProps={{ maxLength: 80 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg.length)}/80 chars` : null}
           />
         </Grid>
 
@@ -214,9 +272,40 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackThanksMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{maxLength: 85}}
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg.length)}/85 chars` : null}
           />
         </Grid>
+
+        <Grid item xs={12} sm={12}>
+        <FormControl className={classes.formControl}>
+          <InputLabel id={`mandatoryComments`} required={true}>
+            {"Require comments/text when submitting feedback:"}
+          </InputLabel>
+          <Select
+            name={`select_CommentsMandatory`}
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.reqComments.toString()
+                : 'false'
+            }
+            onChange={(event) => handleRequireComments(event)}
+          >
+            <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
+            <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
         <Grid item xs={12} sm={12}>
           <FormControl style={{ minWidth: '100%' }}>

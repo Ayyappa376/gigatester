@@ -2760,6 +2760,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (data[0].feedbackSettings.tooltip && data[0].feedbackSettings.tooltip.trim().length > 0) {
                             GigaTester_modal.configs.feedback_tooltip_msg = data[0].feedbackSettings.tooltip.trim();
                         }
+                        if (data[0].feedbackSettings.reqComments) {
+                            GigaTester_modal.configs.form_settings_default['FEEDBACK'].comment_field_mandatory = data[0].feedbackSettings.reqComments;
+                        }
                     }
                     if(data[0].bugSettings) {
                         if(data[0].bugSettings.title && data[0].bugSettings.title.trim().length > 0) {
@@ -2773,6 +2776,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         }
                         if (data[0].bugSettings.tooltip && data[0].bugSettings.tooltip.trim().length > 0) {
                             GigaTester_modal.configs.bugs_tooltip_msg = data[0].bugSettings.tooltip.trim();
+                        }
+                        if (data[0].bugSettings.reqComments) {
+                            GigaTester_modal.configs.form_settings_default['BUGS'].comment_field_mandatory = data[0].bugSettings.reqComments;
                         }
                     }
                     if(data[0].widgetLookAndFeel) {

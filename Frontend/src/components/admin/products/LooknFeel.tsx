@@ -76,6 +76,12 @@ const useStyles = makeStyles((theme) => ({
 	formControl: {
 		minWidth: '100%',
 	},
+	helperText: {
+    textAlign: 'right',
+    margin: 0,
+    position: 'absolute',
+    right: 0,
+  },
 }));
 
 const LookAndFeel = ({
@@ -203,8 +209,18 @@ const LookAndFeel = ({
 						autoComplete='off'
             className='textFieldStyle'
             inputProps={{maxLength: 20}}
-            style={{ marginTop: 5}}
-					/>
+						style={{ marginTop: 5 }}
+						FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams &&
+							productParams.products &&
+							productParams.products[0] &&
+							productParams.products[0].feedbackAgentSettings &&
+							productParams.products[0].feedbackAgentSettings.widgetLookAndFeel ?
+              `${(productParams.products[0].feedbackAgentSettings
+								.widgetLookAndFeel.text.length)}/20 chars` : null}
+          />
 				</Grid>
 
 				<Grid item xs={12} sm={12}>
