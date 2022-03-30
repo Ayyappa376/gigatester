@@ -89,7 +89,9 @@ export const VersionFilter = (props : IVersionFilterProps) => {
 
     return (
         <div style={{paddingLeft: '1rem'}}>
-            <FormControl className={classes.formControlSmall}>
+            <FormControl style={{
+                width: "150px"
+            }}>
                 <InputLabel id="demo-customized-select-label">Version</InputLabel>
                 <Select
                 labelId="demo-customized-select-label"
