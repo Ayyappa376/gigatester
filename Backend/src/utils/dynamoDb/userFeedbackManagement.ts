@@ -235,7 +235,7 @@ export const feedbackProcessPieChartData = (pData: ProcessedData) => {
 };
 
 export const bugProcessBarChartData = (items: AppFeedback[]) => {
-    const severityData: ProcessedData = {Critical : 0, High : 0, Medium : 0, Low : 0};
+    const severityData: ProcessedData = {};
     if(items.length > 0) {
         items.forEach((item) => {
             if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
