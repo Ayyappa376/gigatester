@@ -42,6 +42,7 @@ export interface FeedbackAgentSettings {
 export interface BugSettings {
     categories: Category[];
     dialogMsg?: string;
+    reqComments?: boolean;
     severities: SeverityType[];
     thanksMsg?: string;
     title?: string;
@@ -53,6 +54,7 @@ export interface FeedbackSettings {
     dialogMsg?: string;
     ratingIcon: RatingIconType;
     ratingLimit: number; //values 1,2,3,4,5
+    reqComments?: boolean;
     thanksMsg?: string;
     title?: string;
     tooltip?: string;
@@ -60,12 +62,15 @@ export interface FeedbackSettings {
 
 export interface WidgetLAF {
     bgColor: string;
+    btnWidth: string | number;
     fgColor: string;
     font: string;
+    fontWeight: number;
     icon?: string;
     position: string;
+    rotation: string;
     text: string;
- }
+  }
 
 export interface Category {
     feedbacks?: string[];

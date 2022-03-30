@@ -65,7 +65,7 @@ export interface IWidgetLAF {
   bgColor: string;
   fgColor: string;
   font: string;
-  icon: string;
+  icon?: string;
   position: string;
   text: string;
   fontWeight: number;
