@@ -684,16 +684,16 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     let newAdjustedPos = '-';
                     if (styleCheckWidth > 113) {
                         let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
-                        // console.log('result 1', newPosition);
                         newAdjustedPos += newPosition.toString();
-                        // console.log('new position', newAdjustedPos);
                         adjustedPosition = `${newAdjustedPos}px`;
                     } else if (styleCheckWidth < 90) {
                         let newPosition = 35 - 10;
                         newAdjustedPos += newPosition.toString();
-                        // console.log('small new position', newAdjustedPos);
                         adjustedPosition = `${newAdjustedPos}px`;
+                    } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
+                        adjustedPosition = '-35px';
                     }
+                     console.log('checking position', adjustedPosition);
                     return adjustedPosition;
                 },
                 addFeedbackButton: function() {
@@ -722,14 +722,15 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.custom_ui.button[0].style.top = '50%';
                     } else if (this.configs.main_button_position === 'left') {
                         this.custom_ui.button[0].style.right = '';
-                        this.custom_ui.button[0].style.right = null;
                         this.custom_ui.button[0].style.top = '50%';
                         this.custom_ui.button[0].style.left = this.adjustWidgetCSS(button);
                     } else if (this.configs.main_button_position === 'bottom') {
                         this.custom_ui.button[0].style.top = '';
-                        this.custom_ui.button[0].style.bottom = '4%';
+                        this.custom_ui.button[0].style.bottom = '0.2%';
                         this.custom_ui.button[0].style.right = '35px';
-                        this.custom_ui.button[0].style.top = '';
+                    } else if (this.configs.main_button_position === 'top') {
+                        this.custom_ui.button[0].style.top = '2%';
+                        this.custom_ui.button[0].style.right = '35px';
                     }
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
@@ -2233,13 +2234,27 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     let popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>')
                     popup_dialog[0].style.transform = `rotate(${GigaTester_modal.configs.pop_up_rotate}deg)`
-                    popup_dialog[0].style.bottom = GigaTester_modal.configs.pop_up_position;
+                    if (GigaTester_modal.configs.main_button_position === 'top') {
+                        popup_dialog[0].style.top = GigaTester_modal.configs.pop_up_position;
+                    } else {
+                        popup_dialog[0].style.bottom = GigaTester_modal.configs.pop_up_position;
+                    }
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
                     let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
+                    if (GigaTester_modal.configs.main_button_position === 'left') {
+                        popup_bug_icon_tooltip[0].style.right = '-136px';
+                    } else {
+                        popup_bug_icon_tooltip[0].style.left = '-136px';
+                    }
                     let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_modal.configs.feedback_title + '</gtdiv></popupbtn>');
                     let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feedback_tooltip_msg);
+                    if (GigaTester_modal.configs.main_button_position === 'left') {
+                        popup_feedback_icon_tooltip[0].style.right = '-136px';
+                    } else {
+                        popup_feedback_icon_tooltip[0].style.left = '-136px';
+                    }
                     popup_bug_icon.appendTo(popup_dialog);
                     popup_bug_icon_tooltip.appendTo(popup_bug_icon);
                     popup_feedback_icon.appendTo(popup_dialog);
@@ -2844,6 +2859,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (data[0].widgetLookAndFeel.position) {
                             GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
                             if (data[0].widgetLookAndFeel.position === 'bottom') {
+                                GigaTester_modal.configs.pop_up_rotate = '0'
+                                GigaTester_modal.configs.pop_up_position = '5px'
+                            } else if (data[0].widgetLookAndFeel.position === 'top') {
                                 GigaTester_modal.configs.pop_up_rotate = '0'
                                 GigaTester_modal.configs.pop_up_position = '5px'
                             }
