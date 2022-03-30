@@ -8,7 +8,8 @@ interface userInfoProps {
   userId: string | undefined,
   platformInfo: string | undefined,
   sourceIp: string | undefined,
-  osInfo: string | undefined
+  osInfo: string | undefined,
+  pageURL: string | undefined,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -35,7 +36,7 @@ const useStyles = makeStyles((theme) => ({
   }
 }));
 
-export default function FolderList({ userId, platformInfo, sourceIp, osInfo }: userInfoProps) {
+export default function FolderList({ userId, platformInfo, sourceIp, osInfo, pageURL }: userInfoProps) {
   const classes = useStyles();
   return (
     <List className={classes.list}>
@@ -54,6 +55,10 @@ export default function FolderList({ userId, platformInfo, sourceIp, osInfo }: u
       <ListItem className={classes.listItems}>
         <Typography className={classes.labels}>OS</Typography>
         <ListItemText className={classes.listText}  primary={osInfo && osInfo.length > 0 ? osInfo : '-'} />
+      </ListItem>
+      <ListItem className={classes.listItems}>
+        <Typography className={classes.labels}>page URL</Typography>
+        <ListItemText className={classes.listText}  primary={pageURL && pageURL.length > 0 ? pageURL : '-'} />
       </ListItem>
     </List>
   );
