@@ -49,8 +49,10 @@ try {
             productId: await getproductIdForKey(jsonBody.productKey),
             productRating: jsonBody.productRating,
             productVersion: jsonBody.productVersion,
+            pageURL: jsonBody.pageURL,
             sourceIP: event.requestContext.identity.sourceIp,
             userDetails: jsonBody.userDetails,
+            contextDetails: jsonBody.contextDetails,
             userId: jsonBody.userName,
           },
           TableName: getTableNameFor('GT_feedback')

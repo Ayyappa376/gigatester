@@ -565,6 +565,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 form_type: "FEEDBACK",
                 timer: 180,
                 user_detail: {},
+                context_detail: {},
                 set_screen_default_category: true,
                 configs: {
                     has_video: true,
@@ -2681,6 +2682,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         platformName: GigaTester_modal.configs.capture_system_details ? platform.name : '',
                         platformVersion: GigaTester_modal.configs.capture_system_details ? platform.version : '',
                         platformOs: GigaTester_modal.configs.capture_system_details ? platform.os : '',
+                        pageURL: GigaTester_modal.configs.capture_system_details ? window.location : '',
                         //more like this: platform.layout, platform.manafacturer, platform.product, platform.prerelease, platform.ua(user agent),
                         // window.devicePixelRatio, window.screen.width, window.screen.height, window.orientation,
                         // window.location
@@ -2690,9 +2692,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                           file: GigaTester_modal.form_data.external_file,
                           audio: GigaTester_modal.form_data.audio_file,
                         },
-                          feedbackComments: { "generalComment" : this.form_data['description'], "standardFeedback" : standardFeedback , ...comments },
-                          productKey: GigaTester.apiKey,
-                          userDetails: GigaTester_modal.user_detail
+                        feedbackComments: { "generalComment" : this.form_data['description'], "standardFeedback" : standardFeedback , ...comments },
+                        productKey: GigaTester.apiKey,
+                        userDetails: GigaTester_modal.user_detail,
+                        contextDetails: GigaTester_modal.context_detail
                       }
                       console.log(postData, 'post Data')
                       fetch(`${GigaTester.endpoint}/feedback/`, {
@@ -2962,9 +2965,8 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 }
             },
             setUserDetails: function(userData){
-                console.log(userData)
+                console.log('Gigatester: user details ' + userData)
                 if(typeof userData === "object"){
-                console.log('gigatester userdetails ' + userData)
                 Object.entries(userData).forEach(([key, val]) => {
                     if(key.trim().toLowerCase() == "email"){
                         GigaTester.setEmail(val)
@@ -2973,6 +2975,19 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                   });
                 GigaTester_modal.user_detail = userData
                 sessionStorage.setItem('gigatesterDefaultUserDetails', JSON.stringify(userData))
+                }
+            },
+            setContextDetails: function(contextData){
+                console.log('Gigatester: context details ' + contextData)
+                if(typeof contextData === "object"){
+                // Object.entries(contextData).forEach(([key, val]) => {
+                //     if(key.trim().toLowerCase() == "email"){
+                //         GigaTester.setEmail(val)
+                //     }
+                //     console.log(key.trim().toLowerCase(), val);
+                //   });
+                GigaTester_modal.context_detail = contextData
+                sessionStorage.setItem('gigatesterContextDetails', JSON.stringify(contextData))
                 }
             },
             setName: function(name) {

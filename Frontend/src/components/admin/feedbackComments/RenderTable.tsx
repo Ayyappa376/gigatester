@@ -233,24 +233,6 @@ const RenderTable = (props: IProps) => {
           {props.tableData.map(
             (row: IAppFeedback, index: number) => {
 //              const labelId = `enhanced-table-checkbox-${index}`;
-/*              let sourceDetails = '-';
-              let osInfo = '-';
-
-              if(row.userId) sourceDetails = row.userId;
-
-              if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
-
-              let platformInfo;
-              if(row.platformName) {
-                if(row.platformVersion) {
-                  platformInfo = `(${row.platformName} - ${row.platformVersion})`
-                } else {
-                  platformInfo = row.platformName;
-                }
-                sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
-              }
-              if(row.platformOs) osInfo = osInfo  === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
-*/
               const platformInfo = row.platformName ?
                 (row.platformVersion ? `${row.platformName} - ${row.platformVersion}`: row.platformName) :
                 '-';
@@ -262,7 +244,7 @@ const RenderTable = (props: IProps) => {
                   key={row.id}
                 >
                   <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
-                        <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} osInfo={osInfo} />
+                        <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} osInfo={osInfo} pageURL={row.pageURL}/>
                   </TableCell>
                   <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
                         {row.createdOn ? getDateTime(row.createdOn) : '-'}
