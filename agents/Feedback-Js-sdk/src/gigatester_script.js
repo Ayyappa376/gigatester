@@ -2527,16 +2527,16 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                                 console.log("UPLOAD SUCCESSFUL");
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-msg").text(GigaTester_StringRes.get("media_upload_success") + " " + GigaTester_StringRes.get("submitting_feedback")).insertAfter(send_button);
                                 console.log('GigaTester: ', xhr.responseURL);
-                                if(xhr.responseURL.slice(56,64) === 'gt_image'){
+                                if(xhr.responseURL.includes('gt_image')){
                                 GigaTester_modal.form_data.image_file = xhr.responseURL.split('?')[0];
                                 console.log(xhr.responseURL.split('?')[0], 'img data')
                                 GigaTester_modal.post();
                                 }
-                                else if(xhr.responseURL.slice(56,64) === 'gt_video'){
+                                else if(xhr.responseURL.includes('gt_video')){
                                 GigaTester_modal.form_data.video_file = xhr.responseURL.split('?')[0]
                                 GigaTester_modal.post();
                                 }
-                                else if(xhr.responseURL.slice(56,64) === 'gt_audio'){
+                                else if(xhr.responseURL.includes('gt_audio')){
                                 GigaTester_modal.form_data.audio_file = xhr.responseURL.split('?')[0]
                                 GigaTester_modal.post();
                                 }
