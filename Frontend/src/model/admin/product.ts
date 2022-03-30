@@ -33,7 +33,7 @@ export interface IFeedbackAgentSettings {
   title: string;
   uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1024
   videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
-  requireEmail?: IRequireEmail;
+  requireEmail?: boolean;
   captureSystemDetails?: boolean;
   widgetLookAndFeel: IWidgetLAF;
   bugSettings?: IBugSettings;
@@ -125,6 +125,6 @@ export type ITrackingSystemType = 'SELF' | 'JIRA';
 export const TRACKING_SYSTEM_SELF: ITrackingSystemType = 'SELF';
 export const TRACKING_SYSTEM_JIRA: ITrackingSystemType = 'JIRA';
 
-export type IRequireEmail = 'MANDATORY' | 'OPTIONAL';
-export const EMAIL_MANDATORY: IRequireEmail = 'MANDATORY';
-export const EMAIL_OPTIONAL: IRequireEmail = 'OPTIONAL';
+// export type IRequireEmail = 'MANDATORY' | 'OPTIONAL';
+// export const EMAIL_MANDATORY: IRequireEmail = 'MANDATORY';
+// export const EMAIL_OPTIONAL: IRequireEmail = 'OPTIONAL';

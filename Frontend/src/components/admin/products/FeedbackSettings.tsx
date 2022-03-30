@@ -1,5 +1,5 @@
 import React, { Fragment } from 'react';
-import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, Button, IconButton, makeStyles } from "@material-ui/core";
+import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, Button, IconButton, makeStyles, FormControlLabel, Checkbox } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { ICategory, IProductParams } from '../../../model';
@@ -149,13 +149,13 @@ const FeedbackSettings = ({
 }: CategoryProps) => {
   const classes = useStyles();
 
-  const handleRequireComments = (event: any) => {
-    if (event.target.value === 'true') {
-      handleReqComments(true, 'Feedback');
-    } else if (event.target.value === 'false') {
-      handleReqComments(false, 'Feedback');
-    }
-  }
+  // const handleRequireComments = (event: any) => {
+  //   if (event.target.value === 'true') {
+  //     handleReqComments(true, 'Feedback');
+  //   } else if (event.target.value === 'false') {
+  //     handleReqComments(false, 'Feedback');
+  //   }
+  // }
 
   return (
     <Fragment>
@@ -285,27 +285,46 @@ const FeedbackSettings = ({
         </Grid>
 
         <Grid item xs={12} sm={12}>
-        <FormControl className={classes.formControl}>
-          <InputLabel id={`mandatoryComments`} required={true}>
-            {"Require comments/text when submitting feedback:"}
-          </InputLabel>
-          <Select
-            name={`select_CommentsMandatory`}
-            value={
-              (productParams && productParams.products && productParams.products[0] &&
-                productParams.products[0].feedbackAgentSettings &&
-                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
-                productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit)
-                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.reqComments.toString()
-                : 'false'
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.feedbackSettings)
+                  ? productParams.products[0].feedbackAgentSettings.feedbackSettings.reqComments
+                  : true}
+                onChange={(event) => handleReqComments('Feedback')}
+                value="FeedbackRequireComments"
+              />
             }
-            onChange={(event) => handleRequireComments(event)}
-          >
-            <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
-            <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
+            label={
+              <Typography color="textSecondary">
+                {"Comment field mandatory?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
+          {/* <FormControl className={classes.formControl}>
+            <InputLabel id={`mandatoryComments`} required={true}>
+              {"Require comments/text when submitting feedback:"}
+            </InputLabel>
+            <Select
+              name={`select_CommentsMandatory`}
+              value={
+                (productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                  productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit)
+                  ? productParams.products[0].feedbackAgentSettings.feedbackSettings.reqComments.toString()
+                  : 'false'
+              }
+              onChange={(event) => handleRequireComments(event)}
+            >
+              <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
+              <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
+            </Select>
+          </FormControl> */}
+        </Grid>
 
         <Grid item xs={12} sm={12}>
           <FormControl style={{ minWidth: '100%' }}>

@@ -611,7 +611,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         bug_title_message: GigaTester_StringRes.get("report_bug_msg"),
                         rating_mandatory: false,
                         email_field: true,
-                        email_field_mandatory: false,
+                        email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
                         comment_field_placeholder: "",
@@ -632,7 +632,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         rating_title_message: GigaTester_StringRes.get("give_feedback_msg"),
                         rating_mandatory: true,
                         email_field: true,
-                        email_field_mandatory: false,
+                        email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
                         comment_field_placeholder: "",
@@ -2814,8 +2814,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (data[0].feedbackSettings.tooltip && data[0].feedbackSettings.tooltip.trim().length > 0) {
                             GigaTester_modal.configs.feedback_tooltip_msg = data[0].feedbackSettings.tooltip.trim();
                         }
-                        if (data[0].feedbackSettings.reqComments) {
-                            GigaTester_modal.configs.form_settings_default['FEEDBACK'].comment_field_mandatory = data[0].feedbackSettings.reqComments;
+//                        if (data[0].feedbackSettings.reqComments && data[0].feedbackSettings.reqComments === "MANDATORY") {
+                        if(data[0].feedbackSettings.reqComments != undefined && data[0].feedbackSettings.reqComments === false) {
+                            GigaTester_modal.form_settings_default['FEEDBACK'].comment_field_mandatory = false;
                         }
                     }
                     if(data[0].bugSettings) {
@@ -2831,8 +2832,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (data[0].bugSettings.tooltip && data[0].bugSettings.tooltip.trim().length > 0) {
                             GigaTester_modal.configs.bugs_tooltip_msg = data[0].bugSettings.tooltip.trim();
                         }
-                        if (data[0].bugSettings.reqComments) {
-                            GigaTester_modal.form_settings_default['BUGS'].comment_field_mandatory = data[0].bugSettings.reqComments;
+//                        if (data[0].bugSettings.reqComments && data[0].bugSettings.reqComments === "MANDATORY") {
+                        if(data[0].bugSettings.reqComments != undefined && data[0].bugSettings.reqComments === false) {
+                            GigaTester_modal.form_settings_default['BUGS'].comment_field_mandatory = false;
                         }
                     }
                     if(data[0].widgetLookAndFeel) {
@@ -2880,9 +2882,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if(data[0].uploadFileMaxSize && data[0].uploadFileMaxSize > 0) {
                         GigaTester_modal.configs.max_file_size = data[0].uploadFileMaxSize;
                     }
-                    if(data[0].requireEmail && data[0].requireEmail === "MANDATORY") {
-                        GigaTester_modal.form_settings_default['FEEDBACK'].email_field_mandatory = true
-                        GigaTester_modal.form_settings_default['BUGS'].email_field_mandatory = true
+//                    if(data[0].requireEmail && data[0].requireEmail === "MANDATORY") {
+                    if(data[0].requireEmail != undefined && data[0].requireEmail === false) {
+                        GigaTester_modal.form_settings_default['FEEDBACK'].email_field_mandatory = false
+                        GigaTester_modal.form_settings_default['BUGS'].email_field_mandatory = false
                     }
                     if(data[0].thanksStr && data[0].thanksStr.trim().length > 0) {
                         GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_headline = data[0].thanksStr.trim();

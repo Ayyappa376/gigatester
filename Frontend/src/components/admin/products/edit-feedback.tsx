@@ -26,7 +26,7 @@ import {
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
-  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT, EMAIL_MANDATORY, EMAIL_OPTIONAL
+  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT//, EMAIL_MANDATORY, EMAIL_OPTIONAL
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -156,7 +156,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               dialogMsg: 'Tell us more about the issue you faced',
               thanksMsg: 'We will remove your concern soon',
               title: 'Report Bug',
-              tooltip: 'Tell us your concern'
+              tooltip: 'Tell us your concern',
+              reqComments: true,
             },
             feedbackSettings: {
               categories: [],
@@ -166,7 +167,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               thanksMsg: 'We appriciate your feedback',
               title: 'Give Feedback',
               tooltip: 'Tell us your experience',
-              reqComments: false,
+              reqComments: true,
             },
             invokeDelay: 5,
             invokeOn: [INVOKE_TYPE_MANUAL],
@@ -174,7 +175,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             title: '',
             uploadFileMaxSize: '400',
             videoAudioMaxDuration: '1.5',
-            requireEmail: EMAIL_OPTIONAL,
+            requireEmail: true,
             captureSystemDetails: true,
             widgetLookAndFeel: {
               bgColor: '#042e5b',
@@ -780,31 +781,27 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
-        temp.products[0].feedbackAgentSettings.requireEmail = event.target.value;
+        temp.products[0].feedbackAgentSettings.requireEmail = !temp.products[0].feedbackAgentSettings.requireEmail;
         setProductParams(temp);
       }
     }
   };
 
-  const handleReqComments = (event: boolean, type: string) => {
-    if (type === 'Bugs') {
-      if (productParams) {
-        const temp: IProductParams | undefined = { ...productParams };
+  const handleReqComments = (/*event: boolean, */type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (type === 'Bugs') {
         if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
           temp.products[0].feedbackAgentSettings.bugSettings) {
-          temp.products[0].feedbackAgentSettings.bugSettings.reqComments = event;
-          setProductParams(temp);
+          temp.products[0].feedbackAgentSettings.bugSettings.reqComments = !temp.products[0].feedbackAgentSettings.bugSettings.reqComments;
         }
-      }
-    } else if (type === 'Feedback') {
-      if (productParams) {
-        const temp: IProductParams | undefined = { ...productParams };
+      } else if (type === 'Feedback') {
         if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
           temp.products[0].feedbackAgentSettings.feedbackSettings) {
-          temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = event;
-          setProductParams(temp);
+          temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = !temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments;
         }
       }
+      setProductParams(temp);
     }
   }
 

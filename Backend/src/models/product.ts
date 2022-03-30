@@ -31,7 +31,7 @@ export interface FeedbackAgentSettings {
     invokeOn: InvokeType[];
     logo?: string;
     platform: PlatformType;
-    requireEmail?: RequireEmail; // make email optional or mandatory
+    requireEmail?: boolean; // make email optional or mandatory
     thanksStr?: string;
     title: string;
     uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
@@ -119,6 +119,6 @@ export type TrackingSystemType = 'SELF' | 'JIRA';
 export const TRACKING_SYSTEM_SELF: TrackingSystemType = 'SELF';
 export const TRACKING_SYSTEM_JIRA: TrackingSystemType = 'JIRA';
 
-export type RequireEmail = 'MANDATORY' | 'OPTIONAL' ;
-export const EMAIL_MANDATORY: RequireEmail = 'MANDATORY';
-export const EMAIL_OPTIONAL: RequireEmail = 'OPTIONAL';
+// export type RequireEmail = 'MANDATORY' | 'OPTIONAL' ;
+// export const EMAIL_MANDATORY: RequireEmail = 'MANDATORY';
+// export const EMAIL_OPTIONAL: RequireEmail = 'OPTIONAL';
