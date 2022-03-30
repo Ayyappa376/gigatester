@@ -164,7 +164,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               dialogMsg: 'Tell us how much you like our app',
               thanksMsg: 'We appriciate your feedback',
               title: 'Give Feedback',
-              tooltip: 'Tell us your experience'
+              tooltip: 'Tell us your experience',
+              reqComments: false,
             },
             invokeDelay: 5,
             invokeOn: [INVOKE_TYPE_MANUAL],
@@ -575,7 +576,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   }
 
   const handleMaintButtonLength = (event: any) => {
-    console.log('in main btn length', event);
+    // console.log('in main btn length', event);
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
@@ -659,7 +660,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event;
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event.target.value;
         setProductParams(temp);
       }
     }
@@ -816,6 +817,28 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       }
     }
   };
+
+  const handleReqComments = (event: boolean, type: string) => {
+    if (type === 'Bugs') {
+      if (productParams) {
+        const temp: IProductParams | undefined = { ...productParams };
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.bugSettings) {
+          temp.products[0].feedbackAgentSettings.bugSettings.reqComments = event;
+          setProductParams(temp);
+        }
+      }
+    } else if (type === 'Feedback') {
+      if (productParams) {
+        const temp: IProductParams | undefined = { ...productParams };
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.feedbackSettings) {
+          temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = event;
+          setProductParams(temp);
+        }
+      }
+    }
+  }
 
   const handleCaptureSystemDetailsOption = (event: any) => {
     if (productParams) {
@@ -990,6 +1013,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleFeedbackTypesChange: handleFeedbackTypesChange,
       handleUploadFileMaxSizeChange: handleUploadFileMaxSizeChange,
       handleEmailOption: handleEmailOption,
+      handleReqComments: handleReqComments,
       handleCaptureSystemDetailsOption: handleCaptureSystemDetailsOption,
       addFeedbackCategory: addFeedbackCategory,
       handleChangeFeedbackCategoryName: handleChangeFeedbackCategoryName,

@@ -273,7 +273,7 @@ export const getBugBarChartOptions = (bugBarChartSeries: any, FeedbackBarChartDa
       id: 'severity-chart'
     },
     xaxis: {
-      categories: Object.keys(FeedbackBarChartData), //hard coded severity value
+      categories: Object.keys(FeedbackBarChartData),
     },
     title: {
       text: 'Total - ' + bugBarChartSeries[0].data.reduce((a : any, b: any) => a + b, 0),

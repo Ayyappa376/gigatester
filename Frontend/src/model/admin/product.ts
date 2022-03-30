@@ -47,6 +47,7 @@ export interface IBugSettings {
   thanksMsg?: string;
   title?: string;
   tooltip?: string;
+  reqComments: boolean;
 }
 
 export interface IFeedbackSettings {
@@ -57,6 +58,7 @@ export interface IFeedbackSettings {
   thanksMsg?: string;
   title?: string;
   tooltip?: string;
+  reqComments: boolean;
 }
 
 export interface IWidgetLAF {

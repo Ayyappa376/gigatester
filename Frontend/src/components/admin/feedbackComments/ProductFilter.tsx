@@ -89,7 +89,7 @@ export const VersionFilter = (props : IVersionFilterProps) => {
 const useStyles = makeStyles((theme: Theme) =>
   createStyles({
     formControlBig: {
-        width: "250px",
+        width: "190px",
       },
       formControlSmall: {
         width: "150px",

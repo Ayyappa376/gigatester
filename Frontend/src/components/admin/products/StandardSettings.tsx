@@ -68,6 +68,12 @@ const useStyles = makeStyles((theme) => ({
   formControl: {
     minWidth: '100%',
   },
+  helperText: {
+    textAlign: 'right',
+    margin: 0,
+    position: 'absolute',
+    right: 0,
+  },
 }));
 
 const StandardSettings = ({
@@ -127,6 +133,12 @@ const StandardSettings = ({
           fullWidth
           autoComplete='off'
           className='textFieldStyle'
+          FormHelperTextProps={{
+            className: classes.helperText
+          }}
+          helperText={`${(productParams && productParams.products && productParams.products[0] &&
+            productParams.products[0].feedbackAgentSettings &&
+            productParams.products[0].feedbackAgentSettings.title.length)}/15 characters`}
           inputProps={{maxLength: 15}}
         />
       </Grid>
@@ -149,7 +161,14 @@ const StandardSettings = ({
           fullWidth
           autoComplete='off'
           className='textFieldStyle'
-          inputProps={{maxLength: 60}}
+          inputProps={{ maxLength: 60 }}
+          FormHelperTextProps={{
+            className: classes.helperText
+          }}
+          helperText={productParams && productParams.products && productParams.products[0] &&
+            productParams.products[0].feedbackAgentSettings &&
+            productParams.products[0].feedbackAgentSettings.thanksStr ?
+            `${(productParams.products[0].feedbackAgentSettings.thanksStr.length)}/60 characters` : null}
         />
       </Grid>
 
