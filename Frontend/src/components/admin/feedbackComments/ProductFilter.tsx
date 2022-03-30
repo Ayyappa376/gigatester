@@ -1,4 +1,5 @@
 import { Chip, createStyles, FormControl, Input, InputBase, InputLabel, makeStyles, MenuItem, Select, Theme, useTheme, withStyles } from '@material-ui/core';
+import { createFilterOptions } from '@material-ui/lab';
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
@@ -9,7 +10,9 @@ interface IProps {
     selectedProdId: string;
     setSelectedProdId: Function;
     productNameIdMapping: IProductNameIdMapping;
-    productInfo: ILimitedProductDetails[]
+    productInfo: ILimitedProductDetails[];
+    filtered: any;
+    setFiltered: Function;
 }
 
 
@@ -17,11 +20,19 @@ const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 
 const ProductFilter = (props : IProps) => {
-    const {selectedProdId, productNameIdMapping, productInfo} = props;
+    const {selectedProdId, productNameIdMapping, productInfo, filtered, setFiltered} = props;
     const classes = useStyles();
+    const [chose, setChose] = useState("");
 
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChange = (event: any) => {
+        setChose(event.target.value)
         props.setSelectedProdId(event.target.value as string);
+        if (!filtered.product) {
+            setFiltered((prevState: any) => ({
+                ...prevState,
+                 product: true
+            }))
+        }
       };
 
 //    const label = 'Choose Product';
@@ -33,11 +44,11 @@ const ProductFilter = (props : IProps) => {
                 <Select
                     labelId="product-select-label"
                     id="product-select"
-                    value={selectedProdId}
-                    onChange={handleChange}
+                    value={chose}
+                    onChange={(event) => handleChange(event)}
                 >
                  <MenuItem disabled value="">
-                    <em>Please Select</em>
+                    Please Select
                  </MenuItem>
                 {Object.keys(productNameIdMapping).map((id) => (
                     <MenuItem key={id} value={id} >
@@ -54,16 +65,26 @@ interface IVersionFilterProps {
     productVersion: string;
     setProductVersion: Function;
     versionList: string[];
+    filtered: any;
+    setFiltered: Function;
 }
 
 export const VersionFilter = (props : IVersionFilterProps) => {
-    const {productVersion, versionList} = props;
+    const {productVersion, versionList, filtered, setFiltered} = props;
     const classes = useStyles();
     const theme = useTheme();
+    const [chose, setChose] = useState("");
 
 
-    const handleChange = (event: React.ChangeEvent<{ value: unknown }>) => {
+    const handleChange = (event: any) => {
+        setChose(event.target.value)
         props.setProductVersion(event.target.value as string);
+        if (!filtered.version) {
+            setFiltered((prevState: any) => ({
+                ...prevState,
+                 version: true
+            }))
+        }
     };
 
     return (
@@ -73,11 +94,11 @@ export const VersionFilter = (props : IVersionFilterProps) => {
                 <Select
                 labelId="demo-customized-select-label"
                 id="demo-customized-select"
-                value={productVersion}
+                value={chose}
                 onChange={handleChange}
                 >
-                <MenuItem key={0} value={""} >
-                    <em>Please Select</em>
+                <MenuItem disabled key={0} value={""} >
+                    Please Select
                 </MenuItem>
                 {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
                 </Select>
