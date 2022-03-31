@@ -33,7 +33,7 @@ export interface IFeedbackAgentSettings {
   title: string;
   uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1024
   videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
-  requireEmail?: IRequireEmail;
+  requireEmail?: boolean;
   captureSystemDetails?: boolean;
   widgetLookAndFeel: IWidgetLAF;
   bugSettings?: IBugSettings;
@@ -65,12 +65,14 @@ export interface IWidgetLAF {
   bgColor: string;
   fgColor: string;
   font: string;
-  icon?: string;
-  position: string;
-  text: string;
   fontWeight: number;
-  rotation: string;
-  btnWidth: string | number;
+  fontStyle: string;
+  text: string;
+  icon?: string;
+  position: IWidgetPosition;
+  rotation?: string;
+  top?: string;
+  left?: string;
 }
 
 export interface ICategory {
@@ -125,6 +127,11 @@ export type ITrackingSystemType = 'SELF' | 'JIRA';
 export const TRACKING_SYSTEM_SELF: ITrackingSystemType = 'SELF';
 export const TRACKING_SYSTEM_JIRA: ITrackingSystemType = 'JIRA';
 
-export type IRequireEmail = 'MANDATORY' | 'OPTIONAL';
-export const EMAIL_MANDATORY: IRequireEmail = 'MANDATORY';
-export const EMAIL_OPTIONAL: IRequireEmail = 'OPTIONAL';
+export type IWidgetPosition = 'RIGHT_MIDDLE' | 'RIGHT_BOTTOM' | 'LEFT_MIDDLE' | 'LEFT_BOTTOM' |'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'CUSTOM';
+export const POS_RIGHT_MIDDLE: IWidgetPosition = 'RIGHT_MIDDLE';
+export const POS_RIGHT_BOTTOM: IWidgetPosition = 'RIGHT_BOTTOM';
+export const POS_LEFT_MIDDLE: IWidgetPosition = 'LEFT_MIDDLE';
+export const POS_LEFT_BOTTOM: IWidgetPosition = 'LEFT_BOTTOM';
+export const POS_BOTTOM_RIGHT: IWidgetPosition = 'BOTTOM_RIGHT';
+export const POS_BOTTOM_LEFT: IWidgetPosition = 'BOTTOM_LEFT';
+export const POS_CUSTOM: IWidgetPosition = 'CUSTOM';

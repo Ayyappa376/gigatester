@@ -32,6 +32,7 @@ try {
         const tableparams = {
           Item: {
             bugPriority: jsonBody.bugPriority,
+            contextDetails: jsonBody.contextDetails,
             createdOn: Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()),
             feedbackCategory: jsonBody.feedbackCategory,
             feedbackComments: JSON.stringify(jsonBody.feedbackComments),
@@ -43,16 +44,15 @@ try {
             },
             feedbackType: jsonBody.feedbackType,
             id: `feedback_${uuidv1()}`,
+            pageURL: jsonBody.pageURL,
             platformName: jsonBody.platformName,
             platformOs: jsonBody.platformOs,
             platformVersion: jsonBody.platformVersion,
             productId: await getproductIdForKey(jsonBody.productKey),
             productRating: jsonBody.productRating,
             productVersion: jsonBody.productVersion,
-            pageURL: jsonBody.pageURL,
             sourceIP: event.requestContext.identity.sourceIp,
             userDetails: jsonBody.userDetails,
-            contextDetails: jsonBody.contextDetails,
             userId: jsonBody.userName,
           },
           TableName: getTableNameFor('GT_feedback')

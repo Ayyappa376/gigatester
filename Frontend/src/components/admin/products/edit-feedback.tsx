@@ -26,7 +26,8 @@ import {
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   SEVERITY_TYPE_CRITICAL, SEVERITY_TYPE_MEDIUM, SEVERITY_TYPE_HIGH, SEVERITY_TYPE_LOW,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
-  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT, EMAIL_MANDATORY, EMAIL_OPTIONAL
+  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT,//, EMAIL_MANDATORY, EMAIL_OPTIONAL
+  POS_RIGHT_MIDDLE
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -156,7 +157,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               dialogMsg: 'Tell us more about the issue you faced',
               thanksMsg: 'We will remove your concern soon',
               title: 'Report Bug',
-              tooltip: 'Tell us your concern'
+              tooltip: 'Tell us your concern',
+              reqComments: true,
             },
             feedbackSettings: {
               categories: [],
@@ -166,7 +168,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               thanksMsg: 'We appriciate your feedback',
               title: 'Give Feedback',
               tooltip: 'Tell us your experience',
-              reqComments: false,
+              reqComments: true,
             },
             invokeDelay: 5,
             invokeOn: [INVOKE_TYPE_MANUAL],
@@ -174,18 +176,20 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             title: '',
             uploadFileMaxSize: '400',
             videoAudioMaxDuration: '1.5',
-            requireEmail: EMAIL_OPTIONAL,
+            requireEmail: true,
             captureSystemDetails: true,
             widgetLookAndFeel: {
               bgColor: '#042e5b',
               fgColor: '#ffffff',
               font: 'inherit',
-              icon: '',
-              position: 'center right',
-              text: 'Feedback',
               fontWeight: 400,
-              rotation: '90',
-              width: 'auto',
+              fontStyle: 'normal',
+              text: 'Feedback',
+              icon: '',
+              position: POS_RIGHT_MIDDLE,
+              rotation: '0',
+              top: '0',
+              left: '0'
             }
           };
         }
@@ -533,107 +537,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
-  const handleMainButtonTitleChange = (event: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.text = event.target.value;
-        setProductParams(temp);
-      }
-    }
-  }
-
-  const handleMaintButtonLength = (event: any) => {
-    // console.log('in main btn length', event);
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.btnWidth = event;
-        setProductParams(temp);
-      }
-    }
-  }
-
-  const handleMainBtnColor = (event: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        if (typeof(event) === 'string') {
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.bgColor = event;
-          setProductParams(temp);
-        } else {
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.bgColor = event.target.value;
-          setProductParams(temp);
-        }
-      }
-    }
-  }
-
-  const handleMainBtnTextColor = (event: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        if (typeof(event) === 'string') {
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fgColor = event;
-          setProductParams(temp);
-        } else {
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fgColor = event.target.value;
-          setProductParams(temp);
-        }
-      }
-    }
-  }
-
-  const handleMainBtnFont = (event: any) => {
-    if (typeof (event) === 'string') {
-      if (productParams) {
-        const temp: IProductParams | undefined = { ...productParams };
-        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.font = event;
-          setProductParams(temp);
-        }
-      }
-    } else {
-      if (productParams) {
-        const temp: IProductParams | undefined = { ...productParams };
-        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.font = event.target.value;
-          setProductParams(temp);
-        }
-      }
-    }
-  }
-
-  const handleMainBtnFontWeight = (event: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fontWeight = event;
-        setProductParams(temp);
-      }
-    }
-  }
-
-  const handleMainBtnRotation = (event: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.rotation = event;
-        setProductParams(temp);
-      }
-    }
-  }
-
-  const handleMainBtnPosition = (event: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event.target.value;
-        setProductParams(temp);
-      }
-    }
-  }
-
   const handleThanksStrChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -780,31 +683,27 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
-        temp.products[0].feedbackAgentSettings.requireEmail = event.target.value;
+        temp.products[0].feedbackAgentSettings.requireEmail = !temp.products[0].feedbackAgentSettings.requireEmail;
         setProductParams(temp);
       }
     }
   };
 
-  const handleReqComments = (event: boolean, type: string) => {
-    if (type === 'Bugs') {
-      if (productParams) {
-        const temp: IProductParams | undefined = { ...productParams };
+  const handleReqComments = (/*event: boolean, */type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (type === 'Bugs') {
         if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
           temp.products[0].feedbackAgentSettings.bugSettings) {
-          temp.products[0].feedbackAgentSettings.bugSettings.reqComments = event;
-          setProductParams(temp);
+          temp.products[0].feedbackAgentSettings.bugSettings.reqComments = !temp.products[0].feedbackAgentSettings.bugSettings.reqComments;
         }
-      }
-    } else if (type === 'Feedback') {
-      if (productParams) {
-        const temp: IProductParams | undefined = { ...productParams };
+      } else if (type === 'Feedback') {
         if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
           temp.products[0].feedbackAgentSettings.feedbackSettings) {
-          temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = event;
-          setProductParams(temp);
+          temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = !temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments;
         }
       }
+      setProductParams(temp);
     }
   }
 
@@ -844,6 +743,137 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
         temp.products[0].feedbackAgentSettings.platform = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnTitleChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.text = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnColor = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        if (typeof(event) === 'string') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.bgColor = event;
+          setProductParams(temp);
+        } else {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.bgColor = event.target.value;
+          setProductParams(temp);
+        }
+      }
+    }
+  }
+
+  const handleMainBtnTextColor = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        if (typeof(event) === 'string') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fgColor = event;
+          setProductParams(temp);
+        } else {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fgColor = event.target.value;
+          setProductParams(temp);
+        }
+      }
+    }
+  }
+
+  const handleMainBtnFont = (event: any) => {
+    if (typeof (event) === 'string') {
+      if (productParams) {
+        const temp: IProductParams | undefined = { ...productParams };
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.font = event;
+          setProductParams(temp);
+        }
+      }
+    } else {
+      if (productParams) {
+        const temp: IProductParams | undefined = { ...productParams };
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.font = event.target.value;
+          setProductParams(temp);
+        }
+      }
+    }
+  }
+
+  const handleMainBtnFontWeight = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fontWeight = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnFontStyle = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.fontStyle = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnPosition = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.position = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnRotation = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.rotation = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnTop = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.top = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleMainBtnLeft = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.left = event;
         setProductParams(temp);
       }
     }
@@ -967,14 +997,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handlePlatformTypeChange: handlePlatformTypeChange,
       handleInvokeDelayChange: handleInvokeDelayChange,
       handleTitleChange: handleTitleChange,
-      handleMainButtonTitleChange: handleMainButtonTitleChange,
-      handleMainBtnColor: handleMainBtnColor,
-      handleMainBtnTextColor: handleMainBtnTextColor,
-      handleMainBtnFont: handleMainBtnFont,
-      handleMainBtnPosition: handleMainBtnPosition,
-      handleMainBtnFontWeight: handleMainBtnFontWeight,
-      handleMainBtnRotation: handleMainBtnRotation,
-      handleMaintButtonLength: handleMaintButtonLength,
       handleThanksStrChange: handleThanksStrChange,
       handleVideoAudioMaxDurationChange: handleVideoAudioMaxDurationChange,
       handleInvokeOnChange: handleInvokeOnChange,
@@ -1004,6 +1026,16 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleBugTooltipChange: handleBugTooltipChange,
       handleBugDialogMsgChange: handleBugDialogMsgChange,
       handleBugThanksMsgChange: handleBugThanksMsgChange,
+      handleMainBtnTitleChange: handleMainBtnTitleChange,
+      handleMainBtnColor: handleMainBtnColor,
+      handleMainBtnTextColor: handleMainBtnTextColor,
+      handleMainBtnFont: handleMainBtnFont,
+      handleMainBtnFontWeight: handleMainBtnFontWeight,
+      handleMainBtnFontStyle: handleMainBtnFontStyle,
+      handleMainBtnPosition: handleMainBtnPosition,
+      handleMainBtnRotation: handleMainBtnRotation,
+      handleMainBtnTop: handleMainBtnTop,
+      handleMainBtnLeft: handleMainBtnLeft,
     }
 
     return (

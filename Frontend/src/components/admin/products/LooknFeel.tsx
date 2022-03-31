@@ -13,25 +13,21 @@ import {
 	Button,
 } from '@material-ui/core';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
-import {
-	IProductParams,
-} from '../../../model';
+import { IProductParams, POS_RIGHT_MIDDLE } from '../../../model';
 import { ChromePicker } from 'react-color';
 
 interface SettingsProps {
 	productParams: IProductParams;
-	handleTitleChange: Function;
-	handleMainButtonTitleChange: Function;
-	handleFeedbackTypesChange: Function;
-	handlePlatformTypeChange: Function;
-	handleCaptureSystemDetailsOption: Function;
+	handleMainBtnTitleChange: Function;
 	handleMainBtnColor: Function;
 	handleMainBtnTextColor: Function;
 	handleMainBtnFont: Function;
-  handleMainBtnPosition: Function;
-  handleMainBtnRotation: Function;
-  handleMainBtnFontWeight: Function;
-  handleMaintButtonLength: Function;
+	handleMainBtnFontWeight: Function;
+	handleMainBtnFontStyle: Function;
+	handleMainBtnPosition: Function;
+	handleMainBtnRotation: Function;
+	handleMainBtnTop: Function;
+	handleMainBtnLeft: Function;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -77,37 +73,41 @@ const useStyles = makeStyles((theme) => ({
 		minWidth: '100%',
 	},
 	helperText: {
-    textAlign: 'right',
-    margin: 0,
-    position: 'absolute',
-    right: 0,
-  },
+		textAlign: 'right',
+		margin: 0,
+		position: 'absolute',
+		right: 0,
+	},
 }));
 
 const LookAndFeel = ({
 	productParams,
-	handleMainButtonTitleChange,
+	handleMainBtnTitleChange,
 	handleMainBtnColor,
 	handleMainBtnTextColor,
 	handleMainBtnFont,
-  handleMainBtnPosition,
-  handleMainBtnRotation,
-  handleMainBtnFontWeight,
-  handleMaintButtonLength,
+	handleMainBtnFontWeight,
+	handleMainBtnFontStyle,
+	handleMainBtnPosition,
+	handleMainBtnRotation,
+	handleMainBtnTop,
+	handleMainBtnLeft,
 }: SettingsProps) => {
 	const classes = useStyles();
 	const [buttonColor, setButtonColor] = useState('#042e5b');
-	const [buttonTextColor, setBtnTextColor] = useState('#ffff');
+	const [buttonTextColor, setBtnTextColor] = useState('#ffffff');
 	const [colorSelect, setColorSelect] = useState('please select');
-  const [fontSelect, setFontSelect] = useState('Arial,sans-serif');
-  const [isCustom, setIsCustom] = useState(false);
-  const [customFont, setCustomFont] = useState('');
-  const [fWeight, setFontWeight] = useState(400);
+	const [fontSelect, setFontSelect] = useState('Arial,sans-serif');
+	const [isCustom, setIsCustom] = useState(false);
+	const [customFont, setCustomFont] = useState('');
+	const [fWeight, setFontWeight] = useState(400);
+	const [fStyle, setFontStyle] = useState('normal');
 	const [buttonText, setButtonText] = useState('Feedback');
-	const [btnPosition, setBtnPosition] = useState('right');
-  const [rotation, setRotation] = useState('0');
-  const [showColor, setShowColor] = useState(false);
-
+	const [btnPosition, setBtnPosition] = useState(POS_RIGHT_MIDDLE);
+	const [rotation, setRotation] = useState<string | undefined>('0');
+	const [buttonTop, setButtonTop] = useState<string | undefined>('0');
+	const [buttonLeft, setButtonLeft] = useState<string | undefined>('0');
+	const [showColor, setShowColor] = useState(false);
 
 	useEffect(() => {
 		if (
@@ -126,20 +126,33 @@ const LookAndFeel = ({
 					.fgColor,
 			);
 			setFontSelect(
-				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.font
-      );
-      setButtonText(
-        productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.text
-      )
-      setRotation(
-        productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.rotation
-      )
-      setFontWeight(
-        productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.fontWeight
-			)
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.font,
+			);
+			setFontWeight(
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+					.fontWeight,
+			);
+			setFontStyle(
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+					.fontStyle,
+			);
+			setButtonText(
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.text,
+			);
 			setBtnPosition(
-				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.position
-			)
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+					.position,
+			);
+			setRotation(
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+					.rotation,
+			);
+			setButtonTop(
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.top,
+			);
+			setButtonLeft(
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.left,
+			);
 		}
 	}, [productParams]);
 
@@ -153,25 +166,25 @@ const LookAndFeel = ({
 		setColorSelect(event.target.value);
 	};
 
-  const handleFontChange = (event: any) => {
-      setFontSelect(event.target.value);
-      handleMainBtnFont(event);
-  };
+	const handleFontChange = (event: any) => {
+		setFontSelect(event.target.value);
+		handleMainBtnFont(event);
+	};
 
-  const handleCustomFont = (event: any) => {
-      setCustomFont(event.target.value);
-      // handleMainBtnFont(event);
-  }
+	const handleCustomFont = (event: any) => {
+		setCustomFont(event.target.value);
+		// handleMainBtnFont(event);
+	};
 
-  const handleFontWeight = (event: any) => {
-    setFontWeight(event.target.value);
-    handleMainBtnFontWeight(event.target.value);
-  }
+	const handleFontWeight = (event: any) => {
+		setFontWeight(event.target.value);
+		handleMainBtnFontWeight(event.target.value);
+	};
 
-  const handleDegChange = (event: any) => {
-    setRotation(event.target.value)
-    handleMainBtnRotation(event.target.value);
-	}
+	const handleDegChange = (event: any) => {
+		setRotation(event.target.value);
+		handleMainBtnRotation(event.target.value);
+	};
 
 	const handleBtnPosition = (event: any) => {
 		const selectedPosition = event.target.value;
@@ -192,19 +205,18 @@ const LookAndFeel = ({
 			setBtnPosition(event.target.value);
 			handleMainBtnPosition(event);
 		}
-	}
+	};
 
-  const convertTitleWidth = (title: string) => {
-    const newWidth = title.length * 10;
-    return newWidth.toString();
-  }
+	const convertTitleWidth = (title: string) => {
+		const newWidth = title.length * 10;
+		return newWidth.toString();
+	};
 
-  const handleTitle = (event: any) => {
-    handleMainButtonTitleChange(event);
-    let newLength = convertTitleWidth(event.target.value);
-    handleMaintButtonLength(newLength);
-  }
-
+	// const handleTitle = (event: any) => {
+	//   handleMainBtnTitleChange(event);
+	//   let newLength = convertTitleWidth(event.target.value);
+	//   handleMaintBtnLength(newLength);
+	// }
 
 	return (
 		<Grid
@@ -234,38 +246,44 @@ const LookAndFeel = ({
 								: ''
 						}
 						label={'Choose the text you want to display on the initial button:'}
-						onChange={(event) => handleTitle(event)}
+						onChange={(event) => handleMainBtnTitleChange(event)}
 						fullWidth
 						autoComplete='off'
-            className='textFieldStyle'
-            inputProps={{maxLength: 20}}
+						className='textFieldStyle'
+						inputProps={{ maxLength: 20 }}
 						style={{ marginTop: 5 }}
 						FormHelperTextProps={{
-              className: classes.helperText
-            }}
-            helperText={productParams &&
+							className: classes.helperText,
+						}}
+						helperText={
+							productParams &&
 							productParams.products &&
 							productParams.products[0] &&
 							productParams.products[0].feedbackAgentSettings &&
-							productParams.products[0].feedbackAgentSettings.widgetLookAndFeel ?
-              `${(productParams.products[0].feedbackAgentSettings
-								.widgetLookAndFeel.text.length)}/20 characters` : null}
-          />
+							productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+								? `${productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.text.length}/20 characters`
+								: null
+						}
+					/>
 				</Grid>
 
 				<Grid item xs={12} sm={12}>
 					<FormControl className={classes.formControl}>
-						<InputLabel style={{ marginTop: 5}} id={`fontStylingOptions`} required={true}>
+						<InputLabel
+							style={{ marginTop: 5 }}
+							id={`fontStylingOptions`}
+							required={true}
+						>
 							{'Choose font to display on initial button:'}
 						</InputLabel>
-            <Select
-              disabled={isCustom ? true : false}
+						<Select
+							disabled={isCustom ? true : false}
 							name={`select_fontStylingOptions`}
 							value={fontSelect}
-              onChange={(event) => {
-                // if (event.target.value === 'Custom') {
-                //   setIsCustom(true);
-                // }
+							onChange={(event) => {
+								// if (event.target.value === 'Custom') {
+								//   setIsCustom(true);
+								// }
 								handleFontChange(event);
 							}}
 						>
@@ -301,111 +319,115 @@ const LookAndFeel = ({
 							</MenuItem>
 							<MenuItem key={11} value={'Brush Script MT,cursive'}>
 								{'Brush Script MT(cursive)'}
-              </MenuItem>
-              <MenuItem key={12} value={'Monaco, sans-serif'}>
+							</MenuItem>
+							<MenuItem key={12} value={'Monaco, sans-serif'}>
 								{'Monaco (sans-serif)'}
-              </MenuItem>
-              <MenuItem key={13} value={'Andale Mono, sans-serif'}>
+							</MenuItem>
+							<MenuItem key={13} value={'Andale Mono, sans-serif'}>
 								{'Andale Mono (sans-serif)'}
-              </MenuItem>
-              <MenuItem key={14} value={'Open Sans, sans-serif'}>
+							</MenuItem>
+							<MenuItem key={14} value={'Open Sans, sans-serif'}>
 								{'Open Sans (sans-serif)'}
-              </MenuItem>
-              {/* <MenuItem key={12} value={'Custom'}>
-								{'Add your custom font'}
-							</MenuItem> */}
+							</MenuItem>
+							{/* <MenuItem key={12} value={'Custom'}>
+                                {'Add your custom font'}
+                            </MenuItem> */}
 						</Select>
-          </FormControl>
-          {isCustom ? (
-            <TextField
-            required={true}
-						type='string'
-						id={`main_buttonFont`}
-						name={`main_buttonFont`}
-						value={customFont}
-						label={'Add your custom font:'}
-						onChange={(event) => handleCustomFont(event)}
-						fullWidth
-						autoComplete='off'
-            className='textFieldStyle'
-            inputProps={{maxLength: 25}}
-            style={{ marginTop: 5}}
-            />
-          ): null}
-        </Grid>
+					</FormControl>
+					{isCustom ? (
+						<TextField
+							required={true}
+							type='string'
+							id={`main_buttonFont`}
+							name={`main_buttonFont`}
+							value={customFont}
+							label={'Add your custom font:'}
+							onChange={(event) => handleCustomFont(event)}
+							fullWidth
+							autoComplete='off'
+							className='textFieldStyle'
+							inputProps={{ maxLength: 25 }}
+							style={{ marginTop: 5 }}
+						/>
+					) : null}
+				</Grid>
 
-        <Grid item xs={12} sm={12}>
-          	<FormControl className={classes.formControl}>
-						<InputLabel style={{ marginTop: 5}} id={`weight`} required={true}>
+				<Grid item xs={12} sm={12}>
+					<FormControl className={classes.formControl}>
+						<InputLabel style={{ marginTop: 5 }} id={`weight`} required={true}>
 							{'Choose font weight:'}
 						</InputLabel>
 						<Select
 							name={`select_fontWeight`}
 							value={fWeight}
-              onChange={(event) => {
-                handleFontWeight(event);
+							onChange={(event) => {
+								handleFontWeight(event);
 							}}
 						>
 							<MenuItem key={2} value={200}>
-								{"lighter"}
+								{'lighter'}
 							</MenuItem>
 							<MenuItem key={3} value={400}>
-								{"normal"}
+								{'normal'}
 							</MenuItem>
 							<MenuItem key={4} value={700}>
-								{"bold"}
-              </MenuItem>
-              <MenuItem key={5} value={900}>
-								{"bolder"}
+								{'bold'}
+							</MenuItem>
+							<MenuItem key={5} value={900}>
+								{'bolder'}
 							</MenuItem>
 						</Select>
 					</FormControl>
 				</Grid>
 
-        {/* <Grid item xs={12} sm={12}>
-          	<FormControl className={classes.formControl}>
-						<InputLabel style={{ marginTop: 5}} id={`rotation`} required={true}>
-							{'Choose Widget Rotation (please be aware this may effect other styling):'}
-						</InputLabel>
-						<Select
-							name={`select_rotation`}
-							value={rotation}
+				{/* <Grid item xs={12} sm={12}>
+              <FormControl className={classes.formControl}>
+                        <InputLabel style={{ marginTop: 5}} id={`rotation`} required={true}>
+                            {'Choose Widget Rotation (please be aware this may effect other styling):'}
+                        </InputLabel>
+                        <Select
+                            name={`select_rotation`}
+                            value={rotation}
               onChange={(event) => {
                 handleDegChange(event);
-							}}
-						>
-							<MenuItem key={1} value={'0'}>
-								{'0 degrees'}
-							</MenuItem>
-							<MenuItem key={2} value={'90'}>
-								{'90 degrees'}
-							</MenuItem>
-							<MenuItem key={3} value={'180'}>
-								{'180 degrees'}
-							</MenuItem>
-							<MenuItem key={4} value={'270'}>
-								{'270 degrees'}
+                            }}
+                        >
+                            <MenuItem key={1} value={'0'}>
+                                {'0 degrees'}
+                            </MenuItem>
+                            <MenuItem key={2} value={'90'}>
+                                {'90 degrees'}
+                            </MenuItem>
+                            <MenuItem key={3} value={'180'}>
+                                {'180 degrees'}
+                            </MenuItem>
+                            <MenuItem key={4} value={'270'}>
+                                {'270 degrees'}
               </MenuItem>
               <MenuItem key={5} value={'360'}>
-								{'360 degrees'}
-							</MenuItem>
-						</Select>
-					</FormControl>
-				</Grid> */}
+                                {'360 degrees'}
+                            </MenuItem>
+                        </Select>
+                    </FormControl>
+                </Grid> */}
 
 				<Grid item xs={12} sm={12}>
-          	<FormControl className={classes.formControl}>
-						<InputLabel style={{ marginTop: 5}} id={`position`} required={true}>
+					<FormControl className={classes.formControl}>
+						<InputLabel
+							style={{ marginTop: 5 }}
+							id={`position`}
+							required={true}
+						>
 							{'Choose Widget position on site: (will affect widget rotation)'}
 						</InputLabel>
 						<Select
 							name={`select_position`}
 							value={btnPosition}
-              onChange={(event) => {
-                handleBtnPosition(event);
+							onChange={(event) => {
+								handleBtnPosition(event);
 							}}
 						>
-              <MenuItem key={1} value={'left'}>
+							<MenuItem key={1} value={'left'}>
 								{'Left'}
 							</MenuItem>
 							<MenuItem key={2} value={'right'}>
@@ -423,7 +445,11 @@ const LookAndFeel = ({
 
 				<Grid item xs={12} sm={12}>
 					<FormControl className={classes.formControl}>
-						<InputLabel style={{ marginTop: 5}} id={`colorStylingOptions`} required={true}>
+						<InputLabel
+							style={{ marginTop: 5 }}
+							id={`colorStylingOptions`}
+							required={true}
+						>
 							{'Choose color styling options:'}
 						</InputLabel>
 						<Select
@@ -451,7 +477,11 @@ const LookAndFeel = ({
 
 				{showColor ? (
 					<Grid item xs={12} sm={12}>
-            <InputLabel style={{ marginTop: 15}} id={`colorSelect`} required={true}>
+						<InputLabel
+							style={{ marginTop: 15 }}
+							id={`colorSelect`}
+							required={true}
+						>
 							{'Choose an initial color for your widget to show:'}
 						</InputLabel>
 						<br></br>
@@ -494,9 +524,7 @@ const LookAndFeel = ({
 										id={`main_buttonColor`}
 										name={`main_buttonColor`}
 										value={buttonColor}
-										label={
-											'Choose widget button color: (Hex)'
-										}
+										label={'Choose widget button color: (Hex)'}
 										onChange={(event) => {
 											console.log(event.target.value);
 											setButtonColor(event.target.value);
@@ -513,9 +541,7 @@ const LookAndFeel = ({
 										id={`main_buttonTextColor`}
 										name={`main_buttonTextColor`}
 										value={buttonTextColor}
-										label={
-											'Choose widget text color: (Hex)'
-										}
+										label={'Choose widget text color: (Hex)'}
 										onChange={(event) => {
 											setBtnTextColor(event.target.value);
 											handleMainBtnTextColor(event);
@@ -536,9 +562,9 @@ const LookAndFeel = ({
 					display: 'flex',
 					flexDirection: 'row',
 					justifyContent: 'center',
-          alignItems: 'center',
-          marginLeft: 50,
-          padding: 20,
+					alignItems: 'center',
+					marginLeft: 50,
+					padding: 20,
 				}}
 			>
 				<Box
@@ -550,8 +576,17 @@ const LookAndFeel = ({
 						justifyContent: 'flex-start',
 						alignItems: 'center',
 					}}
-        >
-          <p style={{ fontSize: 13, textAlign: 'center', color: 'gray', marginBottom: 50}}>Widget Preview</p>
+				>
+					<p
+						style={{
+							fontSize: 13,
+							textAlign: 'center',
+							color: 'gray',
+							marginBottom: 50,
+						}}
+					>
+						Widget Preview
+					</p>
 					<Button
 						disableRipple
 						style={{
@@ -559,20 +594,20 @@ const LookAndFeel = ({
 							height: 40,
 							lineHeight: 40,
 							padding: '0 20px',
-              margin: 0,
-              marginTop: 10,
+							margin: 0,
+							marginTop: 10,
 							borderRadius: '4px 4px 4px 4px',
-              backgroundColor: buttonColor,
+							backgroundColor: buttonColor,
 							color: buttonTextColor,
 							textAlign: 'center',
 							fontSize: 14,
-              fontFamily: isCustom ? customFont : fontSelect,
-              fontWeight: fWeight,
-              transform: `rotate(${rotation}deg)`,
-              textTransform: 'none',
+							fontFamily: isCustom ? customFont : fontSelect,
+							fontWeight: fWeight,
+							transform: `rotate(${rotation}deg)`,
+							textTransform: 'none',
 						}}
 					>
-            {buttonText}
+						{buttonText}
 					</Button>
 				</Box>
 			</Box>

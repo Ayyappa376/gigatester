@@ -31,7 +31,7 @@ export interface FeedbackAgentSettings {
     invokeOn: InvokeType[];
     logo?: string;
     platform: PlatformType;
-    requireEmail?: RequireEmail; // make email optional or mandatory
+    requireEmail?: boolean; // make email optional or mandatory
     thanksStr?: string;
     title: string;
     uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
@@ -62,14 +62,16 @@ export interface FeedbackSettings {
 
 export interface WidgetLAF {
     bgColor: string;
-    btnWidth: string | number;
     fgColor: string;
     font: string;
+    fontStyle: string;
     fontWeight: number;
     icon?: string;
-    position: string;
-    rotation: string;
+    left?: string;
+    position: WidgetPosition;
+    rotation?: string;
     text: string;
+    top?: string;
   }
 
 export interface Category {
@@ -119,6 +121,11 @@ export type TrackingSystemType = 'SELF' | 'JIRA';
 export const TRACKING_SYSTEM_SELF: TrackingSystemType = 'SELF';
 export const TRACKING_SYSTEM_JIRA: TrackingSystemType = 'JIRA';
 
-export type RequireEmail = 'MANDATORY' | 'OPTIONAL' ;
-export const EMAIL_MANDATORY: RequireEmail = 'MANDATORY';
-export const EMAIL_OPTIONAL: RequireEmail = 'OPTIONAL';
+export type WidgetPosition = 'RIGHT_MIDDLE' | 'RIGHT_BOTTOM' | 'LEFT_MIDDLE' | 'LEFT_BOTTOM' |'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'CUSTOM';
+export const POS_RIGHT_MIDDLE: WidgetPosition = 'RIGHT_MIDDLE';
+export const POS_RIGHT_BOTTOM: WidgetPosition = 'RIGHT_BOTTOM';
+export const POS_LEFT_MIDDLE: WidgetPosition = 'LEFT_MIDDLE';
+export const POS_LEFT_BOTTOM: WidgetPosition = 'LEFT_BOTTOM';
+export const POS_BOTTOM_RIGHT: WidgetPosition = 'BOTTOM_RIGHT';
+export const POS_BOTTOM_LEFT: WidgetPosition = 'BOTTOM_LEFT';
+export const POS_CUSTOM: WidgetPosition = 'CUSTOM';
