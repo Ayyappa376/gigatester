@@ -32,6 +32,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
   const classes = useStyles();
   const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
   const [pieChartSeries, setPieChartSeries] = useState({})
+  // const [bugBarChartData, setBugBarChartData] = useState({})
   const [showImageModal, setShowImageModal] = useState(false);
   const [signedImageUrl, setSignedImageUrl] = useState('');
   const [attachmentType, setAttachmentType] = useState('')
@@ -82,6 +83,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
   const [currentDisable, setCurrentDisable] = useState<string>('');
   const [category, setCat] = useState<boolean>(false);
   const [severity, setSeverity] = useState<boolean>(false);
+  const [severityList, setSeverityList] = useState<any>([]);
+  const [categoryList, setCategoryList] = useState<any>([]);
   const [keys, setKey] = useState<boolean>(false);
   const [rating, setRating] = useState<boolean>(false);
 
@@ -92,6 +95,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
         data: Object.values(feedbackBarChartData)
       }];
       setBarChartSeries(series);
+      console.log(feedbackBarChartData, 'fbcdd')
+      setSeverityList(Object.keys(feedbackBarChartData))
     }
   }, [feedbackBarChartData])
 
@@ -122,12 +127,13 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
          }
        });
 
-     const urlArrayCopy = [...urlArray];
+    const urlArrayCopy = [...urlArray];
      urlArrayCopy.push(...urls);
      setUrlArray(urlArrayCopy)
    }, [data])
   const pieChartOptions = getPieChartOptions(pieChartSeries);
-  const bugBarChartOptions = getBugBarChartOptions(bugBarChartSeries);
+  console.log(feedbackBarChartData, 'fbcd');
+  const bugBarChartOptions = getBugBarChartOptions(bugBarChartSeries, feedbackBarChartData);
 
   const disbaleFilterButtons = (filter: string) => {
     if (filter === '') {
@@ -334,6 +340,14 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
         if(Object.keys(feedbackBarChartData).length > 0) {
           setBackdropOpen(false);
         }
+        if(pieChartSeries){
+          let searchCategoryList = Object.keys(pieChartSeries);
+          searchCategoryList =  searchCategoryList.map(element => {
+            return element.toLowerCase();
+          })
+          console.log(searchCategoryList);
+          setCategoryList(searchCategoryList)
+        }
     }
   }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])
 
@@ -462,16 +476,16 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
     }
   }
 
-  const getCategoryList = () => {
-    const categoryList: string[] = []
-    if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
-      prodNameIdMapping[selectedProdId].categories.map((el) => {
-        categoryList.push(el.name);
-      });
-    }
+  // const getCategoryList = () => {
+  //   const categoryList: string[] = []
+  //   if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
+  //     prodNameIdMapping[selectedProdId].categories.map((el) => {
+  //       categoryList.push(el.name);
+  //     });
+  //   }
 
-    return categoryList;
-  }
+  //   return categoryList;
+  // }
 
   const imagePayload = {
     showImageModal: showImageModal,
@@ -513,7 +527,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
           order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
           searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
           focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={categoryList} severityList={severityList} resultsFetched={resultsFetched}
           />
         </div>
         :
@@ -535,7 +549,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
           order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
           searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
           focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={categoryList} severityList={severityList} resultsFetched={resultsFetched}
           />
         </div>}
           </div>

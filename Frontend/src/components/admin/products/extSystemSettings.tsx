@@ -188,6 +188,16 @@ const EditExternalSystemSettings = (props: any) => {
     }
   }
 
+  const handleAuthChange = (event: any, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.auth[type] = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
   const handleSystemTypeChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -267,6 +277,48 @@ const EditExternalSystemSettings = (props: any) => {
                 }
                 label={'The URl for your tracking/incident management system'}
                 onChange={(event) => handleURLChange(event)}
+                disabled={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].trackingSystem &&
+                  productParams.products[0].trackingSystem.type === TRACKING_SYSTEM_SELF)}
+                fullWidth
+                autoComplete='off'
+                className='textFieldStyle'
+              />
+                <TextField
+                required={true}
+                type='string'
+                id={`title`}
+                name={`title`}
+                value={
+                  (productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].trackingSystem &&
+                  productParams.products[0].trackingSystem.auth['authUser'])
+                  ? productParams.products[0].trackingSystem.auth['authUser']
+                  : ''
+                }
+                label={'Provide auth user email for your tracking/incident management system'}
+                onChange={(event) => handleAuthChange(event, 'authUser')}
+                disabled={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].trackingSystem &&
+                  productParams.products[0].trackingSystem.type === TRACKING_SYSTEM_SELF)}
+                fullWidth
+                autoComplete='off'
+                className='textFieldStyle'
+              />
+                <TextField
+                required={true}
+                type='string'
+                id={`title`}
+                name={`title`}
+                value={
+                  (productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].trackingSystem &&
+                  productParams.products[0].trackingSystem.auth['authKey'])
+                  ? productParams.products[0].trackingSystem.auth['authKey']
+                  : ''
+                }
+                label={'Provide auth key for your tracking/incident management system'}
+                onChange={(event) => handleAuthChange(event, 'authKey')}
                 disabled={(productParams && productParams.products && productParams.products[0] &&
                   productParams.products[0].trackingSystem &&
                   productParams.products[0].trackingSystem.type === TRACKING_SYSTEM_SELF)}

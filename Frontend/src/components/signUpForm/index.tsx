@@ -140,7 +140,7 @@ export default function SignupForm(props: any) {
             // setNewUserPosted(true);
           })
           .catch((error) => {
-            // console.log(error);
+            console.log(error);
             setLoading(false);
             setErrorMessage(
               "Internal error occurred while registering user."

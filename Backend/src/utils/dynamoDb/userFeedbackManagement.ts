@@ -2,6 +2,7 @@ import { SeverityType } from '@models/index';
 import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
+//import { ServerResponse } from 'http';
 import { queryRaw, scan } from './sdk';
 
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
@@ -209,7 +210,7 @@ export const getUserFeedbackListForChart = async ({type, items, search, lastEval
     return scan<any[]>(params);
   };
 
-const convertFirstLetterToUppercase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+// const convertFirstLetterToUppercase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export const feedbackProcessBarChartData = (items: AppFeedback[]) => {
     const ratingData: ProcessedData = {1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0};
@@ -234,16 +235,35 @@ export const feedbackProcessPieChartData = (pData: ProcessedData) => {
     return {dissatisfied, satisfied, somewhatSatisfied};
 };
 
-export const bugProcessBarChartData = (items: AppFeedback[]) => {
-    const severityData: ProcessedData = {Critical : 0, High : 0, Medium : 0, Low : 0};
-    if(items.length > 0) {
-        items.forEach((item) => {
+export const bugProcessBarChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
+  if(prodId && prodVersion) {
+  // const severities: string[] = await getSeveritiesList({prodId, prodVersion, chartType});
+    const severityData: ProcessedData = {};
+    // console.log(severities, 'sverriiiiii')
+    // severities.forEach((el) => {
+    //   severityData[el] = 0;
+    // });
+  //   if(data.length > 0) {
+  //     data.forEach((item: any) => {
+  //         if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
+  //             severityData[convertFirstLetterToUppercase(item.bugPriority)] = 0;
+  //         }
+  //     });
+  // }
+    if(data.length > 0) {
+        data.forEach((item: any) => {
             if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
-                severityData[convertFirstLetterToUppercase(item.bugPriority)] += 1;
+              if(!severityData[item.bugPriority]) {
+                severityData[item.bugPriority] = 1;
+              } else {
+                severityData[item.bugPriority] += 1;
+              }
             }
         });
     }
     return severityData;
+  }
+  return {};
 };
 
 export const getCategoriesList = ({prodId, prodVersion, chartType}: {chartType: string; prodId: string; prodVersion: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
@@ -265,17 +285,34 @@ export const getCategoriesList = ({prodId, prodVersion, chartType}: {chartType: 
     return resolve(categoryList);
   });
 
+  export const getSeveritiesList = ({prodId, prodVersion, chartType}: {chartType: string; prodId: string; prodVersion: string}): Promise<string[]> => new Promise(async(resolve, reject) => {
+    const severityList: string[] = [];
+    const productInfo = await getProductDetails(prodId, prodVersion);
+    if (chartType === 'BUG_REPORT') {
+      if(productInfo && productInfo.feedbackAgentSettings && productInfo.feedbackAgentSettings.bugSettings && productInfo.feedbackAgentSettings.bugSettings.severities.length) {
+        productInfo.feedbackAgentSettings.bugSettings.severities.map((el: any) => {
+          severityList.push(el);
+        });
+      }
+    }
+    return resolve(severityList);
+  });
+
 export const processPieChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
   if(prodId && prodVersion) {
-    const categories: string[] = await getCategoriesList({prodId, prodVersion, chartType});
+    // const categories: string[] = await getCategoriesList({prodId, prodVersion, chartType});
     const categoryData: ProcessedData = {};
-    categories.forEach((el) => {
-      categoryData[el] = 0;
-    });
+    // categories.forEach((el) => {
+    //   categoryData[el] = 0;
+    // });
     if(data.length > 0) {
       data.forEach((item) => {
-            if(item.feedbackCategory && categories.indexOf(item.feedbackCategory) !== -1) {
+            if(item.feedbackCategory) {
+              if(!categoryData[item.feedbackCategory]) {
+                categoryData[item.feedbackCategory] = 1;
+              } else {
                 categoryData[item.feedbackCategory] += 1;
+              }
             }
         });
     }
@@ -293,7 +330,7 @@ const processFeedbackChartData = async({data, prodId, prodVersion, chartType}: {
 };
 
 const processBugReportChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
-  const barChartData = bugProcessBarChartData(data);
+  const barChartData = await bugProcessBarChartData({data, prodId, prodVersion, chartType});
   const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
   return {
     barChartData, pieChartData

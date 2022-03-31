@@ -59,7 +59,61 @@ export async function connectAndFetchFromJIRA(
               }
             tool.items.value = [toolConfig.attributes.items.defaultValue];
             }
+            const severityURL = `${tool.url.value}/rest/api/latest/priority`;
+            HttpRequest.httpRequest('GET', severityURL, undefined, auth, {Accept: 'application/json'})
+            .then((resStatus: any) => {
+//              appLogger.info({connectAndFetchFromJIRA: {statusesURL, resStatus}});
+              if (resStatus.statusCode < 200 || resStatus.statusCode >= 300) {
+                const err = new Error('Error connecting to JIRA');
+                appLogger.error(err, 'Code: ' + resStatus.statusCode);
+                reject(err);
+              } else {
+                const statusData = JSON.parse(resStatus.body);
+                appLogger.info({statusData});
+//                const options = statusData.map((elm: any) => elm.name);
+                const options = {};
+                statusData.forEach((elm: any) => {
+                  options[elm.name] = elm.name;
+                });
+                tool.closeState.options = options;
+                if(toolConfig.attributes.closeState.defaultValue) {
+//                  if(! tool.closeState.options.includes(toolConfig.attributes.closeState.defaultValue)) {
+//                    tool.closeState.options.push(toolConfig.attributes.closeState.defaultValue);
+//                  }
+                  if(! Object.keys(tool.closeState.options).includes(toolConfig.attributes.closeState.defaultValue)) {
+                    tool.closeState.options[toolConfig.attributes.closeState.defaultValue] = toolConfig.attributes.closeState.defaultValue;
+                  }
+                  tool.closeState.value = toolConfig.attributes.closeState.defaultValue;
+                }
+                tool.startState.options = options;
+                if(toolConfig.attributes.startState.defaultValue) {
+//                  if(! tool.startState.options.includes(toolConfig.attributes.startState.defaultValue)) {
+//                    tool.startState.options.push(toolConfig.attributes.startState.defaultValue);
+//                  }
+                  if(! Object.keys(tool.startState.options).includes(toolConfig.attributes.startState.defaultValue)) {
+                    tool.startState.options[toolConfig.attributes.startState.defaultValue] = toolConfig.attributes.startState.defaultValue;
+                  }
+                  tool.startState.value = toolConfig.attributes.startState.defaultValue;
+                }
+                tool.newState.options = options;
+                if(toolConfig.attributes.newState.defaultValue) {
+//                  if(! tool.newState.options.includes(toolConfig.attributes.newState.defaultValue)) {
+//                    tool.newState.options.push(toolConfig.attributes.newState.defaultValue);
+//                  }
+                  if(! Object.keys(tool.newState.options).includes(toolConfig.attributes.newState.defaultValue)) {
+                    tool.newState.options[toolConfig.attributes.newState.defaultValue] = toolConfig.attributes.newState.defaultValue;
+                  }
+                  tool.newState.value = toolConfig.attributes.newState.defaultValue;
+                }
 
+                appLogger.info({tool});
+                resolve(tool);
+              }
+            })
+            .catch((err) => {
+              appLogger.error({ JIRAGetError: err });
+              reject(err);
+            });
             const statusesURL = `${tool.url.value}/rest/api/latest/status`;
             HttpRequest.httpRequest('GET', statusesURL, undefined, auth, {Accept: 'application/json'})
             .then((resStatus: any) => {

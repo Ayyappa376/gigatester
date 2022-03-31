@@ -55,6 +55,7 @@ export const getFeedbackData = ({ urlAppend}: any) => {
 
 interface IGetChartData {
   setFeedbackBarChartData: Function,
+  // setBugBarChartData: Function,
   setBugBarChartSeries: Function,
   setPieChartSeries: Function,
   prodId: string,
@@ -81,10 +82,12 @@ export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarCha
       url,
     }).then((response: any) => {
       const processedData = response.Items;
+      console.log(processedData, 'processedData')
         setBugBarChartSeries([{
           name: 'Severity',
           data: Object.values(processedData.barChartData)
         }])
+        setFeedbackBarChartData(processedData.barChartData)
         setPieChartSeries(processedData.pieChartData)
     })
     .catch((error) => {
