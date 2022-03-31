@@ -31,7 +31,7 @@ try {
         const now = new Date();
         const tableparams = {
           Item: {
-            bugPriority: jsonBody.bugPriority,
+            bugPriority: jsonBody.bugPriority.toLowerCase(),
             contextDetails: jsonBody.contextDetails,
             createdOn: Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()),
             feedbackCategory: jsonBody.feedbackCategory,

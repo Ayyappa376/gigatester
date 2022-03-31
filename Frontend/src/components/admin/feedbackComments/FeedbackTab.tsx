@@ -87,6 +87,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   const [currentDisable, setCurrentDisable] = useState<string>('');
   const [category, setCat] = useState<boolean>(false);
   const [severity, setSeverity] = useState<boolean>(false);
+  const [severityList, setSeverityList] = useState<any>([]);
+  const [categoryList, setCategoryList] = useState<any>([]);
   const [keys, setKey] = useState<boolean>(false);
   const [rating, setRating] = useState<boolean>(false);
 
@@ -341,8 +343,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       if (Object.keys(feedbackBarChartData).length > 0) {
         setBackdropOpen(false);
       }
+      if(pieChartSeries){
+        setCategoryList(Object.keys(pieChartSeries))
+      }
     }
-  }, [selectedProdId, rawData, feedbackBarChartData, error, noDataError])
+  }, [selectedProdId, rawData, feedbackBarChartData,pieChartSeries, error, noDataError])
 
   const fetchSignedUrl = (imgUrl: string) => {
     const urlSplit = imgUrl.split('/')
@@ -479,16 +484,16 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     }
   }
 
-  const getCategoryList = () => {
-    const categoryList: string[] = []
-    if (prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
-      prodNameIdMapping[selectedProdId].categories.map((el) => {
-        categoryList.push(el.name);
-      });
-    }
+  // const getCategoryList = () => {
+  //   const categoryList: string[] = []
+  //   if (prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
+  //     prodNameIdMapping[selectedProdId].categories.map((el) => {
+  //       categoryList.push(el.name);
+  //     });
+  //   }
 
-    return categoryList;
-  }
+  //   return categoryList;
+  // }
 
   const imagePayload = {
     showImageModal: showImageModal,
@@ -530,7 +535,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
             order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
             searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
             focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+            focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={categoryList} severityList={severityList} resultsFetched={resultsFetched}
           />
         </div>
           :
@@ -552,7 +557,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
                 order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
                 searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
                 focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-                focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={getCategoryList()} resultsFetched={resultsFetched}
+                focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={categoryList} severityList={severityList} resultsFetched={resultsFetched}
               />
             </div>}
           </div>

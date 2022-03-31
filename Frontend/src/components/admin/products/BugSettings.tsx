@@ -5,10 +5,10 @@ import { Grid, Typography, TextField, Button, IconButton,
 } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { ICategory, IProductParams } from '../../../model';
+import { ICategory, IProductParams, ISeverity } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
 
-interface CategoryProps {
+interface BugSettingProps {
   productParams: IProductParams,
   addBugCategory: Function,
   handleChangeBugCategoryName: Function,
@@ -21,6 +21,78 @@ interface CategoryProps {
   handleBugDialogMsgChange: Function,
   handleBugThanksMsgChange: Function,
   handleReqComments: Function,
+  addBugSeverity: Function,
+  handleChangeBugSeverityName: Function,
+  deleteBugSeverity: Function,
+}
+
+  // const handleTrackingSystemDetails = (event: any) => {
+  // let auth = btoa('sasidharan.r@pinimbus.com:mVhjy8RGYQPuaAhE8roHAEB8');
+  // console.log(auth);
+  // fetch('https://pinimbus.atlassian.net/rest/api/latest/priority',{
+  //   method: 'GET',
+  //   mode: 'no-cors',
+  //   headers: {
+  //     'Authorization': 'Basic ' + `auth`,
+  //     'Content-Type': 'application/json',
+  //   }
+  // }).then(
+  //   response => console.log(response))
+  // .then(data => {
+  //   console.log('Success:', data);
+  // })
+  // .catch((error) => {
+  //   console.error('Error:', error);
+  // })
+  // let myHeaders = new Headers();
+  // myHeaders.append("Authorization", "Basic c2FzaWRoYXJhbi5yQHBpbmltYnVzLmNvbTptVmhqeThSR1lRUHVhQWhFOHJvSEFFQjg=");
+
+  // let requestOptions = {
+  //   method: 'GET',
+  //   headers: myHeaders,
+  // };
+
+  // fetch("https://pinimbus.atlassian.net/rest/api/latest/priority", requestOptions)
+  //   .then(response => response.text())
+  //   .then(result => console.log(result))
+  //   .catch(error => console.log('error', error));
+  // }
+
+const renderSeverityDetails = (
+  severity: ISeverity,
+  catIndex: number,
+  handleChangeBugSeverityName: Function,
+  deleteBugSeverity: Function,
+  ) => {
+    return(   
+    <Fragment key={catIndex}>
+      <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
+        <Grid item xs={10} sm={10}>
+          <TextField
+            required
+            type='string'
+            id={`severity_${catIndex}`}
+            name={`severity_${catIndex}`}
+            label='Severity Type'
+            value={severity}
+            fullWidth
+            onChange={(event) => handleChangeBugSeverityName(event, catIndex)}
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+        </Grid>
+        <Grid item xs={2} sm={2}>
+          <LightTooltip
+            title={'Delete this Severity type'}
+            aria-label='delete this severity type'
+          >
+            <IconButton size='small' onClick={() => deleteBugSeverity(catIndex)} >
+              <ClearIcon />
+            </IconButton>
+          </LightTooltip>
+        </Grid>
+      </Grid>
+    </Fragment>)
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -127,6 +199,9 @@ const renderCategoryDetails = (
 const BugSettings = ({
   productParams,
   addBugCategory,
+  addBugSeverity,
+  handleChangeBugSeverityName,
+  deleteBugSeverity,
   handleChangeBugCategoryName,
   deleteBugCategory,
   addBugStdFeedbackText,
@@ -137,7 +212,7 @@ const BugSettings = ({
   handleBugDialogMsgChange,
   handleBugThanksMsgChange,
   handleReqComments,
-}: CategoryProps) => {
+}: BugSettingProps) => {
   const classes = useStyles();
 
   // const handleRequireComments = (event: any) => {
@@ -346,6 +421,52 @@ const BugSettings = ({
               deleteBugStdFeedbackText);
           })}
       </Grid>
+      
+      <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
+        <Grid item xs={10}>
+          <Typography variant="h6">Severity:</Typography>
+        </Grid>
+        <Grid item xs={2} style={{ textAlign: "center" }}>
+          <LightTooltip
+            title={'Add a severity type'}
+            aria-label='Add a severity type'
+          >
+            <Button size='small' variant="outlined" onClick={() => addBugSeverity()} >
+              <AddIcon /> Severity
+            </Button>
+          </LightTooltip>
+        </Grid>
+        {productParams && productParams.products && productParams.products[0] &&
+          productParams.products[0].feedbackAgentSettings &&
+          productParams.products[0].feedbackAgentSettings.bugSettings &&
+          productParams.products[0].feedbackAgentSettings.bugSettings.severities &&
+          productParams.products[0].feedbackAgentSettings.bugSettings.severities.map((severity: ISeverity, index: number) => {
+            return renderSeverityDetails(
+              severity,
+              index,
+              handleChangeBugSeverityName,
+              deleteBugSeverity
+ );
+          })}
+      </Grid>
+      {/* <FormControlLabel
+          control={
+            <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].trackingSystem)
+                ? productParams.products[0].trackingSystem.severity
+                : false}
+              onChange={(event) => handleTrackingSystemDetails(event)}
+              value="trackingSystemSeverityDetails"
+            />
+          }
+          label={
+            <Typography color="textSecondary">
+              {"Use Tracking system severity details"}
+            </Typography>
+          }
+          labelPlacement={'start'}
+        /> */}
       </Fragment>
   );
 }
