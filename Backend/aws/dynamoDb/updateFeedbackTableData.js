@@ -35,7 +35,7 @@ function scan(params) {
           params,
           async (err, data) => {
             if (err) {
-              appLogger.error(err);
+              // appLogger.error(err);
               return reject(err);
             }
             let result = data.Items;
@@ -57,6 +57,11 @@ function scan(params) {
 const fetchData = () => {
     let params  = {
         TableName: 'dev_GT_feedback',
+        FilterExpression: '#bugPriority = :bugPriority',
+        ExpressionAttributeNames: {
+          "#bugPriority": "bugPriority",
+      },
+        ExpressionAttributeValues: {":bugPriority": "Highest"},
     };
     return scan(params);
 }
@@ -76,17 +81,21 @@ const convertCommentArrayToString = (commentArray) => {
    return JSON.stringify(commentsObject);
 }
 
+const convertSeverityDataToLowerCase = (severity) => {
+
+}
+
 const processData = async() => {
     const data = await fetchData();
-   // console.log(data)
+   console.log(data)
 
     data.forEach((el) => {
-      if(typeof el.feedbackComments === 'object'){
+      if(typeof el.bugPriority === 'string'){
         //const newComment = convertCommentArrayToString(el.feedbackComments)
         const id = el.id;
         const params = {
-          ExpressionAttributeNames: {'#comments': 'feedbackComments'},
-          ExpressionAttributeValues: {':newComment': JSON.stringify(el.feedbackComments)},
+          ExpressionAttributeNames: {'#comments': 'bugPriority'},
+          ExpressionAttributeValues: {':newComment': "highest"},
           Key: {
             id,
           },

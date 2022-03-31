@@ -210,7 +210,7 @@ export const getUserFeedbackListForChart = async ({type, items, search, lastEval
     return scan<any[]>(params);
   };
 
-const convertFirstLetterToUppercase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
+// const convertFirstLetterToUppercase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export const feedbackProcessBarChartData = (items: AppFeedback[]) => {
     const ratingData: ProcessedData = {1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0};
@@ -253,11 +253,11 @@ export const bugProcessBarChartData = async({data, prodId, prodVersion, chartTyp
     if(data.length > 0) {
         data.forEach((item: any) => {
             if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
-              if(!severityData[convertFirstLetterToUppercase(item.bugPriority)]){
-                severityData[convertFirstLetterToUppercase(item.bugPriority)] = 1
+              if(!severityData[item.bugPriority]){
+                severityData[item.bugPriority] = 1
               }
               else{
-                severityData[convertFirstLetterToUppercase(item.bugPriority)] += 1;
+                severityData[item.bugPriority] += 1;
               }
             }
         });

@@ -127,7 +127,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
          }
        });
 
-     const urlArrayCopy = [...urlArray];
+    const urlArrayCopy = [...urlArray];
      urlArrayCopy.push(...urls);
      setUrlArray(urlArrayCopy)
    }, [data])
@@ -341,7 +341,12 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
           setBackdropOpen(false);
         }
         if(pieChartSeries){
-          setCategoryList(Object.keys(pieChartSeries))
+          let searchCategoryList = Object.keys(pieChartSeries);
+          searchCategoryList =  searchCategoryList.map(element => {
+            return element.toLowerCase();
+          })
+          console.log(searchCategoryList);
+          setCategoryList(searchCategoryList)
         }
     }
   }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])

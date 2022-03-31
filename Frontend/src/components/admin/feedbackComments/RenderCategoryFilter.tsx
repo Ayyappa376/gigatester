@@ -42,7 +42,7 @@ const RenderCategoryFilter = (props: IProps) => {
         <div id="RenderFilter-Block">
             <div id="RenderFilter-textContainer">
                 <Typography id="RenderFilter-textHeader">
-                    {`Chose ${type} with category:`}
+                    {`Choose ${type} with category:`}
                 </Typography>
             </div>
             <div id="RenderFilter-flexContainer">
