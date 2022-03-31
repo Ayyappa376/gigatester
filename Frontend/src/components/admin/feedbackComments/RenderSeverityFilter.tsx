@@ -8,6 +8,7 @@ interface IProps {
     focusSeverity: string[];
     disableButtons: boolean;
     severity: boolean;
+    severityList: string[];
     setDisable: Function;
 }
 
@@ -15,7 +16,7 @@ const severityList = [
     "Critical", "High", "Medium", "Low"
 ]
 const RenderSeverityFilter = React.memo((props: IProps) => {
-    const {focusSeverity, setFocusSeverity, severity, setDisable} = props;
+    const {focusSeverity, setFocusSeverity, severityList, severity, setDisable} = props;
 
     const handleKeywordClick = (val: string) => {
         if(props.disableButtons) {

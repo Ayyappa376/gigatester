@@ -37,6 +37,7 @@ interface IProps {
   focusCategory: string[],
   setFocusCategory: Function;
   categoryList: string[],
+  severityList: string[],
   order: Order,
   keyword: string,
   setKeyword: Function,
@@ -173,9 +174,9 @@ const RenderTable = (props: IProps) => {
             <Grid item md={6}>
               {
                 <div>
-                <RenderSeverityFilter severity={severity} setDisable={setDisable} focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
+                <RenderSeverityFilter severity={severity} setDisable={setDisable} severityList={props.severityList} focusSeverity={props.focusSeverity} setFocusSeverity={props.setFocusSeverity} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
                 <Divider style={{marginTop: '1rem', marginBottom: '1rem', transform: 'translateX(-1rem) scaleX(1.1)'}}/>
-                <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList}/>
+                <RenderCategoryFilter category={category} setDisable={setDisable} focusCategory={props.focusCategory} setFocusCategory={props.setFocusCategory} type={type} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} categoryList={props.categoryList} />
                 </div>
               }
             </Grid>
