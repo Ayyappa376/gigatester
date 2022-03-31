@@ -1,34 +1,37 @@
 import { Box, Tabs, Tab, Container, Grid, makeStyles, Divider, Paper } from '@material-ui/core';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
-import { IFeedbackComments, IProductNameIdMapping, ILimitedProductDetails, IAppFeedback, IFeedbackBarChartData, ILastEvalKey } from './common';
+import { IFeedbackComments, IProductNameIdMapping, ILimitedProductDetails, IAppFeedback, IFeedbackBarChartData, ILastEvalKey, NUMBER_OF_ITEMS_PER_FETCH,  IFetchRecursiveData } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import RenderTable, { Order } from './RenderTable';
 import FeedbackTab from './FeedbackTab';
 import BugsTab from './BugsTab';
+import { getFeedbckChartData, getFeedbackData, getProductDetails } from './methods';
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import { Http } from '../../../utils';
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
+  const { productId } = props;
   const classes = useStyles();
   const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
   const [selectedProduct, setSelectedProduct] = useState<string>('');
   const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
   const [prodNameIdMappingBugCopy, setProdNameIdMappingBugs] = useState<IProductNameIdMapping>({})
-  // const [selectedProdId, setSelectedProdId] = useState<string>(() => {
-  //   if (props.productId) {
-  //     return props.productId;
-  //   }
-  //   return ''
-  // })
   const [selectedProdId, setSelectedProdId] = useState<string>("")
-  // const [productVersion, setProductVersion] = useState(() => {
-  //   if (props.prodVersion) {
-  //     return props.prodVersion;
-  //   }
-  //   return ''
-  // });
   const [productVersion, setProductVersion] = useState("");
+  // const [rawData, setRawData] = useState([]);
+  // const [focusCategory, setFocusCategory] = useState([]);
+  // const [currentDisable, setCurrentDisable] = useState<string>('');
+  // const [data, setData] = useState<IAppFeedback[]>([]);
+  // const [resultsFetched, setResultsFetched] = useState(false);
+  // const [error, setError] = useState(false);
+  // const [isBugReport, setBugReport] = useState<boolean | undefined>();
+  // const [backdropOpen, setBackdropOpen] = useState(false);
+  // const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
+  // const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
+  // const [searchInitiated, setSearchInitiated] = useState(false)
+  // const [noDataError, setNoDataError] = useState(true);
+  const [filtered, setFiltered] = useState({ product: false, version: false });
 
   const setProduct = (val: string) => {
     if (val) {
@@ -42,59 +45,22 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     selectedProdId: selectedProdId,
     productVersion: productVersion,
     selectedProduct: selectedProdId,
+    filtered: filtered,
   }
 
   useEffect(() => {
-    productInfoProp.selectedProdId = selectedProdId;
-    productInfoProp.productVersion = productVersion;
-    productInfoProp.selectedProduct = selectedProdId;
+      productInfoProp.selectedProdId = selectedProdId;
+      productInfoProp.productVersion = productVersion;
+      productInfoProp.selectedProduct = selectedProdId;
   }, [selectedProdId, productVersion])
 
 
-  const getProductDetails = () => {
-    Http.get({
-      url: `/api/v2/products`,
-    }).then((response: any) => {
-      if (response && response.products && Array.isArray(response.products) && response.products.length > 0) {
-        const productInfoCopy = [...productInfo]
-        const prodNameIdMappingCopy: any = { ...prodNameIdMapping };
-        response.products.forEach((el: any) => {
-          const prodInfo = { id: "", name: "" };
-          prodInfo.id = el.id;
-          prodInfo.name = el.name;
-          productInfoCopy.push(prodInfo);
-          if (prodNameIdMappingCopy[prodInfo.id]) {
-            prodNameIdMappingCopy[prodInfo.id].version.push(el.version);
-          } else {
-            prodNameIdMappingBugCopy[prodInfo.id] = {
-              name: prodInfo.name,
-              version: [el.version][0],
-              categories: el.feedbackAgentSettings ? el.feedbackAgentSettings.bugSettings.categories ? el.feedbackAgentSettings.bugSettings.categories : [] : []
-            }
-            prodNameIdMappingCopy[prodInfo.id] = {
-              name: prodInfo.name,
-              version: [el.version],
-              categories: el.feedbackAgentSettings ? el.feedbackAgentSettings.feedbackSettings.categories ? el.feedbackAgentSettings.feedbackSettings.categories : [] : []
-            }
-          }
-        })
-        setProductInfo(productInfoCopy);
-        setProdNameIdMapping(prodNameIdMappingCopy);
-        setProdNameIdMappingBugs(prodNameIdMappingBugCopy);
-        if (props.productId && props.prodVersion) {
-          return;
-        }
-        const defaultProductId = Object.keys(prodNameIdMappingCopy)[0];
-        setSelectedProdId(defaultProductId);
-        setProductVersion(prodNameIdMappingCopy[defaultProductId].version[0]);
-      }
-    }).catch((error: any) => {
-      console.error(error);
-    })
-  }
-
   useEffect(() => {
-    getProductDetails();
+    let load = false;
+    if (!load) {
+      getProductDetails({ productInfo, prodNameIdMapping, prodNameIdMappingBugCopy, setProductInfo, setProdNameIdMapping, setSelectedProdId, setProdNameIdMappingBugs, setProductVersion, productId, productVersion});
+    }
+    return () => { load = true}
   }, []);
 
 
@@ -174,7 +140,9 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
             <ProductFilter selectedProdId={selectedProdId}
               setSelectedProdId={setProduct}
               productNameIdMapping={prodNameIdMapping}
-              productInfo={productInfo}
+            productInfo={productInfo}
+            filtered={filtered}
+            setFiltered={setFiltered}
             />
           </Grid>
           <Grid item xl={2} style={{ position: 'relative' }}>
@@ -182,6 +150,8 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
               setProductVersion={setProductVersion}
               versionList={selectedProdId ? prodNameIdMapping[selectedProdId] ? prodNameIdMapping[selectedProdId].version ?
                 prodNameIdMapping[selectedProdId].version : [] : [] : []}
+                filtered={filtered}
+                setFiltered={setFiltered}
             />
           </Grid>
         </Grid>

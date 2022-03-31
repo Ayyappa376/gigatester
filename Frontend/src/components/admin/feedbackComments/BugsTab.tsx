@@ -20,7 +20,8 @@ interface ChosenProps {
   productInfoProp: any,
 }
 
-const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
+const BugsTab = (props: RouteComponentProps & ChosenProps) => {
+  const { filtered } = props.productInfoProp;
   const [backdropOpen, setBackdropOpen] = useState(false);
   const [error, setError] = useState(false)
   const [isBugReport, setBugReport] = useState<boolean | undefined>(true);
@@ -99,7 +100,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
     const rateMap: IRatingMapping = {};
      const bugMap: IBugDataMapping = {};
      const urls: string[] = [];
- 
+
        data.forEach((item: IAppFeedback) => {
          if (item.feedbackType === "BUG_REPORT") {
            bugMap[item.id] = {
@@ -120,7 +121,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
            setBugDataMapping(bugMap);
          }
        });
- 
+
      const urlArrayCopy = [...urlArray];
      urlArrayCopy.push(...urls);
      setUrlArray(urlArrayCopy)
@@ -162,7 +163,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps ) => {
   }, [currentDisable])
 
   useEffect(() => {
-    if(selectedProdId && productVersion) {
+    if(filtered.product && filtered.version && selectedProdId && productVersion) {
       setBackdropOpen(true);
       fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
       getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
