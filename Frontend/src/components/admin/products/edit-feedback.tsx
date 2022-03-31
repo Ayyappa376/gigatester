@@ -26,7 +26,8 @@ import {
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
   RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT,//, EMAIL_MANDATORY, EMAIL_OPTIONAL
-  POS_RIGHT_MIDDLE
+  POS_RIGHT_MIDDLE,
+  ICustomProperties
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -186,6 +187,16 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               text: 'Feedback',
               icon: '',
               position: POS_RIGHT_MIDDLE,
+              custom: {
+                top: '',
+                bottom: '',
+                right: '',
+                left: '',
+                borderRadius: '',
+                rotation: '',
+                margin: '',
+                padding: '',
+              },
               rotation: '0',
               top: '0',
               left: '0'
@@ -889,27 +900,42 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
-  const handleMainBtnTop = (event: any) => {
+  const handleMainBtnCustom = (event: any, key: ICustomProperties) => {
+    const property = event.target.value;
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
         temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.top = event;
-        setProductParams(temp);
+        if (key === 'top') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.top = property;
+          setProductParams(temp);
+        } else if (key === 'bottom') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.bottom = property;
+          setProductParams(temp);
+        } else if (key === 'right') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.right = property;
+          setProductParams(temp);
+        } else if (key === 'left') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.left = property;
+          setProductParams(temp);
+        } else if (key === 'borderRadius') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.borderRadius = property;
+          setProductParams(temp);
+        } else if (key === 'rotation') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.rotation = property;
+          setProductParams(temp);
+        }  else if (key === 'margin') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.margin = property;
+          setProductParams(temp);
+        } else if (key === 'padding') {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.padding = property;
+          setProductParams(temp);
+        }
+
       }
     }
   }
 
-  const handleMainBtnLeft = (event: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel.left = event;
-        setProductParams(temp);
-      }
-    }
-  }
 
   const copyToClipboard = (textAreaId: string) => {
     const textArea = document.querySelector(`#${textAreaId}`);
@@ -1069,8 +1095,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleMainBtnFontStyle: handleMainBtnFontStyle,
       handleMainBtnPosition: handleMainBtnPosition,
       handleMainBtnRotation: handleMainBtnRotation,
-      handleMainBtnTop: handleMainBtnTop,
-      handleMainBtnLeft: handleMainBtnLeft,
+      handleMainBtnCustom: handleMainBtnCustom,
     }
 
     return (

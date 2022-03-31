@@ -67,11 +67,21 @@ export interface WidgetLAF {
     fontStyle: string;
     fontWeight: number;
     icon?: string;
-    left?: string;
     position: WidgetPosition;
     rotation?: string;
     text: string;
+    custom?: CustomProperties;
+}
+
+export interface CustomProperties {
     top?: string;
+    bottom?: string;
+    left?: string;
+    right?: string;
+    borderRadius?: string;
+    rotation?: string;
+    margin?: string;
+    padding?: string;
   }
 
 export interface Category {

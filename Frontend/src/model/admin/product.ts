@@ -71,8 +71,18 @@ export interface IWidgetLAF {
   icon?: string;
   position: IWidgetPosition;
   rotation?: string;
+  custom: ICustomProperties;
+}
+
+export interface ICustomProperties {
   top?: string;
+  bottom?: string;
   left?: string;
+  right?: string;
+  borderRadius?: string;
+  rotation?: string;
+  margin?: string;
+  padding?: string;
 }
 
 export interface ICategory {

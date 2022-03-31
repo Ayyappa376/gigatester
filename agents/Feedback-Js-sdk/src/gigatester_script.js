@@ -585,12 +585,14 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     main_button_font: "inherit",
                     main_button_fontWeight: 400,
                     main_button_rotation: '90',
-                    main_button_position: 'right',
+                    main_button_position: 'RIGHT_MIDDLE',
                     main_button_left: '',
                     main_button_right: '',
                     main_button_top: '',
                     main_button_bottom: '',
-                    main_button_width: 'auto',
+                    main_button_borderRadius: '',
+                    main_button_padding: '',
+                    main_button_margin: '',
                     main_button_height: 40,
                     main_button_rightCSS: 36,
                     pop_up_rotate: '270',
@@ -707,19 +709,17 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (styleCheckWidth > 113) {
                             let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
                             bottomPos += newPosition.toString();
-                            adjustedPosition = `${bottomPos}px`;
+                            adjustedBottom = `${bottomPos}px`;
                         } else if (styleCheckWidth < 90) {
                             let newPosition = 35 - 10;
                             bottomPos += newPosition.toString();
-                            adjustedPosition = `${bottomPos}px`;
+                            adjustedBottom = `${bottomPos}px`;
                         } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
-                            adjustedPosition = '31px';
+                            adjustedBottom = '31px';
                         }
                     }
 
                     if (adjustedPosition && adjustedBottom) {
-                        console.log('adjusted position', adjustedPosition);
-                        console.log('adjusted bottom', adjustedBottom);
                         return { 'adjustedPos': adjustedPosition, 'adjustedBot': adjustedBottom}
                     } else {
                         return { 'adjustedPos': adjustedPosition };
@@ -749,7 +749,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
 
                     if (this.configs.main_button_position === 'RIGHT_MIDDLE') {
                         const reposition = this.adjustWidgetCSS(button);
-                        console.log('reposition', reposition);
                         this.custom_ui.button[0].style.right = reposition.adjustedPos;
                         this.custom_ui.button[0].style.top = '50%';
                     } else if (this.configs.main_button_position === 'RIGHT_BOTTOM') {
@@ -767,7 +766,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.custom_ui.button[0].style.right = '';
                         this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
                         this.custom_ui.button[0].style.left = reposition.adjustedPos;
-
                     } else if (this.configs.main_button_position === 'BOTTOM_LEFT') {
                         this.custom_ui.button[0].style.top = '';
                         this.custom_ui.button[0].style.bottom = '0.5%';
@@ -782,12 +780,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         this.custom_ui.button[0].style.bottom = this.configs.main_button_bottom;
                         this.custom_ui.button[0].style.left = this.configs.main_button_left;
                         this.custom_ui.button[0].style.right = this.configs.main_button_right;
+                        this.custom_ui.button[0].style.borderRadius = this.configs.main_button_borderRadius;
+                        this.custom_ui.button[0].style.margin = this.configs.main_button_margin;
+                        this.custom_ui.button[0].style.padding = this.configs.main_button_padding;
                     }
-                    // if (this.configs.main_button_position === 'right') {
-                    // } else if (this.configs.main_button_position === 'left') {
-                    // } else if (this.configs.main_button_position === 'bottom') {
-                    // } else if (this.configs.main_button_position === 'top') {
-                    // }
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
@@ -2290,26 +2286,36 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     let popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>')
                     popup_dialog[0].style.transform = `rotate(${GigaTester_modal.configs.pop_up_rotate}deg)`
-                    if (GigaTester_modal.configs.main_button_position === 'top') {
-                        popup_dialog[0].style.top = GigaTester_modal.configs.pop_up_position;
-                    } else {
-                        popup_dialog[0].style.bottom = GigaTester_modal.configs.pop_up_position;
+                    if (GigaTester_modal.configs.main_button_position === 'LEFT_BOTTOM') {
+                        popup_dialog[0].style.left = '75px';
+                        popup_dialog[0].style.bottom = '-118px';
+                    } else if (GigaTester_modal.configs.main_button_position === 'RIGHT_BOTTOM') {
+                        popup_dialog[0].style.left = '-8px';
+                        popup_dialog[0].style.bottom = '-118px';
+                    } else if (GigaTester_modal.configs.main_button_position === 'CUSTOM') {
+                        popup_dialog[0].style.position = 'absolute';
+                        popup_dialog[0].style.top = '60%';
+                        popup_dialog[0].style.transform = 'rotate(0deg)';
                     }
                     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn-r")));
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
                     let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
-                    if (GigaTester_modal.configs.main_button_position === 'left') {
+                    if (GigaTester_modal.configs.main_button_position === 'LEFT_MIDDLE' || GigaTester_modal.configs.main_button_position === 'LEFT_BOTTOM' || GigaTester_modal.configs.main_button_position === 'BOTTOM_LEFT') {
                         popup_bug_icon_tooltip[0].style.right = '-136px';
+                        popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
                     } else {
                         popup_bug_icon_tooltip[0].style.left = '-136px';
+                        popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
                     }
                     let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_modal.configs.feedback_title + '</gtdiv></popupbtn>');
                     let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feedback_tooltip_msg);
-                    if (GigaTester_modal.configs.main_button_position === 'left') {
+                    if (GigaTester_modal.configs.main_button_position === 'LEFT_MIDDLE' || GigaTester_modal.configs.main_button_position === 'LEFT_BOTTOM'|| GigaTester_modal.configs.main_button_position === 'BOTTOM_LEFT') {
                         popup_feedback_icon_tooltip[0].style.right = '-136px';
+                        popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
                     } else {
                         popup_feedback_icon_tooltip[0].style.left = '-136px';
+                        popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
                     }
                     popup_bug_icon.appendTo(popup_dialog);
                     popup_bug_icon_tooltip.appendTo(popup_bug_icon);
@@ -2922,45 +2928,33 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             } else if (data[0].widgetLookAndFeel.position === "RIGHT_BOTTOM") {
                                 GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
                                 GigaTester_modal.configs.main_button_rotation = '90';
-                                // pop up should remain the same might need to be pushed up
                             } else if (data[0].widgetLookAndFeel.position === "LEFT_MIDDLE") {
                                 GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
                                 GigaTester_modal.configs.main_button_rotation = '270';
-                                // pop up is rotated to face in ward - 180 or 270
-                                // adjusted proximity similar to right middle positioning
                             } else if (data[0].widgetLookAndFeel.position === "LEFT_BOTTOM") {
                                 GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
                                 GigaTester_modal.configs.main_button_rotation = '270';
-                                // pop up should remain the same might need to be pushed up
-                                // can use the same formula just add 2-4 pxs
                             } else if (data[0].widgetLookAndFeel.position === "BOTTOM_LEFT") {
                                 GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
                                 GigaTester_modal.configs.main_button_rotation = '0';
-                                // pop up is pushed up to be seen
-                                // might need to be adjusted to the left side based on size
+                                GigaTester_modal.configs.pop_up_rotate = '0';
+                                GigaTester_modal.configs.pop_up_position = '5px';
                             } else if (data[0].widgetLookAndFeel.position === "BOTTOM_RIGHT") {
                                 GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
-                                GigaTester_modal.configs.main_button_rotation = '270';
-                                // pop up is pushed up to be seen
-                                // might need to be adjusted to the right side based on size
-
+                                GigaTester_modal.configs.main_button_rotation = '0';
+                                GigaTester_modal.configs.pop_up_rotate = '0';
+                                GigaTester_modal.configs.pop_up_position = '5px';
                             } else if (data[0].widgetLookAndFeel.position === "CUSTOM") {
-                                // custom positioning
-                                // custom right
-                                // custom left
-                                // custom bottom
-                                // custom top
-                                // custom rotation
-                            }
-
-
-                            GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
-                            if (data[0].widgetLookAndFeel.position === 'bottom') {
-                                GigaTester_modal.configs.pop_up_rotate = '0'
-                                GigaTester_modal.configs.pop_up_position = '5px'
-                            } else if (data[0].widgetLookAndFeel.position === 'top') {
-                                GigaTester_modal.configs.pop_up_rotate = '0'
-                                GigaTester_modal.configs.pop_up_position = '5px'
+                                GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
+                                GigaTester_modal.configs.main_button_top = data[0].widgetLookAndFeel.custom.top;
+                                GigaTester_modal.configs.main_button_bottom = data[0].widgetLookAndFeel.custom.bottom;
+                                GigaTester_modal.configs.main_button_left = data[0].widgetLookAndFeel.custom.left;
+                                GigaTester_modal.configs.main_button_right = data[0].widgetLookAndFeel.custom.right;
+                                GigaTester_modal.configs.main_button_rotation = data[0].widgetLookAndFeel.custom.rotation;
+                                GigaTester_modal.configs.main_button_borderRadius = data[0].widgetLookAndFeel.custom.borderRadius;
+                                GigaTester_modal.configs.main_button_margin = data[0].widgetLookAndFeel.custom.margin;
+                                GigaTester_modal.configs.main_button_padding = data[0].widgetLookAndFeel.custom.padding;
+                                //make pop up center
                             }
                         }
                     }

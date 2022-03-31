@@ -739,7 +739,8 @@ popuptooltip {
   padding: 5px 0;
   font-size: 12px;
   position: absolute;
-  top: 0px;
+  top: 15px;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   /* left: -136px; */
   z-index: 1;
 }
@@ -2164,6 +2165,7 @@ background: #fafbfd;
   line-height: 20px;
   color: black;
   font-weight: 600;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
   left: 10px;
   transform: rotate( 270deg );
   /* bottom: -118px; */
