@@ -740,7 +740,7 @@ popuptooltip {
   font-size: 12px;
   position: absolute;
   top: 0px;
-  left: -136px;
+  /* left: -136px; */
   z-index: 1;
 }
 popupbtn:hover popuptooltip {

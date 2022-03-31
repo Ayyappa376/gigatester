@@ -1,5 +1,8 @@
 import React, { Fragment } from 'react';
-import { Grid, Typography, TextField, Button, IconButton, FormControl, Checkbox, InputLabel, Select, MenuItem, makeStyles } from "@material-ui/core";
+import { Grid, Typography, TextField, Button, IconButton,
+  FormControl,  InputLabel, Select, MenuItem,
+  makeStyles, FormControlLabel, Checkbox
+} from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { ICategory, IProductParams, ISeverity } from '../../../model';
@@ -212,13 +215,13 @@ const BugSettings = ({
 }: BugSettingProps) => {
   const classes = useStyles();
 
-  const handleRequireComments = (event: any) => {
-    if (event.target.value === 'true') {
-      handleReqComments(true, 'Bugs');
-    } else if (event.target.value === 'false') {
-      handleReqComments(false, 'Bugs');
-    }
-  }
+  // const handleRequireComments = (event: any) => {
+  //   if (event.target.value === 'true') {
+  //     handleReqComments(true, 'Bugs');
+  //   } else if (event.target.value === 'false') {
+  //     handleReqComments(false, 'Bugs');
+  //   }
+  // }
 
   return (
     <Fragment>
@@ -348,27 +351,46 @@ const BugSettings = ({
         </Grid>
 
         <Grid item xs={12} sm={12}>
-          <FormControl style={{ width: '100%'}}>
-          <InputLabel id={`mandatoryComments`} required={true}>
-            {"Require comments/text when submitting bugs or incidents:"}
-          </InputLabel>
-          <Select
-            name={`select_CommentsMandatory`}
-            value={
-              (productParams && productParams.products && productParams.products[0] &&
-                productParams.products[0].feedbackAgentSettings &&
-                productParams.products[0].feedbackAgentSettings.bugSettings &&
-                productParams.products[0].feedbackAgentSettings.bugSettings.reqComments)
-                ? productParams.products[0].feedbackAgentSettings.bugSettings.reqComments
-                : 'false'
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.bugSettings)
+                  ? productParams.products[0].feedbackAgentSettings.bugSettings.reqComments
+                  : true}
+                onChange={(event) => handleReqComments('Bugs')}
+                value="BugRequireComments"
+              />
             }
-            onChange={(event) => handleRequireComments(event)}
-          >
-            <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
-            <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
-          </Select>
-        </FormControl>
-      </Grid>
+            label={
+              <Typography color="textSecondary">
+                {"Comment field mandatory?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
+          {/* <FormControl style={{ width: '100%'}}>
+            <InputLabel id={`mandatoryComments`} required={true}>
+              {"Require comments/text when submitting bugs or incidents:"}
+            </InputLabel>
+            <Select
+              name={`select_CommentsMandatory`}
+              value={
+                (productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.bugSettings &&
+                  productParams.products[0].feedbackAgentSettings.bugSettings.reqComments)
+                  ? productParams.products[0].feedbackAgentSettings.bugSettings.reqComments
+                  : 'false'
+              }
+              onChange={(event) => handleRequireComments(event)}
+            >
+              <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
+              <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
+            </Select>
+          </FormControl> */}
+        </Grid>
       </Grid>
 
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >

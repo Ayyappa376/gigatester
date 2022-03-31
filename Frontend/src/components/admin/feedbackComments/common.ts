@@ -85,6 +85,7 @@ export interface IAppFeedback {
     productId ? : string;
     productRating: number;
     productVersion ? : string;
+    pageURL ? : string;
     userId ? : string;
     sourceIP?: string;
     feedbackCategory?: FeedbackCategory;
@@ -103,6 +104,8 @@ export interface IAppFeedback {
       version: string;
       architecture: string;
     };
+    userDetails?: any;
+    contextDetails?: any;
   }
 
 export interface ILastEvaluatedKey {

@@ -20,8 +20,8 @@ import renderComments from './RenderComments';
 import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from 'react-loader-spinner'
+import RenderRow from './RenderRow';
 import RenderComments from './RenderComments';
-import ExtraInfo from './ExtraInfo';
 import Failure from '../../failure-page';
 import { table } from 'console';
 
@@ -228,138 +228,120 @@ const RenderTable = (props: IProps) => {
           searchInitiated={props.searchInitiated}
         />{tableData.length > 0 ?
               <TableBody>
-                {/* <TableRow>
-                  <ExtraInfo />
-                </TableRow> */}
           {props.tableData.map(
             (row: IAppFeedback, index: number) => {
 //              const labelId = `enhanced-table-checkbox-${index}`;
-/*              let sourceDetails = '-';
-              let osInfo = '-';
-
-              if(row.userId) sourceDetails = row.userId;
-
-              if(row.sourceIP) sourceDetails = sourceDetails === '-' ? row.sourceIP : sourceDetails + '-' + row.sourceIP;
-
-              let platformInfo;
-              if(row.platformName) {
-                if(row.platformVersion) {
-                  platformInfo = `(${row.platformName} - ${row.platformVersion})`
-                } else {
-                  platformInfo = row.platformName;
-                }
-                sourceDetails = sourceDetails === '-' ? platformInfo : sourceDetails + '-' + platformInfo;
-              }
-              if(row.platformOs) osInfo = osInfo  === '-' ? Object.values(row.platformOs).join('-') : sourceDetails + '-' + Object.values(row.platformOs).join('-');
-*/
               const platformInfo = row.platformName ?
                 (row.platformVersion ? `${row.platformName} - ${row.platformVersion}`: row.platformName) :
                 '-';
               const osInfo = row.platformOs ? Object.values(row.platformOs).join('  - ') : '-';
               return (
-                <TableRow
-                  innerRef={index === tableData.length - 1 ? ref : null}
-                  hover role="checkbox" tabIndex={-1}
-                  key={row.id}
-                >
-                  <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
-                        <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} osInfo={osInfo} />
-                  </TableCell>
-                  <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
-                        {row.createdOn ? getDateTime(row.createdOn) : '-'}
-                  </TableCell>
-                  {
-                    isBugReport ?
-                    <TableCell  align='center' style={{fontSize: '1rem'}}>
-                        {row.bugPriority}
-                    </TableCell> :
-                    <TableCell  align='center' style={{minWidth: '150px', fontSize: '1rem'}}>
-                      <RenderStars rating={row.productRating}/>
-                    </TableCell>
-                  }
-                    <TableCell  align='center' style={{fontSize: '1rem'}}>
-                        {row.feedbackCategory ? row.feedbackCategory : '-'}
-                    </TableCell>
-                  <TableCell align='left' style={{maxWidth: '30vw', fontSize: '1rem'}}>
-                    <div style={{overflow: 'auto', maxHeight: '20vh'}}>
-                        <RenderComments category={row.feedbackCategory} isBugReport={isBugReport} comments={(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)} old={true}/>
-                    </div>
-                    <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
+                <RenderRow key={index} index={index} tableData={tableData} ref={ref}
+                  row={row} fetchAllUrls={fetchAllUrls} platformInfo={platformInfo} osInfo={osInfo} isBugReport={isBugReport} signedUrlMapping={signedUrlMapping} props={props}
+                />
+                // <TableRow
+                //   innerRef={index === tableData.length - 1 ? ref : null}
+                //   hover role="checkbox" tabIndex={-1}
+                //   key={row.id}
+                // >
+                //   <TableCell style={{fontSize: '1rem', maxWidth: '12rem', overflowWrap: 'break-word'}}>
+                //         <FolderList userId={row.userId} platformInfo={platformInfo} sourceIp={row.sourceIP} osInfo={osInfo} pageURL={row.pageURL}/>
+                //   </TableCell>
+                //   <TableCell align='center' style={{fontSize: '1rem', minWidth: '12rem'}}>
+                //         {row.createdOn ? getDateTime(row.createdOn) : '-'}
+                //   </TableCell>
+                //   {
+                //     isBugReport ?
+                //     <TableCell  align='center' style={{fontSize: '1rem'}}>
+                //         {row.bugPriority}
+                //     </TableCell> :
+                //     <TableCell  align='center' style={{minWidth: '150px', fontSize: '1rem'}}>
+                //       <RenderStars rating={row.productRating}/>
+                //     </TableCell>
+                //   }
+                //     <TableCell  align='center' style={{fontSize: '1rem'}}>
+                //         {row.feedbackCategory ? row.feedbackCategory : '-'}
+                //     </TableCell>
+                //   <TableCell align='left' style={{maxWidth: '30vw', fontSize: '1rem'}}>
+                //     <div style={{overflow: 'auto', maxHeight: '20vh'}}>
+                //         <RenderComments category={row.feedbackCategory} isBugReport={isBugReport} comments={(row.feedbackComments && (typeof row.feedbackComments === 'string')? JSON.parse(row.feedbackComments) : undefined)} old={true}/>
+                //     </div>
+                //     <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}>
 
-                    <div key="image-attachment">
-                      {
-                        row.feedbackMedia? row.feedbackMedia.image ? <Link
-                        component="button"
-                        variant="body2"
-                        style={{fontSize: 11}}
-                        onClick={() => {
-                          props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
-                        }}
-                      >
-                        {
-                          signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] && signedUrlMapping[row.feedbackMedia.image].signedUrl ?
-                            <img src={signedUrlMapping[row.feedbackMedia.image].signedUrl} style={{width: 150, marginTop: 10}}></img> : <div/>
-                        }
-                      </Link> : <div/> : <div/>
-                      }
-                    </div>
-                    <div key="video-attachment">
-                      {
-                        row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
-                        <div style={{maxWidth: 700}}>
-                        <video width="50%" controls style={row.feedbackMedia.image ?
-                                      {
-                                        display: 'flex',
-                                        marginTop: 20,
-                                        marginLeft: 20
-                                      } : {
-                                        display: 'block',
-                                        marginTop: 20,
-                                        marginLeft: 'auto',
-                                        marginRight: 'auto',
-                                      }}>
-                          <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ?
-                            signedUrlMapping[row.feedbackMedia.video].signedUrl : '' : ''} type="video/mp4" />
-                        </video>
-                        </div>
-                        : <div style={{maxWidth: 700}}>
-                        <video width="50%" controls style={row.feedbackMedia.image ?
-                                      {
-                                        display: 'flex',
-                                        marginTop: 20,
-                                        marginLeft: 20
-                                      } : {
-                                        display: 'block',
-                                        marginTop: 20,
-                                        marginLeft: 'auto',
-                                        marginRight: 'auto',
-                                      }}>
-                        </video>
-                        </div> : <div/> : <div/>
-                      }
-                    </div>
-                    </div>
-                    <div key="audio-attachment">
-                      {
-                        row.feedbackMedia? row.feedbackMedia.audio ? <AudioPlayer url={row.feedbackMedia.audio}/> : <div/> : <div/>
-                      }
-                    </div>
-                    <div key="file-attachment">
-                      {
-                        row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
-                          <a href={signedUrlMapping[row.feedbackMedia.file] ? signedUrlMapping[row.feedbackMedia.file].signedUrl ?
-                            signedUrlMapping[row.feedbackMedia.file].signedUrl : '' : ''} download target="_blank">
-                            <Link
-                              component="button"
-                              variant="body2"
-                              style={{fontSize: 11}}
-                              >Download attachment</Link>
-                          </a>
-                         : <div/> : <div/> : <div/>
-                      }
-                    </div>
-                  </TableCell>
-                </TableRow>
+                //     <div key="image-attachment">
+                //       {
+                //         row.feedbackMedia? row.feedbackMedia.image ? <Link
+                //         component="button"
+                //         variant="body2"
+                //         style={{fontSize: 11}}
+                //         onClick={() => {
+                //           props.viewAttachmentClicked(row.feedbackMedia.image, row.id, 'image');
+                //         }}
+                //       >
+                //         {
+                //           signedUrlMapping && signedUrlMapping[row.feedbackMedia.image] && signedUrlMapping[row.feedbackMedia.image].signedUrl ?
+                //             <img src={signedUrlMapping[row.feedbackMedia.image].signedUrl} style={{width: 150, marginTop: 10}}></img> : <div/>
+                //         }
+                //       </Link> : <div/> : <div/>
+                //       }
+                //     </div>
+                //     <div key="video-attachment">
+                //       {
+                //         row.feedbackMedia? row.feedbackMedia.video ? fetchAllUrls ?
+                //         <div style={{maxWidth: 700}}>
+                //         <video width="50%" controls style={row.feedbackMedia.image ?
+                //                       {
+                //                         display: 'flex',
+                //                         marginTop: 20,
+                //                         marginLeft: 20
+                //                       } : {
+                //                         display: 'block',
+                //                         marginTop: 20,
+                //                         marginLeft: 'auto',
+                //                         marginRight: 'auto',
+                //                       }}>
+                //           <source src={signedUrlMapping[row.feedbackMedia.video] ? signedUrlMapping[row.feedbackMedia.video].signedUrl ?
+                //             signedUrlMapping[row.feedbackMedia.video].signedUrl : '' : ''} type="video/mp4" />
+                //         </video>
+                //         </div>
+                //         : <div style={{maxWidth: 700}}>
+                //         <video width="50%" controls style={row.feedbackMedia.image ?
+                //                       {
+                //                         display: 'flex',
+                //                         marginTop: 20,
+                //                         marginLeft: 20
+                //                       } : {
+                //                         display: 'block',
+                //                         marginTop: 20,
+                //                         marginLeft: 'auto',
+                //                         marginRight: 'auto',
+                //                       }}>
+                //         </video>
+                //         </div> : <div/> : <div/>
+                //       }
+                //     </div>
+                //     </div>
+                //     <div key="audio-attachment">
+                //       {
+                //         row.feedbackMedia? row.feedbackMedia.audio ? <AudioPlayer url={row.feedbackMedia.audio}/> : <div/> : <div/>
+                //       }
+                //     </div>
+                //     <div key="file-attachment">
+                //       {
+                //         row.feedbackMedia? row.feedbackMedia.file ? fetchAllUrls ?
+                //           <a href={signedUrlMapping[row.feedbackMedia.file] ? signedUrlMapping[row.feedbackMedia.file].signedUrl ?
+                //             signedUrlMapping[row.feedbackMedia.file].signedUrl : '' : ''} download target="_blank">
+                //             <Link
+                //               component="button"
+                //               variant="body2"
+                //               style={{fontSize: 11}}
+                //               >Download attachment</Link>
+                //           </a>
+                //          : <div/> : <div/> : <div/>
+                //       }
+                //     </div>
+                //   </TableCell>
+                // </TableRow>
               );
             }
           )}

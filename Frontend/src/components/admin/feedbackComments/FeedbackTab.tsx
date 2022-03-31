@@ -25,6 +25,7 @@ interface ChosenProps {
 }
 
 const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
+  const { filtered } = props.productInfoProp;
   const [backdropOpen, setBackdropOpen] = useState(false);
   const [error, setError] = useState(false)
   const [isBugReport, setBugReport] = useState<boolean | undefined>();
@@ -168,7 +169,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }, [data])
 
   useEffect(() => {
-    if (selectedProdId && productVersion) {
+    if (filtered.product && filtered.version && selectedProdId && productVersion) {
       setBackdropOpen(true);
       fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
       getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion });
@@ -295,13 +296,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     if (response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
       setBackdropOpen(false);
       if (searchInitiated && searchWord) {
-        setSearchedData((dataObj) => {
+        setSearchedData((dataObj: any) => {
           const dataCopy = new Set([...dataObj].concat(response.Items.Items));
           return Array.from(dataCopy)
         });
         return;
       }
-      setData((dataObj) => {
+      setData((dataObj: any) => {
         const dataCopy = new Set([...dataObj].concat(response.Items.Items));
         return Array.from(dataCopy)
       });

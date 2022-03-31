@@ -8,8 +8,8 @@ import { FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   IProductParams,
   PLATFORM_TYPE_BROWSER,
   PLATFORM_TYPE_NATIVE_REACT,
-  EMAIL_MANDATORY,
-  EMAIL_OPTIONAL,
+  // EMAIL_MANDATORY,
+  // EMAIL_OPTIONAL,
 } from '../../../model';
 
 interface SettingsProps {
@@ -247,25 +247,40 @@ const StandardSettings = ({
       </Grid>
 
       <Grid item xs={12} sm={12}>
-        <FormControl className={classes.formControl}>
+        <FormControlLabel
+          control={
+            <Checkbox
+            checked={(productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings)
+                ? productParams.products[0].feedbackAgentSettings.requireEmail
+                : true}
+              onChange={(event) => handleEmailOption(event)}
+              value="requireEmail"
+            />
+          }
+          label={
+            <Typography color="textSecondary">
+              {"Email field mandatory?"}
+            </Typography>
+          }
+          labelPlacement={'start'}
+        />
+        {/* <FormControl className={classes.formControl}>
           <InputLabel id={`mandatoryEmail`} required={true}>
             {"Is user's email field mandatory for form submission:"}
           </InputLabel>
           <Select
             name={`select_emailMandatory`}
-            value={
-              (productParams && productParams.products && productParams.products[0] &&
-              productParams.products[0].feedbackAgentSettings &&
-              productParams.products[0].feedbackAgentSettings.requireEmail)
+            value={(productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings)
               ? productParams.products[0].feedbackAgentSettings.requireEmail
-              : 'OPTIONAL'
-            }
+              : true}
             onChange={(event) => handleEmailOption(event)}
           >
             <MenuItem key={EMAIL_OPTIONAL} value={EMAIL_OPTIONAL}>{'Optional'}</MenuItem>
             <MenuItem key={EMAIL_MANDATORY} value={EMAIL_MANDATORY}>{'Mandatory'}</MenuItem>
           </Select>
-        </FormControl>
+        </FormControl> */}
       </Grid>
 
       <Grid item xs={12} sm={12}>
