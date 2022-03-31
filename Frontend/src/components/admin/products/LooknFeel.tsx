@@ -13,7 +13,7 @@ import {
 	Button,
 } from '@material-ui/core';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
-import { IProductParams, POS_RIGHT_MIDDLE } from '../../../model';
+import { IProductParams, POS_RIGHT_MIDDLE, POS_RIGHT_BOTTOM, POS_LEFT_MIDDLE, POS_LEFT_BOTTOM, POS_BOTTOM_RIGHT, POS_BOTTOM_LEFT, POS_CUSTOM,  } from '../../../model';
 import { ChromePicker } from 'react-color';
 
 interface SettingsProps {
@@ -207,16 +207,6 @@ const LookAndFeel = ({
 		}
 	};
 
-	const convertTitleWidth = (title: string) => {
-		const newWidth = title.length * 10;
-		return newWidth.toString();
-	};
-
-	// const handleTitle = (event: any) => {
-	//   handleMainBtnTitleChange(event);
-	//   let newLength = convertTitleWidth(event.target.value);
-	//   handleMaintBtnLength(newLength);
-	// }
 
 	return (
 		<Grid
@@ -418,7 +408,7 @@ const LookAndFeel = ({
 							id={`position`}
 							required={true}
 						>
-							{'Choose Widget position on site: (will affect widget rotation)'}
+							{'Choose Widget position on site:'}
 						</InputLabel>
 						<Select
 							name={`select_position`}
@@ -427,17 +417,26 @@ const LookAndFeel = ({
 								handleBtnPosition(event);
 							}}
 						>
-							<MenuItem key={1} value={'left'}>
-								{'Left'}
+							<MenuItem key={1} value={POS_RIGHT_MIDDLE}>
+								{'Right - Middle'}
+                            </MenuItem>
+                            <MenuItem key={2} value={POS_RIGHT_BOTTOM}>
+								{'Right - Bottom'}
+                            </MenuItem>
+                            <MenuItem key={3} value={POS_LEFT_MIDDLE}>
+								{'Left - Middle'}
 							</MenuItem>
-							<MenuItem key={2} value={'right'}>
-								{'Right'}
+							<MenuItem key={4} value={POS_LEFT_BOTTOM}>
+								{'Left - Buttom'}
 							</MenuItem>
-							<MenuItem key={3} value={'top'}>
-								{'Top'}
+							<MenuItem key={5} value={POS_BOTTOM_LEFT}>
+								{'Bottom - Left'}
 							</MenuItem>
-							<MenuItem key={4} value={'bottom'}>
-								{'Bottom'}
+							<MenuItem key={6} value={POS_BOTTOM_RIGHT}>
+								{'Bottom - Right'}
+                            </MenuItem>
+                            <MenuItem key={7} value={POS_CUSTOM}>
+								{'Custom'}
 							</MenuItem>
 						</Select>
 					</FormControl>

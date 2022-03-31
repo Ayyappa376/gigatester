@@ -586,6 +586,10 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     main_button_fontWeight: 400,
                     main_button_rotation: '90',
                     main_button_position: 'right',
+                    main_button_left: '',
+                    main_button_right: '',
+                    main_button_top: '',
+                    main_button_bottom: '',
                     main_button_width: 'auto',
                     main_button_height: 40,
                     main_button_rightCSS: 36,
@@ -681,21 +685,45 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     const styleCheck = window.getComputedStyle(element);
                     const styleCheckWidth = parseInt(styleCheck.width, 10);
                     let adjustedPosition;
+                    let adjustedBottom;
                     let currentRight = this.configs.main_button_rightCSS || 36;
                     let newAdjustedPos = '-';
+                    // adjusting position on left or right proximity to screen edge
                     if (styleCheckWidth > 113) {
                         let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
                         newAdjustedPos += newPosition.toString();
                         adjustedPosition = `${newAdjustedPos}px`;
                     } else if (styleCheckWidth < 90) {
-                        let newPosition = 35 - 10;
+                        let newPosition = 35 - 15;
                         newAdjustedPos += newPosition.toString();
                         adjustedPosition = `${newAdjustedPos}px`;
                     } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
-                        adjustedPosition = '-35px';
+                        adjustedPosition = '-30px';
                     }
-                     console.log('checking position', adjustedPosition);
-                    return adjustedPosition;
+
+                    //adjusting proximity from bottom
+                    if (this.configs.main_button_position === "RIGHT_BOTTOM" || this.configs.main_button_position === "LEFT_BOTTOM") {
+                        let bottomPos = '';
+                        if (styleCheckWidth > 113) {
+                            let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
+                            bottomPos += newPosition.toString();
+                            adjustedPosition = `${bottomPos}px`;
+                        } else if (styleCheckWidth < 90) {
+                            let newPosition = 35 - 10;
+                            bottomPos += newPosition.toString();
+                            adjustedPosition = `${bottomPos}px`;
+                        } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
+                            adjustedPosition = '31px';
+                        }
+                    }
+
+                    if (adjustedPosition && adjustedBottom) {
+                        console.log('adjusted position', adjustedPosition);
+                        console.log('adjusted bottom', adjustedBottom);
+                        return { 'adjustedPos': adjustedPosition, 'adjustedBot': adjustedBottom}
+                    } else {
+                        return { 'adjustedPos': adjustedPosition };
+                    }
                 },
                 addFeedbackButton: function() {
                     if (this.custom_ui.button) {
@@ -718,21 +746,48 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
                     this.custom_ui.button[0].style.transform = `rotate(${this.configs.main_button_rotation}deg)`;
                     const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn-r")[0];
-                    if (this.configs.main_button_position === 'right') {
-                        this.custom_ui.button[0].style.right = this.adjustWidgetCSS(button);
+
+                    if (this.configs.main_button_position === 'RIGHT_MIDDLE') {
+                        const reposition = this.adjustWidgetCSS(button);
+                        console.log('reposition', reposition);
+                        this.custom_ui.button[0].style.right = reposition.adjustedPos;
                         this.custom_ui.button[0].style.top = '50%';
-                    } else if (this.configs.main_button_position === 'left') {
+                    } else if (this.configs.main_button_position === 'RIGHT_BOTTOM') {
+                        const reposition = this.adjustWidgetCSS(button);
+                        console.log('reposition', reposition);
+                        this.custom_ui.button[0].style.right = reposition.adjustedPos;
+                        this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
+                    } else if (this.configs.main_button_position === 'LEFT_MIDDLE') {
+                        const reposition = this.adjustWidgetCSS(button);
                         this.custom_ui.button[0].style.right = '';
                         this.custom_ui.button[0].style.top = '50%';
-                        this.custom_ui.button[0].style.left = this.adjustWidgetCSS(button);
-                    } else if (this.configs.main_button_position === 'bottom') {
+                        this.custom_ui.button[0].style.left = reposition.adjustedPos;
+                    } else if (this.configs.main_button_position === 'LEFT_BOTTOM') {
+                        const reposition = this.adjustWidgetCSS(button);
+                        this.custom_ui.button[0].style.right = '';
+                        this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
+                        this.custom_ui.button[0].style.left = reposition.adjustedPos;
+
+                    } else if (this.configs.main_button_position === 'BOTTOM_LEFT') {
                         this.custom_ui.button[0].style.top = '';
-                        this.custom_ui.button[0].style.bottom = '0.2%';
-                        this.custom_ui.button[0].style.right = '35px';
-                    } else if (this.configs.main_button_position === 'top') {
-                        this.custom_ui.button[0].style.top = '2%';
-                        this.custom_ui.button[0].style.right = '35px';
+                        this.custom_ui.button[0].style.bottom = '0.5%';
+                        this.custom_ui.button[0].style.left = '3%';
+                    } else if (this.configs.main_button_position === 'BOTTOM_RIGHT') {
+                        this.custom_ui.button[0].style.top = '';
+                        this.custom_ui.button[0].style.bottom = '0.5%';
+                        this.custom_ui.button[0].style.right = '3%';
+                    } else if (this.configs.main_button_position === 'CUSTOM') {
+                        console.log('custom css');
+                        this.custom_ui.button[0].style.top = this.configs.main_button_top;
+                        this.custom_ui.button[0].style.bottom = this.configs.main_button_bottom;
+                        this.custom_ui.button[0].style.left = this.configs.main_button_left;
+                        this.custom_ui.button[0].style.right = this.configs.main_button_right;
                     }
+                    // if (this.configs.main_button_position === 'right') {
+                    // } else if (this.configs.main_button_position === 'left') {
+                    // } else if (this.configs.main_button_position === 'bottom') {
+                    // } else if (this.configs.main_button_position === 'top') {
+                    // }
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
@@ -2832,7 +2887,6 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         if (data[0].bugSettings.tooltip && data[0].bugSettings.tooltip.trim().length > 0) {
                             GigaTester_modal.configs.bugs_tooltip_msg = data[0].bugSettings.tooltip.trim();
                         }
-//                        if (data[0].bugSettings.reqComments && data[0].bugSettings.reqComments === "MANDATORY") {
                         if(data[0].bugSettings.reqComments != undefined && data[0].bugSettings.reqComments === false) {
                             GigaTester_modal.form_settings_default['BUGS'].comment_field_mandatory = false;
                         }
@@ -2862,6 +2916,44 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                             }
                         }
                         if (data[0].widgetLookAndFeel.position) {
+                            if (data[0].widgetLookAndFeel.position === "RIGHT_MIDDLE") {
+                                GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
+                                GigaTester_modal.configs.main_button_rotation = '90';
+                            } else if (data[0].widgetLookAndFeel.position === "RIGHT_BOTTOM") {
+                                GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
+                                GigaTester_modal.configs.main_button_rotation = '90';
+                                // pop up should remain the same might need to be pushed up
+                            } else if (data[0].widgetLookAndFeel.position === "LEFT_MIDDLE") {
+                                GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
+                                GigaTester_modal.configs.main_button_rotation = '270';
+                                // pop up is rotated to face in ward - 180 or 270
+                                // adjusted proximity similar to right middle positioning
+                            } else if (data[0].widgetLookAndFeel.position === "LEFT_BOTTOM") {
+                                GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
+                                GigaTester_modal.configs.main_button_rotation = '270';
+                                // pop up should remain the same might need to be pushed up
+                                // can use the same formula just add 2-4 pxs
+                            } else if (data[0].widgetLookAndFeel.position === "BOTTOM_LEFT") {
+                                GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
+                                GigaTester_modal.configs.main_button_rotation = '0';
+                                // pop up is pushed up to be seen
+                                // might need to be adjusted to the left side based on size
+                            } else if (data[0].widgetLookAndFeel.position === "BOTTOM_RIGHT") {
+                                GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
+                                GigaTester_modal.configs.main_button_rotation = '270';
+                                // pop up is pushed up to be seen
+                                // might need to be adjusted to the right side based on size
+
+                            } else if (data[0].widgetLookAndFeel.position === "CUSTOM") {
+                                // custom positioning
+                                // custom right
+                                // custom left
+                                // custom bottom
+                                // custom top
+                                // custom rotation
+                            }
+
+
                             GigaTester_modal.configs.main_button_position = data[0].widgetLookAndFeel.position;
                             if (data[0].widgetLookAndFeel.position === 'bottom') {
                                 GigaTester_modal.configs.pop_up_rotate = '0'
