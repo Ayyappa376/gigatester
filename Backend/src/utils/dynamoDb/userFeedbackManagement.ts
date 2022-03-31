@@ -2,7 +2,7 @@ import { SeverityType } from '@models/index';
 import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
-import { ServerResponse } from 'http';
+//import { ServerResponse } from 'http';
 import { queryRaw, scan } from './sdk';
 
 export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
@@ -236,7 +236,7 @@ export const feedbackProcessPieChartData = (pData: ProcessedData) => {
 };
 
 export const bugProcessBarChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
-  if(prodId && prodVersion) {  
+  if(prodId && prodVersion) {
   // const severities: string[] = await getSeveritiesList({prodId, prodVersion, chartType});
     const severityData: ProcessedData = {};
     // console.log(severities, 'sverriiiiii')
@@ -253,10 +253,9 @@ export const bugProcessBarChartData = async({data, prodId, prodVersion, chartTyp
     if(data.length > 0) {
         data.forEach((item: any) => {
             if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
-              if(!severityData[item.bugPriority]){
-                severityData[item.bugPriority] = 1
-              }
-              else{
+              if(!severityData[item.bugPriority]) {
+                severityData[item.bugPriority] = 1;
+              } else {
                 severityData[item.bugPriority] += 1;
               }
             }
@@ -309,10 +308,11 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
     if(data.length > 0) {
       data.forEach((item) => {
             if(item.feedbackCategory) {
-              if(!categoryData[item.feedbackCategory]){
-                categoryData[item.feedbackCategory] = 1
-              }
+              if(!categoryData[item.feedbackCategory]) {
+                categoryData[item.feedbackCategory] = 1;
+              } else {
                 categoryData[item.feedbackCategory] += 1;
+              }
             }
         });
     }

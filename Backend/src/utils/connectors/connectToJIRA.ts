@@ -110,6 +110,10 @@ export async function connectAndFetchFromJIRA(
                 resolve(tool);
               }
             })
+            .catch((err) => {
+              appLogger.error({ JIRAGetError: err });
+              reject(err);
+            });
             const statusesURL = `${tool.url.value}/rest/api/latest/status`;
             HttpRequest.httpRequest('GET', statusesURL, undefined, auth, {Accept: 'application/json'})
             .then((resStatus: any) => {
@@ -167,7 +171,6 @@ export async function connectAndFetchFromJIRA(
             });
           }
         })
-        
         .catch((err) => {
           appLogger.error({ JIRAGetError: err });
           reject(err);
