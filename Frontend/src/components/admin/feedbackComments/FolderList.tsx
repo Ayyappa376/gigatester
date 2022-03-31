@@ -4,7 +4,8 @@ import {
 	ListItem,
 	ListItemText,
 	Typography,
-	makeStyles,
+  makeStyles,
+  Box,
 } from '@material-ui/core';
 import ImageIcon from '@material-ui/icons/Image';
 import WorkIcon from '@material-ui/icons/Work';
@@ -36,8 +37,7 @@ const useStyles = makeStyles((theme) => ({
 	},
 	list: {
 		height: '95%',
-		maxWidth: '190px',
-		width: '190px',
+		width: '300px',
 		display: 'flex',
 		flexDirection: 'column',
 		justifyContent: 'flex-start',
@@ -46,7 +46,16 @@ const useStyles = makeStyles((theme) => ({
 		whiteSpace: 'nowrap',
 		textOverflow: 'ellipsis',
 		overflow: 'hidden',
-	},
+  },
+  collapseList: {
+    display: 'flex',
+		flexDirection: 'row',
+    justifyContent: 'flex-start',
+    width: '100%',
+  },
+  item: {
+    marginLeft: '30px',
+  }
 }));
 
 export default function FolderList({
@@ -58,9 +67,10 @@ export default function FolderList({
 	isCollapse,
 }: userInfoProps) {
 	const classes = useStyles();
-	return (
+  return (
+    <Box>
 		<List className={classes.list}>
-			{userId && userId.length > 0 ? (
+			{!isCollapse && userId && userId.length > 0 ? (
 				<ListItem className={classes.listItems}>
 					<Typography className={classes.labels}>email</Typography>
 					<ListItemText
@@ -76,9 +86,11 @@ export default function FolderList({
 						}}
 					/>
 				</ListItem>
-			) : null}
+        ) : null}
+      </List>
 			{isCollapse ? (
-				<div>
+        <div className={classes.collapseList}>
+          <div>
 					{sourceIp && sourceIp.length > 0 ? (
 						<ListItem className={classes.listItems}>
 							<Typography className={classes.labels}>source IP</Typography>
@@ -95,7 +107,7 @@ export default function FolderList({
 								primary={'No source IP found'}
 							/>
 						</ListItem>
-					)}
+            )}
 					{platformInfo && platformInfo.length > 0 ? (
 						<ListItem className={classes.listItems}>
 							<Typography className={classes.labels}>platform</Typography>
@@ -114,7 +126,9 @@ export default function FolderList({
 								primary={'No platform information found'}
 							/>
 						</ListItem>
-					)}
+            )}
+          </div>
+          <div className={classes.item}>
 					{osInfo && osInfo.length > 0 ? (
 						<ListItem className={classes.listItems}>
 							<Typography className={classes.labels}>OS</Typography>
@@ -148,9 +162,10 @@ export default function FolderList({
 								primary={'No page URL fond'}
 							/>
 						</ListItem>
-					)}
+            )}
+          </div>
 				</div>
 			) : null}
-		</List>
+      </Box>
 	);
 }

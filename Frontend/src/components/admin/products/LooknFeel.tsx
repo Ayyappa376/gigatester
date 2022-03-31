@@ -362,7 +362,7 @@ const LookAndFeel = ({
 					</FormControl>
 				</Grid>
 
-        {/* <Grid item xs={12} sm={12}>
+        <Grid item xs={12} sm={12}>
           	<FormControl className={classes.formControl}>
 						<InputLabel style={{ marginTop: 5}} id={`rotation`} required={true}>
 							{'Choose Widget Rotation (please be aware this may effect other styling):'}
@@ -391,7 +391,7 @@ const LookAndFeel = ({
 							</MenuItem>
 						</Select>
 					</FormControl>
-				</Grid> */}
+				</Grid>
 
 				<Grid item xs={12} sm={12}>
           	<FormControl className={classes.formControl}>
