@@ -134,6 +134,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   const [failureMessage, setFailureMessage] = useState('Something went wrong');
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('Saved successfully');
+  const [useTrackingSystemSeverity, setUseTrackingSystemSeverity] = useState<boolean>(false)
 //  const [showScriptHelp, setShowScriptHelp] = useState(false);
 //  const [showReactHelp, setShowReactHelp] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -502,7 +503,53 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   };
 
+  const handleExtSystemSeverity = (data: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+            temp.products[0].feedbackAgentSettings.bugSettings.severities = [];
+      }
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.severity = true;
+        setUseTrackingSystemSeverity(true);
+      }
+      data.map((item: any) => {
+            if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+            temp.products[0].feedbackAgentSettings.bugSettings) {
+            temp.products[0].feedbackAgentSettings.bugSettings.severities.push(item);
+              }
+          })
+        setProductParams(temp);
+      }
+  }
+  const handleTrackingSystemDetails = (event: any, authUser: string, authToken: any, externalSystemUrl: string) => {
+    const appendUrl = `?email=${authUser}&appToken=${authToken}&url=${externalSystemUrl}`
+    console.log(productParams)
+    console.log(event.target.checked, 'checked');
+    console.log(appendUrl);
+    if(event.target.checked){
+    Http.get({
+      url: `/api/v2/externalTrackingSystem/JIRA${appendUrl}`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+       console.log(response, 'jira severity')
+       handleExtSystemSeverity(response.Severity);
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        console.log(error)
+      });
+    }
+    else{
+      setUseTrackingSystemSeverity(false);
+    }
+  }
+
   const deleteBugSeverity = (catIndex: number) => {
+    if(!useTrackingSystemSeverity){
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
@@ -511,6 +558,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         setProductParams(temp);
       }
     }
+  }
   };
 
   const addBugSeverity = () => {
@@ -1078,8 +1126,10 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleChangeBugCategoryName: handleChangeBugCategoryName,
       deleteBugCategory: deleteBugCategory,
       addBugSeverity: addBugSeverity,
+      useTrackingSystemSeverity: useTrackingSystemSeverity,
       handleChangeBugSeverityName: handleChangeBugSeverityName,
       deleteBugSeverity: deleteBugSeverity,
+      handleTrackingSystemDetails: handleTrackingSystemDetails,
       addBugStdFeedbackText: addBugStdFeedbackText,
       handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,

@@ -13,6 +13,8 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  FormControlLabel,
+  Checkbox,
 } from "@material-ui/core";
 import ClearIcon from '@material-ui/icons/Clear';
 import { useSelector } from 'react-redux';
@@ -78,6 +80,7 @@ const EditExternalSystemSettings = (props: any) => {
   const classes = useStyles();
   const [extSystemSettingsPosted, setExtSystemSettingsPosted] = useState(false);
   const [extSystemSettingsFetched, setExtSystemSettingsFetched] = useState(false);
+  const [extSystemSeverity, setExtSystemSeverity] = useState([])
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
@@ -119,10 +122,51 @@ const EditExternalSystemSettings = (props: any) => {
         setFailure(true);
       });
   }, []);
+  const handleTrackingSystemDetails = (event: any, authUser: string, authToken: any, externalSystemUrl: string) => {
+    const appendUrl = `?email=${authUser}&appToken=${authToken}&url=${externalSystemUrl}`
+    console.log(productParams)
+    console.log(event);
+    console.log(appendUrl);
+    Http.get({
+      url: `/api/v2/externalTrackingSystem/JIRA${appendUrl}`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+       console.log(response, 'jira severity')
+       handleExtSystemSeverity(response.Severity);
+       setExtSystemSeverity(response);
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        console.log(error)
+      });
+  }
+
+  const handleExtSystemSeverity = (data: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+            temp.products[0].feedbackAgentSettings.bugSettings.severities = [];
+      }
+      // if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+      //   temp.products[0].trackingSystem.severity = true;
+      // }
+      data.map((item: any) => {
+            if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+            temp.products[0].feedbackAgentSettings.bugSettings) {
+            temp.products[0].feedbackAgentSettings.bugSettings.severities.push(item);
+              }
+          })
+        setProductParams(temp);
+      }
+  };
 
   const handleSave = () => {
     if (mandatoryFieldsCheck()) {
       const postData = productParams;
+      console.log(postData, 'savedata')
       Http.put({
         url: `/api/v2/products`,
         body: {
@@ -325,6 +369,30 @@ const EditExternalSystemSettings = (props: any) => {
                 fullWidth
                 autoComplete='off'
                 className='textFieldStyle'
+              />
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={(productParams && productParams.products && productParams.products[0] &&
+                      productParams.products[0].trackingSystem)
+                      ? productParams.products[0].trackingSystem.severity
+                      : false}
+                    onChange={(event) => handleTrackingSystemDetails(event,
+                       ((productParams && productParams.products && productParams.products[0] &&
+                      productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authUser'] : ''), 
+                      ((productParams && productParams.products && productParams.products[0] &&
+                        productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authKey'] : ''), 
+                        ((productParams && productParams.products && productParams.products[0] &&
+                          productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.url : ''))}
+                    value="trackingSystemSeverityDetails"
+                  />
+                }
+                label={
+                  <Typography color="textSecondary">
+                    {"Use Tracking system severity details"}
+                  </Typography>
+                }
+                labelPlacement={'start'}
               />
             </Grid>
           </Paper>

@@ -29,6 +29,8 @@ import { api as getDevicesV2 } from './v2/device/get';
 import { api as postDevicesV2 } from './v2/device/post';
 import { api as putDevicesV2 } from './v2/device/put';
 import { api as dowloadReportsV2 } from './v2/downloadReports/get';
+import { api as getExternalTrackingSystemV2 } from './v2/externalTrackingSystem/get';
+import { api as postExternalTrackingSystemV2 } from './v2/externalTrackingSystem/post';
 import { api as getFeedbackV2 } from './v2/feedback/get';
 import { api as postFeedbackV2 } from './v2/feedback/post';
 //import { api as getFileV2 } from './v2/fileUpload/get';
@@ -104,6 +106,8 @@ const apis: API[] = [
   getCampaignsV2,
   postCampaignsV2,
   putCampaignsV2,
+  getExternalTrackingSystemV2,
+  postExternalTrackingSystemV2,
   deletePlatformsV2,
   getPlatformsV2,
   postPlatformsV2,

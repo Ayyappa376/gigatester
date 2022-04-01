@@ -2,6 +2,7 @@ export * from './apiGateway';
 export * from './cognito';
 export * from './connectors';
 export * from './dynamoDb';
+export * from './externalSystem';
 export * from './logger';
 export * from './elasticSearch';
 export * from './response-builder';
