@@ -36,8 +36,8 @@ interface SettingsProps {
 	handleMainBtnPosition: Function;
 	handleMainBtnRotation: Function;
 	handleMainBtnTop: Function;
-    handleMainBtnLeft: Function;
-    handleMainBtnCustom: Function;
+	handleMainBtnLeft: Function;
+	handleMainBtnCustom: Function;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -88,6 +88,20 @@ const useStyles = makeStyles((theme) => ({
 		position: 'absolute',
 		right: 0,
 	},
+	customLabel: {
+		fontSize: '13px',
+		marginRight: '10px',
+		minWidth: '50px',
+	},
+	customBox: {
+		padding: '2px',
+		width: 'auto',
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		marginRight: '15px',
+	},
 }));
 
 const LookAndFeel = ({
@@ -100,24 +114,28 @@ const LookAndFeel = ({
 	handleMainBtnFontStyle,
 	handleMainBtnPosition,
 	handleMainBtnRotation,
-    handleMainBtnLeft,
-    handleMainBtnCustom,
+	handleMainBtnLeft,
+	handleMainBtnCustom,
 }: SettingsProps) => {
 	const classes = useStyles();
 	const [buttonColor, setButtonColor] = useState<string | undefined>('#042e5b');
-    const [buttonTextColor, setBtnTextColor] = useState<string | undefined>('#ffffff');
-	const [colorSelect, setColorSelect] = useState<string | undefined>('please select');
-	const [fontSelect, setFontSelect] = useState<string | undefined>('Arial,sans-serif');
-    // const [isCustomFont, setIsCustomFont] = useState<Boolean | undefined>(false);
-    const [isCustomPos, setIsCustomPos] = useState<Boolean | undefined>(false);
+	const [buttonTextColor, setBtnTextColor] = useState<string | undefined>(
+		'#ffffff',
+	);
+	const [colorSelect, setColorSelect] = useState<string | undefined>(
+		'please select',
+	);
+	const [fontSelect, setFontSelect] = useState<string | undefined>(
+		'Arial,sans-serif',
+	);
+	// const [isCustomFont, setIsCustomFont] = useState<Boolean | undefined>(false);
+	const [isCustomPos, setIsCustomPos] = useState<Boolean | undefined>(false);
 	const [customFont, setCustomFont] = useState<string | undefined>('');
 	const [fWeight, setFontWeight] = useState<number | undefined>(400);
 	const [fStyle, setFontStyle] = useState<string | undefined>('normal');
 	const [buttonText, setButtonText] = useState<string | undefined>('Feedback');
 	const [btnPosition, setBtnPosition] = useState<string>(POS_RIGHT_MIDDLE);
 	const [rotation, setRotation] = useState<string | undefined>('0');
-	const [buttonTop, setButtonTop] = useState<string | undefined>('0');
-	const [buttonLeft, setButtonLeft] = useState<string | undefined>('0');
 
 	useEffect(() => {
 		if (
@@ -151,12 +169,15 @@ const LookAndFeel = ({
 			);
 			setRotation(
 				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.rotation,
-            );
-            if (productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.position === 'CUSTOM') {
-                setIsCustomPos(true);
-            }
+			);
+			if (
+				productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+					.position === 'CUSTOM'
+			) {
+				setIsCustomPos(true);
+			}
 		}
-    }, [productParams]);
+	}, [productParams]);
 
 	const handleChange = (event: any) => {
 		setColorSelect(event.target.value);
@@ -180,15 +201,15 @@ const LookAndFeel = ({
 	const handleDegChange = (event: any) => {
 		setRotation(event.target.value);
 		handleMainBtnRotation(event.target.value);
-    };
+	};
 
-    const handleCustomPosition = (event: any, property: string) => {
-        handleMainBtnCustom(event, property);
-    }
+	const handleCustomPosition = (event: any, property: string) => {
+		handleMainBtnCustom(event, property);
+	};
 
 	const handleBtnPosition = (event: any) => {
-        const selectedPosition = event.target.value;
-        console.log(selectedPosition);
+		const selectedPosition = event.target.value;
+		console.log(selectedPosition);
 
 		if (
 			selectedPosition === 'RIGHT_MIDDLE' ||
@@ -196,30 +217,30 @@ const LookAndFeel = ({
 		) {
 			handleMainBtnRotation('90');
 			setBtnPosition(selectedPosition);
-            handleMainBtnPosition(event);
-            setIsCustomPos(false);
+			handleMainBtnPosition(event);
+			setIsCustomPos(false);
 		} else if (
 			selectedPosition === 'LEFT_MIDDLE' ||
 			selectedPosition === 'LEFT_BOTTOM'
 		) {
 			handleMainBtnRotation('270');
 			setBtnPosition(selectedPosition);
-            handleMainBtnPosition(event);
-            setIsCustomPos(false);
+			handleMainBtnPosition(event);
+			setIsCustomPos(false);
 		} else if (
 			selectedPosition === 'BOTTOM_RIGHT' ||
 			selectedPosition === 'BOTTOM_LEFT'
 		) {
 			handleMainBtnRotation('0');
 			setBtnPosition(selectedPosition);
-            handleMainBtnPosition(event);
-            setIsCustomPos(false);
-        } else if (selectedPosition === 'CUSTOM') {
-            handleMainBtnRotation('0');
-            setBtnPosition(selectedPosition);
-            handleMainBtnPosition(event);
-            setIsCustomPos(true);
-        }
+			handleMainBtnPosition(event);
+			setIsCustomPos(false);
+		} else if (selectedPosition === 'CUSTOM') {
+			handleMainBtnRotation('0');
+			setBtnPosition(selectedPosition);
+			handleMainBtnPosition(event);
+			setIsCustomPos(true);
+		}
 	};
 
 	return (
@@ -381,15 +402,69 @@ const LookAndFeel = ({
 				</Grid>
 
 				<Grid item xs={12} sm={12}>
+					<Box
+						sx={{
+							display: 'flex',
+							flexDirection: 'row',
+							justifyContent: 'flex-start',
+							width: '100%',
+							padding: '5px',
+						}}
+					>
+						<Box
+							sx={{
+								margin: '5px',
+							}}
+						>
+							<InputLabel
+								style={{ marginTop: '10px', marginBottom: '10px', fontSize: '15px' }}
+								id={`colorStylingOptions`}
+								required={true}
+							>
+								{'Choose button color:'}
+							</InputLabel>
+							<ChromePicker
+								color={buttonColor}
+								onChange={(color) => {
+									setButtonColor(color.hex);
+									handleMainBtnColor(color.hex);
+								}}
+							/>
+						</Box>
+						<Box
+							sx={{
+								margin: '5px',
+							}}
+						>
+							<InputLabel
+								style={{ marginTop: '10px', marginBottom: '10px', fontSize: '15px' }}
+								id={`colorStylingOptions`}
+								required={true}
+							>
+								{'Choose text color:'}
+							</InputLabel>
+							<ChromePicker
+								color={buttonTextColor}
+								onChange={(color) => {
+									// console.log('result', color)
+									setBtnTextColor(color.hex);
+									handleMainBtnTextColor(color.hex);
+								}}
+							/>
+						</Box>
+					</Box>
+				</Grid>
+
+				<Grid item xs={12} sm={12} style={{ marginTop: '20px'}}>
 					<FormControl className={classes.formControl}>
 						<InputLabel style={{ marginTop: 5 }} id={`position`} required={true}>
 							{'Choose Widget position on site:'}
 						</InputLabel>
-                        <Select
-                            // disabled={isCustomPos ? true : false}
+						<Select
+							// disabled={isCustomPos ? true : false}
 							name={`select_position`}
 							value={btnPosition}
-                            onChange={(event) => {
+							onChange={(event) => {
 								handleBtnPosition(event);
 							}}
 						>
@@ -403,7 +478,7 @@ const LookAndFeel = ({
 								{'Left - Middle'}
 							</MenuItem>
 							<MenuItem key={4} value={POS_LEFT_BOTTOM}>
-								{'Left - Buttom'}
+								{'Left - Bottom'}
 							</MenuItem>
 							<MenuItem key={5} value={POS_BOTTOM_LEFT}>
 								{'Bottom - Left'}
@@ -415,234 +490,238 @@ const LookAndFeel = ({
 								{'Custom'}
 							</MenuItem>
 						</Select>
-                    </FormControl>
-                </Grid>
-
-                <Grid item xs={12} sm={12}>
-                    {isCustomPos ? (
-                        <Box sx={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-evenly', alignItems: 'center', padding: '10px', paddingLeft: '20px', width: '70%' }}>
-                        <InputLabel style={{ marginTop: 5 }} id={`customProperties`} required={true}>
-                                {'If more specific positioning is required, feel free to add properties below. Empty fields will not be applied'}
-                            </InputLabel>
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.top
-                                        : ''
-                                }
-                                label={'Top ( px - pixels or percentage):'}
-                                onChange={(event) => handleCustomPosition(event, 'top')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.bottom
-                                        : ''
-                                }
-                                label={'Bottom (pixels or percentage):'}
-                                onChange={(event) => handleCustomPosition(event, 'bottom')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.right
-                                        : ''
-                                }
-                                label={'Right (pixels or percentage):'}
-                                onChange={(event) => handleCustomPosition(event, 'right')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.left
-                                        : ''
-                                }
-                                label={'Left (pixels or percentage):'}
-                                onChange={(event) => handleCustomPosition(event, 'left')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.borderRadius
-                                        : ''
-                                }
-                                label={'Border radius (pixels or percentage):'}
-                                onChange={(event) => handleCustomPosition(event, 'borderRadius')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.rotation
-                                        : ''
-                                }
-                                label={'Rotation (0 - 360 degrees):'}
-                                onChange={(event) => handleCustomPosition(event, 'rotation')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.margin
-                                        : ''
-                                }
-                                label={'Margin (pixels):'}
-                                onChange={(event) => handleCustomPosition(event, 'margin')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                            <TextField
-                                type='string'
-                                id={`customPosition`}
-                                name={`customPosition`}
-                                value={
-                                    productParams &&
-                                    productParams.products &&
-                                    productParams.products[0] &&
-                                    productParams.products[0].feedbackAgentSettings &&
-                                    productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-                                        ? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.padding
-                                        : ''
-                                }
-                                label={'Padding (pixels):'}
-                                onChange={(event) => handleCustomPosition(event, 'padding')}
-                                fullWidth
-                                autoComplete='off'
-                                className='textFieldStyle'
-                                style={{ marginTop: 5 }}
-                                inputProps={{ maxLength: 8 }}
-                            />
-                        </Box>
-                    ): null}
+					</FormControl>
 				</Grid>
 
 				<Grid item xs={12} sm={12}>
-                    <Box sx={{
-                        display: 'flex',
-                        flexDirection: 'row',
-                        justifyContent: 'space-evenly',
-                        width: '100%',
-                        padding: '5px',
-                    }}>
-                        <Box sx={{
-                            margin: '5px',
-                        }}>
-							<InputLabel
-								style={{ marginTop: '10px', marginBottom: '10px', fontSize: '15px' }}
-								id={`colorStylingOptions`}
-								required={true}
-							>
-								{'Choose button color:'}
-							</InputLabel>
-							<ChromePicker
-								color={buttonColor}
-								onChange={(color) => {
-										setButtonColor(color.hex);
-										handleMainBtnColor(color.hex);
-								}}
+					{isCustomPos ? (
+						<InputLabel
+							style={{ marginTop: 5 }}
+							id={`customProperties`}
+							required={true}
+						>
+							{
+								'If more specific positioning is required, feel free to add properties below. Empty fields will not be applied'
+							}
+				</InputLabel>
+					): null}
+					{isCustomPos ? (
+						<Box
+							sx={{
+								padding: '10px',
+								paddingLeft: '20px',
+								width: '98%',
+								display: 'grid',
+								gridTemplateColumns: 'repeat(2, 1fr)',
+								gridTemplateRows: 'repeat(4, 1fr)',
+								gridColumnGap: '0px',
+								gridRowGap: '0px',
+							}}
+						>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Top</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.top
+										: ''
+								}
+								label={'pixels or percentage'}
+								onChange={(event) => handleCustomPosition(event, 'top')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5}}
+								inputProps={{ maxLength: 8 }}
 							/>
-						</Box>
-						<Box sx={{
-                            margin: '5px',
-                        }}>
-							<InputLabel
-								style={{ marginTop: '10px', marginBottom: '10px', fontSize: '15px' }}
-								id={`colorStylingOptions`}
-								required={true}
-							>
-								{'Choose text color:'}
-							</InputLabel>
-							<ChromePicker
-								color={buttonTextColor}
-								onChange={(color) => {
-									// console.log('result', color)
-										setBtnTextColor(color.hex);
-										handleMainBtnTextColor(color.hex);
-								}}
+							</Box>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Bottom:</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.bottom
+										: ''
+								}
+								label={'pixels or percentage'}
+								onChange={(event) => handleCustomPosition(event, 'bottom')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5 }}
+								inputProps={{ maxLength: 8 }}
 							/>
+							</Box>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Right:</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.right
+										: ''
+								}
+								label={'pixels or percentage'}
+								onChange={(event) => handleCustomPosition(event, 'right')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5 }}
+								inputProps={{ maxLength: 8 }}
+							/>
+							</Box>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Left:</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.left
+										: ''
+								}
+								label={'pixels or percentage'}
+								onChange={(event) => handleCustomPosition(event, 'left')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5 }}
+								inputProps={{ maxLength: 8 }}
+							/>
+							</Box>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Border Radius:</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.borderRadius
+										: ''
+								}
+								label={'pixels or percentage'}
+								onChange={(event) => handleCustomPosition(event, 'borderRadius')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5 }}
+								inputProps={{ maxLength: 8 }}
+							/>
+							</Box>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Rotation:</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.rotation
+										: ''
+								}
+								label={'0 - 360'}
+								onChange={(event) => handleCustomPosition(event, 'rotation')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5 }}
+								inputProps={{ maxLength: 8 }}
+							/>
+							</Box>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Margin:</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.margin
+										: ''
+								}
+								label={'pixels'}
+								onChange={(event) => handleCustomPosition(event, 'margin')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5 }}
+								inputProps={{ maxLength: 8 }}
+							/>
+							</Box>
+							<Box className={classes.customBox}>
+								<Typography className={classes.customLabel}>Padding:</Typography>
+								<TextField
+								type='string'
+								id={`customPosition`}
+								name={`customPosition`}
+								value={
+									productParams &&
+									productParams.products &&
+									productParams.products[0] &&
+									productParams.products[0].feedbackAgentSettings &&
+									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+												.custom.padding
+										: ''
+								}
+								label={'pixels'}
+								onChange={(event) => handleCustomPosition(event, 'padding')}
+								fullWidth
+								autoComplete='off'
+								className='textFieldStyle'
+								style={{ marginTop: 5 }}
+								inputProps={{ maxLength: 8 }}
+							/>
+							</Box>
 						</Box>
-					</Box>
+					) : null}
 				</Grid>
+
 			</Box>
 			<Box
 				sx={{

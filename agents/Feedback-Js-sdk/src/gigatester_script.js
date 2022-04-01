@@ -2286,14 +2286,16 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     }
                     let popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>')
                     popup_dialog[0].style.transform = `rotate(${GigaTester_modal.configs.pop_up_rotate}deg)`
+                    popup_dialog[0].style.bottom = '-118px';
                     if (GigaTester_modal.configs.main_button_position === 'LEFT_BOTTOM') {
                         popup_dialog[0].style.left = '75px';
                         popup_dialog[0].style.bottom = '-118px';
                     } else if (GigaTester_modal.configs.main_button_position === 'RIGHT_BOTTOM') {
-                        popup_dialog[0].style.left = '-8px';
+                        popup_dialog[0].style.left = '-50px';
                         popup_dialog[0].style.bottom = '-118px';
                     } else if (GigaTester_modal.configs.main_button_position === 'CUSTOM') {
                         popup_dialog[0].style.position = 'absolute';
+                        popup_dialog[0].style.bottom = '';
                         popup_dialog[0].style.top = '60%';
                         popup_dialog[0].style.transform = 'rotate(0deg)';
                     }
