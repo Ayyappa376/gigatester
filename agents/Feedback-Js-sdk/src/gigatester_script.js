@@ -707,7 +707,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                     if (this.configs.main_button_position === "RIGHT_BOTTOM" || this.configs.main_button_position === "LEFT_BOTTOM") {
                         let bottomPos = '';
                         if (styleCheckWidth > 113) {
-                            let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
+                            let newPosition = ((styleCheckWidth - 114) / 2) + 42;
                             bottomPos += newPosition.toString();
                             adjustedBottom = `${bottomPos}px`;
                         } else if (styleCheckWidth < 90) {
@@ -2292,15 +2292,15 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         popup_dialog[0].style.left = '75px';
                         popup_dialog[0].style.bottom = '-118px';
                     } else if (currentPosition === 'RIGHT_BOTTOM') {
-                        popup_dialog[0].style.left = '-50px';
+                        popup_dialog[0].style.left = '-10px';
                         popup_dialog[0].style.bottom = '-118px';
                     } else if (currentPosition === 'BOTTOM_RIGHT' || currentPosition === 'BOTTOM_LEFT') {
                         popup_dialog[0].style.bottom = '';
                         popup_dialog[0].style.top = '-190px';
                     } else if (currentPosition === 'CUSTOM') {
-                        popup_dialog[0].style.position = 'absolute';
+                        popup_dialog[0].style.position = 'fixed';
                         popup_dialog[0].style.bottom = '';
-                        popup_dialog[0].style.top = '30%';
+                        popup_dialog[0].style.top = '35%';
                         popup_dialog[0].style.left = '50%';
                         popup_dialog[0].style.transform = 'rotate(0deg)';
                     }
