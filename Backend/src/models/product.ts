@@ -62,6 +62,7 @@ export interface FeedbackSettings {
 
 export interface WidgetLAF {
     bgColor: string;
+    custom?: CustomProperties;
     fgColor: string;
     font: string;
     fontStyle: string;
@@ -70,18 +71,17 @@ export interface WidgetLAF {
     position: WidgetPosition;
     rotation?: string;
     text: string;
-    custom?: CustomProperties;
 }
 
 export interface CustomProperties {
-    top?: string;
+    borderRadius?: string;
     bottom?: string;
     left?: string;
-    right?: string;
-    borderRadius?: string;
-    rotation?: string;
     margin?: string;
     padding?: string;
+    right?: string;
+    rotation?: string;
+    top?: string;
   }
 
 export interface Category {

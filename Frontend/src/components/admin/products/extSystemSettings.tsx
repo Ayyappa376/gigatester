@@ -143,6 +143,24 @@ const EditExternalSystemSettings = (props: any) => {
       });
   }
 
+  const handleUploadDataToTrackingSystem = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if(event.target.checked){
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.uploadToTrackingSystem = true;
+        setProductParams(temp);
+      }
+    }
+    else{
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.uploadToTrackingSystem = false;
+        setProductParams(temp);
+      }
+    }
+  }
+  }
+
   const handleExtSystemSeverity = (data: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -242,6 +260,16 @@ const EditExternalSystemSettings = (props: any) => {
     }
   }
 
+  const handleTrackingSytemProjectDetails = (event: any, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.project= event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
   const handleSystemTypeChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -328,6 +356,27 @@ const EditExternalSystemSettings = (props: any) => {
                 autoComplete='off'
                 className='textFieldStyle'
               />
+              <TextField
+                required={true}
+                type='string'
+                id={`title`}
+                name={`title`}
+                value={
+                  (productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].trackingSystem &&
+                  productParams.products[0].trackingSystem.project)
+                  ? productParams.products[0].trackingSystem.project
+                  : ''
+                }
+                label={'Provide project key for your tracking/incident management system'}
+                onChange={(event) => handleTrackingSytemProjectDetails(event, 'authUser')}
+                disabled={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].trackingSystem &&
+                  productParams.products[0].trackingSystem.type === TRACKING_SYSTEM_SELF)}
+                fullWidth
+                autoComplete='off'
+                className='textFieldStyle'
+              />
                 <TextField
                 required={true}
                 type='string'
@@ -375,21 +424,20 @@ const EditExternalSystemSettings = (props: any) => {
                   <Checkbox
                     checked={(productParams && productParams.products && productParams.products[0] &&
                       productParams.products[0].trackingSystem)
-                      ? productParams.products[0].trackingSystem.severity
+                      ? productParams.products[0].trackingSystem.uploadToTrackingSystem
                       : false}
-                    onChange={(event) => handleTrackingSystemDetails(event,
-                       ((productParams && productParams.products && productParams.products[0] &&
-                      productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authUser'] : ''), 
-                      ((productParams && productParams.products && productParams.products[0] &&
-                        productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authKey'] : ''), 
-                        ((productParams && productParams.products && productParams.products[0] &&
-                          productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.url : ''))}
+                    onChange={(event) => handleUploadDataToTrackingSystem(event)}
                     value="trackingSystemSeverityDetails"
+                    disabled={(productParams && productParams.products && productParams.products[0] &&
+                      productParams.products[0].trackingSystem &&
+                      productParams.products[0].trackingSystem.auth &&
+                      productParams.products[0].trackingSystem.url.length < 2 &&
+                      productParams.products[0].trackingSystem.type === TRACKING_SYSTEM_SELF)}
                   />
                 }
                 label={
                   <Typography color="textSecondary">
-                    {"Use Tracking system severity details"}
+                    {"Upload Bug feedback to tracking system"}
                   </Typography>
                 }
                 labelPlacement={'start'}

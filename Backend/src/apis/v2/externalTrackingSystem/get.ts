@@ -1,14 +1,13 @@
 import { API, Handler } from '@apis/index';
 import {
   appLogger,
-  getJIRADetails,
+  getJIRASeverityDetails,
   responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
 
-export type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
 
-export type ExternalSystemType = 'JIRA' | 'BUG_REPORT' | 'FEEDBACK-CHART' | 'BUG-REPORT-CHART';
+export type ExternalSystemType = 'JIRA';
 
 interface ExternalTrackingSystemRequest {
   headers: {
@@ -21,11 +20,11 @@ interface ExternalTrackingSystemRequest {
   params: {
     type: ExternalSystemType;
   };
-  query:{
-    email: string;
+  query: {
     appToken: string;
+    email: string;
     url: string;
-  }
+  };
 }
 
 async function handler(
@@ -36,7 +35,6 @@ async function handler(
   const { headers, params, query } = request;
   const {type} = params;
   const {email, appToken, url} = query;
-  console.log(query, 'bodyyyyyyy')
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
     const err = new Error('InvalidUser');
@@ -54,21 +52,18 @@ async function handler(
 
   try {
     let severity: string[] = [];
-    let auth = {
-        email: email,
-        appToken: appToken,
+    const auth = {
+      appToken,
+      email,
     };
-    let externalSystemUrl = url; 
+    const externalSystemUrl = url;
     if(type) {
-      severity = await getJIRADetails(auth, externalSystemUrl);
+      severity = await getJIRASeverityDetails(auth, externalSystemUrl);
       console.log(severity, 'severrity');
       return responseBuilder.ok({Severity: severity }, response);
     }
-    // put a log here
-    else{
     return responseBuilder.ok({Severity: severity }, response);
-    }
-  } catch (err) {
+  } catch(err) {
     appLogger.error(err, 'Internal Server Error');
     responseBuilder.internalServerError(<Error>err, response);
   }

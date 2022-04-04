@@ -1,1 +1,1 @@
-export * from './getJIRADetails';
+export * from './getJIRASeverityDetails';

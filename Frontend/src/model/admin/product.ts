@@ -94,8 +94,11 @@ export interface ITrackingSystem {
   auth: {
       [key: string]: string;
   };
+  project: string;
+  severity: boolean;
   type: ITrackingSystemType;
   url: string;
+  uploadToTrackingSystem: boolean;
   [key: string]: any;
 }
 

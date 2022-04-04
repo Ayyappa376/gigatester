@@ -1,7 +1,7 @@
 import * as HttpRequest from '@utils/httpRequest';
 import { appLogger } from '@utils/index';
 
-export async function getJIRADetails(
+export async function getJIRASeverityDetails(
     auth: any,
     externalSystemURL: string
   ): Promise<any> {
@@ -22,9 +22,8 @@ export async function getJIRADetails(
           console.log(projData, 'projeccct');
           projData.map((item: any) => {
              severityList.push(item.name);
-          })
+          });
           resolve(severityList);
-  //        tool.projectName.options = projData.map((elm: any) => elm.name);
         }
       })
       .catch((err) => {

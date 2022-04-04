@@ -39,6 +39,7 @@
     "@types/jsonwebtoken": "^8.3.2",
     "@types/uuid": "^3.4.5",
     "amazon-cognito-identity-js": "^3.0.14",
+    "axios": "^0.26.1",
     "body-parser": "^1.18.3",
     "bunyan": "^1.8.12",
     "class-validator": "^0.9.1",
