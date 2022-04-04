@@ -831,6 +831,9 @@ popupbtn:hover popuptooltip {
 #gigatester_ctrls_container .gigatester-btn-r {
   /* right: -35px; */
   /* top: 50%; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   margin-top: -20px;
   border-radius: 4px;
   bottom: auto;
