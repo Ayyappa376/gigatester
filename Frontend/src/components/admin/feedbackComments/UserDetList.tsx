@@ -12,12 +12,7 @@ import WorkIcon from '@material-ui/icons/Work';
 import BeachAccessIcon from '@material-ui/icons/BeachAccess';
 
 interface userInfoProps {
-	userId: string | undefined;
-	platformInfo: string | undefined;
-	sourceIp: string | undefined;
-	osInfo: string | undefined;
-	pageURL: string | undefined;
-	isCollapse: boolean;
+  userDetails: any,
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -50,120 +45,100 @@ const useStyles = makeStyles((theme) => ({
   collapseList: {
     display: 'flex',
 		flexDirection: 'row',
-    justifyContent: 'flex-start',
+    justifyContent: 'space-evenly',
 		width: '90%',
 		margin: 0,
   },
   item: {
-    marginLeft: '10px',
+    marginLeft: '20px',
   }
 }));
 
-export default function FolderList({
-	userId,
-	platformInfo,
-	sourceIp,
-	osInfo,
-	pageURL,
-	isCollapse,
+export default function UserDetailList({
+  userDetails
 }: userInfoProps) {
+  // const { email,
+  //   id,
+  //   guid,
+  //   name, } = userDetails;
 	const classes = useStyles();
 	return (
 		<Box sx={{  display: 'flex',
 		flexDirection: 'column',
 			justifyContent: 'flex-start',
 		}}>
-			{!isCollapse && userId && userId.length > 0 ? (
-		<List className={classes.list}>
-				<ListItem className={classes.listItems}>
-					<Typography className={classes.labels}>email</Typography>
-					<ListItemText
-						className={classes.listText}
-						primary={userId && userId.length > 0 ? userId : '-'}
-						primaryTypographyProps={{
-							style: {
-								maxWidth: isCollapse ? 'auto' : '160px',
-								whiteSpace: 'nowrap',
-								overflow: 'hidden',
-								textOverflow: 'ellipsis',
-							},
-						}}
-					/>
-				</ListItem>
-      </List>
-        ) : null}
-			{isCollapse ? (
+			{userDetails ? (
         <div className={classes.collapseList}>
           <div>
-					{sourceIp && sourceIp.length > 0 ? (
+					{userDetails.email && userDetails.email.length > 0 ? (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>source IP</Typography>
+							<Typography className={classes.labels}>email</Typography>
 							<ListItemText
 								className={classes.listText}
-								primary={sourceIp && sourceIp.length > 0 ? sourceIp : '-'}
+								primary={userDetails.email && userDetails.email.length > 0 ? userDetails.email : '-'}
 							/>
 						</ListItem>
 					) : (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>source IP</Typography>
+							<Typography className={classes.labels}>email</Typography>
 							<ListItemText
 								className={classes.listText}
-								primary={'No source IP found'}
+								primary={'Not found'}
 							/>
 						</ListItem>
             )}
-					{platformInfo && platformInfo.length > 0 ? (
+					{userDetails.id && userDetails.id.length > 0 ? (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>platform</Typography>
+							<Typography className={classes.labels}>id</Typography>
 							<ListItemText
 								className={classes.listText}
 								primary={
-									platformInfo && platformInfo.length > 0 ? platformInfo : '-'
+									userDetails.id && userDetails.id.length > 0 ? userDetails.id : '-'
 								}
 							/>
 						</ListItem>
 					) : (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>platform</Typography>
+							<Typography className={classes.labels}>id</Typography>
 							<ListItemText
 								className={classes.listText}
-								primary={'No platform information found'}
+								primary={'Not found'}
 							/>
 						</ListItem>
             )}
           </div>
           <div className={classes.item}>
-					{osInfo && osInfo.length > 0 ? (
+					{userDetails.guid && userDetails.guid.length > 0 ? (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>OS</Typography>
+							<Typography className={classes.labels}>guid</Typography>
 							<ListItemText
 								className={classes.listText}
-								primary={osInfo && osInfo.length > 0 ? osInfo : '-'}
+								primary={userDetails.guid && userDetails.guid.length > 0 ? userDetails.guid : '-'}
 							/>
 						</ListItem>
 					) : (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>OS</Typography>
+							<Typography className={classes.labels}>Guid</Typography>
 							<ListItemText
 								className={classes.listText}
-								primary={'No operating system information found'}
+								primary={'Not found'}
 							/>
 						</ListItem>
 					)}
-					{pageURL && pageURL.length > 0 ? (
+					{userDetails.name && userDetails.name.length > 0 ? (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>page URL</Typography>
+							<Typography className={classes.labels}>Name </Typography>
 							<ListItemText
 								className={classes.listText}
-								primary={pageURL && pageURL.length > 0 ? pageURL : '-'}
+								primary={userDetails.name && userDetails.name.length > 0 ? userDetails.name : '-'}
 							/>
 						</ListItem>
 					) : (
 						<ListItem className={classes.listItems}>
-							<Typography className={classes.labels}>page URL</Typography>
+							<Typography className={classes.labels}>Name</Typography>
 							<ListItemText
 								className={classes.listText}
-								primary={'No page URL found'}
+								primary={'Not found'}
 							/>
 						</ListItem>
             )}

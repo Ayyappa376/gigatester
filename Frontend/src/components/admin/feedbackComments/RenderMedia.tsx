@@ -35,9 +35,9 @@ const RenderMedia = ({
 
   return (
     <div className={classes.container}>
-      <Box sx={{ padding: '4px'}}>
+      {/* <Box sx={{ padding: '4px'}}>
         <Typography className={classes.label}>Attachment:</Typography>
-      </Box>
+      </Box> */}
     <div
       style={{
         display: 'flex',
@@ -69,7 +69,7 @@ const RenderMedia = ({
                     signedUrlMapping[row.feedbackMedia.image]
                       .signedUrl
                   }
-                  style={{ width: 150, marginTop: 10 }}
+                  style={{ maxWidth: '300px', marginTop: 10 }}
                 ></img>
               ) : (
                 <div />
@@ -86,7 +86,7 @@ const RenderMedia = ({
         {row.feedbackMedia ? (
           row.feedbackMedia.video ? (
             fetchAllUrls ? (
-              <div style={{ maxWidth: 700 }}>
+              <div style={{ maxWidth: 600 }}>
                 <video
                   width='40%'
                   controls
@@ -124,7 +124,7 @@ const RenderMedia = ({
                 </video>
               </div>
             ) : (
-              <div style={{ maxWidth: 700 }}>
+              <div style={{ maxWidth: 600 }}>
                 <video
                   width='50%'
                   controls
@@ -210,6 +210,7 @@ const useStyles = makeStyles((theme: Theme) =>
       flexDirection: 'column',
       justifyContent: 'center',
       alignItems: 'center',
+      minHeight: '150px',
     },
     label: {
       fontSize: '12px',
