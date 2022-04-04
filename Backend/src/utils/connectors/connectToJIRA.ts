@@ -171,6 +171,7 @@ export async function connectAndFetchFromJIRA(
             });
           }
         })
+        
         .catch((err) => {
           appLogger.error({ JIRAGetError: err });
           reject(err);
