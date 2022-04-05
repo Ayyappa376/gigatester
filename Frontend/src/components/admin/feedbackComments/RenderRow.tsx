@@ -54,7 +54,7 @@ const RenderRow = ({
 	const classes = useStyles();
 	const [show, setShow] = useState(false);
 
-	console.log('row', row);
+	// console.log('row', row);
 
 	const handleClick = () => {
 		if (show) {
@@ -119,7 +119,11 @@ const RenderRow = ({
 					</TableCell>
 				)}
 				<TableCell align='center' style={{ fontSize: '1rem' }}>
-					{row.feedbackCategory ? row.feedbackCategory : '-'}
+					{Array.isArray(row.feedbackCategory) === true ?
+						row.feedbackCategory.map((cat: string) => (
+							<div style={{ marginBottom: '5px', overflowWrap: 'break-word' }}>{cat}</div>
+						))
+				: row.feedbackCategory ? row.feedbackCategory : '-'}
 				</TableCell>
 				<TableCell align='left' style={{ maxWidth: '30vw', fontSize: '1rem' }}>
 					<div style={{ overflow: 'auto', maxHeight: '10vh' }}>
