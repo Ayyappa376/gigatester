@@ -17,18 +17,19 @@ import {
 import React, { useEffect, useState } from 'react';
 import { getDate, getDateTime } from '../../../utils/data';
 import FolderList from './FolderList';
+import UserDetailList from './UserDetList';
 import { buttonStyle } from '../../../common/common';
 import RenderComments from './RenderComments';
 import RenderStars from './RenderStarts';
 import RenderMedia from './RenderMedia';
 import AudioPlayer from './audioPlayer';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
-import KeyboardArrowUpIcon from '@material-ui/icons/KeyboardArrowUp';
+import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 
 interface RowProps {
 	index: number;
 	tableData: any;
-	ref: any;
+	innerRef: any;
 	row: any;
 	fetchAllUrls: boolean;
 	platformInfo: any;
@@ -42,7 +43,7 @@ const RenderRow = ({
 	index,
 	row,
 	tableData,
-	ref,
+	innerRef,
 	platformInfo,
 	osInfo,
 	isBugReport,
@@ -50,9 +51,10 @@ const RenderRow = ({
 	signedUrlMapping,
 	fetchAllUrls,
 }: RowProps) => {
-	// const {selectedProdId, productNameIdMapping, productInfo} = props;
 	const classes = useStyles();
 	const [show, setShow] = useState(false);
+
+	// console.log('row', row);
 
 	const handleClick = () => {
 		if (show) {
@@ -64,20 +66,27 @@ const RenderRow = ({
 
 	return (
 		<React.Fragment>
+			<tr>
+				<td>
 			<IconButton
 				aria-label='expand row'
 				size='small'
 				className={classes.iconButton}
+				onClick={() => handleClick()}
 			>
-				{show ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
-			</IconButton>
+				{show ? <KeyboardArrowDownIcon 		style={index % 2 ? { color : "#CACFD2" } : { color : "white" }} /> : <KeyboardArrowRight 	style={index % 2 ? { color : "#CACFD2" } : { color : "white" }} />}
+					</IconButton>
+				</td>
+			</tr>
 			<TableRow
-				innerRef={index === tableData.length - 1 ? ref : null}
+				innerRef={index === tableData.length - 1 ? innerRef : null}
 				hover
 				role='checkbox'
 				tabIndex={-1}
 				key={row.id}
 				onClick={() => handleClick()}
+				style={index % 2 ? { background : "white",  borderBottom: 'none', minHeight: '160px' }:{ background : "#D5D8DC ",  borderBottom: 'none', minHeight: '160px' }}
+				// style={ show ? { borderBottom: 'none' } : { borderBottom: '1px solid gray' }}
 			>
 				<TableCell
 					style={{
@@ -97,10 +106,7 @@ const RenderRow = ({
 						pageURL={undefined}
 					/>
 				</TableCell>
-				<TableCell
-					align='center'
-					style={{ fontSize: '1rem', minWidth: '12rem' }}
-				>
+				<TableCell align='center' style={{ fontSize: '1rem', minWidth: '12rem' }}>
 					{row.createdOn ? getDateTime(row.createdOn) : '-'}
 				</TableCell>
 				{isBugReport ? (
@@ -108,18 +114,19 @@ const RenderRow = ({
 						{row.bugPriority}
 					</TableCell>
 				) : (
-					<TableCell
-						align='center'
-						style={{ minWidth: '150px', fontSize: '1rem' }}
-					>
+					<TableCell align='center' style={{ minWidth: '150px', fontSize: '1rem' }}>
 						<RenderStars rating={row.productRating} />
 					</TableCell>
 				)}
 				<TableCell align='center' style={{ fontSize: '1rem' }}>
-					{row.feedbackCategory ? row.feedbackCategory : '-'}
+					{Array.isArray(row.feedbackCategory) === true ?
+						row.feedbackCategory.map((cat: string) => (
+							<div style={{ marginBottom: '5px', overflowWrap: 'break-word' }}>{cat}</div>
+						))
+				: row.feedbackCategory ? row.feedbackCategory : '-'}
 				</TableCell>
 				<TableCell align='left' style={{ maxWidth: '30vw', fontSize: '1rem' }}>
-					<div style={{ overflow: 'auto', maxHeight: '20vh' }}>
+					<div style={{ overflow: 'auto', maxHeight: '10vh' }}>
 						<RenderComments
 							category={row.feedbackCategory}
 							isBugReport={isBugReport}
@@ -133,13 +140,32 @@ const RenderRow = ({
 					</div>
 				</TableCell>
 			</TableRow>
-			<TableRow>
-				<TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
+			<TableRow style={index % 2 ? { background : "white", borderBottom: 'none' }:{ background : "#D5D8DC ", borderBottom: 'none' }}>
+				<TableCell
+					style={{ paddingBottom: 0, paddingTop: 0, borderBottom: 'none' }}
+					colSpan={6}
+				>
 					<Collapse in={show} timeout='auto' unmountOnExit>
 						<Box sx={{ margin: 1 }}>
-							<Table size='small' aria-label='purchases'>
+							<Table
+								size='small'
+								aria-label='purchases'
+								style={{ borderBottom: 'none' }}
+							>
+								<TableHead>
+									<TableRow style={{ borderBottom: 'none' }}>
+										<TableCell style={{ borderBottom: 'none', textAlign: 'center' }}>
+											Additional Information
+										</TableCell>
+										<TableCell style={{ borderBottom: 'none', textAlign: 'center' }}>
+											User details
+										</TableCell>
+										<TableCell style={{ borderBottom: 'none', textAlign: 'center' }}>Attachment</TableCell>
+									</TableRow>
+								</TableHead>
 								<TableBody>
-									<TableCell>
+									<TableRow style={{ borderBottom: 'none' }}>
+									<TableCell style={{ borderBottom: 'none', width: '35%' }}>
 										<FolderList
 											isCollapse={true}
 											userId={row.userId}
@@ -148,15 +174,21 @@ const RenderRow = ({
 											osInfo={osInfo}
 											pageURL={row.pageURL}
 										/>
+										</TableCell>
+										<TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
+											<UserDetailList
+												userDetails={row.userDetails}
+											/>
 									</TableCell>
-                  <TableCell>
-                    <RenderMedia
-                      row={row}
-                      signedUrlMapping={signedUrlMapping}
-                      fetchAllUrls={fetchAllUrls}
-                      props={props}
-                    />
-									</TableCell>
+									<TableCell style={{ borderBottom: 'none' }}>
+										<RenderMedia
+											row={row}
+											signedUrlMapping={signedUrlMapping}
+											fetchAllUrls={fetchAllUrls}
+											props={props}
+										/>
+										</TableCell>
+										</TableRow>
 								</TableBody>
 							</Table>
 						</Box>
