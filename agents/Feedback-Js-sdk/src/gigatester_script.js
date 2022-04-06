@@ -828,11 +828,11 @@ let GigaTester_StringUtils = {
                 },
                 checkSelectDependancyload: function(){
                     if ( window.jQuery){
-                        $('head').append('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.js"></script>');   
+                        $('head').append('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.js"></script>');
                     }
-                    console.log(window.jQuery, 'jquery');
+                    // console.log(window.jQuery, 'jquery');
                  },
-                 
+
                 addFeedbackButton: function() {
                     if (this.custom_ui.button) {
                         return
@@ -1715,10 +1715,10 @@ let GigaTester_StringUtils = {
                         this.form_data[field_name] = $(e.currentTarget).val()
                         if(field_name === 'category'){
                             if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
-                                this.saveCheckedCategory();         
+                                this.saveCheckedCategory();
                             }
                             console.log(GigaTester_modal.form_type, "form type");
-                            if(GigaTester_modal.form_type === "BUGS"){
+                            if (GigaTester_modal.form_type === "BUGS") {
                                 let feedback_reason = '';
                                 GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
                                     console.log($(e.currentTarget).val())
@@ -1747,10 +1747,10 @@ let GigaTester_StringUtils = {
                             else if(GigaTester_modal.form_type === "FEEDBACK"){
                                 let feedback_reason = '';
                                 GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
-                                    $(e.currentTarget).val().map(category => {                                  
+                                    $(e.currentTarget).val().map(category => {
                                         if(items.name.trim() == category.trim()){
                                                 feedback_reason += `<div>${category}</div>`
-                                       
+
                                         items.feedbacks.forEach( function(value, index){
                                             feedback_reason += ` <input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
                                         })
@@ -1773,7 +1773,7 @@ let GigaTester_StringUtils = {
                 setCategory: function(){
                     GigaTester_modal.configs.categories = [];
                     if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
-                        this.saveCheckedCategory();         
+                        this.saveCheckedCategory();
                     }
                     if(GigaTester_modal.form_type === "BUGS"){
                         if(GigaTester_modal.configs.config_data[0].bugSettings && GigaTester_modal.configs.config_data[0].bugSettings.categories) {
@@ -1817,18 +1817,18 @@ let GigaTester_StringUtils = {
                         console.log(GigaTester_modal.configs.selected_category, 'data push')
                     });
                 }
-                    console.log(GigaTester_modal.configs.selected_category, 'datas push')
+                    // console.log(GigaTester_modal.configs.selected_category, 'datas push')
                 },
                 showSubCategory: function(){
                     if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
-                        this.saveCheckedCategory();         
+                        this.saveCheckedCategory();
                     }
-                    if(GigaTester_modal.form_type === "BUGS"){
+                    if (GigaTester_modal.form_type === "BUGS") {
                         GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
-                            console.log("Gigatester:" + items.name)
+                            // console.log("Gigatester:" + items.name)
                             if($(document.getElementById('category')).val()){
                                 let feedback_reason = '';
-                                $(document.getElementById('category')).val().map(category=> {                 
+                                $(document.getElementById('category')).val().map(category=> {
                                     if(items.name.trim() == category.trim()){
                                         feedback_reason += `<div>${category}</div>`;
                                     items.feedbacks.forEach( function(value, index){
@@ -1840,11 +1840,12 @@ let GigaTester_StringUtils = {
                             }
                         })
                     }
-                    else if(GigaTester_modal.form_type === "FEEDBACK"){
+                    else if (GigaTester_modal.form_type === "FEEDBACK") {
+
                         GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
                             if($(document.getElementById('category')).val()){
                                 let feedback_reason = '';
-                                $(document.getElementById('category')).val().map(category=> {                 
+                                $(document.getElementById('category')).val().map(category=> {
                                     if(items.name.trim() == category.trim()){
                                         feedback_reason += `<div>${category}</div>`;
                                     items.feedbacks.forEach( function(value, index){
@@ -1867,7 +1868,7 @@ let GigaTester_StringUtils = {
                 },
                 saveSubCategory: function() {
                     if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
-                        this.saveCheckedCategory();         
+                        this.saveCheckedCategory();
                     }
                     // if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
                     //     $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
@@ -1875,9 +1876,9 @@ let GigaTester_StringUtils = {
                     //     $(document.getElementsByClassName('gigatester-reason-labels')).remove();
                     // }
                     let feedback_reason = '';
-                    if(GigaTester_modal.form_type === "BUGS"){
+                    if (GigaTester_modal.form_type === "BUGS") {
                         GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
-                            console.log($(document.getElementById('category')).val());
+                            // console.log($(document.getElementById('category')).val());
                             if($(document.getElementById('category')).val()){
                                 $(document.getElementById('category')).val().map(category => {
                                 if(items.name.trim() == category.trim()){
@@ -1943,8 +1944,8 @@ let GigaTester_StringUtils = {
                 setDialogForm: function() {
                     let form_settings = this.getFormSettings(this.form_type);
                     this.checkSessionStorage();
-                    console.log(this.form_type, 'form type')
-                    console.log('GigaTester : form settings ', form_settings);
+                    // console.log(this.form_type, 'form type')
+                    // console.log('GigaTester : form settings ', form_settings);
                     console.log('GigaTester : dialog refresh mode', GigaTester_modal.set_screen_default_category)
                     console.log(GigaTester_modal.configs.selected_category);
                     if(GigaTester_modal.set_screen_default_category){
@@ -1996,8 +1997,9 @@ let GigaTester_StringUtils = {
                      + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
                      + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
-                     + (form_settings.display_category ? '<select  multiple id="category" name="category"' + (form_settings.category_field_mandatory ? " required" : "") + ">"
-                    //  + '<option id="category" value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>" 
+                        +
+                        (form_settings.display_category ? '<select  id="category" name="category" size="1" multiple ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
+                    //  + '<option id="category" value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
                      + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '')
                      + (form_settings.display_severity ? '<select id="severity" name="severity"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
@@ -2022,9 +2024,13 @@ let GigaTester_StringUtils = {
                      + "</form>";
                    this.custom_ui.events.find('.gigatester-ctrl-item-step').html(html);
                 //    $(document.getElementById('category1')).select2();
-                $('#category').select2({
-                    placeholder: 'Select a category',
-                    dropdownParent: $('.gigatester-ctrl-item-form-left')
+                $( document ).ready(function() {
+                    // console.log("ready!");
+                    $('#category').select2({
+                        placeholder: 'Select a category',
+                        dropdownParent: $('.gigatester-ctrl-item-form-left'),
+                        dropdownCssClass: ':all:'
+                    });
                 });
                 // $('#category').val(['']).trigger('change');
                     if(GigaTester_modal.configs.rating_limit > 4){
@@ -2042,7 +2048,7 @@ let GigaTester_StringUtils = {
                     }
 
                     if (default_category) {
-                        console.log(default_category, "form defaults")
+                        // console.log(default_category, "form defaults")
                         console.log(GigaTester_modal.configs.selected_category);
                         // default_category.map(value => {
                         //     this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(value)
@@ -2055,7 +2061,7 @@ let GigaTester_StringUtils = {
                     if (default_severity) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
                     }
-                    console.log(default_email, "default email");
+                    // console.log(default_email, "default email");
                     this.custom_ui.events.find('.gigatester-ctrl-item-step').find('.gigatester-ctrl-item-preview-placeholder').css('border', '1px solid #bfbfbf')
                     setTimeout(()=>{
                         GigaTester_modal.saveSubCategory();
@@ -3241,8 +3247,8 @@ let GigaTester_StringUtils = {
                 delete window.GigaTester
             },
             open: function(mode) {
-                console.log('js api open');
-                console.log(mode)
+                // console.log('js api open');
+                // console.log(mode)
                 GigaTester_modal.openControls();
             },
             close: function() {
