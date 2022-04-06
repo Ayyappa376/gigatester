@@ -7,7 +7,7 @@ import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
-import { ICategory, IProductParams, ISeverity } from '../../../model';
+import { ICategory, IProductParams, TRACKING_SYSTEM_SELF } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
 import { Http } from '../../../utils';
 
@@ -25,52 +25,52 @@ interface BugSettingProps {
   handleBugThanksMsgChange: Function,
   handleReqComments: Function,
   addBugSeverity: Function,
-  handleTrackingSystemDetails: Function,
   handleChangeBugSeverityName: Function,
-  handleSetTrackingSystemBugSeverity: Function,
   deleteBugSeverity: Function,
-  useTrackingSystemSeverity: boolean,
+  handleShowSeverityOption: Function,
+//  handleTrackingSystemDetails: Function,
+//  handleSetTrackingSystemBugSeverity: Function,
+//  useTrackingSystemSeverity: boolean,
 }
 
 
 
 const renderSeverityDetails = (
-  severity: ISeverity,
-  catIndex: number,
-  useTrackingSystemSeverity: boolean,
+  severity: string,
+  sevIndex: number,
+  enableEdit: boolean,
   handleChangeBugSeverityName: Function,
   deleteBugSeverity: Function,
   ) => {
-    return(   
-    <Fragment key={catIndex}>
-      <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
+    return(
+      <Grid container spacing={1} key={`severity_${sevIndex}`} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
         <Grid item xs={10} sm={10}>
           <TextField
             required
             type='string'
-            id={`severity_${catIndex}`}
-            name={`severity_${catIndex}`}
+            id={`severity_${sevIndex}`}
+            name={`severity_${sevIndex}`}
             label='Severity Type'
             value={severity}
-            disabled={useTrackingSystemSeverity}
+            disabled={!enableEdit}
             fullWidth
-            onChange={(event) => handleChangeBugSeverityName(event, catIndex)}
+            onChange={(event) => handleChangeBugSeverityName(event, sevIndex)}
             autoComplete='off'
             className='textFieldStyle'
           />
         </Grid>
-        {useTrackingSystemSeverity ? '' : (<Grid item xs={2} sm={2}>
+        {enableEdit ? (<Grid item xs={2} sm={2}>
           <LightTooltip
-            title={'Delete this Severity type'}
-            aria-label='delete this severity type'
+            title={'Delete this Severity value'}
+            aria-label='delete this severity value'
           >
-            <IconButton size='small' onClick={() => deleteBugSeverity(catIndex)} >
+            <IconButton size='small' onClick={() => deleteBugSeverity(sevIndex)} >
               <ClearIcon />
             </IconButton>
           </LightTooltip>
-        </Grid>)}
+        </Grid>) : ''}
       </Grid>
-    </Fragment>)
+    )
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -176,35 +176,31 @@ const renderCategoryDetails = (
 
 const BugSettings = ({
   productParams,
+//  useTrackingSystemSeverity,
   addBugCategory,
-  addBugSeverity,
-  handleChangeBugSeverityName,
-  handleTrackingSystemDetails,
-  deleteBugSeverity,
   handleChangeBugCategoryName,
   deleteBugCategory,
   addBugStdFeedbackText,
   handleChangeBugStdFeedbackText,
   deleteBugStdFeedbackText,
+  addBugSeverity,
+  handleChangeBugSeverityName,
+  deleteBugSeverity,
   handleBugTitleChange,
   handleBugTooltipChange,
   handleBugDialogMsgChange,
   handleBugThanksMsgChange,
   handleReqComments,
-  useTrackingSystemSeverity
+  handleShowSeverityOption,
+//  handleTrackingSystemDetails,
 }: BugSettingProps) => {
   const classes = useStyles();
-  const stateVariable = useSelector((state: IRootState) => {
-    return state;
-  });
-  // const handleRequireComments = (event: any) => {
-  //   if (event.target.value === 'true') {
-  //     handleReqComments(true, 'Bugs');
-  //   } else if (event.target.value === 'false') {
-  //     handleReqComments(false, 'Bugs');
-  //   }
-  // }
+  // const stateVariable = useSelector((state: IRootState) => {
+  //   return state;
+  // });
 
+  const usingExtTrackingSystem = productParams && productParams.products && productParams.products[0] &&
+    productParams.products[0].trackingSystem && productParams.products[0].trackingSystem.type !== TRACKING_SYSTEM_SELF;
 
   return (
     <Fragment>
@@ -348,31 +344,33 @@ const BugSettings = ({
             }
             label={
               <Typography color="textSecondary">
-                {"Comment field mandatory?"}
+                {"Is general comment field mandatory?"}
               </Typography>
             }
             labelPlacement={'start'}
           />
-          {/* <FormControl style={{ width: '100%'}}>
-            <InputLabel id={`mandatoryComments`} required={true}>
-              {"Require comments/text when submitting bugs or incidents:"}
-            </InputLabel>
-            <Select
-              name={`select_CommentsMandatory`}
-              value={
-                (productParams && productParams.products && productParams.products[0] &&
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
                   productParams.products[0].feedbackAgentSettings &&
-                  productParams.products[0].feedbackAgentSettings.bugSettings &&
-                  productParams.products[0].feedbackAgentSettings.bugSettings.reqComments)
-                  ? productParams.products[0].feedbackAgentSettings.bugSettings.reqComments
-                  : 'false'
-              }
-              onChange={(event) => handleRequireComments(event)}
-            >
-              <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
-              <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
-            </Select>
-          </FormControl> */}
+                  productParams.products[0].feedbackAgentSettings.bugSettings)
+                  ? productParams.products[0].feedbackAgentSettings.bugSettings.showSeverity
+                  : true}
+                onChange={(event) => handleShowSeverityOption()}
+                value="BugShowSeverity"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Show Severity Options to Users?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
         </Grid>
       </Grid>
 
@@ -404,59 +402,65 @@ const BugSettings = ({
               deleteBugStdFeedbackText);
           })}
       </Grid>
+
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
         <Grid item xs={10}>
           <Typography variant="h6">Severity:</Typography>
         </Grid>
-        {useTrackingSystemSeverity ? '' : (<Grid item xs={2} style={{ textAlign: "center" }}>
-          <LightTooltip
-            title={'Add a severity type'}
-            aria-label='Add a severity type'
-          >
-            <Button size='small' variant="outlined" onClick={() => addBugSeverity()} >
-              <AddIcon /> Severity
-            </Button>
-          </LightTooltip>
-        </Grid>) }
+        {usingExtTrackingSystem ? '' :
+          (<Grid item xs={2} style={{ textAlign: "center" }}>
+            <LightTooltip
+              title={'Add a severity type'}
+              aria-label='Add a severity type'
+            >
+              <Button size='small' variant="outlined" onClick={() => addBugSeverity()} >
+                <AddIcon /> Severity
+              </Button>
+            </LightTooltip>
+          </Grid>)
+        }
         {productParams && productParams.products && productParams.products[0] &&
           productParams.products[0].feedbackAgentSettings &&
           productParams.products[0].feedbackAgentSettings.bugSettings &&
           productParams.products[0].feedbackAgentSettings.bugSettings.severities &&
-          productParams.products[0].feedbackAgentSettings.bugSettings.severities.map((severity: ISeverity, index: number) => {
+          productParams.products[0].feedbackAgentSettings.bugSettings.severities.map((severity: string, index: number) => {
             return renderSeverityDetails(
               severity,
               index,
-              useTrackingSystemSeverity,
+              usingExtTrackingSystem ? false: true,
               handleChangeBugSeverityName,
               deleteBugSeverity,
- );
-          })}
-           {productParams && productParams.products && productParams.products[0] && productParams.products[0].trackingSystem ? (<FormControlLabel
-                control={
-                  <Checkbox
-                    checked={(productParams && productParams.products && productParams.products[0] &&
-                      productParams.products[0].trackingSystem)
-                      ? productParams.products[0].trackingSystem.trackingSystem
-                      : false}
-                    onChange={(event) => handleTrackingSystemDetails(event,
-                       ((productParams && productParams.products && productParams.products[0] &&
-                      productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authUser'] : ''), 
-                      ((productParams && productParams.products && productParams.products[0] &&
-                        productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authKey'] : ''), 
-                        ((productParams && productParams.products && productParams.products[0] &&
-                          productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.url : ''))}
-                    value="trackingSystemSeverityDetails"
-                  />
-                }
-                label={
-                  <Typography color="textSecondary">
-                    {"Use Tracking system severity details"}
-                  </Typography>
-                }
-                labelPlacement={'start'}
-              />) : ''
-              }
-      </Grid>
+            )
+          })
+        }
+        {/* {productParams && productParams.products && productParams.products[0] &&
+          productParams.products[0].trackingSystem ?
+          (<FormControlLabel
+            control={
+              <Checkbox
+                checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].trackingSystem)
+                  ? productParams.products[0].trackingSystem.trackingSystem
+                : false}
+                // onChange={(event) => handleTrackingSystemDetails(event,
+                //     ((productParams && productParams.products && productParams.products[0] &&
+                //   productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authUser'] : ''), 
+                //   ((productParams && productParams.products && productParams.products[0] &&
+                //     productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.auth['authKey'] : ''), 
+                //     ((productParams && productParams.products && productParams.products[0] &&
+                //       productParams.products[0].trackingSystem) ? productParams.products[0].trackingSystem.url : ''))}
+                value="trackingSystemSeverityDetails"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Upload bugs to tracking system."}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />) : ''
+          } */}
+        </Grid>
       </Fragment>
   );
 }

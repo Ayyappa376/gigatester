@@ -35,8 +35,8 @@ interface SettingsProps {
 	handleMainBtnFontStyle: Function;
 	handleMainBtnPosition: Function;
 	handleMainBtnRotation: Function;
-	handleMainBtnTop: Function;
-	handleMainBtnLeft: Function;
+//	handleMainBtnTop: Function;
+//	handleMainBtnLeft: Function;
 	handleMainBtnCustom: Function;
 }
 
@@ -114,7 +114,6 @@ const LookAndFeel = ({
 	handleMainBtnFontStyle,
 	handleMainBtnPosition,
 	handleMainBtnRotation,
-	handleMainBtnLeft,
 	handleMainBtnCustom,
 }: SettingsProps) => {
 	const classes = useStyles();
@@ -179,29 +178,34 @@ const LookAndFeel = ({
 		}
 	}, [productParams]);
 
-	const handleChange = (event: any) => {
-		setColorSelect(event.target.value);
-	};
+	// const handleChange = (event: any) => {
+	// 	setColorSelect(event.target.value);
+	// };
 
 	const handleFontChange = (event: any) => {
 		setFontSelect(event.target.value);
 		handleMainBtnFont(event);
 	};
 
-	const handleCustomFont = (event: any) => {
-		setCustomFont(event.target.value);
-		// handleMainBtnFont(event);
-	};
+	// const handleCustomFont = (event: any) => {
+	// 	setCustomFont(event.target.value);
+	// 	// handleMainBtnFont(event);
+	// };
 
 	const handleFontWeight = (event: any) => {
 		setFontWeight(event.target.value);
 		handleMainBtnFontWeight(event.target.value);
 	};
 
-	const handleDegChange = (event: any) => {
-		setRotation(event.target.value);
-		handleMainBtnRotation(event.target.value);
+	const handleFontStyle = (event: any) => {
+		setFontWeight(event.target.value);
+		handleMainBtnFontStyle(event.target.value);
 	};
+
+	// const handleDegChange = (event: any) => {
+	// 	setRotation(event.target.value);
+	// 	handleMainBtnRotation(event.target.value);
+	// };
 
 	const handleCustomPosition = (event: any, property: string) => {
 		handleMainBtnCustom(event, property);
@@ -396,6 +400,31 @@ const LookAndFeel = ({
 							</MenuItem>
 							<MenuItem key={5} value={900}>
 								{'bolder'}
+							</MenuItem>
+						</Select>
+					</FormControl>
+				</Grid>
+
+				<Grid item xs={12} sm={12}>
+					<FormControl className={classes.formControl}>
+						<InputLabel style={{ marginTop: 5 }} id={`style`} required={true}>
+							{'Choose font style:'}
+						</InputLabel>
+						<Select
+							name={`select_fontStyle`}
+							value={fStyle}
+							onChange={(event) => {
+								handleFontStyle(event);
+							}}
+						>
+							<MenuItem key={2} value={'normal'}>
+								{'normal'}
+							</MenuItem>
+							<MenuItem key={3} value={'italic'}>
+								{'italic'}
+							</MenuItem>
+							<MenuItem key={4} value={'underline'}>
+								{'underline'}
 							</MenuItem>
 						</Select>
 					</FormControl>

@@ -570,7 +570,7 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                 configs: {
                     has_video: true,
                     categories:  ['Video', 'Screen', 'Audio', 'Images', 'Other'],
-                    severities: ['Critical', 'High', 'Medium', 'Low'],
+                    severities: [], //['Critical', 'High', 'Medium', 'Low'],
                     locale: 'en',
                     display_powered_by: true,
                     capture_system_details: true,
@@ -2913,6 +2913,9 @@ const GigaTester_StringUtils = require('./js/stringUtils');
                         }
                         if(data[0].bugSettings.reqComments != undefined && data[0].bugSettings.reqComments === false) {
                             GigaTester_modal.form_settings_default['BUGS'].comment_field_mandatory = false;
+                        }
+                        if(data[0].bugSettings.showSeverity != undefined && data[0].bugSettings.showSeverity === false) {
+                            GigaTester_modal.form_settings_default['BUGS'].display_severity = false;
                         }
                     }
                     if(data[0].widgetLookAndFeel) {

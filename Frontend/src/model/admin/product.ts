@@ -42,12 +42,13 @@ export interface IFeedbackAgentSettings {
 
 export interface IBugSettings {
   categories: ICategory[];
-  severities: ISeverity[];
+  severities: string[];
   dialogMsg?: string;
   thanksMsg?: string;
   title?: string;
   tooltip?: string;
   reqComments: boolean;
+  showSeverity: boolean;
 }
 
 export interface IFeedbackSettings {
@@ -95,10 +96,10 @@ export interface ITrackingSystem {
       [key: string]: string;
   };
   project: string;
-  severity: boolean;
+//  severity: boolean;
   type: ITrackingSystemType;
   url: string;
-  uploadToTrackingSystem: boolean;
+//  uploadToTrackingSystem: boolean;
   [key: string]: any;
 }
 
@@ -110,8 +111,6 @@ export interface IProductParams {
 export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
 //export const STATUS_PRODUCT_ARCHIVED = 'archived';
-
-export type ISeverity = string[];
 
 export type IPlatformType = 'Web' | 'Mobile';
 export const PLATFORM_TYPE_BROWSER: IPlatformType = 'Web';
