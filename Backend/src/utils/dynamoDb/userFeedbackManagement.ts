@@ -315,6 +315,13 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
                 }
               })
             }
+            else if(item.feedbackCategory){
+              if(!categoryData[item.feedbackCategory]) {
+                categoryData[item.feedbackCategory] = 1;
+              } else {
+                categoryData[item.feedbackCategory] += 1;
+              }
+            }
         });
     }
     return categoryData;

@@ -725,7 +725,7 @@ let GigaTester_StringUtils = {
                         display_category: true,
                         display_severity: true,
                         category_field_mandatory: false,
-                        severity_field_mandatory: true,
+                        severity_field_mandatory: false,
                         completed_dialog_icon: 0,
                         completed_dialog_headline: GigaTester_StringRes.get("thank_you_text"),
                         completed_dialog_paragraph: GigaTester_StringRes.get("thank_you_bug_msg")
@@ -1936,11 +1936,11 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.html(html);
                     this.setDialogForm();
                 },
-                setMultiSelect: function(){
-                    GigaTester_modal.multiSelect = 'true';
-                    $('#category').val(['']).trigger('change');
-                    setTimeout(()=> {GigaTester_modal.setDialogForm();},100);
-                },
+                // setMultiSelect: function(){
+                //     GigaTester_modal.multiSelect = 'true';
+                //     $('#category').val(['']).trigger('change');
+                //     setTimeout(()=> {GigaTester_modal.setDialogForm();},100);
+                // },
                 setDialogForm: function() {
                     let form_settings = this.getFormSettings(this.form_type);
                     this.checkSessionStorage();
@@ -1998,12 +1998,15 @@ let GigaTester_StringUtils = {
                      + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
                         +
-                        (form_settings.display_category ? '<select  id="category" name="category" size="1" multiple ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
+                        (form_settings.display_category ? '<select  id="category" name="category" size="1" multiple style="width:100%" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
                     //  + '<option id="category" value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
                      + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '')
-                     + (form_settings.display_severity ? '<select id="severity" name="severity"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
-                     + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>" + severity_options + "</select>" : "")
+                     + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
+                     + '<option value="severity" selected disabled>' 
+                     + GigaTester_StringRes.get("select_severity") 
+                     + "</option>"
+                     + severity_options + "</select>" : "")
                      + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
                      + '<gtdiv class="gigatester-ctrl-item-preview-placeholder">' + GigaTester_StringRes.get("attachment_msg") + '</gtdiv>'
@@ -2029,7 +2032,17 @@ let GigaTester_StringUtils = {
                     $('#category').select2({
                         placeholder: 'Select a category',
                         dropdownParent: $('.gigatester-ctrl-item-form-left'),
-                        dropdownCssClass: ':all:'
+                        dropdownCssClass: ':all:',
+                        width: 'resolve'
+                    });
+                });
+                $( document ).ready(function() {
+                    // console.log("ready!");
+                    $('#severity').select2({
+                        placeholder: "Select a severity",
+                        dropdownParent: $('.gigatester-ctrl-item-form-left'),
+                        dropdownCssClass: ':all:',
+                        width: 'resolve'
                     });
                 });
                 // $('#category').val(['']).trigger('change');
@@ -2066,9 +2079,9 @@ let GigaTester_StringUtils = {
                     setTimeout(()=>{
                         GigaTester_modal.saveSubCategory();
                     },10);
-                   if(!GigaTester_modal.multiSelect){
-                       this.setMultiSelect();
-                   }
+                //    if(!GigaTester_modal.multiSelect){
+                //        this.setMultiSelect();
+                //    }
                     // $('#category').select2();
                 },
                 openForm: function(form_type) {

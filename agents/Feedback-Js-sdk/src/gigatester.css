@@ -1582,7 +1582,7 @@ bottom: -23px;
   animation: none;
   -webkit-user-select: auto;
   user-select: auto;
-  margin: 0 0 10px 0;
+  margin: 10px 0 10px 0;
   height: 120px;
   resize: none;
   transition: all 0.1s linear;
@@ -1622,7 +1622,7 @@ bottom: -23px;
   max-height: 200px;
   overflow-y: scroll;
   width: auto;
-  margin: 6px 0 10px 0;
+  margin: 6px 0 6px 0;
 }
 
 #gigatester_ctrls_container .gigatester-ctrl-item gtdiv#gigatester_category_standard_feedback::-webkit-scrollbar {
@@ -2590,12 +2590,17 @@ gtmouseclick {
   display: inline-block;
   margin: 0;
   position: relative;
-  vertical-align: middle; }
+  vertical-align: middle;
+  width: auto; }
   .select2-container .select2-selection--single {
     box-sizing: border-box;
     cursor: pointer;
     display: block;
     height: 28px;
+    font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+    font-size: 14px;
+    font-weight: 400;
+    color: #011348;
     user-select: none;
     -webkit-user-select: none; }
     .select2-container .select2-selection--single .select2-selection__rendered {
@@ -2629,7 +2634,7 @@ gtmouseclick {
       box-sizing: border-box;
       border: none;
       font-size: 100%;
-      margin-top: 5px;
+      margin-top: 7px;
       padding: 0; }
       .select2-container .select2-search--inline .select2-search__field::-webkit-search-cancel-button {
         -webkit-appearance: none; }
@@ -2651,7 +2656,11 @@ gtmouseclick {
 .select2-results__options {
   list-style: none;
   margin: 0;
-  padding: 0; }
+  padding: 0; 
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  font-size: 14px;
+  font-weight: 400;
+  color: #011348}
 
 .select2-results__option {
   padding: 6px;
@@ -2715,18 +2724,18 @@ gtmouseclick {
   white-space: nowrap !important; }
 
 .select2-container--default .select2-selection--single {
-  background-color: #fff;
+  background-color: #fafbfd;
   border: 1px solid #aaa;
   border-radius: 4px; }
   .select2-container--default .select2-selection--single .select2-selection__rendered {
-    color: #444;
+    color: #afb8d1;
     line-height: 28px; }
   .select2-container--default .select2-selection--single .select2-selection__clear {
     cursor: pointer;
     float: right;
     font-weight: bold; }
   .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #999; }
+    color: #afb8d1; }
   .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 26px;
     position: absolute;
@@ -2761,11 +2770,17 @@ gtmouseclick {
 .select2-container--default.select2-container--open .select2-selection--single .select2-selection__arrow b {
   border-color: transparent transparent #888 transparent;
   border-width: 0 4px 5px 4px; }
-
+  .select2-search__field::placeholder{
+    color:#afb8d1;
+  }
 .select2-container--default .select2-selection--multiple {
-  background-color: white;
+  background-color: #fafbfd;
   border: 1px solid #aaa;
   border-radius: 4px;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  font-size: 14px;
+  font-weight: 400;
+  color: #011348;
   cursor: text; }
   .select2-container--default .select2-selection--multiple .select2-selection__rendered {
     box-sizing: border-box;
@@ -2984,6 +2999,7 @@ gtmouseclick {
   .select2-container--classic .select2-selection--multiple .select2-selection__rendered {
     list-style: none;
     margin: 0;
+    color: #011348;
     padding: 0 5px; }
   .select2-container--classic .select2-selection--multiple .select2-selection__clear {
     display: none; }
