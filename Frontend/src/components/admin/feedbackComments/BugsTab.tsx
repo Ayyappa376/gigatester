@@ -131,7 +131,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
      urlArrayCopy.push(...urls);
      setUrlArray(urlArrayCopy)
    }, [data])
-  const pieChartOptions = getPieChartOptions(pieChartSeries);
+  const pieChartOptions = getPieChartOptions(pieChartSeries, 'BUGS');
   console.log(feedbackBarChartData, 'fbcd');
   const bugBarChartOptions = getBugBarChartOptions(bugBarChartSeries, feedbackBarChartData);
 

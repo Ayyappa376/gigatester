@@ -102,7 +102,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     }
   }, [feedbackBarChartData])
 
-  const pieChartOptions = getPieChartOptions(pieChartSeries);
+  const pieChartOptions = getPieChartOptions(pieChartSeries, 'FEEDBACK');
   const feedbackBarChartOptions = getFeedbackBarChartOptions(feedbackBarChartData);
   const disbaleFilterButtons = (filter: string) => {
     if (filter === '') {

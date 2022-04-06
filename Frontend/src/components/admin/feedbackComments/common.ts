@@ -253,6 +253,9 @@ export const getFeedbackBarChartOptions = (feedbackBarChartSeries: any) => {
     },
     xaxis: {
       categories: [RATING_ONE, RATING_TWO, RATING_THREE, RATING_FOUR, RATING_FIVE],
+      title: {
+        text: 'Number of Feedback reported based on rating',
+      },
     },
     title: {
       text: 'Total - ' + Object.values(feedbackBarChartSeries).reduce((a : any, b: any) => a + b, 0),
@@ -277,6 +280,9 @@ export const getBugBarChartOptions = (bugBarChartSeries: any, FeedbackBarChartDa
     },
     xaxis: {
       categories: Object.keys(FeedbackBarChartData),
+      title: {
+        text: 'Number of Bugs reported based on severity',
+      },
     },
     title: {
       text: 'Total - ' + bugBarChartSeries[0].data.reduce((a : any, b: any) => a + b, 0),
@@ -294,7 +300,14 @@ export const getBugBarChartOptions = (bugBarChartSeries: any, FeedbackBarChartDa
   }
 };
 
-export const getPieChartOptions = (pieChartSeries: any) => {
+export const getPieChartOptions = (pieChartSeries: any, feedbackType: string) => {
+  let title=''
+  if(feedbackType === 'BUGS'){
+    title='Bugs'
+  }
+  else{
+    title='Feedback'
+  }
   return {
     labels: Object.keys(pieChartSeries),
     colors: [
@@ -342,6 +355,15 @@ export const getPieChartOptions = (pieChartSeries: any) => {
       width: 380,
       type: 'pie',
     },
+      title: {
+        text: `Number of ${title} reported based on category`,
+        style: {
+          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+          fontSize:  '14px',
+          fontWeight:  'bold',
+          color:  '#263238'
+        },
+      },
     dataLabels: {
       enabled: true,
     },
