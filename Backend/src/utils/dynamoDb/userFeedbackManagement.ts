@@ -5,8 +5,6 @@ import { DynamoDB } from 'aws-sdk';
 //import { ServerResponse } from 'http';
 import { queryRaw, scan } from './sdk';
 
-export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
-
 interface Params {
   filterCategory?: string;
   filterRating?: string;
@@ -33,7 +31,7 @@ export interface ProcessedData {
 export interface AppFeedback {
   bugPriority: SeverityType;
   createdOn: number;
-  feedbackCategory?: FeedbackCategory;
+  feedbackCategory?: string[];
   feedbackComments?: string[];
   feedbackMedia: {
     audio?: string;
@@ -307,12 +305,15 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
     // });
     if(data.length > 0) {
       data.forEach((item) => {
-            if(item.feedbackCategory) {
-              if(!categoryData[item.feedbackCategory]) {
-                categoryData[item.feedbackCategory] = 1;
-              } else {
-                categoryData[item.feedbackCategory] += 1;
-              }
+            if(Array.isArray(item.feedbackCategory)) {
+              console.log(item.feedbackCategory, 'asdnioadinfaldsn');
+              item.feedbackCategory.map(category => {
+                if(!categoryData[category]) {
+                  categoryData[category] = 1;
+                } else {
+                  categoryData[category] += 1;
+                }
+              })
             }
         });
     }

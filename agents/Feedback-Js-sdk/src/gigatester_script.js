@@ -1723,7 +1723,7 @@ let GigaTester_StringUtils = {
                                 GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
                                     console.log($(e.currentTarget).val())
                                     console.log(GigaTester_modal.configs.selected_category);
-                                    if($(e.currentTarget).val()){
+                                    if($(e.currentTarget).val().length > 0){
                                     $(e.currentTarget).val().map(category => {                                  
                                     if(items.name.trim() == category.trim()){
                                             feedback_reason += `<div>${category}</div>`
@@ -1732,8 +1732,16 @@ let GigaTester_StringUtils = {
                                         })
                                         $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
                                     }
-                                })
-                            }
+                                    })
+                                    }
+                                    else{
+                                        if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
+                                            $(document.getElementsByClassName('gigatester-reason-checkboxes')).prev().remove();
+                                            $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
+                                            $(document.getElementsByClassName('gigatester-reason-labels')).next().remove("br");
+                                            $(document.getElementsByClassName('gigatester-reason-labels')).remove();
+                                        }
+                                    }
                                 })
                             }
                             else if(GigaTester_modal.form_type === "FEEDBACK"){
@@ -1928,11 +1936,9 @@ let GigaTester_StringUtils = {
                     this.setDialogForm();
                 },
                 setMultiSelect: function(){
-                    
                     GigaTester_modal.multiSelect = 'true';
-                    console.log($('#category').val(), 'category value');
-                    console.log(GigaTester_modal.multiSelect, 'multiselect value');
-                    GigaTester_modal.setDialogForm();
+                    $('#category').val(['']).trigger('change');
+                    setTimeout(()=> {GigaTester_modal.setDialogForm();},100);
                 },
                 setDialogForm: function() {
                     let form_settings = this.getFormSettings(this.form_type);
