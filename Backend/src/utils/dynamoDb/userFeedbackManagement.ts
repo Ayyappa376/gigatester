@@ -1,4 +1,4 @@
-import { SeverityType } from '@models/index';
+//import { SeverityType } from '@models/index';
 import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
@@ -29,7 +29,7 @@ export interface ProcessedData {
 }
 
 export interface AppFeedback {
-  bugPriority: SeverityType;
+  bugPriority: string[];
   createdOn: number;
   feedbackCategory?: string[];
   feedbackComments?: string[];
@@ -307,15 +307,14 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
       data.forEach((item) => {
             if(Array.isArray(item.feedbackCategory)) {
               console.log(item.feedbackCategory, 'asdnioadinfaldsn');
-              item.feedbackCategory.map(category => {
+              item.feedbackCategory.map((category) => {
                 if(!categoryData[category]) {
                   categoryData[category] = 1;
                 } else {
                   categoryData[category] += 1;
                 }
-              })
-            }
-            else if(item.feedbackCategory){
+              });
+            } else if(item.feedbackCategory) {
               if(!categoryData[item.feedbackCategory]) {
                 categoryData[item.feedbackCategory] = 1;
               } else {

@@ -1,4 +1,4 @@
-/* **** WRAPPER FUNCTIONS FOR ACCESSING ELASTICSEARCH **** */
+/* **** WRAPPER FUNCTIONS FOR ACCESSING ELASTICSEARCH ****
 
 import { Client } from '@elastic/elasticsearch';
 import { config } from '@root/config';
@@ -13,7 +13,7 @@ const esClient = new Client({
   node: config.elasticsearch.url,
 });
 
-/* this is a paged search*/
+/* this is a paged search* /
 export function search<T>(
   indexName: string,
   filters: any,
@@ -329,3 +329,4 @@ export function searchSorted<T>(
     }
   );
 }
+*/

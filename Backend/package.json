@@ -35,7 +35,6 @@
     "typescript"
   ],
   "dependencies": {
-    "@elastic/elasticsearch": "^7.10.0",
     "@types/jsonwebtoken": "^8.3.2",
     "@types/uuid": "^3.4.5",
     "amazon-cognito-identity-js": "^3.0.14",
@@ -90,6 +89,6 @@
     "ts-mockito": "^2.3.1",
     "ts-node": "^8.3.0",
     "tslint": "^5.17.0",
-    "typescript": "^3.5.2"
+    "typescript": "^3.9.0"
   }
 }

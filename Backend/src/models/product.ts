@@ -97,9 +97,9 @@ export interface TrackingSystem {
     project: string;
 //    severity: boolean;
     type: TrackingSystemType;
-    uploadToTrackingSystem: boolean;
+//    uploadToTrackingSystem: boolean;
     url: string;
-    [key: string]: any;  
+    [key: string]: any;
 }
 
 export const STATUS_PRODUCT_ACTIVE = 'active';
