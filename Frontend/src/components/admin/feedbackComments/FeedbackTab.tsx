@@ -19,6 +19,7 @@ import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import RenderComments from './RenderComments';
 import ImageModal from './ImageModal';
+import DateFilter from './DateFilter';
 
 interface ChosenProps {
   productInfoProp: any,
@@ -542,8 +543,12 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
           noDataError ? <div style={{ marginTop: '3rem' }}><Failure message={`There is no feedback to show.`} /></div> :
             <div>
               <ImageModal {...imagePayload} />
-              <div style={{ marginTop: 50 }}>
-                <Grid container style={{ marginTop: '5rem' }}>
+                  <div style={{ marginTop: 50 }}>
+                    <Grid container style={{ width: '95%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+                      <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
+                        <DateFilter />
+                  </Grid>
+              <Grid container style={{ marginTop: '3rem' }}>
                   <Grid item lg={5}>
                     <ReactApexChart options={feedbackBarChartOptions} series={barChartSeries} type="bar" width={500} height={320} />
                   </Grid>

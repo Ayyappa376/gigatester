@@ -2,6 +2,7 @@ import { IRootState } from "../../../reducers";
 import { Http } from "../../../utils";
 import { CONST_BUG_REPORT, CONST_FEEDBACK, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, IFetchRecursiveData, NUMBER_OF_ITEMS_PER_FETCH } from "./common";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { ConsoleLogger } from "@aws-amplify/core";
 
 export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
     return new Promise((resolve, reject) => {
@@ -151,4 +152,29 @@ export const getProductDetails = async ({ productInfo, prodNameIdMapping, prodNa
   })
 }
 
+export const filterDate = (date: Date, sortDate: string) => {
+  let newDate;
+  if (sortDate === '') {
+    return newDate = new Date(date);
+  } else {
+    newDate = new Date();
+    if (sortDate === '1D') {
+      newDate.setDate(newDate.getDate() - 1);
+    } else if (sortDate === '1W') {
+      newDate.setDate(new Date().getDate() - 7)
+    } else if (sortDate === '1M') {
+      newDate.setMonth(newDate.getMonth() - 1);
+    } else if (sortDate === '6M') {
+      newDate.setMonth(newDate.getMonth() - 6);
+    } else if (sortDate === '1Y') {
+      newDate.setFullYear(newDate.getFullYear() - 1);
+    }
+    return newDate;
+  }
+
+}
+
+export const sortByDate = () => {
+  //API call to sort by date if possible
+}
 
