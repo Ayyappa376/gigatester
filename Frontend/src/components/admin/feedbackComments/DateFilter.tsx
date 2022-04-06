@@ -11,11 +11,11 @@ import DatePicker from 'react-date-picker';
 import './stylesRenderFilters.css';
 import { filterDate } from './methods';
 
-// interface RowMediaProps {
+interface DateProp {
+  setSortDate: Function;
+}
 
-// }
-
-const DateFilter = () => {
+const DateFilter = ({  setSortDate }: DateProp) => {
   const [date, setDate] = useState(new Date());
   const classes = useStyles();
 
@@ -26,8 +26,10 @@ const DateFilter = () => {
     const result = filterDate(newDate, filter);
     if (filter === '') {
       setDate(newDate);
+      setSortDate(newDate);
     } else {
       setDate(result);
+      setSortDate(newDate);
     }
   }
 

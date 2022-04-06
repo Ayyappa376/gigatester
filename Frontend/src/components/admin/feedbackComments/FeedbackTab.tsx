@@ -92,6 +92,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   const [categoryList, setCategoryList] = useState<any>([]);
   const [keys, setKey] = useState<boolean>(false);
   const [rating, setRating] = useState<boolean>(false);
+  const [sortDate, setSortDate] = useState();
 
   useEffect(() => {
     if (feedbackBarChartData) {
@@ -427,9 +428,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     return ""
   }
 
-  // useEffect(() => {
-  //   filterByProduct(selectedProdId);
-  // }, [selectedProdId, productVersion])
+  useEffect(() => {
+    //either fetchRecursiveDate
+    //or API call
+  }, [sortDate])
 
   const filterByProduct = (val: string) => {
     console.log(prodNameIdMapping);
@@ -546,7 +548,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
                   <div style={{ marginTop: 50 }}>
                     <Grid container style={{ width: '95%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
                       <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
-                        <DateFilter />
+                      <DateFilter setSortDate={setSortDate}/>
                   </Grid>
               <Grid container style={{ marginTop: '3rem' }}>
                   <Grid item lg={5}>

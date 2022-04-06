@@ -116,6 +116,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [categoryList, setCategoryList] = useState<any>([]);
 	const [keys, setKey] = useState<boolean>(false);
 	const [rating, setRating] = useState<boolean>(false);
+	const [sortDate, setSortDate] = useState();
 
 	useEffect(() => {
 		if (feedbackBarChartData) {
@@ -544,6 +545,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		return '';
 	};
 
+	useEffect(() => {
+    //either fetchRecursiveDate
+    //or API call
+  }, [sortDate])
+
 	const filterByProduct = (val: string) => {
 		console.log(prodNameIdMapping);
 		if (val) {
@@ -724,7 +730,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 									<Typography style={{ marginRight: '10px', padding: '15px' }}>
 										Filter by date:
 									</Typography>
-									<DateFilter />
+									<DateFilter setSortDate={setSortDate}/>
 								</Grid>
 								<Grid container style={{ marginTop: '5rem' }}>
 									<Grid item lg={5}>
