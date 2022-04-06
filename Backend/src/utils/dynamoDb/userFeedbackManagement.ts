@@ -48,7 +48,7 @@ export interface AppFeedback {
   userId?: string;
 }
 
-const NUMBER_OF_DAYS_OF_FEEDBACK = 30;
+const NUMBER_OF_DAYS_OF_FEEDBACK = 120;
 
 export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filterRating, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
@@ -156,7 +156,8 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       params.ExpressionAttributeValues = EAV;
     }
 
-    params.KeyConditionExpression = 'feedbackType=:type AND createdOn>:lastDate';
+    params.KeyConditionExpression = 'feedbackType=:type';
+    //  AND createdOn>:lastDate';
     params.ScanIndexForward = order && order === 'asc' ? true : false;
     params.IndexName = 'feedbackType-createdOn-index'; // Need to remove hardcoding, and name should be based on the subdomain.
 

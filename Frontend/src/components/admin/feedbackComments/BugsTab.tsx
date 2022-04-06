@@ -345,7 +345,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
           searchCategoryList =  searchCategoryList.map(element => {
             return element.toLowerCase();
           })
-          console.log(searchCategoryList);
+          console.log(searchCategoryList, 'category search list');
           setCategoryList(searchCategoryList)
         }
     }

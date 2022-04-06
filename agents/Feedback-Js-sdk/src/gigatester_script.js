@@ -724,8 +724,8 @@ let GigaTester_StringUtils = {
                         comment_field_placeholder: "",
                         display_category: true,
                         display_severity: true,
-                        category_field_mandatory: false,
-                        severity_field_mandatory: false,
+                        category_field_mandatory: true,
+                        severity_field_mandatory: true,
                         completed_dialog_icon: 0,
                         completed_dialog_headline: GigaTester_StringRes.get("thank_you_text"),
                         completed_dialog_paragraph: GigaTester_StringRes.get("thank_you_bug_msg")
@@ -745,8 +745,8 @@ let GigaTester_StringUtils = {
                         comment_field_placeholder: "",
                         display_category: true,
                         display_severity: false,
-                        category_field_mandatory: false,
-                        severity_field_mandatory: false,
+                        category_field_mandatory: true,
+                        severity_field_mandatory: true,
                         completed_dialog_icon: 0,
                         completed_dialog_headline: GigaTester_StringRes.get("thank_you_text"),
                         completed_dialog_paragraph: GigaTester_StringRes.get("thank_you_feedback_msg")
@@ -2003,8 +2003,8 @@ let GigaTester_StringUtils = {
                      + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '')
                      + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
-                     + '<option value="severity" selected disabled>' 
-                     + GigaTester_StringRes.get("select_severity") 
+                     + '<option >' 
+                    //  + GigaTester_StringRes.get("select_severity") 
                      + "</option>"
                      + severity_options + "</select>" : "")
                      + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
@@ -2813,16 +2813,26 @@ let GigaTester_StringUtils = {
                             this.submitPost(e);
                         }
                         }
-                    else if(GigaTester_modal.form_type === "BUGS"){
-                    if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
-                        console.log('category')
-                        GigaTester_modal.setNotifyStatus('Please select a category')
-                        setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
-                    }
+                    else if(GigaTester_modal.form_type === "BUGS"){ 
+                        if(this.form_data['category'] === ['category'] || this.form_data['category'].length < 1){
+                            if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory){ 
+                            console.log('category')
+                            GigaTester_modal.setNotifyStatus('Please select a category')
+                            setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                            }
+                            else{
+                                this.submitPost(e);
+                            }
+                        }
                     else if(this.form_data['severity'] === 'severity' || this.form_data['severity'] === ''){
+                        if(GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory){
                         console.log('severity')
                         GigaTester_modal.setNotifyStatus('Please select bug severity')
                         setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                        }
+                        else{
+                            this.submitPost(e);
+                        }
                     }
                     else{
                         this.submitPost(e);
@@ -2835,9 +2845,14 @@ let GigaTester_StringUtils = {
                         setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                     }
                     else if(this.form_data['category'] === 'category' || this.form_data['category'] === ''){
-                        console.log('category')
-                        GigaTester_modal.setNotifyStatus('Please select a category')
-                        setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                        if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory){ 
+                            console.log('category')
+                            GigaTester_modal.setNotifyStatus('Please select a category')
+                            setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                            }
+                            else{
+                                this.submitPost(e);
+                            }
                     }
                     else{
                         this.submitPost(e);
@@ -2953,11 +2968,11 @@ let GigaTester_StringUtils = {
                         finalRating = 0;
                         feedbackType = 'BUG_REPORT'
                     }
-                    if(this.form_data['category'] === "category"){
-                        this.form_data['category'] = ''
+                    if(this.form_data['category'] === "category" || this.form_data['category'].length < 1){
+                        this.form_data['category'] = ['unknown']
                     }
-                    if(this.form_data['severity'] === "severity"){
-                        this.form_data['severity'] = ''
+                    if(this.form_data['severity'] === "severity" || this.form_data['severity'] === ""){
+                        this.form_data['severity'] = 'unknown'
                     }
                     const postData = {
                         productRating: finalRating,
@@ -3121,6 +3136,9 @@ let GigaTester_StringUtils = {
                         }
                         if(data[0].bugSettings.reqComments != undefined && data[0].bugSettings.reqComments === false) {
                             GigaTester_modal.form_settings_default['BUGS'].comment_field_mandatory = false;
+                        }
+                        if(data[0].bugSettings.reqComments != undefined && data[0].bugSettings.reqSeverity === false) {
+                            GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory = false;
                         }
                     }
                     if(data[0].widgetLookAndFeel) {
