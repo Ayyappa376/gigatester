@@ -35,6 +35,8 @@ export const CONST_BUG_REPORT_CHART = 'BUG-REPORT-CHART';
 
 export const NUMBER_OF_ITEMS_PER_FETCH = 20;
 
+export const LAST_DATE_TO_FETCH = 30;
+
 export interface IFeedbackComments {
   productId?: string,
   prodVersion?: string,

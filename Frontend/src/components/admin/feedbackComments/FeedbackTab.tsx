@@ -10,7 +10,7 @@ import ProductFilter, { VersionFilter } from './ProductFilter';
 import { getDate } from '../../../utils/data';
 import {
   ILimitedProductDetails,
-  IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
+  IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH, LAST_DATE_TO_FETCH,
   IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getFeedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments
 } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
@@ -246,6 +246,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     // setBackdropOpen(true);
     let urlAppend = ``;
     let numItems = NUMBER_OF_ITEMS_PER_FETCH;
+    let lastDate = LAST_DATE_TO_FETCH;
     if (prodId) {
       urlAppend += `?prodId=${prodId}`;
       if (prodVersion) {
@@ -278,7 +279,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     if (searchWord) {
       urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
     }
-
+    urlAppend += urlAppend ? `&filterDate=${lastDate}` : `&filterDate=${lastDate}`
     urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
 
     const response: any = await getFeedbackData({ props, urlAppend }).catch((error) => {
