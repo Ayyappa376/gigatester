@@ -280,7 +280,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     if (searchWord) {
       urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
     }
-
     urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
 
     const response: any = await getFeedbackData({ props, urlAppend }).catch((error) => {

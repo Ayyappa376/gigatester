@@ -147,9 +147,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-        if (typeof window.GigaTester !== undefined) {
-           window.GigaTester.hide();
-        }
         // window.GigaTester?.hide();
         //      fixMultiSelectValuesAndSave(response);
         if (!response.products[0].feedbackAgentSettings) {

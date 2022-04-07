@@ -26,7 +26,7 @@ export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
 
 export const getFeedbackData = ({ urlAppend}: any) => {
     return new Promise((resolve, reject) => {
-      let url = `/api/v2/userFeedback/${CONST_FEEDBACK}`+ urlAppend;
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK}`+ urlAppend + '&filterDate=30'; //hard coded for filterdate
       Http.get({
         url,
       }).then((response: any) => {
@@ -40,7 +40,7 @@ export const getFeedbackData = ({ urlAppend}: any) => {
 
   export const getBugData = ({urlAppend}: any) => {
     return new Promise((resolve, reject) => {
-      let url = `/api/v2/userFeedback/${CONST_BUG_REPORT}`+ urlAppend;
+      let url = `/api/v2/userFeedback/${CONST_BUG_REPORT}`+ urlAppend + '&filterDate=30'; //hard coded for filterdate
       Http.get({
         url,
       }).then((response: any) => {
@@ -64,7 +64,7 @@ interface IGetChartData {
 }
 
 export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=30`; //hard coded for filterdate
       Http.get({
         url,
       }).then((response: any) => {
@@ -78,7 +78,7 @@ export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarCha
   }
 
   export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}`;
+    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=30`; //hard coded for filterdate
     Http.get({
       url,
     }).then((response: any) => {
