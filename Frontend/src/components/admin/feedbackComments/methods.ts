@@ -60,15 +60,18 @@ interface IGetChartData {
   setBugBarChartSeries: Function,
   setPieChartSeries: Function,
   prodId: string,
-  prodVersion: string
+  prodVersion?: string,
+  filterDate?: string,
 }
 
-export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=30`; //hard coded for filterdate
+export const getFeedbckChartData = async ({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion, filterDate }: IGetChartData) => {
+  console.log('date',filterDate);
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=${filterDate ? filterDate : '30'}`; //hard coded for filterdate
       Http.get({
         url,
       }).then((response: any) => {
         const processedData = response.Items;
+        console.log('feedback chart response', processedData)
         setFeedbackBarChartData(processedData.barChartData);
         setPieChartSeries(processedData.pieChartData);
       })
@@ -77,8 +80,8 @@ export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarCha
       });
   }
 
-  export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=30`; //hard coded for filterdate
+  export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion, filterDate}: IGetChartData) => {
+    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=${filterDate ? filterDate : '30'}`; //hard coded for filterdate
     Http.get({
       url,
     }).then((response: any) => {
@@ -173,8 +176,3 @@ export const filterDate = (date: Date, sortDate: string) => {
   }
 
 }
-
-export const sortByDate = () => {
-  //API call to sort by date if possible
-}
-

@@ -101,8 +101,11 @@ export const VersionFilter = (props : IVersionFilterProps) => {
                 >
                 <MenuItem disabled key={0} value={""} >
                     Please Select
+                    </MenuItem>
+                 <MenuItem key={1} value={"all"} >
+                    All versions
                 </MenuItem>
-                {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
+                    {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
                 </Select>
             </FormControl>
         </div>
