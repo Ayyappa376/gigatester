@@ -1,4 +1,4 @@
-import { SeverityType } from '@models/index';
+//import { SeverityType } from '@models/index';
 import { FeedbackType } from '@root/apis/v2/userFeedback/get';
 import { appLogger, getAppFeedbackTableName, getProductDetails } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
@@ -29,7 +29,7 @@ export interface ProcessedData {
 }
 
 export interface AppFeedback {
-  bugPriority: SeverityType;
+  bugPriority: string[];
   createdOn: number;
   feedbackCategory?: string[];
   feedbackComments?: string[];
@@ -134,15 +134,18 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
 
     if(search) {
       EAN['#comments'] = 'feedbackComments';
+      EAN['#severity'] = 'bugPriority';
+      EAN['#category'] = 'feedbackCategory';
       EAV[':keyWord'] = search;
-      FE += FE ? ' and contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
+      // FE += FE ? ' or contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
+      FE += FE ? ' and (contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))' : '(contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))';
     }
 
     const today = new Date();
-    const lastDate = new Date().setDate(today.getDate() - NUMBER_OF_DAYS_OF_FEEDBACK);
+    // const lastDate = new Date().setDate(today.getDate() - NUMBER_OF_DAYS_OF_FEEDBACK);
 
     EAV[':type'] = type;
-    EAV[':lastDate'] = lastDate;
+    // EAV[':lastDate'] = lastDate;
 
     if(FE) {
       params.FilterExpression = FE;
@@ -251,13 +254,24 @@ export const bugProcessBarChartData = async({data, prodId, prodVersion, chartTyp
   // }
     if(data.length > 0) {
         data.forEach((item: any) => {
-            if(item.bugPriority && (item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
+            if((item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
+              if(item.bugPriority){
               if(!severityData[item.bugPriority]) {
                 severityData[item.bugPriority] = 1;
               } else {
                 severityData[item.bugPriority] += 1;
               }
+              }
+              else{
+                if(severityData['unknown']){
+                  severityData['unknown'] += 1; 
+                }
+                else{
+                severityData['unknown'] = 1;
+                }
+              }
             }
+
         });
     }
     return severityData;
@@ -308,19 +322,26 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
       data.forEach((item) => {
             if(Array.isArray(item.feedbackCategory)) {
               console.log(item.feedbackCategory, 'asdnioadinfaldsn');
-              item.feedbackCategory.map(category => {
+              item.feedbackCategory.map((category) => {
                 if(!categoryData[category]) {
                   categoryData[category] = 1;
                 } else {
                   categoryData[category] += 1;
                 }
-              })
-            }
-            else if(item.feedbackCategory){
+              });
+            } else if(item.feedbackCategory) {
               if(!categoryData[item.feedbackCategory]) {
                 categoryData[item.feedbackCategory] = 1;
               } else {
                 categoryData[item.feedbackCategory] += 1;
+              }
+            }
+            else{
+              if(categoryData['unknown']){
+                categoryData['unknown'] += 1;
+              }
+              else{
+              categoryData['unknown'] = 1;
               }
             }
         });

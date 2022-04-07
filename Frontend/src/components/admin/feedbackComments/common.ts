@@ -1,5 +1,5 @@
 import { Order } from "./RenderTable";
-import { IProductInfo, ICategory, ISeverity, IFeedbackType} from "../../../model/admin/product";
+import { IProductInfo, ICategory, IFeedbackType} from "../../../model/admin/product";
 
 // export const SEVERITY_CRITICAL = 'Critical';
 // export const SEVERITY_HIGH = 'High';
@@ -24,9 +24,9 @@ export const CATEGORY_OTHER = "Other";
 
 export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
-export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
+export type FeedbackCategory = string[];
 
-export type BugSeverity = 'Low' | 'Medium' | 'High' | 'Critical';
+//export type BugSeverity = 'Low' | 'Medium' | 'High' | 'Critical';
 
 export const CONST_FEEDBACK = 'FEEDBACK';
 export const CONST_FEEDBACK_CHART = 'FEEDBACK-CHART';
@@ -89,7 +89,7 @@ export interface IAppFeedback {
     userId ? : string;
     sourceIP?: string;
     feedbackCategory?: FeedbackCategory;
-    bugPriority: BugSeverity;
+    bugPriority: string;
     feedbackMedia: {
       image?: string,
       video?: string,
@@ -145,7 +145,7 @@ export interface IRatingMapData {
 export interface IBugMapData {
     userId: string,
     userIp: string,
-    severity?: BugSeverity,
+    severity?: string,
     category?: FeedbackCategory;
     date: number,
     comments: ICommentObject | undefined,

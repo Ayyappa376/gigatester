@@ -6,7 +6,6 @@ import {
 } from '@utils/index';
 import { Response } from 'express';
 
-
 export type ExternalSystemType = 'JIRA';
 
 interface ExternalTrackingSystemRequest {

@@ -134,7 +134,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   const [failureMessage, setFailureMessage] = useState('Something went wrong');
   const [success, setSuccess] = useState(false);
   const [successMessage, setSuccessMessage] = useState('Saved successfully');
-  const [useTrackingSystemSeverity, setUseTrackingSystemSeverity] = useState<boolean>(false)
+//  const [useTrackingSystemSeverity, setUseTrackingSystemSeverity] = useState<boolean>(false)
 //  const [showScriptHelp, setShowScriptHelp] = useState(false);
 //  const [showReactHelp, setShowReactHelp] = useState(false);
   const [showHelp, setShowHelp] = useState(false);
@@ -147,6 +147,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
+        // window.GigaTester?.hide();
         //      fixMultiSelectValuesAndSave(response);
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
@@ -160,6 +161,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               title: 'Report Bug',
               tooltip: 'Tell us your concern',
               reqComments: true,
+              showSeverity: true,
             },
             feedbackSettings: {
               categories: [],
@@ -492,86 +494,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   };
 
-  const handleChangeBugSeverityName = (event: any, catIndex: number) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.bugSettings) {
-        temp.products[0].feedbackAgentSettings.bugSettings.severities[catIndex] = event.target.value;
-        setProductParams(temp);
-      }
-    }
-  };
-
-  const handleExtSystemSeverity = (data: any) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.bugSettings) {
-            temp.products[0].feedbackAgentSettings.bugSettings.severities = [];
-      }
-      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
-        temp.products[0].trackingSystem.severity = true;
-        setUseTrackingSystemSeverity(true);
-      }
-      data.map((item: any) => {
-            if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-            temp.products[0].feedbackAgentSettings.bugSettings) {
-            temp.products[0].feedbackAgentSettings.bugSettings.severities.push(item);
-              }
-          })
-        setProductParams(temp);
-      }
-  }
-  const handleTrackingSystemDetails = (event: any, authUser: string, authToken: any, externalSystemUrl: string) => {
-    const appendUrl = `?email=${authUser}&appToken=${authToken}&url=${externalSystemUrl}`
-    console.log(productParams)
-    console.log(event.target.checked, 'checked');
-    console.log(appendUrl);
-    if(event.target.checked){
-    Http.get({
-      url: `/api/v2/externalTrackingSystem/JIRA${appendUrl}`,
-      state: stateVariable,
-    })
-      .then((response: any) => {
-       console.log(response, 'jira severity')
-       handleExtSystemSeverity(response.Severity);
-      })
-      .catch((error) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        console.log(error)
-      });
-    }
-    else{
-      setUseTrackingSystemSeverity(false);
-    }
-  }
-
-  const deleteBugSeverity = (catIndex: number) => {
-    if(!useTrackingSystemSeverity){
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.bugSettings) {
-        temp.products[0].feedbackAgentSettings.bugSettings.severities.splice(catIndex, 1);
-        setProductParams(temp);
-      }
-    }
-  }
-  };
-
-  const addBugSeverity = () => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.bugSettings) {
-        temp.products[0].feedbackAgentSettings.bugSettings.severities.push([]);
-        setProductParams(temp);
-      }
-    }
-  };
-
   const handleChangeBugStdFeedbackText = (event: any, catIndex: number, index: number) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -616,6 +538,47 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         setProductParams(temp);
       }
     }
+  };
+
+  const handleChangeBugSeverityName = (event: any, sevIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings.severities) {
+        temp.products[0].feedbackAgentSettings.bugSettings.severities[sevIndex] = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const addBugSeverity = () => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+
+        if(!temp.products[0].feedbackAgentSettings.bugSettings.severities) {
+          temp.products[0].feedbackAgentSettings.bugSettings.severities = [];
+        }
+        temp.products[0].feedbackAgentSettings.bugSettings.severities.push('');
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const deleteBugSeverity = (sevIndex: number) => {
+//    if(!useTrackingSystemSeverity){
+      if (productParams) {
+        const temp: IProductParams | undefined = { ...productParams };
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.bugSettings &&
+          temp.products[0].feedbackAgentSettings.bugSettings.severities) {
+          temp.products[0].feedbackAgentSettings.bugSettings.severities.splice(sevIndex, 1);
+          setProductParams(temp);
+        }
+      }
+//    }
   };
 
   const handleTitleChange = (event: any) => {
@@ -726,6 +689,35 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleReqComments = (type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (type === 'Bugs') {
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.bugSettings) {
+          temp.products[0].feedbackAgentSettings.bugSettings.reqComments = !temp.products[0].feedbackAgentSettings.bugSettings.reqComments;
+        }
+      } else if (type === 'Feedback') {
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.feedbackSettings) {
+          temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = !temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments;
+        }
+      }
+      setProductParams(temp);
+    }
+  }
+
+  const handleShowSeverityOption = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.showSeverity = !temp.products[0].feedbackAgentSettings.bugSettings.showSeverity;
+        setProductParams(temp);
+      }
+    }
+  };
+
   const handleFeedbackTypesChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -779,24 +771,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       }
     }
   };
-
-  const handleReqComments = (/*event: boolean, */type: string) => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (type === 'Bugs') {
-        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-          temp.products[0].feedbackAgentSettings.bugSettings) {
-          temp.products[0].feedbackAgentSettings.bugSettings.reqComments = !temp.products[0].feedbackAgentSettings.bugSettings.reqComments;
-        }
-      } else if (type === 'Feedback') {
-        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-          temp.products[0].feedbackAgentSettings.feedbackSettings) {
-          temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = !temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments;
-        }
-      }
-      setProductParams(temp);
-    }
-  }
 
   const handleCaptureSystemDetailsOption = (event: any) => {
     if (productParams) {
@@ -984,6 +958,53 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+//   //Temporarily commented
+//   const handleExtSystemSeverity = (data: any) => {
+//     if (productParams) {
+//       const temp: IProductParams | undefined = { ...productParams };
+//       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+//         temp.products[0].feedbackAgentSettings.bugSettings) {
+//             temp.products[0].feedbackAgentSettings.bugSettings.severities = [];
+//       }
+//       if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+//         temp.products[0].trackingSystem.severity = true;
+// //        setUseTrackingSystemSeverity(true);
+//       }
+//       data.map((item: any) => {
+//             if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+//             temp.products[0].feedbackAgentSettings.bugSettings) {
+//             temp.products[0].feedbackAgentSettings.bugSettings.severities.push(item);
+//               }
+//           })
+//         setProductParams(temp);
+//       }
+//   }
+
+  // //Temporarily commented
+  // const handleTrackingSystemDetails = (event: any, authUser: string, authToken: any, externalSystemUrl: string) => {
+  //   const appendUrl = `?email=${authUser}&appToken=${authToken}&url=${externalSystemUrl}`
+  //   console.log(productParams)
+  //   console.log(event.target.checked, 'checked');
+  //   console.log(appendUrl);
+  //   if(event.target.checked){
+  //   Http.get({
+  //     url: `/api/v2/externalTrackingSystem/JIRA${appendUrl}`,
+  //     state: stateVariable,
+  //   })
+  //     .then((response: any) => {
+  //      console.log(response, 'jira severity')
+  //      handleExtSystemSeverity(response.Severity);
+  //     })
+  //     .catch((error) => {
+  //       const perror = JSON.stringify(error);
+  //       const object = JSON.parse(perror);
+  //       console.log(error)
+  //     });
+  //   }
+  //   // else{
+  //   //   setUseTrackingSystemSeverity(false);
+  //   // }
+  // }
 
   const copyToClipboard = (textAreaId: string) => {
     const textArea = document.querySelector(`#${textAreaId}`);
@@ -1125,18 +1146,19 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       addBugCategory: addBugCategory,
       handleChangeBugCategoryName: handleChangeBugCategoryName,
       deleteBugCategory: deleteBugCategory,
-      addBugSeverity: addBugSeverity,
-      useTrackingSystemSeverity: useTrackingSystemSeverity,
-      handleChangeBugSeverityName: handleChangeBugSeverityName,
-      deleteBugSeverity: deleteBugSeverity,
-      handleTrackingSystemDetails: handleTrackingSystemDetails,
       addBugStdFeedbackText: addBugStdFeedbackText,
       handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,
+      addBugSeverity: addBugSeverity,
+//      useTrackingSystemSeverity: useTrackingSystemSeverity,
+      handleChangeBugSeverityName: handleChangeBugSeverityName,
+      deleteBugSeverity: deleteBugSeverity,
+//      handleTrackingSystemDetails: handleTrackingSystemDetails,
       handleBugTitleChange: handleBugTitleChange,
       handleBugTooltipChange: handleBugTooltipChange,
       handleBugDialogMsgChange: handleBugDialogMsgChange,
       handleBugThanksMsgChange: handleBugThanksMsgChange,
+      handleShowSeverityOption: handleShowSeverityOption,
       handleMainBtnTitleChange: handleMainBtnTitleChange,
       handleMainBtnColor: handleMainBtnColor,
       handleMainBtnTextColor: handleMainBtnTextColor,

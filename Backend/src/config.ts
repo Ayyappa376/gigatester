@@ -26,11 +26,11 @@ export interface Config {
       [key: string]: string;
     };
   };
-  elasticsearch: {
-    password: string;
-    url: string;
-    username: string;
-  };
+  // elasticsearch: {
+  //   password: string;
+  //   url: string;
+  //   username: string;
+  // };
   metricsTables: {
     [key: string]: string;
   };
@@ -86,11 +86,11 @@ export const config: Config = {
       production: 'v7z5d7',
     },
   },
-  elasticsearch: {
-    password: 'gigatester', //change based on where to deploy
-    url: 'http://18.206.35.232:9200', //nomiso - dev env //change based on where to deploy
-    username: 'gigatester-user', //change based on where to deploy
-  },
+  // elasticsearch: {
+  //   password: 'gigatester', //change based on where to deploy
+  //   url: 'http://18.206.35.232:9200', //nomiso - dev env //change based on where to deploy
+  //   username: 'gigatester-user', //change based on where to deploy
+  // },
   metricsTables: {
     buildTable: 'build-data',
     gitlabCommitTable: 'gitlab-commit-data',

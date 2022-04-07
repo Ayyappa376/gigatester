@@ -299,7 +299,7 @@ const FeedbackSettings = ({
             }
             label={
               <Typography color="textSecondary">
-                {"Comment field mandatory?"}
+                {"Is general comment field mandatory?"}
               </Typography>
             }
             labelPlacement={'start'}

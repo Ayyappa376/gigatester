@@ -43,7 +43,8 @@ export interface BugSettings {
     categories: Category[];
     dialogMsg?: string;
     reqComments?: boolean;
-    severities: SeverityType[];
+    severities: string[];
+    showSeverity: boolean;
     thanksMsg?: string;
     title?: string;
     tooltip?: string;
@@ -93,7 +94,10 @@ export interface TrackingSystem {
     auth: {
         [key: string]: string;
     };
+    project: string;
+//    severity: boolean;
     type: TrackingSystemType;
+//    uploadToTrackingSystem: boolean;
     url: string;
     [key: string]: any;
 }
@@ -115,11 +119,11 @@ export const RATING_ICON_TYPE_STAR: RatingIconType = 'STAR';
 export const RATING_ICON_TYPE_HEART: RatingIconType = 'HEART';
 export const RATING_ICON_TYPE_EMOJI: RatingIconType = 'EMOJI';
 
-export type SeverityType = 'Critical' | 'High' | 'Medium' | 'Low';
-export const SEVERITY_TYPE_CRITICAL: SeverityType = 'Critical';
-export const SEVERITY_TYPE_HIGH: SeverityType = 'High';
-export const SEVERITY_TYPE_MEDIUM: SeverityType = 'Medium';
-export const SEVERITY_TYPE_LOW: SeverityType = 'Low';
+// export type SeverityType = 'Critical' | 'High' | 'Medium' | 'Low';
+// export const SEVERITY_TYPE_CRITICAL: SeverityType = 'Critical';
+// export const SEVERITY_TYPE_HIGH: SeverityType = 'High';
+// export const SEVERITY_TYPE_MEDIUM: SeverityType = 'Medium';
+// export const SEVERITY_TYPE_LOW: SeverityType = 'Low';
 
 export type InvokeType = 'MANUAL' | 'AFTER_DELAY' | 'CONTEXT_CHANGE' | 'IDLE';
 export const INVOKE_TYPE_MANUAL: InvokeType = 'MANUAL';
