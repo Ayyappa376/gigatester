@@ -1,6 +1,6 @@
 import { IRootState } from "../../../reducers";
 import { Http } from "../../../utils";
-import { CONST_BUG_REPORT, CONST_FEEDBACK, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, IDateRange,IFetchRecursiveData, NUMBER_OF_ITEMS_PER_FETCH } from "./common";
+import { CONST_BUG_REPORT, CONST_FEEDBACK, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, IDateRange, IFetchRecursiveData, NUMBER_OF_ITEMS_PER_FETCH } from "./common";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { ConsoleLogger } from "@aws-amplify/core";
 
@@ -162,8 +162,11 @@ export const getProductDetails = async ({ productInfo, prodNameIdMapping, prodNa
 
 export const filterDate = (date: Date, sortDate: string) => {
   let newDate;
+  let newTime;
   if (sortDate === '') {
-    return newDate = new Date(date);
+    newDate = new Date(date);
+    newTime = Date.parse(newDate.toString())
+    return { 'dateObj': newDate, 'epoch': newTime };
   } else {
     newDate = new Date();
     if (sortDate === '1D') {
@@ -178,8 +181,8 @@ export const filterDate = (date: Date, sortDate: string) => {
       newDate.setFullYear(newDate.getFullYear() - 1);
     }
 
-
-    return newDate;
+    newTime = Date.parse(newDate.toString());
+    return {'dateObj': newDate, 'epoch': newTime};
   }
 
 }

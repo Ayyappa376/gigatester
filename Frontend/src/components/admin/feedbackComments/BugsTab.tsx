@@ -117,7 +117,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [categoryList, setCategoryList] = useState<any>([]);
 	const [keys, setKey] = useState<boolean>(false);
 	const [rating, setRating] = useState<boolean>(false);
-	const [sortDate, setSortDate] = useState<Date | undefined>();
+	const [sortDate, setSortDate] = useState <number | undefined>();
 
 	useEffect(() => {
 		if (feedbackBarChartData) {
@@ -381,7 +381,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (searchWord) {
 			urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`;
 		}
-    
+
     if(filterDate) {
       urlAppend += urlAppend ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
     }
@@ -569,9 +569,12 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	};
 
 	useEffect(() => {
+		const today = new Date();
+		const todaysDate = Date.parse(today.toString());
+
 		if (sortDate) {
-			console.log('sorted', sortDate);
-			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange});
+			// console.log('sorted', sortDate);
+			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: todaysDate, endDate: sortDate }});
 		}
 	}, [sortDate])
 

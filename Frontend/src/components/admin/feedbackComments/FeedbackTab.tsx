@@ -93,7 +93,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   const [categoryList, setCategoryList] = useState<any>([]);
   const [keys, setKey] = useState<boolean>(false);
   const [rating, setRating] = useState<boolean>(false);
-  const [sortDate, setSortDate] = useState <Date | undefined>();
+  const [sortDate, setSortDate] = useState <number | undefined>();
 
   useEffect(() => {
     if (feedbackBarChartData) {
@@ -193,7 +193,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       // fetch the results from backend
       setData([]);
       setRawData([])
-      fetchRecursiveData({ 
+      fetchRecursiveData({
         fetchOrder: order,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
@@ -447,9 +447,12 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }
 
   useEffect(() => {
+    const today = new Date();
+    const todaysDate = Date.parse(today.toString());
+
     if (sortDate) {
-      console.log('sorted', sortDate);
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
+      // console.log('sorted', sortDate);
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: todaysDate, endDate: sortDate } });
     }
   }, [sortDate])
 

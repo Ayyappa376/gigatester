@@ -23,14 +23,14 @@ const DateFilter = ({  setSortDate }: DateProp) => {
 
   const handleDateChange = (date: any, filter: string) => {
     const newDate = new Date(date);
-    const result = filterDate(newDate, filter);
+    const result: any = filterDate(newDate, filter);
     console.log('result', result);
     if (filter === '') {
-      setDate(newDate);
-      setSortDate(newDate);
+      setDate(result['dateObj']);
+      setSortDate(result['epoch']);
     } else {
-      setDate(result);
-      setSortDate(result);
+      setDate(result['dateObj'])
+      setSortDate(result['epoch'])
     }
   }
 
