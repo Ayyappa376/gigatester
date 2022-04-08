@@ -19,6 +19,7 @@ import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import RenderComments from './RenderComments';
 import ImageModal from './ImageModal';
+import DateFilter from './DateFilter';
 
 interface ChosenProps {
   productInfoProp: any,
@@ -91,6 +92,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   const [categoryList, setCategoryList] = useState<any>([]);
   const [keys, setKey] = useState<boolean>(false);
   const [rating, setRating] = useState<boolean>(false);
+  const [sortDate, setSortDate] = useState <Date | undefined>();
 
   useEffect(() => {
     if (feedbackBarChartData) {
@@ -170,9 +172,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
   useEffect(() => {
     if (filtered.product && filtered.version && selectedProdId && productVersion) {
+      if (productVersion === 'all') {
+      setBackdropOpen(true);
+      fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: '' });
+      } else {
       setBackdropOpen(true);
       fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
       getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion });
+      }
     }
   }, [selectedProdId, productVersion])
 
@@ -425,9 +433,12 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     return ""
   }
 
-  // useEffect(() => {
-  //   filterByProduct(selectedProdId);
-  // }, [selectedProdId, productVersion])
+  useEffect(() => {
+    if (sortDate) {
+      console.log('sorted', sortDate);
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: '10'});
+    }
+  }, [sortDate])
 
   const filterByProduct = (val: string) => {
     console.log(prodNameIdMapping);
@@ -541,8 +552,12 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
           noDataError ? <div style={{ marginTop: '3rem' }}><Failure message={`There is no feedback to show.`} /></div> :
             <div>
               <ImageModal {...imagePayload} />
-              <div style={{ marginTop: 50 }}>
-                <Grid container style={{ marginTop: '5rem' }}>
+                  <div style={{ marginTop: 50 }}>
+                    <Grid container style={{ width: '95%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+                      <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
+                      <DateFilter setSortDate={setSortDate}/>
+                  </Grid>
+              <Grid container style={{ marginTop: '3rem' }}>
                   <Grid item lg={5}>
                     <ReactApexChart options={feedbackBarChartOptions} series={barChartSeries} type="bar" width={500} height={320} />
                   </Grid>

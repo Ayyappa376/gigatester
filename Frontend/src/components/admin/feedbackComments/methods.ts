@@ -2,6 +2,7 @@ import { IRootState } from "../../../reducers";
 import { Http } from "../../../utils";
 import { CONST_BUG_REPORT, CONST_FEEDBACK, CONST_BUG_REPORT_CHART, CONST_FEEDBACK_CHART, IFetchRecursiveData, NUMBER_OF_ITEMS_PER_FETCH } from "./common";
 import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { ConsoleLogger } from "@aws-amplify/core";
 
 export const getSignedUrl = async(url: string, stateVariable: IRootState) => {
     return new Promise((resolve, reject) => {
@@ -59,15 +60,18 @@ interface IGetChartData {
   setBugBarChartSeries: Function,
   setPieChartSeries: Function,
   prodId: string,
-  prodVersion: string
+  prodVersion?: string,
+  filterDate?: string,
 }
 
-export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=30`; //hard coded for filterdate
+export const getFeedbckChartData = async ({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion, filterDate }: IGetChartData) => {
+  console.log('date',filterDate);
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=${filterDate ? filterDate : '30'}`; //hard coded for filterdate
       Http.get({
         url,
       }).then((response: any) => {
         const processedData = response.Items;
+        console.log('feedback chart response', processedData)
         setFeedbackBarChartData(processedData.barChartData);
         setPieChartSeries(processedData.pieChartData);
       })
@@ -76,8 +80,8 @@ export const getFeedbckChartData = async({ setFeedbackBarChartData, setBugBarCha
       });
   }
 
-  export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion}: IGetChartData) => {
-    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=30`; //hard coded for filterdate
+  export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion, filterDate}: IGetChartData) => {
+    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}&prodVersion=${prodVersion}&filterDate=${filterDate ? filterDate : '30'}`; //hard coded for filterdate
     Http.get({
       url,
     }).then((response: any) => {
@@ -151,4 +155,24 @@ export const getProductDetails = async ({ productInfo, prodNameIdMapping, prodNa
   })
 }
 
+export const filterDate = (date: Date, sortDate: string) => {
+  let newDate;
+  if (sortDate === '') {
+    return newDate = new Date(date);
+  } else {
+    newDate = new Date();
+    if (sortDate === '1D') {
+      newDate.setDate(newDate.getDate() - 1);
+    } else if (sortDate === '1W') {
+      newDate.setDate(new Date().getDate() - 7)
+    } else if (sortDate === '1M') {
+      newDate.setMonth(newDate.getMonth() - 1);
+    } else if (sortDate === '6M') {
+      newDate.setMonth(newDate.getMonth() - 6);
+    } else if (sortDate === '1Y') {
+      newDate.setFullYear(newDate.getFullYear() - 1);
+    }
+    return newDate;
+  }
 
+}

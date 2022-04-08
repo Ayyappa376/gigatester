@@ -1,628 +1,1624 @@
-import { Backdrop, Button, CircularProgress, Container, Grid, makeStyles, Modal, Typography } from '@material-ui/core';
-import React, {useState, useEffect, useCallback, useRef} from 'react';
+import {
+	Backdrop,
+	Button,
+	CircularProgress,
+	Container,
+	Grid,
+	makeStyles,
+	Modal,
+	Typography,
+} from '@material-ui/core';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { Http } from '../../../utils';
-import ReactApexChart from 'react-apexcharts'
+import ReactApexChart from 'react-apexcharts';
 import RenderTable, { Order } from './RenderTable';
 import Close from '@material-ui/icons/Close';
-import Image from 'material-ui-image'
+import Image from 'material-ui-image';
 import { getDate } from '../../../utils/data';
-import { ILimitedProductDetails,
-  IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getBugBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments } from './common';
+import {
+	ILimitedProductDetails,
+	IProductNameIdMapping,
+	IAppFeedback,
+	NUMBER_OF_ITEMS_PER_FETCH,
+	IBugDataMapping,
+	IFeedbackBarChartData,
+	IRatingMapping,
+	getBugBarChartOptions,
+	ILastEvalKey,
+	IFetchRecursiveData,
+	getPieChartOptions,
+	IFeedbackComments,
+} from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getBugChartData, getBugData } from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import ImageModal from './ImageModal';
+import DateFilter from './DateFilter';
 
 interface ChosenProps {
-  productInfoProp: any,
+	productInfoProp: any;
 }
 
 const BugsTab = (props: RouteComponentProps & ChosenProps) => {
-  const { filtered } = props.productInfoProp;
-  const [backdropOpen, setBackdropOpen] = useState(false);
-  const [error, setError] = useState(false)
-  const [isBugReport, setBugReport] = useState<boolean | undefined>(true);
-  const [noDataError, setNoDataError] = useState(false)
-  const [data, setData] = useState<IAppFeedback[]>([]);
-  const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
-  const [rawData, setRawData] = useState([]);
-  const classes = useStyles();
-  const [feedbackBarChartData, setFeedbackBarChartData] = useState < IFeedbackBarChartData > ({});
-  const [pieChartSeries, setPieChartSeries] = useState({})
-  // const [bugBarChartData, setBugBarChartData] = useState({})
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [signedImageUrl, setSignedImageUrl] = useState('');
-  const [attachmentType, setAttachmentType] = useState('')
-  const [focusAttachmentUid, setFocusAttachmentUid] = useState("");
-  const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({})
-  const [urlArray, setUrlArray] = useState<string[]>([]);
-  const [barChartSeries, setBarChartSeries] = useState([{
-    name: 'rating',
-    data: [0, 0, 0, 0, 0]
-  }])
-  const [bugBarChartSeries, setBugBarChartSeries] = useState([{
-    name: 'Severity',
-    data: [0, 0, 0, 0, 0]
-  }])
-  const [selectedProdId, setSelectedProdId] = useState<string>(() => {
-    if(props.productInfoProp.selectedProdId) {
-      return props.productInfoProp.selectedProdId;
-    }
-    return ''
-  })
-  const [productVersion, setProductVersion] = useState(() => {
-    if(props.productInfoProp.productVersion) {
-      return props.productInfoProp.productVersion;
-    }
-    return ''
-  });
-  const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>(() => {
-    if (props.productInfoProp.productInfo) {
-      return props.productInfoProp.prodInfo
-    }
-    return ''
-  })
-  const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>(() => {
-    if (props.productInfoProp.prodNameIdMappingBugCopy) {
-      return props.productInfoProp.prodNameIdMappingBugCopy
-    }
-    return ''
-  })
-  const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
-  const [order, setOrder] = useState<Order>('desc')
-  const [keyword, setKeyword] = useState('')
-  const [searchInitiated, setSearchInitiated] = useState(false)
-  const [focusRating, setFocusRating] = useState([]);
-  const [focusSeverity, setFocusSeverity] = useState([]);
-  const [focusCategory, setFocusCategory] = useState([]);
-  const [slideShowImageUrl, setSlideShowImageUrl] = useState('')
-  const [resultsFetched, setResultsFetched] = useState(false);
-  const [currentDisable, setCurrentDisable] = useState<string>('');
-  const [category, setCat] = useState<boolean>(false);
-  const [severity, setSeverity] = useState<boolean>(false);
-  const [severityList, setSeverityList] = useState<any>([]);
-  const [categoryList, setCategoryList] = useState<any>([]);
-  const [keys, setKey] = useState<boolean>(false);
-  const [rating, setRating] = useState<boolean>(false);
+	const { filtered } = props.productInfoProp;
+	const [backdropOpen, setBackdropOpen] = useState(false);
+	const [error, setError] = useState(false);
+	const [isBugReport, setBugReport] = useState<boolean | undefined>(true);
+	const [noDataError, setNoDataError] = useState(false);
+	const [data, setData] = useState<IAppFeedback[]>([]);
+	const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
+	const [rawData, setRawData] = useState([]);
+	const classes = useStyles();
+	const [feedbackBarChartData, setFeedbackBarChartData] =
+		useState<IFeedbackBarChartData>({});
+	const [pieChartSeries, setPieChartSeries] = useState({});
+	// const [bugBarChartData, setBugBarChartData] = useState({})
+	const [showImageModal, setShowImageModal] = useState(false);
+	const [signedImageUrl, setSignedImageUrl] = useState('');
+	const [attachmentType, setAttachmentType] = useState('');
+	const [focusAttachmentUid, setFocusAttachmentUid] = useState('');
+	const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({});
+	const [urlArray, setUrlArray] = useState<string[]>([]);
+	const [barChartSeries, setBarChartSeries] = useState([
+		{
+			name: 'rating',
+			data: [0, 0, 0, 0, 0],
+		},
+	]);
+	const [bugBarChartSeries, setBugBarChartSeries] = useState([
+		{
+			name: 'Severity',
+			data: [0, 0, 0, 0, 0],
+		},
+	]);
+	const [selectedProdId, setSelectedProdId] = useState<string>(() => {
+		if (props.productInfoProp.selectedProdId) {
+			return props.productInfoProp.selectedProdId;
+		}
+		return '';
+	});
+	const [productVersion, setProductVersion] = useState(() => {
+		if (props.productInfoProp.productVersion) {
+			return props.productInfoProp.productVersion;
+		}
+		return '';
+	});
+	const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>(
+		() => {
+			if (props.productInfoProp.productInfo) {
+				return props.productInfoProp.prodInfo;
+			}
+			return '';
+		},
+	);
+	const [prodNameIdMapping, setProdNameIdMapping] =
+		useState<IProductNameIdMapping>(() => {
+			if (props.productInfoProp.prodNameIdMappingBugCopy) {
+				return props.productInfoProp.prodNameIdMappingBugCopy;
+			}
+			return '';
+		});
+	const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
+	const [order, setOrder] = useState<Order>('desc');
+	const [keyword, setKeyword] = useState('');
+	const [searchInitiated, setSearchInitiated] = useState(false);
+	const [focusRating, setFocusRating] = useState([]);
+	const [focusSeverity, setFocusSeverity] = useState([]);
+	const [focusCategory, setFocusCategory] = useState([]);
+	const [slideShowImageUrl, setSlideShowImageUrl] = useState('');
+	const [resultsFetched, setResultsFetched] = useState(false);
+	const [currentDisable, setCurrentDisable] = useState<string>('');
+	const [category, setCat] = useState<boolean>(false);
+	const [severity, setSeverity] = useState<boolean>(false);
+	const [severityList, setSeverityList] = useState<any>([]);
+	const [categoryList, setCategoryList] = useState<any>([]);
+	const [keys, setKey] = useState<boolean>(false);
+	const [rating, setRating] = useState<boolean>(false);
+	const [sortDate, setSortDate] = useState<Date | undefined>();
 
-  useEffect(() => {
-    if(feedbackBarChartData) {
-      const series = [{
-        name: 'Severity',
-        data: Object.values(feedbackBarChartData)
-      }];
-      setBarChartSeries(series);
-      console.log(feedbackBarChartData, 'fbcdd')
-      setSeverityList(Object.keys(feedbackBarChartData))
-    }
-  }, [feedbackBarChartData])
+	useEffect(() => {
+		if (feedbackBarChartData) {
+			const series = [
+				{
+					name: 'Severity',
+					data: Object.values(feedbackBarChartData),
+				},
+			];
+			setBarChartSeries(series);
+			console.log(feedbackBarChartData, 'fbcdd');
+			setSeverityList(Object.keys(feedbackBarChartData));
+		}
+	}, [feedbackBarChartData]);
 
+	useEffect(() => {
+		const rateMap: IRatingMapping = {};
+		const bugMap: IBugDataMapping = {};
+		const urls: string[] = [];
 
-  useEffect(() => {
-    const rateMap: IRatingMapping = {};
-     const bugMap: IBugDataMapping = {};
-     const urls: string[] = [];
+		data.forEach((item: IAppFeedback) => {
+			if (item.feedbackType === 'BUG_REPORT') {
+				bugMap[item.id] = {
+					userId: item.userId ? item.userId : 'Anonymous',
+					userIp: item.sourceIP ? item.sourceIP : '',
+					severity: item.bugPriority,
+					category: item.feedbackCategory,
+					date: item.createdOn,
+					comments:
+						item.feedbackComments && typeof item.feedbackComments === 'string'
+							? JSON.parse(item.feedbackComments)
+							: {},
+					productId: item.productId,
+					productVersion: item.productVersion,
+				};
+				if (item.feedbackMedia) {
+					const links: any = Object.values(item.feedbackMedia);
+					const linksFiltered = links.filter((key: string) => key !== '');
+					urls.push(...linksFiltered);
+				}
+				setBugDataMapping(bugMap);
+			}
+		});
 
-       data.forEach((item: IAppFeedback) => {
-         if (item.feedbackType === "BUG_REPORT") {
-           bugMap[item.id] = {
-             userId: item.userId ? item.userId : 'Anonymous',
-             userIp: item.sourceIP? item.sourceIP : '',
-             severity : item.bugPriority,
-             category: item.feedbackCategory,
-             date : item.createdOn,
-             comments: item.feedbackComments && (typeof item.feedbackComments === 'string') ? JSON.parse(item.feedbackComments) : {},
-             productId: item.productId,
-             productVersion: item.productVersion
-           }
-           if(item.feedbackMedia ) {
-             const links: any = Object.values(item.feedbackMedia);
-             const linksFiltered = links.filter((key: string) => key !== '')
-             urls.push(...linksFiltered);
-           }
-           setBugDataMapping(bugMap);
-         }
-       });
+		const urlArrayCopy = [...urlArray];
+		urlArrayCopy.push(...urls);
+		setUrlArray(urlArrayCopy);
+	}, [data]);
+	const pieChartOptions = getPieChartOptions(pieChartSeries, 'BUGS');
+	console.log(feedbackBarChartData, 'fbcd');
+	const bugBarChartOptions = getBugBarChartOptions(
+		bugBarChartSeries,
+		feedbackBarChartData,
+	);
 
-    const urlArrayCopy = [...urlArray];
-     urlArrayCopy.push(...urls);
-     setUrlArray(urlArrayCopy)
-   }, [data])
-  const pieChartOptions = getPieChartOptions(pieChartSeries, 'BUGS');
-  console.log(feedbackBarChartData, 'fbcd');
-  const bugBarChartOptions = getBugBarChartOptions(bugBarChartSeries, feedbackBarChartData);
+	const disbaleFilterButtons = (filter: string) => {
+		if (filter === '') {
+			setCat(false);
+			setRating(false);
+			setSeverity(false);
+			setKey(false);
+		} else if (filter === 'key') {
+			setCat(true);
+			setRating(true);
+			setSeverity(true);
+			setKey(false);
+		} else if (filter === 'category') {
+			setCat(false);
+			setRating(true);
+			setSeverity(true);
+			setKey(true);
+		} else if (filter === 'severity') {
+			setCat(true);
+			setRating(true);
+			setSeverity(false);
+			setKey(true);
+		} else if (filter === 'rating') {
+			setCat(true);
+			setRating(false);
+			setSeverity(true);
+			setKey(true);
+		}
+	};
 
-  const disbaleFilterButtons = (filter: string) => {
-    if (filter === '') {
-      setCat(false);
-      setRating(false);
-      setSeverity(false);
-      setKey(false);
-    } else if (filter === 'key') {
-      setCat(true);
-      setRating(true);
-      setSeverity(true);
-      setKey(false);
-    } else if (filter === 'category') {
-      setCat(false);
-      setRating(true);
-      setSeverity(true);
-      setKey(true);
-    } else if (filter === 'severity') {
-      setCat(true);
-      setRating(true);
-      setSeverity(false);
-      setKey(true);
-    } else if (filter === 'rating') {
-      setCat(true);
-      setRating(false);
-      setSeverity(true);
-      setKey(true);
-    }
-  }
+	useEffect(() => {
+		disbaleFilterButtons(currentDisable);
+	}, [currentDisable]);
 
-  useEffect(() => {
-    disbaleFilterButtons(currentDisable);
-  }, [currentDisable])
+	useEffect(() => {
+		if (
+			filtered.product &&
+			filtered.version &&
+			selectedProdId &&
+			productVersion
+		) {
+			if (productVersion === 'all') {
+				setBackdropOpen(true);
+				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
+				getBugChartData({
+					setBugBarChartSeries,
+					setFeedbackBarChartData,
+					setPieChartSeries,
+					prodId: selectedProdId,
+					prodVersion: '',
+				});
+			} else {
+				setBackdropOpen(true);
+				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
+				getBugChartData({
+					setBugBarChartSeries,
+					setFeedbackBarChartData,
+					setPieChartSeries,
+					prodId: selectedProdId,
+					prodVersion: productVersion,
+				});
+			}
+		}
+	}, [selectedProdId, productVersion]);
 
-  useEffect(() => {
-    if(filtered.product && filtered.version && selectedProdId && productVersion) {
-      setBackdropOpen(true);
-      fetchRecursiveData({prodId: selectedProdId, prodVersion: productVersion});
-      getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion});
-    }
+	useEffect(() => {
+		if (rawData.length === 0) {
+			return;
+		}
+		if (Object.keys(lastEvaluatedKey).length > 0) {
+			// fetch the results from backend
+			setData([]);
+			setRawData([]);
+			fetchRecursiveData({
+				fetchOrder: order,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+			});
+		} else {
+			setData(sortTableByDate(data, order));
+		}
+	}, [order]);
 
-  }, [selectedProdId, productVersion])
+	useEffect(() => {
+		if (rawData.length === 0) {
+			return;
+		}
+		if (focusRating.length === 0) {
+			setCurrentDisable('');
+			setData(rawData);
+			return;
+		}
+		// fetch the results from backend
+		setResultsFetched(false);
+		setData([]);
+		//setRawData([])
+		fetchRecursiveData({
+			filterRating: focusRating,
+			prodId: selectedProdId,
+			prodVersion: productVersion,
+			showNoEmptyError: true,
+			noRawDataUpdate: true,
+		});
+	}, [focusRating]);
 
-  useEffect(() => {
-    if(rawData.length === 0) {
-      return;
-    }
-    if(Object.keys(lastEvaluatedKey).length > 0) {
-      // fetch the results from backend
-      setData([]);
-      setRawData([])
-      fetchRecursiveData({fetchOrder: order, prodId: selectedProdId, prodVersion: productVersion})
-    } else {
-      setData(sortTableByDate(data, order))
-    }
-  }, [order])
+	useEffect(() => {
+		if (rawData.length === 0) {
+			return;
+		}
+		if (focusSeverity.length <= 0) {
+			setCurrentDisable('');
+			setData(rawData);
+			return;
+		}
+		// fetch the results from backend
+		setResultsFetched(false);
+		setData([]);
+		//setRawData([])
+		fetchRecursiveData({
+			filterSeverity: focusSeverity,
+			prodId: selectedProdId,
+			prodVersion: productVersion,
+			showNoEmptyError: true,
+			noRawDataUpdate: true,
+		});
+	}, [focusSeverity]);
 
-  useEffect(() => {
-    if(rawData.length === 0) {
-      return;
-    }
-    if(focusRating.length === 0) {
-      setCurrentDisable('');
-      setData(rawData);
-      return;
-    }
-    // fetch the results from backend
-    setResultsFetched(false)
-    setData([]);
-    //setRawData([])
-    fetchRecursiveData({filterRating: focusRating, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
-  }, [focusRating])
+	useEffect(() => {
+		if (rawData.length === 0) {
+			return;
+		}
+		if (focusCategory.length <= 0) {
+			setCurrentDisable('');
+			setData(rawData);
+			return;
+		}
+		// fetch the results from backend
+		setResultsFetched(false);
+		setData([]);
+		//setRawData([])
+		fetchRecursiveData({
+			filterCategory: focusCategory,
+			prodId: selectedProdId,
+			prodVersion: productVersion,
+			showNoEmptyError: true,
+			noRawDataUpdate: true,
+		});
+	}, [focusCategory]);
 
-  useEffect(() => {
-    if(rawData.length === 0) {
-      return;
-    }
-    if(focusSeverity.length <= 0) {
-      setCurrentDisable('');
-      setData(rawData);
-      return;
-    }
-    // fetch the results from backend
-    setResultsFetched(false)
-    setData([]);
-    //setRawData([])
-    fetchRecursiveData({filterSeverity: focusSeverity, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
-  }, [focusSeverity])
+	const fetchRecursiveData = async ({
+		lastEvalKey,
+		fetchOrder,
+		filterRating,
+		filterSeverity,
+		filterCategory,
+		prodId,
+		prodVersion,
+		searchWord,
+		showNoEmptyError,
+		noRawDataUpdate,
+	}: IFetchRecursiveData) => {
+		let urlAppend = ``;
+		let numItems = NUMBER_OF_ITEMS_PER_FETCH;
+		if (prodId) {
+			urlAppend += `?prodId=${prodId}`;
+			if (prodVersion) {
+				urlAppend += `&prodVersion=${prodVersion}`;
+			}
+		}
+		if (filterRating) {
+			urlAppend += urlAppend
+				? `&filterRating=${filterRating.join(',')}`
+				: `?filterRating=${filterRating.join(',')}`;
+			numItems = 500;
+		}
 
-  useEffect(() => {
-    if(rawData.length === 0) {
-      return;
-    }
-    if(focusCategory.length <= 0) {
-      setCurrentDisable('');
-      setData(rawData);
-      return;
-    }
-    // fetch the results from backend
-    setResultsFetched(false)
-    setData([]);
-    //setRawData([])
-    fetchRecursiveData({filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true})
-  }, [focusCategory])
+		if (filterSeverity) {
+			urlAppend += urlAppend
+				? `&filterSeverity=${filterSeverity.join(',')}`
+				: `?filterSeverity=${filterSeverity.join(',')}`;
+			numItems = 500;
+		}
 
-  const fetchRecursiveData = async({lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory,prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate}:
-      IFetchRecursiveData) => {
-    let urlAppend = ``;
-    let numItems = NUMBER_OF_ITEMS_PER_FETCH;
-    if(prodId) {
-      urlAppend += `?prodId=${prodId}`;
-      if(prodVersion) {
-        urlAppend += `&prodVersion=${prodVersion}`;
-      }
-    }
-    if(filterRating) {
-      urlAppend += urlAppend ? `&filterRating=${filterRating.join(',')}` : `?filterRating=${filterRating.join(',')}`
-      numItems = 500;
-    }
+		if (filterCategory) {
+			urlAppend += urlAppend
+				? `&filterCategory=${filterCategory.join(',')}`
+				: `?filterCategory=${filterCategory.join(',')}`;
+			numItems = 500;
+		}
 
-    if(filterSeverity) {
-      urlAppend += urlAppend ? `&filterSeverity=${filterSeverity.join(',')}` : `?filterSeverity=${filterSeverity.join(',')}`
-      numItems = 500;
-    }
+		if (lastEvalKey && Object.keys(lastEvalKey).length > 0) {
+			urlAppend += urlAppend
+				? `&lastEvalKey=${JSON.stringify(lastEvalKey)}`
+				: `?lastEvalKey=${JSON.stringify(lastEvalKey)}`;
+		}
 
-    if(filterCategory) {
-      urlAppend += urlAppend ? `&filterCategory=${filterCategory.join(',')}` : `?filterCategory=${filterCategory.join(',')}`
-      numItems = 500;
-    }
+		if (fetchOrder) {
+			urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`;
+		}
 
-    if(lastEvalKey && Object.keys(lastEvalKey).length > 0) {
-      urlAppend += urlAppend ? `&lastEvalKey=${JSON.stringify(lastEvalKey)}` : `?lastEvalKey=${JSON.stringify(lastEvalKey)}`
-    }
+		if (searchWord) {
+			urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`;
+		}
 
-    if(fetchOrder) {
-      urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`
-    }
+		urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`;
 
-    if(searchWord) {
-      urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
-    }
+		const response: any = await getBugData({ props, urlAppend }).catch(
+			(error) => {
+				const perror = JSON.stringify(error);
+				const object = JSON.parse(perror);
+				if (object.code === 401) {
+					props.history.push('/relogin');
+				} else {
+					setError(true);
+				}
+				console.error(
+					'getBugData failed to fetch data with Error code:',
+					object.code,
+				);
+				return;
+			},
+		);
+		setResultsFetched(true);
+		if (
+			response &&
+			response.Items &&
+			response.Items.Items &&
+			Array.isArray(response.Items.Items) &&
+			response.Items.Items.length > 0
+		) {
+			setBackdropOpen(false);
+			if (searchInitiated && searchWord) {
+				setSearchedData((dataObj) => {
+					const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+					return Array.from(dataCopy);
+				});
+				return;
+			}
+			setData((dataObj) => {
+				const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+				return Array.from(dataCopy);
+			});
+			if (!noRawDataUpdate) {
+				// This if check is useful for the cases where filtering is done. If filtering returns 0 elements, the presence of the raw data,
+				setBackdropOpen(false);
+				setRawData((rawDataObj) => {
+					// clear filter will get the idea that the data has already been fetched.
+					const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+					return Array.from(rawDataCopy);
+				});
+			}
 
-    urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
+			if (
+				response.Items.LastEvaluatedKey &&
+				Object.keys(response.Items.LastEvaluatedKey).length > 0
+			) {
+				setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+			}
+			if (
+				Object.keys(lastEvaluatedKey).length > 0 &&
+				!response.Items.LastEvaluatedKey
+			) {
+				setLastEvaluatedKey({});
+			}
+		} else {
+			if (!showNoEmptyError) {
+				setBackdropOpen(false);
+				setNoDataError(true);
+			}
+		}
+	};
 
-    const response: any = await getBugData({ props, urlAppend}).catch((error) => {
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        setError(true)
-      }
-      console.error('getBugData failed to fetch data with Error code:', object.code)
-      return;
-    })
-    setResultsFetched(true);
-    if(response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
-      setBackdropOpen(false);
-      if(searchInitiated && searchWord) {
-        setSearchedData((dataObj) => {
-          const dataCopy = new Set([...dataObj].concat(response.Items.Items));
-          return Array.from(dataCopy)
-        });
-        return;
-      }
-      setData((dataObj) => {
-        const dataCopy = new Set([...dataObj].concat(response.Items.Items));
-        return Array.from(dataCopy)
-      });
-      if(!noRawDataUpdate) {          // This if check is useful for the cases where filtering is done. If filtering returns 0 elements, the presence of the raw data,
-        setBackdropOpen(false);
-        setRawData((rawDataObj) => {  // clear filter will get the idea that the data has already been fetched.
-          const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
-          return Array.from(rawDataCopy)
-        });
-      }
+	const fetchMore = () => {
+		if (Object.keys(lastEvaluatedKey).length > 0 && !searchInitiated) {
+			fetchRecursiveData({
+				lastEvalKey: lastEvaluatedKey,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+			});
+		}
+	};
 
-      if(response.Items.LastEvaluatedKey && Object.keys(response.Items.LastEvaluatedKey).length > 0) {
-        setLastEvaluatedKey(response.Items.LastEvaluatedKey);
-      }
-      if(Object.keys(lastEvaluatedKey).length > 0 && !response.Items.LastEvaluatedKey) {
-        setLastEvaluatedKey({})
-      }
-    } else {
-      if(!showNoEmptyError) {
-        setBackdropOpen(false);
-        setNoDataError(true);
-      }
-    }
-  }
+	useEffect(() => {
+		// if(error || noDataError) {
+		//   setBackdropOpen(false);
+		// }
+		if (rawData.length > 0 && selectedProdId) {
+			setNoDataError(false);
+			if (Object.keys(feedbackBarChartData).length > 0) {
+				setBackdropOpen(false);
+			}
+			if (pieChartSeries) {
+				let searchCategoryList = Object.keys(pieChartSeries);
+				searchCategoryList = searchCategoryList.map((element) => {
+					return element.toLowerCase();
+				});
+				console.log(searchCategoryList, 'category search list');
+				setCategoryList(searchCategoryList);
+			}
+		}
+	}, [
+		selectedProdId,
+		rawData,
+		feedbackBarChartData,
+		pieChartSeries,
+		error,
+		noDataError,
+	]);
 
-  const fetchMore = () => {
-    if(Object.keys(lastEvaluatedKey).length > 0 && !searchInitiated) {
-      fetchRecursiveData({lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true});
-    }
-  }
+	const fetchSignedUrl = (imgUrl: string) => {
+		const urlSplit = imgUrl.split('/');
+		let name = urlSplit[urlSplit.length - 1];
+		Http.get({
+			url: `/api/v2/signedurl/${name}`,
+		})
+			.then((response: any) => {
+				if (response.filePath) {
+					setSignedImageUrl(response.filePath);
+				}
+			})
+			.catch((error: any) => {
+				console.error(error);
+			});
+	};
 
-  useEffect(() => {
-    // if(error || noDataError) {
-    //   setBackdropOpen(false);
-    // }
-    if(rawData.length > 0 && selectedProdId) {
-      setNoDataError(false);
-        if(Object.keys(feedbackBarChartData).length > 0) {
-          setBackdropOpen(false);
-        }
-        if(pieChartSeries){
-          let searchCategoryList = Object.keys(pieChartSeries);
-          searchCategoryList =  searchCategoryList.map(element => {
-            return element.toLowerCase();
-          })
-          console.log(searchCategoryList, 'category search list');
-          setCategoryList(searchCategoryList)
-        }
-    }
-  }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])
+	const handleViewAttachmentClicked = (
+		url: string,
+		id: string,
+		type: string,
+	) => {
+		setShowImageModal(true);
+		setFocusAttachmentUid(id);
+		fetchSignedUrl(url);
+		setAttachmentType(type);
+	};
 
-  const fetchSignedUrl = (imgUrl: string) => {
-    const urlSplit = imgUrl.split('/')
-    let name = urlSplit[urlSplit.length - 1]
-    Http.get({
-        url: `/api/v2/signedurl/${name}`,
-    }).then((response: any) => {
-       if(response.filePath) {
-         setSignedImageUrl(response.filePath);
-       }
-    }).catch((error : any) => {
-        console.error(error);
-    })
-  }
+	const getDateString = (id: string) => {
+		if (bugDataMapping[id]) {
+			return getDate(bugDataMapping[id].date);
+		}
+		return '';
+	};
 
-  const handleViewAttachmentClicked = (url: string, id: string, type: string) => {
-    setShowImageModal(true);
-    setFocusAttachmentUid(id);
-    fetchSignedUrl(url)
-    setAttachmentType(type)
-  }
+	const getComments = (id: string) => {
+		if (bugDataMapping[id]) {
+			return bugDataMapping[id].comments;
+		}
+		return {};
+	};
 
-  const getDateString = (id: string) => {
-    if(bugDataMapping[id]) {
-      return getDate(bugDataMapping[id].date)
-    }
-    return ""
-  }
+	const getUserId = (id: string) => {
+		if (bugDataMapping[id]) {
+			return bugDataMapping[id].userId;
+		}
+		return undefined;
+	};
 
-  const getComments = (id: string) => {
-    if(bugDataMapping[id]) {
-      return bugDataMapping[id].comments
-    }
-    return {}
-  }
+	const getUserIp = (id: string) => {
+		if (bugDataMapping[id]) {
+			return bugDataMapping[id].userIp;
+		}
+		return undefined;
+	};
 
-  const getUserId = (id: string) => {
-    if(bugDataMapping[id]) {
-      return bugDataMapping[id].userId
-    }
-    return undefined
-  }
+	const getProductVersion = (id: string) => {
+		if (bugDataMapping[id]) {
+			return bugDataMapping[id].productVersion;
+		}
+		return '';
+	};
 
-  const getUserIp = (id: string) => {
-    if(bugDataMapping[id]) {
-      return bugDataMapping[id].userIp
-    }
-    return undefined
-  }
+	const getBugSeverity = (id: string) => {
+		if (bugDataMapping[id]) {
+			return bugDataMapping[id].severity;
+		}
+		return '';
+	};
 
-  const getProductVersion = (id: string) => {
-    if(bugDataMapping[id]) {
-      return bugDataMapping[id].productVersion
-    }
-    return ""
-  }
+	const getBugCategory = (id: string) => {
+		if (bugDataMapping[id]) {
+			return bugDataMapping[id].category;
+		}
+		return '';
+	};
 
-  const getBugSeverity = (id: string) => {
-    if(bugDataMapping[id]) {
-      return bugDataMapping[id].severity
-    }
-    return ""
-  }
+	useEffect(() => {
+		if (sortDate) {
+			console.log('sorted', sortDate);
+			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: '10'});
+		}
+	}, [sortDate])
 
-  const getBugCategory = (id: string) => {
-    if(bugDataMapping[id]) {
-      return bugDataMapping[id].category
-    }
-    return ""
-  }
+	const filterByProduct = (val: string) => {
+		console.log(prodNameIdMapping);
+		if (val) {
+			setSelectedProdId(val);
+			setProductVersion(prodNameIdMapping[val].version[0]);
+			setNoDataError(false);
+			setBackdropOpen(true);
+			setRawData([]);
+			setData([]);
+			setFeedbackBarChartData({});
+			setPieChartSeries({});
+			setResultsFetched(false);
+			setSearchedData([]);
+			setKeyword('');
+			setOrder('desc');
+			setFocusCategory([]);
+			setFocusSeverity([]);
+			setFocusRating([]);
+		}
+	};
 
+	const handleRequestSort = () => {
+		setOrder((odr) => {
+			return odr === 'desc' ? 'asc' : 'desc';
+		});
+	};
 
-  const filterByProduct = (val: string) => {
-    console.log(prodNameIdMapping);
-    if(val) {
-      setSelectedProdId(val);
-      setProductVersion(prodNameIdMapping[val].version[0])
-      setNoDataError(false);
-      setBackdropOpen(true);
-      setRawData([]);
-      setData([]);
-      setFeedbackBarChartData({});
-      setPieChartSeries({});
-      setResultsFetched(false);
-      setSearchedData([]);
-      setKeyword('');
-      setOrder('desc');
-      setFocusCategory([]);
-      setFocusSeverity([]);
-      setFocusRating([]);
-    }
-  }
+	const clearSearch = () => {
+		setKeyword('');
+		setSearchedData([]);
+		setSearchInitiated(false);
+	};
 
-  const handleRequestSort = () => {
-    setOrder((odr) => {
-      return odr === 'desc' ? 'asc' : 'desc';
-    })
-  }
+	useEffect(() => {
+		if (keyword && searchInitiated) {
+			setResultsFetched(false);
+			setSearchedData([]);
+			fetchRecursiveData({
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				searchWord: keyword,
+				showNoEmptyError: true,
+			});
+		}
+	}, [searchInitiated, keyword]);
 
-  const clearSearch = () => {
-    setKeyword('');
-    setSearchedData([])
-    setSearchInitiated(false);
-  }
+	const handleCloseModal = (reason: any) => {
+		console.log('calling handleCloseModal', reason);
+		setShowImageModal(false);
+		setFocusAttachmentUid('');
+		setSignedImageUrl('');
+	};
 
-  useEffect(() => {
-    if(keyword && searchInitiated) {
-      setResultsFetched(false)
-      setSearchedData([])
-      fetchRecursiveData({prodId:  selectedProdId, prodVersion: productVersion, searchWord: keyword,  showNoEmptyError: true })
-    }
-  }, [searchInitiated, keyword])
+	const handleImageClicked = () => {
+		if (signedImageUrl) {
+			setSlideShowImageUrl(signedImageUrl);
+		}
+	};
 
-  const handleCloseModal = (reason: any) => {
-    console.log("calling handleCloseModal", reason)
-    setShowImageModal(false);
-    setFocusAttachmentUid('');
-    setSignedImageUrl('')
-  }
+	// const getCategoryList = () => {
+	//   const categoryList: string[] = []
+	//   if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
+	//     prodNameIdMapping[selectedProdId].categories.map((el) => {
+	//       categoryList.push(el.name);
+	//     });
+	//   }
 
-  const handleImageClicked = () => {
-    if(signedImageUrl) {
-      setSlideShowImageUrl(signedImageUrl)
-    }
-  }
+	//   return categoryList;
+	// }
 
-  // const getCategoryList = () => {
-  //   const categoryList: string[] = []
-  //   if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
-  //     prodNameIdMapping[selectedProdId].categories.map((el) => {
-  //       categoryList.push(el.name);
-  //     });
-  //   }
+	const imagePayload = {
+		showImageModal: showImageModal,
+		handleCloseModal: handleCloseModal,
+		attachmentType: attachmentType,
+		handleImageClicked: handleImageClicked,
+		signedImageUrl: signedImageUrl,
+		focusAttachmentUid: focusAttachmentUid,
+		getUserId: getUserId,
+		getUserIp: getUserIp,
+		getDateString: getDateString,
+		getProductVersion: getProductVersion,
+		getBugCategory: getBugCategory,
+		getBugSeverity: getBugSeverity,
+		getRating: undefined,
+		getComments: getComments,
+		isBugReport: isBugReport,
+	};
 
-  //   return categoryList;
-  // }
+	return (
+		<div>
+			<div
+				className={
+					slideShowImageUrl
+						? classes.imageSlideShowVisible
+						: classes.imageSlideShowHidden
+				}
+			>
+				<Close
+					htmlColor='#fff'
+					style={{
+						position: 'absolute',
+						cursor: 'pointer',
+						top: 10,
+						right: 10,
+						fontSize: '2.5rem',
+					}}
+					onClick={() => {
+						setSlideShowImageUrl('');
+					}}
+				/>
+				<div style={{ width: '80vw', marginLeft: '10vw', marginTop: '2vh' }}>
+					<Image
+						aspectRatio={16 / 9}
+						width='90%'
+						height='90%'
+						src={slideShowImageUrl}
+					/>
+				</div>
+			</div>
 
-  const imagePayload = {
-    showImageModal: showImageModal,
-    handleCloseModal: handleCloseModal,
-    attachmentType: attachmentType,
-    handleImageClicked: handleImageClicked,
-    signedImageUrl: signedImageUrl,
-    focusAttachmentUid: focusAttachmentUid,
-    getUserId: getUserId,
-    getUserIp: getUserIp,
-    getDateString: getDateString,
-    getProductVersion: getProductVersion,
-    getBugCategory: getBugCategory,
-    getBugSeverity: getBugSeverity,
-    getRating: undefined,
-    getComments: getComments,
-    isBugReport: isBugReport,
-  }
-
-  return (
-      <div>
-        <div className={slideShowImageUrl ? classes.imageSlideShowVisible : classes.imageSlideShowHidden}>
-          <Close htmlColor='#fff' style={{position: 'absolute', cursor: 'pointer',
-                    top: 10, right: 10, fontSize: '2.5rem'
-                  }} onClick={() => {setSlideShowImageUrl('')}}/>
-          <div style={{ width: '80vw', marginLeft: '10vw',  marginTop: '2vh'}}>
-            <Image aspectRatio={16/9} width='90%' height='90%'   src={slideShowImageUrl} />
-          </div>
-        </div>
-
-        {backdropOpen ? (
-          <Backdrop className={classes.backdrop} open={backdropOpen}>
-              <CircularProgress color='inherit' />
-          </Backdrop>
-        ): (
-          <div>
-              {searchInitiated ? <div>
-          <RenderTable key="renderTable4" tableData={searchedData} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
-          order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-          searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
-          focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={categoryList} severityList={severityList} resultsFetched={resultsFetched}
-          />
-        </div>
-        :
-        noDataError ? <div style={{marginTop: '3rem'}}><Failure message={`There is no bugs to show.`}/></div>:
-        <div>
-          <ImageModal {...imagePayload}/>
-          <div style={{marginTop: 50}}>
-            <Grid container style={{marginTop: '5rem'}}>
-              <Grid item lg={5}>
-                <ReactApexChart options={bugBarChartOptions} series={bugBarChartSeries} type="bar" width={500} height={320} />
-              </Grid>
-              <Grid item lg={2}></Grid>
-              <Grid item lg={5}>
-                <ReactApexChart options={pieChartOptions} series={Object.values(pieChartSeries)} type="pie" width={500} height={320} />
-              </Grid>
-            </Grid>
-          </div>
-          <RenderTable key="renderTable3" tableData={data} urls={urlArray} viewAttachmentClicked={handleViewAttachmentClicked} fetchMore={fetchMore} currentType={'Bug'} keys={keys} category={category} severity={severity} rating={rating} disable={currentDisable} setDisable={setCurrentDisable}
-          order={order} handleRequestSort={handleRequestSort} keyword={keyword} setKeyword={setKeyword}
-          searchInitiated={searchInitiated} setSearchInitiated={setSearchInitiated} clearSearch={clearSearch}
-          focusRating={focusRating} setFocusRating={setFocusRating} focusSeverity={focusSeverity} setFocusSeverity={setFocusSeverity}
-          focusCategory={focusCategory} setFocusCategory={setFocusCategory} categoryList={categoryList} severityList={severityList} resultsFetched={resultsFetched}
-          />
-        </div>}
-          </div>
-        )}
-      </div>
-  )
-}
-
+			{backdropOpen ? (
+				<Backdrop className={classes.backdrop} open={backdropOpen}>
+					<CircularProgress color='inherit' />
+				</Backdrop>
+			) : (
+				<div>
+					{searchInitiated ? (
+						<div>
+							<RenderTable
+								key='renderTable4'
+								tableData={searchedData}
+								urls={urlArray}
+								viewAttachmentClicked={handleViewAttachmentClicked}
+								fetchMore={fetchMore}
+								currentType={'Bug'}
+								keys={keys}
+								category={category}
+								severity={severity}
+								rating={rating}
+								disable={currentDisable}
+								setDisable={setCurrentDisable}
+								order={order}
+								handleRequestSort={handleRequestSort}
+								keyword={keyword}
+								setKeyword={setKeyword}
+								searchInitiated={searchInitiated}
+								setSearchInitiated={setSearchInitiated}
+								clearSearch={clearSearch}
+								focusRating={focusRating}
+								setFocusRating={setFocusRating}
+								focusSeverity={focusSeverity}
+								setFocusSeverity={setFocusSeverity}
+								focusCategory={focusCategory}
+								setFocusCategory={setFocusCategory}
+								categoryList={categoryList}
+								severityList={severityList}
+								resultsFetched={resultsFetched}
+							/>
+						</div>
+					) : noDataError ? (
+						<div style={{ marginTop: '3rem' }}>
+							<Failure message={`There is no bugs to show.`} />
+						</div>
+					) : (
+						<div>
+							<ImageModal {...imagePayload} />
+							<div style={{ marginTop: 50 }}>
+								<Grid
+									container
+									style={{
+										width: '95%',
+										marginTop: '0.5rem',
+										display: 'flex',
+										flexDirection: 'row',
+										justifyContent: 'flex-start',
+									}}
+								>
+									<Typography style={{ marginRight: '10px', padding: '15px' }}>
+										Filter by date:
+									</Typography>
+									<DateFilter setSortDate={setSortDate} />
+								</Grid>
+								<Grid container style={{ marginTop: '3rem' }}>
+									<Grid item lg={5}>
+										<ReactApexChart
+											options={bugBarChartOptions}
+											series={bugBarChartSeries}
+											type='bar'
+											width={500}
+											height={320}
+										/>
+									</Grid>
+									<Grid item lg={2}></Grid>
+									<Grid item lg={5}>
+										<ReactApexChart
+											options={pieChartOptions}
+											series={Object.values(pieChartSeries)}
+											type='pie'
+											width={500}
+											height={320}
+										/>
+									</Grid>
+								</Grid>
+							</div>
+							<RenderTable
+								key='renderTable3'
+								tableData={data}
+								urls={urlArray}
+								viewAttachmentClicked={handleViewAttachmentClicked}
+								fetchMore={fetchMore}
+								currentType={'Bug'}
+								keys={keys}
+								category={category}
+								severity={severity}
+								rating={rating}
+								disable={currentDisable}
+								setDisable={setCurrentDisable}
+								order={order}
+								handleRequestSort={handleRequestSort}
+								keyword={keyword}
+								setKeyword={setKeyword}
+								searchInitiated={searchInitiated}
+								setSearchInitiated={setSearchInitiated}
+								clearSearch={clearSearch}
+								focusRating={focusRating}
+								setFocusRating={setFocusRating}
+								focusSeverity={focusSeverity}
+								setFocusSeverity={setFocusSeverity}
+								focusCategory={focusCategory}
+								setFocusCategory={setFocusCategory}
+								categoryList={categoryList}
+								severityList={severityList}
+								resultsFetched={resultsFetched}
+							/>
+						</div>
+					)}
+				</div>
+			)}
+		</div>
+	);
+};
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    marginTop: '36px',
-    position: 'relative',
-    left: '45%',
-    minWidth: '10%',
-    ...buttonStyle,
-  },
-  grid: {
-    marginTop: theme.spacing(2),
-  },
-  backButton: {
-    marginTop: '36px',
-    position: 'relative',
-    minWidth: '10%',
-    marginRight: '20px',
-    ...buttonStyle,
-  },
-  backdrop: {
-    zIndex: theme.zIndex.drawer + 1,
-    color: '#fff',
-  },
-  firstColumn: {
-    maxWidth: '150px',
-    overflow: 'hidden',
-  },
-  commentsColumn: {
-    maxWidth: '250px',
-  },
-  modalContainer: {
-    alignItems: 'center',
-    marginTop: '5vh',
-    marginLeft: 'auto',
-    marginRight: 'auto',
-    width: '70vw',
-    backgroundColor: '#f7f7f7',
-    borderRadius: '8px',
-    border: '1px solid',
-    boxShadow: '0 0 14px 0 rgb(15 17 17 / 50%)',
-    padding: 0,
-    paddingBottom: 30
-  },
-  imageSlideShowHidden: {
-    display: 'none',
-    width: '50px',
-    height: '50px',
-    position: 'fixed',
-    top: '50%',
-    left: '50%',
-    margin: '-25px 0 0 -25px',
-    transition: 'width 0.5s ease, height 0.5s ease'
-  },
-  imageSlideShowVisible: {
-    display: 'relative',
-    zIndex: 1500,
-    width: '100vw',
-    height: '100vh',
-    position: 'fixed',
-    top: '0',
-    left: '0',
-    backgroundColor: 'rgba(0,0,0,.7)',
-    transition: 'width 0.5s ease, height 0.5s ease'
-  }
+	button: {
+		marginTop: '36px',
+		position: 'relative',
+		left: '45%',
+		minWidth: '10%',
+		...buttonStyle,
+	},
+	grid: {
+		marginTop: theme.spacing(2),
+	},
+	backButton: {
+		marginTop: '36px',
+		position: 'relative',
+		minWidth: '10%',
+		marginRight: '20px',
+		...buttonStyle,
+	},
+	backdrop: {
+		zIndex: theme.zIndex.drawer + 1,
+		color: '#fff',
+	},
+	firstColumn: {
+		maxWidth: '150px',
+		overflow: 'hidden',
+	},
+	commentsColumn: {
+		maxWidth: '250px',
+	},
+	modalContainer: {
+		alignItems: 'center',
+		marginTop: '5vh',
+		marginLeft: 'auto',
+		marginRight: 'auto',
+		width: '70vw',
+		backgroundColor: '#f7f7f7',
+		borderRadius: '8px',
+		border: '1px solid',
+		boxShadow: '0 0 14px 0 rgb(15 17 17 / 50%)',
+		padding: 0,
+		paddingBottom: 30,
+	},
+	imageSlideShowHidden: {
+		display: 'none',
+		width: '50px',
+		height: '50px',
+		position: 'fixed',
+		top: '50%',
+		left: '50%',
+		margin: '-25px 0 0 -25px',
+		transition: 'width 0.5s ease, height 0.5s ease',
+	},
+	imageSlideShowVisible: {
+		display: 'relative',
+		zIndex: 1500,
+		width: '100vw',
+		height: '100vh',
+		position: 'fixed',
+		top: '0',
+		left: '0',
+		backgroundColor: 'rgba(0,0,0,.7)',
+		transition: 'width 0.5s ease, height 0.5s ease',
+	},
 }));
 
-
 export default BugsTab;
+
+// const { filtered } = props.productInfoProp;
+// const [backdropOpen, setBackdropOpen] = useState(false);
+// const [error, setError] = useState(false);
+// const [isBugReport, setBugReport] = useState<boolean | undefined>(true);
+// const [noDataError, setNoDataError] = useState(false);
+// const [data, setData] = useState<IAppFeedback[]>([]);
+// const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
+// const [rawData, setRawData] = useState([]);
+// const classes = useStyles();
+// const [feedbackBarChartData, setFeedbackBarChartData] =
+// 	useState<IFeedbackBarChartData>({});
+// const [pieChartSeries, setPieChartSeries] = useState({});
+// // const [bugBarChartData, setBugBarChartData] = useState({})
+// const [showImageModal, setShowImageModal] = useState(false);
+// const [signedImageUrl, setSignedImageUrl] = useState('');
+// const [attachmentType, setAttachmentType] = useState('');
+// const [focusAttachmentUid, setFocusAttachmentUid] = useState('');
+// const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({});
+// const [urlArray, setUrlArray] = useState<string[]>([]);
+// const [barChartSeries, setBarChartSeries] = useState([
+// 	{
+// 		name: 'rating',
+// 		data: [0, 0, 0, 0, 0],
+// 	},
+// ]);
+// const [bugBarChartSeries, setBugBarChartSeries] = useState([
+// 	{
+// 		name: 'Severity',
+// 		data: [0, 0, 0, 0, 0],
+// 	},
+// ]);
+// const [selectedProdId, setSelectedProdId] = useState<string>(() => {
+// 	if (props.productInfoProp.selectedProdId) {
+// 		return props.productInfoProp.selectedProdId;
+// 	}
+// 	return '';
+// });
+// const [productVersion, setProductVersion] = useState(() => {
+// 	if (props.productInfoProp.productVersion) {
+// 		return props.productInfoProp.productVersion;
+// 	}
+// 	return '';
+// });
+// const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>(
+// 	() => {
+// 		if (props.productInfoProp.productInfo) {
+// 			return props.productInfoProp.prodInfo;
+// 		}
+// 		return '';
+// 	},
+// );
+// const [prodNameIdMapping, setProdNameIdMapping] =
+// 	useState<IProductNameIdMapping>(() => {
+// 		if (props.productInfoProp.prodNameIdMappingBugCopy) {
+// 			return props.productInfoProp.prodNameIdMappingBugCopy;
+// 		}
+// 		return '';
+// 	});
+// const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
+// const [order, setOrder] = useState<Order>('desc');
+// const [keyword, setKeyword] = useState('');
+// const [searchInitiated, setSearchInitiated] = useState(false);
+// const [focusRating, setFocusRating] = useState([]);
+// const [focusSeverity, setFocusSeverity] = useState([]);
+// const [focusCategory, setFocusCategory] = useState([]);
+// const [slideShowImageUrl, setSlideShowImageUrl] = useState('');
+// const [resultsFetched, setResultsFetched] = useState(false);
+// const [currentDisable, setCurrentDisable] = useState<string>('');
+// const [category, setCat] = useState<boolean>(false);
+// const [severity, setSeverity] = useState<boolean>(false);
+// const [severityList, setSeverityList] = useState<any>([]);
+// const [categoryList, setCategoryList] = useState<any>([]);
+// const [keys, setKey] = useState<boolean>(false);
+// const [rating, setRating] = useState<boolean>(false);
+// const [sortDate, setSortDate] = useState();
+
+// useEffect(() => {
+// 	if (feedbackBarChartData) {
+// 		const series = [
+// 			{
+// 				name: 'Severity',
+// 				data: Object.values(feedbackBarChartData),
+// 			},
+// 		];
+// 		setBarChartSeries(series);
+// 		console.log(feedbackBarChartData, 'fbcdd');
+// 		setSeverityList(Object.keys(feedbackBarChartData));
+// 	}
+// }, [feedbackBarChartData]);
+
+// useEffect(() => {
+// 	const rateMap: IRatingMapping = {};
+// 	const bugMap: IBugDataMapping = {};
+// 	const urls: string[] = [];
+
+// 	data.forEach((item: IAppFeedback) => {
+// 		if (item.feedbackType === 'BUG_REPORT') {
+// 			bugMap[item.id] = {
+// 				userId: item.userId ? item.userId : 'Anonymous',
+// 				userIp: item.sourceIP ? item.sourceIP : '',
+// 				severity: item.bugPriority,
+// 				category: item.feedbackCategory,
+// 				date: item.createdOn,
+// 				comments:
+// 					item.feedbackComments && typeof item.feedbackComments === 'string'
+// 						? JSON.parse(item.feedbackComments)
+// 						: {},
+// 				productId: item.productId,
+// 				productVersion: item.productVersion,
+// 			};
+// 			if (item.feedbackMedia) {
+// 				const links: any = Object.values(item.feedbackMedia);
+// 				const linksFiltered = links.filter((key: string) => key !== '');
+// 				urls.push(...linksFiltered);
+// 			}
+// 			setBugDataMapping(bugMap);
+// 		}
+// 	});
+
+// 	const urlArrayCopy = [...urlArray];
+// 	urlArrayCopy.push(...urls);
+// 	setUrlArray(urlArrayCopy);
+// }, [data]);
+// const pieChartOptions = getPieChartOptions(pieChartSeries, 'BUGS');
+// console.log(feedbackBarChartData, 'fbcd');
+// const bugBarChartOptions = getBugBarChartOptions(
+// 	bugBarChartSeries,
+// 	feedbackBarChartData,
+// );
+
+// const disbaleFilterButtons = (filter: string) => {
+// 	if (filter === '') {
+// 		setCat(false);
+// 		setRating(false);
+// 		setSeverity(false);
+// 		setKey(false);
+// 	} else if (filter === 'key') {
+// 		setCat(true);
+// 		setRating(true);
+// 		setSeverity(true);
+// 		setKey(false);
+// 	} else if (filter === 'category') {
+// 		setCat(false);
+// 		setRating(true);
+// 		setSeverity(true);
+// 		setKey(true);
+// 	} else if (filter === 'severity') {
+// 		setCat(true);
+// 		setRating(true);
+// 		setSeverity(false);
+// 		setKey(true);
+// 	} else if (filter === 'rating') {
+// 		setCat(true);
+// 		setRating(false);
+// 		setSeverity(true);
+// 		setKey(true);
+// 	}
+// };
+
+// useEffect(() => {
+// 	disbaleFilterButtons(currentDisable);
+// }, [currentDisable]);
+
+// useEffect(() => {
+// 	if (
+// 		filtered.product &&
+// 		filtered.version &&
+// 		selectedProdId &&
+// 		productVersion
+// 	) {
+// 		setBackdropOpen(true);
+// 		fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
+// 		getBugChartData({
+// 			setBugBarChartSeries,
+// 			setFeedbackBarChartData,
+// 			setPieChartSeries,
+// 			prodId: selectedProdId,
+// 			prodVersion: productVersion,
+// 		});
+// 	}
+// }, [selectedProdId, productVersion]);
+
+// useEffect(() => {
+// 	if (rawData.length === 0) {
+// 		return;
+// 	}
+// 	if (Object.keys(lastEvaluatedKey).length > 0) {
+// 		// fetch the results from backend
+// 		setData([]);
+// 		setRawData([]);
+// 		fetchRecursiveData({
+// 			fetchOrder: order,
+// 			prodId: selectedProdId,
+// 			prodVersion: productVersion,
+// 		});
+// 	} else {
+// 		setData(sortTableByDate(data, order));
+// 	}
+// }, [order]);
+
+// useEffect(() => {
+// 	if (rawData.length === 0) {
+// 		return;
+// 	}
+// 	if (focusRating.length === 0) {
+// 		setCurrentDisable('');
+// 		setData(rawData);
+// 		return;
+// 	}
+// 	// fetch the results from backend
+// 	setResultsFetched(false);
+// 	setData([]);
+// 	//setRawData([])
+// 	fetchRecursiveData({
+// 		filterRating: focusRating,
+// 		prodId: selectedProdId,
+// 		prodVersion: productVersion,
+// 		showNoEmptyError: true,
+// 		noRawDataUpdate: true,
+// 	});
+// }, [focusRating]);
+
+// useEffect(() => {
+// 	if (rawData.length === 0) {
+// 		return;
+// 	}
+// 	if (focusSeverity.length <= 0) {
+// 		setCurrentDisable('');
+// 		setData(rawData);
+// 		return;
+// 	}
+// 	// fetch the results from backend
+// 	setResultsFetched(false);
+// 	setData([]);
+// 	//setRawData([])
+// 	fetchRecursiveData({
+// 		filterSeverity: focusSeverity,
+// 		prodId: selectedProdId,
+// 		prodVersion: productVersion,
+// 		showNoEmptyError: true,
+// 		noRawDataUpdate: true,
+// 	});
+// }, [focusSeverity]);
+
+// useEffect(() => {
+// 	if (rawData.length === 0) {
+// 		return;
+// 	}
+// 	if (focusCategory.length <= 0) {
+// 		setCurrentDisable('');
+// 		setData(rawData);
+// 		return;
+// 	}
+// 	// fetch the results from backend
+// 	setResultsFetched(false);
+// 	setData([]);
+// 	//setRawData([])
+// 	fetchRecursiveData({
+// 		filterCategory: focusCategory,
+// 		prodId: selectedProdId,
+// 		prodVersion: productVersion,
+// 		showNoEmptyError: true,
+// 		noRawDataUpdate: true,
+// 	});
+// }, [focusCategory]);
+
+// const fetchRecursiveData = async ({
+// 	lastEvalKey,
+// 	fetchOrder,
+// 	filterRating,
+// 	filterSeverity,
+// 	filterCategory,
+// 	prodId,
+// 	prodVersion,
+// 	searchWord,
+// 	showNoEmptyError,
+// 	noRawDataUpdate,
+// }: IFetchRecursiveData) => {
+// 	let urlAppend = ``;
+// 	let numItems = NUMBER_OF_ITEMS_PER_FETCH;
+// 	if (prodId) {
+// 		urlAppend += `?prodId=${prodId}`;
+// 		if (prodVersion) {
+// 			urlAppend += `&prodVersion=${prodVersion}`;
+// 		}
+// 	}
+// 	if (filterRating) {
+// 		urlAppend += urlAppend
+// 			? `&filterRating=${filterRating.join(',')}`
+// 			: `?filterRating=${filterRating.join(',')}`;
+// 		numItems = 500;
+// 	}
+
+// 	if (filterSeverity) {
+// 		urlAppend += urlAppend
+// 			? `&filterSeverity=${filterSeverity.join(',')}`
+// 			: `?filterSeverity=${filterSeverity.join(',')}`;
+// 		numItems = 500;
+// 	}
+
+// 	if (filterCategory) {
+// 		urlAppend += urlAppend
+// 			? `&filterCategory=${filterCategory.join(',')}`
+// 			: `?filterCategory=${filterCategory.join(',')}`;
+// 		numItems = 500;
+// 	}
+
+// 	if (lastEvalKey && Object.keys(lastEvalKey).length > 0) {
+// 		urlAppend += urlAppend
+// 			? `&lastEvalKey=${JSON.stringify(lastEvalKey)}`
+// 			: `?lastEvalKey=${JSON.stringify(lastEvalKey)}`;
+// 	}
+
+// 	if (fetchOrder) {
+// 		urlAppend += urlAppend ? `&order=${fetchOrder}` : `?order=${fetchOrder}`;
+// 	}
+
+// 	if (searchWord) {
+// 		urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`;
+// 	}
+
+// 	urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`;
+
+// 	const response: any = await getBugData({ props, urlAppend }).catch(
+// 		(error) => {
+// 			const perror = JSON.stringify(error);
+// 			const object = JSON.parse(perror);
+// 			if (object.code === 401) {
+// 				props.history.push('/relogin');
+// 			} else {
+// 				setError(true);
+// 			}
+// 			console.error(
+// 				'getBugData failed to fetch data with Error code:',
+// 				object.code,
+// 			);
+// 			return;
+// 		},
+// 	);
+// 	setResultsFetched(true);
+// 	if (
+// 		response &&
+// 		response.Items &&
+// 		response.Items.Items &&
+// 		Array.isArray(response.Items.Items) &&
+// 		response.Items.Items.length > 0
+// 	) {
+// 		setBackdropOpen(false);
+// 		if (searchInitiated && searchWord) {
+// 			setSearchedData((dataObj) => {
+// 				const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+// 				return Array.from(dataCopy);
+// 			});
+// 			return;
+// 		}
+// 		setData((dataObj) => {
+// 			const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+// 			return Array.from(dataCopy);
+// 		});
+// 		if (!noRawDataUpdate) {
+// 			// This if check is useful for the cases where filtering is done. If filtering returns 0 elements, the presence of the raw data,
+// 			setBackdropOpen(false);
+// 			setRawData((rawDataObj) => {
+// 				// clear filter will get the idea that the data has already been fetched.
+// 				const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+// 				return Array.from(rawDataCopy);
+// 			});
+// 		}
+
+// 		if (
+// 			response.Items.LastEvaluatedKey &&
+// 			Object.keys(response.Items.LastEvaluatedKey).length > 0
+// 		) {
+// 			setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+// 		}
+// 		if (
+// 			Object.keys(lastEvaluatedKey).length > 0 &&
+// 			!response.Items.LastEvaluatedKey
+// 		) {
+// 			setLastEvaluatedKey({});
+// 		}
+// 	} else {
+// 		if (!showNoEmptyError) {
+// 			setBackdropOpen(false);
+// 			setNoDataError(true);
+// 		}
+// 	}
+// };
+
+// const fetchMore = () => {
+// 	if (Object.keys(lastEvaluatedKey).length > 0 && !searchInitiated) {
+// 		fetchRecursiveData({
+// 			lastEvalKey: lastEvaluatedKey,
+// 			prodId: selectedProdId,
+// 			prodVersion: productVersion,
+// 			showNoEmptyError: true,
+// 		});
+// 	}
+// };
+
+// useEffect(() => {
+// 	// if(error || noDataError) {
+// 	//   setBackdropOpen(false);
+// 	// }
+// 	if (rawData.length > 0 && selectedProdId) {
+// 		setNoDataError(false);
+// 		if (Object.keys(feedbackBarChartData).length > 0) {
+// 			setBackdropOpen(false);
+// 		}
+// 		if (pieChartSeries) {
+// 			let searchCategoryList = Object.keys(pieChartSeries);
+// 			searchCategoryList = searchCategoryList.map((element) => {
+// 				return element.toLowerCase();
+// 			});
+// 			console.log(searchCategoryList);
+// 			setCategoryList(searchCategoryList);
+// 		}
+// 	}
+// }, [
+// 	selectedProdId,
+// 	rawData,
+// 	feedbackBarChartData,
+// 	pieChartSeries,
+// 	error,
+// 	noDataError,
+// ]);
+
+// const fetchSignedUrl = (imgUrl: string) => {
+// 	const urlSplit = imgUrl.split('/');
+// 	let name = urlSplit[urlSplit.length - 1];
+// 	Http.get({
+// 		url: `/api/v2/signedurl/${name}`,
+// 	})
+// 		.then((response: any) => {
+// 			if (response.filePath) {
+// 				setSignedImageUrl(response.filePath);
+// 			}
+// 		})
+// 		.catch((error: any) => {
+// 			console.error(error);
+// 		});
+// };
+
+// const handleViewAttachmentClicked = (
+// 	url: string,
+// 	id: string,
+// 	type: string,
+// ) => {
+// 	setShowImageModal(true);
+// 	setFocusAttachmentUid(id);
+// 	fetchSignedUrl(url);
+// 	setAttachmentType(type);
+// };
+
+// const getDateString = (id: string) => {
+// 	if (bugDataMapping[id]) {
+// 		return getDate(bugDataMapping[id].date);
+// 	}
+// 	return '';
+// };
+
+// const getComments = (id: string) => {
+// 	if (bugDataMapping[id]) {
+// 		return bugDataMapping[id].comments;
+// 	}
+// 	return {};
+// };
+
+// const getUserId = (id: string) => {
+// 	if (bugDataMapping[id]) {
+// 		return bugDataMapping[id].userId;
+// 	}
+// 	return undefined;
+// };
+
+// const getUserIp = (id: string) => {
+// 	if (bugDataMapping[id]) {
+// 		return bugDataMapping[id].userIp;
+// 	}
+// 	return undefined;
+// };
+
+// const getProductVersion = (id: string) => {
+// 	if (bugDataMapping[id]) {
+// 		return bugDataMapping[id].productVersion;
+// 	}
+// 	return '';
+// };
+
+// const getBugSeverity = (id: string) => {
+// 	if (bugDataMapping[id]) {
+// 		return bugDataMapping[id].severity;
+// 	}
+// 	return '';
+// };
+
+// const getBugCategory = (id: string) => {
+// 	if (bugDataMapping[id]) {
+// 		return bugDataMapping[id].category;
+// 	}
+// 	return '';
+// };
+
+// useEffect(() => {
+// 	//either fetchRecursiveDate
+// 	//or API call
+// }, [sortDate])
+
+// const filterByProduct = (val: string) => {
+// 	console.log(prodNameIdMapping);
+// 	if (val) {
+// 		setSelectedProdId(val);
+// 		setProductVersion(prodNameIdMapping[val].version[0]);
+// 		setNoDataError(false);
+// 		setBackdropOpen(true);
+// 		setRawData([]);
+// 		setData([]);
+// 		setFeedbackBarChartData({});
+// 		setPieChartSeries({});
+// 		setResultsFetched(false);
+// 		setSearchedData([]);
+// 		setKeyword('');
+// 		setOrder('desc');
+// 		setFocusCategory([]);
+// 		setFocusSeverity([]);
+// 		setFocusRating([]);
+// 	}
+// };
+
+// const handleRequestSort = () => {
+// 	setOrder((odr) => {
+// 		return odr === 'desc' ? 'asc' : 'desc';
+// 	});
+// };
+
+// const clearSearch = () => {
+// 	setKeyword('');
+// 	setSearchedData([]);
+// 	setSearchInitiated(false);
+// };
+
+// useEffect(() => {
+// 	if (keyword && searchInitiated) {
+// 		setResultsFetched(false);
+// 		setSearchedData([]);
+// 		fetchRecursiveData({
+// 			prodId: selectedProdId,
+// 			prodVersion: productVersion,
+// 			searchWord: keyword,
+// 			showNoEmptyError: true,
+// 		});
+// 	}
+// }, [searchInitiated, keyword]);
+
+// const handleCloseModal = (reason: any) => {
+// 	console.log('calling handleCloseModal', reason);
+// 	setShowImageModal(false);
+// 	setFocusAttachmentUid('');
+// 	setSignedImageUrl('');
+// };
+
+// const handleImageClicked = () => {
+// 	if (signedImageUrl) {
+// 		setSlideShowImageUrl(signedImageUrl);
+// 	}
+// };
+
+// // const getCategoryList = () => {
+// //   const categoryList: string[] = []
+// //   if(prodNameIdMapping && prodNameIdMapping[selectedProdId] && prodNameIdMapping[selectedProdId].categories && prodNameIdMapping[selectedProdId].categories.length > 0) {
+// //     prodNameIdMapping[selectedProdId].categories.map((el) => {
+// //       categoryList.push(el.name);
+// //     });
+// //   }
+
+// //   return categoryList;
+// // }
+
+// const imagePayload = {
+// 	showImageModal: showImageModal,
+// 	handleCloseModal: handleCloseModal,
+// 	attachmentType: attachmentType,
+// 	handleImageClicked: handleImageClicked,
+// 	signedImageUrl: signedImageUrl,
+// 	focusAttachmentUid: focusAttachmentUid,
+// 	getUserId: getUserId,
+// 	getUserIp: getUserIp,
+// 	getDateString: getDateString,
+// 	getProductVersion: getProductVersion,
+// 	getBugCategory: getBugCategory,
+// 	getBugSeverity: getBugSeverity,
+// 	getRating: undefined,
+// 	getComments: getComments,
+// 	isBugReport: isBugReport,
+// };
+
+// return (
+// 	<div>
+// 		<div
+// 			className={
+// 				slideShowImageUrl
+// 					? classes.imageSlideShowVisible
+// 					: classes.imageSlideShowHidden
+// 			}
+// 		>
+// 			<Close
+// 				htmlColor='#fff'
+// 				style={{
+// 					position: 'absolute',
+// 					cursor: 'pointer',
+// 					top: 10,
+// 					right: 10,
+// 					fontSize: '2.5rem',
+// 				}}
+// 				onClick={() => {
+// 					setSlideShowImageUrl('');
+// 				}}
+// 			/>
+// 			<div style={{ width: '80vw', marginLeft: '10vw', marginTop: '2vh' }}>
+// 				<Image
+// 					aspectRatio={16 / 9}
+// 					width='90%'
+// 					height='90%'
+// 					src={slideShowImageUrl}
+// 				/>
+// 			</div>
+// 		</div>
+
+// 		{backdropOpen ? (
+// 			<Backdrop className={classes.backdrop} open={backdropOpen}>
+// 				<CircularProgress color='inherit' />
+// 			</Backdrop>
+// 		) : (
+// 			<div>
+// 				{searchInitiated ? (
+// 					<div>
+// 						<RenderTable
+// 							key='renderTable4'
+// 							tableData={searchedData}
+// 							urls={urlArray}
+// 							viewAttachmentClicked={handleViewAttachmentClicked}
+// 							fetchMore={fetchMore}
+// 							currentType={'Bug'}
+// 							keys={keys}
+// 							category={category}
+// 							severity={severity}
+// 							rating={rating}
+// 							disable={currentDisable}
+// 							setDisable={setCurrentDisable}
+// 							order={order}
+// 							handleRequestSort={handleRequestSort}
+// 							keyword={keyword}
+// 							setKeyword={setKeyword}
+// 							searchInitiated={searchInitiated}
+// 							setSearchInitiated={setSearchInitiated}
+// 							clearSearch={clearSearch}
+// 							focusRating={focusRating}
+// 							setFocusRating={setFocusRating}
+// 							focusSeverity={focusSeverity}
+// 							setFocusSeverity={setFocusSeverity}
+// 							focusCategory={focusCategory}
+// 							setFocusCategory={setFocusCategory}
+// 							categoryList={categoryList}
+// 							severityList={severityList}
+// 							resultsFetched={resultsFetched}
+// 						/>
+// 					</div>
+// 				) : noDataError ? (
+// 					<div style={{ marginTop: '3rem' }}>
+// 						<Failure message={`There is no bugs to show.`} />
+// 					</div>
+// 				) : (
+// 					<div>
+// 						<ImageModal {...imagePayload} />
+// 						<div style={{ marginTop: 50 }}>
+// 							<Grid
+// 								container
+// 								style={{
+// 									width: '95%',
+// 									marginTop: '0.5rem',
+// 									display: 'flex',
+// 									flexDirection: 'row',
+// 									justifyContent: 'flex-start',
+// 								}}
+// 							>
+// 								<Typography style={{ marginRight: '10px', padding: '15px' }}>
+// 									Filter by date:
+// 								</Typography>
+// 								<DateFilter setSortDate={setSortDate}/>
+// 							</Grid>
+// 							<Grid container style={{ marginTop: '5rem' }}>
+// 								<Grid item lg={5}>
+// 									<ReactApexChart
+// 										options={bugBarChartOptions}
+// 										series={bugBarChartSeries}
+// 										type='bar'
+// 										width={500}
+// 										height={320}
+// 									/>
+// 								</Grid>
+// 								<Grid item lg={2}></Grid>
+// 								<Grid item lg={5}>
+// 									<ReactApexChart
+// 										options={pieChartOptions}
+// 										series={Object.values(pieChartSeries)}
+// 										type='pie'
+// 										width={500}
+// 										height={320}
+// 									/>
+// 								</Grid>
+// 							</Grid>
+// 						</div>
+// 						<RenderTable
+// 							key='renderTable3'
+// 							tableData={data}
+// 							urls={urlArray}
+// 							viewAttachmentClicked={handleViewAttachmentClicked}
+// 							fetchMore={fetchMore}
+// 							currentType={'Bug'}
+// 							keys={keys}
+// 							category={category}
+// 							severity={severity}
+// 							rating={rating}
+// 							disable={currentDisable}
+// 							setDisable={setCurrentDisable}
+// 							order={order}
+// 							handleRequestSort={handleRequestSort}
+// 							keyword={keyword}
+// 							setKeyword={setKeyword}
+// 							searchInitiated={searchInitiated}
+// 							setSearchInitiated={setSearchInitiated}
+// 							clearSearch={clearSearch}
+// 							focusRating={focusRating}
+// 							setFocusRating={setFocusRating}
+// 							focusSeverity={focusSeverity}
+// 							setFocusSeverity={setFocusSeverity}
+// 							focusCategory={focusCategory}
+// 							setFocusCategory={setFocusCategory}
+// 							categoryList={categoryList}
+// 							severityList={severityList}
+// 							resultsFetched={resultsFetched}
+// 						/>
+// 					</div>
+// 				)}
+// 			</div>
+// 		)}
+// 	</div>
+// );
+// };
