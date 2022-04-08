@@ -11,7 +11,7 @@ import { getDate } from '../../../utils/data';
 import {
   ILimitedProductDetails,
   IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getFeedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getFeedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IDateRange, IFeedbackComments
 } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getFeedbckChartData, getFeedbackData } from './methods';
@@ -64,6 +64,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     }
     return ''
   });
+  const [dateRange, setDateRange] = useState({ startDate: 1649415761515, endDate: 1640315761515 }); //epoch timestamp
   const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>(() => {
     if (props.productInfoProp.productInfo) {
       return props.productInfoProp.prodInfo
@@ -175,11 +176,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       if (productVersion === 'all') {
       setBackdropOpen(true);
       fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: '' });
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: '', filterDate: dateRange });
       } else {
       setBackdropOpen(true);
       fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion });
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange  });
       }
     }
   }, [selectedProdId, productVersion])
@@ -192,7 +193,14 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       // fetch the results from backend
       setData([]);
       setRawData([])
-      fetchRecursiveData({ fetchOrder: order, prodId: selectedProdId, prodVersion: productVersion })
+      fetchRecursiveData({ 
+        fetchOrder: order,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+        filterCategory: focusCategory,
+        filterSeverity: focusSeverity,
+        searchWord: keyword,
+      })
     } else {
       setData(sortTableByDate(data, order))
     }
@@ -249,7 +257,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     fetchRecursiveData({ filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true })
   }, [focusCategory])
 
-  const fetchRecursiveData = async ({ lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory, prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate }:
+  const fetchRecursiveData = async ({ lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory, filterDate, prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate }:
     IFetchRecursiveData) => {
     // setBackdropOpen(true);
     let urlAppend = ``;
@@ -286,6 +294,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     if (searchWord) {
       urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
     }
+
+    if(filterDate) {
+      urlAppend += urlAppend ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
+    }
+
     urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
 
     const response: any = await getFeedbackData({ props, urlAppend }).catch((error) => {
@@ -337,7 +350,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
   const fetchMore = () => {
     if (Object.keys(lastEvaluatedKey).length > 0) {
-      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true });
+      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, filterRating: focusRating });
     }
   }
 
@@ -436,7 +449,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   useEffect(() => {
     if (sortDate) {
       console.log('sorted', sortDate);
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: '10'});
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
     }
   }, [sortDate])
 

@@ -55,6 +55,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		useState<IFeedbackBarChartData>({});
 	const [pieChartSeries, setPieChartSeries] = useState({});
 	// const [bugBarChartData, setBugBarChartData] = useState({})
+  const [dateRange, setDateRange] = useState({ startDate: 1649415761515, endDate: 1640315761515 });
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [signedImageUrl, setSignedImageUrl] = useState('');
 	const [attachmentType, setAttachmentType] = useState('');
@@ -221,6 +222,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					setPieChartSeries,
 					prodId: selectedProdId,
 					prodVersion: '',
+          filterDate: dateRange,
 				});
 			} else {
 				setBackdropOpen(true);
@@ -231,6 +233,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					setPieChartSeries,
 					prodId: selectedProdId,
 					prodVersion: productVersion,
+          filterDate: dateRange,
 				});
 			}
 		}
@@ -248,6 +251,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				fetchOrder: order,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
+        filterCategory: focusCategory,
+        filterSeverity: focusSeverity,
+        searchWord: keyword,
 			});
 		} else {
 			setData(sortTableByDate(data, order));
@@ -326,6 +332,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		filterRating,
 		filterSeverity,
 		filterCategory,
+    filterDate,
 		prodId,
 		prodVersion,
 		searchWord,
@@ -374,6 +381,10 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (searchWord) {
 			urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`;
 		}
+    
+    if(filterDate) {
+      urlAppend += urlAppend ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
+    }
 
 		urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`;
 
@@ -560,7 +571,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	useEffect(() => {
 		if (sortDate) {
 			console.log('sorted', sortDate);
-			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: '10'});
+			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange});
 		}
 	}, [sortDate])
 

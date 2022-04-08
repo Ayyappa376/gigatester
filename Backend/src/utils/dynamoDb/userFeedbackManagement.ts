@@ -7,13 +7,12 @@ import { queryRaw } from './sdk';
 
 interface Params {
   filterCategory?: string;
-  filterDate?: number;
   filterRating?: string;
   filterSeverity?: string;
   items?: string;
   lastEvalKey?: string;
-  startDate?: number;
-  endDate?: number;
+  startDate?: string;
+  endDate?: string;
   order?: string;
   prodId?: string;
   prodVersion?: string;
@@ -25,7 +24,8 @@ interface GetChartDataProps {
   prodId?: string;
   prodVersion?: string;
   type: FeedbackType;
-  filterDate?: number;
+  startDate?: string;
+  endDate?: string;
 }
 
 interface ItemsData {
@@ -58,7 +58,7 @@ export interface AppFeedback {
 
 // const NUMBER_OF_DAYS_OF_FEEDBACK = 120;
 
-export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filterDate, filterRating, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filterRating, startDate, endDate, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -163,11 +163,12 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       params.FilterExpression = FE;
     }
 
-    if(filterDate){
-      const today = new Date();
-      const lastDate = new Date().setDate(today.getDate() - 30);
-      EAV[':lastDate'] = lastDate;
-      params.KeyConditionExpression = 'feedbackType=:type AND createdOn>:lastDate';
+    if(endDate && startDate){
+      const lastDate = new Date(parseInt(endDate)).getTime();
+      const beginDate = new Date(parseInt(startDate)).getTime();
+      EAV[':startDate'] = beginDate;
+      EAV[':endDate'] = lastDate;
+      params.KeyConditionExpression = 'feedbackType=:type AND createdOn GE :endDate AND createdOn LE :startDate';
     }
     else{
       params.KeyConditionExpression = 'feedbackType=:type';
@@ -180,8 +181,6 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     if(Object.keys(EAV).length > 0) {
       params.ExpressionAttributeValues = EAV;
     }
-
-
     //  AND createdOn>:lastDate';
     // "createdOn BETWEEN :startDate and :lastDate"
     params.ScanIndexForward = order && order === 'asc' ? true : false;
@@ -198,7 +197,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     return queryRaw<any>(params);
   };
 
-export const getUserFeedbackListForChart = async ({type, filterDate, items, search, lastEvalKey, prodId, prodVersion}: Params): Promise<any[]> => {
+export const getUserFeedbackListForChart = async ({type, startDate, endDate, items, search, lastEvalKey, prodId, prodVersion}: Params): Promise<any> => {
     let params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -227,11 +226,17 @@ export const getUserFeedbackListForChart = async ({type, filterDate, items, sear
       };
       EAV[':type'] = type;
       params.IndexName = 'feedbackType-createdOn-index';
-      if(filterDate){
-        const today = new Date();
-        const lastDate = new Date().setDate(today.getDate() - 30);
-        EAV[':lastDate'] = lastDate;
-        params.KeyConditionExpression = 'feedbackType=:type AND createdOn>:lastDate';
+      if(endDate && startDate){
+        console.log(endDate, 'eeeeeeeeeeeendDateeeeeeeeeee');
+        // const today = new Date();
+        // const lastDate = new Date().setDate(today.getDate() - 10);
+        // const intEndDate = new Date(parseInt(endDate))
+        const lastDate = new Date(parseInt(endDate)).getTime();
+        const beginDate = new Date(parseInt(startDate)).getTime();
+        console.log(lastDate, 'laaaaaaastDateeeeeeee')
+        EAV[':startDate'] = beginDate;
+        EAV[':endDate'] = lastDate;
+        params.KeyConditionExpression = 'feedbackType=:type AND createdOn BETWEEN :endDate and :startDate';
       }
       else{
         params.KeyConditionExpression = 'feedbackType=:type';
@@ -267,7 +272,7 @@ export const feedbackProcessPieChartData = (pData: ProcessedData) => {
 };
 
 export const bugProcessBarChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
-  if(prodId && prodVersion) {
+  if(prodId) {
   // const severities: string[] = await getSeveritiesList({prodId, prodVersion, chartType});
     const severityData: ProcessedData = {};
     // console.log(severities, 'sverriiiiii')
@@ -341,7 +346,7 @@ export const getCategoriesList = ({prodId, prodVersion, chartType}: {chartType: 
   });
 
 export const processPieChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
-  if(prodId && prodVersion) {
+  if(prodId) {
     // const categories: string[] = await getCategoriesList({prodId, prodVersion, chartType});
     const categoryData: ProcessedData = {};
     // categories.forEach((el) => {
@@ -397,12 +402,12 @@ const processBugReportChartData = async({data, prodId, prodVersion, chartType}: 
   };
 };
 
-export const getChartData = async({type, prodId, prodVersion, filterDate}: GetChartDataProps) => {
+export const getChartData = async({type, prodId, prodVersion, startDate, endDate}: GetChartDataProps) => {
   let chartType: FeedbackType = 'FEEDBACK';
   if(type !== 'FEEDBACK-CHART') {
     chartType = 'BUG_REPORT';
   }
-  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, filterDate});
+  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, startDate, endDate});
   const data: AppFeedback[] = itemList.Items;
   return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType}) : processBugReportChartData({data, prodId, prodVersion, chartType});
 };
