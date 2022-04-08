@@ -52,9 +52,10 @@
   <!-- The following script is for the dev and local environment -->
   <script>
     window.GigaTester = window.GigaTester || {};
+//    GigaTester.hidden = true;
     GigaTester.apiKey = 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T';
-      GigaTester.productVersion = '0.1';
-      GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
+    GigaTester.productVersion = '0.1';
+    GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
     (function(d) {
         var s = d.createElement('script'); s.async = true;
         s.src = `https://dev.gigatester.io/dist/feedback-agent/browser/gigatester_script.js`;
