@@ -145,10 +145,11 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       EAN['#comments'] = 'feedbackComments';
       EAN['#severity'] = 'bugPriority';
       EAN['#category'] = 'feedbackCategory';
+      EAN['#platformInfo'] = 'platformInfo';
       EAN['#userId'] = 'userId';
       EAV[':keyWord'] = search;
       // FE += FE ? ' or contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
-      FE += FE ? ' and (contains(#userId, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))' : '(contains(#userId, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))';
+      FE += FE ? ' and (contains(#userId, :keyWord) or contains(#platformInfo, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))' : '(contains(#userId, :keyWord) or contains(#platformInfo, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))';
     }
 
     // const today = new Date();
