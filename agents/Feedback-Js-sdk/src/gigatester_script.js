@@ -769,7 +769,7 @@ let GigaTester_StringUtils = {
                     rating: 0,
                     email: "",
                     description: "",
-                    category: [],
+                    category: "",
                     severity: "",
                     audio_file: "",
                     video_file: "",
@@ -1723,10 +1723,20 @@ let GigaTester_StringUtils = {
                             if (GigaTester_modal.form_type === "BUGS") {
                                 let feedback_reason = '';
                                 GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
-                                    console.log($(e.currentTarget).val())
+                                    console.log(typeof $(e.currentTarget).val())
                                     console.log(GigaTester_modal.configs.selected_category);
                                     if($(e.currentTarget).val().length > 0){
-                                    $(e.currentTarget).val().map(category => {                                  
+                                    if(typeof $(e.currentTarget).val() === 'string'){
+                                        console.log('target is string')
+                                        if(items.name.trim() == $(e.currentTarget).val().trim()){
+                                        items.feedbacks.forEach( function(value, index){
+                                            feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
+                                        })
+                                        $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
+                                    }
+                                }
+                                    else{
+                                    $(e.currentTarget).val().map(category => {                                                             
                                     if(items.name.trim() == category.trim()){
                                             feedback_reason += `<div>${category}</div>`
                                         items.feedbacks.forEach( function(value, index){
@@ -1734,8 +1744,8 @@ let GigaTester_StringUtils = {
                                         })
                                         $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
                                     }
-                                    })
-                                    }
+                                 })
+                                }}
                                     else{
                                         if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
                                             $(document.getElementsByClassName('gigatester-reason-checkboxes')).prev().remove();
@@ -1749,6 +1759,16 @@ let GigaTester_StringUtils = {
                             else if(GigaTester_modal.form_type === "FEEDBACK"){
                                 let feedback_reason = '';
                                 GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
+                                    if($(e.currentTarget).val().length > 0){
+                                    if(typeof $(e.currentTarget).val() === 'string'){
+                                        console.log('target is string')
+                                        if(items.name.trim() == $(e.currentTarget).val().trim()){
+                                        items.feedbacks.forEach( function(value, index){
+                                            feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
+                                        })
+                                        $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
+                                    }
+                                    }else{
                                     $(e.currentTarget).val().map(category => {
                                         if(items.name.trim() == category.trim()){
                                                 feedback_reason += `<div>${category}</div>`
@@ -1759,16 +1779,27 @@ let GigaTester_StringUtils = {
                                         $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
                                     }
                                 })
+                                }
+                            }
                             })
                             }
-                            GigaTester_modal.configs.selected_category.map(function (value){
-                                console.log(value);
-                                $('.gigatester-reason-checkboxes').each(function () {
-                                    if($(this).next("label").text() == value){
-                                            $(this).attr('checked', 'true')
-                                        }
-                                    })
-                                });
+                                if(typeof GigaTester_modal.configs.selected_category === 'string'){
+                                    $('.gigatester-reason-checkboxes').each(function () {
+                                        if($(this).next("label").text() == GigaTester_modal.configs.selected_category){
+                                                $(this).attr('checked', 'true')
+                                            }
+                                        })
+                                }
+                                else{
+                                GigaTester_modal.configs.selected_category.map(function (value){
+                                    console.log(value);
+                                    $('.gigatester-reason-checkboxes').each(function () {
+                                        if($(this).next("label").text() == value){
+                                                $(this).attr('checked', 'true')
+                                            }
+                                        })
+                                    });
+                            }
                         }
                     }
                 },
@@ -1814,10 +1845,17 @@ let GigaTester_StringUtils = {
                 saveCheckedCategory: function(){
                     if($('.gigatester-reason-checkboxes:checked')){
                     // GigaTester_modal.configs.selected_category = [];
+                    if(typeof GigaTester_modal.configs.selected_category === 'string'){
+                        $('.gigatester-reason-checkboxes:checked').each(function () {
+                            GigaTester_modal.configs.selected_category = ($(this).next("label").text());
+                            console.log(GigaTester_modal.configs.selected_category, 'data push')
+                        });
+                    }else{
                     $('.gigatester-reason-checkboxes:checked').each(function () {
                         GigaTester_modal.configs.selected_category.push($(this).next("label").text());
                         console.log(GigaTester_modal.configs.selected_category, 'data push')
                     });
+                }
                 }
                     // console.log(GigaTester_modal.configs.selected_category, 'datas push')
                 },
@@ -1859,6 +1897,14 @@ let GigaTester_StringUtils = {
                             }
                         })
                     }
+                    if(typeof GigaTester_modal.configs.selected_category === 'string'){
+                        $('.gigatester-reason-checkboxes').each(function () {
+                            if($(this).next("label").text() == GigaTester_modal.configs.selected_category){
+                                    $(this).attr('checked', 'true')
+                                }
+                            })
+                    }
+                    else{
                     GigaTester_modal.configs.selected_category.map(function (value){
                         console.log(value);
                         $('.gigatester-reason-checkboxes').each(function () {
@@ -1867,6 +1913,7 @@ let GigaTester_StringUtils = {
                                 }
                             })
                         });
+                }
                 },
                 saveSubCategory: function() {
                     if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
@@ -1882,6 +1929,16 @@ let GigaTester_StringUtils = {
                         GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
                             // console.log($(document.getElementById('category')).val());
                             if($(document.getElementById('category')).val()){
+                                if(typeof $(document.getElementById('category')).val() === 'string'){
+                                    if(items.name.trim() == $(document.getElementById('category')).val().trim()){
+                                        items.feedbacks.forEach( function(value, index){
+                                            feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
+                                        })
+                                        console.log('saved standard feedback', GigaTester_modal.configs.selected_category);
+                                        $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
+                                    }
+                                }
+                                else{
                                 $(document.getElementById('category')).val().map(category => {
                                 if(items.name.trim() == category.trim()){
                                     feedback_reason += `<div>${category}</div>`;
@@ -1892,12 +1949,23 @@ let GigaTester_StringUtils = {
                                     $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
                                 }
                             });
+                        }
                             }
                         })
                     }
                     else if(GigaTester_modal.form_type === "FEEDBACK"){
                         GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
                             if($(document.getElementById('category')).val()){
+                                if(typeof $(document.getElementById('category')).val() === 'string'){
+                                    if(items.name.trim() == $(document.getElementById('category')).val().trim()){
+                                        items.feedbacks.forEach( function(value, index){
+                                            feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
+                                        })
+                                        console.log('saved standard feedback', GigaTester_modal.configs.selected_category);
+                                        $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
+                                    }
+                                }
+                                else{
                                 $(document.getElementById('category')).val().map(category => {
                                 if(items.name.trim() == category.trim()){
                                     feedback_reason += `<div>${category}</div>`;
@@ -1907,9 +1975,18 @@ let GigaTester_StringUtils = {
                                     $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
                                 }
                             });
+                        }
                             }
                         })
                     }
+                    if(typeof GigaTester_modal.configs.selected_category === 'string'){
+                        $('.gigatester-reason-checkboxes').each(function () {
+                            if($(this).next("label").text() == GigaTester_modal.configs.selected_category){
+                                    $(this).attr('checked', 'true')
+                                }
+                            })
+                    }
+                    else{
                     GigaTester_modal.configs.selected_category.map(function (value){
                         console.log(value);
                         $('.gigatester-reason-checkboxes').each(function () {
@@ -1918,6 +1995,7 @@ let GigaTester_StringUtils = {
                                 }
                             })
                         });
+                }
                     },
 
                 removeGTControls: function() {
@@ -1999,9 +2077,8 @@ let GigaTester_StringUtils = {
                      + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
                      + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
-                        +
-                        (form_settings.display_category ? '<select  id="category" name="category" size="1" multiple style="width:100%" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
-                    //  + '<option id="category" value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
+                     + (form_settings.display_category ? '<select  id="category" name="category" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
+                     + '<option value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
                      + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '')
                      + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
@@ -2029,24 +2106,24 @@ let GigaTester_StringUtils = {
                      + "</form>";
                    this.custom_ui.events.find('.gigatester-ctrl-item-step').html(html);
                 //    $(document.getElementById('category1')).select2();
-                $( document ).ready(function() {
-                    // console.log("ready!");
-                    $('#category').select2({
-                        placeholder: 'Select a category',
-                        dropdownParent: $('.gigatester-ctrl-item-form-left'),
-                        dropdownCssClass: ':all:',
-                        width: 'resolve'
-                    });
-                });
-                $( document ).ready(function() {
-                    // console.log("ready!");
-                    $('#severity').select2({
-                        placeholder: "Select a severity",
-                        dropdownParent: $('.gigatester-ctrl-item-form-left'),
-                        dropdownCssClass: ':all:',
-                        width: 'resolve'
-                    });
-                });
+                // $( document ).ready(function() {
+                //     // console.log("ready!");
+                //     $('#category').select2({
+                //         placeholder: 'Select a category',
+                //         dropdownParent: $('.gigatester-ctrl-item-form-left'),
+                //         dropdownCssClass: ':all:',
+                //         width: 'resolve'
+                //     });
+                // });
+                // $( document ).ready(function() {
+                //     // console.log("ready!");
+                //     $('#severity').select2({
+                //         placeholder: "Select a severity",
+                //         dropdownParent: $('.gigatester-ctrl-item-form-left'),
+                //         dropdownCssClass: ':all:',
+                //         width: 'resolve'
+                //     });
+                // });
                 // $('#category').val(['']).trigger('change');
                     if(GigaTester_modal.configs.rating_limit > 4){
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
@@ -2065,10 +2142,15 @@ let GigaTester_StringUtils = {
                     if (default_category) {
                         // console.log(default_category, "form defaults")
                         console.log(GigaTester_modal.configs.selected_category);
-                        // default_category.map(value => {
-                        //     this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(value)
-                        // })
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category).trigger('change');
+                        if(typeof default_category === 'string'){
+                            this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category)
+                        }
+                        else{
+                        default_category.map(value => {
+                            this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(value)
+                        })
+                        }
+                        // this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category).trigger('change');
 
                         var select = document.getElementById('category');
                         console.log(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val())
@@ -2317,7 +2399,7 @@ let GigaTester_StringUtils = {
                         timer_button.appendTo(audio_record_stop);
                         timer_info_text.appendTo(audio_record_stop);
                         audio_record_text.appendTo(audio_record_overlay);
-                        audio_record_overlay.appendTo($(document.getElementsByClassName('gigatester-ctrl-item gigatester-ctrl-item-r')));
+                        audio_record_overlay.appendTo($(document.getElementsByClassName('gigatester-ctrl-item')));
                         const recorder = new MediaRecorder(stream);
                         GigaTester_modal.startTimer();
                         const chunks = [];
