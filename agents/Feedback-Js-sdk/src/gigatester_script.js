@@ -661,6 +661,7 @@ let GigaTester_StringUtils = {
 
             //the main object that stores all the data and controls all the flow.
             let GigaTester_modal = {
+                config_loaded: false,
                 canvas_mode: false,
                 controls_step: 0,
                 multiSelect: false,
@@ -2820,8 +2821,6 @@ let GigaTester_StringUtils = {
                             dataError = true;
                             GigaTester_modal.setNotifyStatus(`${'Media size is greater than ' + GigaTester_modal.configs.max_file_size + 'MB, Kindly delete and retry again'}`)
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
-//                        } else {
-//                            this.submitPost(e);
                         }
                     }
                     if(GigaTester_modal.form_type === "BUGS") {
@@ -2834,9 +2833,6 @@ let GigaTester_StringUtils = {
                             GigaTester_modal.setNotifyStatus('Please select bug severity')
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                         }
-                        // else{
-                        //     this.submitPost(e);
-                        // }
                     } else if(GigaTester_modal.form_type === "FEEDBACK") {
                         if(GigaTester_modal.form_settings_default['FEEDBACK'].rating_mandatory && this.form_data.rating < 1){
                             dataError = true;
@@ -2847,9 +2843,6 @@ let GigaTester_StringUtils = {
                             GigaTester_modal.setNotifyStatus('Please select a category')
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                         }
-                        // else{
-                        //     this.submitPost(e);
-                        //     }
                     }
 
                     if(!dataError) {
@@ -3085,16 +3078,24 @@ let GigaTester_StringUtils = {
         let GigaTester_Api = {
             isLoaded: function() {
                 console.log('GigaTester: gigatester isLoaded check');
+                if(GigaTester_modal.config_loaded) {
+                    console.log('GigaTester: config already loaded');
+                    return true;
+                }
                 if(!GigaTester.endpoint || GigaTester.endpoint.length < 1 ) {
                     console.log('GigaTester: loading failed: endpoint not set');
-                    return false
+                    GigaTester_modal.config_loaded = false;
+                    return false;
                 } else if(!GigaTester.apiKey || GigaTester.apiKey.length < 1 ) {
                     console.log('GigaTester: loading failed: apiKey not set');
-                    return false
+                    GigaTester_modal.config_loaded = false;
+                    return false;
                 } else if(!GigaTester.productVersion || GigaTester.productVersion.length < 1 ) {
                     console.log('GigaTester: loading failed: productVersion not set');
-                    return false
+                    GigaTester_modal.config_loaded = false;
+                    return false;
                 } else {
+                    console.log('GigaTester: fetching configuration');
                     fetch(`${GigaTester.endpoint}/feedbackConfig?apiKey=${GigaTester.apiKey}&version=${GigaTester.productVersion}`, {
                         method: 'GET',
                     })
@@ -3260,6 +3261,8 @@ let GigaTester_StringUtils = {
                                 }
                             })
                         }
+                        GigaTester_modal.config_loaded = true;
+
                         GigaTester_modal.addFeedbackButton();
                         GigaTester_modal.checkSelectDependancyload();
 
@@ -3273,9 +3276,10 @@ let GigaTester_StringUtils = {
                     .catch(function(err) {
                         // console.log(err , 'err')
                         console.log('GigaTester: Failed to load config from server');
-                        return false
+                        GigaTester_modal.config_loaded = false;
+                        return false;
                     })
-                    return true
+                    return true;
                 }
             },
             start: function() {
@@ -3301,10 +3305,12 @@ let GigaTester_StringUtils = {
                 GigaTester_modal.reset();
             },
             show: function() {
+                GigaTester.hidden = false;
                 GigaTester_modal.custom_ui.element.css("display", "");
             },
             hide: function() {
                 GigaTester_modal.reset();
+                GigaTester.hidden = true;
                 GigaTester_modal.custom_ui.element.hide();
             },
             setEmail: function(email) {
@@ -3318,12 +3324,12 @@ let GigaTester_StringUtils = {
             setUserDetails: function(userData){
                 console.log('Gigatester: user details ' + userData)
                 if(typeof userData === "object"){
-                    Object.entries(userData).forEach(([key, val]) => {
-                        if(key.trim().toLowerCase() == "email"){
-                            GigaTester.setEmail(val)
-                        }
-                        console.log(key.trim().toLowerCase(), val);
-                    });
+                    // Object.entries(userData).forEach(([key, val]) => {
+                    //     if(key.trim().toLowerCase() == "email"){
+                    //         GigaTester.setEmail(val)
+                    //     }
+                    //     console.log(key.trim().toLowerCase(), val);
+                    // });
                     GigaTester_modal.user_detail = userData;
                     sessionStorage.setItem('gigatesterDefaultUserDetails', JSON.stringify(userData));
                 } else {
@@ -3385,6 +3391,13 @@ let GigaTester_StringUtils = {
                     }
                 } else {
                     console.log('GigaTester: error setting default Category: value of either or both the parameters is not a string');
+                }
+            },
+            postFeedback: function(feedbackData) {
+                console.log('Gigatester: context details ' + contextData);
+                if(typeof contextData === "object") {
+                    //TODO: setfields
+                    GigaTester_modal.post();
                 }
             },
         }
