@@ -2526,42 +2526,9 @@ let GigaTester_StringUtils = {
                         && GigaTester_modal.configs.main_button_rotation !== '0') {
                             popup_dialog[0].style.bottom = '-114px';
                         }
-                        console.log({
-                            config_top: GigaTester_modal.configs.main_button_top,
-                            config_bottom: GigaTester_modal.configs.main_button_bottom,
-                            config_left: GigaTester_modal.configs.main_button_left,
-                            config_right: GigaTester_modal.configs.main_button_right,
-                            config_rotation: GigaTester_modal.configs.main_button_rotation
-                        });
-                        console.log({
-                            btn_top: button.position().top,
-                            btn_bottom: button.position().bottom,
-                            btn_left: button.position().left,
-                            btn_right: button.position().right,
-                            btn_width: button.width(),
-                            btn_height: button.height(),
-                        });
-                        console.log({
-                            top: popup_dialog[0].style.top,
-                            bottom:popup_dialog[0].style.bottom,
-                            left: popup_dialog[0].style.left,
-                            right: popup_dialog[0].style.right,
-                            rotation: popup_dialog[0].style.transform
-                        });
-                        // popup_dialog[0].style.position = 'fixed';
-                        // popup_dialog[0].style.bottom = '';
-                        // popup_dialog[0].style.top = '35%';
-                        // popup_dialog[0].style.left = '50%';
-                        // popup_dialog[0].style.transform = 'rotate(0deg)';
                     }
-
                     popup_dialog.appendTo(button[0]);
 
-                    // if (currentPosition !== 'CUSTOM') {
-                    //     popup_dialog.appendTo($(document.getElementsByClassName("gigatester-btn")));
-                    // } else {
-                    //     popup_dialog.appendTo($(document.body));
-                    // }
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
                     let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
@@ -2842,7 +2809,7 @@ let GigaTester_StringUtils = {
                 },
                 validateFields: function(e) {
                     e.preventDefault();
-                    dataError = false;
+                    let dataError = false;
                     // console.log(GigaTester_modal.form_type)
                     if(GigaTester_modal.form_data.audio_file || GigaTester_modal.form_data.external_file || GigaTester_modal.form_data.video_file || GigaTester_modal.form_data.image_file){
                         let size_limit = GigaTester_modal.configs.max_file_size;
