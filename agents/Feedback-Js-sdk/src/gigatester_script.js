@@ -667,6 +667,7 @@ let GigaTester_StringUtils = {
                 multiSelect: false,
                 form_type: "FEEDBACK",
                 timer: 180,
+                user_email: '', //store the email set by host app
                 user_detail: {},
                 context_detail: {},
                 set_screen_default_category: true,
