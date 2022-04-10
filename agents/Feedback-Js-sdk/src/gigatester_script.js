@@ -3401,7 +3401,7 @@ let GigaTester_StringUtils = {
             },
             //TODO: should eventually remove this function and use only the property
             setUserDetails: function(userData){
-                console.log('Gigatester: user details ' + userData)
+                console.log(userData, 'Gigatester: userData:')
                 if(typeof userData === "object"){
                     Object.entries(userData).forEach(([key, val]) => {
                         if(key.trim().toLowerCase() == "email"){
@@ -3418,7 +3418,7 @@ let GigaTester_StringUtils = {
             },
             //TODO: should eventually remove this function and use only the property
             setContextDetails: function(contextData){
-                console.log('Gigatester: context details ' + contextData);
+                console.log(contextData, 'Gigatester: contextData:');
                 if(typeof contextData === "object") {
                     GigaTester_modal.context_detail = contextData;
                     GigaTester.contextDetails = contextData;
@@ -3500,8 +3500,8 @@ let GigaTester_StringUtils = {
                 //     platformOs?: any
                 //     pageURL?: string
                 //    }
-                console.log('Gigatester: context details ' + contextData);
-                if(typeof contextData === "object") {
+                console.log(feedbackData, 'Gigatester: feedbackData:');
+                if(typeof feedbackData === "object") {
                     //TODO: fill data to be posted from parameter
                     const postData = {
                         productRating: 0,
@@ -3527,7 +3527,7 @@ let GigaTester_StringUtils = {
                         console.log('GigaTester: error posting feedback/bug: value of feedbackType field should be "FEEDBACK" or "BUGS"');
                         return false;
                     } else {
-                        postData.feedbackType = feedbackType;
+                        postData.feedbackType = feedbackData.feedbackType;
                     }
 
                     if(feedbackData.rating) {
@@ -3669,7 +3669,7 @@ let GigaTester_StringUtils = {
         $(document).ready($.proxy(GigaTester_modal.init, GigaTester_modal))
     })(window.jQuery);
     }catch(err){
-            console.log(err, 'err')
+        console.log(err, 'GigaTester: err in jQuery')
     }
 }
 }
