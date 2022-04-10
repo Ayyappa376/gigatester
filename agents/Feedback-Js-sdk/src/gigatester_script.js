@@ -2083,9 +2083,7 @@ let GigaTester_StringUtils = {
                      + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '')
                      + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
-                     + '<option value="severity" selected disabled>' 
-                     + GigaTester_StringRes.get("select_severity") 
-                     + "</option>"
+                     + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>"
                      + severity_options + "</select>" : "")
                      + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
@@ -2955,20 +2953,16 @@ let GigaTester_StringUtils = {
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-msg").text(GigaTester_StringRes.get("media_upload_success") + " " + GigaTester_StringRes.get("submitting_feedback")).insertAfter(send_button);
                                 console.log('GigaTester: ', xhr.responseURL);
                                 if(xhr.responseURL.includes('gt_image')){
-                                GigaTester_modal.form_data.image_file = xhr.responseURL.split('?')[0];
-                                // GigaTester_modal.post();
+                                    GigaTester_modal.form_data.image_file = xhr.responseURL.split('?')[0];
                                 }
                                 else if(xhr.responseURL.includes('gt_video')){
-                                GigaTester_modal.form_data.video_file = xhr.responseURL.split('?')[0]
-                                // GigaTester_modal.post();
+                                    GigaTester_modal.form_data.video_file = xhr.responseURL.split('?')[0]
                                 }
                                 else if(xhr.responseURL.includes('gt_audio')){
-                                GigaTester_modal.form_data.audio_file = xhr.responseURL.split('?')[0]
-                                // GigaTester_modal.post();
+                                    GigaTester_modal.form_data.audio_file = xhr.responseURL.split('?')[0]
                                 }
                                 else{
-                                GigaTester_modal.form_data.external_file = xhr.responseURL.split('?')[0]
-                                // GigaTester_modal.post();
+                                    GigaTester_modal.form_data.external_file = xhr.responseURL.split('?')[0]
                                 }
                                 GigaTester_modal.post();
                               }
@@ -3033,11 +3027,10 @@ let GigaTester_StringUtils = {
                         standardFeedback.push($(this).next("label").text());
                         console.log(standardFeedback);
                     });
-                    if(parseInt(this.form_data.rating) > 0){
-                        finalRating = parseInt(this.form_data.rating)
+                    if(this.form_type === 'FEEDBACK') {
+                        finalRating = parseInt(this.form_data.rating);
                         feedbackType = 'FEEDBACK'
-                    }
-                    else{
+                    } else {
                         finalRating = 0;
                         feedbackType = 'BUG_REPORT'
                     }
@@ -3069,8 +3062,8 @@ let GigaTester_StringUtils = {
                         },
                         feedbackComments: { "generalComment" : this.form_data['description'], "standardFeedback" : standardFeedback , ...comments },
                         productKey: GigaTester.apiKey,
-                        userDetails: GigaTester_modal.user_detail,
-                        contextDetails: GigaTester_modal.context_detail
+                        userDetails: GigaTester.userDetails || GigaTester_modal.user_detail,
+                        contextDetails: GigaTester.contextDetails || GigaTester_modal.context_detail
                       }
                       console.log(postData, 'post Data')
                       fetch(`${GigaTester.endpoint}/feedback/`, {
@@ -3355,6 +3348,8 @@ let GigaTester_StringUtils = {
                         } else {
                             console.log('GigaTester: starting in visible mode');
                         }
+
+                        GigaTester.ready = true;
                     })
                     .catch(function(err) {
                         // console.log(err , 'err')
@@ -3379,9 +3374,7 @@ let GigaTester_StringUtils = {
                 $("script#gigatester-sdk").remove();
                 delete window.GigaTester
             },
-            open: function(mode) {
-                // console.log('js api open');
-                // console.log(mode)
+            open: function() {
                 GigaTester_modal.openControls();
             },
             close: function() {
@@ -3396,33 +3389,39 @@ let GigaTester_StringUtils = {
                 GigaTester.hidden = true;
                 GigaTester_modal.custom_ui.element.hide();
             },
+            //TODO: should eventually remove this function and use only the property
             setEmail: function(email) {
                 // console.log(email);
                 if (typeof email === "string") {
-                    GigaTester_modal.form_data.email = $.trim(email)
+                    GigaTester_modal.form_data.email = $.trim(email);
+                    GigaTester.email = $.trim(email);
                 } else {
                     console.log('GigaTester: error setting email: value not a string');
                 }
             },
+            //TODO: should eventually remove this function and use only the property
             setUserDetails: function(userData){
                 console.log('Gigatester: user details ' + userData)
                 if(typeof userData === "object"){
-                    // Object.entries(userData).forEach(([key, val]) => {
-                    //     if(key.trim().toLowerCase() == "email"){
-                    //         GigaTester.setEmail(val)
-                    //     }
-                    //     console.log(key.trim().toLowerCase(), val);
-                    // });
+                    Object.entries(userData).forEach(([key, val]) => {
+                        if(key.trim().toLowerCase() == "email"){
+                            GigaTester.setEmail(val)
+                        }
+                        console.log(key.trim().toLowerCase(), val);
+                    });
                     GigaTester_modal.user_detail = userData;
+                    GigaTester.userDetails = userData;
                     sessionStorage.setItem('gigatesterDefaultUserDetails', JSON.stringify(userData));
                 } else {
                     console.log('GigaTester: error setting userDetails: value not a map');
                 }
             },
+            //TODO: should eventually remove this function and use only the property
             setContextDetails: function(contextData){
                 console.log('Gigatester: context details ' + contextData);
                 if(typeof contextData === "object") {
                     GigaTester_modal.context_detail = contextData;
+                    GigaTester.contextDetails = contextData;
                     sessionStorage.setItem('gigatesterContextDetails', JSON.stringify(contextData));
                 } else {
                     console.log('GigaTester: error setting contextDetails: value not a map');
@@ -3449,6 +3448,7 @@ let GigaTester_StringUtils = {
                                 console.log('GigaTester: category selected ' + defaultCategory);
                                 GigaTester_modal.configs.bugs_default_category = defaultCategory;
                                 GigaTester_modal.form_data['category'] = defaultCategory;
+                                GigaTester.category = defaultCategory;
                                 sessionStorage.setItem('gigatesterDefaultBugsCategory', defaultCategory)
                             }
                         })
@@ -3461,6 +3461,7 @@ let GigaTester_StringUtils = {
                                 console.log('GigaTester: category selected ' + defaultCategory);
                                 GigaTester_modal.configs.feedback_default_category = defaultCategory;
                                 GigaTester_modal.form_data['category'] = defaultCategory;
+                                GigaTester.category = defaultCategory;
                                 sessionStorage.setItem('gigatesterDefaultFeedbackCategory', defaultCategory)
                             }
                         })
@@ -3476,11 +3477,191 @@ let GigaTester_StringUtils = {
                     console.log('GigaTester: error setting default Category: value of either or both the parameters is not a string');
                 }
             },
-            postFeedback: function(feedbackData) {
+            postFeedback: async function(feedbackData) {
+                //This is the structure of the feedbackData
+                // feedbackData: {
+                //     feedbackType: string //'FEEDBACK' | 'BUGS'
+                //     rating?: number
+                //     comment?: string
+                //     severity?: string
+                //     email?: string
+                //     userDetails?: {
+                //       [key: string]: any
+                //     }
+                //     contextDetails?: {
+                //       [key: string]: any
+                //     }
+                //     categoryComments?: {
+                //       category: string
+                //       comments?: string[]
+                //     }
+                //     platformName?: string
+                //     platformVersion?: string
+                //     platformOs?: any
+                //     pageURL?: string
+                //    }
                 console.log('Gigatester: context details ' + contextData);
                 if(typeof contextData === "object") {
-                    //TODO: setfields
-                    GigaTester_modal.post();
+                    //TODO: fill data to be posted from parameter
+                    const postData = {
+                        productRating: 0,
+                        userName: GigaTester.email || '',
+                        feedbackType: 'FEEDBACK',
+                        feedbackCategory: GigaTester.category || '',
+                        bugPriority: GigaTester.severity || '',
+                        productVersion: GigaTester.productVersion,
+                        platformName: '',
+                        platformVersion: '',
+                        platformOs: '',
+                        pageURL: '',
+                        feedbackMedia: { image: '', video: '', file: '', audio: '' },
+                        feedbackComments: { generalComment : '', standardFeedback : [] },
+                        productKey: GigaTester.apiKey,
+                        userDetails: GigaTester.userDetails || {},
+                        contextDetails: GigaTester.contextDetails || {}
+                      }
+                    if(!feedbackData.feedbackType) {
+                        console.log('GigaTester: error posting feedback/bug: feedbackType not found in parameter');
+                        return false;
+                    } else if(typeof feedbackData.feedbackType !== 'string' || (feedbackData.feedbackType !== 'FEEDBACK' && feedbackData.feedbackType !== 'BUGS')) {
+                        console.log('GigaTester: error posting feedback/bug: value of feedbackType field should be "FEEDBACK" or "BUGS"');
+                        return false;
+                    } else {
+                        postData.feedbackType = feedbackType;
+                    }
+
+                    if(feedbackData.rating) {
+                        if(typeof feedbackData.rating === 'number') {
+                            postData.productRating = feedbackData.rating;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of rating field must be number');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.comment) {
+                        if(typeof feedbackData.comment === 'string') {
+                            postData.feedbackComments.generalComment = feedbackData.comment;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of comment field must be string');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.severity) {
+                        if(typeof feedbackData.severity === 'string') {
+                            postData.feedbackComments.generalComment = feedbackData.severity;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of severity field must be string');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.email) {
+                        if(typeof feedbackData.email === 'string') {
+                            postData.userName = feedbackData.email;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of email field must be string');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.userDetails) {
+                        if(typeof feedbackData.userDetails === 'object') {
+                            postData.userDetails = feedbackData.userDetails;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of userDetails field must be a map');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.contextDetails) {
+                        if(typeof feedbackData.contextDetails === 'object') {
+                            postData.contextDetails = feedbackData.contextDetails;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of contextDetails field must be a map');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.categoryComments) {
+                        if(typeof feedbackData.categoryComments === 'object') {
+                            if(feedbackData.categoryComments.category && typeof feedbackData.categoryComments.category === 'string') {
+                                postData.feedbackCategory = feedbackData.categoryComments.category;
+                            } else {
+                                console.log('GigaTester: error posting feedback/bug: type of categoryComments.category field must be a string');
+                                return false;
+                            }
+
+                            if(feedbackData.categoryComments.comments) {
+                                if(typeof feedbackData.categoryComments.comments === 'object') {
+                                    for(let i = 0; i < feedbackData.categoryComments.comments.length; i += 1) {
+                                        if(typeof feedbackData.categoryComments.comments[i] === 'string') {
+                                            postData.feedbackComments.standardFeedback.push(feedbackData.categoryComments.comments[i]);
+                                        } else {
+                                            console.log('GigaTester: error posting feedback/bug: type of categoryComments.comments field must be a string array');
+                                            return false;
+                                        }
+                                    }
+                                } else {
+                                    console.log('GigaTester: error posting feedback/bug: type of categoryComments.comments field must be a string array');
+                                    return false;
+                                }
+                            }
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of categoryComments field must be a map');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.platformName) {
+                        if(typeof feedbackData.platformName === 'string') {
+                            postData.platformName = feedbackData.platformName;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of platformName field must be string');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.platformVersion) {
+                        if(typeof feedbackData.platformVersion === 'string') {
+                            postData.platformVersion = feedbackData.platformVersion;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of platformVersion field must be string');
+                            return false;
+                        }
+                    }
+
+                    if(feedbackData.platformOs) {
+                        postData.platformOs = feedbackData.platformOs;
+                    }
+
+                    if(feedbackData.pageURL) {
+                        if(typeof feedbackData.pageURL === 'string') {
+                            postData.pageURL = feedbackData.pageURL;
+                        } else {
+                            console.log('GigaTester: error posting feedback/bug: type of pageURL field must be string');
+                            return false;
+                        }
+                    }
+                    console.log(postData, 'GigaTester: postFeedback API: post Data')
+                    const returnData = await fetch(`${GigaTester.endpoint}/feedback/`, {
+                      method: 'POST',
+                      body:  JSON.stringify(postData),
+                      headers: { 'Content-Type': 'application/json' },
+                    })
+                    if(returnData.ok) {
+                        const JSONReturnData = await returnData.json();
+                        console.log(JSONReturnData, 'GigaTester: postFeedback API: JSONReturnData');
+                        console.log('GigaTester: successfully posted feedback/bug');
+                        return true;
+                    } else {
+                        console.log(error, 'GigaTester: error posting feedback/bug: ');
+                        return false;
+                    }
+                } else {
+                    console.log('GigaTester: error posting feedback/bug: parameter is not an object');
+                    return false;
                 }
             },
         }
