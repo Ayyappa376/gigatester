@@ -3451,11 +3451,11 @@ let GigaTester_StringUtils = {
                             if(value.name && (value.name.trim().length > 0) && (defaultCategory.length > 0) &&
                             (value.name.trim().toLowerCase() === defaultCategory)) {
                                 set_default_category_flag = true;
-                                console.log('GigaTester: category selected ' + value);
-                                GigaTester_modal.configs.bugs_default_category = value;
-                                GigaTester_modal.form_data['category'] = value;
-                                GigaTester.category = value;
-                                sessionStorage.setItem('gigatesterDefaultBugsCategory', value);
+                                console.log('GigaTester: category selected ' + value.name);
+                                GigaTester_modal.configs.bugs_default_category = value.name;
+                                GigaTester_modal.form_data['category'] = value.name;
+                                GigaTester.category = value.name;
+                                sessionStorage.setItem('gigatesterDefaultBugsCategory', value.name);
                             }
                         }
                     } else if(params.trim().toUpperCase() === "FEEDBACK" && GigaTester_modal.configs.config_data[0].feedbackSettings &&
@@ -3466,11 +3466,11 @@ let GigaTester_StringUtils = {
                             if(value.name && (value.name.trim().length > 0) && (defaultCategory.length > 0) &&
                             (value.name.trim().toLowerCase() === defaultCategory)) {
                                 set_default_category_flag = true;
-                                console.log('GigaTester: category selected ' + value);
-                                GigaTester_modal.configs.feedback_default_category = value;
-                                GigaTester_modal.form_data['category'] = value;
-                                GigaTester.category = value;
-                                sessionStorage.setItem('gigatesterDefaultFeedbackCategory', value);
+                                console.log('GigaTester: category selected ' + value.name);
+                                GigaTester_modal.configs.feedback_default_category = value.name;
+                                GigaTester_modal.form_data['category'] = value.name;
+                                GigaTester.category = value.name;
+                                sessionStorage.setItem('gigatesterDefaultFeedbackCategory', value.name);
                             }
                         }
                     } else {
