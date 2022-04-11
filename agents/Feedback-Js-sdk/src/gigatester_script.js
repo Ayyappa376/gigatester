@@ -469,6 +469,9 @@ let GigaTester_StringUtils = {
                             this.display_stream.getTracks()[0].onended = function() {
                                 this.stopGTcapture()
                             }.bind(this);
+                            GigaTester_modal.recording = true;
+                            GigaTester_modal.video_recording_mode = true;
+                            GigaTester_modal.set_screen_default_category = false;
                             let count_down = this.count_down;
                             let timer = function() {
                                 if (count_down === 0) {
@@ -663,6 +666,7 @@ let GigaTester_StringUtils = {
             let GigaTester_modal = {
                 config_loaded: false,
                 canvas_mode: false,
+                video_recording_mode: false,
                 controls_step: 0,
                 multiSelect: false,
                 form_type: "FEEDBACK",
@@ -1723,7 +1727,7 @@ let GigaTester_StringUtils = {
                             if (GigaTester_modal.form_type === "BUGS") {
                                 let feedback_reason = '';
                                 GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
-                                    console.log(typeof $(e.currentTarget).val())
+                                    console.log($(e.currentTarget).val())
                                     console.log(GigaTester_modal.configs.selected_category);
                                     if($(e.currentTarget).val().length > 0){
                                     if(typeof $(e.currentTarget).val() === 'string'){
@@ -1867,6 +1871,17 @@ let GigaTester_StringUtils = {
                         GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
                             // console.log("Gigatester:" + items.name)
                             if($(document.getElementById('category')).val()){
+                                if($(typeof document.getElementById('category')).val() === 'string'){
+                                    let feedback_reason = '';
+                                    if(items.name.trim() == $(document.getElementById('category')).val().trim()){
+                                        feedback_reason += `<div>${category}</div>`;
+                                    items.feedbacks.forEach( function(value, index){
+                                        feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
+                                    })
+                                    $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
+                                }
+                                }
+                                else if( $.isArray($(typeof document.getElementById('category')).val())){
                                 let feedback_reason = '';
                                 $(document.getElementById('category')).val().map(category=> {
                                     if(items.name.trim() == category.trim()){
@@ -1877,13 +1892,25 @@ let GigaTester_StringUtils = {
                                     $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
                                 }
                             });
-                            }
+                        }
+                        }
                         })
                     }
                     else if (GigaTester_modal.form_type === "FEEDBACK") {
 
                         GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
                             if($(document.getElementById('category')).val()){
+                                if($(typeof document.getElementById('category')).val() === 'string'){
+                                    let feedback_reason = '';
+                                    if(items.name.trim() == $(document.getElementById('category')).val().trim()){
+                                        feedback_reason += `<div>${category}</div>`;
+                                    items.feedbacks.forEach( function(value, index){
+                                        feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
+                                    })
+                                    $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
+                                }
+                                }
+                                else if( $.isArray($(typeof document.getElementById('category')).val())){
                                 let feedback_reason = '';
                                 $(document.getElementById('category')).val().map(category=> {
                                     if(items.name.trim() == category.trim()){
@@ -1894,6 +1921,7 @@ let GigaTester_StringUtils = {
                                     $(document.getElementById('gigatester_category_standard_feedback')).html(feedback_reason);
                                 }
                                 });
+                            }
                             }
                         })
                     }
@@ -1916,9 +1944,9 @@ let GigaTester_StringUtils = {
                 }
                 },
                 saveSubCategory: function() {
-                    if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
-                        this.saveCheckedCategory();
-                    }
+                    // if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
+                    //     this.saveCheckedCategory();
+                    // }
                     // if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
                     //     $(document.getElementsByClassName('gigatester-reason-checkboxes')).remove();
                     //     $(document.getElementsByClassName('gigatester-reason-labels')).next().remove("br");
@@ -2136,14 +2164,14 @@ let GigaTester_StringUtils = {
                     if (default_description) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('textarea[name="description"]').val(default_description)
                     }
-
+                    // if(!GigaTester_modal.set_screen_default_category){
                     if (default_category) {
                         // console.log(default_category, "form defaults")
-                        console.log(GigaTester_modal.configs.selected_category);
+                        // console.log(GigaTester_modal.configs.selected_category);
                         if(typeof default_category === 'string'){
-                            this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category)
+                            this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category.trim())
                         }
-                        else{
+                        else if ($.isArray(default_category)){
                         default_category.map(value => {
                             this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(value)
                         })
@@ -2153,6 +2181,7 @@ let GigaTester_StringUtils = {
                         var select = document.getElementById('category');
                         console.log(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val())
                     }
+                    // }
                     if (default_severity) {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
                     }
@@ -2509,13 +2538,15 @@ let GigaTester_StringUtils = {
                     let src = window.URL.createObjectURL(video_blob);
                     GigaTester_modal.showControls();
                     setTimeout( function() {
-                        GigaTester_modal.recording = true;
+                        GigaTester_modal.recording = false;
                         GigaTester_modal.form_data.rating =  GigaTester_modal.form_data.rating;
                         GigaTester_modal.setDialogForm();
                         GigaTester_modal.saveSubCategory();
                         if(GigaTester_modal.form_data.rating){
                             GigaTester_modal.selectedRating();
                         }
+                        GigaTester_modal.set_screen_default_category = false;
+                        GigaTester_modal.video_recording_mode = false;
                         let video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
                         let video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
                         let video_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
@@ -2535,6 +2566,7 @@ let GigaTester_StringUtils = {
                             if(GigaTester_modal.form_data.rating){
                                 GigaTester_modal.selectedRating();
                             }
+                            GigaTester_modal.set_screen_default_category = false;
                         })
                         GigaTester_modal.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
                         GigaTester_modal.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
@@ -3451,11 +3483,13 @@ let GigaTester_StringUtils = {
                             if(value.name && (value.name.trim().length > 0) && (defaultCategory.length > 0) &&
                             (value.name.trim().toLowerCase() === defaultCategory)) {
                                 set_default_category_flag = true;
-                                console.log('GigaTester: category selected ' + value);
-                                GigaTester_modal.configs.bugs_default_category = value;
-                                GigaTester_modal.form_data['category'] = value;
-                                GigaTester.category = value;
-                                sessionStorage.setItem('gigatesterDefaultBugsCategory', value);
+                                console.log('GigaTester: category selected ' + JSON.stringify(value));
+                                if(!GigaTester_modal.video_recording_mode){
+                                GigaTester_modal.configs.bugs_default_category = value.name;
+                                GigaTester_modal.form_data['category'] = value.name;
+                                GigaTester.category = value.name;
+                                }
+                                sessionStorage.setItem('gigatesterDefaultBugsCategory', value.name);
                             }
                         }
                     } else if(params.trim().toUpperCase() === "FEEDBACK" && GigaTester_modal.configs.config_data[0].feedbackSettings &&
@@ -3467,10 +3501,12 @@ let GigaTester_StringUtils = {
                             (value.name.trim().toLowerCase() === defaultCategory)) {
                                 set_default_category_flag = true;
                                 console.log('GigaTester: category selected ' + value);
-                                GigaTester_modal.configs.feedback_default_category = value;
-                                GigaTester_modal.form_data['category'] = value;
-                                GigaTester.category = value;
-                                sessionStorage.setItem('gigatesterDefaultFeedbackCategory', value);
+                                if(!GigaTester_modal.video_recording_mode){
+                                GigaTester_modal.configs.feedback_default_category = value.name;
+                                GigaTester_modal.form_data['category'] = value.name;
+                                GigaTester.category = value.name;
+                                }
+                                sessionStorage.setItem('gigatesterDefaultFeedbackCategory', value.name);
                             }
                         }
                     } else {
