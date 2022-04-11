@@ -669,7 +669,7 @@ const LookAndFeel = ({
 								autoComplete='off'
 								className='textFieldStyle'
 								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 8 }}
+								inputProps={{ maxLength: 25 }}
 							/>
 							</Box>
 							<Box className={classes.customBox}>
@@ -719,7 +719,7 @@ const LookAndFeel = ({
 								autoComplete='off'
 								className='textFieldStyle'
 								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 8 }}
+								inputProps={{ maxLength: 25 }}
 							/>
 							</Box>
 							<Box className={classes.customBox}>
@@ -744,7 +744,7 @@ const LookAndFeel = ({
 								autoComplete='off'
 								className='textFieldStyle'
 								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 8 }}
+								inputProps={{ maxLength: 25 }}
 							/>
 							</Box>
 						</Box>
