@@ -64,7 +64,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     }
     return ''
   });
-  const [dateRange, setDateRange] = useState({ startDate: 1649415761515, endDate: 1640315761515 }); //epoch timestamp
   const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>(() => {
     if (props.productInfoProp.productInfo) {
       return props.productInfoProp.prodInfo
@@ -93,7 +92,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   const [categoryList, setCategoryList] = useState<any>([]);
   const [keys, setKey] = useState<boolean>(false);
   const [rating, setRating] = useState<boolean>(false);
-  const [sortDate, setSortDate] = useState <number | undefined>();
+  const [sortDate, setSortDate] = useState<number | undefined>();
+  const [dateRange, setDateRange] = useState({ startDate: 1649415761515, endDate: 1640315761515 }); //epoch timestamp
 
   useEffect(() => {
     if (feedbackBarChartData) {
@@ -174,13 +174,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   useEffect(() => {
     if (filtered.product && filtered.version && selectedProdId && productVersion) {
       if (productVersion === 'all') {
-      setBackdropOpen(true);
-      fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: '', filterDate: dateRange });
+        setBackdropOpen(true);
+        fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
+        getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: '', filterDate: dateRange });
       } else {
-      setBackdropOpen(true);
-      fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange  });
+        setBackdropOpen(true);
+        fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
+        getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
       }
     }
   }, [selectedProdId, productVersion])
@@ -195,8 +195,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       setRawData([])
       fetchRecursiveData({
         fetchOrder: order,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
+        prodId: selectedProdId,
+        prodVersion: productVersion,
         filterCategory: focusCategory,
         filterSeverity: focusSeverity,
         searchWord: keyword,
@@ -295,7 +295,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
     }
 
-    if(filterDate) {
+    if (filterDate) {
       urlAppend += urlAppend ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
     }
 
@@ -363,11 +363,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       if (Object.keys(feedbackBarChartData).length > 0) {
         setBackdropOpen(false);
       }
-      if(pieChartSeries){
+      if (pieChartSeries) {
         setCategoryList(Object.keys(pieChartSeries))
       }
     }
-  }, [selectedProdId, rawData, feedbackBarChartData,pieChartSeries, error, noDataError])
+  }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])
 
   const fetchSignedUrl = (imgUrl: string) => {
     const urlSplit = imgUrl.split('/')
@@ -449,12 +449,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   useEffect(() => {
     const today = new Date();
     const todaysDate = Date.parse(today.toString());
-
     if (sortDate) {
-      // console.log('sorted', sortDate);
       getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: todaysDate, endDate: sortDate } });
     }
-  }, [sortDate])
+    const { startDate, endDate } = dateRange;
+    if (startDate !== 1649415761515 || endDate !== 1640315761515) {
+      console.log('daterange', dateRange)
+      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: startDate, endDate: endDate } });
+    }
+  }, [sortDate, dateRange])
 
   const filterByProduct = (val: string) => {
     console.log(prodNameIdMapping);
@@ -571,7 +574,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
                   <div style={{ marginTop: 50 }}>
                     <Grid container style={{ width: '95%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
                       <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
-                      <DateFilter setSortDate={setSortDate}/>
+                      <DateFilter setSortDate={setSortDate} setDateRange={setDateRange}/>
                   </Grid>
               <Grid container style={{ marginTop: '3rem' }}>
                   <Grid item lg={5}>

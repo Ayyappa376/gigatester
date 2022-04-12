@@ -151,11 +151,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
-<<<<<<< HEAD
-        // window.GigaTester?.hide();
-        //      fixMultiSelectValuesAndSave(response);
-=======
->>>>>>> e97fd74c99592360dd231e33320c3a4168d7d99f
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
             platform: PLATFORM_TYPE_BROWSER,

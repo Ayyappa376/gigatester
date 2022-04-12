@@ -571,12 +571,15 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	useEffect(() => {
 		const today = new Date();
 		const todaysDate = Date.parse(today.toString());
-
 		if (sortDate) {
-			// console.log('sorted', sortDate);
 			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: todaysDate, endDate: sortDate }});
 		}
-	}, [sortDate])
+		const { startDate, endDate } = dateRange;
+    if (startDate !== 1649415761515 || endDate !== 1640315761515) {
+      console.log('daterange', dateRange)
+      getBugChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: startDate, endDate: endDate } });
+    }
+	}, [sortDate, dateRange])
 
 	const filterByProduct = (val: string) => {
 		console.log(prodNameIdMapping);
@@ -758,7 +761,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 									<Typography style={{ marginRight: '10px', padding: '15px' }}>
 										Filter by date:
 									</Typography>
-									<DateFilter setSortDate={setSortDate} />
+									<DateFilter setSortDate={setSortDate} setDateRange={setDateRange} />
 								</Grid>
 								<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>

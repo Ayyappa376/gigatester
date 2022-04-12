@@ -66,7 +66,7 @@ interface IGetChartData {
 }
 
 export const getFeedbckChartData = async ({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion, filterDate }: IGetChartData) => {
-  console.log('date',filterDate);
+  // console.log('date',filterDate);
       let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}`; //hard coded for filterdate
       url += prodVersion ? `&prodVersion=${prodVersion}` : '';
       url += filterDate ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : '';
@@ -74,7 +74,7 @@ export const getFeedbckChartData = async ({ setFeedbackBarChartData, setBugBarCh
         url,
       }).then((response: any) => {
         const processedData = response.Items;
-        console.log('feedback chart response', processedData)
+        // console.log('feedback chart response', processedData)
         setFeedbackBarChartData(processedData.barChartData);
         setPieChartSeries(processedData.pieChartData);
       })
@@ -91,7 +91,7 @@ export const getFeedbckChartData = async ({ setFeedbackBarChartData, setBugBarCh
       url,
     }).then((response: any) => {
       const processedData = response.Items;
-      console.log(processedData, 'processedData')
+      // console.log(processedData, 'processedData')
         setBugBarChartSeries([{
           name: 'Severity',
           data: Object.values(processedData.barChartData)
@@ -160,13 +160,15 @@ export const getProductDetails = async ({ productInfo, prodNameIdMapping, prodNa
   })
 }
 
-export const filterDate = (date: Date, sortDate: string) => {
+export const filterDate = (date: Date | Date[], sortDate: string) => {
   let newDate;
   let newTime;
-  if (sortDate === '') {
-    newDate = new Date(date);
-    newTime = Date.parse(newDate.toString())
-    return { 'dateObj': newDate, 'epoch': newTime };
+  if (Array.isArray(date) && sortDate === '') {
+    let startDate = new Date(date[0]);
+    let endDate = new Date(date[1])
+    const newStartTime = Date.parse(startDate.toString())
+    const newEndTime = Date.parse(endDate.toString())
+    return { 'start': newStartTime, 'end': newEndTime };
   } else {
     newDate = new Date();
     if (sortDate === '1D') {
