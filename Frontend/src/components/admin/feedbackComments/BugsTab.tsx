@@ -577,7 +577,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		const { startDate, endDate } = dateRange;
     if (startDate !== 1649415761515 || endDate !== 1640315761515) {
       console.log('daterange', dateRange)
-      getBugChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: startDate, endDate: endDate } });
+      getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: startDate, endDate: endDate } });
     }
 	}, [sortDate, dateRange])
 
