@@ -36,6 +36,7 @@ import { hostUrl } from '../../../utils/http/constants';
 
 const widgetScript: string = `<script>
 window.GigaTester = window.GigaTester || {};
+GigaTester.ready = false;
 GigaTester.apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\';
 GigaTester.productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\';
 GigaTester.endpoint = \'${hostUrl}\';
@@ -56,25 +57,28 @@ const reactCode: string = `import GigaTester from \'GigaTesterFeedback\';
 />
 `;
 
-const scriptHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.
+// const scriptHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.
 
-GigaTester.hide() => to hide the Feedback button for full screen video
-GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
-GigaTester.open() => to open GigaTester form dialog
-GigaTester.open("BUGS") => to show Bug report form dialog
-GigaTester.open("FEEDBACK") => to show Feedback form dialog
-GigaTester.close() => to close GigaTester dialog
-GigaTester.setUserDetails({
-    email: 'somebody@somewhere.com',
-    id: 'user_1234567890',
-    guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
-    name: 'Some Person'
-  }) => to set details of the user including the email in GigaTester.
-GigaTester.setDefaultCategory("Category Name", "BUGS") => To set the default category to show in Bug report form depending on context.
-GigaTester.setDefaultCategory("Category Name", "FEEDBACK") => To set the default category to show in Feedback form depending on context.
-`;
+// GigaTester.hide() => to hide the Feedback button for full screen video
+// GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
+// GigaTester.open() => to open GigaTester form dialog
+// GigaTester.open("BUGS") => to show Bug report form dialog
+// GigaTester.open("FEEDBACK") => to show Feedback form dialog
+// GigaTester.close() => to close GigaTester dialog
+// GigaTester.setUserDetails({
+//     email: 'somebody@somewhere.com',
+//     id: 'user_1234567890',
+//     guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
+//     name: 'Some Person'
+//   }) => to set details of the user including the email in GigaTester.
+// GigaTester.setDefaultCategory("Category Name", "BUGS") => To set the default category to show in Bug report form depending on context.
+// GigaTester.setDefaultCategory("Category Name", "FEEDBACK") => To set the default category to show in Feedback form depending on context.
+// `;
 
-const reactHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.`;
+// const reactHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.`;
+const scriptHelpText: string = `Refer the Web Browser integration document for integration details.`;
+
+const reactHelpText: string = `Refer the React Native integration document for integration details.`;
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -147,8 +151,11 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
+<<<<<<< HEAD
         // window.GigaTester?.hide();
         //      fixMultiSelectValuesAndSave(response);
+=======
+>>>>>>> e97fd74c99592360dd231e33320c3a4168d7d99f
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
             platform: PLATFORM_TYPE_BROWSER,

@@ -805,7 +805,8 @@ popupbtn:hover popuptooltip {
   line-height: 40px;
   padding: 0 20px;
   margin: 0;
-  border-radius: 4px 4px 0 0;
+  border-radius: 4px;
+  /* border-radius: 4px 4px 0 0; */
   background-color: #011348;
   color: #fff;
   background-color: var(--main-btn-bg);
@@ -828,9 +829,7 @@ popupbtn:hover popuptooltip {
 #gigatester_ctrls_container .gigatester-btn:hover {
   box-shadow: 0 0 10px #5c6c7c;
 }
-#gigatester_ctrls_container .gigatester-btn-r {
-  /* right: -35px; */
-  /* top: 50%; */
+/* #gigatester_ctrls_container .gigatester-btn-r {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -840,7 +839,7 @@ popupbtn:hover popuptooltip {
   transform: rotate(90deg);
   animation: animationMoveLeft 0.2s linear;
   border-bottom: 2px solid transparent;
-}
+} */
 #gigatester_ctrls_container .gigatester-ctrl-item {
   width: 760px;
   height: auto;
@@ -2188,8 +2187,8 @@ background: #fafbfd;
   color: black;
   font-weight: 600;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  left: 10px;
-  transform: rotate( 270deg );
+  /* left: 10px; */
+  /* transform: rotate( 270deg ); */
   /* bottom: -118px; */
   box-shadow: 0 0 10px #5c6c7c;
   animation: animationAppear 0.2s linear;
