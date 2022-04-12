@@ -13,9 +13,9 @@ interface IProps {
     setDisable: Function;
 }
 
-const categoryList = [
-    "Audio", "Video", "Screen", "Images", "Other"
-]
+// const categoryList = [
+//     "Audio", "Video", "Screen", "Images", "Other"
+// ]
 const RenderCategoryFilter = (props: IProps) => {
     const { focusCategory, setFocusCategory, categoryList, type, category, setDisable } = props;
 

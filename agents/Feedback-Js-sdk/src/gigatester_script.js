@@ -1738,7 +1738,7 @@ let GigaTester_StringUtils = {
                                     }
                                 }
                                     else{
-                                    $(e.currentTarget).val().map(category => {                                                             
+                                    $(e.currentTarget).val().map(category => {
                                     if(items.name.trim() == category.trim()){
                                             feedback_reason += `<div>${category}</div>`
                                         items.feedbacks.forEach( function(value, index){
@@ -3081,8 +3081,8 @@ let GigaTester_StringUtils = {
                     if(this.form_data['category'] === "category"){
                         this.form_data['category'] = ''
                     }
-                    if(this.form_data['severity'] === "severity"){
-                        this.form_data['severity'] = ''
+                    if(this.form_data['severity'] === "severity" || this.form_data['severity'] === ""){
+                        this.form_data['severity'] = 'unknown'
                     }
                     const postData = {
                         productRating: finalRating,
