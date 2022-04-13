@@ -183,7 +183,7 @@ const RenderTable = (props: IProps) => {
           </Grid> : <Grid container>
               <Grid item md={6}>
                 {
-                  <RenderKeywordFilter keys={keys} default={props.keyword} setDisable={setDisable} onSubmit={(val: string) => {setKeyword(val)}} onClear={()=> {props.clearSearch()}} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} />
+                  <RenderKeywordFilter keys={keys} default={props.keyword} setDisable={setDisable} onSubmit={handleOnSearch} onClear={()=> {props.clearSearch()}} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} />
                 }
               </Grid>
               <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
