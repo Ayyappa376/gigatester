@@ -52,9 +52,11 @@
   <!-- The following script is for the dev and local environment -->
   <script>
     window.GigaTester = window.GigaTester || {};
+    GigaTester.ready = false;
+//    GigaTester.hidden = true;
     GigaTester.apiKey = 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T';
-      GigaTester.productVersion = '0.1';
-      GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
+    GigaTester.productVersion = '0.1';
+    GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
     (function(d) {
         var s = d.createElement('script'); s.async = true;
         s.src = `https://dev.gigatester.io/dist/feedback-agent/browser/gigatester_script.js`;
@@ -65,6 +67,7 @@
   <!-- The following script is for the beta environment -->
   <!-- <script>
     window.GigaTester = window.GigaTester || {};
+    GigaTester.ready = false;
     GigaTester.apiKey = 'cozvFdUCWO6vf3z3UKnHm4o3RCn45uYf1Fx0tO8T';
     GigaTester.productVersion = '1.x';
     GigaTester.endpoint = 'https://hq6w582al7.execute-api.us-east-1.amazonaws.com/beta';
@@ -78,6 +81,7 @@
   <!-- The following script is for the dish environment -->
   <!-- <script>
     window.GigaTester = window.GigaTester || {};
+    GigaTester.ready = false;
     GigaTester.apiKey = 'mHvJgRIste8VM0agUwn2l3s4INpMjagG3AUrImL1';
     GigaTester.productVersion = '1.x';
     GigaTester.endpoint = 'https://gm97bmv2v7.execute-api.us-east-1.amazonaws.com/production';

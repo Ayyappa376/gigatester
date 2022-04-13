@@ -6,7 +6,6 @@ import {
   Button,
 } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
-import DatePicker from 'react-date-picker';
 import './stylesRenderFilters.css';
 import { filterDate } from './methods';
 import { IDateRange } from './common';
@@ -47,7 +46,8 @@ const DateFilter = ({  setDateRange }: IDateProps) => {
 
   return (
     <Box sx={{
-      width: '52%',
+      minWidth: '50%',
+      height: 'auto',
       padding: '5px',
       display: 'flex',
       flexDirection: 'row',
