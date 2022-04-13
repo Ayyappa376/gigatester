@@ -30,9 +30,6 @@ const RenderComments = (props: IProps) => {
       if(comments[comment] && comment === 'generalComment') {
         commentText = commentText + '\n' + comments[comment]
       }
-      if(comments[comment] && comment === 'standardFeedback') {
-        commentText = commentText + '\n' + comments[comment]
-      }
     });
 
     const sortedKeys = Object.keys(comments).sort((a: string, b: string) => {
@@ -53,11 +50,11 @@ const RenderComments = (props: IProps) => {
       <div >
         <div >
           {
-            comments['standardFeedback'] && props.category && comments['standardFeedback'].length >  0 ?
+            props.category && comments[props.category] && comments[props.category].length >  0 ?
               <div style={{marginTop: '1rem'}}>
                 <Typography color="textSecondary" style={{fontSize: '.85rem'}}>{`${props.category} related ${props.isBugReport? 'bugs' : 'feedbacks'}:`}</Typography>
                 {
-                  comments['standardFeedback'].map((el: string, i: number) => {
+                  comments[props.category].map((el: string, i: number) => {
                     return <div key={el + i.toString()} style={{marginTop: 'auto', marginBottom: 'auto'}}>&#9679;&nbsp;{el}</div>
                   })
                 }

@@ -55,7 +55,10 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		useState<IFeedbackBarChartData>({});
 	const [pieChartSeries, setPieChartSeries] = useState({});
 	// const [bugBarChartData, setBugBarChartData] = useState({})
-  const [dateRange, setDateRange] = useState({ startDate: 1649415761515, endDate: 1640315761515 });
+  const [dateRange, setDateRange] = useState(() => {
+	const today = new Date();
+    const todaysDate = Date.parse(today.toString());
+	return { startDate: todaysDate, endDate: today.setFullYear(today.getFullYear() - 1)}});
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [signedImageUrl, setSignedImageUrl] = useState('');
 	const [attachmentType, setAttachmentType] = useState('');
@@ -214,25 +217,25 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		) {
 			if (productVersion === 'all') {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
+				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '', filterDate: dateRange, });
 				getBugChartData({
 					setBugBarChartSeries,
 					setFeedbackBarChartData,
 					setPieChartSeries,
 					prodId: selectedProdId,
 					prodVersion: '',
-          filterDate: dateRange,
+          			filterDate: dateRange,
 				});
 			} else {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
+				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange, });
 				getBugChartData({
 					setBugBarChartSeries,
 					setFeedbackBarChartData,
 					setPieChartSeries,
 					prodId: selectedProdId,
 					prodVersion: productVersion,
-          filterDate: dateRange,
+          			filterDate: dateRange,
 				});
 			}
 		}
@@ -250,9 +253,10 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				fetchOrder: order,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
-        filterCategory: focusCategory,
-        filterSeverity: focusSeverity,
-        searchWord: keyword,
+				filterCategory: focusCategory,
+				filterSeverity: focusSeverity,
+				searchWord: keyword,
+				filterDate: dateRange,
 			});
 		} else {
 			setData(sortTableByDate(data, order));
@@ -278,6 +282,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: true,
+			filterDate: dateRange,
 		});
 	}, [focusRating]);
 
@@ -300,8 +305,30 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: true,
+			filterDate: dateRange,
 		});
 	}, [focusSeverity]);
+	
+	useEffect(() => {
+		const today = new Date();
+		const todaysDate = Date.parse(today.toString());
+		if (rawData.length === 0) {
+			return;
+		}
+		if (dateRange) {
+			setResultsFetched(false);
+			setData([]);
+			// console.log('sorted', sortDate);
+			fetchRecursiveData({
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+				filterDate: dateRange,
+				noRawDataUpdate: true,
+			});
+			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange});
+		}
+	}, [dateRange])
 
 	useEffect(() => {
 		if (rawData.length === 0) {
@@ -322,6 +349,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: true,
+			filterDate: dateRange,
 		});
 	}, [focusCategory]);
 
@@ -331,7 +359,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		filterRating,
 		filterSeverity,
 		filterCategory,
-    filterDate,
+    	filterDate,
 		prodId,
 		prodVersion,
 		searchWord,
@@ -460,6 +488,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
+				filterCategory: focusCategory,
+				filterSeverity: focusSeverity,
+				filterDate: dateRange,
 			});
 		}
 	};
@@ -567,15 +598,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		return '';
 	};
 
-	useEffect(() => {
-		const today = new Date();
-		const todaysDate = Date.parse(today.toString());
-
-		if (sortDate) {
-			// console.log('sorted', sortDate);
-			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: todaysDate, endDate: sortDate }});
-		}
-	}, [sortDate])
 
 	const filterByProduct = (val: string) => {
 		console.log(prodNameIdMapping);
@@ -619,6 +641,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				searchWord: keyword,
 				showNoEmptyError: true,
+				filterDate: dateRange,
 			});
 		}
 	}, [searchInitiated, keyword]);
@@ -757,7 +780,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 									<Typography style={{ marginRight: '10px', padding: '15px' }}>
 										Filter by date:
 									</Typography>
-									<DateFilter setSortDate={setSortDate} />
+									<DateFilter setDateRange={setDateRange} />
 								</Grid>
 								<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>

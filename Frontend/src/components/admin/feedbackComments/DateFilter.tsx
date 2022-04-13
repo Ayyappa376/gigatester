@@ -5,32 +5,43 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
-import { AnyARecord } from 'dns';
 import React, { useEffect, useState } from 'react';
 import DatePicker from 'react-date-picker';
 import './stylesRenderFilters.css';
 import { filterDate } from './methods';
+import { IDateRange } from './common';
 
-interface DateProp {
-  setSortDate: Function;
+interface IDateProps{
+  setDateRange: Function;
 }
 
-const DateFilter = ({  setSortDate }: DateProp) => {
+const DateFilter = ({  setDateRange }: IDateProps) => {
   const [date, setDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState('1Y');
   const classes = useStyles();
 
   const dateOptions: string[] = ['1D', '1W', '1M', '6M', '1Y'];
 
   const handleDateChange = (date: any, filter: string) => {
     const newDate = new Date(date);
-    const result: any = filterDate(newDate, filter);
+    const today = new Date();
+    const todaysDate = Date.parse(today.toString());
+    let result: any = filterDate(newDate, filter);
     console.log('result', result);
     if (filter === '') {
+      setSelectedDate(filter);
       setDate(result['dateObj']);
-      setSortDate(result['epoch']);
-    } else {
+      setDateRange({startDate: todaysDate,  endDate: result['epoch']});
+    } else if ( filter === selectedDate){
+      result = filterDate(newDate, '1Y')
+      setSelectedDate('1Y');
+      setDate(result['dateObj']);
+      setDateRange({startDate: todaysDate,  endDate: result['epoch']});
+    }
+    else {
+      setSelectedDate(filter)
       setDate(result['dateObj'])
-      setSortDate(result['epoch'])
+      setDateRange({startDate: todaysDate,  endDate: result['epoch']});
     }
   }
 
@@ -44,10 +55,10 @@ const DateFilter = ({  setSortDate }: DateProp) => {
       alignItems: 'center',
     }}>
       {dateOptions.map((day, index: number) => (
-        <Button key={index} id="RenderFilter-btn" size="small" variant="outlined" onClick={(event) => handleDateChange(event, day)}>{day}</Button>
+        <Button key={index} id={day === selectedDate ? "RenderFilter-btnVisited" : "RenderFilter-btn"} size="small" variant="outlined" onClick={(event) => handleDateChange(event, day)}>{day}</Button>
       )) }
       <Box>
-        <DatePicker onChange={(event) => handleDateChange(event, '')}  value={date} />
+        {/* <DatePicker onChange={(event) => handleDateChange(event, '')}  value={date} /> */}
       </Box>
     </Box>
 	);
