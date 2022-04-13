@@ -3117,8 +3117,8 @@ let GigaTester_StringUtils = {
                     if(this.form_data['category'] === "category"){
                         this.form_data['category'] = ''
                     }
-                    if(this.form_data['severity'] === "severity" || this.form_data['severity'] === ""){
-                        this.form_data['severity'] = 'unknown'
+                    if(this.form_data['severity'] === "severity"/* || this.form_data['severity'] === ""*/){
+                        this.form_data['severity'] = '';//'unknown'
                     }
                     const postData = {
                         productRating: finalRating,

@@ -227,13 +227,13 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       EAV[':type'] = type;
       params.IndexName = 'feedbackType-createdOn-index';
       if(endDate && startDate){
-        console.log(endDate, 'eeeeeeeeeeeendDateeeeeeeeeee');
+        // console.log(endDate, 'eeeeeeeeeeeendDateeeeeeeeeee');
         // const today = new Date();
         // const lastDate = new Date().setDate(today.getDate() - 10);
         // const intEndDate = new Date(parseInt(endDate))
         const lastDate = new Date(parseInt(endDate)).getTime();
         const beginDate = new Date(parseInt(startDate)).getTime();
-        console.log(lastDate, 'laaaaaaastDateeeeeeee')
+        // console.log(lastDate, 'laaaaaaastDateeeeeeee')
         EAV[':startDate'] = beginDate;
         EAV[':endDate'] = lastDate;
         params.KeyConditionExpression = 'feedbackType=:type AND createdOn BETWEEN :endDate and :startDate';
@@ -288,20 +288,20 @@ export const bugProcessBarChartData = async({data, prodId, prodVersion, chartTyp
   // }
     if(data.length > 0) {
         data.forEach((item: any) => {
-            if((item.feedbackType === 'BUG_REPORT' || item.productRating === 0/* || (typeof item.productRating === undefined)*/)) {
-              if(item.bugPriority){
-              if(!severityData[item.bugPriority]) {
-                severityData[item.bugPriority] = 1;
-              } else {
-                severityData[item.bugPriority] += 1;
-              }
+            if((item.feedbackType === 'BUG_REPORT'/* || item.productRating === 0 || (typeof item.productRating === undefined)*/)) {
+              if(item.bugPriority && item.bugPriority !== ''){
+                if(!severityData[item.bugPriority]) {
+                  severityData[item.bugPriority] = 1;
+                } else {
+                  severityData[item.bugPriority] += 1;
+                }
               }
               else{
                 if(severityData['unknown']){
                   severityData['unknown'] += 1; 
                 }
                 else{
-                severityData['unknown'] = 1;
+                  severityData['unknown'] = 1;
                 }
               }
             }
@@ -354,31 +354,29 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
     // });
     if(data.length > 0) {
       data.forEach((item) => {
-            if(Array.isArray(item.feedbackCategory)) {
-              console.log(item.feedbackCategory, 'asdnioadinfaldsn');
-              item.feedbackCategory.map((category) => {
-                if(!categoryData[category]) {
-                  categoryData[category] = 1;
-                } else {
-                  categoryData[category] += 1;
-                }
-              });
-            } else if(item.feedbackCategory) {
-              if(!categoryData[item.feedbackCategory]) {
-                categoryData[item.feedbackCategory] = 1;
-              } else {
-                categoryData[item.feedbackCategory] += 1;
-              }
+        if(Array.isArray(item.feedbackCategory)) {
+          console.log(item.feedbackCategory, 'asdnioadinfaldsn');
+          item.feedbackCategory.map((category) => {
+            if(!categoryData[category]) {
+              categoryData[category] = 1;
+            } else {
+              categoryData[category] += 1;
             }
-            else{
-              if(categoryData['unknown']){
-                categoryData['unknown'] += 1;
-              }
-              else{
-              categoryData['unknown'] = 1;
-              }
-            }
-        });
+          });
+        } else if(item.feedbackCategory && item.feedbackCategory !== '') {
+          if(!categoryData[item.feedbackCategory]) {
+            categoryData[item.feedbackCategory] = 1;
+          } else {
+            categoryData[item.feedbackCategory] += 1;
+          }
+        } else {
+          if(categoryData['unknown']) {
+            categoryData['unknown'] += 1;
+          } else {
+          categoryData['unknown'] = 1;
+          }
+        }
+      });
     }
     return categoryData;
   }
