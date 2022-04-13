@@ -333,8 +333,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       console.error('getFeedbackData failed to fetch data with Error code:', object.code)
       return;
     })
-    setResultsFetched(true);
     if (response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
+      setResultsFetched(true);
       setBackdropOpen(false);
       if (searchInitiated && searchWord) {
         setSearchedData((dataObj: any) => {
@@ -371,7 +371,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
   const fetchMore = () => {
     if (Object.keys(lastEvaluatedKey).length > 0) {
-      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, filterRating: focusRating, filterCategory: focusCategory });
+      setResultsFetched(false);
+      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, filterRating: focusRating, filterCategory: focusCategory, filterDate: dateRange });
     }
   }
 

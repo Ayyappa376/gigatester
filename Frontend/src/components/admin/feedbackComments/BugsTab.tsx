@@ -318,6 +318,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (dateRange) {
 			setResultsFetched(false);
 			setData([]);
+			setRawData([]);
 			// console.log('sorted', sortDate);
 			fetchRecursiveData({
 				prodId: selectedProdId,
@@ -366,6 +367,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		showNoEmptyError,
 		noRawDataUpdate,
 	}: IFetchRecursiveData) => {
+		setResultsFetched(false);
 		let urlAppend = ``;
 		let numItems = NUMBER_OF_ITEMS_PER_FETCH;
 		if (prodId) {
@@ -431,7 +433,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				return;
 			},
 		);
-		setResultsFetched(true);
 		if (
 			response &&
 			response.Items &&
@@ -439,6 +440,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			Array.isArray(response.Items.Items) &&
 			response.Items.Items.length > 0
 		) {
+			console.log(resultsFetched, 'result fetch');
+			setResultsFetched(true);
 			setBackdropOpen(false);
 			if (searchInitiated && searchWord) {
 				setSearchedData((dataObj) => {
@@ -483,6 +486,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 
 	const fetchMore = () => {
 		if (Object.keys(lastEvaluatedKey).length > 0 && !searchInitiated) {
+			setResultsFetched(false);
+			console.log('loader open');
 			fetchRecursiveData({
 				lastEvalKey: lastEvaluatedKey,
 				prodId: selectedProdId,
@@ -502,6 +507,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length > 0 && selectedProdId) {
 			setNoDataError(false);
 			if (Object.keys(feedbackBarChartData).length > 0) {
+				console.log('backdrop closed');
 				setBackdropOpen(false);
 			}
 			if (pieChartSeries) {
