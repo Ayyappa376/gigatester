@@ -1,4 +1,4 @@
-import { Box, Tabs, Tab, Container, Grid, makeStyles, Divider, Paper } from '@material-ui/core';
+import { Box, Tabs, Tab, Container, Grid, makeStyles, Divider, Paper, Button } from '@material-ui/core';
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import PropTypes from 'prop-types';
 import { IFeedbackComments, IProductNameIdMapping, ILimitedProductDetails, IAppFeedback, IFeedbackBarChartData, ILastEvalKey, NUMBER_OF_ITEMS_PER_FETCH,  IFetchRecursiveData } from './common';
@@ -19,18 +19,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
   const [prodNameIdMappingBugCopy, setProdNameIdMappingBugs] = useState<IProductNameIdMapping>({})
   const [selectedProdId, setSelectedProdId] = useState<string>("")
   const [productVersion, setProductVersion] = useState("");
-  // const [rawData, setRawData] = useState([]);
-  // const [focusCategory, setFocusCategory] = useState([]);
-  // const [currentDisable, setCurrentDisable] = useState<string>('');
-  // const [data, setData] = useState<IAppFeedback[]>([]);
-  // const [resultsFetched, setResultsFetched] = useState(false);
-  // const [error, setError] = useState(false);
-  // const [isBugReport, setBugReport] = useState<boolean | undefined>();
-  // const [backdropOpen, setBackdropOpen] = useState(false);
-  // const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
-  // const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
-  // const [searchInitiated, setSearchInitiated] = useState(false)
-  // const [noDataError, setNoDataError] = useState(true);
   const [filtered, setFiltered] = useState({ product: false, version: false });
 
   const setProduct = (val: string) => {
@@ -62,6 +50,13 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
     }
     return () => { load = true}
   }, []);
+
+
+  // const handleRemoteBtn = () => {
+  //   if (typeof window.GigaTester !== 'undefined') {
+  //     window.GigaTester.useRemote();
+  //   }
+  // }
 
 
 
@@ -153,7 +148,10 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
                 filtered={filtered}
                 setFiltered={setFiltered}
             />
-          </Grid>
+        </Grid>
+        <Grid item xl={2} style={{ position: 'relative' }}>
+          {/* <Button variant="contained" onClick={() => handleRemoteBtn()}>Remote Btn</Button> */}
+        </Grid>
         </Grid>
         <BasicTabs productInfoProp={productInfoProp} />
     </Container>
