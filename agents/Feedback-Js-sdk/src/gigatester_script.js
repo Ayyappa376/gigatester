@@ -3108,25 +3108,26 @@ let GigaTester_StringUtils = {
                         //more like this: platform.layout, platform.manafacturer, platform.product, platform.prerelease, platform.ua(user agent),
                         // window.devicePixelRatio, window.screen.width, window.screen.height, window.orientation,
                         feedbackMedia: {
-                          image: GigaTester_modal.form_data.image_file,
-                          video: GigaTester_modal.form_data.video_file,
-                          file: GigaTester_modal.form_data.external_file,
-                          audio: GigaTester_modal.form_data.audio_file,
+                          image: GigaTester_modal.form_data.image_file || '',
+                          video: GigaTester_modal.form_data.video_file || '',
+                          file: GigaTester_modal.form_data.external_file || '',
+                          audio: GigaTester_modal.form_data.audio_file || '',
                         },
                         feedbackComments: allComments,
                         productKey: GigaTester.apiKey,
                         userDetails: GigaTester.userDetails || GigaTester_modal.user_detail,
-                        contextDetails: GigaTester.contextDetails || GigaTester_modal.context_detail
+                        contextDetails: GigaTester.contextDetails || GigaTester_modal.context_detail,
                       }
-                      console.log(postData, 'GigaTester: post Data:')
+                    console.log(postData, 'GigaTester: post Data:')
 
                       fetch(`${GigaTester.endpoint}/feedback/`, {
                         method: 'POST',
-                        body:  JSON.stringify(postData),
-                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(postData),
+                        headers: { 'Content-Type': 'application/json'},
                       })
-                        .then(res => res.json())
-                        .then(data => {console.log(data)
+                          .then(res => res.json())
+                          .then(data => {
+                            console.log(data)
                             let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html('<gtdiv>' + "<gtspan>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Cuvo" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;

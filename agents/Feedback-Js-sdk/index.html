@@ -17,8 +17,8 @@
       window.GigaTester = window.GigaTester || {};
       GigaTester.apiKey = 'ic8xdi1MKC2m7M5wEe8OM23qqXyI4aWy96qZW72T';
       GigaTester.productVersion = '0.1';
-      GigaTester.hidden = true;
-      GigaTester.remote = true;
+    //   GigaTester.hidden = true;
+    //   GigaTester.remote = true;
       GigaTester.endpoint = 'https://qe1lgcnkwh.execute-api.us-east-1.amazonaws.com/development';
       (function(d) {
         var s = d.createElement('script'); s.async = true;
@@ -39,17 +39,17 @@
             return userData
         }
 
-        const handleBtn = () => {
-            if (typeof window.GigaTester !== 'undefined') {
-                window.GigaTester.useRemote();
-            }
-        }
-        
+        // const handleBtn = () => {
+        //     if (typeof window.GigaTester !== 'undefined') {
+        //         window.GigaTester.useRemote();
+        //     }
+        // }
+
     </script>
     <h1 style="padding: 10px">Sample app</h1>
     <div style="padding: 10px">
         <!-- <button onclick="alert('Hello there!!')">Hello</button> -->
-        <button id="testbtn" onclick="handleBtn()" style="float:right; margin-right:50px">Test Button</button>
+        <!-- <button id="testbtn" onclick="handleBtn()" style="float:right; margin-right:50px">Test Button</button> -->
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ipsum nibh, bibendum in lectus ut, facilisis egestas turpis. Vivamus placerat metus at mollis elementum. In tristique arcu ipsum, sit amet efficitur neque interdum id. Nam luctus posuere velit, a commodo eros aliquam in. Pellentesque eu faucibus eros. Sed id vestibulum nulla, eu accumsan ante. Sed quis leo vel ligula elementum imperdiet sed ac augue. Nam orci arcu, lacinia sollicitudin faucibus sed, interdum a lorem. Quisque tincidunt mattis ornare.
 
         Sed ultrices ultricies justo vitae venenatis. In hac habitasse platea dictumst. Praesent nunc metus, tincidunt pretium faucibus ac, porttitor non urna. Donec eleifend ligula euismod semper ornare. Vivamus interdum egestas viverra. Maecenas sagittis pellentesque euismod. Mauris ante sem, egestas vitae mattis in, lacinia eu nunc. In in nisl vel magna porta scelerisque. Vestibulum vel mauris at metus fermentum fermentum nec id urna. Nullam tincidunt urna dignissim, dictum nisl vitae, tincidunt nibh. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Aliquam metus leo, luctus sit amet varius at, dictum eu arcu. Suspendisse lacinia ex a molestie consequat. Maecenas fringilla arcu luctus orci vulputate feugiat. Duis tincidunt nisl ultrices, lobortis felis at, faucibus felis.
