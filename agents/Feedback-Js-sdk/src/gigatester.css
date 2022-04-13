@@ -2874,8 +2874,9 @@ gtmouseclick {
     margin-right: 10px;
     padding: 1px; }
   .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #e4e4e4;
-    border: 1px solid #aaa;
+    font-weight: 500;
+    background-color: #FFFFFF;
+    border: 1px solid rgb(161, 161, 161);
     border-radius: 4px;
     cursor: default;
     float: left;
@@ -2929,6 +2930,8 @@ gtmouseclick {
   border: none;
   outline: 0;
   box-shadow: none;
+  caret-color: transparent;
+  /* display: none; */
   -webkit-appearance: textfield; }
 
 .select2-container--default .select2-results > .select2-results__options {

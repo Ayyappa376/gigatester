@@ -913,6 +913,20 @@ let GigaTester_StringUtils = {
                         e.stopPropagation()
                     });
                 },
+                addRemoteButton: function() {
+                    console.log('adding remote button')
+                    const remote = document.getElementById(GigaTester.btnId)
+                    $(remote).addClass('gigatester-btn')
+                    this.custom_ui.button = remote;
+                    console.log('new btn', this.custom_ui.button)
+                    this.custom_ui.button.on("click", this.popOutDialog.bind(this));
+                    this.custom_ui.button.on("click mouseup mousedown", function(e) {
+                        e.stopPropagation()
+                    });
+                    this.custom_ui.element.on("keydown keyup", (e) => {
+                        e.stopPropagation()
+                    });
+                },
                 setNotifyStatus: function(message) {
                     if (!this.custom_ui.screen_status) {
                         this.custom_ui.screen_status = $("<gtdiv>").addClass("gigatester-screen-status").attr("data-html2canvas-ignore", "true");
@@ -3091,8 +3105,8 @@ let GigaTester_StringUtils = {
                     if(this.form_data['category'] === "category"){
                         this.form_data['category'] = ''
                     }
-                    if(this.form_data['severity'] === "severity"){
-                        this.form_data['severity'] = ''
+                    if(this.form_data['severity'] === "severity"/* || this.form_data['severity'] === ""*/){
+                        this.form_data['severity'] = '';//'unknown'
                     }
                     const postData = {
                         productRating: finalRating,
@@ -3390,6 +3404,8 @@ let GigaTester_StringUtils = {
                         if(GigaTester.hidden) {
                             console.log('GigaTester: starting in hidden mode');
                             GigaTester.hide();
+                        } else if (GigaTester.hidden && GigaTester.isRemote) {
+                            console.log('GigaTester: starting in remote mode');
                         } else {
                             console.log('GigaTester: starting in visible mode');
                         }
@@ -3429,7 +3445,7 @@ let GigaTester_StringUtils = {
                 GigaTester.hidden = false;
                 GigaTester_modal.custom_ui.element.css("display", "");
             },
-            hide: function() {
+            hide: function () {
                 GigaTester_modal.reset();
                 GigaTester.hidden = true;
                 GigaTester_modal.custom_ui.element.hide();
@@ -3499,9 +3515,9 @@ let GigaTester_StringUtils = {
                                 set_default_category_flag = true;
                                 console.log('GigaTester: category selected ' + JSON.stringify(value));
                                 if(!GigaTester_modal.video_recording_mode){
-                                GigaTester_modal.configs.bugs_default_category = value.name;
-                                GigaTester_modal.form_data['category'] = value.name;
-                                GigaTester.category = value.name;
+                                    GigaTester_modal.configs.bugs_default_category = value.name;
+                                    GigaTester_modal.form_data['category'] = value.name;
+                                    GigaTester.category = value.name;
                                 }
                                 sessionStorage.setItem('gigatesterDefaultBugsCategory', value.name);
                             }
@@ -3516,9 +3532,9 @@ let GigaTester_StringUtils = {
                                 set_default_category_flag = true;
                                 console.log('GigaTester: category selected ' + value);
                                 if(!GigaTester_modal.video_recording_mode){
-                                GigaTester_modal.configs.feedback_default_category = value.name;
-                                GigaTester_modal.form_data['category'] = value.name;
-                                GigaTester.category = value.name;
+                                    GigaTester_modal.configs.feedback_default_category = value.name;
+                                    GigaTester_modal.form_data['category'] = value.name;
+                                    GigaTester.category = value.name;
                                 }
                                 sessionStorage.setItem('gigatesterDefaultFeedbackCategory', value.name);
                             }

@@ -11,7 +11,7 @@ import { getDate } from '../../../utils/data';
 import {
   ILimitedProductDetails,
   IProductNameIdMapping, IAppFeedback, NUMBER_OF_ITEMS_PER_FETCH,
-  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getFeedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IFeedbackComments
+  IBugDataMapping, IFeedbackBarChartData, IRatingMapping, getFeedbackBarChartOptions, ILastEvalKey, IFetchRecursiveData, getPieChartOptions, IDateRange, IFeedbackComments
 } from './common';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import { getFeedbckChartData, getFeedbackData } from './methods';
@@ -19,6 +19,7 @@ import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import RenderComments from './RenderComments';
 import ImageModal from './ImageModal';
+import DateFilter from './DateFilter';
 
 interface ChosenProps {
   productInfoProp: any,
@@ -91,6 +92,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   const [categoryList, setCategoryList] = useState<any>([]);
   const [keys, setKey] = useState<boolean>(false);
   const [rating, setRating] = useState<boolean>(false);
+  const [sortDate, setSortDate] = useState<number | undefined>();
+  const [dateRange, setDateRange] = useState({ startDate: 1649415761515, endDate: 1640315761515 }); //epoch timestamp
 
   useEffect(() => {
     if (feedbackBarChartData) {
@@ -170,9 +173,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
   useEffect(() => {
     if (filtered.product && filtered.version && selectedProdId && productVersion) {
-      setBackdropOpen(true);
-      fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion });
+      if (productVersion === 'all') {
+        setBackdropOpen(true);
+        fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
+        getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: '', filterDate: dateRange });
+      } else {
+        setBackdropOpen(true);
+        fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
+        getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
+      }
     }
   }, [selectedProdId, productVersion])
 
@@ -184,7 +193,14 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       // fetch the results from backend
       setData([]);
       setRawData([])
-      fetchRecursiveData({ fetchOrder: order, prodId: selectedProdId, prodVersion: productVersion })
+      fetchRecursiveData({
+        fetchOrder: order,
+        prodId: selectedProdId,
+        prodVersion: productVersion,
+        filterCategory: focusCategory,
+        filterSeverity: focusSeverity,
+        searchWord: keyword,
+      })
     } else {
       setData(sortTableByDate(data, order))
     }
@@ -206,6 +222,27 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     //setRawData([])
     fetchRecursiveData({ filterRating: focusRating, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true })
   }, [focusRating])
+
+  useEffect(() => {
+    const today = new Date();
+    const todaysDate = Date.parse(today.toString());
+    if (rawData.length === 0) {
+      return;
+    }
+    if (dateRange) {
+      setResultsFetched(false);
+      setData([]);
+      // console.log('sorted', sortDate);
+      fetchRecursiveData({
+        prodId: selectedProdId,
+        prodVersion: productVersion,
+        showNoEmptyError: true,
+        filterDate: dateRange,
+        noRawDataUpdate: true,
+      });
+    getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
+  }
+}, [dateRange])
 
   useEffect(() => {
     if (rawData.length === 0) {
@@ -241,7 +278,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     fetchRecursiveData({ filterCategory: focusCategory, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, noRawDataUpdate: true })
   }, [focusCategory])
 
-  const fetchRecursiveData = async ({ lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory, prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate }:
+  const fetchRecursiveData = async ({ lastEvalKey, fetchOrder, filterRating, filterSeverity, filterCategory, filterDate, prodId, prodVersion, searchWord, showNoEmptyError, noRawDataUpdate }:
     IFetchRecursiveData) => {
     // setBackdropOpen(true);
     let urlAppend = ``;
@@ -279,6 +316,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`
     }
 
+    if (filterDate) {
+      urlAppend += urlAppend ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
+    }
+
     urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`
 
     const response: any = await getFeedbackData({ props, urlAppend }).catch((error) => {
@@ -292,8 +333,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       console.error('getFeedbackData failed to fetch data with Error code:', object.code)
       return;
     })
-    setResultsFetched(true);
     if (response && response.Items && response.Items.Items && Array.isArray(response.Items.Items) && response.Items.Items.length > 0) {
+      setResultsFetched(true);
       setBackdropOpen(false);
       if (searchInitiated && searchWord) {
         setSearchedData((dataObj: any) => {
@@ -330,7 +371,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
   const fetchMore = () => {
     if (Object.keys(lastEvaluatedKey).length > 0) {
-      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true });
+      setResultsFetched(false);
+      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, filterRating: focusRating, filterCategory: focusCategory, filterDate: dateRange });
     }
   }
 
@@ -343,11 +385,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
       if (Object.keys(feedbackBarChartData).length > 0) {
         setBackdropOpen(false);
       }
-      if(pieChartSeries){
+      if (pieChartSeries) {
         setCategoryList(Object.keys(pieChartSeries))
       }
     }
-  }, [selectedProdId, rawData, feedbackBarChartData,pieChartSeries, error, noDataError])
+  }, [selectedProdId, rawData, feedbackBarChartData, pieChartSeries, error, noDataError])
 
   const fetchSignedUrl = (imgUrl: string) => {
     const urlSplit = imgUrl.split('/')
@@ -426,10 +468,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     return ""
   }
 
-  // useEffect(() => {
-  //   filterByProduct(selectedProdId);
-  // }, [selectedProdId, productVersion])
-
   const filterByProduct = (val: string) => {
     console.log(prodNameIdMapping);
     if (val) {
@@ -464,7 +502,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }
 
   useEffect(() => {
-    if (keyword && searchInitiated) {
+    if (keyword) {
+      console.log(keyword, 'search initialised');
       setResultsFetched(false)
       setSearchedData([])
       fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, searchWord: keyword, showNoEmptyError: true })
@@ -542,8 +581,12 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
           noDataError ? <div style={{ marginTop: '3rem' }}><Failure message={`There is no feedback to show.`} /></div> :
             <div>
               <ImageModal {...imagePayload} />
-              <div style={{ marginTop: 50 }}>
-                <Grid container style={{ marginTop: '5rem' }}>
+                  <div style={{ marginTop: 50 }}>
+                    <Grid container style={{ width: '95%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+                      <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
+                      <DateFilter setDateRange={setDateRange}/>
+                  </Grid>
+              <Grid container style={{ marginTop: '3rem' }}>
                   <Grid item lg={5}>
                     <ReactApexChart options={feedbackBarChartOptions} series={barChartSeries} type="bar" width={500} height={320} />
                   </Grid>
