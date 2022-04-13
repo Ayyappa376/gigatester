@@ -490,7 +490,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }
 
   useEffect(() => {
-    if (keyword && searchInitiated) {
+    if (keyword) {
+      console.log(keyword, 'search initialised');
       setResultsFetched(false)
       setSearchedData([])
       fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, searchWord: keyword, showNoEmptyError: true })
