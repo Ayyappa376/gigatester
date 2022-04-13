@@ -676,6 +676,8 @@ let GigaTester_StringUtils = {
                 context_detail: {},
                 set_screen_default_category: true,
                 configs: {
+                    remoteBtn: '',
+                    isRemote: false,
                     has_video: true,
                     categories:  ['Video', 'Screen', 'Audio', 'Images', 'Other'],
                     severities: [], //['Critical', 'High', 'Medium', 'Low'],
@@ -849,53 +851,76 @@ let GigaTester_StringUtils = {
                     this.custom_ui.element = $("<gtdiv>").addClass("gigatester-ctrls-container").attr({
                         id: "gigatester_ctrls_container",
                     }).appendTo($(document.body));
-                    this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn");
-                    this.custom_ui.button.text(this.configs.main_button_text)
-                    this.custom_ui.button.appendTo(this.custom_ui.element);
-                    this.custom_ui.button[0].style.fontFamily = this.configs.main_button_font;
-                    this.custom_ui.button[0].style.fontWeight = this.configs.main_button_fontWeight;
-                    this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
-                    this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
-                    this.custom_ui.button[0].style.transform = `rotate(${this.configs.main_button_rotation}deg)`;
-                    const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn")[0];
-                    const btnPosition = this.configs.main_button_position;
-                    if (btnPosition === 'RIGHT_MIDDLE') {
-                        const reposition = this.adjustWidgetCSS(button);
-                        this.custom_ui.button[0].style.right = reposition.adjustedPos;
-                        this.custom_ui.button[0].style.top = '50%';
-                    } else if (btnPosition === 'RIGHT_BOTTOM') {
-                        const reposition = this.adjustWidgetCSS(button);
-                        console.log('reposition', reposition);
-                        this.custom_ui.button[0].style.right = reposition.adjustedPos;
-                        this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
-                    } else if (btnPosition === 'LEFT_MIDDLE') {
-                        const reposition = this.adjustWidgetCSS(button);
-                        this.custom_ui.button[0].style.right = '';
-                        this.custom_ui.button[0].style.top = '50%';
-                        this.custom_ui.button[0].style.left = reposition.adjustedPos;
-                    } else if (btnPosition === 'LEFT_BOTTOM') {
-                        const reposition = this.adjustWidgetCSS(button);
-                        this.custom_ui.button[0].style.right = '';
-                        this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
-                        this.custom_ui.button[0].style.left = reposition.adjustedPos;
-                    } else if (btnPosition === 'BOTTOM_LEFT') {
-                        this.custom_ui.button[0].style.top = '';
-                        this.custom_ui.button[0].style.bottom = '0.5%';
-                        this.custom_ui.button[0].style.left = '3%';
-                    } else if (btnPosition === 'BOTTOM_RIGHT') {
-                        this.custom_ui.button[0].style.top = '';
-                        this.custom_ui.button[0].style.bottom = '0.5%';
-                        this.custom_ui.button[0].style.right = '3%';
-                    } else if (btnPosition === 'CUSTOM') {
-                        console.log('custom css');
-                        this.custom_ui.button[0].style.top = this.configs.main_button_top;
-                        this.custom_ui.button[0].style.bottom = this.configs.main_button_bottom;
-                        this.custom_ui.button[0].style.left = this.configs.main_button_left;
-                        this.custom_ui.button[0].style.right = this.configs.main_button_right;
-                        this.custom_ui.button[0].style.borderRadius = this.configs.main_button_borderRadius;
-                        this.custom_ui.button[0].style.margin = this.configs.main_button_margin;
-                        this.custom_ui.button[0].style.padding = this.configs.main_button_padding;
+                    // this.configs.position = 'r';
+                    // this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
+                    if (GigaTester.isRemote) {
+                        const remote = document.getElementById(GigaTester.btnId)
+                        $(remote).addClass('gigatester-btn')
+                        console.log('remote', remote)
+                        this.custom_ui.button = remote;
+                    } else {
+                        this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn");
+                        this.custom_ui.button.text(this.configs.main_button_text)
+                        this.custom_ui.button.appendTo(this.custom_ui.element);
+                        this.custom_ui.button[0].style.fontFamily = this.configs.main_button_font;
+                        this.custom_ui.button[0].style.fontWeight = this.configs.main_button_fontWeight;
+                        this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
+                        this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
+                        this.custom_ui.button[0].style.transform = `rotate(${this.configs.main_button_rotation}deg)`;
+                        const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn")[0];
+                        const btnPosition = this.configs.main_button_position;
+                        if (btnPosition === 'RIGHT_MIDDLE') {
+                            const reposition = this.adjustWidgetCSS(button);
+                            this.custom_ui.button[0].style.right = reposition.adjustedPos;
+                            this.custom_ui.button[0].style.top = '50%';
+                        } else if (btnPosition === 'RIGHT_BOTTOM') {
+                            const reposition = this.adjustWidgetCSS(button);
+                            console.log('reposition', reposition);
+                            this.custom_ui.button[0].style.right = reposition.adjustedPos;
+                            this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
+                        } else if (btnPosition === 'LEFT_MIDDLE') {
+                            const reposition = this.adjustWidgetCSS(button);
+                            this.custom_ui.button[0].style.right = '';
+                            this.custom_ui.button[0].style.top = '50%';
+                            this.custom_ui.button[0].style.left = reposition.adjustedPos;
+                        } else if (btnPosition === 'LEFT_BOTTOM') {
+                            const reposition = this.adjustWidgetCSS(button);
+                            this.custom_ui.button[0].style.right = '';
+                            this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
+                            this.custom_ui.button[0].style.left = reposition.adjustedPos;
+                        } else if (btnPosition === 'BOTTOM_LEFT') {
+                            this.custom_ui.button[0].style.top = '';
+                            this.custom_ui.button[0].style.bottom = '0.5%';
+                            this.custom_ui.button[0].style.left = '3%';
+                        } else if (btnPosition === 'BOTTOM_RIGHT') {
+                            this.custom_ui.button[0].style.top = '';
+                            this.custom_ui.button[0].style.bottom = '0.5%';
+                            this.custom_ui.button[0].style.right = '3%';
+                        } else if (btnPosition === 'CUSTOM') {
+                            console.log('custom css');
+                            this.custom_ui.button[0].style.top = this.configs.main_button_top;
+                            this.custom_ui.button[0].style.bottom = this.configs.main_button_bottom;
+                            this.custom_ui.button[0].style.left = this.configs.main_button_left;
+                            this.custom_ui.button[0].style.right = this.configs.main_button_right;
+                            this.custom_ui.button[0].style.borderRadius = this.configs.main_button_borderRadius;
+                            this.custom_ui.button[0].style.margin = this.configs.main_button_margin;
+                            this.custom_ui.button[0].style.padding = this.configs.main_button_padding;
+                        }
                     }
+                    this.custom_ui.button.on("click", this.popOutDialog.bind(this));
+                    this.custom_ui.button.on("click mouseup mousedown", function(e) {
+                        e.stopPropagation()
+                    });
+                    this.custom_ui.element.on("keydown keyup", (e) => {
+                        e.stopPropagation()
+                    });
+                },
+                addRemoteButton: function() {
+                    console.log('adding remote button')
+                    const remote = document.getElementById(GigaTester.btnId)
+                    $(remote).addClass('gigatester-btn')
+                    this.custom_ui.button = remote;
+                    console.log('new btn', this.custom_ui.button)
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
@@ -2042,11 +2067,6 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.html(html);
                     this.setDialogForm();
                 },
-                // setMultiSelect: function(){
-                //     GigaTester_modal.multiSelect = 'true';
-                //     $('#category').val(['']).trigger('change');
-                //     setTimeout(()=> {GigaTester_modal.setDialogForm();},100);
-                // },
                 setDialogForm: function() {
                     let form_settings = this.getFormSettings(this.form_type);
                     this.checkSessionStorage();
@@ -2619,37 +2639,53 @@ let GigaTester_StringUtils = {
                     }
                     const currentPosition = GigaTester_modal.configs.main_button_position;
                     const button = $(document.getElementsByClassName("gigatester-btn"));
-                    if (currentPosition === 'RIGHT_MIDDLE') {
-                        popup_dialog[0].style.bottom = '-114px';
-                    } else if (currentPosition === 'RIGHT_BOTTOM') {
-                        popup_dialog[0].style.left = '-55px';
-                        popup_dialog[0].style.bottom = '-114px';
-                    } else if (currentPosition === 'LEFT_MIDDLE') {
-                        popup_dialog[0].style.bottom = '-114px';
-                    } else if (currentPosition === 'LEFT_BOTTOM') {
-                        popup_dialog[0].style.left = '70px';
-                        popup_dialog[0].style.bottom = '-114px';
-                    } else if (currentPosition === 'BOTTOM_RIGHT' || currentPosition === 'BOTTOM_LEFT') {
-                        popup_dialog[0].style.top = '-175px';
-                    } else if (currentPosition === 'CUSTOM') {
-                        if(GigaTester_modal.configs.main_button_top && GigaTester_modal.configs.main_button_top !== '') {
-                            popup_dialog[0].style.top = `${button.height()}px`;
-                        }
-                        if(GigaTester_modal.configs.main_button_bottom && GigaTester_modal.configs.main_button_bottom !== '') {
-                            popup_dialog[0].style.top = '-175px';
-                        }
-                        // if(GigaTester_modal.configs.main_button_left && GigaTester_modal.configs.main_button_left !== '') {
-                        //     popup_dialog[0].style.left = `${button.position().left}px`;
-                        // }
-                        // if(GigaTester_modal.configs.main_button_right && GigaTester_modal.configs.main_button_right !== '') {
-                        //     popup_dialog[0].style.right = `${button.position().right}px`;
-                        // }
-                        if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
-                        && GigaTester_modal.configs.main_button_rotation !== '0') {
+                    if (GigaTester_modal.configs.isRemote) {
+                        console.log('pop up is remote', GigaTester_modal.configs.isRemote)
+                        popup_dialog[0].style.position = 'absolute';
+                        popup_dialog[0].style.transform = 'rotate(0deg)';
+                        popup_dialog[0].style.left = '45%';
+                        popup_dialog[0].style.top = '40%';
+                        popup_dialog[0].style.width = '200px';
+                        popup_dialog[0].style.height = '140px';
+                    } else {
+                        if (currentPosition === 'RIGHT_MIDDLE') {
                             popup_dialog[0].style.bottom = '-114px';
+                        } else if (currentPosition === 'RIGHT_BOTTOM') {
+                            popup_dialog[0].style.left = '-55px';
+                            popup_dialog[0].style.bottom = '-114px';
+                        } else if (currentPosition === 'LEFT_MIDDLE') {
+                            popup_dialog[0].style.bottom = '-114px';
+                        } else if (currentPosition === 'LEFT_BOTTOM') {
+                            popup_dialog[0].style.left = '70px';
+                            popup_dialog[0].style.bottom = '-114px';
+                        } else if (currentPosition === 'BOTTOM_RIGHT' || currentPosition === 'BOTTOM_LEFT') {
+                            popup_dialog[0].style.top = '-175px';
+                        } else if (currentPosition === 'CUSTOM') {
+                            if(GigaTester_modal.configs.main_button_top && GigaTester_modal.configs.main_button_top !== '') {
+                                popup_dialog[0].style.top = `${button.height()}px`;
+                            }
+                            if(GigaTester_modal.configs.main_button_bottom && GigaTester_modal.configs.main_button_bottom !== '') {
+                                popup_dialog[0].style.top = '-175px';
+                            }
+                            // if(GigaTester_modal.configs.main_button_left && GigaTester_modal.configs.main_button_left !== '') {
+                            //     popup_dialog[0].style.left = `${button.position().left}px`;
+                            // }
+                            // if(GigaTester_modal.configs.main_button_right && GigaTester_modal.configs.main_button_right !== '') {
+                            //     popup_dialog[0].style.right = `${button.position().right}px`;
+                            // }
+                            if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
+                            && GigaTester_modal.configs.main_button_rotation !== '0') {
+                                popup_dialog[0].style.bottom = '-114px';
+                            }
                         }
                     }
-                    popup_dialog.appendTo(button[0]);
+
+                    if (!GigaTester_modal.configs.isRemote) {
+                        popup_dialog.appendTo(button[0]);
+                    } else {
+                        popup_dialog.appendTo(document.body)
+                    }
+                    // popup_dialog.appendTo(button[0]);
 
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.bug_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
@@ -3376,9 +3412,19 @@ let GigaTester_StringUtils = {
                         GigaTester_modal.addFeedbackButton();
                         GigaTester_modal.checkSelectDependancyload();
 
-                        if(GigaTester.hidden) {
-                            console.log('GigaTester: starting in hiddden mode');
+                        // else if (GigaTester.hidden && GigaTester.isRemote) {
+                        //     console.log('GigaTester: in remote button mode')
+                        //     GigaTester.hide();
+                        //     GigaTester_modal.configs.remoteBtn = GigaTester.btnId;
+                        //     GigaTester_modal.addRemoteButton();
+                        //     // GigaTester_modal.addRemotePopUp();
+                        // }
+
+                        if(GigaTester.hidden && !GigaTester.isRemote) {
+                            console.log('GigaTester: starting in hidden mode');
                             GigaTester.hide();
+                        } else if (GigaTester.hidden && GigaTester.isRemote) {
+                            console.log('GigaTester: starting in remote mode');
                         } else {
                             console.log('GigaTester: starting in visible mode');
                         }
@@ -3418,10 +3464,16 @@ let GigaTester_StringUtils = {
                 GigaTester.hidden = false;
                 GigaTester_modal.custom_ui.element.css("display", "");
             },
-            hide: function() {
+            hide: function () {
                 GigaTester_modal.reset();
                 GigaTester.hidden = true;
                 GigaTester_modal.custom_ui.element.hide();
+            },
+            useRemoteBtn: function (id) {
+                console.log('id', id)
+                GigaTester_modal.configs.remoteBtn = id;
+                GigaTester_modal.configs.isRemote = true;
+
             },
             //TODO: should eventually remove this function and use only the property
             setEmail: function(email) {
