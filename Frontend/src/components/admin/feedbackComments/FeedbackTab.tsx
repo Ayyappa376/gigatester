@@ -224,6 +224,27 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }, [focusRating])
 
   useEffect(() => {
+    const today = new Date();
+    const todaysDate = Date.parse(today.toString());
+    if (rawData.length === 0) {
+      return;
+    }
+    if (dateRange) {
+      setResultsFetched(false);
+      setData([]);
+      // console.log('sorted', sortDate);
+      fetchRecursiveData({
+        prodId: selectedProdId,
+        prodVersion: productVersion,
+        showNoEmptyError: true,
+        filterDate: dateRange,
+        noRawDataUpdate: true,
+      });
+    getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
+  }
+}, [dateRange])
+
+  useEffect(() => {
     if (rawData.length === 0) {
       return;
     }
@@ -350,7 +371,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
   const fetchMore = () => {
     if (Object.keys(lastEvaluatedKey).length > 0) {
-      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, filterRating: focusRating });
+      fetchRecursiveData({ lastEvalKey: lastEvaluatedKey, prodId: selectedProdId, prodVersion: productVersion, showNoEmptyError: true, filterRating: focusRating, filterCategory: focusCategory });
     }
   }
 
@@ -446,19 +467,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
     return ""
   }
 
-  useEffect(() => {
-    const today = new Date();
-    const todaysDate = Date.parse(today.toString());
-    if (sortDate) {
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: todaysDate, endDate: sortDate } });
-    }
-    const { startDate, endDate } = dateRange;
-    if (startDate !== 1649415761515 || endDate !== 1640315761515) {
-      console.log('daterange', dateRange)
-      getFeedbckChartData({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: { startDate: startDate, endDate: endDate } });
-    }
-  }, [sortDate, dateRange])
-
   const filterByProduct = (val: string) => {
     console.log(prodNameIdMapping);
     if (val) {
@@ -493,7 +501,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
   }
 
   useEffect(() => {
-    if (keyword && searchInitiated) {
+    if (keyword) {
+      console.log(keyword, 'search initialised');
       setResultsFetched(false)
       setSearchedData([])
       fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, searchWord: keyword, showNoEmptyError: true })
@@ -574,7 +583,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
                   <div style={{ marginTop: 50 }}>
                     <Grid container style={{ width: '95%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
                       <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
-                      <DateFilter setSortDate={setSortDate} setDateRange={setDateRange}/>
+                      <DateFilter setDateRange={setDateRange}/>
                   </Grid>
               <Grid container style={{ marginTop: '3rem' }}>
                   <Grid item lg={5}>

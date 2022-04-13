@@ -7,6 +7,8 @@ interface IKeywordFilterProps {
     onSubmit: Function;
     onClear: Function;
     keys: boolean;
+    default: string;
+    disableButtons: boolean;
     setDisable: Function;
 }
 
@@ -16,17 +18,25 @@ const keywords = [
 
 
 export const RenderKeywordFilter = (props: IKeywordFilterProps) => {
-    const [keyword, setKeyword] = useState("");
+    const [keyword, setKeyword] = useState(() => {
+        if(props.default) return props.default;
+        return '';
+    });
+    const {setDisable} = props;
 
     const handleKeywordClick = (val: string) => {
+        if(props.disableButtons) {
+            return;
+        }
         if(keyword === val) {
             props.onClear();
-            props.setDisable('');
+            setDisable('');
             setKeyword("");
         } else {
-            props.onSubmit(val);
-            props.setDisable('key');
             setKeyword(val);
+            setDisable('key');
+            props.onSubmit(val);
+            console.log(val, 'keyword');
         }
     }
 

@@ -67,7 +67,7 @@ export const ALROUND = 'alround'
 
 const RenderTable = (props: IProps) => {
   const classes = useStyles();
-  const { tableData, resultsFetched, category, severity, keys, rating, setDisable, disable, urls } = props;
+  const { tableData, resultsFetched, category, severity, keys, rating, setKeyword, setDisable, disable, urls } = props;
   const [fetchAllUrls, setFetchAllUrls] = useState(false);
   const [isBugReport, setBugReport] = useState<boolean>(false);
   const { ref, inView, entry } = useInView();
@@ -153,7 +153,7 @@ const RenderTable = (props: IProps) => {
     ).catch((error) => { console.error(error) });
   }
 
-  const handleOnSearch = (search: any) => { props.setKeyword(search); props.setSearchInitiated(true) };
+  const handleOnSearch = (search: any) => { setKeyword(search); props.setSearchInitiated(true) };
 
   return (
     <Container style={{marginTop: '5rem'}}>
@@ -167,7 +167,7 @@ const RenderTable = (props: IProps) => {
           <Grid container>
             <Grid item md={5}>
               {
-                <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
+                <RenderKeywordFilter keys={keys} default={props.keyword} setDisable={setDisable} onSubmit={handleOnSearch} onClear={()=> {props.clearSearch(); console.log('clearsearch')}} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)}/>
               }
             </Grid>
             <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>
@@ -183,7 +183,7 @@ const RenderTable = (props: IProps) => {
           </Grid> : <Grid container>
               <Grid item md={6}>
                 {
-                  <RenderKeywordFilter keys={keys} setDisable={setDisable} onSubmit={(val: string) => {props.setKeyword(val)}} onClear={()=> {props.clearSearch()}}/>
+                  <RenderKeywordFilter keys={keys} default={props.keyword} setDisable={setDisable} onSubmit={handleOnSearch} onClear={()=> {props.clearSearch()}} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} />
                 }
               </Grid>
               <Grid item lg={1}><Divider orientation="vertical" variant="middle"/></Grid>

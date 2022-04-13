@@ -5,42 +5,42 @@ import {
   Box,
   Button,
 } from '@material-ui/core';
-import { AnyARecord } from 'dns';
 import React, { useEffect, useState } from 'react';
 import './stylesRenderFilters.css';
 import { filterDate } from './methods';
-import DateRangePicker from '@wojtekmaj/react-daterange-picker';
-import { processAverageScore } from '../dashboard/common/manipulate_data';
+import { IDateRange } from './common';
 
-interface DateProp {
-  setSortDate: Function;
+interface IDateProps{
   setDateRange: Function;
 }
 
-const DateFilter = ({  setSortDate, setDateRange }: DateProp) => {
+const DateFilter = ({  setDateRange }: IDateProps) => {
   const [date, setDate] = useState(new Date());
-  const [calendar, setCalendar] = useState<any>([new Date(), new Date()])
+  const [selectedDate, setSelectedDate] = useState('1Y');
   const classes = useStyles();
 
   const dateOptions: string[] = ['1D', '1W', '1M', '6M', '1Y'];
 
   const handleDateChange = (date: any, filter: string) => {
     const newDate = new Date(date);
-    const result: any = filterDate(newDate, filter);
-    setDate(result['dateObj']);
-    setSortDate(result['epoch']);
-  }
-
-  const handleCalendarChange = (event: any) => {
-    // console.log('event', event);
-    setCalendar(event)
-    const result: any = filterDate(calendar, '');
-    if (result.start && result.end) {
-      setDateRange((prevState: any) => ({
-        ...prevState,
-        ['startDate']: result.start,
-        ['endDate']: result.end,
-      }))
+    const today = new Date();
+    const todaysDate = Date.parse(today.toString());
+    let result: any = filterDate(newDate, filter);
+    console.log('result', result);
+    if (filter === '') {
+      setSelectedDate(filter);
+      setDate(result['dateObj']);
+      setDateRange({startDate: todaysDate,  endDate: result['epoch']});
+    } else if ( filter === selectedDate){
+      result = filterDate(newDate, '1Y')
+      setSelectedDate('1Y');
+      setDate(result['dateObj']);
+      setDateRange({startDate: todaysDate,  endDate: result['epoch']});
+    }
+    else {
+      setSelectedDate(filter)
+      setDate(result['dateObj'])
+      setDateRange({startDate: todaysDate,  endDate: result['epoch']});
     }
   }
 
@@ -55,15 +55,10 @@ const DateFilter = ({  setSortDate, setDateRange }: DateProp) => {
       alignItems: 'center',
     }}>
       {dateOptions.map((day, index: number) => (
-        <Button key={index} id="RenderFilter-btn" size="small" variant="outlined" onClick={(event) => handleDateChange(event, day)}>{day}</Button>
+        <Button key={index} id={day === selectedDate ? "RenderFilter-btnVisited" : "RenderFilter-btn"} size="small" variant="outlined" onClick={(event) => handleDateChange(event, day)}>{day}</Button>
       )) }
-      <Box sx={{
-        height: '25px'
-      }}>
-        <DateRangePicker onChange={(event: any) => handleCalendarChange(event)}
-          value={calendar}
-          clearIcon={null}
-        />
+      <Box>
+        {/* <DatePicker onChange={(event) => handleDateChange(event, '')}  value={date} /> */}
       </Box>
     </Box>
 	);

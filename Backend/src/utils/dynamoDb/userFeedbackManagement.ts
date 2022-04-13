@@ -168,7 +168,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
       const beginDate = new Date(parseInt(startDate)).getTime();
       EAV[':startDate'] = beginDate;
       EAV[':endDate'] = lastDate;
-      params.KeyConditionExpression = 'feedbackType=:type AND createdOn GE :endDate AND createdOn LE :startDate';
+      params.KeyConditionExpression = 'feedbackType=:type AND createdOn BETWEEN :endDate AND :startDate';
     }
     else{
       params.KeyConditionExpression = 'feedbackType=:type';
