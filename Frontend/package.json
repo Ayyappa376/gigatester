@@ -44,6 +44,7 @@
     "react-circular-progressbar": "^2.0.3",
     "react-color": "^2.19.3",
     "react-datetime": "^3.0.4",
+    "react-datetime-range-picker": "^3.0.0",
     "react-dom": "16.8.6",
     "react-draggable": "^4.4.4",
     "react-ga": "^2.7.0",
