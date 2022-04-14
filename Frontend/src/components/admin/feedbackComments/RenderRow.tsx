@@ -25,6 +25,7 @@ import RenderStars from './RenderStarts';
 import AudioPlayer from './audioPlayer';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
+import BurstModeIcon from '@material-ui/icons/BurstMode';
 const RenderMedia = React.lazy(() => import('./RenderMedia'));
 
 interface RowProps {
@@ -145,8 +146,20 @@ const RenderRow = ({
 						? row.feedbackCategory
 						: '-'}
 				</TableCell>
-				<TableCell align='left' style={{ maxWidth: '30vw', fontSize: '1rem' }}>
-					<div style={{ overflow: 'auto', maxHeight: '10vh' }}>
+				<TableCell align='left' className={classes.commentBox}>
+					<div style={{ overflow: 'auto', maxHeight: '10vh', position: 'relative' }}>
+						{row.feedbackMedia.image ||
+						row.feedbackMedia.audio ||
+						row.feedbackMedia.video ||
+						row.feedbackMedia.file ? (
+							<IconButton
+								aria-label='asset attached'
+								size='small'
+								className={classes.assetIcon}
+							>
+								<BurstModeIcon style={{ color: '#0B4263', fontSize: '20px' }} />
+							</IconButton>
+						) : null}
 						<RenderComments
 							category={row.feedbackCategory}
 							isBugReport={isBugReport}
@@ -320,6 +333,24 @@ const useStyles = makeStyles((theme: Theme) =>
 		iconButton: {
 			position: 'absolute',
 			margin: '1px',
+		},
+		assetIcon: {
+			position: 'absolute',
+			right: '0',
+		},
+		commentBox: {
+			maxWidth: '30vw',
+			fontSize: '1rem',
+			"&::-webkit-scrollbar": {
+				width: '5px',
+			},
+			"&::-webkit-scrollbar-track": {
+				boxShadow: `inset 0 0 6px rgba(0, 0, 0, 0.3)`,
+			},
+			"&::-webkit-scrollbar-thumb": {
+				backgroundColor: "darkgrey",
+				outline: `1px solid slategrey`,
+			},
 		},
 	}),
 );
