@@ -582,7 +582,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
             <div>
               <ImageModal {...imagePayload} />
                   <div style={{ marginTop: 50 }}>
-                    <Grid container style={{ width: '95%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
+                    <Grid container style={{ width: '55%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
                       <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
                       <DateFilter setDateRange={setDateRange}/>
                   </Grid>

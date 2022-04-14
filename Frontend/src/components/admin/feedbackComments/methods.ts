@@ -67,7 +67,7 @@ interface IGetChartData {
 
 export const getFeedbckChartData = async ({ setFeedbackBarChartData, setBugBarChartSeries, setPieChartSeries, prodId, prodVersion, filterDate }: IGetChartData) => {
   // console.log('date',filterDate);
-      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}`; //hard coded for filterdate
+      let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}`;
       url += prodVersion ? `&prodVersion=${prodVersion}` : '';
       url += filterDate ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : '';
       Http.get({
@@ -84,7 +84,7 @@ export const getFeedbckChartData = async ({ setFeedbackBarChartData, setBugBarCh
   }
 
   export const getBugChartData = async({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId, prodVersion, filterDate}: IGetChartData) => {
-    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}`; //hard coded for filterdate
+    let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}`;
     url += prodVersion ? `&prodVersion=${prodVersion}` : '';
     url += filterDate ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : '';
     Http.get({
