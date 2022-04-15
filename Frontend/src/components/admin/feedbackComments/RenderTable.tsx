@@ -2,47 +2,27 @@ import {
 	Container,
 	Paper,
 	Table,
-	TableHead,
 	TableRow,
 	TableCell,
 	Typography,
 	TableBody,
-	MuiThemeProvider,
-	Tooltip,
 	makeStyles,
-	Link,
-	Divider,
-	TablePagination,
 	TableContainer,
 	Toolbar,
 	lighten,
-	Grid,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
-import { getDate, getDateTime } from '../../../utils/data';
-import FolderList from './FolderList';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
-import AudioPlayer from './audioPlayer';
 import SearchField from './SearchField';
 import EnhancedTableHead from './EnhancedTableHead';
-import RenderRatingFilter from './RenderFilters';
-import RenderKeywordFilter from './RenderKeywordFilter';
-import RenderSeverityFilter from './RenderSeverityFilter';
-import RenderCategoryFilter from './RenderCategoryFilter';
 import { updateSignedUrls, useActions } from '../../../actions';
-import { IAppFeedback, ICommentObject } from './common';
-import RenderStars from './RenderStars';
-import renderComments from './RenderComments';
+import { IAppFeedback } from './common';
 import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from 'react-loader-spinner';
 import RenderRow from './RenderRow';
-import RenderComments from './RenderComments';
-import Failure from '../../failure-page';
-import { table } from 'console';
 
 interface IProps {
 	tableData: IAppFeedback[];
@@ -422,107 +402,3 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 export default RenderTable;
-
-
-// {isBugReport ? (
-//   <Grid container>
-//     <Grid item md={5}>
-//       {
-//         <RenderKeywordFilter
-//           keys={keys}
-//           default={props.keyword}
-//           setDisable={setDisable}
-//           onSubmit={handleOnSearch}
-//           onClear={() => {
-//             props.clearSearch();
-//             console.log('clearsearch');
-//           }}
-//           disableButtons={
-//             !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//           }
-//         />
-//       }
-//     </Grid>
-//     <Grid item lg={1}>
-//       <Divider orientation='vertical' variant='middle' />
-//     </Grid>
-//     <Grid item md={6}>
-//       {
-//         <div>
-//           <RenderSeverityFilter
-//             severity={severity}
-//             setDisable={setDisable}
-//             severityList={props.severityList}
-//             focusSeverity={props.focusSeverity}
-//             setFocusSeverity={props.setFocusSeverity}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//           />
-//           <Divider
-//             style={{
-//               marginTop: '1rem',
-//               marginBottom: '1rem',
-//               transform: 'translateX(-1rem) scaleX(1.1)',
-//             }}
-//           />
-//           <RenderCategoryFilter
-//             category={category}
-//             setDisable={setDisable}
-//             focusCategory={props.focusCategory}
-//             setFocusCategory={props.setFocusCategory}
-//             type={type}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//             categoryList={props.categoryList}
-//           />
-//         </div>
-//       }
-//     </Grid>
-//   </Grid>
-// ) : (
-//   <Grid container>
-//     {/* <Grid item md={6}>
-//         {
-//           <RenderKeywordFilter keys={keys} default={props.keyword} setDisable={setDisable} onSubmit={handleOnSearch} onClear={()=> {props.clearSearch()}} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} />
-//         }
-//       </Grid> */}
-//     <Grid item lg={1}>
-//       <Divider orientation='vertical' variant='middle' />
-//     </Grid>
-//     <Grid item md={5}>
-//       {
-//         <div>
-//           <RenderRatingFilter
-//             rating={rating}
-//             setDisable={setDisable}
-//             focusRating={props.focusRating}
-//             setFocusRating={props.setFocusRating}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//           />
-//           <Divider
-//             style={{
-//               marginTop: '1rem',
-//               marginBottom: '1rem',
-//               transform: 'translateX(-1rem) scaleX(1.1)',
-//             }}
-//           />
-//           <RenderCategoryFilter
-//             category={category}
-//             setDisable={setDisable}
-//             focusCategory={props.focusCategory}
-//             setFocusCategory={props.setFocusCategory}
-//             type={type}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//             categoryList={props.categoryList}
-//           />
-//         </div>
-//       }
-//     </Grid>
-//   </Grid>
-// )}

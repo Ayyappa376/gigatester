@@ -55,7 +55,7 @@ const RenderComments = (props: IProps) => {
                 <Typography color="textSecondary" style={{fontSize: '.85rem'}}>{`${props.category} related ${props.isBugReport? 'bugs' : 'feedbacks'}:`}</Typography>
                 {
                   comments[props.category].map((el: string, i: number) => {
-                    return <div key={el + i.toString()} style={{marginTop: 'auto', marginBottom: 'auto'}}>&#9679;&nbsp;{el}</div>
+                    return <div key={el + i.toString()} style={{marginTop: 'auto', marginBottom: 'auto'}}>&nbsp;&nbsp;- {el}</div>
                   })
                 }
               </div> : <div/>
@@ -71,7 +71,7 @@ const RenderComments = (props: IProps) => {
                           if(old) {
                             return (
                               <div key={key}>
-                                <div>&#9679;&nbsp;{comments[key].message}</div>
+                                <div>&nbsp;&nbsp;- {comments[key].message}</div>
                               </div>
                             )
                           }
@@ -91,7 +91,7 @@ const RenderComments = (props: IProps) => {
             comments['generalComment'] ?
               <div style={{marginTop: '1rem'}}>
                 <Typography color="textSecondary" style={{fontSize: '.85rem'}}>User remarks:</Typography>
-                <div style={{marginTop: 'auto', marginBottom: 'auto'}}>&#9679;&nbsp;{comments['generalComment']}</div>
+                <div style={{marginTop: 'auto', marginBottom: 'auto'}}>&nbsp;&nbsp;- {comments['generalComment']}</div>
               </div> : <div/>
           }
         </div>

@@ -78,11 +78,11 @@ const RenderRow = ({
 					>
 						{show ? (
 							<KeyboardArrowDownIcon
-								style={index % 2 ? { color: '#CACFD2' } : { color: 'white' }}
+								style={index % 2 ? { color: 'rgb(10,34,90)' } : { color: 'rgb(10,34,90)' }}
 							/>
 						) : (
 							<KeyboardArrowRight
-								style={index % 2 ? { color: '#CACFD2' } : { color: 'white' }}
+								style={index % 2 ? { color: 'rgb(10,34,90)' } : { color: 'rgb(10,34,90)' }}
 							/>
 						)}
 					</IconButton>
@@ -98,9 +98,12 @@ const RenderRow = ({
 				style={
 					index % 2
 						? { background: 'white', borderBottom: 'none', minHeight: '160px' }
-						: { background: '#D5D8DC ', borderBottom: 'none', minHeight: '160px' }
+						: {
+								background: 'rgba(10, 34, 90, 0.1)',
+								borderBottom: 'none',
+								minHeight: '160px',
+						  }
 				}
-				// style={ show ? { borderBottom: 'none' } : { borderBottom: '1px solid gray' }}
 			>
 				<TableCell
 					style={{
@@ -177,7 +180,7 @@ const RenderRow = ({
 				style={
 					index % 2
 						? { background: 'white', borderBottom: 'none' }
-						: { background: '#D5D8DC ', borderBottom: 'none' }
+						: { background: 'rgba(10, 34, 90, 0.1) ', borderBottom: 'none' }
 				}
 			>
 				<TableCell
@@ -341,14 +344,14 @@ const useStyles = makeStyles((theme: Theme) =>
 		commentBox: {
 			maxWidth: '30vw',
 			fontSize: '1rem',
-			"&::-webkit-scrollbar": {
+			'&::-webkit-scrollbar': {
 				width: '5px',
 			},
-			"&::-webkit-scrollbar-track": {
+			'&::-webkit-scrollbar-track': {
 				boxShadow: `inset 0 0 6px rgba(0, 0, 0, 0.3)`,
 			},
-			"&::-webkit-scrollbar-thumb": {
-				backgroundColor: "darkgrey",
+			'&::-webkit-scrollbar-thumb': {
+				backgroundColor: 'darkgrey',
 				outline: `1px solid slategrey`,
 			},
 		},
