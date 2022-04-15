@@ -857,7 +857,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 						<div>
 							<ImageModal {...imagePayload} />
 							<div style={{ marginTop: 50 }}>
-								<Grid container style={{ width: '100%', marginTop: '0.6rem' }}>
+								<Grid container style={{ width: '100%', marginTop: '0.4rem' }}>
 									{currentDisable.length > 0 ? (
 										<Alert className={classes.info} severity='info'>
 											Deselect button to reactivate filters

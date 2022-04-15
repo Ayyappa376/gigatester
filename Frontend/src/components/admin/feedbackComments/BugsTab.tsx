@@ -6,6 +6,7 @@ import {
 	Typography,
 	Paper,
 } from '@material-ui/core';
+import { Alert } from '@material-ui/lab';
 import React, { useState, useEffect } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { Http } from '../../../utils';
@@ -800,6 +801,16 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 							<ImageModal {...imagePayload} />
 							<div style={{ marginTop: 50 }}>
 								<Grid container style={{ width: '100%', marginTop: '0.5rem' }}>
+									{currentDisable.length > 0 ? (
+										<Alert className={classes.info} severity='info'>
+											Deselect button to reactivate filters
+										</Alert>
+									) : (
+										<Alert className={classes.info} severity='info'>
+											Please only select one filter at a time. Other options will disabled
+											automatically when selecting
+										</Alert>
+									)}
 									<FilterToolBar
 										children={[
 											{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
@@ -992,6 +1003,18 @@ const useStyles = makeStyles((theme) => ({
 		left: '0',
 		backgroundColor: 'rgba(0,0,0,.7)',
 		transition: 'width 0.5s ease, height 0.5s ease',
+	},
+	info: {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		width: 'auto',
+		height: '20px',
+		fontSize: '13px',
+		padding: '5px',
+		marginBottom: '10px',
+		borderRadius: '10px',
 	},
 }));
 
