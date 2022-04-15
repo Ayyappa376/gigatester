@@ -208,18 +208,6 @@ const RenderTable = (props: IProps) => {
 
 	return (
 		<Container style={{ marginTop: '5rem' }}>
-			{/* <Paper className={classes.filters}>
-				{disable.length > 0 ? (
-					<Alert className={classes.info} severity='info'>
-						Deselect button to reactivate filters
-					</Alert>
-				) : (
-					<Alert className={classes.info} severity='info'>
-						Please only select one filter at a time. Other options will disabled
-						automatically when selecting
-					</Alert>
-				)}
-			</Paper> */}
 			<div className={classes.paper}>
 				<Toolbar className={classes.root}>
 					<Typography
@@ -239,86 +227,64 @@ const RenderTable = (props: IProps) => {
 						clearSearch={props.clearSearch}
 					/>
 				</Toolbar>
-				<TableContainer className={classes.tableCont}>
-					<Table
-						className={classes.table}
-						aria-labelledby='tableTitle'
-						size={'medium'}
-						aria-label='enhanced table'
-					>
-						<EnhancedTableHead
-							classes={classes}
-							order={props.order}
-							onRequestSort={(property: string) => {
-								props.handleRequestSort();
-							}}
-							rowCount={tableData.length}
-							isBugReport={isBugReport}
-							searchInitiated={props.searchInitiated}
-						/>
-						{tableData.length > 0 ? (
-							<TableBody>
-								{props.tableData.map((row: IAppFeedback, index: number) => {
-									//              const labelId = `enhanced-table-checkbox-${index}`;
-									const platformInfo = row.platformName
-										? row.platformVersion
-											? `${row.platformName} - ${row.platformVersion}`
-											: row.platformName
-										: '-';
-									const osInfo = row.platformOs
-										? Object.values(row.platformOs).join('  - ')
-										: '-';
-									return (
-										<RenderRow
-											key={index}
-											index={index}
-											tableData={tableData}
-											innerRef={ref}
-											row={row}
-											fetchAllUrls={fetchAllUrls}
-											platformInfo={platformInfo}
-											osInfo={osInfo}
-											isBugReport={isBugReport}
-											signedUrlMapping={signedUrlMapping}
-											props={props}
-										/>
-									);
-								})}
-								{props.resultsFetched ? (
-									<TableRow>
-										<TableCell></TableCell>
-									</TableRow>
-								) : (
-									<TableRow>
-										<TableCell>
-											<TailSpin
-												wrapperStyle={{ marginLeft: '62%', transform: 'translateX: "-50%' }}
-												height='60'
-												width='30'
-												color='black'
-												ariaLabel='loading'
+				<Paper
+					elevation={3}
+					style={{
+						paddingTop: 10,
+					}}
+				>
+					<TableContainer className={classes.tableCont}>
+						<Table
+							className={classes.table}
+							aria-labelledby='tableTitle'
+							size={'medium'}
+							aria-label='enhanced table'
+						>
+							<EnhancedTableHead
+								classes={classes}
+								order={props.order}
+								onRequestSort={(property: string) => {
+									props.handleRequestSort();
+								}}
+								rowCount={tableData.length}
+								isBugReport={isBugReport}
+								searchInitiated={props.searchInitiated}
+							/>
+							{tableData.length > 0 ? (
+								<TableBody>
+									{props.tableData.map((row: IAppFeedback, index: number) => {
+										//              const labelId = `enhanced-table-checkbox-${index}`;
+										const platformInfo = row.platformName
+											? row.platformVersion
+												? `${row.platformName} - ${row.platformVersion}`
+												: row.platformName
+											: '-';
+										const osInfo = row.platformOs
+											? Object.values(row.platformOs).join('  - ')
+											: '-';
+										return (
+											<RenderRow
+												key={index}
+												index={index}
+												tableData={tableData}
+												innerRef={ref}
+												row={row}
+												fetchAllUrls={fetchAllUrls}
+												platformInfo={platformInfo}
+												osInfo={osInfo}
+												isBugReport={isBugReport}
+												signedUrlMapping={signedUrlMapping}
+												props={props}
 											/>
-										</TableCell>
-									</TableRow>
-								)}
-							</TableBody>
-						) : (
-							<TableBody>
-								<TableRow>
-									<TableCell>
-										<div
-											style={{
-												width: props.resultsFetched ? '249%' : '400%',
-												padding: '.2rem 0 .2rem 0',
-											}}
-										>
-											{props.resultsFetched ? (
-												<div
-													style={{ marginLeft: '62%', transform: 'translateX: "-50%' }}
-												>{`There are no ${
-													isBugReport ? 'bugs' : 'feedbacks'
-												} to show.`}</div>
-											) : (
+										);
+									})}
+									{props.resultsFetched ? (
+										<TableRow>
+											<TableCell></TableCell>
+										</TableRow>
+									) : (
+										<TableRow>
+											<TableCell>
 												<TailSpin
 													wrapperStyle={{
 														marginLeft: '62%',
@@ -329,21 +295,50 @@ const RenderTable = (props: IProps) => {
 													color='black'
 													ariaLabel='loading'
 												/>
-											)}
-										</div>
-									</TableCell>
-								</TableRow>
-							</TableBody>
-						)}
-					</Table>
-				</TableContainer>
+											</TableCell>
+										</TableRow>
+									)}
+								</TableBody>
+							) : (
+								<TableBody>
+									<TableRow>
+										<TableCell>
+											<div
+												style={{
+													width: props.resultsFetched ? '249%' : '400%',
+													padding: '.2rem 0 .2rem 0',
+												}}
+											>
+												{props.resultsFetched ? (
+													<div
+														style={{ marginLeft: '62%', transform: 'translateX: "-50%' }}
+													>{`There are no ${
+														isBugReport ? 'bugs' : 'feedbacks'
+													} to show.`}</div>
+												) : (
+													<TailSpin
+														wrapperStyle={{
+															marginLeft: '62%',
+															transform: 'translateX: "-50%',
+														}}
+														height='60'
+														width='30'
+														color='black'
+														ariaLabel='loading'
+													/>
+												)}
+											</div>
+										</TableCell>
+									</TableRow>
+								</TableBody>
+							)}
+						</Table>
+					</TableContainer>
+				</Paper>
 			</div>
 		</Container>
 	);
 };
-
-// style={{ marginLeft: "62%", transform: 'translateX: "-50%' }}
-//style={{ width: props.resultsFetched ? '249%' : '400%', padding: '.2rem 0 .2rem 0' }}
 
 export const useStyles = makeStyles((theme) => ({
 	button: {

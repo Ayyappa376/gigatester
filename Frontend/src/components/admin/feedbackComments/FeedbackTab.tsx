@@ -1,23 +1,19 @@
 import {
 	Backdrop,
-	Button,
 	CircularProgress,
-	Container,
 	Grid,
 	makeStyles,
-	Modal,
 	Typography,
 	Paper,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Alert } from '@material-ui/lab';
+import React, { useState, useEffect } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { Http } from '../../../utils';
 import ReactApexChart from 'react-apexcharts';
 import RenderTable, { Order } from './RenderTable';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image';
-import ProductFilter, { VersionFilter } from './ProductFilter';
 import { getDate } from '../../../utils/data';
 import {
 	ILimitedProductDetails,
@@ -31,14 +27,11 @@ import {
 	ILastEvalKey,
 	IFetchRecursiveData,
 	getPieChartOptions,
-	IDateRange,
-	IFeedbackComments,
 } from './common';
-import { RouteComponentProps, withRouter } from 'react-router-dom';
+import { RouteComponentProps } from 'react-router-dom';
 import { getFeedbckChartData, getFeedbackData } from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
-import RenderComments from './RenderComments';
 import ImageModal from './ImageModal';
 import DateFilter from './DateFilter';
 import FilterToolBar from './FilterBar/FilterToolBar';
@@ -49,13 +42,14 @@ import RenderCategoryFilter from './RenderCategoryFilter';
 
 interface ChosenProps {
 	productInfoProp: any;
+	productVersion: any;
+	selectedProdId: any;
 }
 
 const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	const { filtered } = props.productInfoProp;
 	const [backdropOpen, setBackdropOpen] = useState(false);
 	const [error, setError] = useState(false);
-	const [isBugReport, setBugReport] = useState<boolean | undefined>();
 	const [noDataError, setNoDataError] = useState(true);
 	const [data, setData] = useState<IAppFeedback[]>([]);
 	const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
@@ -664,7 +658,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	}, [searchInitiated, keyword]);
 
 	const handleCloseModal = (reason: any) => {
-		console.log('calling handleCloseModal', reason);
 		setShowImageModal(false);
 		setFocusAttachmentUid('');
 		setSignedImageUrl('');
@@ -686,6 +679,18 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
 	//   return categoryList;
 	// }
+
+	const renderErr = () => {
+		if (
+			!props?.selectedProdId.trim().length ||
+			!props?.productVersion.trim().length
+		) {
+			return 'Select a product and a version above to view results';
+		}
+
+		return 'No feedback found';
+	};
+
 	const handleOnSearch = (search: any) => {
 		setKeyword(search);
 		setSearchInitiated(true);
@@ -745,74 +750,74 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 					<CircularProgress color='inherit' />
 				</Backdrop>
 			) : (
-          <div>
+				<div>
 					{searchInitiated ? (
-              <div>
-                	<Grid container style={{ width: '100%', marginTop: '0.7rem' }}>
-										{currentDisable.length > 0 ? (
-											<Alert className={classes.info} severity='info'>
-												Deselect button to reactivate filters
-											</Alert>
-										) : (
-											<Alert className={classes.info} severity='info'>
-												Please only select one filter at a time. Other options will disabled
-												automatically when selecting
-											</Alert>
-										)}
-									<FilterToolBar
-										children={[
-											{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
-											{
-												child: (
-													<RenderKeywordFilter
-														keys={keys}
-														default={keyword}
-														setDisable={setCurrentDisable}
-														onSubmit={handleOnSearch}
-														onClear={() => {
-															clearSearch();
-															console.log('clearsearch');
-														}}
-														disableButtons={
-															!resultsFetched && (data.length === 0 || searchInitiated)
-														}
-													/>
-												),
-												name: 'Mentions',
-											},
-											{
-												child: (
-													<RenderRatingFilter
-														rating={rating}
-														setDisable={setCurrentDisable}
-														focusRating={focusRating}
-														setFocusRating={setFocusRating}
-														disableButtons={
-															!resultsFetched && (data.length === 0 || searchInitiated)
-														}
-													/>
-												),
-												name: 'Ratings',
-											},
-											{
-												child: (
-													<RenderCategoryFilter
-														category={category}
-														setDisable={setCurrentDisable}
-														focusCategory={focusCategory}
-														setFocusCategory={setFocusCategory}
-														type={'Feedback'}
-														disableButtons={
-															!resultsFetched && (data.length === 0 || searchInitiated)
-														}
-														categoryList={categoryList}
-													/>
-												),
-												name: 'Category',
-											},
-										]}
-									/>
-								</Grid>
+						<div>
+							<Grid container style={{ width: '100%', marginTop: '0.7rem' }}>
+								{currentDisable.length > 0 ? (
+									<Alert className={classes.info} severity='info'>
+										Deselect button to reactivate filters
+									</Alert>
+								) : (
+									<Alert className={classes.info} severity='info'>
+										Please only select one filter at a time. Other options will disabled
+										automatically when selecting
+									</Alert>
+								)}
+								<FilterToolBar
+									children={[
+										{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
+										{
+											child: (
+												<RenderKeywordFilter
+													keys={keys}
+													default={keyword}
+													setDisable={setCurrentDisable}
+													onSubmit={handleOnSearch}
+													onClear={() => {
+														clearSearch();
+														console.log('clearsearch');
+													}}
+													disableButtons={
+														!resultsFetched && (data.length === 0 || searchInitiated)
+													}
+												/>
+											),
+											name: 'Mentions',
+										},
+										{
+											child: (
+												<RenderRatingFilter
+													rating={rating}
+													setDisable={setCurrentDisable}
+													focusRating={focusRating}
+													setFocusRating={setFocusRating}
+													disableButtons={
+														!resultsFetched && (data.length === 0 || searchInitiated)
+													}
+												/>
+											),
+											name: 'Ratings',
+										},
+										{
+											child: (
+												<RenderCategoryFilter
+													category={category}
+													setDisable={setCurrentDisable}
+													focusCategory={focusCategory}
+													setFocusCategory={setFocusCategory}
+													type={'Feedback'}
+													disableButtons={
+														!resultsFetched && (data.length === 0 || searchInitiated)
+													}
+													categoryList={categoryList}
+												/>
+											),
+											name: 'Category',
+										},
+									]}
+								/>
+							</Grid>
 							<RenderTable
 								key='renderTable2'
 								tableData={searchedData}
@@ -846,23 +851,23 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 						</div>
 					) : noDataError ? (
 						<div style={{ marginTop: '3rem' }}>
-							<Failure message={`There is no feedback to show.`} />
+							<Failure message={renderErr()} />
 						</div>
 					) : (
 						<div>
 							<ImageModal {...imagePayload} />
 							<div style={{ marginTop: 50 }}>
-								<Grid container style={{ width: '100%', marginTop: '0.5rem' }}>
-										{currentDisable.length > 0 ? (
-											<Alert className={classes.info} severity='info'>
-												Deselect button to reactivate filters
-											</Alert>
-										) : (
-											<Alert className={classes.info} severity='info'>
-												Please only select one filter at a time. Other options will disabled
-												automatically when selecting
-											</Alert>
-										)}
+								<Grid container style={{ width: '100%', marginTop: '0.6rem' }}>
+									{currentDisable.length > 0 ? (
+										<Alert className={classes.info} severity='info'>
+											Deselect button to reactivate filters
+										</Alert>
+									) : (
+										<Alert className={classes.info} severity='info'>
+											Please only select one filter at a time. Other options will disabled
+											automatically when selecting
+										</Alert>
+									)}
 									<FilterToolBar
 										children={[
 											{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
@@ -917,25 +922,52 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 										]}
 									/>
 								</Grid>
+								<Grid
+									container
+									style={{
+										width: '55%',
+										marginTop: '0.5rem',
+									}}
+								>
+									<Typography style={{ marginRight: '10px', padding: '15px' }}>
+										Filter by date:{' '}
+									</Typography>
+									<DateFilter setDateRange={setDateRange} />
+								</Grid>
 								<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>
-										<ReactApexChart
-											options={feedbackBarChartOptions}
-											series={barChartSeries}
-											type='bar'
-											width={500}
-											height={320}
-										/>
+										<Paper
+											elevation={3}
+											style={{ minWidth: 515, height: 350, paddingTop: 10 }}
+										>
+											<ReactApexChart
+												options={feedbackBarChartOptions}
+												series={barChartSeries}
+												type='bar'
+												width={500}
+												height={320}
+											/>
+										</Paper>
 									</Grid>
 									<Grid item lg={2}></Grid>
 									<Grid item lg={5}>
-										<ReactApexChart
-											options={pieChartOptions}
-											series={Object.values(pieChartSeries)}
-											type='pie'
-											width={500}
-											height={320}
-										/>
+										<Paper
+											elevation={3}
+											style={{
+												minWidth: 500,
+												height: 350,
+												paddingTop: 10,
+												marginLeft: '-60px',
+											}}
+										>
+											<ReactApexChart
+												options={pieChartOptions}
+												series={Object.values(pieChartSeries)}
+												type='pie'
+												width={500}
+												height={320}
+											/>
+										</Paper>
 									</Grid>
 								</Grid>
 							</div>

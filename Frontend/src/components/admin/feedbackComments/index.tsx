@@ -5,41 +5,26 @@ import {
 	Container,
 	Grid,
 	makeStyles,
-	Divider,
-	Paper,
-	Button,
+	Typography,
 } from '@material-ui/core';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
 	IFeedbackComments,
 	IProductNameIdMapping,
 	ILimitedProductDetails,
-	IAppFeedback,
-	IFeedbackBarChartData,
-	ILastEvalKey,
-	NUMBER_OF_ITEMS_PER_FETCH,
-	IFetchRecursiveData,
 } from './common';
 import './index.css';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import RenderTable, { Order } from './RenderTable';
 import FeedbackTab from './FeedbackTab';
 import BugsTab from './BugsTab';
-import {
-	getFeedbckChartData,
-	getFeedbackData,
-	getProductDetails,
-} from './methods';
+import { getProductDetails } from './methods';
 import TopToolbar from './TopToolbar';
-import { Http } from '../../../utils';
-import { blue } from '@material-ui/core/colors';
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 	const { productId } = props;
 	const classes = useStyles();
 	const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([]);
-	const [selectedProduct, setSelectedProduct] = useState<string>('');
 	const [prodNameIdMapping, setProdNameIdMapping] =
 		useState<IProductNameIdMapping>({});
 	const [prodNameIdMappingBugCopy, setProdNameIdMappingBugs] =
@@ -125,12 +110,35 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 			'aria-controls': `simple-tabpanel-${index}`,
 		};
 	}
+	const renderTabs = () => {
+		if (!selectedProdId.trim().length || !productVersion.trim().length) {
+			return (
+				<Typography variant='h5' component='h2' color='textPrimary'>
+					Please select a product and a version above
+				</Typography>
+			);
+		}
+
+		return (
+			<BasicTabs
+				productInfoProp={productInfoProp}
+				productVersion={productVersion}
+				selectedProdId={selectedProdId}
+			/>
+		);
+	};
 
 	interface BasicTabsProps {
 		productInfoProp: any;
+		productVersion: any;
+		selectedProdId: any;
 	}
 
-	const BasicTabs = ({ productInfoProp }: BasicTabsProps) => {
+	const BasicTabs = ({
+		productInfoProp,
+		productVersion,
+		selectedProdId,
+	}: BasicTabsProps) => {
 		const [value, setValue] = React.useState(0);
 		const classes = useStyles();
 
@@ -139,8 +147,10 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 		};
 
 		let payLoad = {
-			props: props,
-			productInfoProp: productInfoProp,
+			props,
+			productInfoProp,
+			productVersion,
+			selectedProdId,
 		};
 
 		return (
@@ -189,7 +199,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 					}
 				/>
 			</Grid>
-			<BasicTabs productInfoProp={productInfoProp} />
+			{renderTabs()}
 		</Container>
 	);
 };
