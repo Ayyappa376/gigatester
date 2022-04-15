@@ -20,6 +20,7 @@ import { sortTableByDate } from './tableMethods';
 import RenderComments from './RenderComments';
 import ImageModal from './ImageModal';
 import DateFilter from './DateFilter';
+import FilterToolBar from './FilterBar/index';
 
 interface ChosenProps {
   productInfoProp: any,
@@ -582,6 +583,9 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
             <div>
               <ImageModal {...imagePayload} />
                   <div style={{ marginTop: 50 }}>
+                    <Grid container style={{ width: '100%', marginTop: '0.5rem' }}>
+                      <FilterToolBar children={ <DateFilter setDateRange={setDateRange}/>}/>
+                    </Grid>
                     <Grid container style={{ width: '55%', marginTop: '0.5rem', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start' }}>
                       <Typography style={{ marginRight: '10px', padding: '15px'}}>Filter by date: </Typography>
                       <DateFilter setDateRange={setDateRange}/>

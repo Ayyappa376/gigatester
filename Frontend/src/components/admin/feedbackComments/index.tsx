@@ -33,6 +33,7 @@ import {
 import ProductFilter, { VersionFilter } from './ProductFilter';
 import TopToolbar from './TopToolbar';
 import { Http } from '../../../utils';
+import FilterItem from './FilterBar/FilterItem';
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 	const { productId } = props;
@@ -164,42 +165,42 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 		);
 	};
 
-	return (
-		<Container>
-			<Grid className={classes.selectors} container>
-				<TopToolbar />
-			</Grid>
-			<BasicTabs productInfoProp={productInfoProp} />
-		</Container>
-	);
 	// return (
-	//   <Container>
-	//       <Grid className={classes.selectors} container>
-	//         <Grid item xl={2} style={{ position: 'relative' }}>
-	//           <ProductFilter selectedProdId={selectedProdId}
-	//             setSelectedProdId={setProduct}
-	//             productNameIdMapping={prodNameIdMapping}
-	//           productInfo={productInfo}
-	//           filtered={filtered}
-	//           setFiltered={setFiltered}
-	//           />
-	//         </Grid>
-	//         <Grid item xl={2} style={{ position: 'relative' }}>
-	//           <VersionFilter productVersion={productVersion}
-	//             setProductVersion={setProductVersion}
-	//             versionList={selectedProdId ? prodNameIdMapping[selectedProdId] ? prodNameIdMapping[selectedProdId].version ?
-	//               prodNameIdMapping[selectedProdId].version : [] : [] : []}
-	//               filtered={filtered}
-	//               setFiltered={setFiltered}
-	//           />
-	//       </Grid>
-	//       <Grid item xl={2} style={{ position: 'relative' }}>
-	//         {/* <Button variant="contained" onClick={() => handleRemoteBtn()}>Remote Btn</Button> */}
-	//       </Grid>
-	//       </Grid>
-	//       <BasicTabs productInfoProp={productInfoProp} />
-	//   </Container>
-	// )
+	// 	<Container>
+	// 		<Grid className={classes.selectors} container>
+	// 			<TopToolbar />
+  //     </Grid>
+  //     <Grid>
+  //       <FilterItem children={<button>hey</button>}/>
+  //     </Grid>
+	// 		<BasicTabs productInfoProp={productInfoProp} />
+	// 	</Container>
+	// );
+	return (
+	  <Container>
+	      <Grid className={classes.selectors} container>
+	        <Grid item xl={2} style={{ position: 'relative' }}>
+	          <ProductFilter selectedProdId={selectedProdId}
+	            setSelectedProdId={setProduct}
+	            productNameIdMapping={prodNameIdMapping}
+	          productInfo={productInfo}
+	          filtered={filtered}
+	          setFiltered={setFiltered}
+	          />
+	        </Grid>
+	        <Grid item xl={2} style={{ position: 'relative' }}>
+	          <VersionFilter productVersion={productVersion}
+	            setProductVersion={setProductVersion}
+	            versionList={selectedProdId ? prodNameIdMapping[selectedProdId] ? prodNameIdMapping[selectedProdId].version ?
+	              prodNameIdMapping[selectedProdId].version : [] : [] : []}
+	              filtered={filtered}
+	              setFiltered={setFiltered}
+	          />
+	      </Grid>
+	      </Grid>
+	      <BasicTabs productInfoProp={productInfoProp} />
+	  </Container>
+	)
 };
 
 export default withRouter(FeedbackComments);
