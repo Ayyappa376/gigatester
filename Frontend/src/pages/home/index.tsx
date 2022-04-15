@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Container, Grid, Typography, Button, makeStyles, colors } from '@material-ui/core';
+import { Container, Grid, Typography, Button, makeStyles, colors, Paper } from '@material-ui/core';
 import { useSelector } from 'react-redux';
 import { useActions, setSystemDetails, setCurrentPage } from '../../actions';
 import { IRootState } from '../../reducers';
@@ -27,15 +27,28 @@ const useStyles = makeStyles((theme) => ({
     margin: '50px',
   },
   pageBlurbSection: {
-    margin: '50px',
     display: 'flex',
     flexDirection: 'column',
     justifyContent: 'center',
-    width: '90%',
+    width: '95%',
+  },
+  tryItOut: {
+    width: '100%',
+    height: '250px',
+    padding: '20px',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'space-evenly',
+    alignItems: 'center',
+    backgroundColor: '#8AA3C8',
+    borderRadius: '20px',
+    color: 'white',
   },
   headerText: {
-    fontWeight: 'normal',
+    fontWeight: 'bold',
     fontSize: '20px',
+    color: 'white',
+    textAlign: 'center',
   },
   ImgContainer: {
     borderRadius: '2px',
@@ -75,7 +88,9 @@ const useStyles = makeStyles((theme) => ({
     colour: '#999999',
   },
   trialBtn: {
-    marginLeft: '0px',
+    width: '200px',
+    height: '50px',
+    borderRadius: '4px',
     backgroundColor: '#00235e',
     '&:hover, &:focus, &:active': {
       backgroundColor: '#00235e',
@@ -193,24 +208,6 @@ const Home = (props: any) => {
         </Grid>
         <Container className={classes.pageBlurbSection}>
           <Grid container className={classes.pageSection}>
-            <Grid item xs={12}>
-              <Typography className={classes.headerText}>
-                GigaTester enables Product teams to capture feedback and bugs reported by customers
-                directly without going through middle layer.
-              </Typography>
-              <Button
-                variant="outlined"
-                onClick={() => getSignupDialog(true)}
-                color="primary"
-                size="large"
-                data-testid="signUp"
-                className={classes.trialBtn}
-              >
-                Let's try out
-              </Button>
-            </Grid>
-          </Grid>
-          <Grid container className={classes.pageSection}>
             <Grid item xs={12} sm={7} style={{ textAlign: "left" }}>
               <Typography variant="h5" className={classes.sectionTitle}>Feedback agent</Typography>
               <Typography className={classes.sectionText}>
@@ -259,6 +256,27 @@ const Home = (props: any) => {
                   alt='GigaTester Feedback configuration'
                 />
               </Container>
+            </Grid>
+          </Grid>
+          <Grid container className={classes.pageSection}>
+            <Grid item xs={12} style={{ marginBottom: '40px'}}>
+              <Paper className={classes.tryItOut}>
+              <Typography className={classes.headerText}>
+                GigaTester enables Product teams to capture feedback and bugs reported by customers
+                  directly without going through middle layer.
+                  To learn more or want to see a demo, click on the button below to register.
+              </Typography>
+              <Button
+                variant="outlined"
+                onClick={() => getSignupDialog(true)}
+                color="primary"
+                size="large"
+                data-testid="signUp"
+                className={classes.trialBtn}
+              >
+                Let's try out
+                </Button>
+                </Paper>
             </Grid>
           </Grid>
         </Container>
