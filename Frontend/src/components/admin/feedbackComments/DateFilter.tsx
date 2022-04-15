@@ -15,13 +15,14 @@ import 'react-datepicker/dist/react-datepicker.css';
 
 interface IDateProps {
 	setDateRange: Function;
+	selectedDate: string;
+	setSelectedDate: Function;
 }
 
-const DateFilter = ({ setDateRange }: IDateProps) => {
+const DateFilter = ({ setDateRange, selectedDate, setSelectedDate }: IDateProps) => {
 	const [date, setDate] = useState(new Date());
 	const [firstDate, setFirstDate] = useState<Date | undefined>();
 	const [secondDate, setSecondDate] = useState<Date | undefined>();
-	const [selectedDate, setSelectedDate] = useState('1Y');
 	const classes = useStyles();
 
 	const dateOptions: string[] = ['1D', '1W', '1M', '6M', '1Y'];

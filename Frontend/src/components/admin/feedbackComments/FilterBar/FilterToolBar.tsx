@@ -41,7 +41,7 @@ const FilterToolBar = ({
 					: null}
 				<Box className={classes.searchFieldBox}>
 					<SearchField
-						style={{ marginTop: 0, marginRight: '5px', backgroundColor: 'white', width: '250px', height: '35px', borderRadius: '14px' }}
+						style={{ marginRight: '10px', marginTop: '2px', backgroundColor: 'white', width: '250px', height: '35px', borderRadius: '14px' }}
 						key='SearchFieldEl'
 						default={keyword}
 						searchInitiated={searchInitiated}

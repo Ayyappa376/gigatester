@@ -20,6 +20,9 @@ import FeedbackTab from './FeedbackTab';
 import BugsTab from './BugsTab';
 import { getProductDetails } from './methods';
 import TopToolbar from './TopToolbar';
+import ChatIcon from '@material-ui/icons/Chat'
+import BugReportIcon from '@material-ui/icons/BugReport';
+//@material-ui/icons
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 	const { productId } = props;
@@ -75,11 +78,6 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 		};
 	}, []);
 
-	// const handleRemoteBtn = () => {
-	//   if (typeof window.GigaTester !== 'undefined') {
-	//     window.GigaTester.useRemote();
-	//   }
-	// }
 
 	const TabPanel = (props: any) => {
 		const { children, value, index, ...other } = props;
@@ -104,7 +102,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 		value: PropTypes.number.isRequired,
 	};
 
-	function a11yProps(index: any) {
+	function tabProps(index: any) {
 		return {
 			id: `simple-tab-${index}`,
 			'aria-controls': `simple-tabpanel-${index}`,
@@ -154,7 +152,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 		};
 
 		return (
-			<Box sx={{ width: '100%' }}>
+			<Box sx={{ width: '100%', marginTop: '40px' }}>
 				<Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
 					<Tabs
 						value={value}
@@ -162,8 +160,8 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 						onChange={handleChange}
 						aria-label='view-feedback-tabs'
 					>
-						<Tab label='Feedback' {...a11yProps(0)} />
-						<Tab label='Bugs' {...a11yProps(1)} />
+						<Tab icon={<ChatIcon />} label='Feedback' {...tabProps(0)}/>
+						<Tab icon={<BugReportIcon /> } label='Bugs' {...tabProps(1)}/>
 					</Tabs>
 				</Box>
 				<TabPanel value={value} index={0}>
@@ -213,17 +211,21 @@ const useStyles = makeStyles({
 			height: 2.5,
 		},
 		'& .MuiTab-root.Mui-selected': {
-			color: 'black',
-			backgroundColor: 'transparent',
+			color: 'white',
+			backgroundColor: '#16448C',
+			borderRadius: '5px',
 		},
+		'& .MuiTab-wrapper': {
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-evenly',
+		}
 	},
 	selectors: {
 		position: 'relative',
-		//    padding: '10px',
 		marginBottom: '20px',
 		marginTop: '20px',
 		width: '100%',
-		//    backgroundColor: '#E9E9E9',
 		color: 'black',
 	},
 });

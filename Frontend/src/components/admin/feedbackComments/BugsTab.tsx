@@ -126,6 +126,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [categoryList, setCategoryList] = useState<any>([]);
 	const [keys, setKey] = useState<boolean>(false);
 	const [rating, setRating] = useState<boolean>(false);
+	const [selectedDate, setSelectedDate] = useState <string>('1Y');
 	const [sortDate, setSortDate] = useState<number | undefined>();
 
 	useEffect(() => {
@@ -817,7 +818,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										handleOnSearch={handleOnSearch}
 										clearSearch={clearSearch}
 										children={[
-											{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
+											{ child: <DateFilter setSelectedDate={setSelectedDate} selectedDate={selectedDate} setDateRange={setDateRange} />, name: 'Date' },
 											{
 												child: (
 													<RenderKeywordFilter

@@ -31,16 +31,16 @@ const TopToolbar = (props: any) => {
 				<Grid container spacing={2}>
 					<Grid item xs={8}>
 						{/* @ts-ignore */}
-						<Typography variant='h4' component='h4'>
+						<Typography variant='h4' component='h4' style={{ fontWeight: 600}}>
 							View Feedback
 						</Typography>
 					</Grid>
 				</Grid>
 				<Grid container spacing={2} id='filter-dropdown-grid'>
-					<Grid item xs={4}>
+					<Grid item xs={4} lg={3}>
 						<ProductFilter {...props} />
 					</Grid>
-					<Grid item xs={4}>
+					<Grid item xs={4} lg={3}>
 						<VersionFilter {...props} />
 					</Grid>
 				</Grid>

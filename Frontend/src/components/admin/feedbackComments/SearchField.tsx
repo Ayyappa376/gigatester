@@ -1,4 +1,4 @@
-import { Paper, InputBase, IconButton, Divider } from '@material-ui/core';
+import { Paper, Input, IconButton, Divider, Tooltip } from '@material-ui/core';
 import React, { useEffect, useState } from 'react';
 import SearchIcon from '@material-ui/icons/Search';
 import ClearIcon from '@material-ui/icons/Clear';
@@ -54,12 +54,13 @@ const SearchField = (props: IProps) => {
 					borderRadius: '14px',
 				}}
 			>
-				<InputBase
+				<Input
 					key='searchFieldInput'
-					style={{ marginLeft: 1, flex: 1, width: '90%', borderBottom: 'none', border: 'none' }}
+					style={{ marginLeft: 1, flex: 1, width: '90%'}}
 					placeholder='Search'
 					value={keyword}
-                    inputProps={{ 'aria-label': 'search', }}
+					inputProps={{ 'aria-label': 'search', }}
+					disableUnderline={true}
 					onChange={handleTyping}
 					onKeyPress={handleKeyPress}
 				/>
@@ -78,6 +79,7 @@ const SearchField = (props: IProps) => {
 					<div />
 				)}
 				<Divider style={{ height: 28, marginLeft: 5 }} orientation='vertical' />
+				<Tooltip title="click to start search" arrow>
 				<IconButton
 					type='button'
 					key='searchFieldSearchIconButton'
@@ -87,7 +89,8 @@ const SearchField = (props: IProps) => {
 					onClick={handleSearchInit}
 				>
 					<SearchIcon key='searchFieldSearchIcon' />
-				</IconButton>
+					</IconButton>
+					</Tooltip>
 			</div>
 		</div>
 	);

@@ -187,7 +187,7 @@ const RenderMedia = ({
 				</div>
 			) : (
 				<div>
-					<Typography>No attachment</Typography>
+					<Typography style={{ fontWeight: 'bold'}}>No attachment</Typography>
 				</div>
 			)}
 		</div>
