@@ -4,15 +4,19 @@
 }
 
 #RenderFilter-flexContainer {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: auto;
+    grid-column-gap: 15px;
+    grid-row-gap: 15px;
     flex-wrap: wrap;
 }
 
 #RenderFilter-btn {
-    border-radius: 0px;
+    border-radius: 7px;
     margin: .4rem;
     transition: all .2s;
-    
+
 }
 
 #RenderFilter-btn:hover {
@@ -21,11 +25,11 @@
 }
 
 #RenderFilter-btn:focus, #RenderFilter-btn:active {
-    
+
     background-color: transparent;
 }
 #RenderFilter-btnVisited {
-    border-radius: 0px;
+    border-radius: 7px;
     margin: .4rem;
     transition: all .2s;
     color: #fff;

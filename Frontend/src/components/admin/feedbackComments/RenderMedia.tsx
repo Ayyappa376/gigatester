@@ -13,7 +13,7 @@ import { getDate, getDateTime } from '../../../utils/data';
 import FolderList from './FolderList';
 import { buttonStyle } from '../../../common/common';
 import RenderComments from './RenderComments';
-import RenderStars from './RenderStarts';
+import RenderStars from './RenderStars';
 import AudioPlayer from './audioPlayer';
 
 interface RowMediaProps {

@@ -3,7 +3,7 @@ import { Grid, makeStyles, Modal, Typography } from '@material-ui/core';
 import { buttonStyle } from '../../../common/common';
 import Close from '@material-ui/icons/Close';
 import Image from 'material-ui-image'
-import RenderStars from './RenderStarts';
+import RenderStars from './RenderStars';
 import Draggable from 'react-draggable';
 import RenderComments from './RenderComments';
 

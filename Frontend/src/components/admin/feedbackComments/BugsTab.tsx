@@ -36,6 +36,11 @@ import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import ImageModal from './ImageModal';
 import DateFilter from './DateFilter';
+import FilterToolBar from './FilterBar/FilterToolBar';
+import RenderKeywordFilter from './RenderKeywordFilter';
+import RenderSeverityFilter from './RenderSeverityFilter';
+import RenderRatingFilter from './RenderFilters';
+import RenderCategoryFilter from './RenderCategoryFilter';
 
 interface ChosenProps {
 	productInfoProp: any;
@@ -55,10 +60,14 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		useState<IFeedbackBarChartData>({});
 	const [pieChartSeries, setPieChartSeries] = useState({});
 	// const [bugBarChartData, setBugBarChartData] = useState({})
-  const [dateRange, setDateRange] = useState(() => {
-	const today = new Date();
-    const todaysDate = Date.parse(today.toString());
-	return { startDate: todaysDate, endDate: today.setFullYear(today.getFullYear() - 1)}});
+	const [dateRange, setDateRange] = useState(() => {
+		const today = new Date();
+		const todaysDate = Date.parse(today.toString());
+		return {
+			startDate: todaysDate,
+			endDate: today.setFullYear(today.getFullYear() - 1),
+		};
+	});
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [signedImageUrl, setSignedImageUrl] = useState('');
 	const [attachmentType, setAttachmentType] = useState('');
@@ -120,7 +129,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [categoryList, setCategoryList] = useState<any>([]);
 	const [keys, setKey] = useState<boolean>(false);
 	const [rating, setRating] = useState<boolean>(false);
-	const [sortDate, setSortDate] = useState <number | undefined>();
+	const [sortDate, setSortDate] = useState<number | undefined>();
 
 	useEffect(() => {
 		if (feedbackBarChartData) {
@@ -217,25 +226,33 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		) {
 			if (productVersion === 'all') {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '', filterDate: dateRange, });
+				fetchRecursiveData({
+					prodId: selectedProdId,
+					prodVersion: '',
+					filterDate: dateRange,
+				});
 				getBugChartData({
 					setBugBarChartSeries,
 					setFeedbackBarChartData,
 					setPieChartSeries,
 					prodId: selectedProdId,
 					prodVersion: '',
-          			filterDate: dateRange,
+					filterDate: dateRange,
 				});
 			} else {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange, });
+				fetchRecursiveData({
+					prodId: selectedProdId,
+					prodVersion: productVersion,
+					filterDate: dateRange,
+				});
 				getBugChartData({
 					setBugBarChartSeries,
 					setFeedbackBarChartData,
 					setPieChartSeries,
 					prodId: selectedProdId,
 					prodVersion: productVersion,
-          			filterDate: dateRange,
+					filterDate: dateRange,
 				});
 			}
 		}
@@ -308,7 +325,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			filterDate: dateRange,
 		});
 	}, [focusSeverity]);
-	
+
 	useEffect(() => {
 		const today = new Date();
 		const todaysDate = Date.parse(today.toString());
@@ -327,9 +344,16 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 				noRawDataUpdate: true,
 			});
-			getBugChartData({ setBugBarChartSeries, setFeedbackBarChartData, setPieChartSeries, prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange});
+			getBugChartData({
+				setBugBarChartSeries,
+				setFeedbackBarChartData,
+				setPieChartSeries,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				filterDate: dateRange,
+			});
 		}
-	}, [dateRange])
+	}, [dateRange]);
 
 	useEffect(() => {
 		if (rawData.length === 0) {
@@ -360,7 +384,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		filterRating,
 		filterSeverity,
 		filterCategory,
-    	filterDate,
+		filterDate,
 		prodId,
 		prodVersion,
 		searchWord,
@@ -411,9 +435,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			urlAppend += urlAppend ? `&search=${searchWord}` : `?search=${searchWord}`;
 		}
 
-    if(filterDate) {
-      urlAppend += urlAppend ? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}` : `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
-    }
+		if (filterDate) {
+			urlAppend += urlAppend
+				? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}`
+				: `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
+		}
 
 		urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`;
 
@@ -604,7 +630,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		return '';
 	};
 
-
 	const filterByProduct = (val: string) => {
 		console.log(prodNameIdMapping);
 		if (val) {
@@ -657,6 +682,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		setShowImageModal(false);
 		setFocusAttachmentUid('');
 		setSignedImageUrl('');
+	};
+
+	const handleOnSearch = (search: any) => {
+		setKeyword(search);
+		setSearchInitiated(true);
 	};
 
 	const handleImageClicked = () => {
@@ -773,7 +803,63 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 						<div>
 							<ImageModal {...imagePayload} />
 							<div style={{ marginTop: 50 }}>
-								<Grid
+								<Grid container style={{ width: '100%', marginTop: '0.5rem' }}>
+									<FilterToolBar
+										children={[
+											{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
+											{
+												child: (
+													<RenderKeywordFilter
+														keys={keys}
+														default={keyword}
+														setDisable={setCurrentDisable}
+														onSubmit={handleOnSearch}
+														onClear={() => {
+															clearSearch();
+															console.log('clearsearch');
+														}}
+														disableButtons={
+															!resultsFetched && (data.length === 0 || searchInitiated)
+														}
+													/>
+												),
+												name: 'Mentions',
+											},
+											{
+												child: (
+													<RenderSeverityFilter
+														severity={severity}
+														setDisable={setCurrentDisable}
+														severityList={severityList}
+														focusSeverity={focusSeverity}
+														setFocusSeverity={setFocusSeverity}
+														disableButtons={
+															!resultsFetched && (data.length === 0 || searchInitiated)
+														}
+													/>
+												),
+												name: 'Severity',
+											},
+											{
+												child: (
+													<RenderCategoryFilter
+														category={category}
+														setDisable={setCurrentDisable}
+														focusCategory={focusCategory}
+														setFocusCategory={setFocusCategory}
+														type={'Feedback'}
+														disableButtons={
+															!resultsFetched && (data.length === 0 || searchInitiated)
+														}
+														categoryList={categoryList}
+													/>
+												),
+												name: 'Category',
+											},
+										]}
+									/>
+								</Grid>
+								{/* <Grid
 									container
 									style={{
 										width: '95%',
@@ -787,7 +873,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										Filter by date:
 									</Typography>
 									<DateFilter setDateRange={setDateRange} />
-								</Grid>
+								</Grid> */}
 								<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>
 										<ReactApexChart

@@ -1,20 +1,29 @@
 import React, { useState } from 'react';
 import { Button, Paper, Box, Typography, Popover, makeStyles, } from '@material-ui/core';
 import DateFilter from '../DateFilter';
+import { filter } from 'lodash';
 
 interface FilterProps {
 	children: any,
+	filterName: string,
 }
 
-const FilterItem = ({ children }: FilterProps) => {
+const FilterItem = ({ children, filterName}: FilterProps) => {
 	const [anchor, setanchor] = useState(null);
+	const [flag, setFlag] = useState(false);
 	const classes = useStyles();
 
 	const handleClick = (event: any) => {
+		if (!flag) {
+			setFlag(true)
+		}
 		setanchor(event.currentTarget);
 	};
 
 	const handleClose = () => {
+		if (flag) {
+			setFlag(false)
+		}
 		setanchor(null);
 	};
 
@@ -23,8 +32,8 @@ const FilterItem = ({ children }: FilterProps) => {
 
 	return (
 		<div>
-			<Button className={classes.filterBtn} aria-describedby={id} variant='contained' onClick={handleClick}>
-				Date
+			<Button className={flag ? classes.filterBtnSelected : classes.filterBtn} aria-describedby={id} variant='contained' onClick={handleClick}>
+				{filterName ? filterName : null}
 			</Button>
 			<Popover
 				classes={{ paper: classes.popover }}
@@ -34,8 +43,13 @@ const FilterItem = ({ children }: FilterProps) => {
 				onClose={handleClose}
 				anchorOrigin={{
 					vertical: 'bottom',
-					horizontal: 'left',
+					horizontal: 'center',
 				}}
+				transformOrigin={{
+					vertical: 'top',
+					horizontal: 'center',
+				}}
+
 			>
 				<Box className={classes.popoverBox}>
 					{ children }
@@ -47,28 +61,34 @@ const FilterItem = ({ children }: FilterProps) => {
 
 const useStyles = makeStyles((theme) => ({
 	filterBtn: {
-		borderRadius: '10px',
+		borderRadius: '15px',
 		backgroundColor: 'white',
 		color: '#2B559B',
-		fontSize: '17px',
+		fontSize: '15px',
+		textTransform: 'none',
+		marginLeft: '5px',
+		marginRight: '5px',
+	},
+	filterBtnSelected: {
+		borderRadius: '15px',
+		backgroundColor: '#259ffb',
+		color: 'white',
+		fontSize: '15px',
 		textTransform: 'none',
 		marginLeft: '5px',
 		marginRight: '5px',
 	},
 	popover: {
-		backgroundColor: '#F8F8F8',
+		backgroundColor: '#FBFBFB',
 		borderRadius: '15px',
 		padding: '7px',
+		marginTop: '5px',
 	},
 	popoverBox: {
 		height: 'auto',
 		width: 'auto',
 		display: 'grid',
 		marginTop: '5px',
-		gridTemplateColumns: 'repeat(3, 1fr)',
-		gridTemplateRows: 'repeat(2, 1fr)',
-		gridColumnGap: '15px',
-		gridRowGap: '15px',
 	},
 	tempBtn: {
 		backgroundColor: 'white',

@@ -20,7 +20,7 @@ import FolderList from './FolderList';
 import UserDetailList from './UserDetList';
 import { buttonStyle } from '../../../common/common';
 import RenderComments from './RenderComments';
-import RenderStars from './RenderStarts';
+import RenderStars from './RenderStars';
 // import RenderMedia from './RenderMedia';
 import AudioPlayer from './audioPlayer';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
