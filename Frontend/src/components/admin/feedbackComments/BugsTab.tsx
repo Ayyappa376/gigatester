@@ -812,6 +812,10 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										</Alert>
 									)}
 									<FilterToolBar
+										keyword={keyword}
+										searchInitiated={searchInitiated}
+										handleOnSearch={handleOnSearch}
+										clearSearch={clearSearch}
 										children={[
 											{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
 											{

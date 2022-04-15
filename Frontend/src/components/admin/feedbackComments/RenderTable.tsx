@@ -2,47 +2,26 @@ import {
 	Container,
 	Paper,
 	Table,
-	TableHead,
 	TableRow,
 	TableCell,
 	Typography,
 	TableBody,
-	MuiThemeProvider,
-	Tooltip,
 	makeStyles,
-	Link,
-	Divider,
-	TablePagination,
 	TableContainer,
 	Toolbar,
 	lighten,
-	Grid,
 } from '@material-ui/core';
-import Alert from '@material-ui/lab/Alert';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
-import { getDate, getDateTime } from '../../../utils/data';
-import FolderList from './FolderList';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
-import AudioPlayer from './audioPlayer';
-import SearchField from './SearchField';
 import EnhancedTableHead from './EnhancedTableHead';
-import RenderRatingFilter from './RenderFilters';
-import RenderKeywordFilter from './RenderKeywordFilter';
-import RenderSeverityFilter from './RenderSeverityFilter';
-import RenderCategoryFilter from './RenderCategoryFilter';
 import { updateSignedUrls, useActions } from '../../../actions';
-import { IAppFeedback, ICommentObject } from './common';
-import RenderStars from './RenderStars';
-import renderComments from './RenderComments';
+import { IAppFeedback } from './common';
 import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from 'react-loader-spinner';
 import RenderRow from './RenderRow';
-import RenderComments from './RenderComments';
-import Failure from '../../failure-page';
-import { table } from 'console';
 
 interface IProps {
 	tableData: IAppFeedback[];
@@ -218,14 +197,6 @@ const RenderTable = (props: IProps) => {
 					>
 						{`${type}`}
 					</Typography>
-					<SearchField
-						style={{ marginTop: 10, marginLeft: 'auto' }}
-						key='SearchFieldEl'
-						default={props.keyword}
-						searchInitiated={props.searchInitiated}
-						onSearch={handleOnSearch}
-						clearSearch={props.clearSearch}
-					/>
 				</Toolbar>
 				<Paper
 					elevation={3}

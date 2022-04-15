@@ -3,30 +3,27 @@ import {
 	makeStyles,
 	Theme,
 	Box,
-	Typography,
 	Table,
 	TableHead,
 	TableBody,
 	TableRow,
 	TableCell,
 	Collapse,
-	Link,
 	lighten,
 	IconButton,
+	Tooltip,
 } from '@material-ui/core';
-import React, { useEffect, useState, Suspense } from 'react';
-import { getDate, getDateTime } from '../../../utils/data';
+import React, { useState, Suspense } from 'react';
+import { getDateTime } from '../../../utils/data';
 import FolderList from './FolderList';
 import UserDetailList from './UserDetList';
 import { buttonStyle } from '../../../common/common';
 import RenderComments from './RenderComments';
 import RenderStars from './RenderStars';
-// import RenderMedia from './RenderMedia';
-import AudioPlayer from './audioPlayer';
+import RenderMedia from './RenderMedia';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
-import BurstModeIcon from '@material-ui/icons/BurstMode';
-const RenderMedia = React.lazy(() => import('./RenderMedia'));
+import AnnouncmentIcon from '@material-ui/icons/Announcement';
 
 interface RowProps {
 	index: number;
@@ -98,9 +95,8 @@ const RenderRow = ({
 				style={
 					index % 2
 						? { background: 'white', borderBottom: 'none', minHeight: '160px' }
-						: { background: '#D5D8DC ', borderBottom: 'none', minHeight: '160px' }
+						: { background: '#F1F3F5', borderBottom: 'none', minHeight: '160px' }
 				}
-				// style={ show ? { borderBottom: 'none' } : { borderBottom: '1px solid gray' }}
 			>
 				<TableCell
 					style={{
@@ -147,18 +143,20 @@ const RenderRow = ({
 						: '-'}
 				</TableCell>
 				<TableCell align='left' className={classes.commentBox}>
-					<div style={{ overflow: 'auto', maxHeight: '10vh', position: 'relative' }}>
+					<div className={classes.commentBox}>
 						{row.feedbackMedia.image ||
 						row.feedbackMedia.audio ||
 						row.feedbackMedia.video ||
 						row.feedbackMedia.file ? (
-							<IconButton
-								aria-label='asset attached'
-								size='small'
-								className={classes.assetIcon}
-							>
-								<BurstModeIcon style={{ color: '#0B4263', fontSize: '20px' }} />
-							</IconButton>
+							<Tooltip title='Contains attachment' placement='bottom' arrow>
+								<IconButton
+									aria-label='asset attached'
+									size='small'
+									className={classes.assetIcon}
+								>
+									<AnnouncmentIcon style={{ color: '#0B4263', fontSize: '20px' }} />
+								</IconButton>
+							</Tooltip>
 						) : null}
 						<RenderComments
 							category={row.feedbackCategory}
@@ -177,7 +175,7 @@ const RenderRow = ({
 				style={
 					index % 2
 						? { background: 'white', borderBottom: 'none' }
-						: { background: '#D5D8DC ', borderBottom: 'none' }
+						: { background: '#F1F3F5', borderBottom: 'none' }
 				}
 			>
 				<TableCell
@@ -339,17 +337,19 @@ const useStyles = makeStyles((theme: Theme) =>
 			right: '0',
 		},
 		commentBox: {
-			maxWidth: '30vw',
+			maxHeight: '13vh',
+			overflow: 'auto',
 			fontSize: '1rem',
-			"&::-webkit-scrollbar": {
-				width: '5px',
+			position: 'relative',
+			'&::-webkit-scrollbar': {
+				width: '3px',
 			},
-			"&::-webkit-scrollbar-track": {
-				boxShadow: `inset 0 0 6px rgba(0, 0, 0, 0.3)`,
+			'&::-webkit-scrollbar-track': {
+				backgroundColor: 'white',
 			},
-			"&::-webkit-scrollbar-thumb": {
-				backgroundColor: "darkgrey",
-				outline: `1px solid slategrey`,
+			'&::-webkit-scrollbar-thumb': {
+				backgroundColor: 'gray',
+				borderRadius: '5px',
 			},
 		},
 	}),

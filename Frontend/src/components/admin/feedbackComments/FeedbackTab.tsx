@@ -39,6 +39,7 @@ import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderRatingFilter from './RenderFilters';
 import RenderCategoryFilter from './RenderCategoryFilter';
+import SearchField from './SearchField';
 
 interface ChosenProps {
 	productInfoProp: any;
@@ -765,6 +766,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 									</Alert>
 								)}
 								<FilterToolBar
+									keyword={keyword}
+									searchInitiated={searchInitiated}
+									handleOnSearch={handleOnSearch}
+									clearSearch={clearSearch}
 									children={[
 										{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
 										{
@@ -869,6 +874,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 										</Alert>
 									)}
 									<FilterToolBar
+										keyword={keyword}
+										searchInitiated={searchInitiated}
+										handleOnSearch={handleOnSearch}
+										clearSearch={clearSearch}
 										children={[
 											{ child: <DateFilter setDateRange={setDateRange} />, name: 'Date' },
 											{
