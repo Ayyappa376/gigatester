@@ -15,6 +15,7 @@ import React, { useEffect, useState } from 'react';
 import { buttonStyle } from '../../../common/common';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
+import SearchField from './SearchField';
 import EnhancedTableHead from './EnhancedTableHead';
 import { updateSignedUrls, useActions } from '../../../actions';
 import { IAppFeedback } from './common';
@@ -254,20 +255,21 @@ const RenderTable = (props: IProps) => {
 											<TableCell></TableCell>
 										</TableRow>
 									) : (
-										<TableRow>
-											<TableCell>
-												<TailSpin
-													wrapperStyle={{
-														marginLeft: '62%',
-														transform: 'translateX: "-50%',
-													}}
-													height='60'
-													width='30'
-													color='black'
-													ariaLabel='loading'
-												/>
-											</TableCell>
-										</TableRow>
+										<div></div>
+										// <TableRow>
+										// 	<TableCell>
+										// 		<TailSpin
+										// 			wrapperStyle={{
+										// 				marginLeft: '62%',
+										// 				transform: 'translateX: "-50%',
+										// 			}}
+										// 			height='60'
+										// 			width='30'
+										// 			color='black'
+										// 			ariaLabel='loading'
+										// 		/>
+										// 	</TableCell>
+										// </TableRow>
 									)}
 								</TableBody>
 							) : (
@@ -393,107 +395,3 @@ export const useStyles = makeStyles((theme) => ({
 }));
 
 export default RenderTable;
-
-
-// {isBugReport ? (
-//   <Grid container>
-//     <Grid item md={5}>
-//       {
-//         <RenderKeywordFilter
-//           keys={keys}
-//           default={props.keyword}
-//           setDisable={setDisable}
-//           onSubmit={handleOnSearch}
-//           onClear={() => {
-//             props.clearSearch();
-//             console.log('clearsearch');
-//           }}
-//           disableButtons={
-//             !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//           }
-//         />
-//       }
-//     </Grid>
-//     <Grid item lg={1}>
-//       <Divider orientation='vertical' variant='middle' />
-//     </Grid>
-//     <Grid item md={6}>
-//       {
-//         <div>
-//           <RenderSeverityFilter
-//             severity={severity}
-//             setDisable={setDisable}
-//             severityList={props.severityList}
-//             focusSeverity={props.focusSeverity}
-//             setFocusSeverity={props.setFocusSeverity}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//           />
-//           <Divider
-//             style={{
-//               marginTop: '1rem',
-//               marginBottom: '1rem',
-//               transform: 'translateX(-1rem) scaleX(1.1)',
-//             }}
-//           />
-//           <RenderCategoryFilter
-//             category={category}
-//             setDisable={setDisable}
-//             focusCategory={props.focusCategory}
-//             setFocusCategory={props.setFocusCategory}
-//             type={type}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//             categoryList={props.categoryList}
-//           />
-//         </div>
-//       }
-//     </Grid>
-//   </Grid>
-// ) : (
-//   <Grid container>
-//     {/* <Grid item md={6}>
-//         {
-//           <RenderKeywordFilter keys={keys} default={props.keyword} setDisable={setDisable} onSubmit={handleOnSearch} onClear={()=> {props.clearSearch()}} disableButtons={!resultsFetched && (tableData.length === 0 || props.searchInitiated)} />
-//         }
-//       </Grid> */}
-//     <Grid item lg={1}>
-//       <Divider orientation='vertical' variant='middle' />
-//     </Grid>
-//     <Grid item md={5}>
-//       {
-//         <div>
-//           <RenderRatingFilter
-//             rating={rating}
-//             setDisable={setDisable}
-//             focusRating={props.focusRating}
-//             setFocusRating={props.setFocusRating}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//           />
-//           <Divider
-//             style={{
-//               marginTop: '1rem',
-//               marginBottom: '1rem',
-//               transform: 'translateX(-1rem) scaleX(1.1)',
-//             }}
-//           />
-//           <RenderCategoryFilter
-//             category={category}
-//             setDisable={setDisable}
-//             focusCategory={props.focusCategory}
-//             setFocusCategory={props.setFocusCategory}
-//             type={type}
-//             disableButtons={
-//               !resultsFetched && (tableData.length === 0 || props.searchInitiated)
-//             }
-//             categoryList={props.categoryList}
-//           />
-//         </div>
-//       }
-//     </Grid>
-//   </Grid>
-// )}

@@ -75,11 +75,11 @@ const RenderRow = ({
 					>
 						{show ? (
 							<KeyboardArrowDownIcon
-								style={index % 2 ? { color: '#CACFD2' } : { color: 'white' }}
+								style={index % 2 ? { color: 'rgb(10,34,90)' } : { color: 'rgb(10,34,90)' }}
 							/>
 						) : (
 							<KeyboardArrowRight
-								style={index % 2 ? { color: '#CACFD2' } : { color: 'white' }}
+								style={index % 2 ? { color: 'rgb(10,34,90)' } : { color: 'rgb(10,34,90)' }}
 							/>
 						)}
 					</IconButton>
@@ -95,7 +95,11 @@ const RenderRow = ({
 				style={
 					index % 2
 						? { background: 'white', borderBottom: 'none', minHeight: '160px' }
-						: { background: '#F1F3F5', borderBottom: 'none', minHeight: '160px' }
+						: {
+								background: 'rgba(10, 34, 90, 0.1)',
+								borderBottom: 'none',
+								minHeight: '160px',
+						  }
 				}
 			>
 				<TableCell
@@ -175,7 +179,7 @@ const RenderRow = ({
 				style={
 					index % 2
 						? { background: 'white', borderBottom: 'none' }
-						: { background: '#F1F3F5', borderBottom: 'none' }
+						: { background: 'rgba(10, 34, 90, 0.1) ', borderBottom: 'none' }
 				}
 			>
 				<TableCell

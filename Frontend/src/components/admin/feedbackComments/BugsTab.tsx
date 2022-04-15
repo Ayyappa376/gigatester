@@ -807,7 +807,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										</Alert>
 									) : (
 										<Alert className={classes.info} severity='info'>
-											Please only select one filter at a time. Other options will disabled
+											Please only select one filter at a time. Other options will be disabled
 											automatically when selecting
 										</Alert>
 									)}
