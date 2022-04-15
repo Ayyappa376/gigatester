@@ -1,45 +1,22 @@
-import {
-	Box,
-	Tabs,
-	Tab,
-	Container,
-	Grid,
-	makeStyles,
-	Divider,
-	Paper,
-	Button,
-} from '@material-ui/core';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import { Box, Tabs, Tab, Container, Grid, makeStyles } from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
 	IFeedbackComments,
 	IProductNameIdMapping,
 	ILimitedProductDetails,
-	IAppFeedback,
-	IFeedbackBarChartData,
-	ILastEvalKey,
-	NUMBER_OF_ITEMS_PER_FETCH,
-	IFetchRecursiveData,
 } from './common';
 import './index.css';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import RenderTable, { Order } from './RenderTable';
 import FeedbackTab from './FeedbackTab';
 import BugsTab from './BugsTab';
-import {
-	getFeedbckChartData,
-	getFeedbackData,
-	getProductDetails,
-} from './methods';
+import { getProductDetails } from './methods';
 import TopToolbar from './TopToolbar';
-import { Http } from '../../../utils';
-import { blue } from '@material-ui/core/colors';
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 	const { productId } = props;
 	const classes = useStyles();
 	const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([]);
-	const [selectedProduct, setSelectedProduct] = useState<string>('');
 	const [prodNameIdMapping, setProdNameIdMapping] =
 		useState<IProductNameIdMapping>({});
 	const [prodNameIdMappingBugCopy, setProdNameIdMappingBugs] =
