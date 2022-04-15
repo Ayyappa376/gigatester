@@ -922,18 +922,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 										]}
 									/>
 								</Grid>
-								<Grid
-									container
-									style={{
-										width: '55%',
-										marginTop: '0.5rem',
-									}}
-								>
-									<Typography style={{ marginRight: '10px', padding: '15px' }}>
-										Filter by date:{' '}
-									</Typography>
-									<DateFilter setDateRange={setDateRange} />
-								</Grid>
 								<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>
 										<Paper

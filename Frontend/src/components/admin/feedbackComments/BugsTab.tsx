@@ -855,21 +855,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										]}
 									/>
 								</Grid>
-								{/* <Grid
-									container
-									style={{
-										width: '95%',
-										marginTop: '0.5rem',
-										display: 'flex',
-										flexDirection: 'row',
-										justifyContent: 'flex-start',
-									}}
-								>
-									<Typography style={{ marginRight: '10px', padding: '15px' }}>
-										Filter by date:
-									</Typography>
-									<DateFilter setDateRange={setDateRange} />
-								</Grid> */}
 								<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>
 										<Paper
