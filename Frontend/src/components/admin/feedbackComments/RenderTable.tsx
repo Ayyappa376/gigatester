@@ -263,20 +263,21 @@ const RenderTable = (props: IProps) => {
 											<TableCell></TableCell>
 										</TableRow>
 									) : (
-										<TableRow>
-											<TableCell>
-												<TailSpin
-													wrapperStyle={{
-														marginLeft: '62%',
-														transform: 'translateX: "-50%',
-													}}
-													height='60'
-													width='30'
-													color='black'
-													ariaLabel='loading'
-												/>
-											</TableCell>
-										</TableRow>
+										<div></div>
+										// <TableRow>
+										// 	<TableCell>
+										// 		<TailSpin
+										// 			wrapperStyle={{
+										// 				marginLeft: '62%',
+										// 				transform: 'translateX: "-50%',
+										// 			}}
+										// 			height='60'
+										// 			width='30'
+										// 			color='black'
+										// 			ariaLabel='loading'
+										// 		/>
+										// 	</TableCell>
+										// </TableRow>
 									)}
 								</TableBody>
 							) : (
