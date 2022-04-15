@@ -36,6 +36,8 @@ import DateFilter from './DateFilter';
 
 interface ChosenProps {
 	productInfoProp: any;
+	productVersion: any;
+	selectedProdId: any;
 }
 
 const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
@@ -672,6 +674,17 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	//   return categoryList;
 	// }
 
+	const renderErr = () => {
+		if (
+			!props?.selectedProdId.trim().length ||
+			!props?.productVersion.trim().length
+		) {
+			return 'Select a product and a version above to view results';
+		}
+
+		return 'No feedback found';
+	};
+
 	const imagePayload = {
 		showImageModal: showImageModal,
 		handleCloseModal: handleCloseModal,
@@ -762,7 +775,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 						</div>
 					) : noDataError ? (
 						<div style={{ marginTop: '3rem' }}>
-							<Failure message={`There is no feedback to show.`} />
+							<Failure message={renderErr()} />
 						</div>
 					) : (
 						<div>

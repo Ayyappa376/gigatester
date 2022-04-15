@@ -1,4 +1,12 @@
-import { Box, Tabs, Tab, Container, Grid, makeStyles } from '@material-ui/core';
+import {
+	Box,
+	Tabs,
+	Tab,
+	Container,
+	Grid,
+	makeStyles,
+	Typography,
+} from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import {
@@ -102,12 +110,35 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 			'aria-controls': `simple-tabpanel-${index}`,
 		};
 	}
+	const renderTabs = () => {
+		if (!selectedProdId.trim().length || !productVersion.trim().length) {
+			return (
+				<Typography variant='h5' component='h2' color='textPrimary'>
+					Please select a product and a version above
+				</Typography>
+			);
+		}
+
+		return (
+			<BasicTabs
+				productInfoProp={productInfoProp}
+				productVersion={productVersion}
+				selectedProdId={selectedProdId}
+			/>
+		);
+	};
 
 	interface BasicTabsProps {
 		productInfoProp: any;
+		productVersion: any;
+		selectedProdId: any;
 	}
 
-	const BasicTabs = ({ productInfoProp }: BasicTabsProps) => {
+	const BasicTabs = ({
+		productInfoProp,
+		productVersion,
+		selectedProdId,
+	}: BasicTabsProps) => {
 		const [value, setValue] = React.useState(0);
 		const classes = useStyles();
 
@@ -116,8 +147,10 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 		};
 
 		let payLoad = {
-			props: props,
-			productInfoProp: productInfoProp,
+			props,
+			productInfoProp,
+			productVersion,
+			selectedProdId,
 		};
 
 		return (
@@ -166,7 +199,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 					}
 				/>
 			</Grid>
-			<BasicTabs productInfoProp={productInfoProp} />
+			{renderTabs()}
 		</Container>
 	);
 };

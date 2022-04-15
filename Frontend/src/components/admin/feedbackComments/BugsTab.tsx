@@ -783,7 +783,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 						</div>
 					) : noDataError ? (
 						<div style={{ marginTop: '3rem' }}>
-							<Failure message={`There is no bugs to show.`} />
+							<Failure message={`No bugs found`} />
 						</div>
 					) : (
 						<div>
