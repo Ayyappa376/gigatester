@@ -126,7 +126,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [categoryList, setCategoryList] = useState<any>([]);
 	const [keys, setKey] = useState<boolean>(false);
 	const [rating, setRating] = useState<boolean>(false);
-	const [selectedDate, setSelectedDate] = useState <string>('1Y');
+	const [selectedDate, setSelectedDate] = useState<string>('1Y');
 	const [sortDate, setSortDate] = useState<number | undefined>();
 
 	useEffect(() => {
@@ -808,17 +808,27 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										</Alert>
 									) : (
 										<Alert className={classes.info} severity='info'>
-											Please only select one filter at a time. Other options will be disabled
-											automatically when selecting
+											Please only select one filter at a time. Other options will be
+											disabled automatically when selecting
 										</Alert>
 									)}
 									<FilterToolBar
+										currentDisable={currentDisable}
 										keyword={keyword}
 										searchInitiated={searchInitiated}
 										handleOnSearch={handleOnSearch}
 										clearSearch={clearSearch}
 										children={[
-											{ child: <DateFilter setSelectedDate={setSelectedDate} selectedDate={selectedDate} setDateRange={setDateRange} />, name: 'Date' },
+											{
+												child: (
+													<DateFilter
+														setSelectedDate={setSelectedDate}
+														selectedDate={selectedDate}
+														setDateRange={setDateRange}
+													/>
+												),
+												name: 'Date',
+											},
 											{
 												child: (
 													<RenderKeywordFilter

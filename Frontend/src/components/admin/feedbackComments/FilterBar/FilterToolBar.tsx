@@ -8,7 +8,8 @@ interface FilterToolbarProps {
 	searchInitiated: any;
 	keyword: string;
 	handleOnSearch: Function;
-	clearSearch: Function;
+  clearSearch: Function;
+  currentDisable: string;
 }
 
 const FilterToolBar = ({
@@ -16,7 +17,8 @@ const FilterToolBar = ({
 	keyword,
 	searchInitiated,
 	clearSearch,
-	handleOnSearch,
+  handleOnSearch,
+  currentDisable,
 }: FilterToolbarProps) => {
 	const classes = useStyles();
 
@@ -31,7 +33,8 @@ const FilterToolBar = ({
 				{Array.isArray(children)
 					? children.map((child: any, index: number) => {
 							return (
-								<FilterItem
+                <FilterItem
+                  currentDisable={currentDisable}
 									key={index}
 									children={child.child}
 									filterName={child.name}

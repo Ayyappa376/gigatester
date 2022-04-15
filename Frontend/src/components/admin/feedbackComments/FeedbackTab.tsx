@@ -48,81 +48,80 @@ interface ChosenProps {
 }
 
 const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
-  const { filtered } = props.productInfoProp;
-  const [backdropOpen, setBackdropOpen] = useState(false);
-  const [error, setError] = useState(false);
-  const [noDataError, setNoDataError] = useState(true);
-  const [data, setData] = useState<IAppFeedback[]>([]);
-  const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
-  const [rawData, setRawData] = useState([]);
-  const classes = useStyles();
-  const [feedbackBarChartData, setFeedbackBarChartData] =
-    useState<IFeedbackBarChartData>({});
-  const [pieChartSeries, setPieChartSeries] = useState({});
-  const [showImageModal, setShowImageModal] = useState(false);
-  const [signedImageUrl, setSignedImageUrl] = useState('');
-  const [attachmentType, setAttachmentType] = useState('');
-  const [focusAttachmentUid, setFocusAttachmentUid] = useState('');
-  const [ratingMapping, setRatingMapping] = useState<IRatingMapping>({});
-  const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({});
-  const [urlArray, setUrlArray] = useState<string[]>([]);
-  const [barChartSeries, setBarChartSeries] = useState([
-    {
-      name: 'rating',
-      data: [0, 0, 0, 0, 0],
-    },
-  ]);
-  const [bugBarChartSeries, setBugBarChartSeries] = useState([
-    {
-      name: 'Severity',
-      data: [0, 0, 0, 0, 0],
-    },
-  ]);
-  const [selectedProdId, setSelectedProdId] = useState<string>(() => {
-    if (props.productInfoProp.selectedProdId) {
-      return props.productInfoProp.selectedProdId;
-    }
-    return '';
-  });
-  const [productVersion, setProductVersion] = useState(() => {
-    if (props.productInfoProp.productVersion) {
-      return props.productInfoProp.productVersion;
-    }
-    return '';
-  });
-  const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>(
-    () => {
-      if (props.productInfoProp.productInfo) {
-        return props.productInfoProp.prodInfo;
-      }
-      return '';
-    },
-  );
-  const [prodNameIdMapping, setProdNameIdMapping] =
-    useState<IProductNameIdMapping>(() => {
-      if (props.productInfoProp.prodNameIdMapping) {
-        return props.productInfoProp.prodNameIdMapping;
-      }
-      return '';
-    });
-  const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
-  const [order, setOrder] = useState<Order>('desc');
-  const [keyword, setKeyword] = useState('');
-  const [searchInitiated, setSearchInitiated] = useState(false);
-  const [focusRating, setFocusRating] = useState([]);
-  const [focusSeverity, setFocusSeverity] = useState([]);
-  const [focusCategory, setFocusCategory] = useState([]);
-  const [slideShowImageUrl, setSlideShowImageUrl] = useState('');
-  const [resultsFetched, setResultsFetched] = useState(false);
-  const [currentDisable, setCurrentDisable] = useState<string>('');
-  const [category, setCat] = useState<boolean>(false);
-  const [severity, setSeverity] = useState<boolean>(false);
-  const [severityList, setSeverityList] = useState<any>([]);
-  const [categoryList, setCategoryList] = useState<any>([]);
-  const [keys, setKey] = useState<boolean>(false);
-  const [rating, setRating] = useState<boolean>(false);
-  const [sortDate, setSortDate] = useState<number | undefined>();
-  const [selectedDate, setSelectedDate] = useState <string>('1Y');
+	const { filtered } = props.productInfoProp;
+	const [backdropOpen, setBackdropOpen] = useState(false);
+	const [error, setError] = useState(false);
+	const [noDataError, setNoDataError] = useState(true);
+	const [data, setData] = useState<IAppFeedback[]>([]);
+	const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
+	const [rawData, setRawData] = useState([]);
+	const classes = useStyles();
+	const [feedbackBarChartData, setFeedbackBarChartData] =
+		useState<IFeedbackBarChartData>({});
+	const [pieChartSeries, setPieChartSeries] = useState({});
+	const [showImageModal, setShowImageModal] = useState(false);
+	const [signedImageUrl, setSignedImageUrl] = useState('');
+	const [attachmentType, setAttachmentType] = useState('');
+	const [focusAttachmentUid, setFocusAttachmentUid] = useState('');
+	const [ratingMapping, setRatingMapping] = useState<IRatingMapping>({});
+	const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({});
+	const [urlArray, setUrlArray] = useState<string[]>([]);
+	const [barChartSeries, setBarChartSeries] = useState([
+		{
+			name: 'rating',
+			data: [0, 0, 0, 0, 0],
+		},
+	]);
+	const [bugBarChartSeries, setBugBarChartSeries] = useState([
+		{
+			name: 'Severity',
+			data: [0, 0, 0, 0, 0],
+		},
+	]);
+	const [selectedProdId, setSelectedProdId] = useState<string>(() => {
+		if (props.productInfoProp.selectedProdId) {
+			return props.productInfoProp.selectedProdId;
+		}
+		return '';
+	});
+	const [productVersion, setProductVersion] = useState(() => {
+		if (props.productInfoProp.productVersion) {
+			return props.productInfoProp.productVersion;
+		}
+		return '';
+	});
+	const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>(
+		() => {
+			if (props.productInfoProp.productInfo) {
+				return props.productInfoProp.prodInfo;
+			}
+			return '';
+		},
+	);
+	const [prodNameIdMapping, setProdNameIdMapping] =
+		useState<IProductNameIdMapping>(() => {
+			if (props.productInfoProp.prodNameIdMapping) {
+				return props.productInfoProp.prodNameIdMapping;
+			}
+			return '';
+		});
+	const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
+	const [order, setOrder] = useState<Order>('desc');
+	const [keyword, setKeyword] = useState('');
+	const [searchInitiated, setSearchInitiated] = useState(false);
+	const [focusRating, setFocusRating] = useState([]);
+	const [focusSeverity, setFocusSeverity] = useState([]);
+	const [focusCategory, setFocusCategory] = useState([]);
+	const [slideShowImageUrl, setSlideShowImageUrl] = useState('');
+	const [resultsFetched, setResultsFetched] = useState(false);
+	const [currentDisable, setCurrentDisable] = useState<string>('');
+	const [category, setCat] = useState<boolean>(false);
+	const [severity, setSeverity] = useState<boolean>(false);
+	const [severityList, setSeverityList] = useState<any>([]);
+	const [categoryList, setCategoryList] = useState<any>([]);
+	const [keys, setKey] = useState<boolean>(false);
+	const [rating, setRating] = useState<boolean>(false);
+	const [selectedDate, setSelectedDate] = useState<string>('1Y');
 	const [dateRange, setDateRange] = useState({
 		startDate: 1649415761515,
 		endDate: 1640315761515,
@@ -762,17 +761,27 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 									</Alert>
 								) : (
 									<Alert className={classes.info} severity='info'>
-										Please only select one filter at a time. Other options will be disabled
-										automatically when selecting
+										Please only select one filter at a time. Other options will be
+										disabled automatically when selecting
 									</Alert>
 								)}
 								<FilterToolBar
+									currentDisable={currentDisable}
 									keyword={keyword}
 									searchInitiated={searchInitiated}
 									handleOnSearch={handleOnSearch}
 									clearSearch={clearSearch}
 									children={[
-										{ child: <DateFilter setSelectedDate={setSelectedDate} selectedDate={selectedDate} setDateRange={setDateRange} />, name: 'Date' },
+										{
+											child: (
+												<DateFilter
+													setSelectedDate={setSelectedDate}
+													selectedDate={selectedDate}
+													setDateRange={setDateRange}
+												/>
+											),
+											name: 'Date',
+										},
 										{
 											child: (
 												<RenderKeywordFilter
@@ -870,17 +879,27 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 										</Alert>
 									) : (
 										<Alert className={classes.info} severity='info'>
-											Please only select one filter at a time. Other options will be disabled
-											automatically when selecting
+											Please only select one filter at a time. Other options will be
+											disabled automatically when selecting
 										</Alert>
 									)}
 									<FilterToolBar
+										currentDisable={currentDisable}
 										keyword={keyword}
 										searchInitiated={searchInitiated}
 										handleOnSearch={handleOnSearch}
 										clearSearch={clearSearch}
 										children={[
-											{ child: <DateFilter setSelectedDate={setSelectedDate} selectedDate={selectedDate} setDateRange={setDateRange} />, name: 'Date' },
+											{
+												child: (
+													<DateFilter
+														setSelectedDate={setSelectedDate}
+														selectedDate={selectedDate}
+														setDateRange={setDateRange}
+													/>
+												),
+												name: 'Date',
+											},
 											{
 												child: (
 													<RenderKeywordFilter

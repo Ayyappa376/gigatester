@@ -6,9 +6,10 @@ import { filter } from 'lodash';
 interface FilterProps {
 	children: any,
 	filterName: string,
+	currentDisable: string,
 }
 
-const FilterItem = ({ children, filterName}: FilterProps) => {
+const FilterItem = ({ children, filterName, currentDisable}: FilterProps) => {
 	const [anchor, setanchor] = useState(null);
 	const [flag, setFlag] = useState(false);
 	const classes = useStyles();
@@ -61,7 +62,7 @@ const FilterItem = ({ children, filterName}: FilterProps) => {
 
 const useStyles = makeStyles((theme) => ({
 	filterBtn: {
-		borderRadius: '15px',
+		borderRadius: '17px',
 		backgroundColor: 'white',
 		color: '#2B559B',
 		fontSize: '15px',
