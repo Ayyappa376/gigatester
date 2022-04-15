@@ -6,6 +6,7 @@ import {
 	Grid,
 	makeStyles,
 	Typography,
+	Paper,
 } from '@material-ui/core';
 import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
@@ -113,9 +114,26 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 	const renderTabs = () => {
 		if (!selectedProdId.trim().length || !productVersion.trim().length) {
 			return (
-				<Typography variant='h5' component='h2' color='textPrimary'>
-					Please select a product and a version above
-				</Typography>
+				<Box>
+					<Typography variant='h5' component='h2' color='textPrimary'>
+						Please select a product and a version above
+					</Typography>
+
+					<Paper
+						elevation={3}
+						style={{
+							height: '300px',
+							width: '400px',
+							background: 'url(magnifying.jpeg)',
+							marginTop: '20px',
+							// @ts-ignore
+							'-webkit-background-size': 'cover',
+							'-moz-background-size': 'cover',
+							'-o-background-size': 'cover',
+							'background-size': 'cover',
+						}}
+					/>
+				</Box>
 			);
 		}
 
