@@ -21,6 +21,7 @@ import {
 	NUMBER_OF_ITEMS_PER_FETCH,
 	IFetchRecursiveData,
 } from './common';
+import './index.css';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 import RenderTable, { Order } from './RenderTable';
 import FeedbackTab from './FeedbackTab';
@@ -30,10 +31,9 @@ import {
 	getFeedbackData,
 	getProductDetails,
 } from './methods';
-import ProductFilter, { VersionFilter } from './ProductFilter';
 import TopToolbar from './TopToolbar';
 import { Http } from '../../../utils';
-import FilterItem from './FilterBar/FilterItem';
+import { blue } from '@material-ui/core/colors';
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 	const { productId } = props;
@@ -104,6 +104,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 				role='tabpanel'
 				hidden={value !== index}
 				id={`simple-tabpanel-${index}`}
+				className='feedback-tab-panel'
 				aria-labelledby={`simple-tab-${index}`}
 				{...other}
 			>
@@ -165,42 +166,32 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 		);
 	};
 
-	// return (
-	// 	<Container>
-	// 		<Grid className={classes.selectors} container>
-	// 			<TopToolbar />
-  //     </Grid>
-  //     <Grid>
-  //       <FilterItem children={<button>hey</button>}/>
-  //     </Grid>
-	// 		<BasicTabs productInfoProp={productInfoProp} />
-	// 	</Container>
-	// );
 	return (
-	  <Container>
-	      <Grid className={classes.selectors} container>
-	        <Grid item xl={2} style={{ position: 'relative' }}>
-	          <ProductFilter selectedProdId={selectedProdId}
-	            setSelectedProdId={setProduct}
-	            productNameIdMapping={prodNameIdMapping}
-	          productInfo={productInfo}
-	          filtered={filtered}
-	          setFiltered={setFiltered}
-	          />
-	        </Grid>
-	        <Grid item xl={2} style={{ position: 'relative' }}>
-	          <VersionFilter productVersion={productVersion}
-	            setProductVersion={setProductVersion}
-	            versionList={selectedProdId ? prodNameIdMapping[selectedProdId] ? prodNameIdMapping[selectedProdId].version ?
-	              prodNameIdMapping[selectedProdId].version : [] : [] : []}
-	              filtered={filtered}
-	              setFiltered={setFiltered}
-	          />
-	      </Grid>
-	      </Grid>
-	      <BasicTabs productInfoProp={productInfoProp} />
-	  </Container>
-	)
+		<Container>
+			<Grid className={classes.selectors} container>
+				<TopToolbar
+					selectedProdId={selectedProdId}
+					setSelectedProdId={setProduct}
+					productNameIdMapping={prodNameIdMapping}
+					productInfo={productInfo}
+					filtered={filtered}
+					setFiltered={setFiltered}
+					productVersion={productVersion}
+					setProductVersion={setProductVersion}
+					versionList={
+						selectedProdId
+							? prodNameIdMapping[selectedProdId]
+								? prodNameIdMapping[selectedProdId].version
+									? prodNameIdMapping[selectedProdId].version
+									: []
+								: []
+							: []
+					}
+				/>
+			</Grid>
+			<BasicTabs productInfoProp={productInfoProp} />
+		</Container>
+	);
 };
 
 export default withRouter(FeedbackComments);

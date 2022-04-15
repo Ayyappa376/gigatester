@@ -1,0 +1,3 @@
+.feedback-tab-panel {
+	max-width: calc(100vw - 320px);
+}
