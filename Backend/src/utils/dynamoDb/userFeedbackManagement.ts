@@ -37,9 +37,9 @@ export interface ProcessedData {
 }
 
 export interface AppFeedback {
-  bugPriority: string[];
+  bugPriority: string | string[];
   createdOn: number;
-  feedbackCategory?: string[];
+  feedbackCategory?: string | string[];
   feedbackComments?: string[];
   feedbackMedia: {
     audio?: string;
@@ -80,64 +80,61 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
 
     if(filterRating) {
       const rating = filterRating.split(',');
-      if(rating.length > 0) {
-        rating.forEach((el, i) => {
-          EAN['#rating'] = 'productRating';
-          EAV[`:ratingVal${i}`] = parseInt(el, 10);
-          if(i === 0) {
-            if(rating.length === 1) {
-              FE += FE ? ` and #rating = :ratingVal${i}` : `#rating = :ratingVal${i}`;
-            } else {
-              FE += FE ? ` and (#rating = :ratingVal${i}` : `(#rating = :ratingVal${i}`;
-            }
-          } else if (i === rating.length - 1) {
-            FE += ` or #rating = :ratingVal${i})`;
+      for(let i = 0; i < rating.length; i += 1) {
+        const el = rating[i];
+        EAN['#rating'] = 'productRating';
+        EAV[`:ratingVal${i}`] = parseInt(el, 10);
+        if(i === 0) {
+          if(rating.length === 1) {
+            FE += FE ? ` and #rating = :ratingVal${i}` : `#rating = :ratingVal${i}`;
           } else {
-            FE += ` or #rating = :ratingVal${i}`;
+            FE += FE ? ` and (#rating = :ratingVal${i}` : `(#rating = :ratingVal${i}`;
           }
-        });
+        } else if(i === (rating.length - 1)) {
+          FE += ` or #rating = :ratingVal${i})`;
+        } else {
+          FE += ` or #rating = :ratingVal${i}`;
+        }
       }
     }
 
     if(filterSeverity) {
       const severity = filterSeverity.split(',');
-      if(severity.length > 0) {
-        severity.forEach((el, i) => {
-          EAN['#severity'] = 'bugPriority';
-          EAV[`:severityVal${i}`] = el;
-          if(i === 0) {
-            if(severity.length === 1) {
-              FE += FE ? ` and #severity = :severityVal${i}` : `#severity = :severityVal${i}`;
-            } else {
-              FE += FE ? ` and (#severity = :severityVal${i}` : `(#severity = :severityVal${i}`;
-            }
-          } else if (i === severity.length - 1) {
-            FE += ` or #severity = :severityVal${i})`;
+      for(let i = 0; i < severity.length; i += 1) {
+        const el = severity[i];
+        EAN['#severity'] = 'bugPriority';
+        EAV[`:severityVal${i}`] = el;
+        if(i === 0) {
+          if(severity.length === 1) {
+            FE += FE ? ` and #severity = :severityVal${i}` : `#severity = :severityVal${i}`;
           } else {
-            FE += ` or #severity = :severityVal${i}`;
+            FE += FE ? ` and (#severity = :severityVal${i}` : `(#severity = :severityVal${i}`;
           }
-        });
+        } else if(i === (severity.length - 1)) {
+          FE += ` or #severity = :severityVal${i})`;
+        } else {
+          FE += ` or #severity = :severityVal${i}`;
+        }
       }
     }
 
     if(filterCategory) {
       const categories = filterCategory.split(',');
-      if(categories.length > 0) {
-        categories.forEach((el, i) => {
-          EAN['#category'] = 'feedbackCategory';
-          EAV[`:categoryVal${i}`] = el;
-          if(i === 0) {
-            if(categories.length === 1) {
-              FE += FE ? ` and #category = :categoryVal${i}` : `#category = :categoryVal${i}`;
-            } else {
-              FE += FE ? ` and (#category = :categoryVal${i}` : `(#category = :categoryVal${i}`;
-            }
-          } else if (i === categories.length - 1) {
-            FE += ` or #category = :categoryVal${i})`;
+      for(let i = 0; i < categories.length; i += 1) {
+        const el = categories[i];
+        EAN['#category'] = 'feedbackCategory';
+        EAV[`:categoryVal${i}`] = el;
+        if(i === 0) {
+          if(categories.length === 1) {
+            FE += FE ? ` and #category = :categoryVal${i}` : `#category = :categoryVal${i}`;
           } else {
-            FE += ` or #category = :categoryVal${i}`;
+            FE += FE ? ` and (#category = :categoryVal${i}` : `(#category = :categoryVal${i}`;
           }
-        });
+        } else if(i === (categories.length - 1)) {
+          FE += ` or #category = :categoryVal${i})`;
+        } else {
+          FE += ` or #category = :categoryVal${i}`;
+        }
       }
     }
 
@@ -158,19 +155,17 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     EAV[':type'] = type;
      // EAV[':startDate'] = startDate;
 
-
     if(FE) {
       params.FilterExpression = FE;
     }
 
-    if(endDate && startDate){
-      const lastDate = new Date(parseInt(endDate)).getTime();
-      const beginDate = new Date(parseInt(startDate)).getTime();
+    if(endDate && startDate) {
+      const lastDate = new Date(parseInt(endDate, 10)).getTime();
+      const beginDate = new Date(parseInt(startDate, 10)).getTime();
       EAV[':startDate'] = beginDate;
       EAV[':endDate'] = lastDate;
       params.KeyConditionExpression = 'feedbackType=:type AND createdOn BETWEEN :endDate AND :startDate';
-    }
-    else{
+    } else {
       params.KeyConditionExpression = 'feedbackType=:type';
     }
 
@@ -216,7 +211,6 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       }
     }
 
-
     if(FE) {
       params = {
         ExpressionAttributeNames: EAN,
@@ -226,19 +220,18 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       };
       EAV[':type'] = type;
       params.IndexName = 'feedbackType-createdOn-index';
-      if(endDate && startDate){
+      if(endDate && startDate) {
         // console.log(endDate, 'eeeeeeeeeeeendDateeeeeeeeeee');
         // const today = new Date();
         // const lastDate = new Date().setDate(today.getDate() - 10);
         // const intEndDate = new Date(parseInt(endDate))
-        const lastDate = new Date(parseInt(endDate)).getTime();
-        const beginDate = new Date(parseInt(startDate)).getTime();
+        const lastDate = new Date(parseInt(endDate, 10)).getTime();
+        const beginDate = new Date(parseInt(startDate, 10)).getTime();
         // console.log(lastDate, 'laaaaaaastDateeeeeeee')
         EAV[':startDate'] = beginDate;
         EAV[':endDate'] = lastDate;
         params.KeyConditionExpression = 'feedbackType=:type AND createdOn BETWEEN :endDate and :startDate';
-      }
-      else{
+      } else {
         params.KeyConditionExpression = 'feedbackType=:type';
       }
     }
@@ -249,16 +242,13 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
 // const convertFirstLetterToUppercase = (str: string) => str.charAt(0).toUpperCase() + str.slice(1);
 
 export const feedbackProcessBarChartData = (items: AppFeedback[]) => {
-    const ratingData: ProcessedData = {1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0};
-    if(items.length > 0) {
-        items.forEach((item) => {
-            if(item.productRating /*&& (typeof item.productRating !== 'string')*/) {
-                ratingData[item.productRating.toString()] += 1;
-            }
-        });
+  const ratingData: ProcessedData = {1 : 0, 2 : 0, 3 : 0, 4 : 0, 5 : 0};
+  for(const item of items) {
+    if(item.productRating /*&& (typeof item.productRating !== 'string')*/) {
+        ratingData[item.productRating.toString()] += 1;
     }
-    console.log(ratingData);
-    return ratingData;
+  }
+  return ratingData;
 };
 
 export const feedbackProcessPieChartData = (pData: ProcessedData) => {
@@ -287,26 +277,40 @@ export const bugProcessBarChartData = async({data, prodId, prodVersion, chartTyp
   //     });
   // }
     if(data.length > 0) {
-        data.forEach((item: any) => {
-            if((item.feedbackType === 'BUG_REPORT'/* || item.productRating === 0 || (typeof item.productRating === undefined)*/)) {
-              if(item.bugPriority && item.bugPriority !== ''){
-                if(!severityData[item.bugPriority]) {
-                  severityData[item.bugPriority] = 1;
+      const unknownKey = 'unknown';
+      for(const item of data) {
+        if((item.feedbackType === 'BUG_REPORT'/* || item.productRating === 0 || (typeof item.productRating === undefined)*/)) {
+          if(Array.isArray(item.bugPriority)) {
+            for(const priority of item.bugPriority) {
+              if(priority === '') {
+                if(severityData[unknownKey]) {
+                  severityData[unknownKey] += 1;
                 } else {
-                  severityData[item.bugPriority] += 1;
+                  severityData[unknownKey] = 1;
                 }
-              }
-              else{
-                if(severityData['unknown']){
-                  severityData['unknown'] += 1; 
-                }
-                else{
-                  severityData['unknown'] = 1;
+              } else {
+                if(!severityData[priority]) {
+                  severityData[priority] = 1;
+                } else {
+                  severityData[priority] += 1;
                 }
               }
             }
-
-        });
+          } else if(item.bugPriority && (item.bugPriority !== '')) {
+            if(!severityData[item.bugPriority]) {
+              severityData[item.bugPriority] = 1;
+            } else {
+              severityData[item.bugPriority] += 1;
+            }
+          } else {
+            if(severityData[unknownKey]) {
+              severityData[unknownKey] += 1;
+            } else {
+              severityData[unknownKey] = 1;
+            }
+          }
+        }
+      }
     }
     return severityData;
   }
@@ -349,34 +353,39 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
   if(prodId) {
     // const categories: string[] = await getCategoriesList({prodId, prodVersion, chartType});
     const categoryData: ProcessedData = {};
-    // categories.forEach((el) => {
-    //   categoryData[el] = 0;
-    // });
     if(data.length > 0) {
-      data.forEach((item) => {
+      const unknownKey = 'unknown';
+      for(const item of data) {
         if(Array.isArray(item.feedbackCategory)) {
-          console.log(item.feedbackCategory, 'asdnioadinfaldsn');
-          item.feedbackCategory.map((category) => {
-            if(!categoryData[category]) {
-              categoryData[category] = 1;
+          for(const category of item.feedbackCategory) {
+            if(category === '') {
+              if(categoryData[unknownKey]) {
+                categoryData[unknownKey] += 1;
+              } else {
+              categoryData[unknownKey] = 1;
+              }
             } else {
-              categoryData[category] += 1;
+              if(!categoryData[category]) {
+                categoryData[category] = 1;
+              } else {
+                categoryData[category] += 1;
+              }
             }
-          });
-        } else if(item.feedbackCategory && item.feedbackCategory !== '') {
+          }
+        } else if(item.feedbackCategory && (item.feedbackCategory !== '')) {
           if(!categoryData[item.feedbackCategory]) {
             categoryData[item.feedbackCategory] = 1;
           } else {
             categoryData[item.feedbackCategory] += 1;
           }
         } else {
-          if(categoryData['unknown']) {
-            categoryData['unknown'] += 1;
+          if(categoryData[unknownKey]) {
+            categoryData[unknownKey] += 1;
           } else {
-          categoryData['unknown'] = 1;
+          categoryData[unknownKey] = 1;
           }
         }
-      });
+      }
     }
     return categoryData;
   }
@@ -384,8 +393,7 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
 };
 
 const processFeedbackChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string})  => {
-  console.log('datafeedasd', data.length)
-  const barChartData = await feedbackProcessBarChartData(data);
+  const barChartData = feedbackProcessBarChartData(data);
   const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
   return {
     barChartData, pieChartData

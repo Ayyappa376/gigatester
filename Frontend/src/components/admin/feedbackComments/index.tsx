@@ -26,7 +26,7 @@ import BugReportIcon from '@material-ui/icons/BugReport';
 //@material-ui/icons
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
-	const { productId } = props;
+	const { productId, prodVersion } = props;
 	const classes = useStyles();
 	const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([]);
 	const [prodNameIdMapping, setProdNameIdMapping] =
@@ -70,15 +70,14 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 				setSelectedProdId,
 				setProdNameIdMappingBugs,
 				setProductVersion,
-				productId,
-				productVersion,
+				productId: props.productId,
+				productVersion : props.prodVersion,
 			});
 		}
 		return () => {
 			load = true;
 		};
 	}, []);
-
 
 	const TabPanel = (props: any) => {
 		const { children, value, index, ...other } = props;

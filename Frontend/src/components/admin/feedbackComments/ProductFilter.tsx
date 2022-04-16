@@ -22,7 +22,11 @@ const ITEM_PADDING_TOP = 8;
 const ProductFilter = (props : IProps) => {
     const {selectedProdId, productNameIdMapping, productInfo, filtered, setFiltered} = props;
     const classes = useStyles();
-    const [chose, setChose] = useState("");
+    const [chose, setChose] = useState('');
+
+    useEffect(() => {
+        setChose(props.selectedProdId);
+	}, []);
 
     const handleChange = (event: any) => {
         setChose(event.target.value)
@@ -35,7 +39,8 @@ const ProductFilter = (props : IProps) => {
         }
       };
 
-//    const label = 'Choose Product';
+    console.log(props.selectedProdId);
+    console.log(chose);
 
     return (
         <div>
@@ -73,8 +78,11 @@ export const VersionFilter = (props : IVersionFilterProps) => {
     const {productVersion, versionList, filtered, setFiltered} = props;
     const classes = useStyles();
     const theme = useTheme();
-    const [chose, setChose] = useState("");
+    const [chose, setChose] = useState('');
 
+	useEffect(() => {
+        setChose(props.productVersion);
+	}, []);
 
     const handleChange = (event: any) => {
         setChose(event.target.value)
@@ -87,6 +95,8 @@ export const VersionFilter = (props : IVersionFilterProps) => {
         }
     };
 
+    console.log(props.productVersion);
+    console.log({chose});
     return (
         <div style={{paddingLeft: '1rem'}}>
             <FormControl style={{

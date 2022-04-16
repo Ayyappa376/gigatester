@@ -37,6 +37,7 @@
     "no-var-requires": false,
     "no-magic-numbers": false,
     "whitespace": false,
+    "member-ordering": false,
     "no-unnecessary-class": [
       "allow-static-only"
     ],

@@ -201,6 +201,8 @@ export const getProductDetails = async ({
 				setProdNameIdMapping(prodNameIdMappingCopy);
 				setProdNameIdMappingBugs(prodNameIdMappingBugCopy);
 				if (productId && productVersion) {
+					setSelectedProdId(productId);
+					setProductVersion(productVersion);
 					return;
 				}
 				// const defaultProductId = Object.keys(prodNameIdMappingCopy)[0];
