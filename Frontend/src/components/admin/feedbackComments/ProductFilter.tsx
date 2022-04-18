@@ -26,7 +26,7 @@ const ProductFilter = (props : IProps) => {
 
     useEffect(() => {
         setChose(props.selectedProdId);
-	}, []);
+	}, [selectedProdId]);
 
     const handleChange = (event: any) => {
         setChose(event.target.value)
@@ -84,7 +84,7 @@ export const VersionFilter = (props : IVersionFilterProps) => {
 
 	useEffect(() => {
         setChose(props.productVersion);
-	}, []);
+	}, [productVersion]);
 
     const handleChange = (event: any) => {
         setChose(event.target.value)

@@ -44,8 +44,8 @@ const RenderSeverityFilter = React.memo((props: IProps) => {
             </div>
             <div id="RenderFilter-flexContainer">
                 {severityList.map((el) => {
-                    return <Button variant='outlined' disabled={severity}
-                    key={el} onClick={() => {handleKeywordClick(el)}} id={focusSeverity.indexOf(el) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button>
+                    return  el !== 'unknown' ? <Button variant='outlined' disabled={severity}
+                    key={el} onClick={() => {handleKeywordClick(el)}} id={focusSeverity.indexOf(el) != -1 ? "RenderFilter-btnVisited" : "RenderFilter-btn"}>{el}</Button> : ''
                 }
                 )}
             </div>

@@ -70,6 +70,7 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 				setSelectedProdId,
 				setProdNameIdMappingBugs,
 				setProductVersion,
+        setFiltered,
 				productId: props.productId,
 				productVersion : props.prodVersion,
 			});

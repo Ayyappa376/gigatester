@@ -141,6 +141,7 @@ interface productDetails {
 	setSelectedProdId: Function;
 	setProdNameIdMappingBugs: Function;
 	setProductVersion: Function;
+  setFiltered: Function;
 	productId: any;
 	productVersion: any;
 }
@@ -154,6 +155,7 @@ export const getProductDetails = async ({
 	setSelectedProdId,
 	setProdNameIdMappingBugs,
 	setProductVersion,
+  setFiltered,
 	productId,
 	productVersion,
 }: productDetails) => {
@@ -203,6 +205,7 @@ export const getProductDetails = async ({
 				if (productId && productVersion) {
 					setSelectedProdId(productId);
 					setProductVersion(productVersion);
+          setFiltered({ product: true, version: true })
 					return;
 				}
 				// const defaultProductId = Object.keys(prodNameIdMappingCopy)[0];

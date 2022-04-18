@@ -39,8 +39,8 @@ const DateFilter = ({ setDateRange, selectedDate, setSelectedDate }: IDateProps)
 		const today = new Date();
 
 		if (firstDate && secondDate) {
-			const startDay = Date.parse(firstDate.toString());
-			const endDay = Date.parse(secondDate.toString());
+			const startDay = Date.parse(secondDate.toString());
+			const endDay = Date.parse(firstDate.toString());
 			setDateRange({ startDate: startDay, endDate: endDay });
 			setSelectedDate('');
 		}

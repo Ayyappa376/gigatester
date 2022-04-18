@@ -57,14 +57,10 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [feedbackBarChartData, setFeedbackBarChartData] =
 		useState<IFeedbackBarChartData>({});
 	const [pieChartSeries, setPieChartSeries] = useState({});
-	const [dateRange, setDateRange] = useState(() => {
-		const today = new Date();
-		const todaysDate = Date.parse(today.toString());
-		return {
-			startDate: todaysDate,
-			endDate: today.setFullYear(today.getFullYear() - 1),
-		};
-	});
+	const [dateRange, setDateRange] = useState({
+		startDate: '',
+		endDate: '',
+	}); //epoch timestamp
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [signedImageUrl, setSignedImageUrl] = useState('');
 	const [attachmentType, setAttachmentType] = useState('');
@@ -271,7 +267,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterCategory: focusCategory,
 				filterSeverity: focusSeverity,
 				searchWord: keyword,
-				filterDate: dateRange,
 			});
 		} else {
 			setData(sortTableByDate(data, order));
@@ -340,7 +335,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				showNoEmptyError: true,
 				filterDate: dateRange,
-				noRawDataUpdate: true,
 			});
 			getBugChartData({
 				setBugBarChartSeries,
@@ -500,13 +494,29 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			) {
 				setLastEvaluatedKey({});
 			}
-		} else {
-			if (!showNoEmptyError) {
-				setBackdropOpen(false);
-				setNoDataError(true);
-			}
+		}
+	else if (
+		response &&
+		response.Items &&
+		response.Items.Items &&
+		Array.isArray(response.Items.Items) &&
+		response.Items.Items.length === 0
+	) {
+		setResultsFetched(true);
+		if (
+			Object.keys(lastEvaluatedKey).length > 0 &&
+			!response.Items.LastEvaluatedKey
+		) {
+			setLastEvaluatedKey({});
+		}
+	}
+	else {
+		if (!showNoEmptyError) {
+			setBackdropOpen(false);
+			setNoDataError(true);
 		}
 	};
+};
 
 	const fetchMore = () => {
 		if (Object.keys(lastEvaluatedKey).length > 0 && !searchInitiated) {
@@ -537,7 +547,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			if (pieChartSeries) {
 				let searchCategoryList = Object.keys(pieChartSeries);
 				searchCategoryList = searchCategoryList.map((element) => {
-					return element.toLowerCase();
+					// return element.toLowerCase(); // Tried lower case as standard;
+					return element;
 				});
 				console.log(searchCategoryList, 'category search list');
 				setCategoryList(searchCategoryList);

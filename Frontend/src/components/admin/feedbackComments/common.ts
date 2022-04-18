@@ -35,8 +35,8 @@ export const CONST_BUG_REPORT_CHART = 'BUG-REPORT-CHART';
 
 export const NUMBER_OF_ITEMS_PER_FETCH = 20;
  export interface IDateRange {
-  startDate: number,
-  endDate: number,
+  startDate: string,
+  endDate: string,
 }
 
 export interface IFeedbackComments {

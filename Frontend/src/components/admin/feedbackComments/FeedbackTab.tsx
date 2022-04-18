@@ -123,8 +123,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	const [rating, setRating] = useState<boolean>(false);
 	const [selectedDate, setSelectedDate] = useState<string>('1Y');
 	const [dateRange, setDateRange] = useState({
-		startDate: 1649415761515,
-		endDate: 1640315761515,
+		startDate: '',
+		endDate: '',
 	}); //epoch timestamp
 
 	useEffect(() => {
@@ -218,7 +218,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		) {
 			if (productVersion === 'all') {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '' });
+				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '',filterDate: dateRange });
 				getFeedbckChartData({
 					setFeedbackBarChartData,
 					setBugBarChartSeries,
@@ -229,7 +229,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				});
 			} else {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion });
+				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
 				getFeedbckChartData({
 					setFeedbackBarChartData,
 					setBugBarChartSeries,
@@ -283,6 +283,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: true,
+			filterDate: dateRange,
 		});
 	}, [focusRating]);
 
@@ -295,13 +296,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (dateRange) {
 			setResultsFetched(false);
 			setData([]);
+			setCurrentDisable('');
 			// console.log('sorted', sortDate);
 			fetchRecursiveData({
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
 				filterDate: dateRange,
-				noRawDataUpdate: true,
 			});
 			getFeedbckChartData({
 				setFeedbackBarChartData,
@@ -356,6 +357,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodId: selectedProdId,
 			prodVersion: productVersion,
 			showNoEmptyError: true,
+			filterDate: dateRange,
 			noRawDataUpdate: true,
 		});
 	}, [focusCategory]);
@@ -466,7 +468,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				setBackdropOpen(false);
 				setRawData((rawDataObj) => {
 					// clear filter will get the idea that the data has already been fetched.
-					const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+					let rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+					if(filterDate){
+						rawDataCopy = new Set([].concat(response.Items.Items));
+					}
 					return Array.from(rawDataCopy);
 				});
 			}
@@ -483,13 +488,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			) {
 				setLastEvaluatedKey({});
 			}
-		} else {
+		} 
+		else {
 			if (!showNoEmptyError) {
 				setBackdropOpen(false);
 				setNoDataError(true);
 			}
 		}
-	};
+	}	
+
 
 	const fetchMore = () => {
 		if (Object.keys(lastEvaluatedKey).length > 0) {
