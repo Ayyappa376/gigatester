@@ -24,7 +24,7 @@ export const CATEGORY_OTHER = "Other";
 
 export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT';
 
-export type FeedbackCategory = 'Video' | 'Audio' | 'Screen' | 'Images' | 'Other';
+export type FeedbackCategory = string[];
 
 //export type BugSeverity = 'Low' | 'Medium' | 'High' | 'Critical';
 
@@ -34,6 +34,10 @@ export const CONST_BUG_REPORT = 'BUG_REPORT';
 export const CONST_BUG_REPORT_CHART = 'BUG-REPORT-CHART';
 
 export const NUMBER_OF_ITEMS_PER_FETCH = 20;
+ export interface IDateRange {
+  startDate: number,
+  endDate: number,
+}
 
 export interface IFeedbackComments {
   productId?: string,
@@ -169,7 +173,8 @@ export interface IFetchRecursiveData {
   lastEvalKey?: ILastEvalKey,
   fetchOrder?: Order,
   filterRating?: number[],
-  filterSeverity?: string[], 
+  filterSeverity?: string[],
+  filterDate?: IDateRange,
   filterCategory?: string[], 
   prodId?: string,
   prodVersion?: string,

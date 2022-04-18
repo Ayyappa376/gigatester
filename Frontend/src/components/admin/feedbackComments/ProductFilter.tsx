@@ -24,6 +24,10 @@ const ProductFilter = (props : IProps) => {
     const classes = useStyles();
     const [chose, setChose] = useState('');
 
+    useEffect(() => {
+        setChose(props.selectedProdId);
+	}, []);
+
     const handleChange = (event: any) => {
         setChose(event.target.value)
         props.setSelectedProdId(event.target.value as string);
@@ -35,12 +39,9 @@ const ProductFilter = (props : IProps) => {
             }))
         }
       };
-      
-//    const label = 'Choose Product';
-useEffect(()=> {
-    setChose(selectedProdId);
-    console.log(selectedProdId);
-}, [selectedProdId])
+
+    console.log(props.selectedProdId);
+    console.log(chose);
 
     return (
         <div>
@@ -81,6 +82,9 @@ export const VersionFilter = (props : IVersionFilterProps) => {
     const theme = useTheme();
     const [chose, setChose] = useState('');
 
+	useEffect(() => {
+        setChose(props.productVersion);
+	}, []);
 
     const handleChange = (event: any) => {
         setChose(event.target.value)
@@ -93,10 +97,8 @@ export const VersionFilter = (props : IVersionFilterProps) => {
         }
     };
 
-        useEffect(() => {
-            setChose(productVersion)
-        }, [productVersion])
-
+    console.log(props.productVersion);
+    console.log({chose});
     return (
         <div style={{paddingLeft: '1rem'}}>
             <FormControl style={{
@@ -111,8 +113,11 @@ export const VersionFilter = (props : IVersionFilterProps) => {
                 >
                 <MenuItem disabled key={0} value={""} >
                     Please Select
+                    </MenuItem>
+                 <MenuItem key={1} value={"all"} >
+                    All versions
                 </MenuItem>
-                {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
+                    {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
                 </Select>
             </FormControl>
         </div>

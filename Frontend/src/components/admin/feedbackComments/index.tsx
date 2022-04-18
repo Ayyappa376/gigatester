@@ -1,195 +1,248 @@
-import { Box, Tabs, Tab, Container, Grid, makeStyles, Divider, Paper } from '@material-ui/core';
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import {
+	Box,
+	Tabs,
+	Tab,
+	Container,
+	Grid,
+	makeStyles,
+	Typography,
+	Paper,
+} from '@material-ui/core';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
-import { IFeedbackComments, IProductNameIdMapping, ILimitedProductDetails, IAppFeedback, IFeedbackBarChartData, ILastEvalKey, NUMBER_OF_ITEMS_PER_FETCH,  IFetchRecursiveData } from './common';
+import {
+	IFeedbackComments,
+	IProductNameIdMapping,
+	ILimitedProductDetails,
+} from './common';
+import './index.css';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
-import RenderTable, { Order } from './RenderTable';
 import FeedbackTab from './FeedbackTab';
 import BugsTab from './BugsTab';
-import { getFeedbckChartData, getFeedbackData, getProductDetails } from './methods';
-import ProductFilter, { VersionFilter } from './ProductFilter';
-import { Http } from '../../../utils';
+import { getProductDetails } from './methods';
+import TopToolbar from './TopToolbar';
+import ChatIcon from '@material-ui/icons/Chat'
+import BugReportIcon from '@material-ui/icons/BugReport';
+//@material-ui/icons
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
-  const { productId, prodVersion } = props;
-  const classes = useStyles();
-  const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
-  const [selectedProduct, setSelectedProduct] = useState<string>('');
-  const [prodNameIdMapping, setProdNameIdMapping] = useState<IProductNameIdMapping>({})
-  const [prodNameIdMappingBugCopy, setProdNameIdMappingBugs] = useState<IProductNameIdMapping>({})
-  const [selectedProdId, setSelectedProdId] = useState<string>("")
-  const [productVersion, setProductVersion] = useState("");
-  // const [rawData, setRawData] = useState([]);
-  // const [focusCategory, setFocusCategory] = useState([]);
-  // const [currentDisable, setCurrentDisable] = useState<string>('');
-  // const [data, setData] = useState<IAppFeedback[]>([]);
-  // const [resultsFetched, setResultsFetched] = useState(false);
-  // const [error, setError] = useState(false);
-  // const [isBugReport, setBugReport] = useState<boolean | undefined>();
-  // const [backdropOpen, setBackdropOpen] = useState(false);
-  // const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
-  // const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
-  // const [searchInitiated, setSearchInitiated] = useState(false)
-  // const [noDataError, setNoDataError] = useState(true);
-  const [filtered, setFiltered] = useState({ product: false, version: false });
+	const { productId, prodVersion } = props;
+	const classes = useStyles();
+	const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([]);
+	const [prodNameIdMapping, setProdNameIdMapping] =
+		useState<IProductNameIdMapping>({});
+	const [prodNameIdMappingBugCopy, setProdNameIdMappingBugs] =
+		useState<IProductNameIdMapping>({});
+	const [selectedProdId, setSelectedProdId] = useState<string>('');
+	const [productVersion, setProductVersion] = useState('');
+	const [filtered, setFiltered] = useState({ product: false, version: false });
 
-  const setProduct = (val: string) => {
-    if (val) {
-      setSelectedProdId(val);
-    }
-  }
+	const setProduct = (val: string) => {
+		if (val) {
+			setSelectedProdId(val);
+		}
+	};
 
-  const productInfoProp = {
-    prodNameIdMapping: prodNameIdMapping,
-    prodNameIdMappingBugCopy: prodNameIdMappingBugCopy,
-    selectedProdId: selectedProdId,
-    productVersion: productVersion,
-    selectedProduct: selectedProdId,
-    filtered: filtered,
-  }
+	const productInfoProp = {
+		prodNameIdMapping: prodNameIdMapping,
+		prodNameIdMappingBugCopy: prodNameIdMappingBugCopy,
+		selectedProdId: selectedProdId,
+		productVersion: productVersion,
+		selectedProduct: selectedProdId,
+		filtered: filtered,
+	};
 
-  useEffect(() => {
-      productInfoProp.selectedProdId = selectedProdId;
-      productInfoProp.productVersion = productVersion;
-      productInfoProp.selectedProduct = selectedProdId;
-      console.log(productInfoProp);
-  }, [selectedProdId, productVersion])
+	useEffect(() => {
+		productInfoProp.selectedProdId = selectedProdId;
+		productInfoProp.productVersion = productVersion;
+		productInfoProp.selectedProduct = selectedProdId;
+	}, [selectedProdId, productVersion]);
 
+	useEffect(() => {
+		let load = false;
+		if (!load) {
+			getProductDetails({
+				productInfo,
+				prodNameIdMapping,
+				prodNameIdMappingBugCopy,
+				setProductInfo,
+				setProdNameIdMapping,
+				setSelectedProdId,
+				setProdNameIdMappingBugs,
+				setProductVersion,
+				productId: props.productId,
+				productVersion : props.prodVersion,
+			});
+		}
+		return () => {
+			load = true;
+		};
+	}, []);
 
-  useEffect(() => {
-    let load = false;
-    if (!load ) {
-      getProductDetails({ productInfo, prodNameIdMapping, prodNameIdMappingBugCopy, setFiltered, setProductInfo, setProdNameIdMapping, setSelectedProdId, setProdNameIdMappingBugs, setProductVersion, productId, prodVersion});
-      if(productId && prodVersion){
-      setSelectedProdId(productId);
-      setProductVersion(prodVersion);
-      setFiltered({product: true, version: true});
-      }
-    }
-    return () => { load = true}
-  }, []);
+	const TabPanel = (props: any) => {
+		const { children, value, index, ...other } = props;
 
+		return (
+			<div
+				role='tabpanel'
+				hidden={value !== index}
+				id={`simple-tabpanel-${index}`}
+				className='feedback-tab-panel'
+				aria-labelledby={`simple-tab-${index}`}
+				{...other}
+			>
+				{value === index && <div>{children}</div>}
+			</div>
+		);
+	};
 
+	TabPanel.propTypes = {
+		children: PropTypes.node,
+		index: PropTypes.number.isRequired,
+		value: PropTypes.number.isRequired,
+	};
 
-  const TabPanel = (props: any) => {
-    const { children, value, index, ...other } = props;
+	function tabProps(index: any) {
+		return {
+			id: `simple-tab-${index}`,
+			'aria-controls': `simple-tabpanel-${index}`,
+		};
+	}
+	const renderTabs = () => {
+		if (!selectedProdId.trim().length || !productVersion.trim().length) {
+			return (
+				<Box>
+					<Typography variant='h5' component='h2' color='textPrimary'>
+						Please select a product and a version above
+					</Typography>
 
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <div>
-            {children}
-          </div>
-        )}
-      </div>
-    );
-  }
+					<Paper
+						elevation={3}
+						style={{
+							height: '300px',
+							width: '400px',
+							background: 'url(magnifying.jpeg)',
+							marginTop: '20px',
+							// @ts-ignore
+							'-webkit-background-size': 'cover',
+							'-moz-background-size': 'cover',
+							'-o-background-size': 'cover',
+							'background-size': 'cover',
+						}}
+					/>
+				</Box>
+			);
+		}
 
-  TabPanel.propTypes = {
-    children: PropTypes.node,
-    index: PropTypes.number.isRequired,
-    value: PropTypes.number.isRequired,
-  };
+		return (
+			<BasicTabs
+				productInfoProp={productInfoProp}
+				productVersion={productVersion}
+				selectedProdId={selectedProdId}
+			/>
+		);
+	};
 
-  function a11yProps(index: any) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
+	interface BasicTabsProps {
+		productInfoProp: any;
+		productVersion: any;
+		selectedProdId: any;
+	}
 
-  interface BasicTabsProps {
-    productInfoProp: any,
-  }
+	const BasicTabs = ({
+		productInfoProp,
+		productVersion,
+		selectedProdId,
+	}: BasicTabsProps) => {
+		const [value, setValue] = React.useState(0);
+		const classes = useStyles();
 
-  const BasicTabs = ({ productInfoProp }: BasicTabsProps) => {
-    const [value, setValue] = React.useState(0);
-    const classes = useStyles();
+		const handleChange = (event: any, newValue: number) => {
+			setValue(newValue);
+		};
 
-    const handleChange = (event: any, newValue: number) => {
-      setValue(newValue);
-    };
+		let payLoad = {
+			props,
+			productInfoProp,
+			productVersion,
+			selectedProdId,
+		};
 
-    let payLoad = {
-      props: props,
-      productInfoProp: productInfoProp,
-    }
+		return (
+			<Box sx={{ width: '100%', marginTop: '40px' }}>
+				<Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+					<Tabs
+						value={value}
+						className={classes.tabs}
+						onChange={handleChange}
+						aria-label='view-feedback-tabs'
+					>
+						<Tab icon={<ChatIcon />} label='Feedback' {...tabProps(0)}/>
+						<Tab icon={<BugReportIcon /> } label='Bugs' {...tabProps(1)}/>
+					</Tabs>
+				</Box>
+				<TabPanel value={value} index={0}>
+					<FeedbackTab {...props} {...payLoad} />
+				</TabPanel>
+				<TabPanel value={value} index={1}>
+					<BugsTab {...props} {...payLoad} />
+				</TabPanel>
+			</Box>
+		);
+	};
 
-    return (
-      <Box sx={{ width: '100%' }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={value} className={classes.tabs} onChange={handleChange} aria-label="view-feedback-tabs">
-            <Tab label="Feedback" {...a11yProps(0)} />
-            <Tab label="Bugs" {...a11yProps(1)} />
-          </Tabs>
-        </Box>
-        <TabPanel value={value} index={0}>
-          <FeedbackTab {...props} {...payLoad} />
-        </TabPanel>
-        <TabPanel value={value} index={1}>
-          <BugsTab {...props} {...payLoad} />
-        </TabPanel>
-      </Box>
-    );
-  }
-
-  return (
-    <Container>
-        <Grid className={classes.selectors} container>
-          <Grid item xl={2} style={{ position: 'relative' }}>
-            <ProductFilter selectedProdId={selectedProdId}
-              setSelectedProdId={setProduct}
-              productNameIdMapping={prodNameIdMapping}
-            productInfo={productInfo}
-            filtered={filtered}
-            setFiltered={setFiltered}
-            />
-          </Grid>
-          <Grid item xl={2} style={{ position: 'relative' }}>
-            <VersionFilter productVersion={productVersion}
-              setProductVersion={setProductVersion}
-              versionList={selectedProdId ? prodNameIdMapping[selectedProdId] ? prodNameIdMapping[selectedProdId].version ?
-                prodNameIdMapping[selectedProdId].version : [] : [] : []}
-                filtered={filtered}
-                setFiltered={setFiltered}
-            />
-          </Grid>
-        </Grid>
-        <BasicTabs productInfoProp={productInfoProp} />
-    </Container>
-  )
-
-}
-
+	return (
+		<Container>
+			<Grid className={classes.selectors} container>
+				<TopToolbar
+					selectedProdId={selectedProdId}
+					setSelectedProdId={setProduct}
+					productNameIdMapping={prodNameIdMapping}
+					productInfo={productInfo}
+					filtered={filtered}
+					setFiltered={setFiltered}
+					productVersion={productVersion}
+					setProductVersion={setProductVersion}
+					versionList={
+						selectedProdId
+							? prodNameIdMapping[selectedProdId]
+								? prodNameIdMapping[selectedProdId].version
+									? prodNameIdMapping[selectedProdId].version
+									: []
+								: []
+							: []
+					}
+				/>
+			</Grid>
+			{renderTabs()}
+		</Container>
+	);
+};
 
 export default withRouter(FeedbackComments);
 
-
 const useStyles = makeStyles({
-  tabs: {
-
-    "& .MuiTabs-indicator": {
-      backgroundColor: "#042E5B",
-      height: 2.5,
-    },
-    "& .MuiTab-root.Mui-selected": {
-      color: 'black',
-      backgroundColor: 'transparent',
-    },
-  },
-  selectors: {
-    position: 'relative',
-//    padding: '10px',
-    marginBottom: '20px',
-    marginTop: '20px',
-    width: '100%',
-//    backgroundColor: '#E9E9E9',
-    color: 'black',
-  }
-})
+	tabs: {
+		'& .MuiTabs-indicator': {
+			backgroundColor: '#042E5B',
+			height: 2.5,
+		},
+		'& .MuiTab-root.Mui-selected': {
+			color: 'white',
+			backgroundColor: '#16448C',
+			borderRadius: '5px',
+		},
+		'& .MuiTab-wrapper': {
+			display: 'flex',
+			flexDirection: 'row',
+			justifyContent: 'space-evenly',
+		}
+	},
+	selectors: {
+		position: 'relative',
+		marginBottom: '20px',
+		marginTop: '20px',
+		width: '100%',
+		color: 'black',
+	},
+});
