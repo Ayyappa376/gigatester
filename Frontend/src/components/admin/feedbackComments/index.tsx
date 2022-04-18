@@ -11,7 +11,7 @@ import ProductFilter, { VersionFilter } from './ProductFilter';
 import { Http } from '../../../utils';
 
 const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
-  const { productId } = props;
+  const { productId, prodVersion } = props;
   const classes = useStyles();
   const [productInfo, setProductInfo] = useState<ILimitedProductDetails[]>([])
   const [selectedProduct, setSelectedProduct] = useState<string>('');
@@ -52,13 +52,19 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
       productInfoProp.selectedProdId = selectedProdId;
       productInfoProp.productVersion = productVersion;
       productInfoProp.selectedProduct = selectedProdId;
+      console.log(productInfoProp);
   }, [selectedProdId, productVersion])
 
 
   useEffect(() => {
     let load = false;
-    if (!load) {
-      getProductDetails({ productInfo, prodNameIdMapping, prodNameIdMappingBugCopy, setProductInfo, setProdNameIdMapping, setSelectedProdId, setProdNameIdMappingBugs, setProductVersion, productId, productVersion});
+    if (!load ) {
+      getProductDetails({ productInfo, prodNameIdMapping, prodNameIdMappingBugCopy, setFiltered, setProductInfo, setProdNameIdMapping, setSelectedProdId, setProdNameIdMappingBugs, setProductVersion, productId, prodVersion});
+      if(productId && prodVersion){
+      setSelectedProdId(productId);
+      setProductVersion(prodVersion);
+      setFiltered({product: true, version: true});
+      }
     }
     return () => { load = true}
   }, []);

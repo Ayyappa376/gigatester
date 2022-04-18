@@ -22,11 +22,12 @@ const ITEM_PADDING_TOP = 8;
 const ProductFilter = (props : IProps) => {
     const {selectedProdId, productNameIdMapping, productInfo, filtered, setFiltered} = props;
     const classes = useStyles();
-    const [chose, setChose] = useState("");
+    const [chose, setChose] = useState('');
 
     const handleChange = (event: any) => {
         setChose(event.target.value)
         props.setSelectedProdId(event.target.value as string);
+        console.log(event.target.value);
         if (!filtered.product) {
             setFiltered((prevState: any) => ({
                 ...prevState,
@@ -34,8 +35,12 @@ const ProductFilter = (props : IProps) => {
             }))
         }
       };
-
+      
 //    const label = 'Choose Product';
+useEffect(()=> {
+    setChose(selectedProdId);
+    console.log(selectedProdId);
+}, [selectedProdId])
 
     return (
         <div>
@@ -45,6 +50,7 @@ const ProductFilter = (props : IProps) => {
                     labelId="product-select-label"
                     id="product-select"
                     value={chose}
+                    defaultValue={selectedProdId}
                     onChange={(event) => handleChange(event)}
                 >
                  <MenuItem disabled value="">
@@ -73,7 +79,7 @@ export const VersionFilter = (props : IVersionFilterProps) => {
     const {productVersion, versionList, filtered, setFiltered} = props;
     const classes = useStyles();
     const theme = useTheme();
-    const [chose, setChose] = useState("");
+    const [chose, setChose] = useState('');
 
 
     const handleChange = (event: any) => {
@@ -86,6 +92,10 @@ export const VersionFilter = (props : IVersionFilterProps) => {
             }))
         }
     };
+
+        useEffect(() => {
+            setChose(productVersion)
+        }, [productVersion])
 
     return (
         <div style={{paddingLeft: '1rem'}}>

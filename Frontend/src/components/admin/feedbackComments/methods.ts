@@ -101,17 +101,18 @@ interface productDetails {
   prodNameIdMapping: any,
   prodNameIdMappingBugCopy: any,
   setProductInfo: Function,
+  setFiltered: Function,
   setProdNameIdMapping: Function,
   setSelectedProdId: Function,
   setProdNameIdMappingBugs: Function,
   setProductVersion: Function,
   productId: any,
-  productVersion: any,
+  prodVersion: any,
   }
 
-export const getProductDetails = async ({ productInfo, prodNameIdMapping, prodNameIdMappingBugCopy, setProductInfo, setProdNameIdMapping, setSelectedProdId, setProdNameIdMappingBugs, setProductVersion, productId, productVersion  }: productDetails) => {
+export const getProductDetails = async ({ productInfo, prodNameIdMapping, prodNameIdMappingBugCopy, setFiltered, setProductInfo, setProdNameIdMapping, setSelectedProdId, setProdNameIdMappingBugs, setProductVersion, productId, prodVersion  }: productDetails) => {
   Http.get({
-    url: `/api/v2/products`,
+    url: `/api/v2/products/`,
   }).then((response: any) => {
     if (response && response.products && Array.isArray(response.products) && response.products.length > 0) {
       const productInfoCopy = [...productInfo]
@@ -139,12 +140,14 @@ export const getProductDetails = async ({ productInfo, prodNameIdMapping, prodNa
       setProductInfo(productInfoCopy);
       setProdNameIdMapping(prodNameIdMappingCopy);
       setProdNameIdMappingBugs(prodNameIdMappingBugCopy);
-      if (productId && productVersion) {
+      if (productId && prodVersion) {
         return;
       }
       const defaultProductId = Object.keys(prodNameIdMappingCopy)[0];
-      setSelectedProdId(defaultProductId);
-      setProductVersion(prodNameIdMappingCopy[defaultProductId].version[0]);
+      // setSelectedProdId(productId);
+      // setProductVersion(prodVersion);
+      // setFiltered({product: true, version: true});
+      console.log(defaultProductId, prodNameIdMappingCopy[productId].version[prodVersion], productId, prodVersion)
     }
   }).catch((error: any) => {
     console.error(error);
