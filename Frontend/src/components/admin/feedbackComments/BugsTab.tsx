@@ -477,7 +477,10 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				setBackdropOpen(false);
 				setRawData((rawDataObj) => {
 					// clear filter will get the idea that the data has already been fetched.
-					const rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+					let rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
+					if(filterDate){
+						rawDataCopy = new Set([].concat(response.Items.Items));
+					}
 					return Array.from(rawDataCopy);
 				});
 			}

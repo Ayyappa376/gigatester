@@ -489,12 +489,34 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				setLastEvaluatedKey({});
 			}
 		} 
+		else if (
+			response &&
+			response.Items &&
+			response.Items.Items &&
+			Array.isArray(response.Items.Items) &&
+			response.Items.Items.length === 0
+		) {
+			setResultsFetched(true);
+			if (
+				response.Items.LastEvaluatedKey &&
+				Object.keys(response.Items.LastEvaluatedKey).length > 0
+			) {
+				setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+				// fetchMore();
+			}
+			if (
+				Object.keys(lastEvaluatedKey).length > 0 &&
+				!response.Items.LastEvaluatedKey
+			) {
+				setLastEvaluatedKey({});
+			}
+		}
 		else {
 			if (!showNoEmptyError) {
 				setBackdropOpen(false);
 				setNoDataError(true);
 			}
-		}
+		};
 	}	
 
 
