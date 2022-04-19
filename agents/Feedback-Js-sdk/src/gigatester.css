@@ -714,8 +714,8 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
 }
 popupbtn {
   position: relative;
-    top: 0px;
-    left: 0px;
+  top: 0px;
+  left: 0px;
 }
 popupbtn svg{
   width: 50px;

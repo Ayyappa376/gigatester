@@ -560,8 +560,8 @@ let GigaTester_StringUtils = {
                         this.stopGTcapture()
                     } else {
                         console.log('Screen Recorder Error')
-                        GigaTester_modal.setNotifyStatus("Screen Recorder Error, try again or use a different browser");
-                        setTimeout(()=> {GigaTester_modal.clearNotifyStatus()},7000);
+                        GigaTester_modal.setNotifyStatus("Screen Recorder Error, try again or use a different browser. Press cancel to return");
+                        setTimeout(()=> {GigaTester_modal.clearNotifyStatus()}, 4000);
                     }
                 },
                 getTimerStr: function() {
