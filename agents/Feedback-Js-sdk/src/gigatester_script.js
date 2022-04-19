@@ -1724,7 +1724,7 @@ let GigaTester_StringUtils = {
                     if (this.custom_ui.events) {
                         return
                     }
-                    this.custom_ui.events = $("<div>").addClass("gigatester-ctrl-item gigatester-ctrl-item");
+                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item");
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
@@ -2314,9 +2314,18 @@ let GigaTester_StringUtils = {
                         })
                     }
                 },
-                screenshotImage: function(rawImage){
+                screenshotImage: function (rawImage) {
+                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+                    navigator.userAgent &&
+                    navigator.userAgent.indexOf('CriOS') == -1 &&
+                    navigator.userAgent.indexOf('FxiOS') == -1;
                     const final_width = Math.round(window.innerWidth * 0.95); //95% of viewport width
-                    const final_height = Math.round(window.innerHeight * 0.95); //95% of viewport height
+                    let final_height
+                    if (isSafari) {
+                        final_height  = Math.round(window.innerHeight * 0.85); //95% of viewport height
+                    } else {
+                        final_height = Math.round(window.innerHeight * 0.95); //95% of viewport height
+                    }
                     console.log("image [width, height] = [" + final_width + ", " + final_height + "]" );
                     const canvas = document.createElement("canvas");
                     const context = canvas.getContext("2d");
@@ -2333,6 +2342,7 @@ let GigaTester_StringUtils = {
                         const screencapture_dialog = $('<gtdiv id="gigatester_screencapture_dialog"></gtdiv>');
                         image_overlay.appendTo(screencapture_dialog);
                         screencapture_dialog.appendTo(document.body);
+                        $('gigatester-ctrl-item').css("display", "none")
                         this.addCanvas();
                         GigaTester_modal.scrollDisable();
                     }
@@ -2738,7 +2748,6 @@ let GigaTester_StringUtils = {
                 },
                 hideControls: function() {
                     this.custom_ui.button.hide();
-                    // this.custom_ui.element.attr("isopen", "true")
                     this.custom_ui.element.removeAttr("isopen")
                 },
                 showControls: function (force_show_form) {
