@@ -535,6 +535,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 	};
 
+	useEffect(()=>{
+
+	},[lastEvaluatedKey])
+
 	useEffect(() => {
 		// if (error || noDataError) {
 		//   // setBackdropOpen(false);
