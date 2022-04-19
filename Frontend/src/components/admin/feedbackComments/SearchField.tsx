@@ -32,6 +32,7 @@ const SearchField = (props: IProps) => {
 
 	const handleClear = () => {
 		props.clearSearch();
+		setKeyword('');
 	};
 
 	const handleSearchInit = () => {

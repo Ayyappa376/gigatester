@@ -49,6 +49,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [backdropOpen, setBackdropOpen] = useState(false);
 	const [error, setError] = useState(false);
 	const [isBugReport, setBugReport] = useState<boolean | undefined>(true);
+	const [retryFetch, setRetryFetch] = useState(false);
+	const [globalSearchInitiated, setGlobalSearchInitiated] = useState(false);
+	const [prevLastEvalKey, setPrevLastEvalKey] = useState('');
 	const [noDataError, setNoDataError] = useState(false);
 	const [data, setData] = useState<IAppFeedback[]>([]);
 	const [searchedData, setSearchedData] = useState<IAppFeedback[]>([]);
@@ -134,7 +137,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				},
 			];
 			setBarChartSeries(series);
-			console.log(feedbackBarChartData, 'fbcdd');
 			setSeverityList(Object.keys(feedbackBarChartData));
 		}
 	}, [feedbackBarChartData]);
@@ -329,7 +331,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			setResultsFetched(false);
 			setData([]);
 			setRawData([]);
-			// console.log('sorted', sortDate);
 			fetchRecursiveData({
 				prodId: selectedProdId,
 				prodVersion: productVersion,
@@ -458,16 +459,15 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			Array.isArray(response.Items.Items) &&
 			response.Items.Items.length > 0
 		) {
-			console.log(resultsFetched, 'result fetch');
 			setResultsFetched(true);
 			setBackdropOpen(false);
-			if (searchInitiated && searchWord) {
-				setSearchedData((dataObj) => {
-					const dataCopy = new Set([...dataObj].concat(response.Items.Items));
-					return Array.from(dataCopy);
-				});
-				return;
-			}
+			// if (searchInitiated && searchWord) {
+			// 	setSearchedData((dataObj) => {
+			// 		const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+			// 		return Array.from(dataCopy);
+			// 	});
+			// 	return;
+			// } -- can be used for global search 
 			setData((dataObj) => {
 				const dataCopy = new Set([...dataObj].concat(response.Items.Items));
 				return Array.from(dataCopy);
@@ -478,7 +478,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				setRawData((rawDataObj) => {
 					// clear filter will get the idea that the data has already been fetched.
 					let rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
-					if(filterDate){
+					if(filterDate?.endDate){
 						rawDataCopy = new Set([].concat(response.Items.Items));
 					}
 					return Array.from(rawDataCopy);
@@ -490,6 +490,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				Object.keys(response.Items.LastEvaluatedKey).length > 0
 			) {
 				setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+				setRetryFetch(false);
 			}
 			if (
 				Object.keys(lastEvaluatedKey).length > 0 &&
@@ -505,12 +506,21 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		Array.isArray(response.Items.Items) &&
 		response.Items.Items.length === 0
 	) {
-		setResultsFetched(true);
 		if (
+			response.Items.LastEvaluatedKey &&
+			Object.keys(response.Items.LastEvaluatedKey).length > 0
+		) {
+			setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+			setRetryFetch(true);
+		}
+		else if (
 			Object.keys(lastEvaluatedKey).length > 0 &&
 			!response.Items.LastEvaluatedKey
 		) {
 			setLastEvaluatedKey({});
+		}
+		else{
+			setResultsFetched(true);
 		}
 	}
 	else {
@@ -522,20 +532,29 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 };
 
 	const fetchMore = () => {
-		if (Object.keys(lastEvaluatedKey).length > 0 && !searchInitiated) {
+		if(prevLastEvalKey !== lastEvaluatedKey.id){
+			setPrevLastEvalKey(lastEvaluatedKey.id)
+		if (Object.keys(lastEvaluatedKey).length > 0) {
 			setResultsFetched(false);
-			console.log('loader open');
 			fetchRecursiveData({
 				lastEvalKey: lastEvaluatedKey,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
+				searchWord: keyword,
 				filterCategory: focusCategory,
 				filterSeverity: focusSeverity,
 				filterDate: dateRange,
 			});
 		}
+	}
 	};
+
+	useEffect(()=>{
+		if(retryFetch){
+			fetchMore();
+		}
+	},[retryFetch, lastEvaluatedKey])
 
 	useEffect(() => {
 		// if(error || noDataError) {
@@ -544,7 +563,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length > 0 && selectedProdId) {
 			setNoDataError(false);
 			if (Object.keys(feedbackBarChartData).length > 0) {
-				console.log('backdrop closed');
 				setBackdropOpen(false);
 			}
 			if (pieChartSeries) {
@@ -553,7 +571,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					// return element.toLowerCase(); // Tried lower case as standard;
 					return element;
 				});
-				console.log(searchCategoryList, 'category search list');
 				setCategoryList(searchCategoryList);
 			}
 		}
@@ -643,7 +660,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	};
 
 	const filterByProduct = (val: string) => {
-		console.log(prodNameIdMapping);
 		if (val) {
 			setSelectedProdId(val);
 			setProductVersion(prodNameIdMapping[val].version[0]);
@@ -676,6 +692,17 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	};
 
 	useEffect(() => {
+		if (rawData.length === 0) {
+			return;
+		}
+		if (keyword.length <= 0) {
+			setCurrentDisable('');
+			setData(rawData);
+			return;
+		}
+		// fetch the results from backend
+		setResultsFetched(false);
+		setData([]);
 		if (keyword && searchInitiated) {
 			setResultsFetched(false);
 			setSearchedData([]);
@@ -685,12 +712,12 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				searchWord: keyword,
 				showNoEmptyError: true,
 				filterDate: dateRange,
+				noRawDataUpdate: true,
 			});
 		}
 	}, [searchInitiated, keyword]);
 
 	const handleCloseModal = (reason: any) => {
-		console.log('calling handleCloseModal', reason);
 		setShowImageModal(false);
 		setFocusAttachmentUid('');
 		setSignedImageUrl('');
@@ -774,7 +801,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				</Backdrop>
 			) : (
 				<div>
-					{searchInitiated ? (
+					{globalSearchInitiated ? (
 						<div>
 							<RenderTable
 								key='renderTable4'
@@ -852,7 +879,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 														onSubmit={handleOnSearch}
 														onClear={() => {
 															clearSearch();
-															console.log('clearsearch');
 														}}
 														disableButtons={
 															!resultsFetched && (data.length === 0 || searchInitiated)
