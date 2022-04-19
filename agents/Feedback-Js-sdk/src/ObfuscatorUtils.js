@@ -11,7 +11,7 @@ var options = {
     compact: false,
     transformObjectKeys: false,
     splitStrings: false,
-    unicodeEscapeSequence: false,
+    unicodeEscapeSequence: true,
     disableConsoleOutput: false,
 }
 var obfuscateResult = jsObfuscator.obfuscate(code, options);

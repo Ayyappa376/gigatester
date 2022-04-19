@@ -420,7 +420,7 @@ let GigaTester_StringUtils = {
                         $(document.getElementsByClassName('gigatester-video-controls-timer')).removeClass('gigatester-video-controls-timer-show')
                     });
                 },
-                removeGTControls: function() {
+                removeGTControls: function () {
                     this.screen_recorder_overlay.remove();
                     this.controls.remove();
                     this.screen_recorder_overlay = null;
@@ -530,6 +530,9 @@ let GigaTester_StringUtils = {
                         this.recordingStop();
                         this.removeGTControls();
                         this.reset();
+                        if (!GigaTester.remote) {
+                            GigaTester_modal.custom_ui.button.show();
+                        }
                         if (this.options.onCancel) {
                             this.options.onCancel()
                         }
@@ -539,6 +542,9 @@ let GigaTester_StringUtils = {
                     this.recordingStop();
                     this.removeGTControls();
                     this.reset();
+                    if (!GigaTester.remote) {
+                        GigaTester_modal.custom_ui.button.show();
+                    }
                     if (this.options.onCancel) {
                         this.options.onCancel()
                     }
@@ -853,7 +859,6 @@ let GigaTester_StringUtils = {
                     // this.configs.position = 'r';
                     // this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn");
-                    console.log('Gigatester using remote button', GigaTester.remote)
                     if (GigaTester.remote && GigaTester.remote === true) {
                         this.custom_ui.button[0].style.display = 'none';
                     } else {
@@ -894,7 +899,6 @@ let GigaTester_StringUtils = {
                             this.custom_ui.button[0].style.bottom = '0.5%';
                             this.custom_ui.button[0].style.right = '3%';
                         } else if (btnPosition === 'CUSTOM') {
-                            console.log('custom css');
                             this.custom_ui.button[0].style.top = this.configs.main_button_top;
                             this.custom_ui.button[0].style.bottom = this.configs.main_button_bottom;
                             this.custom_ui.button[0].style.left = this.configs.main_button_left;
@@ -1047,7 +1051,7 @@ let GigaTester_StringUtils = {
                         this.custom_ui.overlay.overlay_hint_tooltip.remove();
                         this.custom_ui.overlay.overlay_hint_tooltip = null
                     }
-                    this.custom_ui.overlay.remove();
+                    console.log('overlay', this.custom_ui.overlay)
                     this.custom_ui.overlay = null;
                     this.canvas_mode = false;
                     $(document.getElementById('gigatester_screencapture_dialog')).remove()
@@ -1165,6 +1169,9 @@ let GigaTester_StringUtils = {
                             e.preventDefault();
                             this.cancelGTcapture();
                             GigaTester_modal.removeComments();
+                            if (!GigaTester.remote) {
+                                GigaTester_modal.custom_ui.button.show();
+                            }
                             GigaTester_modal.Draw_Tools.image_capture = false;
                         }.bind(this));
                         this.toolbar.find(".gigatester-toolbar-tool-color-indicator-option").on("click", $.proxy(function(e) {
@@ -1188,7 +1195,6 @@ let GigaTester_StringUtils = {
                             if(GigaTester_modal.form_data.rating){
                                 GigaTester_modal.selectedRating();
                             }
-
                             GigaTester_modal.saveSubCategory();
                             GigaTester_modal.removeGToverlay();
                             this.removeTools()
@@ -1712,7 +1718,7 @@ let GigaTester_StringUtils = {
                     if (this.custom_ui.events) {
                         return
                     }
-                    this.custom_ui.events = $("<div>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.configs.position);
+                    this.custom_ui.events = $("<div>").addClass("gigatester-ctrl-item gigatester-ctrl-item");
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
@@ -2073,10 +2079,7 @@ let GigaTester_StringUtils = {
                 setDialogForm: function () {
                     let form_settings = this.getFormSettings(this.form_type);
                     this.checkSessionStorage();
-                    // console.log(this.form_type, 'form type')
-                    // console.log('GigaTester : form settings ', form_settings);
-                    console.log('GigaTester : dialog refresh mode', GigaTester_modal.set_screen_default_category)
-                    // console.log(GigaTester_modal.configs.selected_category);
+                    // console.log('GigaTester : dialog refresh mode', GigaTester_modal.set_screen_default_category)
                     if(GigaTester_modal.set_screen_default_category){
                         GigaTester_modal.setCategory();
                     }
@@ -2191,7 +2194,7 @@ let GigaTester_StringUtils = {
                         // this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val(default_category).trigger('change');
 
                         var select = document.getElementById('category');
-                        console.log(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val())
+                        // console.log(this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="category"]').val())
                     }
                     // }
                     if (default_severity) {
@@ -2217,6 +2220,7 @@ let GigaTester_StringUtils = {
                     GigaTester_modal.canvas_mode = true;
                     GigaTester_modal.saveCheckedCategory();
                     GigaTester_modal.set_screen_default_category = false;
+                    console.log('current browser', window.navigator.userAgent)
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                         console.log("GigaTester: This browser does not support media capture API");
                     } else {
@@ -2279,6 +2283,7 @@ let GigaTester_StringUtils = {
                                     }
                                 } else {
                                     // TODO: add logic for if failure to capture video
+                                    console.log('backed out of capture video')
                                 }
                                 setTimeout(()=> {
                                     recorder.stop(),
@@ -2288,9 +2293,12 @@ let GigaTester_StringUtils = {
                             console.log('GigaTester: image recording started')
                         })
                         .catch(function(err) {
-                            console.log(err , 'err')
+                            console.log(err , 'permision to screen record was denied')
                             GigaTester_modal.set_screen_default_category = false;
                             GigaTester_modal.recording = false;
+                            if (!GigaTester.remote) {
+                                GigaTester_modal.custom_ui.button.show();
+                            }
                             GigaTester_modal.showControls();
                             GigaTester_modal.setDialogForm();
                             GigaTester_modal.saveCheckedCategory();
@@ -2730,15 +2738,15 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.hide();
                     this.custom_ui.element.removeAttr("isopen")
                 },
-                showControls: function(force_show_form) {
+                showControls: function (force_show_form) {
                     if (!this.autoHide()) {
                         this.custom_ui.button.show()
                     }
-                        this.setDialogForm();
-                        this.custom_ui.events.find('.gigatester-ctrl-item-step').show();
-                        if (force_show_form) {
+                    this.setDialogForm();
+                    this.custom_ui.events.find('.gigatester-ctrl-item-step').show();
+                    if (force_show_form) {
                             this.custom_ui.events.find(".gigatester-ctrl-item-form").show()
-                        }
+                    }
                     this.custom_ui.events.show();
                     this.focusControls();
                     this.custom_ui.element.attr("isopen", "true")
