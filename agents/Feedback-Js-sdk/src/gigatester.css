@@ -81,7 +81,7 @@ gtdiv *{
   position: fixed;
   z-index: 2147483645;
   top: 0;
-  left: 50%;
+  left: 45%;
   width: auto;
   height: 45px;
   line-height: 45px;
@@ -92,7 +92,7 @@ gtdiv *{
   cursor: pointer;
   box-sizing: border-box;
   opacity: 0;
-  transform: translateX(-50%);
+  transform: translate(-35%, 200%);
   animation: animationAppearMoveDown 0.2s linear 0.8s forwards;
   white-space: nowrap;
   font-size: 16px;
@@ -1997,7 +1997,7 @@ bottom: -23px;
   bottom: auto;
   left: auto;
   margin: auto;
-  opacity: 0;
+  opacity: 1;
   transform: none;
   box-shadow: 0 0 10px #5c6c7c;
   animation: animationAppear 0.1s linear 0.05s forwards;
