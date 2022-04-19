@@ -99,7 +99,7 @@ const RenderTable = (props: IProps) => {
 	const currentLength = tableData.length;
 
 	useEffect(() => {
-		if (inView) {
+		if (inView && props.resultsFetched) {
 			//constraint for infinite scroll (affects filter query) && tableData.length > 0
 			props.fetchMore();
 		}

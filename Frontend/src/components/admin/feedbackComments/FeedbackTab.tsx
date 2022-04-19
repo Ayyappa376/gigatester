@@ -66,6 +66,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	const [ratingMapping, setRatingMapping] = useState<IRatingMapping>({});
 	const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({});
 	const [urlArray, setUrlArray] = useState<string[]>([]);
+	const [prevLastEvalKey, setPrevLastEvalKey] = useState('');
 	const [barChartSeries, setBarChartSeries] = useState([
 		{
 			name: 'rating',
@@ -106,9 +107,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			return '';
 		});
 	const [lastEvaluatedKey, setLastEvaluatedKey] = useState<ILastEvalKey>({});
+	const [retryFetch, setRetryFetch] = useState(false);
 	const [order, setOrder] = useState<Order>('desc');
 	const [keyword, setKeyword] = useState('');
 	const [searchInitiated, setSearchInitiated] = useState(false);
+	const [globalSearchInitiated, setGlobalSearchInitiated] = useState(false);
 	const [focusRating, setFocusRating] = useState([]);
 	const [focusSeverity, setFocusSeverity] = useState([]);
 	const [focusCategory, setFocusCategory] = useState([]);
@@ -267,7 +270,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
-		console.log(focusRating);
 		if (focusRating.length === 0) {
 			setCurrentDisable('');
 			setData(rawData);
@@ -297,7 +299,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			setResultsFetched(false);
 			setData([]);
 			setCurrentDisable('');
-			// console.log('sorted', sortDate);
 			fetchRecursiveData({
 				prodId: selectedProdId,
 				prodVersion: productVersion,
@@ -319,7 +320,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
-		console.log(focusSeverity);
 		if (focusSeverity.length <= 0) {
 			setCurrentDisable('');
 			setData(rawData);
@@ -342,7 +342,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
-		console.log(focusCategory);
 		if (focusCategory.length <= 0) {
 			setCurrentDisable('');
 			setData(rawData);
@@ -452,13 +451,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		) {
 			setResultsFetched(true);
 			setBackdropOpen(false);
-			if (searchInitiated && searchWord) {
-				setSearchedData((dataObj: any) => {
-					const dataCopy = new Set([...dataObj].concat(response.Items.Items));
-					return Array.from(dataCopy);
-				});
-				return;
-			}
+			// if (searchInitiated && searchWord) {
+			// 	setSearchedData((dataObj: any) => {
+			// 		const dataCopy = new Set([...dataObj].concat(response.Items.Items));
+			// 		return Array.from(dataCopy);
+			// 	});
+			// 	return;
+			// }
 			setData((dataObj: any) => {
 				const dataCopy = new Set([...dataObj].concat(response.Items.Items));
 				return Array.from(dataCopy);
@@ -469,7 +468,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				setRawData((rawDataObj) => {
 					// clear filter will get the idea that the data has already been fetched.
 					let rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
-					if(filterDate){
+					if(filterDate?.endDate){
 						rawDataCopy = new Set([].concat(response.Items.Items));
 					}
 					return Array.from(rawDataCopy);
@@ -481,6 +480,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				Object.keys(response.Items.LastEvaluatedKey).length > 0
 			) {
 				setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+				setRetryFetch(false);
 			}
 			if (
 				Object.keys(lastEvaluatedKey).length > 0 &&
@@ -496,19 +496,24 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			Array.isArray(response.Items.Items) &&
 			response.Items.Items.length === 0
 		) {
-			setResultsFetched(true);
+			
 			if (
 				response.Items.LastEvaluatedKey &&
 				Object.keys(response.Items.LastEvaluatedKey).length > 0
 			) {
 				setLastEvaluatedKey(response.Items.LastEvaluatedKey);
-				// fetchMore();
+				setRetryFetch(true);
 			}
-			if (
+			else if (
 				Object.keys(lastEvaluatedKey).length > 0 &&
 				!response.Items.LastEvaluatedKey
 			) {
 				setLastEvaluatedKey({});
+				setRetryFetch(false);
+				setResultsFetched(true);
+			}
+			else{
+				setResultsFetched(true);
 			}
 		}
 		else {
@@ -521,6 +526,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
 
 	const fetchMore = () => {
+		if(prevLastEvalKey !== lastEvaluatedKey.id){
+			setPrevLastEvalKey(lastEvaluatedKey.id)
 		if (Object.keys(lastEvaluatedKey).length > 0) {
 			setResultsFetched(false);
 			fetchRecursiveData({
@@ -528,16 +535,20 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
+				searchWord: keyword,
 				filterRating: focusRating,
 				filterCategory: focusCategory,
 				filterDate: dateRange,
 			});
 		}
+	}
 	};
 
 	useEffect(()=>{
-
-	},[lastEvaluatedKey])
+		if(retryFetch){
+			fetchMore();
+		}
+	},[retryFetch, lastEvaluatedKey])
 
 	useEffect(() => {
 		// if (error || noDataError) {
@@ -645,7 +656,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	};
 
 	const filterByProduct = (val: string) => {
-		console.log(prodNameIdMapping);
 		if (val) {
 			setSelectedProdId(val);
 			setProductVersion(prodNameIdMapping[val].version[0]);
@@ -678,15 +688,26 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	};
 
 	useEffect(() => {
+		if (rawData.length === 0) {
+			return;
+		}
+		if (keyword.length <= 0) {
+			setCurrentDisable('');
+			setData(rawData);
+			return;
+		}
+		// fetch the results from backend
+		setResultsFetched(false);
+		setData([]);
+		//setRawData([])
 		if (keyword) {
-			console.log(keyword, 'search initialised');
-			setResultsFetched(false);
-			setSearchedData([]);
 			fetchRecursiveData({
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				searchWord: keyword,
 				showNoEmptyError: true,
+				filterDate: dateRange,
+				noRawDataUpdate: true,
 			});
 		}
 	}, [searchInitiated, keyword]);
@@ -784,8 +805,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 					<CircularProgress color='inherit' />
 				</Backdrop>
 			) : (
-				<div>
-					{searchInitiated ? (
+				<div> 
+					{globalSearchInitiated  ? (
 						<div>
 							<Grid container style={{ width: '100%', marginTop: '0.7rem' }}>
 								{currentDisable.length > 0 ? (
@@ -824,7 +845,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 													onSubmit={handleOnSearch}
 													onClear={() => {
 														clearSearch();
-														console.log('clearsearch');
 													}}
 													disableButtons={
 														!resultsFetched && (data.length === 0 || searchInitiated)
@@ -897,7 +917,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								resultsFetched={resultsFetched}
 							/>
 						</div>
-					) : noDataError ? (
+					) : 
+					noDataError ? (
 						<div style={{ marginTop: '3rem' }}>
 							<Failure message={renderErr()} />
 						</div>
@@ -942,7 +963,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 														onSubmit={handleOnSearch}
 														onClear={() => {
 															clearSearch();
-															console.log('clearsearch');
 														}}
 														disableButtons={
 															!resultsFetched && (data.length === 0 || searchInitiated)
@@ -1052,7 +1072,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								resultsFetched={resultsFetched}
 							/>
 						</div>
-					)}
+					 )    } 
 				</div>
 			)}
 		</div>
