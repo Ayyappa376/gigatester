@@ -272,7 +272,24 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 		if (focusRating.length === 0) {
 			setCurrentDisable('');
-			setData(rawData);
+			// setData(rawData);
+			fetchRecursiveData({
+				filterRating: focusRating,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+				noRawDataUpdate: true,
+				filterDate: dateRange,
+			});
+			getFeedbckChartData({
+				setFeedbackBarChartData,
+				setBugBarChartSeries,
+				setPieChartSeries,
+				filterRating: focusRating,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				filterDate: dateRange,
+			});
 			return;
 		}
 		// fetch the results from backend
@@ -285,6 +302,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: true,
+			filterDate: dateRange,
+		});
+		getFeedbckChartData({
+			setFeedbackBarChartData,
+			setBugBarChartSeries,
+			setPieChartSeries,
+			filterRating: focusRating,
+			prodId: selectedProdId,
+			prodVersion: productVersion,
 			filterDate: dateRange,
 		});
 	}, [focusRating]);

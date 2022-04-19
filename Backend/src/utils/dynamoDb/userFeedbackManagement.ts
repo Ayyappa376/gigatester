@@ -21,6 +21,9 @@ interface Params {
 }
 
 interface GetChartDataProps {
+  filterCategory?: string;
+  filterRating?: string;
+  filterSeverity?: string;
   prodId?: string;
   prodVersion?: string;
   type: FeedbackType;
@@ -30,6 +33,8 @@ interface GetChartDataProps {
 
 interface ItemsData {
   Items: AppFeedback[];
+  LastEvaluatedKey: object;
+  Count: number;
 }
 
 export interface ProcessedData {
@@ -192,7 +197,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     return queryRaw<any>(params);
   };
 
-export const getUserFeedbackListForChart = async ({type, startDate, endDate, items, search, lastEvalKey, prodId, prodVersion}: Params): Promise<any> => {
+export const getUserFeedbackListForChart = async ({type, startDate, endDate, items, search, lastEvalKey, filterCategory, filterRating, filterSeverity, prodId, prodVersion}: Params): Promise<any> => {
     let params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -208,6 +213,66 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
         EAN['#prodVersion'] = 'productVersion';
         EAV[':prodVersion'] = prodVersion;
         FE += FE ? ' and #prodVersion = :prodVersion' : '#prodVersion = :prodVersion';
+      }
+    }
+
+    if(filterRating) {
+      const rating = filterRating.split(',');
+      for(let i = 0; i < rating.length; i += 1) {
+        const el = rating[i];
+        EAN['#rating'] = 'productRating';
+        EAV[`:ratingVal${i}`] = parseInt(el, 10);
+        if(i === 0) {
+          if(rating.length === 1) {
+            FE += FE ? ` and #rating = :ratingVal${i}` : `#rating = :ratingVal${i}`;
+          } else {
+            FE += FE ? ` and (#rating = :ratingVal${i}` : `(#rating = :ratingVal${i}`;
+          }
+        } else if(i === (rating.length - 1)) {
+          FE += ` or #rating = :ratingVal${i})`;
+        } else {
+          FE += ` or #rating = :ratingVal${i}`;
+        }
+      }
+    }
+
+    if(filterSeverity) {
+      const severity = filterSeverity.split(',');
+      for(let i = 0; i < severity.length; i += 1) {
+        const el = severity[i];
+        EAN['#severity'] = 'bugPriority';
+        EAV[`:severityVal${i}`] = el;
+        if(i === 0) {
+          if(severity.length === 1) {
+            FE += FE ? ` and #severity = :severityVal${i}` : `#severity = :severityVal${i}`;
+          } else {
+            FE += FE ? ` and (#severity = :severityVal${i}` : `(#severity = :severityVal${i}`;
+          }
+        } else if(i === (severity.length - 1)) {
+          FE += ` or #severity = :severityVal${i})`;
+        } else {
+          FE += ` or #severity = :severityVal${i}`;
+        }
+      }
+    }
+
+    if(filterCategory) {
+      const categories = filterCategory.split(',');
+      for(let i = 0; i < categories.length; i += 1) {
+        const el = categories[i];
+        EAN['#category'] = 'feedbackCategory';
+        EAV[`:categoryVal${i}`] = el;
+        if(i === 0) {
+          if(categories.length === 1) {
+            FE += FE ? ` and #category = :categoryVal${i}` : `#category = :categoryVal${i}`;
+          } else {
+            FE += FE ? ` and (#category = :categoryVal${i}` : `(#category = :categoryVal${i}`;
+          }
+        } else if(i === (categories.length - 1)) {
+          FE += ` or #category = :categoryVal${i})`;
+        } else {
+          FE += ` or #category = :categoryVal${i}`;
+        }
       }
     }
 
@@ -236,6 +301,7 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       }
     }
     appLogger.info({ getPlatformList_scan_params: params });
+    console.log(params, 'paaaaaaaaarams')
     return queryRaw<any[]>(params);
   };
 
@@ -408,12 +474,13 @@ const processBugReportChartData = async({data, prodId, prodVersion, chartType}: 
   };
 };
 
-export const getChartData = async({type, prodId, prodVersion, startDate, endDate}: GetChartDataProps) => {
+export const getChartData = async({type, prodId, prodVersion, startDate, filterCategory, filterRating, filterSeverity, endDate}: GetChartDataProps) => {
   let chartType: FeedbackType = 'FEEDBACK';
   if(type !== 'FEEDBACK-CHART') {
     chartType = 'BUG_REPORT';
   }
-  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, startDate, endDate});
+  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion,filterCategory, filterRating, filterSeverity, startDate, endDate});
+  console.log(itemList.LastEvaluatedKey, itemList.Count, 'aaaaaaaaaaaaaaa');
   const data: AppFeedback[] = itemList.Items;
   return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType}) : processBugReportChartData({data, prodId, prodVersion, chartType});
 };

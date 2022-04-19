@@ -66,6 +66,7 @@ interface IGetChartData {
 	// setBugBarChartData: Function,
 	setBugBarChartSeries: Function;
 	setPieChartSeries: Function;
+	filterRating?: string[];
 	prodId: string;
 	prodVersion?: string;
 	filterDate?: IDateRange;
@@ -77,11 +78,14 @@ export const getFeedbckChartData = async ({
 	setPieChartSeries,
 	prodId,
 	prodVersion,
+	filterRating,
 	filterDate,
 }: IGetChartData) => {
 	// console.log('date',filterDate);
 	let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}`;
 	url += prodVersion ? `&prodVersion=${prodVersion}` : '';
+
+	url += filterRating ? `&filterRating=${filterRating.join(',')}` : '';
 	url += filterDate
 		? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}`
 		: '';
