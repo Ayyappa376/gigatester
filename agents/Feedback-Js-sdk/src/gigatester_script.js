@@ -1724,7 +1724,7 @@ let GigaTester_StringUtils = {
                     if (this.custom_ui.events) {
                         return
                     }
-                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item");
+                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.custom_ui.position);
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
@@ -2342,7 +2342,6 @@ let GigaTester_StringUtils = {
                         const screencapture_dialog = $('<gtdiv id="gigatester_screencapture_dialog"></gtdiv>');
                         image_overlay.appendTo(screencapture_dialog);
                         screencapture_dialog.appendTo(document.body);
-                        $('gigatester-ctrl-item').css("display", "none")
                         this.addCanvas();
                         GigaTester_modal.scrollDisable();
                     }
@@ -2749,6 +2748,7 @@ let GigaTester_StringUtils = {
                 hideControls: function() {
                     this.custom_ui.button.hide();
                     this.custom_ui.element.removeAttr("isopen")
+                    this.custom_ui.element.css("display", "none");
                 },
                 showControls: function (force_show_form) {
                     if (!this.autoHide()) {
@@ -2761,6 +2761,7 @@ let GigaTester_StringUtils = {
                     }
                     this.custom_ui.events.show();
                     this.focusControls();
+                    this.custom_ui.element.css("display", "");
                     this.custom_ui.element.attr("isopen", "true")
                 },
                 openControls: function () {
