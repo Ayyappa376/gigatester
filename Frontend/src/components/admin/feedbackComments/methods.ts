@@ -66,6 +66,10 @@ interface IGetChartData {
 	// setBugBarChartData: Function,
 	setBugBarChartSeries: Function;
 	setPieChartSeries: Function;
+	filterRating?: string[];
+	filterCategory?: string[];
+	filterSeverity?: string[];
+	searchWord?: string;
 	prodId: string;
 	prodVersion?: string;
 	filterDate?: IDateRange;
@@ -77,11 +81,17 @@ export const getFeedbckChartData = async ({
 	setPieChartSeries,
 	prodId,
 	prodVersion,
+	filterRating,
+	searchWord,
+	filterCategory,
 	filterDate,
 }: IGetChartData) => {
 	// console.log('date',filterDate);
 	let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}`;
 	url += prodVersion ? `&prodVersion=${prodVersion}` : '';
+	url += filterCategory ? `&filterCategory=${filterCategory.join(',')}` : '';
+	url += filterRating ? `&filterRating=${filterRating.join(',')}` : '';
+	url += searchWord ? `&search=${searchWord}` : '';
 	url += filterDate
 		? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}`
 		: '';
@@ -103,12 +113,19 @@ export const getBugChartData = async ({
 	setBugBarChartSeries,
 	setFeedbackBarChartData,
 	setPieChartSeries,
+	searchWord,
 	prodId,
 	prodVersion,
+	filterCategory,
+	filterRating,
+	filterSeverity,
 	filterDate,
 }: IGetChartData) => {
 	let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}`;
 	url += prodVersion ? `&prodVersion=${prodVersion}` : '';
+	url += filterCategory ? `&filterCategory=${filterCategory.join(',')}` : '';
+	url += filterSeverity ? `&filterSeverity=${filterSeverity.join(',')}` : '';
+	url += searchWord ? `&search=${searchWord}` : '';
 	url += filterDate
 		? `&startDate=${filterDate.startDate}&endDate=${filterDate.endDate}`
 		: '';
@@ -141,7 +158,7 @@ interface productDetails {
 	setSelectedProdId: Function;
 	setProdNameIdMappingBugs: Function;
 	setProductVersion: Function;
-  setFiltered: Function;
+  	setFiltered: Function;
 	productId: any;
 	productVersion: any;
 }

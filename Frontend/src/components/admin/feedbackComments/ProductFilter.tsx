@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import { Http } from '../../../utils';
-import { IProductNameIdMapping, ILimitedProductDetails } from './common';
+import { IProductNameIdMapping, ILimitedProductDetails, CONST_PRODUCT_ALL_VERSION } from './common';
 
 interface IProps {
     selectedProdId: string;
@@ -114,9 +114,9 @@ export const VersionFilter = (props : IVersionFilterProps) => {
                 <MenuItem disabled key={0} value={""} >
                     Please Select
                     </MenuItem>
-                 <MenuItem key={1} value={"all"} >
+                 {/* <MenuItem key={1} value={CONST_PRODUCT_ALL_VERSION} >
                     All versions
-                </MenuItem>
+                </MenuItem> */}
                     {versionList.map((version, i) => <MenuItem key={version + i.toString()} value={version}>{version}</MenuItem>)}
                 </Select>
             </FormControl>

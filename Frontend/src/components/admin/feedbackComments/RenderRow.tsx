@@ -17,6 +17,7 @@ import React, { useState, Suspense } from 'react';
 import { getDateTime } from '../../../utils/data';
 import FolderList from './FolderList';
 import UserDetailList from './UserDetList';
+import ContextDetList from './ContextDetList';
 import { buttonStyle } from '../../../common/common';
 import RenderComments from './RenderComments';
 import RenderStars from './RenderStars';
@@ -221,6 +222,9 @@ const RenderRow = ({
 										<TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
 											<UserDetailList userDetails={row.userDetails} />
 										</TableCell>
+										{/* <TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
+											<ContextDetList userDetails={row.userDetails} />
+										</TableCell> */}
 										<TableCell style={{ borderBottom: 'none' }}>
 											<Suspense fallback={<div style={{ width: '100%' }}>loading...</div>}>
 												<RenderMedia
