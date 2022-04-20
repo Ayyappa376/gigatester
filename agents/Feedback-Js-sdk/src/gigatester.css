@@ -86,17 +86,20 @@ gtdiv *{
   height: 45px;
   line-height: 45px;
   padding: 0 25px;
-  background: rgba(76, 84, 91, 0.8);
+  /* background: rgba(76, 84, 91, 0.8); */
+  background: #F06767;
   color: #fff;
   border-radius: 4px;
   cursor: pointer;
   box-sizing: border-box;
   opacity: 0;
-  transform: translate(-35%, 200%);
+  transform: translate(-38%, 200%);
   animation: animationAppearMoveDown 0.2s linear 0.8s forwards;
   white-space: nowrap;
   font-size: 16px;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  font-weight: 600;
+  text-align: center;
   -webkit-font-smoothing: antialiased;
 }
 gttoolbar {

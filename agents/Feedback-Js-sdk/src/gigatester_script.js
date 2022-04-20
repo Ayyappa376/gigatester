@@ -357,7 +357,8 @@ let GigaTester_StringUtils = {
                     this.timer = Math.max(30, this.timer);
                     this.timer_total = this.timer;
                     this.reset();
-                    this.getGigaDevice(this.createNewControls.bind(this));
+                    console.log('giga event', this.options.event)
+                    this.getGigaDevice(this.createNewControls.bind(this), options.event);
                 },
                 reset: function() {
                     this.recorded_blobs = [];
@@ -370,15 +371,15 @@ let GigaTester_StringUtils = {
                         this.pause_button.html(GigaTester_Icons.pause_icon)
                     }
                 },
-                getGigaDevice: async function(callback) {
+                getGigaDevice: async function (callback, event) {
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                         callback();
                         return
                     }
-                    // const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-                    // navigator.userAgent &&
-                    // navigator.userAgent.indexOf('CriOS') == -1 &&
-                    // navigator.userAgent.indexOf('FxiOS') == -1;
+                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+                    navigator.userAgent &&
+                    navigator.userAgent.indexOf('CriOS') == -1 &&
+                    navigator.userAgent.indexOf('FxiOS') == -1;
                     await navigator.mediaDevices.enumerateDevices().then(function(devices) {
                         devices.forEach(function(device) {
                             // console.log(device)
@@ -392,7 +393,9 @@ let GigaTester_StringUtils = {
                             }
                         }.bind(this));
                         if (this.device_list.audioinput.length || this.device_list.screeninput.length) {
-                            this.startVideoCapture();
+                            if (!isSafari) {
+                                this.startVideoCapture();
+                            }
                         callback();
                         }
                     }.bind(this)).catch(function(error) {})
@@ -467,7 +470,6 @@ let GigaTester_StringUtils = {
                         audio: true,
                         video: false
                     };
-
                     try {
                         let afterGetVideoStream = function () {
                                 this.display_stream.getTracks()[0].onended = function() {
@@ -500,7 +502,9 @@ let GigaTester_StringUtils = {
                                     let audio_tracks = this.audio_stream.getTracks();
                                     this.combo_stream = new MediaStream(display_tracks.concat(audio_tracks));
                                     afterGetVideoStream()
-                                }.bind(this)).catch(this.handleStreamCaptureError.bind(this))
+                                }.bind(this)).catch((error) => {
+                                    this.handleStreamCaptureError(error)
+                                })
                             } else {
                                 navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
                                     this.display_stream = stream;
@@ -509,7 +513,9 @@ let GigaTester_StringUtils = {
                                     this.is_muted = true;
                                     this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true);
                                     afterGetVideoStream()
-                                }.bind(this)).catch(this.handleStreamCaptureError.bind(this))
+                                }.bind(this)).catch((error) => {
+                                    this.handleStreamCaptureError(error)
+                                })
                             }
                         }.bind(this);
                         console.log(this.device_list.audioinput.length);
@@ -524,7 +530,6 @@ let GigaTester_StringUtils = {
                             afterGetAudioStream()
                         }
                     } catch (e) {
-                        console.log('error capturing video', e);
                         this.handleStreamCaptureError(e)
                     }
                 },
@@ -557,11 +562,17 @@ let GigaTester_StringUtils = {
                 handleStreamCaptureError: function (e) {
                     console.log('handle stream error', e)
                     if (typeof e.name !== "undefined" && e.name === "NotAllowedError") {
+                        console.log(e.name)
+                        const errorMessage = e.toString();
+                        errorMessage.replace('DOMException:')
+                        GigaTester_modal.setNotifyStatus(`Screen Recorder Error - ${errorMessage}. Please grant browser access to record screen.`);
+                        setTimeout(()=> {GigaTester_modal.clearNotifyStatus()}, 5000);
                         this.stopGTcapture()
                     } else {
                         console.log('Screen Recorder Error')
-                        GigaTester_modal.setNotifyStatus("Screen Recorder Error, try again or use a different browser. Press cancel to return");
-                        setTimeout(()=> {GigaTester_modal.clearNotifyStatus()}, 4000);
+                        GigaTester_modal.setNotifyStatus("Screen Recorder Error, try again or use a different browser.");
+                        setTimeout(() => { GigaTester_modal.clearNotifyStatus() }, 5000);
+                        this.stopGTcapture()
                     }
                 },
                 getTimerStr: function() {
@@ -1724,6 +1735,10 @@ let GigaTester_StringUtils = {
                     if (this.custom_ui.events) {
                         return
                     }
+                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+                    navigator.userAgent &&
+                    navigator.userAgent.indexOf('CriOS') == -1 &&
+                    navigator.userAgent.indexOf('FxiOS') == -1;
                     this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.custom_ui.position);
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
@@ -1736,7 +1751,11 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.on("submit", ".gigatester-ctrl-item-options", this.validateFields.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.changeCategory.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.changeSeverity.bind(this));
-                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
+                    if (isSafari) {
+                        this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.altScreenRecorder.bind(this));
+                    } else {
+                        this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
+                    }
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-audio", this.recordAudio.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.recordImage.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-checkbox-container > gtdiv", this.toggleCheckbox.bind(this));
@@ -1756,7 +1775,7 @@ let GigaTester_StringUtils = {
                             if($(document.getElementsByClassName('gigatester-reason-checkboxes'))){
                                 this.saveCheckedCategory();
                             }
-                            console.log(GigaTester_modal.form_type, "form type");
+                            // console.log(GigaTester_modal.form_type, "form type");
                             if (GigaTester_modal.form_type === "BUGS") {
                                 let feedback_reason = '';
                                 GigaTester_modal.configs.config_data[0].bugSettings.categories.map(items => {
@@ -1764,7 +1783,7 @@ let GigaTester_StringUtils = {
                                     console.log(GigaTester_modal.configs.selected_category);
                                     if($(e.currentTarget).val().length > 0){
                                     if(typeof $(e.currentTarget).val() === 'string'){
-                                        console.log('target is string')
+                                        // console.log('target is string')
                                         if(items.name.trim() == $(e.currentTarget).val().trim()){
                                         items.feedbacks.forEach( function(value, index){
                                             feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
@@ -1798,7 +1817,7 @@ let GigaTester_StringUtils = {
                                 GigaTester_modal.configs.config_data[0].feedbackSettings.categories.map(items => {
                                     if($(e.currentTarget).val().length > 0){
                                     if(typeof $(e.currentTarget).val() === 'string'){
-                                        console.log('target is string')
+                                        // console.log('target is string')
                                         if(items.name.trim() == $(e.currentTarget).val().trim()){
                                         items.feedbacks.forEach( function(value, index){
                                             feedback_reason += `<input id="gt-cb-reason${index}" class="gigatester-reason-checkboxes" type="checkbox"> <label for="gt-cb-reason${index}" class="gigatester-reason-labels" id="gigatester-reason-label">${value}</label> <br>`
@@ -1829,7 +1848,7 @@ let GigaTester_StringUtils = {
                                 }
                                 else{
                                 GigaTester_modal.configs.selected_category.map(function (value){
-                                    console.log(value);
+                                    // console.log(value);
                                     $('.gigatester-reason-checkboxes').each(function () {
                                         if($(this).next("label").text() == value){
                                                 $(this).attr('checked', 'true')
@@ -2298,7 +2317,9 @@ let GigaTester_StringUtils = {
                             console.log('GigaTester: image recording started')
                         })
                         .catch(function(err) {
-                            console.log(err , 'permision to screen record was denied')
+                            console.log(err, 'permision to screen record was denied')
+                            GigaTester_modal.setNotifyStatus("Screen capture error: permision to screen record was denied");
+                            setTimeout(()=> {GigaTester_modal.clearNotifyStatus()}, 6000);
                             GigaTester_modal.set_screen_default_category = false;
                             GigaTester_modal.recording = false;
                             if (!GigaTester.remote) {
@@ -2531,7 +2552,11 @@ let GigaTester_StringUtils = {
                         }
                         })
                         .catch(function(err){
-                            console.log(err , 'audio err')
+                            console.log(err, 'audio err')
+                            const errorMessage = err.toString();
+                            errorMessage.replace('DOMException');
+                            GigaTester_modal.setNotifyStatus(`Audio recording error: ${errorMessage}.Please grant browser access to record audio.`);
+                            setTimeout(()=> {GigaTester_modal.clearNotifyStatus()}, 6000);
                         })
 
                     }
@@ -2618,8 +2643,68 @@ let GigaTester_StringUtils = {
                     Screen_Recorder.start({
                         onSubmit: GigaTester_modal.submitVidCapture,
                         onCancel: this.Draw_Tools.cancelGTcapture.bind(this.Draw_Tools),
-                        timer: this.configs.screen_record_time
+                        timer: this.configs.screen_record_time,
+                        event: e,
                     })
+                },
+                altScreenRecorder: function (e) {
+                    console.log('Alternative screen recorder')
+                    GigaTester_modal.saveCheckedCategory();
+                    this.hideControls();
+                    this.startScreenRecorder();
+                    // Screen_Recorder.createNewControls();
+                    let recorder = null;
+                    async function captureScreen() {
+                        mediaConstraints = {
+                          video: {
+                            cursor: 'always',
+                            resizeMode: 'crop-and-scale'
+                          }
+                        }
+                        const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
+                        return screenStream
+                    }
+                    async function recordStream() {
+                    const stream = await captureMediaDevices();
+                    recorder = new MediaRecorder(stream)
+                    console.log('recorder', recorder)
+                    let chunks = []
+
+                    recorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                        chunks.push(event.data)
+                        }
+                    }
+
+                    recorder.onstop = () => {
+                        const blob = new Blob(chunks, {
+                        type: 'video/webm;codecs=vp9'
+                        })
+                        chunks = []
+                        const blobUrl = URL.createObjectURL(blob)
+                        console.log(blobUrl)
+                    }
+
+                    recorder.ondataavailable = event => {
+                        if (event.data.size > 0) {
+                          chunks.push(event.data)
+                        }
+                    }
+
+                    recorder.onstop = () => {
+                        const blob = new Blob(chunks, {
+                          type: 'video/webm'
+                        })
+
+                        chunks = []
+                        const blobUrl = URL.createObjectURL(blob)
+
+                        console.log(blobUrl)
+                      }
+
+                    recorder.start(200)
+                    }
+
                 },
                 loadVideo: async function(src) {
                     console.log('loaded video')
@@ -2905,8 +2990,6 @@ let GigaTester_StringUtils = {
                             GigaTester_modal.selectedRating();
                         }
                         })
-//                        const filesize = Math.round((GigaTester_modal.form_data.external_file.size / 1024));
-//                        console.log("GigaTester: filesize = " + filesize + 'KB')
                         if (GigaTester_modal.form_data.external_file.size > size_limit * 1024 * 1024) {
                             console.log("GigaTester: external_file_size = " + Math.ceil(GigaTester_modal.form_data.external_file.size / 1024 / 1024) + 'MB')
                             console.log("GigaTester: size_limit = " + size_limit + "MB")
@@ -2958,14 +3041,14 @@ let GigaTester_StringUtils = {
                     this.controls_step = 0
                 },
                 postMedia: function(fileSelected){
-                    console.log(fileSelected,'postMedia')
-                    console.log(fileSelected.name, 'name')
+                    // console.log(fileSelected,'postMedia')
+                    // console.log(fileSelected.name, 'name')
                     console.log('postMedia')
                     let formUpload = new FormData();
                     formUpload.append('file', fileSelected);
                     formUpload.append('fileName', fileSelected.name);
                     const reader = new FileReader();
-                    console.log(formUpload.entries(),'formuplod')
+                    // console.log(formUpload.entries(),'formuplod')
                     reader.onloadend = () => {
                         console.log('inside reader')
                         const dataInfo = {
@@ -3038,7 +3121,7 @@ let GigaTester_StringUtils = {
                               if (xhr.status === 200) {
                                 console.log("UPLOAD SUCCESSFUL");
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-msg").text(GigaTester_StringRes.get("media_upload_success") + " " + GigaTester_StringRes.get("submitting_feedback")).insertAfter(send_button);
-                                console.log('GigaTester: ', xhr.responseURL);
+                                // console.log('GigaTester: ', xhr.responseURL);
                                 if(xhr.responseURL.includes('gt_image')){
                                     GigaTester_modal.form_data.image_file = xhr.responseURL.split('?')[0];
                                 }
@@ -3078,7 +3161,7 @@ let GigaTester_StringUtils = {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.width(send_button.width());
                                 let percent = parseInt(evt.loaded / evt.total * 100, 10);
-                                console.log(percent, evt)
+                                // console.log(percent, evt)
                                 send_button.find(".gigatester-ctrl-item-send-text").text(percent + "%");
                                 send_button.find(".gigatester-ctrl-item-send-progress").width(percent + "%")
                             }
@@ -3194,7 +3277,7 @@ let GigaTester_StringUtils = {
                 },
                 submitPost: function(e){
                     e.preventDefault();
-                    console.log('submit post')
+                    // console.log('submit post')
                     if(GigaTester_modal.form_data.video_file){
                         GigaTester_modal.postMedia(GigaTester_modal.form_data.video_file);
                     }
