@@ -21,15 +21,21 @@ interface Params {
 }
 
 interface GetChartDataProps {
+  filterCategory?: string;
+  filterRating?: string;
+  filterSeverity?: string;
   prodId?: string;
   prodVersion?: string;
   type: FeedbackType;
+  search?: string;
   startDate?: string;
   endDate?: string;
 }
 
 interface ItemsData {
   Items: AppFeedback[];
+  LastEvaluatedKey: object;
+  Count: number;
 }
 
 export interface ProcessedData {
@@ -181,7 +187,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     params.ScanIndexForward = order && order === 'asc' ? true : false;
     params.IndexName = 'feedbackType-createdOn-index'; // Need to remove hardcoding, and name should be based on the subdomain.
 
-    params.Limit = items ? parseInt(items, 10) : 100;
+    params.Limit = items ? parseInt(items, 10) : 500;
 
     if(lastEvalKey) {
       const exKeyStart: any = JSON.parse(lastEvalKey);
@@ -192,7 +198,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     return queryRaw<any>(params);
   };
 
-export const getUserFeedbackListForChart = async ({type, startDate, endDate, items, search, lastEvalKey, prodId, prodVersion}: Params): Promise<any> => {
+export const getUserFeedbackListForChart = async ({type, startDate, endDate, items, search, lastEvalKey, filterCategory, filterRating, filterSeverity, prodId, prodVersion}: Params): Promise<any> => {
     let params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -211,6 +217,77 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       }
     }
 
+    if(filterRating) {
+      const rating = filterRating.split(',');
+      for(let i = 0; i < rating.length; i += 1) {
+        const el = rating[i];
+        EAN['#rating'] = 'productRating';
+        EAV[`:ratingVal${i}`] = parseInt(el, 10);
+        if(i === 0) {
+          if(rating.length === 1) {
+            FE += FE ? ` and #rating = :ratingVal${i}` : `#rating = :ratingVal${i}`;
+          } else {
+            FE += FE ? ` and (#rating = :ratingVal${i}` : `(#rating = :ratingVal${i}`;
+          }
+        } else if(i === (rating.length - 1)) {
+          FE += ` or #rating = :ratingVal${i})`;
+        } else {
+          FE += ` or #rating = :ratingVal${i}`;
+        }
+      }
+    }
+
+    if(filterSeverity) {
+      const severity = filterSeverity.split(',');
+      for(let i = 0; i < severity.length; i += 1) {
+        const el = severity[i];
+        EAN['#severity'] = 'bugPriority';
+        EAV[`:severityVal${i}`] = el;
+        if(i === 0) {
+          if(severity.length === 1) {
+            FE += FE ? ` and #severity = :severityVal${i}` : `#severity = :severityVal${i}`;
+          } else {
+            FE += FE ? ` and (#severity = :severityVal${i}` : `(#severity = :severityVal${i}`;
+          }
+        } else if(i === (severity.length - 1)) {
+          FE += ` or #severity = :severityVal${i})`;
+        } else {
+          FE += ` or #severity = :severityVal${i}`;
+        }
+      }
+    }
+
+    if(search) {
+      EAN['#comments'] = 'feedbackComments';
+      EAN['#severity'] = 'bugPriority';
+      EAN['#category'] = 'feedbackCategory';
+      EAN['#platformInfo'] = 'platformInfo';
+      EAN['#userId'] = 'userId';
+      EAV[':keyWord'] = search;
+      // FE += FE ? ' or contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
+      FE += FE ? ' and (contains(#userId, :keyWord) or contains(#platformInfo, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))' : '(contains(#userId, :keyWord) or contains(#platformInfo, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))';
+    }
+
+    if(filterCategory) {
+      const categories = filterCategory.split(',');
+      for(let i = 0; i < categories.length; i += 1) {
+        const el = categories[i];
+        EAN['#category'] = 'feedbackCategory';
+        EAV[`:categoryVal${i}`] = el;
+        if(i === 0) {
+          if(categories.length === 1) {
+            FE += FE ? ` and #category = :categoryVal${i}` : `#category = :categoryVal${i}`;
+          } else {
+            FE += FE ? ` and (#category = :categoryVal${i}` : `(#category = :categoryVal${i}`;
+          }
+        } else if(i === (categories.length - 1)) {
+          FE += ` or #category = :categoryVal${i})`;
+        } else {
+          FE += ` or #category = :categoryVal${i}`;
+        }
+      }
+    }
+
     if(FE) {
       params = {
         ExpressionAttributeNames: EAN,
@@ -221,13 +298,11 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       EAV[':type'] = type;
       params.IndexName = 'feedbackType-createdOn-index';
       if(endDate && startDate) {
-        // console.log(endDate, 'eeeeeeeeeeeendDateeeeeeeeeee');
         // const today = new Date();
         // const lastDate = new Date().setDate(today.getDate() - 10);
         // const intEndDate = new Date(parseInt(endDate))
         const lastDate = new Date(parseInt(endDate, 10)).getTime();
         const beginDate = new Date(parseInt(startDate, 10)).getTime();
-        // console.log(lastDate, 'laaaaaaastDateeeeeeee')
         EAV[':startDate'] = beginDate;
         EAV[':endDate'] = lastDate;
         params.KeyConditionExpression = 'feedbackType=:type AND createdOn BETWEEN :endDate and :startDate';
@@ -265,7 +340,6 @@ export const bugProcessBarChartData = async({data, prodId, prodVersion, chartTyp
   if(prodId) {
   // const severities: string[] = await getSeveritiesList({prodId, prodVersion, chartType});
     const severityData: ProcessedData = {};
-    // console.log(severities, 'sverriiiiii')
     // severities.forEach((el) => {
     //   severityData[el] = 0;
     // });
@@ -408,12 +482,12 @@ const processBugReportChartData = async({data, prodId, prodVersion, chartType}: 
   };
 };
 
-export const getChartData = async({type, prodId, prodVersion, startDate, endDate}: GetChartDataProps) => {
+export const getChartData = async({type, prodId,search, prodVersion, startDate, filterCategory, filterRating, filterSeverity, endDate}: GetChartDataProps) => {
   let chartType: FeedbackType = 'FEEDBACK';
   if(type !== 'FEEDBACK-CHART') {
     chartType = 'BUG_REPORT';
   }
-  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, startDate, endDate});
+  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, search, filterCategory, filterRating, filterSeverity, startDate, endDate});
   const data: AppFeedback[] = itemList.Items;
   return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType}) : processBugReportChartData({data, prodId, prodVersion, chartType});
 };

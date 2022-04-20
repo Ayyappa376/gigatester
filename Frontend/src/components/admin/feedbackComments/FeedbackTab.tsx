@@ -272,7 +272,24 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 		if (focusRating.length === 0) {
 			setCurrentDisable('');
-			setData(rawData);
+			// setData(rawData);
+			fetchRecursiveData({
+				filterRating: focusRating,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+				noRawDataUpdate: true,
+				filterDate: dateRange,
+			});
+			getFeedbckChartData({
+				setFeedbackBarChartData,
+				setBugBarChartSeries,
+				setPieChartSeries,
+				filterRating: focusRating,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				filterDate: dateRange,
+			});
 			return;
 		}
 		// fetch the results from backend
@@ -285,6 +302,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: true,
+			filterDate: dateRange,
+		});
+		getFeedbckChartData({
+			setFeedbackBarChartData,
+			setBugBarChartSeries,
+			setPieChartSeries,
+			filterRating: focusRating,
+			prodId: selectedProdId,
+			prodVersion: productVersion,
 			filterDate: dateRange,
 		});
 	}, [focusRating]);
@@ -322,7 +348,22 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 		if (focusSeverity.length <= 0) {
 			setCurrentDisable('');
-			setData(rawData);
+			// setData(rawData);
+			fetchRecursiveData({
+				filterSeverity: focusSeverity,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+				noRawDataUpdate: true,
+			});
+			getFeedbckChartData({
+				setFeedbackBarChartData,
+				setBugBarChartSeries,
+				setPieChartSeries,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				filterDate: dateRange,
+			});
 			return;
 		}
 		// fetch the results from backend
@@ -336,6 +377,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			showNoEmptyError: true,
 			noRawDataUpdate: true,
 		});
+		getFeedbckChartData({
+			setFeedbackBarChartData,
+			setBugBarChartSeries,
+			setPieChartSeries,
+			prodId: selectedProdId,
+			prodVersion: productVersion,
+			filterDate: dateRange,
+		});
+		
 	}, [focusSeverity]);
 
 	useEffect(() => {
@@ -344,7 +394,24 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 		if (focusCategory.length <= 0) {
 			setCurrentDisable('');
-			setData(rawData);
+			// setData(rawData);
+			fetchRecursiveData({
+				filterCategory: focusCategory,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+				filterDate: dateRange,
+				noRawDataUpdate: true,
+			});
+			getFeedbckChartData({
+				setFeedbackBarChartData,
+				setBugBarChartSeries,
+				setPieChartSeries,
+				filterCategory: focusCategory,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				filterDate: dateRange,
+			});
 			return;
 		}
 		// fetch the results from backend
@@ -358,6 +425,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			showNoEmptyError: true,
 			filterDate: dateRange,
 			noRawDataUpdate: true,
+		});
+		getFeedbckChartData({
+			setFeedbackBarChartData,
+			setBugBarChartSeries,
+			setPieChartSeries,
+			filterCategory: focusCategory,
+			prodId: selectedProdId,
+			prodVersion: productVersion,
+			filterDate: dateRange,
 		});
 	}, [focusCategory]);
 
@@ -529,17 +605,17 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if(prevLastEvalKey !== lastEvaluatedKey.id){
 			setPrevLastEvalKey(lastEvaluatedKey.id)
 		if (Object.keys(lastEvaluatedKey).length > 0) {
-			setResultsFetched(false);
-			fetchRecursiveData({
-				lastEvalKey: lastEvaluatedKey,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
-				showNoEmptyError: true,
-				searchWord: keyword,
-				filterRating: focusRating,
-				filterCategory: focusCategory,
-				filterDate: dateRange,
-			});
+			setResultsFetched(true);
+			// fetchRecursiveData({
+			// 	lastEvalKey: lastEvaluatedKey,
+			// 	prodId: selectedProdId,
+			// 	prodVersion: productVersion,
+			// 	showNoEmptyError: true,
+			// 	searchWord: keyword,
+			// 	filterRating: focusRating,
+			// 	filterCategory: focusCategory,
+			// 	filterDate: dateRange,
+			// });
 		}
 	}
 	};
@@ -693,7 +769,24 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 		if (keyword.length <= 0) {
 			setCurrentDisable('');
-			setData(rawData);
+			// setData(rawData);
+			fetchRecursiveData({
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				searchWord: keyword,
+				showNoEmptyError: true,
+				filterDate: dateRange,
+				noRawDataUpdate: true,
+			});
+			getFeedbckChartData({
+				setFeedbackBarChartData,
+				setBugBarChartSeries,
+				setPieChartSeries,
+				searchWord: keyword,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				filterDate: dateRange,
+			});
 			return;
 		}
 		// fetch the results from backend
@@ -708,6 +801,15 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				showNoEmptyError: true,
 				filterDate: dateRange,
 				noRawDataUpdate: true,
+			});
+			getFeedbckChartData({
+				setFeedbackBarChartData,
+				setBugBarChartSeries,
+				setPieChartSeries,
+				searchWord: keyword,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				filterDate: dateRange,
 			});
 		}
 	}, [searchInitiated, keyword]);
