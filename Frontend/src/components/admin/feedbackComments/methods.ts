@@ -65,6 +65,7 @@ interface IGetChartData {
 	setFeedbackBarChartData: Function;
 	// setBugBarChartData: Function,
 	setBugBarChartSeries: Function;
+	setDataFetchLoader: Function;
 	setPieChartSeries: Function;
 	filterRating?: string[];
 	filterCategory?: string[];
@@ -76,6 +77,7 @@ interface IGetChartData {
 }
 
 export const getFeedbckChartData = async ({
+	setDataFetchLoader,
 	setFeedbackBarChartData,
 	setBugBarChartSeries,
 	setPieChartSeries,
@@ -87,6 +89,7 @@ export const getFeedbckChartData = async ({
 	filterDate,
 }: IGetChartData) => {
 	// console.log('date',filterDate);
+	setDataFetchLoader(true);
 	let url = `/api/v2/userFeedback/${CONST_FEEDBACK_CHART}?prodId=${prodId}`;
 	url += prodVersion ? `&prodVersion=${prodVersion}` : '';
 	url += filterCategory ? `&filterCategory=${filterCategory.join(',')}` : '';
@@ -103,13 +106,16 @@ export const getFeedbckChartData = async ({
 			// console.log('feedback chart response', processedData)
 			setFeedbackBarChartData(processedData.barChartData);
 			setPieChartSeries(processedData.pieChartData);
+			setDataFetchLoader(false);
 		})
 		.catch((error) => {
 			console.error(error);
+			setDataFetchLoader(false);
 		});
 };
 
 export const getBugChartData = async ({
+	setDataFetchLoader,
 	setBugBarChartSeries,
 	setFeedbackBarChartData,
 	setPieChartSeries,
@@ -121,6 +127,7 @@ export const getBugChartData = async ({
 	filterSeverity,
 	filterDate,
 }: IGetChartData) => {
+	setDataFetchLoader(true);
 	let url = `/api/v2/userFeedback/${CONST_BUG_REPORT_CHART}?prodId=${prodId}`;
 	url += prodVersion ? `&prodVersion=${prodVersion}` : '';
 	url += filterCategory ? `&filterCategory=${filterCategory.join(',')}` : '';
@@ -134,6 +141,7 @@ export const getBugChartData = async ({
 	})
 		.then((response: any) => {
 			const processedData = response.Items;
+			setDataFetchLoader(false);
 			// console.log(processedData, 'processedData')
 			setBugBarChartSeries([
 				{
@@ -146,6 +154,7 @@ export const getBugChartData = async ({
 		})
 		.catch((error) => {
 			console.error(error);
+			setDataFetchLoader(true);
 		});
 };
 

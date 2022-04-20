@@ -68,6 +68,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const [signedImageUrl, setSignedImageUrl] = useState('');
 	const [attachmentType, setAttachmentType] = useState('');
 	const [focusAttachmentUid, setFocusAttachmentUid] = useState('');
+	const [dataFetchLoader, setDataFetchLoader] = useState(false);
 	const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({});
 	const [urlArray, setUrlArray] = useState<string[]>([]);
 	const [barChartSeries, setBarChartSeries] = useState([
@@ -228,6 +229,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					filterDate: dateRange,
 				});
 				getBugChartData({
+					setDataFetchLoader,
 					setBugBarChartSeries,
 					setFeedbackBarChartData,
 					setPieChartSeries,
@@ -243,6 +245,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					filterDate: dateRange,
 				});
 				getBugChartData({
+					setDataFetchLoader,
 					setBugBarChartSeries,
 					setFeedbackBarChartData,
 					setPieChartSeries,
@@ -291,6 +294,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 			});
 			getBugChartData({
+				setDataFetchLoader,
 				setBugBarChartSeries,
 				setFeedbackBarChartData,
 				setPieChartSeries,
@@ -314,6 +318,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			filterDate: dateRange,
 		});
 		getBugChartData({
+			setDataFetchLoader,
 			setBugBarChartSeries,
 			setFeedbackBarChartData,
 			setPieChartSeries,
@@ -340,6 +345,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 			});
 			getBugChartData({
+				setDataFetchLoader,
 				setBugBarChartSeries,
 				setFeedbackBarChartData,
 				setPieChartSeries,
@@ -363,6 +369,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			filterDate: dateRange,
 		});
 		getBugChartData({
+			setDataFetchLoader,
 			setBugBarChartSeries,
 			setFeedbackBarChartData,
 			setPieChartSeries,
@@ -390,6 +397,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 			});
 			getBugChartData({
+				setDataFetchLoader,
 				setBugBarChartSeries,
 				setFeedbackBarChartData,
 				setPieChartSeries,
@@ -416,6 +424,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 			});
 			getBugChartData({
+				setDataFetchLoader,
 				setBugBarChartSeries,
 				setFeedbackBarChartData,
 				setPieChartSeries,
@@ -439,6 +448,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			filterDate: dateRange,
 		});
 		getBugChartData({
+			setDataFetchLoader,
 			setBugBarChartSeries,
 			setFeedbackBarChartData,
 			setPieChartSeries,
@@ -777,6 +787,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			setCurrentDisable('');
 			// setData(rawData);
 			getBugChartData({
+				setDataFetchLoader,
 				setBugBarChartSeries,
 				setFeedbackBarChartData,
 				setPieChartSeries,
@@ -802,6 +813,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				noRawDataUpdate: true,
 			});
 			getBugChartData({
+				setDataFetchLoader,
 				setBugBarChartSeries,
 				setFeedbackBarChartData,
 				setPieChartSeries,
@@ -930,7 +942,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								resultsFetched={resultsFetched}
 							/>
 						</div>
-					) : noDataError ? (
+					) :  noDataError ? (
 						<div style={{ marginTop: '3rem' }}>
 							<Failure message={`No bugs found`} />
 						</div>

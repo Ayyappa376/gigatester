@@ -66,6 +66,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	const [ratingMapping, setRatingMapping] = useState<IRatingMapping>({});
 	const [bugDataMapping, setBugDataMapping] = useState<IBugDataMapping>({});
 	const [urlArray, setUrlArray] = useState<string[]>([]);
+	const [dataFetchLoader, setDataFetchLoader] = useState(true);
 	const [prevLastEvalKey, setPrevLastEvalKey] = useState('');
 	const [barChartSeries, setBarChartSeries] = useState([
 		{
@@ -223,6 +224,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				setBackdropOpen(true);
 				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '',filterDate: dateRange });
 				getFeedbckChartData({
+					setDataFetchLoader,
 					setFeedbackBarChartData,
 					setBugBarChartSeries,
 					setPieChartSeries,
@@ -234,6 +236,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				setBackdropOpen(true);
 				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
 				getFeedbckChartData({
+					setDataFetchLoader,
 					setFeedbackBarChartData,
 					setBugBarChartSeries,
 					setPieChartSeries,
@@ -282,6 +285,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 			});
 			getFeedbckChartData({
+				setDataFetchLoader,
 				setFeedbackBarChartData,
 				setBugBarChartSeries,
 				setPieChartSeries,
@@ -305,6 +309,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			filterDate: dateRange,
 		});
 		getFeedbckChartData({
+			setDataFetchLoader,
 			setFeedbackBarChartData,
 			setBugBarChartSeries,
 			setPieChartSeries,
@@ -332,6 +337,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 			});
 			getFeedbckChartData({
+				setDataFetchLoader,
 				setFeedbackBarChartData,
 				setBugBarChartSeries,
 				setPieChartSeries,
@@ -357,6 +363,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				noRawDataUpdate: true,
 			});
 			getFeedbckChartData({
+				setDataFetchLoader,
 				setFeedbackBarChartData,
 				setBugBarChartSeries,
 				setPieChartSeries,
@@ -378,6 +385,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			noRawDataUpdate: true,
 		});
 		getFeedbckChartData({
+			setDataFetchLoader,
 			setFeedbackBarChartData,
 			setBugBarChartSeries,
 			setPieChartSeries,
@@ -404,6 +412,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				noRawDataUpdate: true,
 			});
 			getFeedbckChartData({
+				setDataFetchLoader,
 				setFeedbackBarChartData,
 				setBugBarChartSeries,
 				setPieChartSeries,
@@ -427,6 +436,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			noRawDataUpdate: true,
 		});
 		getFeedbckChartData({
+			setDataFetchLoader,
 			setFeedbackBarChartData,
 			setBugBarChartSeries,
 			setPieChartSeries,
@@ -779,6 +789,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				noRawDataUpdate: true,
 			});
 			getFeedbckChartData({
+				setDataFetchLoader,
 				setFeedbackBarChartData,
 				setBugBarChartSeries,
 				setPieChartSeries,
@@ -803,6 +814,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				noRawDataUpdate: true,
 			});
 			getFeedbckChartData({
+				setDataFetchLoader,
 				setFeedbackBarChartData,
 				setBugBarChartSeries,
 				setPieChartSeries,
@@ -988,6 +1000,9 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 									]}
 								/>
 							</Grid>
+							dataFetchLoader ? (<div style={{ marginTop: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+							<CircularProgress color='inherit' />
+							</div>) : 
 							<RenderTable
 								key='renderTable2'
 								tableData={searchedData}
@@ -1106,7 +1121,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 										]}
 									/>
 								</Grid>
-								<Grid container style={{ marginTop: '3rem' }}>
+								{dataFetchLoader ? (<div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+							<CircularProgress color='inherit' />
+							</div>) :
+								(<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>
 										<Paper
 											elevation={3}
@@ -1141,7 +1159,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 											/>
 										</Paper>
 									</Grid>
-								</Grid>
+								</Grid>)}
 							</div>
 							<RenderTable
 								key='renderTable1'
@@ -1174,7 +1192,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								resultsFetched={resultsFetched}
 							/>
 						</div>
-					 )    } 
+					 )    }
 				</div>
 			)}
 		</div>
