@@ -17,7 +17,6 @@ import React, { useState, Suspense } from 'react';
 import { getDateTime } from '../../../utils/data';
 import FolderList from './FolderList';
 import UserDetailList from './UserDetList';
-import ContextDetList from './ContextDetList';
 import { buttonStyle } from '../../../common/common';
 import RenderComments from './RenderComments';
 import RenderStars from './RenderStars';
