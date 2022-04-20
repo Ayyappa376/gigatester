@@ -1,29 +1,36 @@
 import React, { useState } from 'react';
-import { Button, Paper, Box, Typography, Popover, makeStyles, } from '@material-ui/core';
+import {
+	Button,
+	Paper,
+	Box,
+	Typography,
+	Popover,
+	makeStyles,
+} from '@material-ui/core';
 import DateFilter from '../DateFilter';
 import { filter } from 'lodash';
 
 interface FilterProps {
-	children: any,
-	filterName: string,
-	currentDisable: string,
+	children: any;
+	filterName: string;
+	currentDisable: string;
 }
 
-const FilterItem = ({ children, filterName, currentDisable}: FilterProps) => {
+const FilterItem = ({ children, filterName, currentDisable }: FilterProps) => {
 	const [anchor, setanchor] = useState(null);
 	const [flag, setFlag] = useState(false);
 	const classes = useStyles();
 
 	const handleClick = (event: any) => {
 		if (!flag) {
-			setFlag(true)
+			setFlag(true);
 		}
 		setanchor(event.currentTarget);
 	};
 
 	const handleClose = () => {
 		if (flag) {
-			setFlag(false)
+			setFlag(false);
 		}
 		setanchor(null);
 	};
@@ -33,7 +40,12 @@ const FilterItem = ({ children, filterName, currentDisable}: FilterProps) => {
 
 	return (
 		<div>
-			<Button className={flag ? classes.filterBtnSelected : classes.filterBtn} aria-describedby={id} variant='contained' onClick={handleClick}>
+			<Button
+				className={flag ? classes.filterBtnSelected : classes.filterBtn}
+				aria-describedby={id}
+				variant='contained'
+				onClick={handleClick}
+			>
 				{filterName ? filterName : null}
 			</Button>
 			<Popover
@@ -42,6 +54,8 @@ const FilterItem = ({ children, filterName, currentDisable}: FilterProps) => {
 				open={open}
 				anchorEl={anchor}
 				onClose={handleClose}
+				disableAutoFocus={true}
+				disableEnforceFocus={true}
 				anchorOrigin={{
 					vertical: 'bottom',
 					horizontal: 'center',
@@ -50,11 +64,8 @@ const FilterItem = ({ children, filterName, currentDisable}: FilterProps) => {
 					vertical: 'top',
 					horizontal: 'center',
 				}}
-
 			>
-				<Box className={classes.popoverBox}>
-					{ children }
-				</Box>
+				<Box className={classes.popoverBox}>{children}</Box>
 			</Popover>
 		</div>
 	);
@@ -94,8 +105,7 @@ const useStyles = makeStyles((theme) => ({
 	tempBtn: {
 		backgroundColor: 'white',
 		color: '#2B559B',
-	}
+	},
 }));
 
 export default FilterItem;
-
