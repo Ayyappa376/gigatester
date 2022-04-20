@@ -1,6 +1,6 @@
 import { Box, Divider, makeStyles, Typography } from '@material-ui/core';
 import React from 'react';
-import { ICommentObject } from './common';
+import { FeedbackCategory, ICommentObject } from './common';
 
 const RenderNumber = (props: any) => {
   return (
@@ -13,7 +13,7 @@ const RenderNumber = (props: any) => {
 interface IProps {
   comments?: ICommentObject,
   old?: boolean,
-  category?: string,
+  category?: string | FeedbackCategory,
   isBugReport: boolean | undefined,
 }
 
@@ -50,15 +50,31 @@ const RenderComments = (props: IProps) => {
       <div >
         <div >
           {
-            props.category && comments[props.category] && comments[props.category].length >  0 ?
-              <div style={{marginTop: '1rem'}}>
-                <Typography color="textSecondary" style={{fontSize: '.85rem'}}>{`${props.category} related ${props.isBugReport? 'bugs' : 'feedbacks'}:`}</Typography>
-                {
-                  comments[props.category].map((el: string, i: number) => {
-                    return <div key={el + i.toString()} style={{marginTop: 'auto', marginBottom: 'auto'}}>&nbsp;&nbsp;- {el}</div>
-                  })
-                }
-              </div> : <div/>
+            props.category ?
+            Array.isArray(props.category) === true ?
+              typeof props.category !== 'string' && props.category.map((cat: string, index: number) => (
+                comments[cat] && comments[cat].length >  0 ?
+                  <div style={{marginTop: '1rem'}}>
+                    <Typography color="textSecondary" style={{fontSize: '.85rem'}}>{`${props.category} related ${props.isBugReport? 'bugs' : 'feedbacks'}:`}</Typography>
+                    {
+                      comments[cat].map((el: string, i: number) => {
+                        return <div key={el + i.toString()} style={{marginTop: 'auto', marginBottom: 'auto'}}>&nbsp;&nbsp;- {el}</div>
+                      })
+                    }
+                  </div> : <div/>
+              )) :
+              (
+                typeof props.category === 'string' && comments[props.category] && comments[props.category].length >  0 ?
+                  <div style={{marginTop: '1rem'}}>
+                    <Typography color="textSecondary" style={{fontSize: '.85rem'}}>{`${props.category} related ${props.isBugReport? 'bugs' : 'feedbacks'}:`}</Typography>
+                    {
+                      comments[props.category].map((el: string, i: number) => {
+                        return <div key={el + i.toString()} style={{marginTop: 'auto', marginBottom: 'auto'}}>&nbsp;&nbsp;- {el}</div>
+                      })
+                    }
+                  </div> : <div/>
+              )
+            : <div/>
           }
         </div>
         <div>
