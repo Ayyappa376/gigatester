@@ -298,13 +298,11 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       EAV[':type'] = type;
       params.IndexName = 'feedbackType-createdOn-index';
       if(endDate && startDate) {
-        // console.log(endDate, 'eeeeeeeeeeeendDateeeeeeeeeee');
         // const today = new Date();
         // const lastDate = new Date().setDate(today.getDate() - 10);
         // const intEndDate = new Date(parseInt(endDate))
         const lastDate = new Date(parseInt(endDate, 10)).getTime();
         const beginDate = new Date(parseInt(startDate, 10)).getTime();
-        // console.log(lastDate, 'laaaaaaastDateeeeeeee')
         EAV[':startDate'] = beginDate;
         EAV[':endDate'] = lastDate;
         params.KeyConditionExpression = 'feedbackType=:type AND createdOn BETWEEN :endDate and :startDate';
@@ -313,7 +311,6 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
       }
     }
     appLogger.info({ getPlatformList_scan_params: params });
-    console.log(params, 'paaaaaaaaarams')
     return queryRaw<any[]>(params);
   };
 
@@ -343,7 +340,6 @@ export const bugProcessBarChartData = async({data, prodId, prodVersion, chartTyp
   if(prodId) {
   // const severities: string[] = await getSeveritiesList({prodId, prodVersion, chartType});
     const severityData: ProcessedData = {};
-    // console.log(severities, 'sverriiiiii')
     // severities.forEach((el) => {
     //   severityData[el] = 0;
     // });
@@ -492,7 +488,6 @@ export const getChartData = async({type, prodId,search, prodVersion, startDate, 
     chartType = 'BUG_REPORT';
   }
   const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, search, filterCategory, filterRating, filterSeverity, startDate, endDate});
-  console.log(itemList.LastEvaluatedKey, itemList.Count, '')
   const data: AppFeedback[] = itemList.Items;
   return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType}) : processBugReportChartData({data, prodId, prodVersion, chartType});
 };
