@@ -2819,17 +2819,18 @@ let GigaTester_StringUtils = {
                         }
                         if (selected_icon.length) {
                             rating = selected_icon.data("rating")
-                            console.log(rating)
                         }
                         this.form_data.rating = rating.slice(rating.length -1, rating.length)
                         console.log(GigaTester_modal.configs.rating_limit, 'form data')
                     }
-                    if(this.form_data.rating <= GigaTester_modal.configs.rating_limit){
-                    this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
-                    this.custom_ui.events.off("click", "gtrating > gtdiv");
-                    this.custom_ui.events.off("mouseenter", "gtrating > gtdiv");
-                    this.custom_ui.events.off("mouseleave", "gtrating > gtdiv");
+                    if (this.form_data.rating <= GigaTester_modal.configs.rating_limit && GigaTester_modal.configs.rating_limit === 5) {
+                        this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                     this.focusControls()
+                    } else if (this.form_data.rating <= GigaTester_modal.configs.rating_limit && GigaTester_modal.configs.rating_limit !== 5) {
+                        this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
+                        this.custom_ui.events.off("click", "gtrating > gtdiv");
+                        this.custom_ui.events.off("mouseenter", "gtrating > gtdiv");
+                        this.custom_ui.events.off("mouseleave", "gtrating > gtdiv");
                     }
                 },
                 selectRating: function(e) {
@@ -2842,7 +2843,6 @@ let GigaTester_StringUtils = {
                         $(e.currentTarget).removeClass("inactive")
                     }
                     let rating = this.form_data.rating || "";
-
                     if (form_settings.rating_type) {
                         let selected_icon = this.custom_ui.events.find("gtrating > gtdiv:not(.inactive):last");
                         if (selected_icon.length) {
@@ -2850,24 +2850,26 @@ let GigaTester_StringUtils = {
                             console.log('GigaTester: ratings type ', rating)
                         }
                         this.form_data.rating = rating.slice(rating.length -1, rating.length)
-                        // console.log(this.form_data.rating, 'form data')
-                        console.log('GigaTester : max commented rating limit', GigaTester_modal.configs.rating_limit)
+                        // console.log('GigaTester : max commented rating limit', GigaTester_modal.configs.rating_limit)
                     }
-                    if(this.form_data.rating <= GigaTester_modal.configs.rating_limit){
-                    this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
-                    this.custom_ui.events.off("click", "gtrating > gtdiv");
-                    this.custom_ui.events.off("mouseenter", "gtrating > gtdiv");
-                    this.custom_ui.events.off("mouseleave", "gtrating > gtdiv");
+                    if (this.form_data.rating <= GigaTester_modal.configs.rating_limit && GigaTester_modal.configs.rating_limit === 5) {
+                        this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                     this.focusControls()
-                    }
-                    else{
+                    } else if (this.form_data.rating <= GigaTester_modal.configs.rating_limit && GigaTester_modal.configs.rating_limit !== 5) {
+                        this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
+                        this.custom_ui.events.off("click", "gtrating > gtdiv");
+                        this.custom_ui.events.off("mouseenter", "gtrating > gtdiv");
+                        this.custom_ui.events.off("mouseleave", "gtrating > gtdiv");
+                    } else{
                         this.post();
                     }
                 },
                 ratingPreview: function(e) {
                     let form_settings = this.getFormSettings(this.form_type);
                     if (form_settings.rating_type === "STAR" || form_settings.rating_type === "HEART") {
-                        this.custom_ui.events.find("gtrating > gtdiv").removeClass("highlight").addClass("preview");
+                        if (GigaTester_modal.configs.rating_limit !== 5) {
+                            this.custom_ui.events.find("gtrating > gtdiv").removeClass("highlight").addClass("preview");
+                        }
                         $(e.currentTarget).prevAll().addClass("highlight");
                         $(e.currentTarget).addClass("highlight")
                     } else if (form_settings.rating_type === "EMOJI" || form_settings.rating_type === "THUMB") {
@@ -2875,7 +2877,7 @@ let GigaTester_StringUtils = {
                         $(e.currentTarget).addClass("highlight")
                     }
                 },
-                unRatingPreview: function(e) {
+                unRatingPreview: function (e) {
                     this.custom_ui.events.find("gtrating > gtdiv").removeClass("highlight preview")
                 },
                 uploadAttachment: function(e) {
