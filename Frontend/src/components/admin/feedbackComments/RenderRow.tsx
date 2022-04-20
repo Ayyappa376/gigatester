@@ -24,17 +24,19 @@ import RenderMedia from './RenderMedia';
 import KeyboardArrowDownIcon from '@material-ui/icons/KeyboardArrowDown';
 import KeyboardArrowRight from '@material-ui/icons/KeyboardArrowRight';
 import AnnouncmentIcon from '@material-ui/icons/Announcement';
+import { IAppFeedback } from './common';
+import { ISignedUrls } from '../../../model';
 
 interface RowProps {
 	index: number;
-	tableData: any;
+	tableData: IAppFeedback[];
 	innerRef: any;
-	row: any;
+	row: IAppFeedback;
 	fetchAllUrls: boolean;
-	platformInfo: any;
-	osInfo: any;
+	platformInfo: string;
+	osInfo: string;
 	isBugReport: boolean;
-	signedUrlMapping: any;
+	signedUrlMapping: ISignedUrls;
 	props: any;
 }
 
@@ -133,7 +135,8 @@ const RenderRow = ({
 					</TableCell>
 				)}
 				<TableCell align='center' style={{ fontSize: '1rem' }}>
-					{Array.isArray(row.feedbackCategory) === true
+					{row.feedbackCategory ?
+						Array.isArray(row.feedbackCategory) === true
 						? row.feedbackCategory.map((cat: string, index: number) => (
 								<div
 									key={index}
@@ -143,8 +146,7 @@ const RenderRow = ({
 								</div>
 						  ))
 						: row.feedbackCategory
-						? row.feedbackCategory
-						: '-'}
+					: '-'}
 				</TableCell>
 				<TableCell align='left' className={classes.commentBox}>
 					<div className={classes.commentBox}>
@@ -196,10 +198,13 @@ const RenderRow = ({
 								<TableHead>
 									<TableRow style={{ borderBottom: 'none' }}>
 										<TableCell style={{ borderBottom: 'none', textAlign: 'center' }}>
-											Additional Information
+											System Information
 										</TableCell>
 										<TableCell style={{ borderBottom: 'none', textAlign: 'center' }}>
 											User details
+										</TableCell>
+										<TableCell style={{ borderBottom: 'none', textAlign: 'center' }}>
+											Context details
 										</TableCell>
 										<TableCell style={{ borderBottom: 'none', textAlign: 'center' }}>
 											Attachment
@@ -220,6 +225,9 @@ const RenderRow = ({
 										</TableCell>
 										<TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
 											<UserDetailList userDetails={row.userDetails} />
+										</TableCell>
+										<TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
+											<UserDetailList userDetails={row.contextDetails} />
 										</TableCell>
 										<TableCell style={{ borderBottom: 'none' }}>
 											<Suspense fallback={<div style={{ width: '100%' }}>loading...</div>}>

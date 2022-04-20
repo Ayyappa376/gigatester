@@ -43,8 +43,8 @@ const useStyles = makeStyles((theme) => ({
 		overflow: 'hidden',
   },
   collapseList: {
-    display: 'flex',
-		flexDirection: 'row',
+    // display: 'flex',
+		// flexDirection: 'row',
     justifyContent: 'space-evenly',
 		width: '90%',
 		margin: 0,
@@ -57,10 +57,6 @@ const useStyles = makeStyles((theme) => ({
 export default function UserDetailList({
   userDetails
 }: userInfoProps) {
-  // const { email,
-  //   id,
-  //   guid,
-  //   name, } = userDetails;
 	const classes = useStyles();
 	return (
 		<Box sx={{  display: 'flex',
@@ -69,7 +65,20 @@ export default function UserDetailList({
 		}}>
 			{userDetails ? (
         <div className={classes.collapseList}>
-          <div>
+          {Object.keys(userDetails).map((key: string) => {
+            return (
+            <div>
+              <ListItem className={classes.listItems}>
+                <Typography className={classes.labels}>{key}</Typography>
+                <ListItemText
+                  className={classes.listText}
+                  primary={userDetails[key] && userDetails[key].length > 0 ? userDetails[key] : '-'}
+                />
+              </ListItem>
+            </div>
+            )
+          })}
+          {/* <div>
 					{userDetails.email && userDetails.email.length > 0 ? (
 						<ListItem className={classes.listItems}>
 							<Typography className={classes.labels}>email</Typography>
@@ -142,8 +151,8 @@ export default function UserDetailList({
 							/>
 						</ListItem>
             )}
-          </div>
-				</div>
+          </div> */}
+		</div>
 			) : null}
       </Box>
 	);
