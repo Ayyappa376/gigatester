@@ -27,6 +27,7 @@ interface GetChartDataProps {
   prodId?: string;
   prodVersion?: string;
   type: FeedbackType;
+  search?: string;
   startDate?: string;
   endDate?: string;
 }
@@ -186,7 +187,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     params.ScanIndexForward = order && order === 'asc' ? true : false;
     params.IndexName = 'feedbackType-createdOn-index'; // Need to remove hardcoding, and name should be based on the subdomain.
 
-    params.Limit = items ? parseInt(items, 10) : 100;
+    params.Limit = items ? parseInt(items, 10) : 500;
 
     if(lastEvalKey) {
       const exKeyStart: any = JSON.parse(lastEvalKey);
@@ -254,6 +255,17 @@ export const getUserFeedbackListForChart = async ({type, startDate, endDate, ite
           FE += ` or #severity = :severityVal${i}`;
         }
       }
+    }
+
+    if(search) {
+      EAN['#comments'] = 'feedbackComments';
+      EAN['#severity'] = 'bugPriority';
+      EAN['#category'] = 'feedbackCategory';
+      EAN['#platformInfo'] = 'platformInfo';
+      EAN['#userId'] = 'userId';
+      EAV[':keyWord'] = search;
+      // FE += FE ? ' or contains(#comments, :keyWord)' : 'contains(#comments, :keyWord)';
+      FE += FE ? ' and (contains(#userId, :keyWord) or contains(#platformInfo, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))' : '(contains(#userId, :keyWord) or contains(#platformInfo, :keyWord) or contains(#severity, :keyWord) or contains(#comments, :keyWord) or contains(#category, :keyWord))';
     }
 
     if(filterCategory) {
@@ -474,13 +486,13 @@ const processBugReportChartData = async({data, prodId, prodVersion, chartType}: 
   };
 };
 
-export const getChartData = async({type, prodId, prodVersion, startDate, filterCategory, filterRating, filterSeverity, endDate}: GetChartDataProps) => {
+export const getChartData = async({type, prodId,search, prodVersion, startDate, filterCategory, filterRating, filterSeverity, endDate}: GetChartDataProps) => {
   let chartType: FeedbackType = 'FEEDBACK';
   if(type !== 'FEEDBACK-CHART') {
     chartType = 'BUG_REPORT';
   }
-  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion,filterCategory, filterRating, filterSeverity, startDate, endDate});
-  console.log(itemList.LastEvaluatedKey, itemList.Count, 'aaaaaaaaaaaaaaa');
+  const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, search, filterCategory, filterRating, filterSeverity, startDate, endDate});
+  console.log(itemList.LastEvaluatedKey, itemList.Count, '')
   const data: AppFeedback[] = itemList.Items;
   return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType}) : processBugReportChartData({data, prodId, prodVersion, chartType});
 };

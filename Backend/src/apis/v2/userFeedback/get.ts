@@ -68,7 +68,7 @@ async function handler(
       return responseBuilder.ok({Items: feedback }, response);
     }
     if(type === 'FEEDBACK-CHART' || type === 'BUG-REPORT-CHART') {
-      const chartData = await getChartData({type, prodId, filterCategory, filterRating, filterSeverity, prodVersion, startDate, endDate});
+      const chartData = await getChartData({type, prodId, search, filterCategory, filterRating, filterSeverity, prodVersion, startDate, endDate});
       return responseBuilder.ok({Items: chartData }, response);
     }
     feedback = await getUserFeedbackList({type,items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate});

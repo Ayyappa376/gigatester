@@ -222,9 +222,9 @@ const RenderRow = ({
 										<TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
 											<UserDetailList userDetails={row.userDetails} />
 										</TableCell>
-										<TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
+										{/* <TableCell style={{ borderBottom: 'none', minWidth: '10%' }}>
 											<ContextDetList userDetails={row.userDetails} />
-										</TableCell>
+										</TableCell> */}
 										<TableCell style={{ borderBottom: 'none' }}>
 											<Suspense fallback={<div style={{ width: '100%' }}>loading...</div>}>
 												<RenderMedia
