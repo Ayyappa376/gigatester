@@ -2,6 +2,7 @@ import { API, Handler } from '@apis/index';
 import {
   appLogger,
   getChartData,
+  getUserFeedbackItemList,
   getUserFeedbackList,
   responseBuilder,
 } from '@utils/index';
@@ -44,7 +45,7 @@ async function handler(
   appLogger.info({ UserFeedbackRequest: request }, 'Inside Handler');
   const { headers, params, query } = request;
   const {type} = params;
-  const {items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate} = query;
+  const {items, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate} = query;
 
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
@@ -71,8 +72,7 @@ async function handler(
       const chartData = await getChartData({type, prodId, search, filterCategory, filterRating, filterSeverity, prodVersion, startDate, endDate});
       return responseBuilder.ok({Items: chartData }, response);
     }
-    feedback = await getUserFeedbackList({type,items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate});
-    // put a log here
+    feedback = await getUserFeedbackItemList({type,items, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate});
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
