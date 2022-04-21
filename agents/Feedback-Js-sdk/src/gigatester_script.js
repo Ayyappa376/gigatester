@@ -2780,24 +2780,38 @@ let GigaTester_StringUtils = {
                     if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM' || currentPosition === 'BOTTOM_LEFT') {
                         popup_bug_icon_tooltip[0].style.right = '-136px';
                         popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                        if (GigaTester_modal.configs.isSafari) {
+                            popup_bug_icon_tooltip[0].style.marginTop = '-80px';
+                            popup_bug_icon_tooltip[0].style.right = '-180px';
+                        }
                     } else if (currentPosition === 'CUSTOM') {
                         popup_bug_icon[0].style.textAlign = 'center';
                         popup_bug_icon_tooltip[0].style.left = '-106px';
                     } else {
                         popup_bug_icon_tooltip[0].style.left = '-136px';
                         popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                        if (GigaTester_modal.configs.isSafari) {
+                            popup_bug_icon_tooltip[0].style.marginTop = '-80px';
+                        }
                     }
                     let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_Icons.feedback_icon + GigaTester_modal.configs.feedback_title + '</gtdiv></popupbtn>');
                     let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feedback_tooltip_msg);
                     if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM'|| currentPosition === 'BOTTOM_LEFT') {
                         popup_feedback_icon_tooltip[0].style.right = '-136px';
                         popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                        if (GigaTester_modal.configs.isSafari) {
+                            popup_feedback_icon_tooltip[0].style.marginTop = '-80px';
+                            popup_feedback_icon_tooltip[0].style.right = '-180px';
+                        }
                     } else if (currentPosition === 'CUSTOM') {
                         popup_feedback_icon[0].style.textAlign = 'center';
                         popup_feedback_icon_tooltip[0].style.left = '-106px';
                     } else {
                         popup_feedback_icon_tooltip[0].style.left = '-136px';
                         popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                        if (GigaTester_modal.configs.isSafari) {
+                            popup_feedback_icon_tooltip[0].style.marginTop = '-80px';
+                        }
                     }
                     if (GigaTester_modal.configs.isRemote) {
                         pop_up_title.appendTo(popup_dialog)
