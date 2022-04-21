@@ -357,8 +357,7 @@ let GigaTester_StringUtils = {
                     this.timer = Math.max(30, this.timer);
                     this.timer_total = this.timer;
                     this.reset();
-                    console.log('giga event', this.options.event)
-                    this.getGigaDevice(this.createNewControls.bind(this), options.event);
+                    this.getGigaDevice(this.createNewControls.bind(this));
                 },
                 reset: function() {
                     this.recorded_blobs = [];
@@ -371,15 +370,15 @@ let GigaTester_StringUtils = {
                         this.pause_button.html(GigaTester_Icons.pause_icon)
                     }
                 },
-                getGigaDevice: async function (callback, event) {
-                    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
-                        callback();
-                        return
-                    }
+                getGigaDevice: async function (callback) {
                     const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
                     navigator.userAgent &&
                     navigator.userAgent.indexOf('CriOS') == -1 &&
                     navigator.userAgent.indexOf('FxiOS') == -1;
+                    if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+                        callback();
+                        return
+                    }
                     await navigator.mediaDevices.enumerateDevices().then(function(devices) {
                         devices.forEach(function(device) {
                             // console.log(device)
@@ -393,10 +392,13 @@ let GigaTester_StringUtils = {
                             }
                         }.bind(this));
                         if (this.device_list.audioinput.length || this.device_list.screeninput.length) {
-                            if (!isSafari) {
-                                this.startVideoCapture();
-                            }
-                        callback();
+                            this.startVideoCapture();
+                            // if (isSafari) {
+                            //     this.startAltScreenRecorder();
+                            // } else {
+                            //     this.startVideoCapture();
+                            // }
+                            callback();
                         }
                     }.bind(this)).catch(function(error) {})
                 },
@@ -470,6 +472,11 @@ let GigaTester_StringUtils = {
                         audio: true,
                         video: false
                     };
+                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+                    navigator.userAgent &&
+                    navigator.userAgent.indexOf('CriOS') == -1 &&
+                    navigator.userAgent.indexOf('FxiOS') == -1;
+
                     try {
                         let afterGetVideoStream = function () {
                                 this.display_stream.getTracks()[0].onended = function() {
@@ -494,6 +501,7 @@ let GigaTester_StringUtils = {
                                 this.stop_button.show();
                                 this.close_button.show()
                         }.bind(this);
+
                         let afterGetAudioStream = function() {
                             if (this.audio_stream) {
                                 navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
@@ -532,6 +540,40 @@ let GigaTester_StringUtils = {
                     } catch (e) {
                         this.handleStreamCaptureError(e)
                     }
+                },
+                startAltScreenRecorder: function () {
+                    console.log('Alternative screen recorder')
+                    let displayMediaOptions = {
+                        video: {
+                            cursor: "always"
+                        },
+                        audio: false,
+                        preferCurrentTab: false
+                    };
+                    let userMediaOptions = {
+                        audio: true,
+                        video: false
+                    };
+                    try {
+                        if (this.device_list.audioinput.length >= 0) {
+                            navigator.mediaDevices.getUserMedia(userMediaOptions).then(function(stream) {
+                                this.audio_stream = stream;
+                                console.log('this.audio_stream')
+                            }).catch(function (error) {
+                                navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
+                                    this.display_stream = stream;
+                                    let display_tracks = this.display_stream.getTracks();
+                                    let audio_tracks = this.audio_stream.getTracks();
+                                    this.combo_stream = new MediaStream(display_tracks.concat(audio_tracks));
+                                }).catch((error) => {
+                                    console.log('wow anothe error', error)
+                                })
+                            })
+                        }
+                    } catch (error) {
+                        console.log('error', error)
+                    }
+
                 },
                 stopGTcapture: function () {
                     if (this.recorder) {
@@ -1735,10 +1777,6 @@ let GigaTester_StringUtils = {
                     if (this.custom_ui.events) {
                         return
                     }
-                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-                    navigator.userAgent &&
-                    navigator.userAgent.indexOf('CriOS') == -1 &&
-                    navigator.userAgent.indexOf('FxiOS') == -1;
                     this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.custom_ui.position);
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
@@ -1751,11 +1789,12 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.on("submit", ".gigatester-ctrl-item-options", this.validateFields.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.changeCategory.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.changeSeverity.bind(this));
-                    if (isSafari) {
-                        this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.altScreenRecorder.bind(this));
-                    } else {
-                        this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
-                    }
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
+                    // if (isSafari) {
+                    //     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startAltScreenRecorder.bind(this));
+                    // } else {
+                    //     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
+                    // }
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-audio", this.recordAudio.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.recordImage.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-checkbox-container > gtdiv", this.toggleCheckbox.bind(this));
@@ -2646,65 +2685,6 @@ let GigaTester_StringUtils = {
                         timer: this.configs.screen_record_time,
                         event: e,
                     })
-                },
-                altScreenRecorder: function (e) {
-                    console.log('Alternative screen recorder')
-                    GigaTester_modal.saveCheckedCategory();
-                    this.hideControls();
-                    this.startScreenRecorder();
-                    // Screen_Recorder.createNewControls();
-                    let recorder = null;
-                    async function captureScreen() {
-                        mediaConstraints = {
-                          video: {
-                            cursor: 'always',
-                            resizeMode: 'crop-and-scale'
-                          }
-                        }
-                        const screenStream = await navigator.mediaDevices.getDisplayMedia(mediaConstraints)
-                        return screenStream
-                    }
-                    async function recordStream() {
-                    const stream = await captureMediaDevices();
-                    recorder = new MediaRecorder(stream)
-                    console.log('recorder', recorder)
-                    let chunks = []
-
-                    recorder.ondataavailable = event => {
-                        if (event.data.size > 0) {
-                        chunks.push(event.data)
-                        }
-                    }
-
-                    recorder.onstop = () => {
-                        const blob = new Blob(chunks, {
-                        type: 'video/webm;codecs=vp9'
-                        })
-                        chunks = []
-                        const blobUrl = URL.createObjectURL(blob)
-                        console.log(blobUrl)
-                    }
-
-                    recorder.ondataavailable = event => {
-                        if (event.data.size > 0) {
-                          chunks.push(event.data)
-                        }
-                    }
-
-                    recorder.onstop = () => {
-                        const blob = new Blob(chunks, {
-                          type: 'video/webm'
-                        })
-
-                        chunks = []
-                        const blobUrl = URL.createObjectURL(blob)
-
-                        console.log(blobUrl)
-                      }
-
-                    recorder.start(200)
-                    }
-
                 },
                 loadVideo: async function(src) {
                     console.log('loaded video')
