@@ -29,7 +29,7 @@ import {
 	getPieChartOptions,
 } from './common';
 import { RouteComponentProps } from 'react-router-dom';
-import { getFeedbckChartData, getFeedbackData } from './methods';
+import { getFeedbckChartData, getFeedbackData, filterDate } from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import ImageModal from './ImageModal';
@@ -645,7 +645,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			if (Object.keys(feedbackBarChartData).length > 0) {
 				setBackdropOpen(false);
 			}
-			if (pieChartSeries) {
+			if (pieChartSeries && focusRating.length === 0 && focusCategory.length === 0) {
 				setCategoryList(Object.keys(pieChartSeries));
 			}
 		}
