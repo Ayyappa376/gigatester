@@ -42,6 +42,7 @@ export interface FeedbackAgentSettings {
 export interface BugSettings {
     categories: Category[];
     dialogMsg?: string;
+    icon?: string;
     reqComments?: boolean;
     severities: string[];
     showSeverity: boolean;
@@ -53,6 +54,7 @@ export interface BugSettings {
 export interface FeedbackSettings {
     categories: Category[];
     dialogMsg?: string;
+    icon?: string;
     ratingIcon: RatingIconType;
     ratingLimit: number; //values 1,2,3,4,5
     reqComments?: boolean;

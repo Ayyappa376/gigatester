@@ -45,6 +45,7 @@ export interface IBugSettings {
   severities: string[];
   dialogMsg?: string;
   thanksMsg?: string;
+  icon?: string;
   title?: string;
   tooltip?: string;
   reqComments: boolean;
@@ -57,6 +58,7 @@ export interface IFeedbackSettings {
   ratingLimit: number; //values 1,2,3,4,5
   dialogMsg?: string;
   thanksMsg?: string;
+  icon?: string;
   title?: string;
   tooltip?: string;
   reqComments: boolean;
