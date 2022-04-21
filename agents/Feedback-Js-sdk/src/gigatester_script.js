@@ -371,14 +371,15 @@ let GigaTester_StringUtils = {
                     }
                 },
                 getGigaDevice: async function (callback) {
-                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-                    navigator.userAgent &&
-                    navigator.userAgent.indexOf('CriOS') == -1 &&
-                    navigator.userAgent.indexOf('FxiOS') == -1;
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                         callback();
                         return
                     }
+                    if (GigaTester_modal.configs.isSafari) {
+                        console.log('browser is Safari')
+                        this.startAltScreenRecorder();
+                        callback();
+                    } else {
                     await navigator.mediaDevices.enumerateDevices().then(function(devices) {
                         devices.forEach(function(device) {
                             // console.log(device)
@@ -393,14 +394,11 @@ let GigaTester_StringUtils = {
                         }.bind(this));
                         if (this.device_list.audioinput.length || this.device_list.screeninput.length) {
                             this.startVideoCapture();
-                            // if (isSafari) {
-                            //     this.startAltScreenRecorder();
-                            // } else {
-                            //     this.startVideoCapture();
-                            // }
                             callback();
                         }
                     }.bind(this)).catch(function(error) {})
+
+                    }
                 },
                 createNewControls: function() {
                     this.screen_recorder_overlay = $("<gtdiv>").attr("id", "gigatester_video_container").appendTo($(document.body));
@@ -411,10 +409,10 @@ let GigaTester_StringUtils = {
                     this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("remaining_time", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>").appendTo(this.controls);
                     this.timer_button = $("<btn>").addClass("gigatester-video-controls-timer").text(this.getTimerStr()).appendTo(this.controls);
                     this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.close_icon).appendTo(this.controls);
-                    if (!this.device_list.audioinput.length) {
-                        this.is_muted = true;
-                        this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true)
-                    }
+                    // if (!this.device_list.audioinput.length) {
+                    //     this.is_muted = true;
+                    //     this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true)
+                    // }
                     this.stop_button.find("btn-timer, btn-timer-mask").css("animation-duration", this.timer + "s");
                     this.stp_btn.on("click", this.stopGTcapture.bind(this));
                     this.close_button.on("click", this.cancelGTcapture.bind(this));
@@ -472,10 +470,6 @@ let GigaTester_StringUtils = {
                         audio: true,
                         video: false
                     };
-                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-                    navigator.userAgent &&
-                    navigator.userAgent.indexOf('CriOS') == -1 &&
-                    navigator.userAgent.indexOf('FxiOS') == -1;
 
                     try {
                         let afterGetVideoStream = function () {
@@ -532,7 +526,7 @@ let GigaTester_StringUtils = {
                                 this.audio_stream = stream;
                                 afterGetAudioStream();
                             }.bind(this)).catch(function() {
-                                afterGetAudioStream()
+                                afterGetAudioStream();
                             }.bind(this))
                         } else {
                             afterGetAudioStream()
@@ -547,7 +541,7 @@ let GigaTester_StringUtils = {
                         video: {
                             cursor: "always"
                         },
-                        audio: false,
+                        audio: true,
                         preferCurrentTab: false
                     };
                     let userMediaOptions = {
@@ -555,21 +549,52 @@ let GigaTester_StringUtils = {
                         video: false
                     };
                     try {
-                        if (this.device_list.audioinput.length >= 0) {
-                            navigator.mediaDevices.getUserMedia(userMediaOptions).then(function(stream) {
-                                this.audio_stream = stream;
-                                console.log('this.audio_stream')
-                            }).catch(function (error) {
-                                navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function(stream) {
-                                    this.display_stream = stream;
-                                    let display_tracks = this.display_stream.getTracks();
-                                    let audio_tracks = this.audio_stream.getTracks();
-                                    this.combo_stream = new MediaStream(display_tracks.concat(audio_tracks));
-                                }).catch((error) => {
-                                    console.log('wow anothe error', error)
-                                })
-                            })
-                        }
+                        let afterGetVideoStream = function () {
+                            let display_tracks = this.display_stream.getTracks();
+                            let audio_tracks = this.audio_stream.getTracks();
+                            this.combo_stream = new MediaStream(display_tracks.concat(audio_tracks));
+                            this.display_stream.getTracks()[0].onended = function() {
+                                this.stopGTcapture()
+                            }.bind(this);
+                            GigaTester_modal.recording = true;
+                            GigaTester_modal.video_recording_mode = true;
+                            GigaTester_modal.set_screen_default_category = false;
+                            let count_down = this.count_down;
+                            let timer = function () {
+                                console.log('in timer function')
+                                console.log('count', count_down)
+                                if (count_down === 0) {
+                                    this.screen_recorder_overlay.hide();
+                                    $(".gigatester-video-count-down").remove();
+                                    this.startRecording()
+                                } else {
+                                    $("<gttimer>").addClass("gigatester-video-count-down").text(count_down).appendTo($(document.body));
+                                    count_down--;
+                                    this.count_down_timeout = setTimeout(timer.bind(this), 1e3)
+                                }
+                            };
+                            timer.call(this);
+                            this.stop_button.show();
+                            this.close_button.show()
+                        }.bind(this);
+
+                        navigator.mediaDevices.getUserMedia(userMediaOptions).then(function(stream) {
+                            this.audio_stream = stream;
+                        }.bind(this)).catch(function() {
+                            console.log('error')
+                        }.bind(this))
+
+                        navigator.mediaDevices.getDisplayMedia(displayMediaOptions).then(function (stream) {
+                            console.log('stream', stream)
+                            this.display_stream = stream;
+                            let display_tracks = this.display_stream.getTracks();
+                            this.combo_stream = this.display_stream;
+                            this.is_muted = false;
+                            // this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true);
+                            afterGetVideoStream()
+                        }.bind(this)).catch((error) => {
+                            this.handleStreamCaptureError(error)
+                        })
                     } catch (error) {
                         console.log('error', error)
                     }
@@ -647,9 +672,10 @@ let GigaTester_StringUtils = {
                     clearTimeout(this.count_down_timeout)
                 },
                 startRecording: function () {
+                    console.log('current mime type', this.mime_type)
                     try {
                         this.recorder = new MediaRecorder(this.combo_stream, {
-                            mimeType: this.mime_type
+                            mimeType: GigaTester_modal.configs.isSafari ? 'video/mp4' : this.mime_type
                         })
                     } catch (e) {
                         return
@@ -714,7 +740,7 @@ let GigaTester_StringUtils = {
                     this.recordingStop();
                     if (this.options.onSubmit) {
                         let video_blob = new Blob(this.recorded_blobs, {
-                            type: "video/webm"
+                            type: "video/mp4"
                         });
                         this.options.onSubmit(video_blob)
                     }
@@ -744,6 +770,7 @@ let GigaTester_StringUtils = {
                 configs: {
                     isRemote: false,
                     has_video: true,
+                    isSafari: false,
                     categories:  ['Video', 'Screen', 'Audio', 'Images', 'Other'],
                     severities: [], //['Critical', 'High', 'Medium', 'Low'],
                     locale: 'en',
@@ -1790,11 +1817,6 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.on("change", 'select[name="category"]', this.changeCategory.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.changeSeverity.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
-                    // if (isSafari) {
-                    //     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startAltScreenRecorder.bind(this));
-                    // } else {
-                    //     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
-                    // }
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-audio", this.recordAudio.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-screenshot", this.recordImage.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-checkbox-container > gtdiv", this.toggleCheckbox.bind(this));
@@ -2375,13 +2397,9 @@ let GigaTester_StringUtils = {
                     }
                 },
                 screenshotImage: function (rawImage) {
-                    const isSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
-                    navigator.userAgent &&
-                    navigator.userAgent.indexOf('CriOS') == -1 &&
-                    navigator.userAgent.indexOf('FxiOS') == -1;
                     const final_width = Math.round(window.innerWidth * 0.95); //95% of viewport width
                     let final_height
-                    if (isSafari) {
+                    if (GigaTester_modal.configs.isSafari) {
                         final_height  = Math.round(window.innerHeight * 0.85); //95% of viewport height
                     } else {
                         final_height = Math.round(window.innerHeight * 0.95); //95% of viewport height
@@ -2641,7 +2659,7 @@ let GigaTester_StringUtils = {
                         GigaTester_modal.set_screen_default_category = false;
                         GigaTester_modal.video_recording_mode = false;
                         let video_overlay = $('<div id="gigatester_video_player"><div></div></div>');
-                        let video = $('<video id="gigatester_video_preview_player" controls loop autoplay preload="auto" src="' + src + '"></video>');
+                        let video = $('<video id="gigatester_video_preview_player" '+ (GigaTester_modal.configs.isSafari ? '' : 'loop autoplay ' ) + 'controls preload="auto" src="' + src + '"></video>');
                         let video_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
                         $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
                         $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
@@ -2683,7 +2701,6 @@ let GigaTester_StringUtils = {
                         onSubmit: GigaTester_modal.submitVidCapture,
                         onCancel: this.Draw_Tools.cancelGTcapture.bind(this.Draw_Tools),
                         timer: this.configs.screen_record_time,
-                        event: e,
                     })
                 },
                 loadVideo: async function(src) {
@@ -3326,6 +3343,11 @@ let GigaTester_StringUtils = {
                     GigaTester_modal.config_loaded = false;
                     return false;
                 } else {
+                    // check browser for safari regardless of fetch call
+                    const checkSafari = navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
+                    navigator.userAgent &&
+                    navigator.userAgent.indexOf('CriOS') == -1 &&
+                    navigator.userAgent.indexOf('FxiOS') == -1;
                     console.log('GigaTester: fetching configuration');
                     fetch(`${GigaTester.endpoint}/feedbackConfig?apiKey=${GigaTester.apiKey}&version=${GigaTester.productVersion}`, {
                         method: 'GET',
@@ -3483,9 +3505,10 @@ let GigaTester_StringUtils = {
                             })
                         }
                         GigaTester_modal.config_loaded = true;
-
                         GigaTester_modal.addFeedbackButton();
                         GigaTester_modal.checkSelectDependancyload();
+
+                        GigaTester_modal.configs.isSafari = checkSafari;
 
                         if(GigaTester.hidden) {
                             console.log('GigaTester: starting in hidden mode');
@@ -3499,7 +3522,7 @@ let GigaTester_StringUtils = {
                         GigaTester.ready = true;
                     })
                     .catch(function(err) {
-                        // console.log(err , 'err')
+                        console.log(err , 'err')
                         console.log('GigaTester: Failed to load config from server');
                         GigaTester_modal.config_loaded = false;
                         return false;
