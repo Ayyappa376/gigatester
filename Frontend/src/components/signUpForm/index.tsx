@@ -110,13 +110,17 @@ export default function SignupForm(props: any) {
   };
 
   const closeDialog = () => {
+    setOpenSignin(false);
     setDialogOpen(false);
     props.handleCloseSignup(false);
-    // props.getSignInState(false);
   };
 
-  const getSignInState = (state: boolean) => {
-    setOpenSignin(state);
+  const setSignInState = (state: boolean) => {
+    if(state) {
+      setOpenSignin(state);
+    } else {
+      closeDialog();
+    }
   };
 
   const handleSubmit = () => {
@@ -125,7 +129,6 @@ export default function SignupForm(props: any) {
     if (validateEmail(emailId)) {
       if (checkBox) {
         const postData = userParamState;
-//        postData["roles"] = ["Manager"];
         try {
           Http.post({
             url: `/api/v2/admin/users`,
@@ -137,13 +140,12 @@ export default function SignupForm(props: any) {
           .then((response: any) => {
             setVerifyEmail(true);
             setLoading(false);
-            // setNewUserPosted(true);
           })
           .catch((error) => {
             console.log(error);
             setLoading(false);
             setErrorMessage(
-              "Internal error occurred while registering user."
+              "Failed to register user."
             );
             setSnackbarOpen(true);
           });
@@ -331,7 +333,7 @@ export default function SignupForm(props: any) {
   };
 
   return openSignin ? (
-    <SignInForm openSignin={openSignin} getSignInState={getSignInState} changePassword={false} />
+    <SignInForm openSignin={openSignin} setSignInState={setSignInState} changePassword={false} />
   ) : (
     <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
       {signUpDialog()}

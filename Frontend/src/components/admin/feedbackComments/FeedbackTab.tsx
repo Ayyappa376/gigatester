@@ -29,7 +29,7 @@ import {
 	getPieChartOptions,
 } from './common';
 import { RouteComponentProps } from 'react-router-dom';
-import { getFeedbckChartData, getFeedbackData } from './methods';
+import { getFeedbckChartData, getFeedbackData, filterDate } from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import ImageModal from './ImageModal';
@@ -276,12 +276,14 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (focusRating.length === 0) {
 			setCurrentDisable('');
 			// setData(rawData);
+			setData([]);
+			setRawData([]);
 			fetchRecursiveData({
 				filterRating: focusRating,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 				filterDate: dateRange,
 			});
 			getFeedbckChartData({
@@ -299,13 +301,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		//setRawData([])
+		setRawData([]);
 		fetchRecursiveData({
 			filterRating: focusRating,
 			prodId: selectedProdId,
 			prodVersion: productVersion,
 			showNoEmptyError: true,
-			noRawDataUpdate: true,
+			noRawDataUpdate: false,
 			filterDate: dateRange,
 		});
 		getFeedbckChartData({
@@ -329,6 +331,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (dateRange) {
 			setResultsFetched(false);
 			setData([]);
+			setRawData([]);
 			setCurrentDisable('');
 			fetchRecursiveData({
 				prodId: selectedProdId,
@@ -354,13 +357,14 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 		if (focusSeverity.length <= 0) {
 			setCurrentDisable('');
+			setRawData([])
 			// setData(rawData);
 			fetchRecursiveData({
 				filterSeverity: focusSeverity,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 			});
 			getFeedbckChartData({
 				setDataFetchLoader,
@@ -376,13 +380,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		//setRawData([])
+		setRawData([])
 		fetchRecursiveData({
 			filterSeverity: focusSeverity,
 			prodId: selectedProdId,
 			prodVersion: productVersion,
 			showNoEmptyError: true,
-			noRawDataUpdate: true,
+			noRawDataUpdate: false,
 		});
 		getFeedbckChartData({
 			setDataFetchLoader,
@@ -409,7 +413,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				showNoEmptyError: true,
 				filterDate: dateRange,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 			});
 			getFeedbckChartData({
 				setDataFetchLoader,
@@ -433,7 +437,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			filterDate: dateRange,
-			noRawDataUpdate: true,
+			noRawDataUpdate: false,
 		});
 		getFeedbckChartData({
 			setDataFetchLoader,
@@ -645,7 +649,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			if (Object.keys(feedbackBarChartData).length > 0) {
 				setBackdropOpen(false);
 			}
-			if (pieChartSeries) {
+			if (pieChartSeries && focusRating.length === 0 && focusCategory.length === 0 && keyword.length === 0) {
 				setCategoryList(Object.keys(pieChartSeries));
 			}
 		}
@@ -786,7 +790,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				searchWord: keyword,
 				showNoEmptyError: true,
 				filterDate: dateRange,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 			});
 			getFeedbckChartData({
 				setDataFetchLoader,
@@ -803,7 +807,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		//setRawData([])
+		setRawData([])
 		if (keyword) {
 			fetchRecursiveData({
 				prodId: selectedProdId,
@@ -811,7 +815,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				searchWord: keyword,
 				showNoEmptyError: true,
 				filterDate: dateRange,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 			});
 			getFeedbckChartData({
 				setDataFetchLoader,

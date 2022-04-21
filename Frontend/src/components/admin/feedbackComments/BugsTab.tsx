@@ -138,7 +138,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				},
 			];
 			setBarChartSeries(series);
+			if (feedbackBarChartData && focusSeverity.length === 0 && focusCategory.length === 0 && keyword.length === 0) {
 			setSeverityList(Object.keys(feedbackBarChartData));
+			}
 		}
 	}, [feedbackBarChartData]);
 
@@ -285,12 +287,13 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (focusRating.length === 0) {
 			setCurrentDisable('');
 			// setData(rawData);
+			setRawData([]);
 			fetchRecursiveData({
 				filterRating: focusRating,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 				filterDate: dateRange,
 			});
 			getBugChartData({
@@ -314,7 +317,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			prodId: selectedProdId,
 			prodVersion: productVersion,
 			showNoEmptyError: true,
-			noRawDataUpdate: true,
+			noRawDataUpdate: false,
 			filterDate: dateRange,
 		});
 		getBugChartData({
@@ -336,12 +339,13 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (focusSeverity.length <= 0) {
 			setCurrentDisable('');
 			// setData(rawData);
+			setRawData([]);
 			fetchRecursiveData({
 				filterSeverity: focusSeverity,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 				filterDate: dateRange,
 			});
 			getBugChartData({
@@ -359,13 +363,13 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		//setRawData([])
+		setRawData([])
 		fetchRecursiveData({
 			filterSeverity: focusSeverity,
 			prodId: selectedProdId,
 			prodVersion: productVersion,
 			showNoEmptyError: true,
-			noRawDataUpdate: true,
+			noRawDataUpdate: false,
 			filterDate: dateRange,
 		});
 		getBugChartData({
@@ -415,12 +419,14 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (focusCategory.length <= 0) {
 			setCurrentDisable('');
 			// setData(rawData);
+			setData([]);
+			setRawData([]);
 			fetchRecursiveData({
 				filterCategory: focusCategory,
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 				filterDate: dateRange,
 			});
 			getBugChartData({
@@ -438,13 +444,13 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		//setRawData([])
+		setRawData([])
 		fetchRecursiveData({
 			filterCategory: focusCategory,
 			prodId: selectedProdId,
 			prodVersion: productVersion,
 			showNoEmptyError: true,
-			noRawDataUpdate: true,
+			noRawDataUpdate: false,
 			filterDate: dateRange,
 		});
 		getBugChartData({
@@ -653,7 +659,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			if (Object.keys(feedbackBarChartData).length > 0) {
 				setBackdropOpen(false);
 			}
-			if (pieChartSeries) {
+			if (pieChartSeries && focusSeverity.length === 0 && focusCategory.length === 0 && keyword.length === 0) {
 				let searchCategoryList = Object.keys(pieChartSeries);
 				searchCategoryList = searchCategoryList.map((element) => {
 					// return element.toLowerCase(); // Tried lower case as standard;
@@ -810,7 +816,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				searchWord: keyword,
 				showNoEmptyError: true,
 				filterDate: dateRange,
-				noRawDataUpdate: true,
+				noRawDataUpdate: false,
 			});
 			getBugChartData({
 				setDataFetchLoader,

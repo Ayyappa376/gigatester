@@ -105,16 +105,12 @@ export default function SignInForm(props: any) {
           history.push("/admin"),
           setLoading(true),
           closeDialog()
-//          setDialogOpen(false),
-//          props.setSignInState(false),
         );
       } else {
         return (
           history.push("/profile"),
           setLoading(true),
           closeDialog()
-//          setDialogOpen(false),
-//          props.setSignInState(false),
         );
       }
     }

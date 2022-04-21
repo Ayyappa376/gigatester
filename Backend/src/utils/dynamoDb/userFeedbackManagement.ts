@@ -187,7 +187,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
     params.ScanIndexForward = order && order === 'asc' ? true : false;
     params.IndexName = 'feedbackType-createdOn-index'; // Need to remove hardcoding, and name should be based on the subdomain.
 
-    params.Limit = items ? parseInt(items, 10) : 500;
+    params.Limit = items ? parseInt(items, 10) : 100;
 
     if(lastEvalKey) {
       const exKeyStart: any = JSON.parse(lastEvalKey);
@@ -196,7 +196,28 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
 
     appLogger.info('getUserFeedbackList: ', { params });
     return queryRaw<any>(params);
+
   };
+
+export const getUserFeedbackItemList = async ({type, items, search, filterRating, startDate, endDate, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
+  let feedback: any;
+  let count: number = 0;
+  let itemList: Set<any> = new Set();
+  feedback = await getUserFeedbackList({type,items, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate});
+  let lastEvalKey: string = JSON.stringify(feedback.LastEvaluatedKey);
+  while(lastEvalKey) {
+    itemList = new Set([...itemList].concat(feedback.Items));
+    count += feedback.Count;
+    console.log(feedback.Count, feedback.LastEvaluatedKey, lastEvalKey, 'aasdadfsf');
+    feedback = await getUserFeedbackList({type,items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate});
+    lastEvalKey = feedback.LastEvaluatedKey ? JSON.stringify(feedback.LastEvaluatedKey) : '';
+  }
+  itemList = new Set([...itemList].concat(feedback.Items));
+  count += feedback.Count;
+  feedback.Count = count;
+  feedback.Items = [...itemList];
+  return feedback;
+};
 
 export const getUserFeedbackListForChart = async ({type, startDate, endDate, items, search, lastEvalKey, filterCategory, filterRating, filterSeverity, prodId, prodVersion}: Params): Promise<any> => {
     let params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
