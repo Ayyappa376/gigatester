@@ -312,7 +312,7 @@ const EditExternalSystemSettings = (props: any) => {
           <Paper className={classes.sections}>
             <Grid container spacing={1} style={{borderBottom: 'solid 1px #dddddd', padding: '20px 0'}} >
               <Grid item xs={12}>
-                <Typography variant="h6">General Widget Settings:</Typography>
+                <Typography variant="h6">External System Settings:</Typography>
               </Grid>
 
               <FormControl className={classes.formControl}>

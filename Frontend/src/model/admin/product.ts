@@ -71,7 +71,7 @@ export interface IWidgetLAF {
   fontWeight: number;
   fontStyle: string;
   text: string;
-  icon?: ICustomIcon;
+  icon?: string;
   position: IWidgetPosition;
   rotation?: string;
   custom: ICustomProperties;
@@ -88,9 +88,9 @@ export interface ICustomProperties {
   padding?: string;
 }
 
-export interface ICustomIcon {
-  [key: string]: string,
-}
+// export interface ICustomIcon {
+//   [key: string]: string,
+// }
 
 export interface ICategory {
   feedbacks?: string[];
@@ -113,6 +113,10 @@ export interface IProductParams {
   productConfig: IObjectConfigDetails;
   products?: IProductInfo[];
 }
+
+export const MAIN_BUTTON = 'MainButton';
+export const FEEDBACK_OPT = 'FeedbackOpt';
+export const BUGS_OPT = 'BugsOpt';
 
 export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';

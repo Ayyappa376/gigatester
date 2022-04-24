@@ -1,33 +1,31 @@
 import React, { Fragment } from 'react';
 import { Grid, Typography, TextField, Button, IconButton,
-  FormControl,  InputLabel, Select, MenuItem,
-  makeStyles, FormControlLabel, Checkbox
+  makeStyles, FormControlLabel, Checkbox, Box
 } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { useSelector } from 'react-redux';
-import { IRootState } from '../../../reducers';
-import { ICategory, IProductParams, TRACKING_SYSTEM_SELF } from '../../../model';
+import { BUGS_OPT, ICategory, IProductParams, TRACKING_SYSTEM_SELF } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
-import { Http } from '../../../utils';
+import IconSelect from './IconSelect';
 
 interface BugSettingProps {
-  productParams: IProductParams,
-  addBugCategory: Function,
-  handleChangeBugCategoryName: Function,
-  deleteBugCategory: Function,
-  addBugStdFeedbackText: Function,
-  handleChangeBugStdFeedbackText: Function,
-  deleteBugStdFeedbackText: Function,
-  handleBugTitleChange: Function,
-  handleBugTooltipChange: Function,
-  handleBugDialogMsgChange: Function,
-  handleBugThanksMsgChange: Function,
-  handleReqComments: Function,
-  addBugSeverity: Function,
-  handleChangeBugSeverityName: Function,
-  deleteBugSeverity: Function,
-  handleShowSeverityOption: Function,
+  productParams: IProductParams;
+  addBugCategory: Function;
+  handleChangeBugCategoryName: Function;
+  deleteBugCategory: Function;
+  addBugStdFeedbackText: Function;
+  handleChangeBugStdFeedbackText: Function;
+  deleteBugStdFeedbackText: Function;
+  handleBugTitleChange: Function;
+  handleBugTooltipChange: Function;
+  handleBugDialogMsgChange: Function;
+  handleBugThanksMsgChange: Function;
+  handleReqComments: Function;
+  addBugSeverity: Function;
+  handleChangeBugSeverityName: Function;
+  deleteBugSeverity: Function;
+  handleShowSeverityOption: Function;
+	handleIconChange: Function;
 //  handleTrackingSystemDetails: Function,
 //  handleSetTrackingSystemBugSeverity: Function,
 //  useTrackingSystemSeverity: boolean,
@@ -83,6 +81,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     right: 0,
   },
+	dialogue: {
+		fontSize: '18px',
+		fontWeight: 500,
+		color: 'rgb(10, 34, 90)',
+		textAlign: 'left',
+	},
 }));
 
 const renderCategoryDetails = (
@@ -192,6 +196,7 @@ const BugSettings = ({
   handleBugThanksMsgChange,
   handleReqComments,
   handleShowSeverityOption,
+  handleIconChange
 //  handleTrackingSystemDetails,
 }: BugSettingProps) => {
   const classes = useStyles();
@@ -234,6 +239,18 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings.bugSettings.title ?
               `${(productParams.products[0].feedbackAgentSettings.bugSettings.title.length)}/15 characters` : null}
           />
+        </Grid>
+
+        <Grid item xs={12} sm={12} style={{ marginTop: '5px', border: 'solid 1px #dddddd' }}>
+          <Box
+            sx={{
+              width: '100%',
+              marginTop: '5px',
+              marginBottom: '5px',
+            }}
+          >
+            <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={BUGS_OPT} />
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={12}>

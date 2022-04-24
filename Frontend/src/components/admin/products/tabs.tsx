@@ -64,7 +64,7 @@ export default function EditFeedbackTabs(props: any) {
     <Box sx={{ width: '100%' }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
         <Tabs className={classes.tabs} value={value} onChange={handleChange} aria-label="tabs">
-          <Tab label="General Widget Settings" {...a11yProps(0)} />
+          <Tab label="General Settings" {...a11yProps(0)} />
           <Tab label="Feedback Settings" {...a11yProps(1)} />
           <Tab label="Bugs Settings" {...a11yProps(2)} />
           <Tab label="Widget Appearance" {...a11yProps(3)} />

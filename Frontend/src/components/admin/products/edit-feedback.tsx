@@ -22,12 +22,15 @@ import EditFeedbackTabs from './tabs';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import {
-  IProductParams, ICategory, ICustomIcon,
+  IProductParams, ICategory,
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
   RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT,//, EMAIL_MANDATORY, EMAIL_OPTIONAL
   POS_RIGHT_MIDDLE,
-  ICustomProperties
+  ICustomProperties,
+  FEEDBACK_OPT,
+  BUGS_OPT,
+  MAIN_BUTTON
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -158,6 +161,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             bugSettings: {
               categories: [],
               severities: [],
+              icon: '',
               dialogMsg: 'Tell us more about the issue you faced',
               thanksMsg: 'We will remove your concern soon',
               title: 'Report Bug',
@@ -169,6 +173,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               categories: [],
               ratingIcon: RATING_ICON_TYPE_STAR,
               ratingLimit: 2,
+              icon: '',
               dialogMsg: 'Tell us how much you like our app',
               thanksMsg: 'We appriciate your feedback',
               title: 'Give Feedback',
@@ -190,7 +195,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               fontWeight: 400,
               fontStyle: 'normal',
               text: 'Feedback',
-              icon: {},
+              icon: '',
               position: POS_RIGHT_MIDDLE,
               custom: {
                 top: '',
@@ -968,21 +973,29 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
-        if (temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon !== undefined) {
-          console.log('current icon saved', temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon)
-          const newIcon = temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon;
-          newIcon[type] = iconStr;
-          console.log('newicon', newIcon)
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon = newIcon;
-          setProductParams(temp);
-        } else {
-          const newIcon: ICustomIcon = {};
-          newIcon[type] = iconStr;
-          console.log('newicon', newIcon)
-          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon = newIcon;
-          setProductParams(temp);
+        temp.products[0].feedbackAgentSettings) {
+        switch (type) {
+          case FEEDBACK_OPT: {
+            if (temp.products[0].feedbackAgentSettings.feedbackSettings) {
+              temp.products[0].feedbackAgentSettings.feedbackSettings.icon = iconStr;
+            }
+            break;
+          }
+          case BUGS_OPT: {
+            if (temp.products[0].feedbackAgentSettings.bugSettings) {
+              temp.products[0].feedbackAgentSettings.bugSettings.icon = iconStr;
+            }
+            break;
+          }
+          case MAIN_BUTTON:
+          default: {
+            if (temp.products[0].feedbackAgentSettings.bugSettings) {
+              temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon = iconStr;
+            }
+            break;
+          }
         }
+        setProductParams(temp);
       }
     }
   }

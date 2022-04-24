@@ -780,7 +780,7 @@ let GigaTester_StringUtils = {
                     selected_category: [],
                     rating_limit: 2,
                     title: "Cuvo",
-                    screen_record_time: 120,
+                    main_button_icon: '',
                     main_button_text: "FEEDBACK",
                     main_button_text_color: "#FFFFFF",
                     main_button_background_color: "#042e5b",
@@ -797,10 +797,10 @@ let GigaTester_StringUtils = {
                     main_button_margin: '',
                     main_button_height: 40,
                     main_button_rightCSS: 36,
-                    // pop_up_rotate: '0',//'270',
                     audio_time: 10,
                     feedback_default_category: "",
                     bugs_default_category:"",
+                    screen_record_time: 120,
                     max_file_size: 20,
                     feedback_icon: GigaTester_Icons.feedback_icon,
                     bugs_icon: GigaTester_Icons.bug_icon,
@@ -3381,6 +3381,9 @@ let GigaTester_StringUtils = {
                             if(data[0].feedbackSettings.ratingIcon) {
                                 GigaTester_modal.form_settings_default['FEEDBACK'].rating_type = data[0].feedbackSettings.ratingIcon;
                             }
+                            if(data[0].feedbackSettings.icon && data[0].feedbackSettings.icon.trim().length > 0) {
+                                GigaTester_modal.configs.feedback_icon = data[0].feedbackSettings.icon.trim();
+                            }
                             if(data[0].feedbackSettings.title && data[0].feedbackSettings.title.trim().length > 0) {
                                 GigaTester_modal.configs.feedback_title = data[0].feedbackSettings.title.trim();
                             }
@@ -3471,16 +3474,19 @@ let GigaTester_StringUtils = {
                                     GigaTester_modal.configs.main_button_padding = data[0].widgetLookAndFeel.custom.padding;
                                 }
                             }
-                            if (data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon.hasOwnProperty('Feedback')) {
-                                const lookAndFeel = data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon;
-                                for (let key in lookAndFeel) {
-                                    if (key === 'Feedback') {
-                                        GigaTester_modal.configs.feedback_icon = data[0].widgetLookAndFeel.icon['Feedback'];
-                                    } else if (key === 'Incident/Bug') {
-                                        GigaTester_modal.configs.bugs_icon = data[0].widgetLookAndFeel.icon['Incident/Bug'];
-                                    }
-                                }
+                            if(data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon.trim().length > 0) {
+                                GigaTester_modal.configs.main_button_icon = data[0].widgetLookAndFeel.icon.trim();
                             }
+                            // if (data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon.hasOwnProperty('Feedback')) {
+                            //     const lookAndFeel = data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon;
+                            //     for (let key in lookAndFeel) {
+                            //         if (key === 'Feedback') {
+                            //             GigaTester_modal.configs.feedback_icon = data[0].widgetLookAndFeel.icon['Feedback'];
+                            //         } else if (key === 'Incident/Bug') {
+                            //             GigaTester_modal.configs.bugs_icon = data[0].widgetLookAndFeel.icon['Incident/Bug'];
+                            //         }
+                            //     }
+                            // }
                         }
                         if(data[0].title && data[0].title.trim().length > 0) {
                             GigaTester_modal.configs.title = data[0].title.trim();

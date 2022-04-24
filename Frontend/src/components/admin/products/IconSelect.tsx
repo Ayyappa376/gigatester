@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
     fontWeight: 500,
     color: 'black',
     marginTop: '10px',
-    textAlign: 'center',
+    textAlign: 'left',
   },
   uploadBtn: {
     marginTop: '10px',
@@ -89,7 +89,7 @@ const IconSelect = ({ iconType, product, handleIconChange }: IconProps) => {
 
   return (
     <Fragment>
-      <Typography className={classes.iconTitle}>{iconType.length ? iconType : 'Undefined'} icon </Typography>
+      <Typography className={classes.iconTitle}>Icon:</Typography>
     <Box sx={{
       display: 'flex',
       flexDirection: 'row',

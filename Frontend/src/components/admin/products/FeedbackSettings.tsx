@@ -1,25 +1,28 @@
 import React, { Fragment } from 'react';
-import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, Button, IconButton, makeStyles, FormControlLabel, Checkbox } from "@material-ui/core";
+import { Grid, Typography, TextField, FormControl, MenuItem, Select,
+  InputLabel, Button, IconButton, makeStyles, FormControlLabel,
+  Checkbox, Box } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { ICategory, IProductParams } from '../../../model';
+import { FEEDBACK_OPT, ICategory, IProductParams } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
-import { eventNames } from 'cluster';
+import IconSelect from './IconSelect';
 
 interface CategoryProps {
-  productParams: IProductParams,
-  addFeedbackCategory: Function,
-  handleChangeFeedbackCategoryName: Function,
-  deleteFeedbackCategory: Function,
-  addFeedbackStdFeedbackText: Function,
-  handleChangeFeedbackStdFeedbackText: Function,
-  deleteFeedbackStdFeedbackText: Function,
-  handleFeedbackTitleChange: Function,
-  handleFeedbackTooltipChange: Function,
-  handleFeedbackDialogMsgChange: Function,
-  handleFeedbackThanksMsgChange: Function,
-  handleRatingLimitChange: Function,
-  handleReqComments: Function,
+  productParams: IProductParams;
+  addFeedbackCategory: Function;
+  handleChangeFeedbackCategoryName: Function;
+  deleteFeedbackCategory: Function;
+  addFeedbackStdFeedbackText: Function;
+  handleChangeFeedbackStdFeedbackText: Function;
+  deleteFeedbackStdFeedbackText: Function;
+  handleFeedbackTitleChange: Function;
+  handleFeedbackTooltipChange: Function;
+  handleFeedbackDialogMsgChange: Function;
+  handleFeedbackThanksMsgChange: Function;
+  handleRatingLimitChange: Function;
+  handleReqComments: Function;
+	handleIconChange: Function;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -41,6 +44,12 @@ const useStyles = makeStyles((theme) => ({
     position: 'absolute',
     right: 0,
   },
+	dialogue: {
+		fontSize: '18px',
+		fontWeight: 500,
+		color: 'rgb(10, 34, 90)',
+		textAlign: 'left',
+	},
 }));
 
 const renderCategoryDetails = (
@@ -146,16 +155,9 @@ const FeedbackSettings = ({
   handleFeedbackThanksMsgChange,
   handleRatingLimitChange,
   handleReqComments,
+  handleIconChange
 }: CategoryProps) => {
   const classes = useStyles();
-
-  // const handleRequireComments = (event: any) => {
-  //   if (event.target.value === 'true') {
-  //     handleReqComments(true, 'Feedback');
-  //   } else if (event.target.value === 'false') {
-  //     handleReqComments(false, 'Feedback');
-  //   }
-  // }
 
   return (
     <Fragment>
@@ -189,6 +191,18 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings.feedbackSettings.title ?
               `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.title.length)}/15 characters` : null}
           />
+        </Grid>
+
+        <Grid item xs={12} sm={12} style={{ marginTop: '5px', border: 'solid 1px #dddddd' }}>
+          <Box
+            sx={{
+              width: '100%',
+              marginTop: '5px',
+              marginBottom: '5px',
+            }}
+          >
+            <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={FEEDBACK_OPT} />
+          </Box>
         </Grid>
 
         <Grid item xs={12} sm={12}>
@@ -304,26 +318,6 @@ const FeedbackSettings = ({
             }
             labelPlacement={'start'}
           />
-          {/* <FormControl className={classes.formControl}>
-            <InputLabel id={`mandatoryComments`} required={true}>
-              {"Require comments/text when submitting feedback:"}
-            </InputLabel>
-            <Select
-              name={`select_CommentsMandatory`}
-              value={
-                (productParams && productParams.products && productParams.products[0] &&
-                  productParams.products[0].feedbackAgentSettings &&
-                  productParams.products[0].feedbackAgentSettings.feedbackSettings &&
-                  productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingLimit)
-                  ? productParams.products[0].feedbackAgentSettings.feedbackSettings.reqComments.toString()
-                  : 'false'
-              }
-              onChange={(event) => handleRequireComments(event)}
-            >
-              <MenuItem key={1} value={'false'}>{'Optional'}</MenuItem>
-              <MenuItem key={2} value={'true'}>{'Mandatory'}</MenuItem>
-            </Select>
-          </FormControl> */}
         </Grid>
 
         <Grid item xs={12} sm={12}>

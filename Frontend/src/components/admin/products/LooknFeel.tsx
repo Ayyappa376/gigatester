@@ -22,6 +22,7 @@ import {
 	POS_BOTTOM_RIGHT,
 	POS_BOTTOM_LEFT,
 	POS_CUSTOM,
+	MAIN_BUTTON,
 } from '../../../model';
 import { ChromePicker } from 'react-color';
 import IconSelect from './IconSelect';
@@ -36,8 +37,6 @@ interface SettingsProps {
 	handleMainBtnFontStyle: Function;
 	handleMainBtnPosition: Function;
 	handleMainBtnRotation: Function;
-	//	handleMainBtnTop: Function;
-	//	handleMainBtnLeft: Function;
 	handleMainBtnCustom: Function;
 	handleIconChange: Function;
 }
@@ -827,23 +826,15 @@ const LookAndFeel = ({
 				</Box>
 			</Box>
 
-			<Grid item xs={12} sm={12} style={{ marginTop: '30px' }}>
-				<Box>
-					<Divider  variant="middle"/>
-				</Box>
-			</Grid>
-
-			<Grid item xs={12} sm={12} style={{ marginTop: '5px' }}>
+			<Grid item xs={12} sm={12} style={{ marginTop: '5px', border: 'solid 1px #dddddd'  }}>
 				<Box
 					sx={{
 						width: '100%',
-						marginTop: '10px',
-						marginBottom: '10px',
+						marginTop: '5px',
+						marginBottom: '5px',
 					}}
 				>
-					<Typography className={classes.dialogue}>Popup dialogue icons</Typography>
-					<IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={'Feedback'} />
-					<IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={'Incident/Bug'}/>
+					<IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={MAIN_BUTTON} />
 				</Box>
 			</Grid>
 		</Grid>
