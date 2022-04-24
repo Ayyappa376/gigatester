@@ -22,7 +22,7 @@ import EditFeedbackTabs from './tabs';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import {
-  IProductParams, ICategory,
+  IProductParams, ICategory, ICustomIcon,
   FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
   RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT,//, EMAIL_MANDATORY, EMAIL_OPTIONAL
@@ -190,7 +190,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               fontWeight: 400,
               fontStyle: 'normal',
               text: 'Feedback',
-              icon: '',
+              icon: {},
               position: POS_RIGHT_MIDDLE,
               custom: {
                 top: '',
@@ -960,6 +960,33 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+
+  const handleIconChange = (event: any) => {
+    console.log('handle icon', event)
+    const { type, iconStr } = event;
+
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        if (temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon !== undefined) {
+          console.log('current icon saved', temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon)
+          const newIcon = temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon;
+          newIcon[type] = iconStr;
+          console.log('newicon', newIcon)
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon = newIcon;
+          setProductParams(temp);
+        } else {
+          const newIcon: ICustomIcon = {};
+          newIcon[type] = iconStr;
+          console.log('newicon', newIcon)
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.icon = newIcon;
+          setProductParams(temp);
+        }
+      }
+    }
+  }
+
 //   //Temporarily commented
 //   const handleExtSystemSeverity = (data: any) => {
 //     if (productParams) {
@@ -1170,6 +1197,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleMainBtnPosition: handleMainBtnPosition,
       handleMainBtnRotation: handleMainBtnRotation,
       handleMainBtnCustom: handleMainBtnCustom,
+      handleIconChange: handleIconChange,
     }
 
     return (

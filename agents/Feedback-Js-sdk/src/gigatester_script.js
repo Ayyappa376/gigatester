@@ -3381,9 +3381,6 @@ let GigaTester_StringUtils = {
                             if(data[0].feedbackSettings.ratingIcon) {
                                 GigaTester_modal.form_settings_default['FEEDBACK'].rating_type = data[0].feedbackSettings.ratingIcon;
                             }
-                            if(data[0].feedbackSettings.icon && data[0].feedbackSettings.icon.trim().length > 0) {
-                                GigaTester_modal.configs.feedback_icon = data[0].feedbackSettings.icon.trim();
-                            }
                             if(data[0].feedbackSettings.title && data[0].feedbackSettings.title.trim().length > 0) {
                                 GigaTester_modal.configs.feedback_title = data[0].feedbackSettings.title.trim();
                             }
@@ -3472,6 +3469,16 @@ let GigaTester_StringUtils = {
                                     GigaTester_modal.configs.main_button_borderRadius = data[0].widgetLookAndFeel.custom.borderRadius;
                                     GigaTester_modal.configs.main_button_margin = data[0].widgetLookAndFeel.custom.margin;
                                     GigaTester_modal.configs.main_button_padding = data[0].widgetLookAndFeel.custom.padding;
+                                }
+                            }
+                            if (data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon.hasOwnProperty('Feedback')) {
+                                const lookAndFeel = data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon;
+                                for (let key in lookAndFeel) {
+                                    if (key === 'Feedback') {
+                                        GigaTester_modal.configs.feedback_icon = data[0].widgetLookAndFeel.icon['Feedback'];
+                                    } else if (key === 'Incident/Bug') {
+                                        GigaTester_modal.configs.bugs_icon = data[0].widgetLookAndFeel.icon['Incident/Bug'];
+                                    }
                                 }
                             }
                         }

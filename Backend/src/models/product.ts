@@ -70,7 +70,7 @@ export interface WidgetLAF {
     font: string;
     fontStyle: string;
     fontWeight: number;
-    icon?: string;
+    icon?: CustomIcon;
     position: WidgetPosition;
     rotation?: string;
     text: string;
@@ -85,7 +85,11 @@ export interface CustomProperties {
     right?: string;
     rotation?: string;
     top?: string;
-  }
+}
+
+export interface CustomIcon {
+    [key: string]: string,
+}
 
 export interface Category {
     feedbacks?: string[];

@@ -9,8 +9,8 @@ import {
 	InputLabel,
 	makeStyles,
 	Box,
-	colors,
 	Button,
+	Divider,
 } from '@material-ui/core';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import {
@@ -24,6 +24,7 @@ import {
 	POS_CUSTOM,
 } from '../../../model';
 import { ChromePicker } from 'react-color';
+import IconSelect from './IconSelect';
 
 interface SettingsProps {
 	productParams: IProductParams;
@@ -35,9 +36,10 @@ interface SettingsProps {
 	handleMainBtnFontStyle: Function;
 	handleMainBtnPosition: Function;
 	handleMainBtnRotation: Function;
-//	handleMainBtnTop: Function;
-//	handleMainBtnLeft: Function;
+	//	handleMainBtnTop: Function;
+	//	handleMainBtnLeft: Function;
 	handleMainBtnCustom: Function;
+	handleIconChange: Function;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -102,6 +104,12 @@ const useStyles = makeStyles((theme) => ({
 		alignItems: 'center',
 		marginRight: '15px',
 	},
+	dialogue: {
+		fontSize: '18px',
+		fontWeight: 500,
+		color: 'rgb(10, 34, 90)',
+		textAlign: 'left',
+	},
 }));
 
 const LookAndFeel = ({
@@ -115,6 +123,7 @@ const LookAndFeel = ({
 	handleMainBtnPosition,
 	handleMainBtnRotation,
 	handleMainBtnCustom,
+	handleIconChange,
 }: SettingsProps) => {
 	const classes = useStyles();
 	const [buttonColor, setButtonColor] = useState<string | undefined>('#042e5b');
@@ -259,6 +268,17 @@ const LookAndFeel = ({
 				}}
 			>
 				<Grid item xs={12} sm={12}>
+					<Box
+						sx={{
+							width: '100%',
+							marginTop: '10px',
+							marginBottom: '10px',
+						}}
+					>
+						<Typography className={classes.dialogue}>
+							Feedback agent styles
+						</Typography>
+					</Box>
 					<TextField
 						required={true}
 						type='string'
@@ -484,7 +504,7 @@ const LookAndFeel = ({
 					</Box>
 				</Grid>
 
-				<Grid item xs={12} sm={12} style={{ marginTop: '20px'}}>
+				<Grid item xs={12} sm={12} style={{ marginTop: '20px' }}>
 					<FormControl className={classes.formControl}>
 						<InputLabel style={{ marginTop: 5 }} id={`position`} required={true}>
 							{'Choose Widget position on site:'}
@@ -532,8 +552,8 @@ const LookAndFeel = ({
 							{
 								'If more specific positioning is required, feel free to add properties below. Empty fields will not be applied'
 							}
-				</InputLabel>
-					): null}
+						</InputLabel>
+					) : null}
 					{isCustomPos ? (
 						<Box
 							sx={{
@@ -550,207 +570,206 @@ const LookAndFeel = ({
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Top</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.top
-										: ''
-								}
-								label={'pixels or percentage'}
-								onChange={(event) => handleCustomPosition(event, 'top')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5}}
-								inputProps={{ maxLength: 8 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.top
+											: ''
+									}
+									label={'pixels or percentage'}
+									onChange={(event) => handleCustomPosition(event, 'top')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 8 }}
+								/>
 							</Box>
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Bottom:</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.bottom
-										: ''
-								}
-								label={'pixels or percentage'}
-								onChange={(event) => handleCustomPosition(event, 'bottom')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 8 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.bottom
+											: ''
+									}
+									label={'pixels or percentage'}
+									onChange={(event) => handleCustomPosition(event, 'bottom')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 8 }}
+								/>
 							</Box>
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Right:</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.right
-										: ''
-								}
-								label={'pixels or percentage'}
-								onChange={(event) => handleCustomPosition(event, 'right')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 8 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.right
+											: ''
+									}
+									label={'pixels or percentage'}
+									onChange={(event) => handleCustomPosition(event, 'right')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 8 }}
+								/>
 							</Box>
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Left:</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.left
-										: ''
-								}
-								label={'pixels or percentage'}
-								onChange={(event) => handleCustomPosition(event, 'left')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 8 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.left
+											: ''
+									}
+									label={'pixels or percentage'}
+									onChange={(event) => handleCustomPosition(event, 'left')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 8 }}
+								/>
 							</Box>
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Border Radius:</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.borderRadius
-										: ''
-								}
-								label={'pixels or percentage'}
-								onChange={(event) => handleCustomPosition(event, 'borderRadius')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 25 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.borderRadius
+											: ''
+									}
+									label={'pixels or percentage'}
+									onChange={(event) => handleCustomPosition(event, 'borderRadius')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 25 }}
+								/>
 							</Box>
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Rotation:</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.rotation
-										: ''
-								}
-								label={'0 - 360'}
-								onChange={(event) => handleCustomPosition(event, 'rotation')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 8 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.rotation
+											: ''
+									}
+									label={'0 - 360'}
+									onChange={(event) => handleCustomPosition(event, 'rotation')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 8 }}
+								/>
 							</Box>
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Margin:</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.margin
-										: ''
-								}
-								label={'pixels'}
-								onChange={(event) => handleCustomPosition(event, 'margin')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 25 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.margin
+											: ''
+									}
+									label={'pixels'}
+									onChange={(event) => handleCustomPosition(event, 'margin')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 25 }}
+								/>
 							</Box>
 							<Box className={classes.customBox}>
 								<Typography className={classes.customLabel}>Padding:</Typography>
 								<TextField
-								type='string'
-								id={`customPosition`}
-								name={`customPosition`}
-								value={
-									productParams &&
-									productParams.products &&
-									productParams.products[0] &&
-									productParams.products[0].feedbackAgentSettings &&
-									productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-										? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-												.custom.padding
-										: ''
-								}
-								label={'pixels'}
-								onChange={(event) => handleCustomPosition(event, 'padding')}
-								fullWidth
-								autoComplete='off'
-								className='textFieldStyle'
-								style={{ marginTop: 5 }}
-								inputProps={{ maxLength: 25 }}
-							/>
+									type='string'
+									id={`customPosition`}
+									name={`customPosition`}
+									value={
+										productParams &&
+										productParams.products &&
+										productParams.products[0] &&
+										productParams.products[0].feedbackAgentSettings &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
+													.custom.padding
+											: ''
+									}
+									label={'pixels'}
+									onChange={(event) => handleCustomPosition(event, 'padding')}
+									fullWidth
+									autoComplete='off'
+									className='textFieldStyle'
+									style={{ marginTop: 5 }}
+									inputProps={{ maxLength: 25 }}
+								/>
 							</Box>
 						</Box>
 					) : null}
 				</Grid>
-
 			</Box>
 			<Box
 				sx={{
@@ -807,6 +826,26 @@ const LookAndFeel = ({
 					</Button>
 				</Box>
 			</Box>
+
+			<Grid item xs={12} sm={12} style={{ marginTop: '30px' }}>
+				<Box>
+					<Divider  variant="middle"/>
+				</Box>
+			</Grid>
+
+			<Grid item xs={12} sm={12} style={{ marginTop: '5px' }}>
+				<Box
+					sx={{
+						width: '100%',
+						marginTop: '10px',
+						marginBottom: '10px',
+					}}
+				>
+					<Typography className={classes.dialogue}>Popup dialogue icons</Typography>
+					<IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={'Feedback'} />
+					<IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={'Incident/Bug'}/>
+				</Box>
+			</Grid>
 		</Grid>
 	);
 };

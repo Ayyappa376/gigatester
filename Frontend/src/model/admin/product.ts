@@ -71,7 +71,7 @@ export interface IWidgetLAF {
   fontWeight: number;
   fontStyle: string;
   text: string;
-  icon?: string;
+  icon?: ICustomIcon;
   position: IWidgetPosition;
   rotation?: string;
   custom: ICustomProperties;
@@ -86,6 +86,10 @@ export interface ICustomProperties {
   rotation?: string;
   margin?: string;
   padding?: string;
+}
+
+export interface ICustomIcon {
+  [key: string]: string,
 }
 
 export interface ICategory {
