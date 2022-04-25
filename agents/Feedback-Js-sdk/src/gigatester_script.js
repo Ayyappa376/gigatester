@@ -781,7 +781,7 @@ let GigaTester_StringUtils = {
                     rating_limit: 2,
                     title: "Cuvo",
                     main_button_icon: '',
-                    main_button_text: "FEEDBACK",
+                    main_button_text: "FEEDBACK", 
                     main_button_text_color: "#FFFFFF",
                     main_button_background_color: "#042e5b",
                     main_button_font: "inherit",
@@ -796,7 +796,8 @@ let GigaTester_StringUtils = {
                     main_button_padding: '',
                     main_button_margin: '',
                     main_button_height: 40,
-                    main_button_rightCSS: 36,
+                    main_button_width: 140,
+//                    main_button_rightCSS: 36,
                     audio_time: 10,
                     feedback_default_category: "",
                     bugs_default_category:"",
@@ -886,48 +887,55 @@ let GigaTester_StringUtils = {
                     window.GigaTester.isLoaded();
                     this.checkSessionStorage();
                 },
-                adjustWidgetCSS: function(element) {
-                    const styleCheck = window.getComputedStyle(element);
-                    const styleCheckWidth = parseInt(styleCheck.width, 10);
-                    let adjustedPosition;
-                    let adjustedBottom;
-                    let currentRight = this.configs.main_button_rightCSS || 36;
-                    let newAdjustedPos = '-';
-                    // adjusting position on left or right proximity to screen edge
-                    if (styleCheckWidth > 113) {
-                        let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
-                        newAdjustedPos += newPosition.toString();
-                        adjustedPosition = `${newAdjustedPos}px`;
-                    } else if (styleCheckWidth < 90) {
-                        let newPosition = 35 - 15;
-                        newAdjustedPos += newPosition.toString();
-                        adjustedPosition = `${newAdjustedPos}px`;
-                    } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
-                        adjustedPosition = '-30px';
-                    }
+                // adjustWidgetCSS: function(element) {
+                //     const styleCheck = window.getComputedStyle(element);
+                //     // const styleCheckWidth = parseInt(styleCheck.width, 10);
+                //     const width = parseInt(styleCheck.width, 10);
+                //     const height = parseInt(styleCheck.height, 10);
+                //     const top = parseInt(styleCheck.top, 10);
+                //     const bottom = parseInt(styleCheck.bottom, 10);
+                //     const left = parseInt(styleCheck.left, 10);
+                //     const right = parseInt(styleCheck.right, 10);
+
+                    // let adjustedPosition;
+                    // let adjustedBottom;
+                    // let currentRight = this.configs.main_button_rightCSS || 36;
+                    // let newAdjustedPos = '-';
+                    // // adjusting position on left or right proximity to screen edge
+                    // if (styleCheckWidth > 113) {
+                    //     let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
+                    //     newAdjustedPos += newPosition.toString();
+                    //     adjustedPosition = `${newAdjustedPos}px`;
+                    // } else if (styleCheckWidth < 90) {
+                    //     let newPosition = 35 - 15;
+                    //     newAdjustedPos += newPosition.toString();
+                    //     adjustedPosition = `${newAdjustedPos}px`;
+                    // } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
+                    //     adjustedPosition = '-30px';
+                    // }
 
                     //adjusting proximity from bottom
-                    if (this.configs.main_button_position === "RIGHT_BOTTOM" || this.configs.main_button_position === "LEFT_BOTTOM") {
-                        let bottomPos = '';
-                        if (styleCheckWidth > 113) {
-                            let newPosition = ((styleCheckWidth - 114) / 2) + 42;
-                            bottomPos += newPosition.toString();
-                            adjustedBottom = `${bottomPos}px`;
-                        } else if (styleCheckWidth < 90) {
-                            let newPosition = 35 - 10;
-                            bottomPos += newPosition.toString();
-                            adjustedBottom = `${bottomPos}px`;
-                        } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
-                            adjustedBottom = '31px';
-                        }
-                    }
+                //     if (this.configs.main_button_position === "RIGHT_BOTTOM" || this.configs.main_button_position === "LEFT_BOTTOM") {
+                //         let bottomPos = '';
+                //         if (styleCheckWidth > 113) {
+                //             let newPosition = ((styleCheckWidth - 114) / 2) + 42;
+                //             bottomPos += newPosition.toString();
+                //             adjustedBottom = `${bottomPos}px`;
+                //         } else if (styleCheckWidth < 90) {
+                //             let newPosition = 35 - 10;
+                //             bottomPos += newPosition.toString();
+                //             adjustedBottom = `${bottomPos}px`;
+                //         } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
+                //             adjustedBottom = '31px';
+                //         }
+                //     }
 
-                    if (adjustedPosition && adjustedBottom) {
-                        return { 'adjustedPos': adjustedPosition, 'adjustedBot': adjustedBottom}
-                    } else {
-                        return { 'adjustedPos': adjustedPosition };
-                    }
-                },
+                //     if (adjustedPosition && adjustedBottom) {
+                //         return { 'adjustedPos': adjustedPosition, 'adjustedBot': adjustedBottom}
+                //     } else {
+                //         return { 'adjustedPos': adjustedPosition };
+                //     }
+                // },
                 checkSelectDependancyload: function(){
                     if ( window.jQuery){
                         $('head').append('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.js"></script>');
@@ -945,40 +953,56 @@ let GigaTester_StringUtils = {
                     this.custom_ui.element = $("<gtdiv>").addClass("gigatester-ctrls-container").attr({
                         id: "gigatester_ctrls_container",
                     }).appendTo($(document.body));
-                    // this.configs.position = 'r';
-                    // this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn gigatester-btn-" + this.configs.position);
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn");
                     if (GigaTester.remote && GigaTester.remote === true) {
                         this.custom_ui.button[0].style.display = 'none';
                     } else {
-                        this.custom_ui.button.text(this.configs.main_button_text)
+                        if(this.configs.main_button_icon && this.configs.main_button_icon !== '') {
+                            const iconAndText = `<span class="gigatester-btn-icon">${this.configs.main_button_icon}</span>${this.configs.main_button_text}`;
+                            this.custom_ui.button.html(iconAndText);
+                        } else {
+                            this.custom_ui.button.text(this.configs.main_button_text);
+                        }
                         this.custom_ui.button.appendTo(this.custom_ui.element);
                         this.custom_ui.button[0].style.fontFamily = this.configs.main_button_font;
                         this.custom_ui.button[0].style.fontWeight = this.configs.main_button_fontWeight;
                         this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
                         this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
-                        this.custom_ui.button[0].style.transform = `rotate(${this.configs.main_button_rotation}deg)`;
-                        const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn")[0];
+                        // const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn")[0];
+
+                        const styleCheck = window.getComputedStyle(this.custom_ui.button[0]);
+                        const width = parseInt(styleCheck.width, 10);
+                        const height = parseInt(styleCheck.height, 10);
+                        // const top = parseInt(styleCheck.top, 10);
+                        // const bottom = parseInt(styleCheck.bottom, 10);
+                        // const left = parseInt(styleCheck.left, 10);
+                        // const right = parseInt(styleCheck.right, 10);
+    
                         const btnPosition = this.configs.main_button_position;
                         if (btnPosition === 'RIGHT_MIDDLE') {
-                            const reposition = this.adjustWidgetCSS(button);
-                            this.custom_ui.button[0].style.right = reposition.adjustedPos;
+                            // const reposition = this.adjustWidgetCSS(button);
+                            // this.custom_ui.button[0].style.right = reposition.adjustedPos;
+                            this.custom_ui.button[0].style.right = `-${(width-height)/2}px`;
                             this.custom_ui.button[0].style.top = '50%';
                         } else if (btnPosition === 'RIGHT_BOTTOM') {
-                            const reposition = this.adjustWidgetCSS(button);
-                            console.log('reposition', reposition);
-                            this.custom_ui.button[0].style.right = reposition.adjustedPos;
-                            this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
+                            // const reposition = this.adjustWidgetCSS(button);
+                            // this.custom_ui.button[0].style.right = reposition.adjustedPos;
+                            // this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
+                            this.custom_ui.button[0].style.right = `-${(width-height)/2}px`;
+                            this.custom_ui.button[0].style.bottom = `${(width)/2}px`;
                         } else if (btnPosition === 'LEFT_MIDDLE') {
-                            const reposition = this.adjustWidgetCSS(button);
-                            this.custom_ui.button[0].style.right = '';
+                            // const reposition = this.adjustWidgetCSS(button);
+                            // this.custom_ui.button[0].style.right = '';
                             this.custom_ui.button[0].style.top = '50%';
-                            this.custom_ui.button[0].style.left = reposition.adjustedPos;
+                            // this.custom_ui.button[0].style.left = reposition.adjustedPos;
+                            this.custom_ui.button[0].style.left = `-${(width-height)/2}px`;
                         } else if (btnPosition === 'LEFT_BOTTOM') {
-                            const reposition = this.adjustWidgetCSS(button);
-                            this.custom_ui.button[0].style.right = '';
-                            this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
-                            this.custom_ui.button[0].style.left = reposition.adjustedPos;
+                            // const reposition = this.adjustWidgetCSS(button);
+                            // this.custom_ui.button[0].style.right = '';
+                            // this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
+                            // this.custom_ui.button[0].style.left = reposition.adjustedPos;
+                            this.custom_ui.button[0].style.left = `-${(width-height)/2}px`;;
+                            this.custom_ui.button[0].style.bottom = `${(width)/2}px`;
                         } else if (btnPosition === 'BOTTOM_LEFT') {
                             this.custom_ui.button[0].style.top = '';
                             this.custom_ui.button[0].style.bottom = '0.5%';
@@ -997,6 +1021,7 @@ let GigaTester_StringUtils = {
                             this.custom_ui.button[0].style.padding = this.configs.main_button_padding;
                         }
                     }
+                    this.custom_ui.button[0].style.transform = `rotate(${this.configs.main_button_rotation}deg)`;
 
                     this.custom_ui.button.on("click", this.popOutDialog.bind(this));
                     this.custom_ui.button.on("click mouseup mousedown", function(e) {
@@ -2737,6 +2762,9 @@ let GigaTester_StringUtils = {
                     }
                     const currentPosition = GigaTester_modal.configs.main_button_position;
                     const button = $(document.getElementsByClassName("gigatester-btn"));
+                    const styleCheck = window.getComputedStyle(this.custom_ui.button[0]);
+                    const btnWidth = parseInt(styleCheck.width, 10);
+                    const btnHeight = parseInt(styleCheck.height, 10);
 
                     if (GigaTester_modal.configs.isRemote) {
                         popup_dialog[0].style.transform = 'rotate(0deg)';
@@ -2745,18 +2773,18 @@ let GigaTester_StringUtils = {
                         if (currentPosition === 'RIGHT_MIDDLE') {
                             popup_dialog[0].style.bottom = '-114px';
                         } else if (currentPosition === 'RIGHT_BOTTOM') {
-                            popup_dialog[0].style.left = '-55px';
+                            popup_dialog[0].style.left = `${btnWidth-150}px`;//'-55px'; //'-10px';
                             popup_dialog[0].style.bottom = '-114px';
                         } else if (currentPosition === 'LEFT_MIDDLE') {
                             popup_dialog[0].style.bottom = '-114px';
                         } else if (currentPosition === 'LEFT_BOTTOM') {
-                            popup_dialog[0].style.left = '70px';
+                            popup_dialog[0].style.left = `${btnWidth-50}px`;//'70px'; //'60px';
                             popup_dialog[0].style.bottom = '-114px';
                         } else if (currentPosition === 'BOTTOM_RIGHT' || currentPosition === 'BOTTOM_LEFT') {
                             popup_dialog[0].style.top = '-175px';
                         } else if (currentPosition === 'CUSTOM') {
                             if(GigaTester_modal.configs.main_button_top && GigaTester_modal.configs.main_button_top !== '') {
-                                popup_dialog[0].style.top = `${button.height()}px`;
+                                popup_dialog[0].style.top = `${btnHeight}px`;
                             }
                             if(GigaTester_modal.configs.main_button_bottom && GigaTester_modal.configs.main_button_bottom !== '') {
                                 popup_dialog[0].style.top = '-175px';

@@ -201,7 +201,16 @@ const FeedbackSettings = ({
               marginBottom: '5px',
             }}
           >
-            <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={FEEDBACK_OPT} />
+            {/* <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={FEEDBACK_OPT} /> */}
+            <IconSelect
+              iconStr={productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.icon ?
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.icon : ''}
+              handleIconChange={handleIconChange}
+              iconType={FEEDBACK_OPT}
+            />
           </Box>
         </Grid>
 

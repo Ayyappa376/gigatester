@@ -834,7 +834,16 @@ const LookAndFeel = ({
 						marginBottom: '5px',
 					}}
 				>
-					<IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={MAIN_BUTTON} />
+					{/* <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={MAIN_BUTTON} /> */}
+          <IconSelect
+            iconStr={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+              productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.icon ?
+              productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.icon : ''}
+            handleIconChange={handleIconChange}
+            iconType={MAIN_BUTTON}
+          />
 				</Box>
 			</Grid>
 		</Grid>

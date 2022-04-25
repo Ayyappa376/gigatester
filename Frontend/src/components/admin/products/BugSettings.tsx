@@ -249,7 +249,16 @@ const BugSettings = ({
               marginBottom: '5px',
             }}
           >
-            <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={BUGS_OPT} />
+            {/* <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={BUGS_OPT} /> */}
+            <IconSelect
+              iconStr={productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.icon ?
+                productParams.products[0].feedbackAgentSettings.bugSettings.icon : ''}
+              handleIconChange={handleIconChange}
+              iconType={BUGS_OPT}
+            />
           </Box>
         </Grid>
 

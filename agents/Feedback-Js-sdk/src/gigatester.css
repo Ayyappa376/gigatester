@@ -826,7 +826,12 @@ popupbtn:hover popuptooltip {
   box-sizing: border-box;
   user-select: none;
 }
-#gigatester_ctrls_container .gigatester-btn svg path {
+#gigatester_ctrls_container .gigatester-btn .gigatester-btn-icon svg {
+  width: 20px;
+  height: 20px;
+  margin: 10px 5px;
+}
+#gigatester_ctrls_container .gigatester-btn .gigatester-btn-icon svg path {
   fill: #000;
 }
 #gigatester_ctrls_container .gigatester-btn:hover {
