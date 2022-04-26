@@ -15,7 +15,7 @@ export const sendFeedbackThanksMessage = async (
                 Message: {
                     Body: {
                       Text: {
-                          Data: "Dear customer," + "\n" + thanksMessage + "\n" +  "Sincerely," + "\n" + clientTitle
+                          Data: "Dear Customer," + "\n" + thanksMessage + "." + "\n" +  "Sincerely," + "\n" + clientTitle
                       },
                     },
 
