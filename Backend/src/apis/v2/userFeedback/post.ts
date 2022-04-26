@@ -2,7 +2,7 @@ import { API, Handler } from '@apis/index';
 import {
   appLogger,
   getChartData,
-  // getUserFeedbackItemList,
+//   getUserFeedbackItemList,
   getUserFeedbackList,
   responseBuilder,
 } from '@utils/index';
@@ -11,7 +11,20 @@ import { Response } from 'express';
 export type FilterType = 'category' | 'rating' | 'keyword' | 'severity';
 
 export type FeedbackType = 'FEEDBACK' | 'BUG_REPORT' | 'FEEDBACK-CHART' | 'BUG-REPORT-CHART';
-
+export interface FeedbackPostType {
+    type: FeedbackType;
+    filterCategory?: string;
+    startDate?: string;
+    endDate?: string;
+    filterRating?: string;
+    filterSeverity?: string;
+    items?: string;
+    lastEvalKey?: string;
+    order?: string;
+    prodId?: string;
+    prodVersion?: string;
+    search?: string;
+}
 interface UserFeedbackRequest {
   headers: {
     user: {
@@ -20,19 +33,15 @@ interface UserFeedbackRequest {
       email: string;
     };
   };
-  params: {
+  body: {
     type: FeedbackType;
-  };
-  query: {
     filterCategory?: string;
     startDate?: string;
     endDate?: string;
     filterRating?: string;
     filterSeverity?: string;
     items?: string;
-    lastEvalKeyId?: string;
-    lastEvalKeyfeedbackType?: string;
-    lastEvalKeyCreatedOn?: string;
+    lastEvalKey?: string;
     order?: string;
     prodId?: string;
     prodVersion?: string;
@@ -45,9 +54,8 @@ async function handler(
   response: Response
 ): Promise<any> {
   appLogger.info({ UserFeedbackRequest: request }, 'Inside Handler');
-  const { headers, params, query } = request;
-  const {type} = params;
-  const {items, search, prodId, lastEvalKeyCreatedOn,lastEvalKeyId, lastEvalKeyfeedbackType, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate} = query;
+  const { headers, body } = request;
+  const {items, type, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate} = body;
 
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
@@ -74,7 +82,7 @@ async function handler(
       const chartData = await getChartData({type, prodId, search, filterCategory, filterRating, filterSeverity, prodVersion, startDate, endDate});
       return responseBuilder.ok({Items: chartData }, response);
     }
-    feedback = await getUserFeedbackList({type,items, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate, lastEvalKeyId,lastEvalKeyfeedbackType,lastEvalKeyCreatedOn });
+    feedback = await getUserFeedbackList({type,items, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate});
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');
@@ -84,6 +92,6 @@ async function handler(
 
 export const api: API = {
   handler: <Handler>(<unknown>handler),
-  method: 'get',
+  method: 'post',
   route: '/api/v2/userFeedback/:type?',
 };

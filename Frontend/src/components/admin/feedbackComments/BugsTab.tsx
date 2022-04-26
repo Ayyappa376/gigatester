@@ -29,7 +29,7 @@ import {
 	getPieChartOptions,
 } from './common';
 import { RouteComponentProps } from 'react-router-dom';
-import { getBugChartData, getBugData } from './methods';
+import { getBugChartData, getBugData, getFeedbackLastEvalkeyData } from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import ImageModal from './ImageModal';
@@ -39,6 +39,8 @@ import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderRatingFilter from './RenderFilters';
 import RenderCategoryFilter from './RenderCategoryFilter';
+import { useSelector } from "react-redux";
+import { IRootState } from "../../../reducers";
 
 interface ChosenProps {
 	productInfoProp: any;
@@ -64,6 +66,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		startDate: '',
 		endDate: '',
 	}); //epoch timestamp
+	const stateVariable = useSelector((state: IRootState) => {
+		return state;
+	  });
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [signedImageUrl, setSignedImageUrl] = useState('');
 	const [attachmentType, setAttachmentType] = useState('');
@@ -510,8 +515,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 
 		if (lastEvalKey && Object.keys(lastEvalKey).length > 0) {
 			urlAppend += urlAppend
-				? `&lastEvalKey=${JSON.stringify(lastEvalKey)}`
-				: `?lastEvalKey=${JSON.stringify(lastEvalKey)}`;
+				? `&lastEvalKeyId=${lastEvalKey.id}&lastEvalKeyfeedbackType=${lastEvalKey.feedbackType}&lastEvalKeyCreatedOn=${lastEvalKey.createdOn}`
+				: `?lastEvalKeyId=${lastEvalKey.id}&lastEvalKeyfeedbackType=${lastEvalKey.feedbackType}&lastEvalKeyCreatedOn=${lastEvalKey.createdOn}`;
 		}
 
 		if (fetchOrder) {
@@ -612,15 +617,22 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			!response.Items.LastEvaluatedKey
 		) {
 			setLastEvaluatedKey({});
+			setRetryFetch(false);
+			setResultsFetched(true);
 		}
 		else{
 			setResultsFetched(true);
+			setRetryFetch(false);
 		}
 	}
 	else {
 		if (!showNoEmptyError) {
 			setBackdropOpen(false);
 			setNoDataError(true);
+		}
+		else{
+			setResultsFetched(true);
+
 		}
 	};
 };
@@ -629,18 +641,36 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if(prevLastEvalKey !== lastEvaluatedKey.id){
 			setPrevLastEvalKey(lastEvaluatedKey.id)
 		if (Object.keys(lastEvaluatedKey).length > 0) {
-			setResultsFetched(true);
-			// fetchRecursiveData({
+			setResultsFetched(false);
+			// let postData = {
+			// 	type: 'BUG_REPORT',
+			// 	items: '20',
 			// 	lastEvalKey: lastEvaluatedKey,
 			// 	prodId: selectedProdId,
 			// 	prodVersion: productVersion,
-			// 	showNoEmptyError: true,
-			// 	searchWord: keyword,
-			// 	filterCategory: focusCategory,
-			// 	filterSeverity: focusSeverity,
-			// 	filterDate: dateRange,
-			// });
+			// }
+			// getFeedbackLastEvalkeyData(postData, stateVariable);
+			fetchRecursiveData({
+				lastEvalKey: lastEvaluatedKey,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+				searchWord: keyword,
+				filterCategory: focusCategory,
+				filterSeverity: focusSeverity,
+				filterDate: dateRange,
+			});
 		}
+		else{
+			setResultsFetched(true);
+			if(backdropOpen){
+				setBackdropOpen(false);
+				setNoDataError(true);
+			}
+		}
+	}
+	else{
+		setResultsFetched(true);
 	}
 	};
 
@@ -782,16 +812,24 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	const clearSearch = () => {
 		setKeyword('');
 		setSearchedData([]);
-		setSearchInitiated(false);
 	};
 
 	useEffect(() => {
-		if (rawData.length === 0) {
-			return;
-		}
-		if (keyword.length <= 0) {
+		if (keyword.length <= 0 && searchInitiated) {
 			setCurrentDisable('');
+			setSearchInitiated(false);
+			setRawData([]);
+			setData([]);
+			setResultsFetched(false);
 			// setData(rawData);
+			fetchRecursiveData({
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				searchWord: keyword,
+				showNoEmptyError: true,
+				filterDate: dateRange,
+				noRawDataUpdate: false,
+			});
 			getBugChartData({
 				setDataFetchLoader,
 				setBugBarChartSeries,
@@ -805,9 +843,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			return;
 		}
 		// fetch the results from backend
-		setResultsFetched(false);
-		setData([]);
-		if (keyword && searchInitiated) {
+
+		if (keyword) {
+			setResultsFetched(false);
+			setData([]);
+			setRawData([]);
 			setResultsFetched(false);
 			setSearchedData([]);
 			fetchRecursiveData({
@@ -1035,7 +1075,10 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										]}
 									/>
 								</Grid>
-								<Grid container style={{ marginTop: '3rem' }}>
+								{dataFetchLoader ? (<div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+							<CircularProgress color='inherit' />
+							</div>) :
+								(<Grid container style={{ marginTop: '3rem' }}>
 									<Grid item lg={5}>
 										<Paper
 											elevation={3}
@@ -1070,7 +1113,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 											/>
 										</Paper>
 									</Grid>
-								</Grid>
+								</Grid>)}
 							</div>
 							<RenderTable
 								key='renderTable3'

@@ -11,6 +11,9 @@ interface Params {
   filterSeverity?: string;
   items?: string;
   lastEvalKey?: string;
+  lastEvalKeyCreatedOn?: string;
+  lastEvalKeyfeedbackType?: string;
+  lastEvalKeyId?: string;
   startDate?: string;
   endDate?: string;
   order?: string;
@@ -64,7 +67,7 @@ export interface AppFeedback {
 
 // const NUMBER_OF_DAYS_OF_FEEDBACK = 120;
 
-export const getUserFeedbackList = async ({type, items, search, lastEvalKey, filterRating, startDate, endDate, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
+export const getUserFeedbackList = async ({type, items, search, lastEvalKey, lastEvalKeyId, lastEvalKeyCreatedOn, lastEvalKeyfeedbackType, filterRating, startDate, endDate, filterSeverity, filterCategory, prodId, prodVersion, order}: Params): Promise<any[]> => {
     const params: DynamoDB.QueryInput = <DynamoDB.QueryInput>{
       TableName: getAppFeedbackTableName(),
     };
@@ -189,8 +192,16 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, fil
 
     params.Limit = items ? parseInt(items, 10) : 100;
 
-    if(lastEvalKey) {
-      const exKeyStart: any = JSON.parse(lastEvalKey);
+    if(lastEvalKeyCreatedOn && !lastEvalKey) {
+      const exKeyStart: any = {
+        createdOn: parseInt(lastEvalKeyCreatedOn,10),
+        feedbackType: lastEvalKeyfeedbackType,
+        id: lastEvalKeyId
+      };
+      params.ExclusiveStartKey = exKeyStart;
+    }
+    else if(lastEvalKey){
+      const exKeyStart: any = JSON.stringify(lastEvalKey);
       params.ExclusiveStartKey = exKeyStart;
     }
 
@@ -208,7 +219,6 @@ export const getUserFeedbackItemList = async ({type, items, search, filterRating
   while(lastEvalKey) {
     itemList = new Set([...itemList].concat(feedback.Items));
     count += feedback.Count;
-    console.log(feedback.Count, feedback.LastEvaluatedKey, lastEvalKey, 'aasdadfsf');
     feedback = await getUserFeedbackList({type,items, search, lastEvalKey, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate});
     lastEvalKey = feedback.LastEvaluatedKey ? JSON.stringify(feedback.LastEvaluatedKey) : '';
   }

@@ -52,7 +52,7 @@ export const getBugData = ({ urlAppend }: any) => {
 			url,
 		})
 			.then((response: any) => {
-				console.log(response, 'bug data');
+				// console.log(response, 'bug data');
 				return resolve(response);
 			})
 			.catch((error) => {
@@ -113,6 +113,24 @@ export const getFeedbckChartData = async ({
 			setDataFetchLoader(false);
 		});
 };
+
+export const getFeedbackLastEvalkeyData = (postData: any, stateVariable: IRootState) => {
+	return new Promise((resolve, reject) => {
+	Http.post({
+		url: `/api/v2/userFeedback/`,
+		body: {
+		  ...postData,
+		},
+		state: stateVariable
+	})
+		.then((response: any) => {
+			return resolve(response);
+		})
+		.catch((error) => {
+			return reject(error);
+		});
+	});
+}
 
 export const getBugChartData = async ({
 	setDataFetchLoader,

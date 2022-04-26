@@ -40,6 +40,7 @@ import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderRatingFilter from './RenderFilters';
 import RenderCategoryFilter from './RenderCategoryFilter';
 import SearchField from './SearchField';
+import { last } from 'lodash';
 
 interface ChosenProps {
 	productInfoProp: any;
@@ -358,6 +359,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (focusSeverity.length <= 0) {
 			setCurrentDisable('');
 			setRawData([])
+			setData([]);
 			// setData(rawData);
 			fetchRecursiveData({
 				filterSeverity: focusSeverity,
@@ -407,6 +409,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (focusCategory.length <= 0) {
 			setCurrentDisable('');
 			// setData(rawData);
+			setData([]);
 			fetchRecursiveData({
 				filterCategory: focusCategory,
 				prodId: selectedProdId,
@@ -496,8 +499,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 
 		if (lastEvalKey && Object.keys(lastEvalKey).length > 0) {
 			urlAppend += urlAppend
-				? `&lastEvalKey=${JSON.stringify(lastEvalKey)}`
-				: `?lastEvalKey=${JSON.stringify(lastEvalKey)}`;
+				? `&lastEvalKeyId=${lastEvalKey.id}&lastEvalKeyfeedbackType=${lastEvalKey.feedbackType}&lastEvalKeyCreatedOn=${lastEvalKey.createdOn}`
+				: `?lastEvalKeyId=${lastEvalKey.id}&lastEvalKeyfeedbackType=${lastEvalKey.feedbackType}&lastEvalKeyCreatedOn=${lastEvalKey.createdOn}`;
 		}
 
 		if (fetchOrder) {
@@ -586,7 +589,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			Array.isArray(response.Items.Items) &&
 			response.Items.Items.length === 0
 		) {
-			
 			if (
 				response.Items.LastEvaluatedKey &&
 				Object.keys(response.Items.LastEvaluatedKey).length > 0
@@ -604,12 +606,17 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			}
 			else{
 				setResultsFetched(true);
+				setRetryFetch(false);
 			}
 		}
 		else {
 			if (!showNoEmptyError) {
 				setBackdropOpen(false);
 				setNoDataError(true);
+			}
+			else{
+				setResultsFetched(true);
+
 			}
 		};
 	}	
@@ -619,18 +626,28 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if(prevLastEvalKey !== lastEvaluatedKey.id){
 			setPrevLastEvalKey(lastEvaluatedKey.id)
 		if (Object.keys(lastEvaluatedKey).length > 0) {
-			setResultsFetched(true);
-			// fetchRecursiveData({
-			// 	lastEvalKey: lastEvaluatedKey,
-			// 	prodId: selectedProdId,
-			// 	prodVersion: productVersion,
-			// 	showNoEmptyError: true,
-			// 	searchWord: keyword,
-			// 	filterRating: focusRating,
-			// 	filterCategory: focusCategory,
-			// 	filterDate: dateRange,
-			// });
+			setResultsFetched(false);
+			fetchRecursiveData({
+				lastEvalKey: lastEvaluatedKey,
+				prodId: selectedProdId,
+				prodVersion: productVersion,
+				showNoEmptyError: true,
+				searchWord: keyword,
+				filterRating: focusRating,
+				filterCategory: focusCategory,
+				filterDate: dateRange,
+			});
 		}
+		else{
+			setResultsFetched(true);
+			if(backdropOpen){
+				setBackdropOpen(false);
+				setNoDataError(true);
+			}
+		}
+	}
+	else{
+		setResultsFetched(true);
 	}
 	};
 
@@ -774,16 +791,17 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	const clearSearch = () => {
 		setKeyword('');
 		setSearchedData([]);
-		setSearchInitiated(false);
+
 	};
 
 	useEffect(() => {
-		if (rawData.length === 0) {
-			return;
-		}
-		if (keyword.length <= 0) {
+		if (keyword.length <= 0 && searchInitiated) {
 			setCurrentDisable('');
 			// setData(rawData);
+			setSearchInitiated(false);
+			setData([]);
+			setRawData([])
+			setResultsFetched(false);
 			fetchRecursiveData({
 				prodId: selectedProdId,
 				prodVersion: productVersion,
@@ -805,10 +823,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			return;
 		}
 		// fetch the results from backend
-		setResultsFetched(false);
-		setData([]);
-		setRawData([])
 		if (keyword) {
+			setResultsFetched(false);
+			setData([]);
+			setRawData([])
 			fetchRecursiveData({
 				prodId: selectedProdId,
 				prodVersion: productVersion,

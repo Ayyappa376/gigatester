@@ -77,6 +77,7 @@ import { api as getUsers2V2 } from './v2/user/get';
 import { api as postUsers2V2 } from './v2/user/post';
 import { api as putUsers2V2 } from './v2/user/put';
 import { api as getUserFeedbackV2 } from './v2/userFeedback/get';
+import { api as postUserFeedbackV2 } from './v2/userFeedback/post';
 import { api as deleteUsersV2 } from './v2/userManagement/delete';
 import { api as getUserstV2 } from './v2/userManagement/get';
 import { api as createUsersV2 } from './v2/userManagement/post';
@@ -161,7 +162,8 @@ const apis: API[] = [
   postUsers2V2,
   putUsers2V2,
   getSignedUrlV2,
-  getUserFeedbackV2
+  getUserFeedbackV2,
+  postUserFeedbackV2
 ];
 
 // const metricsApis: API[] = [
