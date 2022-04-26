@@ -14,16 +14,15 @@ export const sendFeedbackThanksMessage = async (
                 },
                 Message: {
                     Body: {
-                    Text: {
-                      Data: `Dear customer, ${thanksMessage}   Sincerely, ${clientTitle}`
-                    },
+                      Text: {
+                          Data: "Dear customer," + "\n" + thanksMessage + "\n" +  "Sincerely," + "\n" + clientTitle
+                      },
                     },
 
                     Subject: { Data: 'Thank you for your feedback!' },
                 },
                 Source: 'no-reply@dev.gigatester.io',
             };
-            // appLogger.info({ thankYouEmailParams: mailParams });
             ses.sendEmail(mailParams, (err, data) => {
                 if (err) {
                     // appLogger.error({ emailError: err });
