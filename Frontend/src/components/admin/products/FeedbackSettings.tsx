@@ -193,15 +193,13 @@ const FeedbackSettings = ({
           />
         </Grid>
 
-        <Grid item xs={12} sm={12} style={{ marginTop: '5px', border: 'solid 1px #dddddd' }}>
+        <Grid item xs={12} sm={12} style={{ marginTop: '5px',  marginBottom: '10px', border: 'solid 1px #F1F1F1' }}>
           <Box
             sx={{
               width: '100%',
               marginTop: '5px',
-              marginBottom: '5px',
             }}
           >
-            {/* <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={FEEDBACK_OPT} /> */}
             <IconSelect
               iconStr={productParams && productParams.products && productParams.products[0] &&
                 productParams.products[0].feedbackAgentSettings &&
@@ -322,7 +320,7 @@ const FeedbackSettings = ({
             }
             label={
               <Typography color="textSecondary">
-                {"Is general comment field mandatory?"}
+                {"Require general comment field?"}
               </Typography>
             }
             labelPlacement={'start'}

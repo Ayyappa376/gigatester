@@ -967,9 +967,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
 
 
   const handleIconChange = (event: any) => {
-    console.log('handle icon', event)
     const { type, iconStr } = event;
-
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&

@@ -6,6 +6,7 @@ import {
 	makeStyles,
 	Box,
   Button,
+  Tooltip,
 } from '@material-ui/core';
 import IconProgressBar from './IconProgressBar';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
@@ -46,10 +47,6 @@ const IconSelect = ({ iconType, iconStr, /*product, */handleIconChange }: IconPr
   const classes = useStyles();
 
   useEffect(() => {
-    // if (product[0].feedbackAgentSettings &&
-    //   product[0].feedbackAgentSettings.widgetLookAndFeel && product[0].feedbackAgentSettings.widgetLookAndFeel.icon) {
-    //   if (product[0].feedbackAgentSettings.widgetLookAndFeel.icon[iconType]) {
-    //     const returnedIcon = product[0].feedbackAgentSettings.widgetLookAndFeel.icon[iconType].replace(/\<\?xml.+\?\>|\<\!DOCTYPE.+]\>/g, '');
     if(iconStr){
         const returnedIcon = iconStr.replace(/\<\?xml.+\?\>|\<\!DOCTYPE.+]\>/g, '');
         convertSVG(returnedIcon);
@@ -86,6 +83,10 @@ const IconSelect = ({ iconType, iconStr, /*product, */handleIconChange }: IconPr
         handleIconChange({type: iconType, iconStr: resultString});
       }
     };
+    reader.onerror = function (event) {
+      console.log('error uploading svg file', event);
+      reader.abort();
+    }
     reader.readAsText(file);
   }
 
@@ -110,7 +111,9 @@ const IconSelect = ({ iconType, iconStr, /*product, */handleIconChange }: IconPr
           <Box sx={{ marginTop: '10px'}}>
             <input type="file" id={`svg-${iconType}-upload`} accept='image/svg+xml' onChange={e => handleChange(e)} style={{ display: 'none'}}></input>
             <label htmlFor={`svg-${iconType}-upload`}>
-              <Button className={classes.uploadBtn} variant="contained" component="span">Upload</Button>
+              <Tooltip title="svg+xml files only" arrow>
+                <Button className={classes.uploadBtn} variant="contained" component="span">Upload</Button>
+              </Tooltip>
             </label>
           </Box>
 
@@ -121,10 +124,6 @@ const IconSelect = ({ iconType, iconStr, /*product, */handleIconChange }: IconPr
             flexDirection: 'row',
             justifyContent: 'flex-start',
             alignItems: 'center',
-            // paddingLeft: '10px',
-            // paddingTop: '5px',
-            // maxHeight: '200px',
-            // overflow: 'scroll',
           }}>
             <Typography style={{ margin: '20px 10px 5px 10px' }}>or</Typography>
             {/* <IconProgressBar /> */}

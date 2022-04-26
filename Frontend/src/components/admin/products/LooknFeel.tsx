@@ -826,7 +826,7 @@ const LookAndFeel = ({
 				</Box>
 			</Box>
 
-			<Grid item xs={12} sm={12} style={{ marginTop: '5px', border: 'solid 1px #dddddd'  }}>
+			<Grid item xs={12} sm={12} style={{ marginTop: '20px', border: 'solid 1px #F1F1F1',  }}>
 				<Box
 					sx={{
 						width: '100%',
@@ -834,7 +834,6 @@ const LookAndFeel = ({
 						marginBottom: '5px',
 					}}
 				>
-					{/* <IconSelect product={productParams.products} handleIconChange={handleIconChange} iconType={MAIN_BUTTON} /> */}
           <IconSelect
             iconStr={productParams && productParams.products && productParams.products[0] &&
               productParams.products[0].feedbackAgentSettings &&

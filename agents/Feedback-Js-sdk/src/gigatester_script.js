@@ -41,7 +41,7 @@ const GigaTester_StringRes = {
         your_email: "Your email",
         select_category: "Select a category *",
         select_severity: "Choose severity *",
-        your_comment: "Provide your comments *",
+        your_comment: "Provide your comments",
         screenshot_attached: "Screenshot attached",
         send: "Send feedback",
         close: "Close",
@@ -771,6 +771,7 @@ let GigaTester_StringUtils = {
                     isRemote: false,
                     has_video: true,
                     isSafari: false,
+                    cuvoTypes: [],
                     categories:  ['Video', 'Screen', 'Audio', 'Images', 'Other'],
                     severities: [], //['Critical', 'High', 'Medium', 'Low'],
                     locale: 'en',
@@ -781,7 +782,7 @@ let GigaTester_StringUtils = {
                     rating_limit: 2,
                     title: "Cuvo",
                     main_button_icon: '',
-                    main_button_text: "FEEDBACK", 
+                    main_button_text: "FEEDBACK",
                     main_button_text_color: "#FFFFFF",
                     main_button_background_color: "#042e5b",
                     main_button_font: "inherit",
@@ -797,7 +798,6 @@ let GigaTester_StringUtils = {
                     main_button_margin: '',
                     main_button_height: 40,
                     main_button_width: 140,
-//                    main_button_rightCSS: 36,
                     audio_time: 10,
                     feedback_default_category: "",
                     bugs_default_category:"",
@@ -887,61 +887,11 @@ let GigaTester_StringUtils = {
                     window.GigaTester.isLoaded();
                     this.checkSessionStorage();
                 },
-                // adjustWidgetCSS: function(element) {
-                //     const styleCheck = window.getComputedStyle(element);
-                //     // const styleCheckWidth = parseInt(styleCheck.width, 10);
-                //     const width = parseInt(styleCheck.width, 10);
-                //     const height = parseInt(styleCheck.height, 10);
-                //     const top = parseInt(styleCheck.top, 10);
-                //     const bottom = parseInt(styleCheck.bottom, 10);
-                //     const left = parseInt(styleCheck.left, 10);
-                //     const right = parseInt(styleCheck.right, 10);
-
-                    // let adjustedPosition;
-                    // let adjustedBottom;
-                    // let currentRight = this.configs.main_button_rightCSS || 36;
-                    // let newAdjustedPos = '-';
-                    // // adjusting position on left or right proximity to screen edge
-                    // if (styleCheckWidth > 113) {
-                    //     let newPosition = ((styleCheckWidth - 114) / 2) + currentRight;
-                    //     newAdjustedPos += newPosition.toString();
-                    //     adjustedPosition = `${newAdjustedPos}px`;
-                    // } else if (styleCheckWidth < 90) {
-                    //     let newPosition = 35 - 15;
-                    //     newAdjustedPos += newPosition.toString();
-                    //     adjustedPosition = `${newAdjustedPos}px`;
-                    // } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
-                    //     adjustedPosition = '-30px';
-                    // }
-
-                    //adjusting proximity from bottom
-                //     if (this.configs.main_button_position === "RIGHT_BOTTOM" || this.configs.main_button_position === "LEFT_BOTTOM") {
-                //         let bottomPos = '';
-                //         if (styleCheckWidth > 113) {
-                //             let newPosition = ((styleCheckWidth - 114) / 2) + 42;
-                //             bottomPos += newPosition.toString();
-                //             adjustedBottom = `${bottomPos}px`;
-                //         } else if (styleCheckWidth < 90) {
-                //             let newPosition = 35 - 10;
-                //             bottomPos += newPosition.toString();
-                //             adjustedBottom = `${bottomPos}px`;
-                //         } else if (styleCheckWidth < 113 && styleCheckWidth > 90) {
-                //             adjustedBottom = '31px';
-                //         }
-                //     }
-
-                //     if (adjustedPosition && adjustedBottom) {
-                //         return { 'adjustedPos': adjustedPosition, 'adjustedBot': adjustedBottom}
-                //     } else {
-                //         return { 'adjustedPos': adjustedPosition };
-                //     }
-                // },
                 checkSelectDependancyload: function(){
                     if ( window.jQuery){
                         $('head').append('<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.js"></script>');
                     }
                  },
-
                 addFeedbackButton: function() {
                     if (this.custom_ui.button) {
                         return
@@ -969,7 +919,6 @@ let GigaTester_StringUtils = {
                         this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
                         this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
                         // const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn")[0];
-
                         const styleCheck = window.getComputedStyle(this.custom_ui.button[0]);
                         const width = parseInt(styleCheck.width, 10);
                         const height = parseInt(styleCheck.height, 10);
@@ -977,30 +926,20 @@ let GigaTester_StringUtils = {
                         // const bottom = parseInt(styleCheck.bottom, 10);
                         // const left = parseInt(styleCheck.left, 10);
                         // const right = parseInt(styleCheck.right, 10);
-    
+
                         const btnPosition = this.configs.main_button_position;
                         if (btnPosition === 'RIGHT_MIDDLE') {
-                            // const reposition = this.adjustWidgetCSS(button);
-                            // this.custom_ui.button[0].style.right = reposition.adjustedPos;
                             this.custom_ui.button[0].style.right = `-${(width-height)/2}px`;
                             this.custom_ui.button[0].style.top = '50%';
                         } else if (btnPosition === 'RIGHT_BOTTOM') {
-                            // const reposition = this.adjustWidgetCSS(button);
-                            // this.custom_ui.button[0].style.right = reposition.adjustedPos;
-                            // this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
                             this.custom_ui.button[0].style.right = `-${(width-height)/2}px`;
                             this.custom_ui.button[0].style.bottom = `${(width)/2}px`;
                         } else if (btnPosition === 'LEFT_MIDDLE') {
-                            // const reposition = this.adjustWidgetCSS(button);
                             // this.custom_ui.button[0].style.right = '';
                             this.custom_ui.button[0].style.top = '50%';
                             // this.custom_ui.button[0].style.left = reposition.adjustedPos;
                             this.custom_ui.button[0].style.left = `-${(width-height)/2}px`;
                         } else if (btnPosition === 'LEFT_BOTTOM') {
-                            // const reposition = this.adjustWidgetCSS(button);
-                            // this.custom_ui.button[0].style.right = '';
-                            // this.custom_ui.button[0].style.bottom = reposition.adjustedBot;
-                            // this.custom_ui.button[0].style.left = reposition.adjustedPos;
                             this.custom_ui.button[0].style.left = `-${(width-height)/2}px`;;
                             this.custom_ui.button[0].style.bottom = `${(width)/2}px`;
                         } else if (btnPosition === 'BOTTOM_LEFT') {
@@ -2249,7 +2188,7 @@ let GigaTester_StringUtils = {
                      + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
                      + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>"
                      + severity_options + "</select>" : "")
-                     + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
+                     + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + (form_settings.comment_field_mandatory ? " *" : "") + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
                      + '<gtdiv class="gigatester-ctrl-item-preview-placeholder">' + GigaTester_StringRes.get("attachment_msg") + '</gtdiv>'
                      + (display_screenshot || display_audio || display_video || display_attachment ?
@@ -2772,6 +2711,7 @@ let GigaTester_StringUtils = {
                     } else {
                         if (currentPosition === 'RIGHT_MIDDLE') {
                             popup_dialog[0].style.bottom = '-114px';
+                            // popup_dialog[0].style.bottom = `-${(btnWidth - btnHeight) - 20}px`
                         } else if (currentPosition === 'RIGHT_BOTTOM') {
                             popup_dialog[0].style.left = `${btnWidth-150}px`;//'-55px'; //'-10px';
                             popup_dialog[0].style.bottom = '-114px';
@@ -2789,12 +2729,6 @@ let GigaTester_StringUtils = {
                             if(GigaTester_modal.configs.main_button_bottom && GigaTester_modal.configs.main_button_bottom !== '') {
                                 popup_dialog[0].style.top = '-175px';
                             }
-                            // if(GigaTester_modal.configs.main_button_left && GigaTester_modal.configs.main_button_left !== '') {
-                            //     popup_dialog[0].style.left = `${button.position().left}px`;
-                            // }
-                            // if(GigaTester_modal.configs.main_button_right && GigaTester_modal.configs.main_button_right !== '') {
-                            //     popup_dialog[0].style.right = `${button.position().right}px`;
-                            // }
                             if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
                             && GigaTester_modal.configs.main_button_rotation !== '0') {
                                 popup_dialog[0].style.bottom = '-114px';
@@ -2805,66 +2739,74 @@ let GigaTester_StringUtils = {
 
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let pop_up_title = $('<popupbtn class="remote-title"><gtdiv>' + GigaTester_modal.configs.title + '</gtdiv</popupbtn>')
-                    let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.bugs_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
-                    let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
-                    if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM' || currentPosition === 'BOTTOM_LEFT') {
-                        popup_bug_icon_tooltip[0].style.right = '-136px';
-                        popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
-                        if (GigaTester_modal.configs.isSafari) {
-                            popup_bug_icon_tooltip[0].style.marginTop = '-80px';
-                            popup_bug_icon_tooltip[0].style.right = '-180px';
+
+                    GigaTester_modal.configs.cuvoTypes.forEach(function(type) {
+                        if (type === 'BUGS') {
+                            let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.bugs_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
+                            let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
+                            if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM' || currentPosition === 'BOTTOM_LEFT') {
+                                popup_bug_icon_tooltip[0].style.right = '-136px';
+                                popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                                if (GigaTester_modal.configs.isSafari) {
+                                    popup_bug_icon_tooltip[0].style.marginTop = '-80px';
+                                    popup_bug_icon_tooltip[0].style.right = '-180px';
+                                }
+                            } else if (currentPosition === 'CUSTOM') {
+                                popup_bug_icon[0].style.textAlign = 'center';
+                                popup_bug_icon_tooltip[0].style.left = '-106px';
+                            } else {
+                                popup_bug_icon_tooltip[0].style.left = '-136px';
+                                popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                                if (GigaTester_modal.configs.isSafari) {
+                                    popup_bug_icon_tooltip[0].style.marginTop = '-80px';
+                                }
+                            }
+                            popup_bug_icon.appendTo(popup_dialog);
+                            popup_bug_icon_tooltip.appendTo(popup_bug_icon);
+                            popup_bug_icon.on("click", function (e) {
+                                GigaTester_modal.form_type = "BUGS";
+                                window.GigaTester.open("BUGS");
+                                popup_dialog.remove();
+                                e.stopPropagation();
+                                e.preventDefault();
+                            })
+                        } else if (type === 'FEEDBACK') {
+                            let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.feedback_icon + GigaTester_modal.configs.feedback_title + '</gtdiv></popupbtn>');
+                            let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feedback_tooltip_msg);
+                            if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM'|| currentPosition === 'BOTTOM_LEFT') {
+                                popup_feedback_icon_tooltip[0].style.right = '-136px';
+                                popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                                if (GigaTester_modal.configs.isSafari) {
+                                    popup_feedback_icon_tooltip[0].style.marginTop = '-80px';
+                                    popup_feedback_icon_tooltip[0].style.right = '-180px';
+                                }
+                            } else if (currentPosition === 'CUSTOM') {
+                                popup_feedback_icon[0].style.textAlign = 'center';
+                                popup_feedback_icon_tooltip[0].style.left = '-106px';
+                            } else {
+                                popup_feedback_icon_tooltip[0].style.left = '-136px';
+                                popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
+                                if (GigaTester_modal.configs.isSafari) {
+                                    popup_feedback_icon_tooltip[0].style.marginTop = '-80px';
+                                }
+                            }
+                            popup_feedback_icon.appendTo(popup_dialog);
+                            popup_feedback_icon_tooltip.appendTo(popup_feedback_icon);
+                            popup_feedback_icon.on("click", function(e){
+                                GigaTester_modal.form_type = "FEEDBACK";
+                                window.GigaTester.open("FEEDBACK");
+                                popup_dialog.remove();
+                                e.stopPropagation();
+                                e.preventDefault();
+                            })
                         }
-                    } else if (currentPosition === 'CUSTOM') {
-                        popup_bug_icon[0].style.textAlign = 'center';
-                        popup_bug_icon_tooltip[0].style.left = '-106px';
-                    } else {
-                        popup_bug_icon_tooltip[0].style.left = '-136px';
-                        popup_bug_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
-                        if (GigaTester_modal.configs.isSafari) {
-                            popup_bug_icon_tooltip[0].style.marginTop = '-80px';
-                        }
-                    }
-                    let popup_feedback_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.feedback_icon + GigaTester_modal.configs.feedback_title + '</gtdiv></popupbtn>');
-                    let popup_feedback_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feedback_tooltip_msg);
-                    if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM'|| currentPosition === 'BOTTOM_LEFT') {
-                        popup_feedback_icon_tooltip[0].style.right = '-136px';
-                        popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
-                        if (GigaTester_modal.configs.isSafari) {
-                            popup_feedback_icon_tooltip[0].style.marginTop = '-80px';
-                            popup_feedback_icon_tooltip[0].style.right = '-180px';
-                        }
-                    } else if (currentPosition === 'CUSTOM') {
-                        popup_feedback_icon[0].style.textAlign = 'center';
-                        popup_feedback_icon_tooltip[0].style.left = '-106px';
-                    } else {
-                        popup_feedback_icon_tooltip[0].style.left = '-136px';
-                        popup_feedback_icon_tooltip[0].style.fontFamily = 'Open Sans,sans-serif';
-                        if (GigaTester_modal.configs.isSafari) {
-                            popup_feedback_icon_tooltip[0].style.marginTop = '-80px';
-                        }
-                    }
+                    })
+
                     if (GigaTester_modal.configs.isRemote) {
                         pop_up_title.appendTo(popup_dialog)
                     }
-                    popup_bug_icon.appendTo(popup_dialog);
-                    popup_bug_icon_tooltip.appendTo(popup_bug_icon);
-                    popup_feedback_icon.appendTo(popup_dialog);
-                    popup_feedback_icon_tooltip.appendTo(popup_feedback_icon);
+
                     popup_dialog_close.appendTo(popup_dialog);
-                    popup_bug_icon.on("click", function (e) {
-                        GigaTester_modal.form_type = "BUGS";
-                        window.GigaTester.open("BUGS");
-                        popup_dialog.remove();
-                        e.stopPropagation();
-                        e.preventDefault();
-                    })
-                    popup_feedback_icon.on("click", function(e){
-                        GigaTester_modal.form_type = "FEEDBACK";
-                        window.GigaTester.open("FEEDBACK");
-                        popup_dialog.remove();
-                        e.stopPropagation();
-                        e.preventDefault();
-                    })
                     popup_dialog_close.on("click", function(e) {
                         popup_dialog.remove();
                         e.stopPropagation();
@@ -2887,7 +2829,7 @@ let GigaTester_StringUtils = {
                     }
                     this.custom_ui.events.show();
                     this.focusControls();
-                    this.custom_ui.element.css("display", "");
+                    // this.custom_ui.element.css("display", "");
                     this.custom_ui.element.attr("isopen", "true")
                 },
                 openControls: function () {
@@ -3398,10 +3340,14 @@ let GigaTester_StringUtils = {
                     })
                     .then(res => res.json())
                     .then(data => {
-                        //console.log('GigaTester: api data ', data);
+                        console.log('GigaTester: api data ', data);
                         GigaTester_modal.configs.categories = [];
                         GigaTester_modal.configs.severities = [];
                         GigaTester_modal.configs.workflow_type = "";
+
+                        if (data[0].feedbackTypes.length > 0) {
+                            GigaTester_modal.configs.cuvoTypes = data[0].feedbackTypes;
+                        }
                         if(data[0].feedbackSettings) {
                             if(data[0].feedbackSettings.ratingLimit) {
                                 GigaTester_modal.configs.rating_limit = data[0].feedbackSettings.ratingLimit;
@@ -3444,7 +3390,7 @@ let GigaTester_StringUtils = {
                             if (data[0].bugSettings.thanksMsg && data[0].bugSettings.thanksMsg.trim().length > 0) {
                                 GigaTester_modal.form_settings_default['BUGS'].completed_dialog_paragraph = data[0].bugSettings.thanksMsg.trim();
                             }
-                            if(data[0].bugSettings.reqComments != undefined && data[0].bugSettings.reqComments === false) {
+                            if (data[0].bugSettings.reqComments != undefined && data[0].bugSettings.reqComments === false) {
                                 GigaTester_modal.form_settings_default['BUGS'].comment_field_mandatory = false;
                             }
                             if(data[0].bugSettings.showSeverity != undefined && data[0].bugSettings.showSeverity === false) {
@@ -3505,16 +3451,6 @@ let GigaTester_StringUtils = {
                             if(data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon.trim().length > 0) {
                                 GigaTester_modal.configs.main_button_icon = data[0].widgetLookAndFeel.icon.trim();
                             }
-                            // if (data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon.hasOwnProperty('Feedback')) {
-                            //     const lookAndFeel = data[0].widgetLookAndFeel.icon && data[0].widgetLookAndFeel.icon;
-                            //     for (let key in lookAndFeel) {
-                            //         if (key === 'Feedback') {
-                            //             GigaTester_modal.configs.feedback_icon = data[0].widgetLookAndFeel.icon['Feedback'];
-                            //         } else if (key === 'Incident/Bug') {
-                            //             GigaTester_modal.configs.bugs_icon = data[0].widgetLookAndFeel.icon['Incident/Bug'];
-                            //         }
-                            //     }
-                            // }
                         }
                         if(data[0].title && data[0].title.trim().length > 0) {
                             GigaTester_modal.configs.title = data[0].title.trim();

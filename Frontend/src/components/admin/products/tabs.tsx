@@ -1,7 +1,7 @@
 import * as React from 'react';
 import PropTypes from 'prop-types';
 import {Tabs, Tab, Box, makeStyles } from '@material-ui/core';
-import StandardSettings from './StandardSettings';
+import StandardSettings from './GeneralSettings';
 import FeedbackSettings from './FeedbackSettings';
 import BugSettings from './BugSettings';
 import LookAndFeel from './LooknFeel';

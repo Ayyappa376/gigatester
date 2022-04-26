@@ -3,6 +3,7 @@ const dynamo = new aws.DynamoDB.DocumentClient();
 const cors = require('cors');
 const axios = require('axios');
 import uuidv1 from 'uuid/v1';
+import { sendFeedbackThanksMessage } from '../../../../utils/cognito/sendEmail';
 
 cors({
   origin: true,
