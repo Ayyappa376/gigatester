@@ -53,6 +53,7 @@
     "moment": "^2.23.0",
     "nodemailer": "^4.7.0",
     "otp-generator": "^1.1.0",
+    "request": "^2.88.2",
     "serverless": "^2.69.1",
     "serverless-http": "^1.8.0",
     "simple-excel-to-json": "^2.2.1",
