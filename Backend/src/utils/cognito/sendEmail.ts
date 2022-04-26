@@ -33,33 +33,3 @@ export const sendResetPasswordMessage = async (
         });
     });
 
-export const sendFeedbackThanksMessage = async (
-        email: string,
-        clientTitle: string,
-        thanksMessage: string,
-    ): Promise<any> =>
-        new Promise<any>((resolve, reject) => {
-            // const site: string = (process.env.DB_ENV === 'development') ? 'dev.gigatester.io' : 'beta.gigatester.io';
-            const mailParams = {
-                Destination: {
-                    ToAddresses: [email],
-                },
-                Message: {
-                    Body: {
-                        Text: { Data: `${thanksMessage} Sincerely,  ${clientTitle}` },
-                    },
-
-                    Subject: { Data: 'Thank you for your feedback!' },
-                },
-                Source: `no-reply@${clientTitle}`,
-            };
-            // appLogger.info({ adminResetPasswordMailParams: mailParams });
-            ses.sendEmail(mailParams, (err, data) => {
-                if (err) {
-                    // appLogger.error({ adminResetPasswordError: err });
-                    reject(err);
-                }
-                appLogger.info({ emailSent: data });
-                resolve(data);
-            });
-});

@@ -3,7 +3,7 @@ const dynamo = new aws.DynamoDB.DocumentClient();
 const cors = require('cors');
 const axios = require('axios');
 import uuidv1 from 'uuid/v1';
-import { sendFeedbackThanksMessage } from '../../../../utils/cognito/sendEmail';
+import { sendFeedbackThanksMessage } from './emailReply';
 
 cors({
   origin: true,
@@ -75,6 +75,9 @@ try {
           console.log('JIRA upload', postJIRA);
         }
         console.log(trackingSystemDetails);
+
+        const thankYouEmail: any = await sendFeedbackThanksMessage(jsonBody.userName, jsonBody.title, jsonBody.thanksMsg);
+        console.log('thank you ', thankYouEmail);
         body = await dynamo.put(tableparams).promise();
         break;
       // case 'PUT':

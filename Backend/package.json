@@ -10,7 +10,7 @@
     "prebuild": "npm run clean && npm run analyse",
     "build": "serverless package",
     "predeploy": "npm run clean && npm run analyse",
-    "deploy": "serverless deploy",
+    "deploy:dev": "serverless deploy",
     "deploy:prod": "npm run deploy -- --stage production",
     "deploy:beta": "npm run deploy -- --stage beta",
     "deploy:init": "serverless create_domain",
