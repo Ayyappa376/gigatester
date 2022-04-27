@@ -965,6 +965,61 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleEnableEmail = (event: boolean, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.feedbackTypes) {
+        if (event && !temp.products[0].emailConfig.feedbackTypes.includes(type)) {
+          temp.products[0].emailConfig.feedbackTypes.push(type)
+        } else if (!event) {
+          if (temp.products[0].emailConfig.feedbackTypes.includes(type)) {
+            const oldEmail = temp.products[0].emailConfig.feedbackTypes;
+            const index = oldEmail.indexOf(type);
+            oldEmail.splice(index, 1);
+            temp.products[0].emailConfig.feedbackTypes = oldEmail;
+          }
+        }
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleEmailText = (event: any, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.emailText) {
+        const newMessages = temp.products[0].emailConfig.emailText;
+        newMessages[type] = event.target.value;
+        temp.products[0].emailConfig.emailText = newMessages;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleEmailRating = (event: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.ratingLimit) {
+        temp.products[0].emailConfig.ratingLimit = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleEmailSeverity = (event: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.severityLimit) {
+        temp.products[0].emailConfig.severityLimit = event;
+        setProductParams(temp);
+      }
+    }
+  }
+
 
   const handleIconChange = (event: any) => {
     const { type, iconStr } = event;
@@ -1209,6 +1264,10 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleMainBtnRotation: handleMainBtnRotation,
       handleMainBtnCustom: handleMainBtnCustom,
       handleIconChange: handleIconChange,
+      handleEmailText: handleEmailText,
+      handleEnableEmail: handleEnableEmail,
+      handleEmailRating: handleEmailRating,
+      handleEmailSeverity: handleEmailSeverity,
     }
 
     return (

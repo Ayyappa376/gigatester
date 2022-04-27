@@ -113,8 +113,10 @@ export interface ITrackingSystem {
 export interface IEmailConfiguration {
   feedbackTypes: string[]; //Feedback or bugs
   ratingLimit?: number; // 0 = none, 1, 2, 3, 4, 5, 6 = all?
-  severityLimit?: string; // not sure
-  emailText: string; // long string
+  severityLimit?: number; // not sure']
+  emailText: {
+    [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
+  }
 }
 
 export interface IProductParams {

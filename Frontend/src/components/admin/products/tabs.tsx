@@ -5,7 +5,7 @@ import StandardSettings from './GeneralSettings';
 import FeedbackSettings from './FeedbackSettings';
 import BugSettings from './BugSettings';
 import LookAndFeel from './LooknFeel';
-import EmailSettings from './EmailSettings';
+import EmailSettings from './email/EmailSettings';
 
 const useStyles = makeStyles({
   tabs: {
