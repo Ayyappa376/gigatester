@@ -15,6 +15,7 @@ export interface IProductInfo {
   feedbackAgentSettings?: IFeedbackAgentSettings;
   status: string;
   trackingSystem?: ITrackingSystem;
+  emailConfig?: IEmailConfiguration;
   [keyName: string]: any;
 }
 
@@ -107,6 +108,13 @@ export interface ITrackingSystem {
   url: string;
 //  uploadToTrackingSystem: boolean;
   [key: string]: any;
+}
+
+export interface IEmailConfiguration {
+  feedbackTypes: string[]; //Feedback or bugs
+  ratingLimit?: number; // 0 = none, 1, 2, 3, 4, 5, 6 = all?
+  severityLimit?: string; // not sure
+  emailText: string; // long string
 }
 
 export interface IProductParams {
