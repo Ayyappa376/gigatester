@@ -931,13 +931,11 @@ let GigaTester_StringUtils = {
                         if (btnPosition === 'RIGHT_MIDDLE') {
                             this.custom_ui.button[0].style.right = `-${(width-height)/2}px`;
                             this.custom_ui.button[0].style.top = '50%';
-                        } else if (btnPosition === 'RIGHT_BOTTOM') {
+                        } else if (btnPosition === 'RIGHT_BOTTOM') { 
                             this.custom_ui.button[0].style.right = `-${(width-height)/2}px`;
                             this.custom_ui.button[0].style.bottom = `${(width)/2}px`;
                         } else if (btnPosition === 'LEFT_MIDDLE') {
-                            // this.custom_ui.button[0].style.right = '';
                             this.custom_ui.button[0].style.top = '50%';
-                            // this.custom_ui.button[0].style.left = reposition.adjustedPos;
                             this.custom_ui.button[0].style.left = `-${(width-height)/2}px`;
                         } else if (btnPosition === 'LEFT_BOTTOM') {
                             this.custom_ui.button[0].style.left = `-${(width-height)/2}px`;;
@@ -3170,16 +3168,16 @@ let GigaTester_StringUtils = {
 
                     let finalRating = 0;
                     let feedbackType = '';
-                    let completedMessage = '';
+//                    let completedMessage = '';
                     let form_settings = this.getFormSettings(this.form_type);
                     if(this.form_type === 'FEEDBACK') {
                         finalRating = parseInt(this.form_data.rating);
                         feedbackType = 'FEEDBACK'
-                        completedMessage = GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_paragraph
+//                        completedMessage = GigaTester_modal.form_settings_default['FEEDBACK'].completed_dialog_paragraph
                     } else {
                         finalRating = 0;
                         feedbackType = 'BUG_REPORT'
-                        completedMessage = GigaTester_modal.form_settings_default['BUGS'].completed_dialog_paragraph
+//                        completedMessage = GigaTester_modal.form_settings_default['BUGS'].completed_dialog_paragraph
                     }
 
                     let allComments = {
@@ -3211,9 +3209,9 @@ let GigaTester_StringUtils = {
                         platformVersion: GigaTester_modal.configs.capture_system_details ? platform.version : '',
                         platformOs: GigaTester_modal.configs.capture_system_details ? platform.os : '',
                         pageURL: GigaTester_modal.configs.capture_system_details ? window.location : '',
-                        title: GigaTester_modal.configs.title,
-                        thanksMsg: completedMessage,
-                        //more like this: platform.layout, platform.manafacturer, platform.product, platform.prerelease, platform.ua(user agent),
+//                        title: GigaTester_modal.configs.title,
+//                        thanksMsg: completedMessage,
+                        // //more like this: platform.layout, platform.manafacturer, platform.product, platform.prerelease, platform.ua(user agent),
                         // window.devicePixelRatio, window.screen.width, window.screen.height, window.orientation,
                         feedbackMedia: {
                           image: GigaTester_modal.form_data.image_file || '',

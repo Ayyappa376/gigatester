@@ -3,6 +3,7 @@ const dynamo = new aws.DynamoDB.DocumentClient();
 const cors = require('cors');
 const axios = require('axios');
 import uuidv1 from 'uuid/v1';
+import { ProductInfo } from '../../../../models/product';
 import { sendFeedbackThanksMessage } from '../email/emailReply';
 
 cors({
@@ -32,53 +33,62 @@ try {
       case 'POST':
         const jsonBody = JSON.parse(event.body);
         const now = new Date();
-        const tableparams = {
-          Item: {
-            bugPriority: jsonBody.bugPriority.toLowerCase(),
-            contextDetails: jsonBody.contextDetails,
-            createdOn: Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()),
-            feedbackCategory: jsonBody.feedbackCategory,
-            feedbackComments: JSON.stringify(jsonBody.feedbackComments),
-            feedbackMedia: {
-              audio: jsonBody.feedbackMedia.audio ? jsonBody.feedbackMedia.audio : '',
-              file: jsonBody.feedbackMedia.file ? jsonBody.feedbackMedia.file : '',
-              image: jsonBody.feedbackMedia.image ? jsonBody.feedbackMedia.image : '',
-              video: jsonBody.feedbackMedia.video ? jsonBody.feedbackMedia.video : '',
+        const product: ProductInfo | undefined = await getProductForKey(jsonBody.productKey);
+        if(product) {
+          const tableparams = {
+            Item: {
+              bugPriority: jsonBody.bugPriority.toLowerCase(),
+              contextDetails: jsonBody.contextDetails,
+              createdOn: Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds()),
+              feedbackCategory: jsonBody.feedbackCategory,
+              feedbackComments: JSON.stringify(jsonBody.feedbackComments),
+              feedbackMedia: {
+                audio: jsonBody.feedbackMedia.audio ? jsonBody.feedbackMedia.audio : '',
+                file: jsonBody.feedbackMedia.file ? jsonBody.feedbackMedia.file : '',
+                image: jsonBody.feedbackMedia.image ? jsonBody.feedbackMedia.image : '',
+                video: jsonBody.feedbackMedia.video ? jsonBody.feedbackMedia.video : '',
+              },
+              feedbackType: jsonBody.feedbackType,
+              id: `feedback_${uuidv1()}`,
+              pageURL: jsonBody.pageURL,
+              platformName: jsonBody.platformName,
+              platformOs: jsonBody.platformOs,
+              platformVersion: jsonBody.platformVersion,
+              productId: product.id,
+              productRating: jsonBody.productRating,
+              productVersion: jsonBody.productVersion,
+              sourceIP: event.requestContext.identity.sourceIp,
+              userDetails: jsonBody.userDetails,
+              userId: jsonBody.userName,
             },
-            feedbackType: jsonBody.feedbackType,
-            id: `feedback_${uuidv1()}`,
-            pageURL: jsonBody.pageURL,
-            platformName: jsonBody.platformName,
-            platformOs: jsonBody.platformOs,
-            platformVersion: jsonBody.platformVersion,
-            productId: await getproductIdForKey(jsonBody.productKey),
-            productRating: jsonBody.productRating,
-            productVersion: jsonBody.productVersion,
-            sourceIP: event.requestContext.identity.sourceIp,
-            userDetails: jsonBody.userDetails,
-            userId: jsonBody.userName,
-          },
-          TableName: getTableNameFor('GT_feedback')
-        };
+            TableName: getTableNameFor('GT_feedback')
+          };
+          body = await dynamo.put(tableparams).promise();
 
-        const trackingSystemDetails: any = await getproductTrackingSystemDetails(jsonBody.productKey);
-        if(trackingSystemDetails.uploadToTrackingSystem) {
-          const postJIRA = await postJIRAIncident(
-             {
-              appToken: trackingSystemDetails.auth.authKey,
-              email: trackingSystemDetails.auth.authUser,
-            },
-            JSON.stringify(jsonBody.feedbackComments),
-            trackingSystemDetails.url,
-            jsonBody.feedbackCategory
-          );
-          console.log('JIRA upload', postJIRA);
+          const trackingSystemDetails: any = await getproductTrackingSystemDetails(jsonBody.productKey);
+          if(trackingSystemDetails.uploadToTrackingSystem) {
+            const postJIRA = await postJIRAIncident(
+              {
+                appToken: trackingSystemDetails.auth.authKey,
+                email: trackingSystemDetails.auth.authUser,
+              },
+              JSON.stringify(jsonBody.feedbackComments),
+              trackingSystemDetails.url,
+              jsonBody.feedbackCategory
+            );
+            console.log('JIRA upload', postJIRA);
+          }
+          console.log(trackingSystemDetails);
+
+//          const thankYouEmail: any = await sendFeedbackThanksMessage(jsonBody.userName, jsonBody.title, jsonBody.thanksMsg);
+          if(jsonBody.userName && jsonBody.userName !== '' && jsonBody.userName.includes('@')) {
+            const thankYouEmail: any = await sendFeedbackThanksMessage(
+              jsonBody.userName,
+              product.feedbackAgentSettings?.title,
+              (jsonBody.feedbackType === 'FEEDBACK') ? product.feedbackAgentSettings?.feedbackSettings?.thanksMsg : product.feedbackAgentSettings?.bugSettings?.thanksMsg);
+            console.log('thank you ', thankYouEmail);
+          }
         }
-        console.log(trackingSystemDetails);
-
-        const thankYouEmail: any = await sendFeedbackThanksMessage(jsonBody.userName, jsonBody.title, jsonBody.thanksMsg);
-        console.log('thank you ', thankYouEmail);
-        body = await dynamo.put(tableparams).promise();
         break;
       // case 'PUT':
       //   body = await dynamo.update(JSON.parse(event.body)).promise();
@@ -106,7 +116,7 @@ try {
   };
 };
 
-async function getproductIdForKey(productKey: string): Promise<string> {
+async function getProductForKey(productKey: string): Promise<any> {
     const params = {
         ExpressionAttributeNames: {'#apiKey': 'apiKey'},
         ExpressionAttributeValues: {':apiKey': productKey},
@@ -116,7 +126,8 @@ async function getproductIdForKey(productKey: string): Promise<string> {
     console.log('feedback-api-db-handler: DynamoDBScan params:', params);
     const result = await dynamo.scan(params).promise();
     console.log('feedback-api-db-handler: DynamoDBScan result:', result);
-    return (result.Items.length > 0) ? result.Items[0].id : '';
+//    return (result.Items.length > 0) ? result.Items[0].id : '';
+    return (result.Items.length > 0) ? result.Items[0] : undefined;
 }
 
 async function getproductTrackingSystemDetails(productKey: string): Promise<string> {

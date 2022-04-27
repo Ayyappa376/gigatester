@@ -3,7 +3,6 @@
 // const fs = require('fs');
 // const Handlebars = require("handlebars");
 
-
 // export const processReplyEmail = async (email: string, thanksMessage: string, clientTitle: string, callback: any) => {
 //   // Prepare data for template placeholders
 //   // inject data into templates
@@ -74,6 +73,5 @@
 //   });
 
 //  })
-
 
 // }

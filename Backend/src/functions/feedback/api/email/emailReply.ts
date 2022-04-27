@@ -1,13 +1,17 @@
 import aws from 'aws-sdk';
 const ses = new aws.SES({ region: 'us-east-1' });
 
+const THANKS_MSG = 'Thank you for your valuable feedback.';
+const SUBJECT = 'Thank you for your feedback!';
+const TITLE = 'Çuvo Team';
+const FROM_EMAIL = 'no-reply@dev.gigatester.io';
+
 export const sendFeedbackThanksMessage = async (
         email: string,
-        clientTitle: string,
-        thanksMessage: string,
+        clientTitle: string | undefined,
+        thanksMessage: string | undefined,
     ): Promise<any> =>
         new Promise<any>((resolve, reject) => {
-            // const site: string = (process.env.DB_ENV === 'development') ? 'dev.gigatester.io' : 'beta.gigatester.io';
             const mailParams = {
                 Destination: {
                     ToAddresses: [email],
@@ -15,21 +19,20 @@ export const sendFeedbackThanksMessage = async (
                 Message: {
                     Body: {
                       Text: {
-                          Data: "Dear Customer," + "\n" + thanksMessage + "." + "\n" +  "Sincerely," + "\n" + clientTitle
+                          Data: `Dear Customer,\n${thanksMessage?thanksMessage:THANKS_MSG}.\nSincerely,\n${clientTitle?clientTitle:TITLE}`
+//                          "Dear Customer," + "\n" + thanksMessage  + "." + "\n" +  "Sincerely," + "\n" + clientTitle
                       },
                     },
 
-                    Subject: { Data: 'Thank you for your feedback!' },
+                    Subject: { Data: SUBJECT },
                 },
-                Source: 'no-reply@dev.gigatester.io',
+                Source: FROM_EMAIL,
             };
             ses.sendEmail(mailParams, (err, data) => {
                 if (err) {
-                    // appLogger.error({ emailError: err });
-                  console.log('error', err)
-                    reject(err);
+                  console.log('error', err);
+                  reject(err);
                 }
-                // appLogger.info({ emailSent: data });
                 resolve(data);
             });
 });

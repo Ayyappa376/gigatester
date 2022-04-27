@@ -199,8 +199,7 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, las
         id: lastEvalKeyId
       };
       params.ExclusiveStartKey = exKeyStart;
-    }
-    else if(lastEvalKey){
+    } else if(lastEvalKey) {
       const exKeyStart: any = JSON.stringify(lastEvalKey);
       params.ExclusiveStartKey = exKeyStart;
     }
