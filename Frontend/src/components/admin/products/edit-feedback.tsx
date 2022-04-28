@@ -998,23 +998,52 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
-  const handleEmailRating = (event: number) => {
+  const handleEmailRating = (event: any) => {
+    const { key, check } = event;
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
         temp.products[0].emailConfig.ratingLimit) {
-        temp.products[0].emailConfig.ratingLimit = event;
+        if (temp.products[0].emailConfig.ratingLimit[key]) {
+          temp.products[0].emailConfig.ratingLimit[key] = check;
+        } else if (!temp.products[0].emailConfig.ratingLimit[key]) {
+          const prevRatingObj = temp.products[0].emailConfig.ratingLimit;
+          prevRatingObj[key] = check;
+          temp.products[0].emailConfig.ratingLimit = prevRatingObj;
+        }
         setProductParams(temp);
       }
     }
   }
 
-  const handleEmailSeverity = (event: number) => {
+  const handleEmailSeverity = (event: any) => {
+    const { key, check } = event;
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
-        temp.products[0].emailConfig.severityLimit) {
-        temp.products[0].emailConfig.severityLimit = event;
+        temp.products[0].emailConfig.severityLimit && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        const severity = temp.products[0].emailConfig.severityLimit;
+        console.log('severity obj', severity);
+        // if emailConfig.severityLimit object is empty, we set it here for the first time
+        // Using bugSetting.severities array, we can map out the values and add false boolean value
+        // this will be stored in the backend
+        if (Object.keys(severity).length < temp.products[0].feedbackAgentSettings?.bugSettings?.severities.length) {
+          const severityArray = temp.products[0].feedbackAgentSettings?.bugSettings.severities;
+          const setSeverity: any = {};
+          severityArray.forEach((val) => { setSeverity[val] = false })
+          setSeverity[key] = check;
+          temp.products[0].emailConfig.severityLimit = setSeverity;
+        } else {
+          // else if the severity limit object is set, we can then set key value pairs regularly 
+          if (temp.products[0].emailConfig.severityLimit[key]) {
+            temp.products[0].emailConfig.severityLimit[key] = check;
+          } else if (!temp.products[0].emailConfig.severityLimit[key]) {
+            const prevSeverityObj = temp.products[0].emailConfig.severityLimit;
+            prevSeverityObj[key] = check;
+            temp.products[0].emailConfig.severityLimit = prevSeverityObj;
+          }
+        }
         setProductParams(temp);
       }
     }

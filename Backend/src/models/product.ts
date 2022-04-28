@@ -94,8 +94,12 @@ export interface CustomProperties {
 
 export interface EmailConfiguration {
     feedbackTypes: string[]; //Feedback or bugs
-    ratingLimit?: number; // 0 = none, 1, 2, 3, 4, 5, 6 = all?
-    severityLimit?: number; // not sure']
+    ratingLimit?: {
+        [key: string]: boolean;
+      }; // 0, 1, 2, 3, 4, 5, 6 = all?
+      severityLimit?: {
+        [key: string]: boolean;
+      }; // 0, 1, 2, 3, 4, 5, 6 = all?
     emailText: {
       [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
     }

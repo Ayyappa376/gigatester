@@ -29,8 +29,6 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 	const [check, setChecked] = useState(false);
 	const classes = useStyles();
 
-	console.log('product', productInfo)
-
 	useEffect(() => {
 		if (
 			productInfo.products &&
@@ -77,15 +75,16 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 						{productInfo.products &&
 						productInfo.products[0] &&
 						productInfo.products[0].emailConfig && type !== 'BUGS' ? (
-							<RatingLimitButtons
-									limit={productInfo.products[0].emailConfig.ratingLimit}
+								<RatingLimitButtons
+									ratingSymbol={productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon}
+									ratingObj={productInfo.products[0].emailConfig.ratingLimit}
 									handleEmailRating={handleEmailRating}
 							/>
 						) : null}
 
 						{productInfo.products &&
 						productInfo.products[0] &&
-						productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type !== 'FEEDBACK' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} /> : null}
+							productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type !== 'FEEDBACK' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} severitiesObj={productInfo.products[0].emailConfig.severityLimit} /> : null}
 
 						<TextField
 							className={classes.emailText}
