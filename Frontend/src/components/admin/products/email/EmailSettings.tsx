@@ -81,9 +81,9 @@ const EmailSettings = ({
 									type={type}
 									productInfo={productParams}
 									handleEmailText={handleEmailText}
-                handleEnableEmail={handleEnableEmail}
-                handleEmailRating={handleEmailRating}
-                handleEmailSeverity={handleEmailSeverity}
+                	handleEnableEmail={handleEnableEmail}
+                	handleEmailRating={handleEmailRating}
+                	handleEmailSeverity={handleEmailSeverity}
 								/>
 							),
 					  )
@@ -94,17 +94,3 @@ const EmailSettings = ({
 };
 
 export default EmailSettings;
-
-// <Accordion key={index}>
-//   <AccordionSummary
-//   className={classes.accordSummary}
-//   expandIcon={<ExpandMoreIcon />}
-//   aria-controls="panel1a-content"
-//   id="panel1a-header"
-// >
-//     <Typography className={classes.accordionTitle}>{type}</Typography>
-// </AccordionSummary>
-//   <AccordionDetails>
-
-//   </AccordionDetails>
-// </Accordion>
