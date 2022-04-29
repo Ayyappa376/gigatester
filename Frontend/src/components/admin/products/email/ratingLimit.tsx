@@ -48,24 +48,50 @@ const RatingLimitButtons = ({
     5: false,
     6: false,
   });
+  const [oldState, setOldState] = useState <stateProps>({});
   const [ratingMap, setRatingMap] = useState<number[]>([])
+  const [checkAll, setCheckAll] = useState<boolean>(false);
 	const classes = useStyles();
 	const RATE_LIMIT = 7; //remove 0th index, and add 7th which is all
 
   useEffect(() => {
     if (Object.keys(ratingObj).length > 0) {
       setState(ratingObj)
+      setOldState(ratingObj)
     }
     const rateMapping = Array.from(Array(RATE_LIMIT).keys());
     rateMapping.shift();
     setRatingMap(rateMapping);
   }, [ratingObj]);
 
+  useEffect(() => {
+    if (checkAll) {
+      let tickAllSeverities: stateProps = {};
+			for (let key in state) {
+        tickAllSeverities[key] = true;
+        handleEmailRating({ key: key, check: true})
+      }
+    }
+  }, [checkAll])
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setState({
-      ...state,
-      [event.target.value]: event.target.checked,
-    });
+    if (event.target.value === '6' && event.target.checked) {
+      setOldState(state);
+			let tickAllSeverities: stateProps = {};
+			for (let key in state) {
+        tickAllSeverities[key] = true;
+      }
+      setState(tickAllSeverities)
+      setCheckAll(true)
+    } else if (event.target.value === '6' && !event.target.checked) {
+      setState(oldState)
+      setCheckAll(false);
+		} else {
+			setState({
+				...state,
+				[event.target.value]: event.target.checked,
+      });
+    }
     handleEmailRating({ key: event.target.value, check: event.target.checked })
   };
 
@@ -90,19 +116,3 @@ const RatingLimitButtons = ({
 
 export default RatingLimitButtons;
 
-{
-	/* <RadioGroup
-row
-value={value}
-onChange={handleChange}
-aria-labelledby='rating-row-radio-buttons-group-label'
-name='row-radio-buttons-group'
->
-<FormControlLabel value={1} control={<Radio color="primary"/>} label='1 star' />
-<FormControlLabel value={2} control={<Radio color="primary"/>} label='2 stars' />
-<FormControlLabel value={3} control={<Radio color="primary"/>} label='3 stars' />
-<FormControlLabel value={4} control={<Radio color="primary"/>} label='4 stars' />
-<FormControlLabel value={5} control={<Radio color="primary"/>} label='5 stars' />
-<FormControlLabel value={6} control={<Radio color="primary"/>} label='all' />
-</RadioGroup> */
-}

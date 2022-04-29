@@ -89,7 +89,7 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 						<TextField
 							className={classes.emailText}
 							id='outlined-multiline-static'
-							label='Email message'
+							label='Body of email message'
 							value={productInfo.products &&
 								productInfo.products[0] &&
 								productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.emailText &&  productInfo.products[0].emailConfig.emailText[type] ?  productInfo.products[0].emailConfig.emailText[type] : ''}

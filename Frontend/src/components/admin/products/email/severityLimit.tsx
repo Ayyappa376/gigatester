@@ -40,6 +40,7 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
 	});
 	const [prevState, setPrevState] = useState <stateProps>({});
 	const [severityMap, setSeverityMap] = useState<any | undefined>([]);
+	const [checkAll, setCheckAll] = useState<boolean>(false);
 	const classes = useStyles();
 
 	useEffect(() => {
@@ -59,6 +60,16 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
 		}
 	}, [severities, severitiesObj]);
 
+	useEffect(() => {
+    if (checkAll) {
+      let tickAllSeverities: stateProps = {};
+			for (let key in state) {
+        tickAllSeverities[key] = true;
+        handleEmailSeverity({ key: key, check: true})
+      }
+    }
+  }, [checkAll])
+
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.value === 'All' && event.target.checked) {
 			setPrevState(state);
@@ -67,8 +78,10 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
 				tickAllSeverities[key] = true;
 			}
 			setState(tickAllSeverities)
+			setCheckAll(true)
 		} else if (event.target.value === 'All' && !event.target.checked) {
 			setState(prevState)
+			setCheckAll(false);
 		} else {
 			setState({
 				...state,
