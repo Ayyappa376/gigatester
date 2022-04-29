@@ -1,5 +1,4 @@
 import aws from 'aws-sdk';
-import { String } from 'aws-sdk/clients/batch';
 const ses = new aws.SES({ region: 'us-east-1' });
 
 const THANKS_MSG = 'Thank you for your valuable feedback.';
