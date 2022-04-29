@@ -68,7 +68,17 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
         handleEmailSeverity({ key: key, check: true})
       }
     }
-  }, [checkAll])
+	}, [checkAll])
+
+	// function tickAllCheckBox(obj: any) {
+	// 	let allTrue = true;
+	// 	for (let key in obj) {
+	// 		if (obj[key] === false) {
+	// 			allTrue = false;
+	// 		}
+	// 	}
+	// 	return allTrue;
+	// }
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.value === 'All' && event.target.checked) {
