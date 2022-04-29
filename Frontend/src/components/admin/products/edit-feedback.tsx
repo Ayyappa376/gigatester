@@ -1024,10 +1024,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         temp.products[0].emailConfig.severityLimit && temp.products[0].feedbackAgentSettings &&
         temp.products[0].feedbackAgentSettings.bugSettings) {
         const severity = temp.products[0].emailConfig.severityLimit;
-        console.log('severity obj', severity);
         // if emailConfig.severityLimit object is empty, we set it here for the first time
-        // Using bugSetting.severities array, we can map out the values and add false boolean value
-        // this will be stored in the backend
         if (Object.keys(severity).length < temp.products[0].feedbackAgentSettings?.bugSettings?.severities.length) {
           const severityArray = temp.products[0].feedbackAgentSettings?.bugSettings.severities;
           const setSeverity: any = {};
@@ -1035,7 +1032,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           setSeverity[key] = check;
           temp.products[0].emailConfig.severityLimit = setSeverity;
         } else {
-          // else if the severity limit object is set, we can then set key value pairs regularly 
+          // else if the severity limit object is set, we can then set key value pairs regularly
           if (temp.products[0].emailConfig.severityLimit[key]) {
             temp.products[0].emailConfig.severityLimit[key] = check;
           } else if (!temp.products[0].emailConfig.severityLimit[key]) {
