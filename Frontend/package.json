@@ -70,7 +70,8 @@
     "redux-thunk": "2.3.0",
     "typescript": "^3.9.0",
     "use-react-screenshot": "^3.0.0",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "xlsx": "^0.18.5"
   },
   "scripts": {
     "start": "HTTPS=true react-scripts start",

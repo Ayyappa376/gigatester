@@ -10,7 +10,6 @@ import {
 } from '@material-ui/core';
 import IconProgressBar from './IconProgressBar';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
-import { setBeforeAuthorizedRequestAction } from '../../../utils/http';
 
 
 const useStyles = makeStyles((theme) => ({
@@ -93,7 +92,7 @@ const IconSelect = ({ iconType, iconStr, /*product, */handleIconChange }: IconPr
 
 
   return (
-    <Fragment>
+    <React.Fragment>
       <Typography className={classes.iconTitle}>Icon:</Typography>
       <Box sx={{
         display: 'flex',
@@ -152,7 +151,7 @@ const IconSelect = ({ iconType, iconStr, /*product, */handleIconChange }: IconPr
           {base64data ? ( <img style={{ width: '50px', height: '50px'}} src={`data:image/svg+xml;base64,${base64data}`} alt="" />) : null}
         </Box>
       </Box>
-    </Fragment>
+    </React.Fragment>
   )
 };
 

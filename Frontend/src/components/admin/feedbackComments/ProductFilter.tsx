@@ -40,8 +40,8 @@ const ProductFilter = (props : IProps) => {
         }
       };
 
-    console.log(props.selectedProdId);
-    console.log(chose);
+    // console.log(props.selectedProdId);
+    // console.log(chose);
 
     return (
         <div>
@@ -97,8 +97,8 @@ export const VersionFilter = (props : IVersionFilterProps) => {
         }
     };
 
-    console.log(props.productVersion);
-    console.log({chose});
+    // console.log(props.productVersion);
+    // console.log({chose});
     return (
         <div style={{paddingLeft: '1rem'}}>
             <FormControl style={{

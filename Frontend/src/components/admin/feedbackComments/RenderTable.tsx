@@ -187,7 +187,7 @@ const RenderTable = (props: IProps) => {
 	};
 
 	return (
-		<Container style={{ marginTop: '5rem' }}>
+		<Container style={{ marginTop: '1.5rem' }}>
 			<div className={classes.paper}>
 				<Toolbar className={classes.root}>
 					<Typography
