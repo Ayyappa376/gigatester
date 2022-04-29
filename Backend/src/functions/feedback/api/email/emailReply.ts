@@ -32,13 +32,14 @@ async function sendFeedbackThanksMessage(
             if (err) {
               console.log('error', err);
               reject(err);
+            } else {
+               resolve(data);
             }
-            resolve(data);
         });
     });
 }
 
-export const processThankYouEmail = async (userName: string, jsonFeedbackType: string, product: any, productRating: number | string, bugPriority: string) => {
+export const processThankYouEmail = async (userName: string, jsonFeedbackType: string, product: any, productRating: number, bugPriority: string) => {
     const { feedbackType, emailText, ratingLimit, severitLimit } = product.emailConfig;
     let validEmail = false;
     let checkRating = false;
@@ -49,7 +50,7 @@ export const processThankYouEmail = async (userName: string, jsonFeedbackType: s
     }
 
     if (feedbackType.includes(jsonFeedbackType)) {
-        if (productRating && productRating !== 0) {
+        if (productRating !== 0) {
             if (ratingLimit[productRating] === true) {
                 checkRating = true;
             }
@@ -70,7 +71,7 @@ export const processThankYouEmail = async (userName: string, jsonFeedbackType: s
         }
     } else {
         return;
-     } 
+     }
 
 }
 
