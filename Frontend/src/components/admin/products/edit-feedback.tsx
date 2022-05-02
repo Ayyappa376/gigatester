@@ -213,6 +213,14 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             }
           };
         }
+        if (!response.products[0].emailConfig) {
+          response.products[0].emailConfig = {
+            feedbackTypes: [],
+            emailText: {},
+            ratingLimit: {},
+            severityLimit: {},
+          };
+        }
         console.log('resp', response);
         setProductParams(response);
         setFeedbackAgentSettingsFetched(true);

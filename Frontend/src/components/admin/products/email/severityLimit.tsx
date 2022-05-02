@@ -42,8 +42,7 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
 	const [severityMap, setSeverityMap] = useState<any | undefined>([]);
 	const [checkAll, setCheckAll] = useState<boolean>(false);
 	const classes = useStyles();
-
-	console.log('severities', severities)
+	const defaultMap = ['Highest', 'High', 'Medium', 'Lower', 'Lowest', 'Critical']; // fallback if no severities are configured
 
 	useEffect(() => {
     if (severities) {
@@ -55,10 +54,18 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
 			setState(severitiesObj);
 		} else {
 			const newSevObj: stateProps = {};
-			severities.forEach((item: string) => {
-			newSevObj[item] = false
-			})
-			setState(newSevObj);
+			if (severities.length === 0) {
+				defaultMap.forEach((item: string) => {
+					newSevObj[item] = false
+				})
+				setSeverityMap(defaultMap);
+				setState(newSevObj);
+			} else {
+				severities.forEach((item: string) => {
+					newSevObj[item] = false
+				})
+				setState(newSevObj);
+			}
 		}
 	}, [severities, severitiesObj]);
 
