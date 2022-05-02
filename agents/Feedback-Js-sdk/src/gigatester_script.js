@@ -3545,12 +3545,13 @@ let GigaTester_StringUtils = {
                 }
             },
             start: function() {
+                GigaTester_modal.config_loaded = false;
                 GigaTester_modal.init.call(GigaTester_modal);
                 console.log('GigaTester: js api');
             },
             destroy: function() {
                 if (GigaTester_modal.custom_ui && GigaTester_modal.custom_ui.element) {
-                    GigaTester_modal.custom_ui.element.remove()
+                    GigaTester_modal.custom_ui.element.remove();
                 }
                 GigaTester.Event_Recorder.stop();
                 GigaTester.Console_Recorder.stop();
