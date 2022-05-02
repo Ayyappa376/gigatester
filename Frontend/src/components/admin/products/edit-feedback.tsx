@@ -965,6 +965,87 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleEnableEmail = (event: boolean, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.feedbackTypes) {
+        if (event && !temp.products[0].emailConfig.feedbackTypes.includes(type)) {
+          temp.products[0].emailConfig.feedbackTypes.push(type)
+        } else if (!event) {
+          if (temp.products[0].emailConfig.feedbackTypes.includes(type)) {
+            const oldEmail = temp.products[0].emailConfig.feedbackTypes;
+            const index = oldEmail.indexOf(type);
+            oldEmail.splice(index, 1);
+            temp.products[0].emailConfig.feedbackTypes = oldEmail;
+          }
+        }
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleEmailText = (event: any, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.emailText) {
+        const newMessages = temp.products[0].emailConfig.emailText;
+        newMessages[type] = event.target.value;
+        temp.products[0].emailConfig.emailText = newMessages;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleEmailRating = (event: any) => {
+    const { key, check } = event;
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.ratingLimit) {
+        if (temp.products[0].emailConfig.ratingLimit[key]) {
+          temp.products[0].emailConfig.ratingLimit[key] = check;
+        } else if (!temp.products[0].emailConfig.ratingLimit[key]) {
+          const prevRatingObj = temp.products[0].emailConfig.ratingLimit;
+          prevRatingObj[key] = check;
+          temp.products[0].emailConfig.ratingLimit = prevRatingObj;
+        }
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleEmailSeverity = (event: any) => {
+    const { key, check } = event;
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].emailConfig &&
+        temp.products[0].emailConfig.severityLimit && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        const severity = temp.products[0].emailConfig.severityLimit;
+        // if emailConfig.severityLimit object is empty, we set it here for the first time
+        if (Object.keys(severity).length < temp.products[0].feedbackAgentSettings?.bugSettings?.severities.length) {
+          const severityArray = temp.products[0].feedbackAgentSettings?.bugSettings.severities;
+          const setSeverity: any = {};
+          severityArray.forEach((val) => { setSeverity[val] = false })
+          setSeverity[key] = check;
+          temp.products[0].emailConfig.severityLimit = setSeverity;
+        } else {
+          // else if the severity limit object is set, we can then set key value pairs regularly
+          if (temp.products[0].emailConfig.severityLimit[key]) {
+            temp.products[0].emailConfig.severityLimit[key] = check;
+          } else if (!temp.products[0].emailConfig.severityLimit[key]) {
+            const prevSeverityObj = temp.products[0].emailConfig.severityLimit;
+            prevSeverityObj[key] = check;
+            temp.products[0].emailConfig.severityLimit = prevSeverityObj;
+          }
+        }
+        setProductParams(temp);
+      }
+    }
+  }
+
 
   const handleIconChange = (event: any) => {
     const { type, iconStr } = event;
@@ -1209,6 +1290,10 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleMainBtnRotation: handleMainBtnRotation,
       handleMainBtnCustom: handleMainBtnCustom,
       handleIconChange: handleIconChange,
+      handleEmailText: handleEmailText,
+      handleEnableEmail: handleEnableEmail,
+      handleEmailRating: handleEmailRating,
+      handleEmailSeverity: handleEmailSeverity,
     }
 
     return (

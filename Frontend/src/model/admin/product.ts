@@ -15,6 +15,7 @@ export interface IProductInfo {
   feedbackAgentSettings?: IFeedbackAgentSettings;
   status: string;
   trackingSystem?: ITrackingSystem;
+  emailConfig?: IEmailConfiguration;
   [keyName: string]: any;
 }
 
@@ -107,6 +108,19 @@ export interface ITrackingSystem {
   url: string;
 //  uploadToTrackingSystem: boolean;
   [key: string]: any;
+}
+
+export interface IEmailConfiguration {
+  feedbackTypes: string[]; //Feedback or bugs
+  ratingLimit?: {
+    [key: string]: boolean;
+  }; // 0, 1, 2, 3, 4, 5, 6 = all?
+  severityLimit?: {
+    [key: string]: boolean;
+  }; // 0, 1, 2, 3, 4, 5, 6 = all?
+  emailText: {
+    [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
+  }
 }
 
 export interface IProductParams {

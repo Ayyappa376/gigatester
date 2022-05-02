@@ -4,7 +4,7 @@ const cors = require('cors');
 const axios = require('axios');
 import uuidv1 from 'uuid/v1';
 import { ProductInfo } from '../../../../models/product';
-import { sendFeedbackThanksMessage } from '../email/emailReply';
+import { processThankYouEmail } from '../email/emailReply';
 
 cors({
   origin: true,
@@ -80,14 +80,15 @@ try {
           }
           console.log(trackingSystemDetails);
 
-//          const thankYouEmail: any = await sendFeedbackThanksMessage(jsonBody.userName, jsonBody.title, jsonBody.thanksMsg);
-          if(jsonBody.userName && jsonBody.userName !== '' && jsonBody.userName.includes('@')) {
-            const thankYouEmail: any = await sendFeedbackThanksMessage(
-              jsonBody.userName,
-              product.feedbackAgentSettings?.title,
-              (jsonBody.feedbackType === 'FEEDBACK') ? product.feedbackAgentSettings?.feedbackSettings?.thanksMsg : product.feedbackAgentSettings?.bugSettings?.thanksMsg);
-            console.log('thank you ', thankYouEmail);
-          }
+          const processingEmail: any = await processThankYouEmail(
+            jsonBody.userName,
+            jsonBody.feedbackType,
+            product,
+            jsonBody.productRating,
+            jsonBody.bugPriority,
+        );
+          console.log('Sending thank you email', processingEmail);
+
         }
         break;
       // case 'PUT':

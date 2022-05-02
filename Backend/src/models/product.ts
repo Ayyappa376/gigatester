@@ -13,6 +13,7 @@ export interface ProductInfo {
     testers?: TesterStatus[];
     testSuite?: string[];
     trackingSystem?: TrackingSystem;
+    emailConfig?: EmailConfiguration;
     version: string;
     [keyName: string]: any;
 }
@@ -90,6 +91,19 @@ export interface CustomProperties {
 // export interface CustomIcon {
 //     [key: string]: string,
 // }
+
+export interface EmailConfiguration {
+    feedbackTypes: string[]; //Feedback or bugs
+    ratingLimit?: {
+        [key: string]: boolean;
+      }; // 0, 1, 2, 3, 4, 5, 6 = all?
+      severityLimit?: {
+        [key: string]: boolean;
+      }; // 0, 1, 2, 3, 4, 5, 6 = all?
+    emailText: {
+      [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
+    }
+  }
 
 export interface Category {
     feedbacks?: string[];
