@@ -52,7 +52,7 @@ const RatingLimitButtons = ({
   const [ratingMap, setRatingMap] = useState<number[]>([])
   const [checkAll, setCheckAll] = useState<boolean>(false);
 	const classes = useStyles();
-	const RATE_LIMIT = 7; //remove 0th index, and add 7th which is all
+  const RATE_LIMIT = 7; //remove 0th index, and add 7th which is all
 
   useEffect(() => {
     if (Object.keys(ratingObj).length > 0) {

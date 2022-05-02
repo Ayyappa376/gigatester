@@ -43,6 +43,8 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
 	const [checkAll, setCheckAll] = useState<boolean>(false);
 	const classes = useStyles();
 
+	console.log('severities', severities)
+
 	useEffect(() => {
     if (severities) {
 			const newMap = severities;
@@ -54,7 +56,7 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
 		} else {
 			const newSevObj: stateProps = {};
 			severities.forEach((item: string) => {
-				newSevObj[item] = false
+			newSevObj[item] = false
 			})
 			setState(newSevObj);
 		}
@@ -70,15 +72,6 @@ const SeverityLimitButtons = ({ severities, handleEmailSeverity, severitiesObj }
     }
 	}, [checkAll])
 
-	// function tickAllCheckBox(obj: any) {
-	// 	let allTrue = true;
-	// 	for (let key in obj) {
-	// 		if (obj[key] === false) {
-	// 			allTrue = false;
-	// 		}
-	// 	}
-	// 	return allTrue;
-	// }
 
 	const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		if (event.target.value === 'All' && event.target.checked) {

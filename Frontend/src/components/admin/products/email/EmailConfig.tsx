@@ -72,19 +72,17 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 			<Box className={classes.configContain}>
 				{check ? (
 					<Box className={classes.emailConfig}>
-						{productInfo.products &&
-						productInfo.products[0] &&
-						productInfo.products[0].emailConfig && type !== 'BUGS' ? (
+						{productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon && type !== 'BUGS' ? (
 								<RatingLimitButtons
 									ratingSymbol={productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon}
-									ratingObj={productInfo.products[0].emailConfig.ratingLimit}
+									ratingObj={productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.ratingLimit ? productInfo.products[0].emailConfig.ratingLimit : {}}
 									handleEmailRating={handleEmailRating}
 							/>
 						) : null}
 
-						{productInfo.products &&
+						{check && productInfo.products &&
 						productInfo.products[0] &&
-							productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type !== 'FEEDBACK' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} severitiesObj={productInfo.products[0].emailConfig.severityLimit} /> : null}
+							productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type !== 'FEEDBACK' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} severitiesObj={(productInfo.products[0] && productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.severityLimit ? productInfo.products[0].emailConfig.severityLimit : {})} /> : null}
 
 						<TextField
 							className={classes.emailText}
@@ -96,7 +94,7 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 							multiline
 							onChange={(event) => handleEmailTextChange(event, type)}
 							inputProps={{
-								maxLength: 3000,
+								maxLength: 5000,
 								style: { backgroundColor: '#F5F5F5', padding: '10px' },
 							}}
 							rows={5}
