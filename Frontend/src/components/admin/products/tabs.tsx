@@ -5,6 +5,7 @@ import StandardSettings from './GeneralSettings';
 import FeedbackSettings from './FeedbackSettings';
 import BugSettings from './BugSettings';
 import LookAndFeel from './LooknFeel';
+import EmailSettings from './email/EmailSettings';
 
 const useStyles = makeStyles({
   tabs: {
@@ -67,7 +68,8 @@ export default function EditFeedbackTabs(props: any) {
           <Tab label="General Settings" {...a11yProps(0)} />
           <Tab label="Feedback Settings" {...a11yProps(1)} />
           <Tab label="Bugs Settings" {...a11yProps(2)} />
-          <Tab label="Widget Appearance" {...a11yProps(3)} />
+          <Tab label="Email Setttings" {...a11yProps(3)} />
+          <Tab label="Widget Appearance" {...a11yProps(4)} />
         </Tabs>
       </Box>
       <TabPanel value={value} index={0}>
@@ -80,6 +82,9 @@ export default function EditFeedbackTabs(props: any) {
         <BugSettings {...props.settingsProps}/>
       </TabPanel>
       <TabPanel value={value} index={3}>
+        <EmailSettings {...props.settingsProps}/>
+      </TabPanel>
+      <TabPanel value={value} index={4}>
         <LookAndFeel {...props.settingsProps}/>
       </TabPanel>
     </Box>
