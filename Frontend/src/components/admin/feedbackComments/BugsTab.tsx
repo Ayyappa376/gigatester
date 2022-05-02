@@ -29,7 +29,11 @@ import {
 	getPieChartOptions,
 } from './common';
 import { RouteComponentProps } from 'react-router-dom';
-import { getBugChartData, getBugData, getFeedbackLastEvalkeyData } from './methods';
+import {
+	getBugChartData,
+	getBugData,
+	getFeedbackLastEvalkeyData,
+} from './methods';
 import Failure from '../../failure-page';
 import { sortTableByDate } from './tableMethods';
 import ImageModal from './ImageModal';
@@ -39,8 +43,9 @@ import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderRatingFilter from './RenderFilters';
 import RenderCategoryFilter from './RenderCategoryFilter';
-import { useSelector } from "react-redux";
-import { IRootState } from "../../../reducers";
+import { useSelector } from 'react-redux';
+import { IRootState } from '../../../reducers';
+import ExportBtn from './ExportButton';
 
 interface ChosenProps {
 	productInfoProp: any;
@@ -68,7 +73,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 	}); //epoch timestamp
 	const stateVariable = useSelector((state: IRootState) => {
 		return state;
-	  });
+	});
 	const [showImageModal, setShowImageModal] = useState(false);
 	const [signedImageUrl, setSignedImageUrl] = useState('');
 	const [attachmentType, setAttachmentType] = useState('');
@@ -143,8 +148,13 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				},
 			];
 			setBarChartSeries(series);
-			if (feedbackBarChartData && focusSeverity.length === 0 && focusCategory.length === 0 && keyword.length === 0) {
-			setSeverityList(Object.keys(feedbackBarChartData));
+			if (
+				feedbackBarChartData &&
+				focusSeverity.length === 0 &&
+				focusCategory.length === 0 &&
+				keyword.length === 0
+			) {
+				setSeverityList(Object.keys(feedbackBarChartData));
 			}
 		}
 	}, [feedbackBarChartData]);
@@ -368,7 +378,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		setRawData([])
+		setRawData([]);
 		fetchRecursiveData({
 			filterSeverity: focusSeverity,
 			prodId: selectedProdId,
@@ -449,7 +459,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		setRawData([])
+		setRawData([]);
 		fetchRecursiveData({
 			filterCategory: focusCategory,
 			prodId: selectedProdId,
@@ -566,7 +576,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			// 		return Array.from(dataCopy);
 			// 	});
 			// 	return;
-			// } -- can be used for global search 
+			// } -- can be used for global search
 			setData((dataObj) => {
 				const dataCopy = new Set([...dataObj].concat(response.Items.Items));
 				return Array.from(dataCopy);
@@ -577,7 +587,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				setRawData((rawDataObj) => {
 					// clear filter will get the idea that the data has already been fetched.
 					let rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
-					if(filterDate?.endDate){
+					if (filterDate?.endDate) {
 						rawDataCopy = new Set([].concat(response.Items.Items));
 					}
 					return Array.from(rawDataCopy);
@@ -597,88 +607,80 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			) {
 				setLastEvaluatedKey({});
 			}
-		}
-	else if (
-		response &&
-		response.Items &&
-		response.Items.Items &&
-		Array.isArray(response.Items.Items) &&
-		response.Items.Items.length === 0
-	) {
-		if (
-			response.Items.LastEvaluatedKey &&
-			Object.keys(response.Items.LastEvaluatedKey).length > 0
+		} else if (
+			response &&
+			response.Items &&
+			response.Items.Items &&
+			Array.isArray(response.Items.Items) &&
+			response.Items.Items.length === 0
 		) {
-			setLastEvaluatedKey(response.Items.LastEvaluatedKey);
-			setRetryFetch(true);
-		}
-		else if (
-			Object.keys(lastEvaluatedKey).length > 0 &&
-			!response.Items.LastEvaluatedKey
-		) {
-			setLastEvaluatedKey({});
-			setRetryFetch(false);
-			setResultsFetched(true);
-		}
-		else{
-			setResultsFetched(true);
-			setRetryFetch(false);
-		}
-	}
-	else {
-		if (!showNoEmptyError) {
-			setBackdropOpen(false);
-			setNoDataError(true);
-		}
-		else{
-			setResultsFetched(true);
-
-		}
-	};
-};
-
-	const fetchMore = () => {
-		if(prevLastEvalKey !== lastEvaluatedKey.id){
-			setPrevLastEvalKey(lastEvaluatedKey.id)
-		if (Object.keys(lastEvaluatedKey).length > 0) {
-			setResultsFetched(false);
-			// let postData = {
-			// 	type: 'BUG_REPORT',
-			// 	items: '20',
-			// 	lastEvalKey: lastEvaluatedKey,
-			// 	prodId: selectedProdId,
-			// 	prodVersion: productVersion,
-			// }
-			// getFeedbackLastEvalkeyData(postData, stateVariable);
-			fetchRecursiveData({
-				lastEvalKey: lastEvaluatedKey,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
-				showNoEmptyError: true,
-				searchWord: keyword,
-				filterCategory: focusCategory,
-				filterSeverity: focusSeverity,
-				filterDate: dateRange,
-			});
-		}
-		else{
-			setResultsFetched(true);
-			if(backdropOpen){
+			if (
+				response.Items.LastEvaluatedKey &&
+				Object.keys(response.Items.LastEvaluatedKey).length > 0
+			) {
+				setLastEvaluatedKey(response.Items.LastEvaluatedKey);
+				setRetryFetch(true);
+			} else if (
+				Object.keys(lastEvaluatedKey).length > 0 &&
+				!response.Items.LastEvaluatedKey
+			) {
+				setLastEvaluatedKey({});
+				setRetryFetch(false);
+				setResultsFetched(true);
+			} else {
+				setResultsFetched(true);
+				setRetryFetch(false);
+			}
+		} else {
+			if (!showNoEmptyError) {
 				setBackdropOpen(false);
 				setNoDataError(true);
+			} else {
+				setResultsFetched(true);
 			}
 		}
-	}
-	else{
-		setResultsFetched(true);
-	}
 	};
 
-	useEffect(()=>{
-		if(retryFetch){
+	const fetchMore = () => {
+		if (prevLastEvalKey !== lastEvaluatedKey.id) {
+			setPrevLastEvalKey(lastEvaluatedKey.id);
+			if (Object.keys(lastEvaluatedKey).length > 0) {
+				setResultsFetched(false);
+				// let postData = {
+				// 	type: 'BUG_REPORT',
+				// 	items: '20',
+				// 	lastEvalKey: lastEvaluatedKey,
+				// 	prodId: selectedProdId,
+				// 	prodVersion: productVersion,
+				// }
+				// getFeedbackLastEvalkeyData(postData, stateVariable);
+				fetchRecursiveData({
+					lastEvalKey: lastEvaluatedKey,
+					prodId: selectedProdId,
+					prodVersion: productVersion,
+					showNoEmptyError: true,
+					searchWord: keyword,
+					filterCategory: focusCategory,
+					filterSeverity: focusSeverity,
+					filterDate: dateRange,
+				});
+			} else {
+				setResultsFetched(true);
+				if (backdropOpen) {
+					setBackdropOpen(false);
+					setNoDataError(true);
+				}
+			}
+		} else {
+			setResultsFetched(true);
+		}
+	};
+
+	useEffect(() => {
+		if (retryFetch) {
 			fetchMore();
 		}
-	},[retryFetch, lastEvaluatedKey])
+	}, [retryFetch, lastEvaluatedKey]);
 
 	useEffect(() => {
 		// if(error || noDataError) {
@@ -689,7 +691,12 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			if (Object.keys(feedbackBarChartData).length > 0) {
 				setBackdropOpen(false);
 			}
-			if (pieChartSeries && focusSeverity.length === 0 && focusCategory.length === 0 && keyword.length === 0) {
+			if (
+				pieChartSeries &&
+				focusSeverity.length === 0 &&
+				focusCategory.length === 0 &&
+				keyword.length === 0
+			) {
 				let searchCategoryList = Object.keys(pieChartSeries);
 				searchCategoryList = searchCategoryList.map((element) => {
 					// return element.toLowerCase(); // Tried lower case as standard;
@@ -988,7 +995,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								resultsFetched={resultsFetched}
 							/>
 						</div>
-					) :  noDataError ? (
+					) : noDataError ? (
 						<div style={{ marginTop: '3rem' }}>
 							<Failure message={`No bugs found`} />
 						</div>
@@ -1075,45 +1082,55 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 										]}
 									/>
 								</Grid>
-								{dataFetchLoader ? (<div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-							<CircularProgress color='inherit' />
-							</div>) :
-								(<Grid container style={{ marginTop: '3rem' }}>
-									<Grid item lg={5}>
-										<Paper
-											elevation={3}
-											style={{ minWidth: 515, height: 350, paddingTop: 10 }}
-										>
-											<ReactApexChart
-												options={bugBarChartOptions}
-												series={bugBarChartSeries}
-												type='bar'
-												width={500}
-												height={320}
-											/>
-										</Paper>
+								{dataFetchLoader ? (
+									<div
+										style={{
+											marginTop: '3rem',
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+										}}
+									>
+										<CircularProgress color='inherit' />
+									</div>
+								) : (
+									<Grid container style={{ marginTop: '3rem' }}>
+										<Grid item lg={5}>
+											<Paper
+												elevation={3}
+												style={{ minWidth: 515, height: 350, paddingTop: 10 }}
+											>
+												<ReactApexChart
+													options={bugBarChartOptions}
+													series={bugBarChartSeries}
+													type='bar'
+													width={500}
+													height={320}
+												/>
+											</Paper>
+										</Grid>
+										<Grid item lg={2}></Grid>
+										<Grid item lg={5}>
+											<Paper
+												elevation={3}
+												style={{
+													minWidth: 500,
+													height: 350,
+													paddingTop: 10,
+													marginLeft: '-60px',
+												}}
+											>
+												<ReactApexChart
+													options={pieChartOptions}
+													series={Object.values(pieChartSeries)}
+													type='pie'
+													width={500}
+													height={320}
+												/>
+											</Paper>
+										</Grid>
 									</Grid>
-									<Grid item lg={2}></Grid>
-									<Grid item lg={5}>
-										<Paper
-											elevation={3}
-											style={{
-												minWidth: 500,
-												height: 350,
-												paddingTop: 10,
-												marginLeft: '-60px',
-											}}
-										>
-											<ReactApexChart
-												options={pieChartOptions}
-												series={Object.values(pieChartSeries)}
-												type='pie'
-												width={500}
-												height={320}
-											/>
-										</Paper>
-									</Grid>
-								</Grid>)}
+								)}
 							</div>
 							<RenderTable
 								key='renderTable3'
@@ -1144,6 +1161,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								productName={prodNameIdMapping[selectedProdId].name}
 							/>
 						</div>
 					)}

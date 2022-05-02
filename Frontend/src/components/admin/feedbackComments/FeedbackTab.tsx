@@ -1204,9 +1204,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 												/>
 											</Paper>
 										</Grid>
-										<Grid item lg={5} style={{ marginTop: '20px', marginBottom: 0, height: '80px'}}>
-															<ExportBtn data={data} client={prodNameIdMapping[selectedProdId].name}/>
-										</Grid>
 									</Grid>
 								)}
 							</div>
@@ -1239,6 +1236,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								productName={prodNameIdMapping[selectedProdId].name}
 							/>
 						</div>
 					)}
