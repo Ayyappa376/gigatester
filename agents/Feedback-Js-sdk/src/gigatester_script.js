@@ -3545,11 +3545,13 @@ let GigaTester_StringUtils = {
                 }
             },
             start: function() {
+                console.log('GigaTester: start called');
                 GigaTester_modal.config_loaded = false;
                 GigaTester_modal.init.call(GigaTester_modal);
                 console.log('GigaTester: js api');
             },
             destroy: function() {
+                console.log('GigaTester: destroy called');
                 if (GigaTester_modal.custom_ui && GigaTester_modal.custom_ui.element) {
                     GigaTester_modal.custom_ui.element.remove();
                 }
@@ -3560,28 +3562,33 @@ let GigaTester_StringUtils = {
                 delete window.GigaTester
             },
             open: function() {
+                console.log('GigaTester: open called');
                 GigaTester_modal.openControls();
             },
             close: function() {
+                console.log('GigaTester: close called');
                 GigaTester_modal.reset();
             },
             show: function() {
+                console.log('GigaTester: show called');
                 GigaTester.hidden = false;
                 GigaTester_modal.custom_ui.element.css("display", "");
             },
             hide: function () {
+                console.log('GigaTester: hide called');
                 GigaTester_modal.reset();
                 GigaTester.hidden = true;
                 GigaTester_modal.custom_ui.element.hide();
             },
             useRemote: function () {
+                console.log('GigaTester: useRemote called');
                 GigaTester_modal.configs.isRemote = true;
                 GigaTester_modal.custom_ui.element.css("display", "");
                 GigaTester_modal.popOutDialog();
             },
             //TODO: should eventually remove this function and use only the property
             setEmail: function(email) {
-                // console.log(email);
+                console.log('GigaTester: setEmail called with email =', email);
                 if (typeof email === "string") {
                     GigaTester_modal.form_data.email = $.trim(email);
                     GigaTester.email = $.trim(email);
@@ -3591,13 +3598,13 @@ let GigaTester_StringUtils = {
             },
             //TODO: should eventually remove this function and use only the property
             setUserDetails: function(userData){
-                console.log(userData, 'Gigatester: userData:')
+                console.log('GigaTester: setUserDetails called with userData =', userData);
                 if(typeof userData === "object"){
                     Object.entries(userData).forEach(([key, val]) => {
                         if(key.trim().toLowerCase() == "email"){
                             GigaTester.setEmail(val)
                         }
-                        console.log(key.trim().toLowerCase(), val);
+                        // console.log(key.trim().toLowerCase(), val);
                     });
                     GigaTester_modal.user_detail = userData;
                     GigaTester.userDetails = userData;
@@ -3608,7 +3615,7 @@ let GigaTester_StringUtils = {
             },
             //TODO: should eventually remove this function and use only the property
             setContextDetails: function(contextData){
-                console.log(contextData, 'Gigatester: contextData:');
+                console.log('GigaTester: setContextDetails called with contextData =', contextData);
                 if(typeof contextData === "object") {
                     GigaTester_modal.context_detail = contextData;
                     GigaTester.contextDetails = contextData;
@@ -3623,6 +3630,7 @@ let GigaTester_StringUtils = {
             //     }
             // },
             setDefaultCategory: function(category, params) {
+                console.log('GigaTester: setDefaultCategory called with {contextData, params} =', {contextData: contextData, params: params});
                  if (typeof category === "string" && typeof params === "string") {
                     let defaultCategory = category.trim().toLowerCase();
                     console.log('GigaTester: defaultCategory ', defaultCategory)
@@ -3698,7 +3706,7 @@ let GigaTester_StringUtils = {
                 //     platformOs?: any
                 //     pageURL?: string
                 //    }
-                console.log(feedbackData, 'Gigatester: feedbackData:');
+                console.log('Gigatester: postFeedback called with feedbackData = ', feedbackData);
                 if(typeof feedbackData === "object") {
                     //TODO: fill data to be posted from parameter
                     const postData = {

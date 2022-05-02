@@ -37,7 +37,7 @@ async function sendThanksEmail(
     });
 }
 
-/**
+/* *
  * Validates email and checks product email configuration before sending email
  * @param  {string} userName- User's email
  *  @param {string} jsonFeedbackType- Feedback types (FEEDBACK or BUG_REPORT) from jsonBody POST data
@@ -76,7 +76,7 @@ export const processThankYouEmail = async (userName: string, jsonFeedbackType: s
         }
 
         if ((checkRating || checkSeverity) && validEmail) {
-            console.log('Email- type:', type, 'checkRating:', checkRating, 'checkSeverity:', checkSeverity, 'userName:', userName, 'validEmail:', validEmail)
+            console.log('Email- type:', type, 'checkRating:', checkRating, 'checkSeverity:', checkSeverity, 'userName:', userName, 'validEmail:', validEmail);
             try {
                 const thankYouEmail: any = await sendThanksEmail(userName, product.feedbackAgentSettings.title, emailText[type]);
                 console.log('Email sent result:', thankYouEmail);
@@ -85,10 +85,10 @@ export const processThankYouEmail = async (userName: string, jsonFeedbackType: s
                 console.log(`error sending ${type} email`, error);
             }
         } else {
-            return;
+            return undefined;
         }
 
     }
 
     return result;
-}
+};
