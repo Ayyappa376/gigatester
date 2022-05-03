@@ -39,6 +39,7 @@ import RenderKeywordFilter from './RenderKeywordFilter';
 import RenderSeverityFilter from './RenderSeverityFilter';
 import RenderRatingFilter from './RenderFilters';
 import RenderCategoryFilter from './RenderCategoryFilter';
+import ExportBtn from './ExportButton';
 import SearchField from './SearchField';
 import { last } from 'lodash';
 
@@ -223,7 +224,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		) {
 			if (productVersion === 'all') {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: '',filterDate: dateRange });
+				fetchRecursiveData({
+					prodId: selectedProdId,
+					prodVersion: '',
+					filterDate: dateRange,
+				});
 				getFeedbckChartData({
 					setDataFetchLoader,
 					setFeedbackBarChartData,
@@ -235,7 +240,11 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				});
 			} else {
 				setBackdropOpen(true);
-				fetchRecursiveData({ prodId: selectedProdId, prodVersion: productVersion, filterDate: dateRange });
+				fetchRecursiveData({
+					prodId: selectedProdId,
+					prodVersion: productVersion,
+					filterDate: dateRange,
+				});
 				getFeedbckChartData({
 					setDataFetchLoader,
 					setFeedbackBarChartData,
@@ -358,7 +367,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 		if (focusSeverity.length <= 0) {
 			setCurrentDisable('');
-			setRawData([])
+			setRawData([]);
 			setData([]);
 			// setData(rawData);
 			fetchRecursiveData({
@@ -382,7 +391,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		// fetch the results from backend
 		setResultsFetched(false);
 		setData([]);
-		setRawData([])
+		setRawData([]);
 		fetchRecursiveData({
 			filterSeverity: focusSeverity,
 			prodId: selectedProdId,
@@ -399,7 +408,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			filterDate: dateRange,
 		});
-		
 	}, [focusSeverity]);
 
 	useEffect(() => {
@@ -561,7 +569,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				setRawData((rawDataObj) => {
 					// clear filter will get the idea that the data has already been fetched.
 					let rawDataCopy = new Set([...rawDataObj].concat(response.Items.Items));
-					if(filterDate?.endDate){
+					if (filterDate?.endDate) {
 						rawDataCopy = new Set([].concat(response.Items.Items));
 					}
 					return Array.from(rawDataCopy);
@@ -581,8 +589,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			) {
 				setLastEvaluatedKey({});
 			}
-		} 
-		else if (
+		} else if (
 			response &&
 			response.Items &&
 			response.Items.Items &&
@@ -595,67 +602,59 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			) {
 				setLastEvaluatedKey(response.Items.LastEvaluatedKey);
 				setRetryFetch(true);
-			}
-			else if (
+			} else if (
 				Object.keys(lastEvaluatedKey).length > 0 &&
 				!response.Items.LastEvaluatedKey
 			) {
 				setLastEvaluatedKey({});
 				setRetryFetch(false);
 				setResultsFetched(true);
-			}
-			else{
+			} else {
 				setResultsFetched(true);
 				setRetryFetch(false);
 			}
-		}
-		else {
+		} else {
 			if (!showNoEmptyError) {
 				setBackdropOpen(false);
 				setNoDataError(true);
-			}
-			else{
+			} else {
 				setResultsFetched(true);
-
-			}
-		};
-	}	
-
-
-	const fetchMore = () => {
-		if(prevLastEvalKey !== lastEvaluatedKey.id){
-			setPrevLastEvalKey(lastEvaluatedKey.id)
-		if (Object.keys(lastEvaluatedKey).length > 0) {
-			setResultsFetched(false);
-			fetchRecursiveData({
-				lastEvalKey: lastEvaluatedKey,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
-				showNoEmptyError: true,
-				searchWord: keyword,
-				filterRating: focusRating,
-				filterCategory: focusCategory,
-				filterDate: dateRange,
-			});
-		}
-		else{
-			setResultsFetched(true);
-			if(backdropOpen){
-				setBackdropOpen(false);
-				setNoDataError(true);
 			}
 		}
-	}
-	else{
-		setResultsFetched(true);
-	}
 	};
 
-	useEffect(()=>{
-		if(retryFetch){
+	const fetchMore = () => {
+		if (prevLastEvalKey !== lastEvaluatedKey.id) {
+			setPrevLastEvalKey(lastEvaluatedKey.id);
+			if (Object.keys(lastEvaluatedKey).length > 0) {
+				setResultsFetched(false);
+				fetchRecursiveData({
+					lastEvalKey: lastEvaluatedKey,
+					prodId: selectedProdId,
+					prodVersion: productVersion,
+					showNoEmptyError: true,
+					searchWord: keyword,
+					filterRating: focusRating,
+					filterCategory: focusCategory,
+					filterDate: dateRange,
+				});
+			} else {
+				setResultsFetched(true);
+				if (backdropOpen) {
+					setBackdropOpen(false);
+					setNoDataError(true);
+				}
+			}
+		} else {
+			setResultsFetched(true);
+		}
+	};
+
+	useEffect(() => {
+		if (retryFetch) {
 			fetchMore();
 		}
-	},[retryFetch, lastEvaluatedKey])
+	}, [retryFetch, lastEvaluatedKey]);
 
 	useEffect(() => {
 		// if (error || noDataError) {
@@ -666,7 +665,12 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			if (Object.keys(feedbackBarChartData).length > 0) {
 				setBackdropOpen(false);
 			}
-			if (pieChartSeries && focusRating.length === 0 && focusCategory.length === 0 && keyword.length === 0) {
+			if (
+				pieChartSeries &&
+				focusRating.length === 0 &&
+				focusCategory.length === 0 &&
+				keyword.length === 0
+			) {
 				setCategoryList(Object.keys(pieChartSeries));
 			}
 		}
@@ -791,7 +795,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 	const clearSearch = () => {
 		setKeyword('');
 		setSearchedData([]);
-
 	};
 
 	useEffect(() => {
@@ -800,7 +803,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			// setData(rawData);
 			setSearchInitiated(false);
 			setData([]);
-			setRawData([])
+			setRawData([]);
 			setResultsFetched(false);
 			fetchRecursiveData({
 				prodId: selectedProdId,
@@ -826,7 +829,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (keyword) {
 			setResultsFetched(false);
 			setData([]);
-			setRawData([])
+			setRawData([]);
 			fetchRecursiveData({
 				prodId: selectedProdId,
 				prodVersion: productVersion,
@@ -941,10 +944,13 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 					<CircularProgress color='inherit' />
 				</Backdrop>
 			) : (
-				<div> 
-					{globalSearchInitiated  ? (
+				<div>
+					{globalSearchInitiated ? (
 						<div>
-							<Grid container style={{ width: '100%', marginTop: '0.7rem' }}>
+							<Grid
+								container
+								style={{ width: '100%', marginTop: '0.7rem', position: 'relative' }}
+							>
 								{currentDisable.length > 0 ? (
 									<Alert className={classes.info} severity='info'>
 										Deselect button to reactivate filters
@@ -1022,9 +1028,18 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 									]}
 								/>
 							</Grid>
-							dataFetchLoader ? (<div style={{ marginTop: '3rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-							<CircularProgress color='inherit' />
-							</div>) : 
+							dataFetchLoader ? (
+							<div
+								style={{
+									marginTop: '3rem',
+									display: 'flex',
+									alignItems: 'center',
+									justifyContent: 'center',
+								}}
+							>
+								<CircularProgress color='inherit' />
+							</div>
+							) :
 							<RenderTable
 								key='renderTable2'
 								tableData={searchedData}
@@ -1056,8 +1071,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								resultsFetched={resultsFetched}
 							/>
 						</div>
-					) : 
-					noDataError ? (
+					) : noDataError ? (
 						<div style={{ marginTop: '3rem' }}>
 							<Failure message={renderErr()} />
 						</div>
@@ -1143,45 +1157,55 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 										]}
 									/>
 								</Grid>
-								{dataFetchLoader ? (<div style={{ marginTop: '3rem', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-							<CircularProgress color='inherit' />
-							</div>) :
-								(<Grid container style={{ marginTop: '3rem' }}>
-									<Grid item lg={5}>
-										<Paper
-											elevation={3}
-											style={{ minWidth: 515, height: 350, paddingTop: 10 }}
-										>
-											<ReactApexChart
-												options={feedbackBarChartOptions}
-												series={barChartSeries}
-												type='bar'
-												width={500}
-												height={320}
-											/>
-										</Paper>
+								{dataFetchLoader ? (
+									<div
+										style={{
+											marginTop: '3rem',
+											display: 'flex',
+											justifyContent: 'center',
+											alignItems: 'center',
+										}}
+									>
+										<CircularProgress color='inherit' />
+									</div>
+								) : (
+									<Grid container style={{ marginTop: '3rem' }}>
+										<Grid item lg={5}>
+											<Paper
+												elevation={3}
+												style={{ minWidth: 515, height: 350, paddingTop: 10 }}
+											>
+												<ReactApexChart
+													options={feedbackBarChartOptions}
+													series={barChartSeries}
+													type='bar'
+													width={500}
+													height={320}
+												/>
+											</Paper>
+										</Grid>
+										<Grid item lg={2}></Grid>
+										<Grid item lg={5}>
+											<Paper
+												elevation={3}
+												style={{
+													minWidth: 500,
+													height: 350,
+													paddingTop: 10,
+													marginLeft: '-60px',
+												}}
+											>
+												<ReactApexChart
+													options={pieChartOptions}
+													series={Object.values(pieChartSeries)}
+													type='pie'
+													width={500}
+													height={320}
+												/>
+											</Paper>
+										</Grid>
 									</Grid>
-									<Grid item lg={2}></Grid>
-									<Grid item lg={5}>
-										<Paper
-											elevation={3}
-											style={{
-												minWidth: 500,
-												height: 350,
-												paddingTop: 10,
-												marginLeft: '-60px',
-											}}
-										>
-											<ReactApexChart
-												options={pieChartOptions}
-												series={Object.values(pieChartSeries)}
-												type='pie'
-												width={500}
-												height={320}
-											/>
-										</Paper>
-									</Grid>
-								</Grid>)}
+								)}
 							</div>
 							<RenderTable
 								key='renderTable1'
@@ -1212,9 +1236,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								productName={prodNameIdMapping[selectedProdId].name}
 							/>
 						</div>
-					 )    }
+					)}
 				</div>
 			)}
 		</div>
