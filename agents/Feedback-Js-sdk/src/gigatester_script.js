@@ -3630,7 +3630,7 @@ let GigaTester_StringUtils = {
             //     }
             // },
             setDefaultCategory: function(category, params) {
-                console.log('GigaTester: setDefaultCategory called with {contextData, params} =', {contextData: contextData, params: params});
+                console.log('GigaTester: setDefaultCategory called with {category, params} =', {category: category, params: params});
                  if (typeof category === "string" && typeof params === "string") {
                     let defaultCategory = category.trim().toLowerCase();
                     console.log('GigaTester: defaultCategory ', defaultCategory)
