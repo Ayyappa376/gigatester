@@ -992,7 +992,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								setFocusCategory={setFocusCategory}
 								categoryList={categoryList}
 								severityList={severityList}
-								resultsFetched={resultsFetched}
+									resultsFetched={resultsFetched}
+									fetchAgain={fetchMore}
 							/>
 						</div>
 					) : noDataError ? (
@@ -1162,6 +1163,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								severityList={severityList}
 								resultsFetched={resultsFetched}
 								productName={prodNameIdMapping[selectedProdId].name}
+								fetchAgain={fetchMore}
 							/>
 						</div>
 					)}

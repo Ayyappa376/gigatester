@@ -74,7 +74,7 @@ async function handler(
       const chartData = await getChartData({type, prodId, search, filterCategory, filterRating, filterSeverity, prodVersion, startDate, endDate});
       return responseBuilder.ok({Items: chartData }, response);
     }
-    feedback = await getUserFeedbackList({type,items, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate, lastEvalKeyId,lastEvalKeyfeedbackType,lastEvalKeyCreatedOn });
+    feedback = await getUserFeedbackList({type, items, search, prodId, prodVersion, order, filterRating, filterSeverity, filterCategory, startDate, endDate, lastEvalKeyId,lastEvalKeyfeedbackType,lastEvalKeyCreatedOn });
     return responseBuilder.ok({Items: feedback }, response);
   } catch (err) {
     appLogger.error(err, 'Internal Server Error');

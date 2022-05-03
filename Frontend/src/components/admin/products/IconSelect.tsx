@@ -8,7 +8,7 @@ import {
   Button,
   Tooltip,
 } from '@material-ui/core';
-import IconProgressBar from './IconProgressBar';
+import IconProgressBar from '../feedbackComments/IconProgressBar';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 
 

@@ -23,14 +23,18 @@ interface exportProps {
 	data?: any;
 	client?: string;
 	type?: string;
+	fetchMore: Function;
 }
 
-const ExportBtn = ({ data, client, type }: exportProps) => {
+const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
 	const [exportedData, setExportedData] = useState<any>([]);
 	const [enable, setDisable] = useState<boolean>(false);
+	const [toExport , setToExport] = useState<boolean>(false);
+	const [quantity, setQuantity] = useState<number>(0);
 	const classes = useStyles();
 
 	// console.log('data', data);
+	console.log('quanitty', quantity)
 
 	const organizeData = (data: any) => {
 		const tempArray: any = [];
@@ -99,26 +103,41 @@ const ExportBtn = ({ data, client, type }: exportProps) => {
 	}
 
 	useEffect(() => {
-		if (data.length > 0) {
+		if (data.length > 0 && data !== exportedData) {
 			setDisable(false);
 			const dataOrganized: any[] = organizeData(data);
+			setQuantity(dataOrganized.length)
 			setExportedData(dataOrganized);
 		} else {
 			setDisable(true);
 		}
 	}, [data])
 
+	useEffect(() => {
+
+		if (exportedData.length > 0 && toExport) {
+			console.log('EXPORTING');
+			// create day stamp, title for export file, and feedback type (Feedback or bugs)
+			const day = new Date().toISOString().split('T')[0];
+			const title = client ? `${client}_${day}.xlsx` : `'Product_${day}.xlsx'`;
+			const dataType = type ? type : 'Feedback';
+
+			// XLSX functions -> create workbook, create worksheet (map JSON data to excel sheets)
+			const workBook = XLSX.utils.book_new();
+			const workSheet = XLSX.utils.json_to_sheet(exportedData);
+			XLSX.utils.book_append_sheet(workBook, workSheet, `${dataType}-Sheet`);
+			// exports XLSX file based on data set above
+			XLSX.writeFile(workBook, title);
+		}
+	}, [exportedData])
+
 
 	const handleExport = (event: any) => {
-		console.log('EXPORTING');
-		const day = new Date().toISOString().split('T')[0];
-		const title = client ? `${client}_${day}.xlsx` : `'Product_${day}.xlsx'`;
-		const dataType = type ? type : 'Feedback';
+		// on click, fetchMore will call max db scan of 999999
+		fetchMore(999999);
+		// set export to true allows useEffect with exportedData state to export excel file
+		setToExport(true);
 
-		const workBook = XLSX.utils.book_new();
-		const workSheet = XLSX.utils.json_to_sheet(exportedData);
-		XLSX.utils.book_append_sheet(workBook, workSheet, `${dataType}-Sheet`);
-		XLSX.writeFile(workBook, title);
   };
 
 	return (

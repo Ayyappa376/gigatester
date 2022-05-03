@@ -146,7 +146,7 @@ export interface IRatingMapData {
     productId?: string,
     productVersion?: string
 }
-  
+
 export interface IBugMapData {
     userId: string,
     userIp: string,
@@ -157,11 +157,11 @@ export interface IBugMapData {
     productId?: string,
     productVersion?: string
 }
-  
+
 export interface IRatingMapping {
     [key : string] : IRatingMapData;
 };
-  
+
 export interface IBugDataMapping {
     [key : string] : IBugMapData;
 };
@@ -176,13 +176,14 @@ export interface IFetchRecursiveData {
   filterRating?: number[],
   filterSeverity?: string[],
   filterDate?: IDateRange,
-  filterCategory?: string[], 
+  filterCategory?: string[],
   prodId?: string,
   prodVersion?: string,
   showNoEmptyError?: boolean,
   searchWord?: string;
   noRawDataUpdate?: boolean;
-} 
+  fetchQuantity?: number;
+}
 
 export const feedbackPieChartOptions = {
     labels: [SATISFIED, SOMEWHAT_SATISFIED, DISSATISFIED],
@@ -253,7 +254,7 @@ export const feedbackPieChartOptions = {
   }
 
 export const getFeedbackBarChartOptions = (feedbackBarChartSeries: any) => {
-  return { 
+  return {
     chart: {
       id: 'rating-chart'
     },
@@ -280,7 +281,7 @@ export const getFeedbackBarChartOptions = (feedbackBarChartSeries: any) => {
 };
 
 export const getBugBarChartOptions = (bugBarChartSeries: any, FeedbackBarChartData: any) => {
-   return { 
+   return {
     chart: {
       id: 'severity-chart'
     },

@@ -54,6 +54,7 @@ interface IProps {
 	severity: boolean;
 	rating: boolean;
 	productName?: string;
+	fetchAgain: Function;
 }
 
 export type Order = 'asc' | 'desc';
@@ -86,6 +87,7 @@ const RenderTable = (props: IProps) => {
 		disable,
 		urls,
 		productName,
+		fetchAgain,
 	} = props;
 	const [fetchAllUrls, setFetchAllUrls] = useState(false);
 	const [isBugReport, setBugReport] = useState<boolean>(false);
@@ -191,7 +193,7 @@ const RenderTable = (props: IProps) => {
 
 	return (
 		<Container style={{ marginTop: '1.5rem' }}>
-			<ExportBtn data={tableData} client={productName} type={type} />
+			<ExportBtn data={tableData} client={productName} type={type} fetchMore={fetchAgain} />
 			<div className={classes.paper}>
 				<Toolbar className={classes.root}>
 					<Typography
