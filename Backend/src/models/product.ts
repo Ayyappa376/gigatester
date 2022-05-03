@@ -102,7 +102,7 @@ export interface EmailConfiguration {
       }; // 0, 1, 2, 3, 4, 5, 6 = all?
     emailText: {
       [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
-    }
+    };
   }
 
 export interface Category {

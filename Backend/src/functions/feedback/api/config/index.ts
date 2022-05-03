@@ -42,30 +42,23 @@ exports.handler = async (event: any) => {
       }
     try {
         switch (event.httpMethod) {
-            // case 'DELETE':
-            //     body = await dynamo.delete(JSON.parse(event.body)).promise();
-            //     break;
            case 'GET':
-               const apiKey = event.queryStringParameters.apiKey;
-               const version = event.queryStringParameters.version;
-               const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
+              const apiKey = event.queryStringParameters.apiKey;
+              const version = event.queryStringParameters.version;
+              const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>(<unknown>{
                 ExpressionAttributeValues: {
                   ':apiKey': apiKey,
                   ':version': version },
                 FilterExpression: 'apiKey = :apiKey AND version = :version',
                 TableName: getTableNameFor('GT_Products'),
               });
-               body = (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackAgentSettings);
+              console.log('feedback-api-config-handler: scan_params:', params);
+              body = (await scan<ProductInfo[]>(params)).map((prod: ProductInfo) => prod.feedbackAgentSettings);
+              console.log('feedback-api-config-handler: Response:', body);
 //               headers['Access-Control-Allow-Headers'] = '*';
 //               headers['Access-Control-Allow-Origin'] = '*';
 //               headers['Access-Control-Allow-Methods'] = 'HEAD, GET, POST, PUT, DELETE';
-               break;
-            // case 'POST':
-            //     body = await dynamo.put(tableparams).promise();
-            //     break;
-            // case 'PUT':
-            //     body = await dynamo.update(JSON.parse(event.body)).promise();
-            //     break;
+              break;
             case 'OPTIONS':
                 statusCode = '200';
 //                headers['Access-Control-Allow-Headers'] = '*';
