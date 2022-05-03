@@ -23,6 +23,7 @@ import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from 'react-loader-spinner';
 import RenderRow from './RenderRow';
+import ExportBtn from './ExportButton';
 
 interface IProps {
 	tableData: IAppFeedback[];
@@ -52,6 +53,7 @@ interface IProps {
 	category: boolean;
 	severity: boolean;
 	rating: boolean;
+	productName?: string;
 }
 
 export type Order = 'asc' | 'desc';
@@ -83,6 +85,7 @@ const RenderTable = (props: IProps) => {
 		setDisable,
 		disable,
 		urls,
+		productName,
 	} = props;
 	const [fetchAllUrls, setFetchAllUrls] = useState(false);
 	const [isBugReport, setBugReport] = useState<boolean>(false);
@@ -187,7 +190,8 @@ const RenderTable = (props: IProps) => {
 	};
 
 	return (
-		<Container style={{ marginTop: '5rem' }}>
+		<Container style={{ marginTop: '1.5rem' }}>
+			<ExportBtn data={tableData} client={productName} type={type} />
 			<div className={classes.paper}>
 				<Toolbar className={classes.root}>
 					<Typography

@@ -40,8 +40,8 @@ const ProductFilter = (props : IProps) => {
         }
       };
 
-    console.log(props.selectedProdId);
-    console.log(chose);
+    // console.log(props.selectedProdId);
+    // console.log(chose);
 
     return (
         <div>
