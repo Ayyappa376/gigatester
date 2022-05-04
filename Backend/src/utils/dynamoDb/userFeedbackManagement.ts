@@ -190,7 +190,6 @@ export const getUserFeedbackList = async ({type, items, search, lastEvalKey, las
     params.ScanIndexForward = order && order === 'asc' ? true : false;
   params.IndexName = 'feedbackType-createdOn-index'; // Need to remove hardcoding, and name should be based on the subdomain.
 
-    console.log('items', items)
     params.Limit = items ? parseInt(items, 10) : 100;
 
     if(lastEvalKeyCreatedOn && !lastEvalKey) {

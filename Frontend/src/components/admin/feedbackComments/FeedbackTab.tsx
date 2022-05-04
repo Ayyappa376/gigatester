@@ -476,7 +476,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		noRawDataUpdate,
 		fetchQuantity,
 	}: IFetchRecursiveData) => {
-		console.log('fetchQuantity', fetchQuantity);
 		// setBackdropOpen(true);
 		let urlAppend = ``;
 		let numItems = fetchQuantity ? fetchQuantity : NUMBER_OF_ITEMS_PER_FETCH;
