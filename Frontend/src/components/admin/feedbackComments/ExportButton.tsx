@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { Grid, Button, makeStyles, Tooltip } from '@material-ui/core';
+import { Grid, Button, makeStyles, Tooltip,	CircularProgress, Backdrop, } from '@material-ui/core';
 import GetApp from '@material-ui/icons/GetApp';
 import { buttonStyle } from '../../../common/common';
+import IconProgressBar from './IconProgressBar';
 import * as XLSX from 'xlsx';
 
 const useStyles = makeStyles((theme) => ({
@@ -17,6 +18,10 @@ const useStyles = makeStyles((theme) => ({
 	tooltip: {
 		fontSize: '12px',
 	},
+	backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
+  },
 }));
 
 interface exportProps {
@@ -26,16 +31,24 @@ interface exportProps {
 	fetchMore: Function;
 }
 
+const MAX_LIMIT = 999999;
+
 const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
-	const [exportedData, setExportedData] = useState<any>([]);
+	const [original, setOriginal] = useState<any>([]);
 	const [enable, setDisable] = useState<boolean>(false);
-	const [toExport , setToExport] = useState<boolean>(false);
-	const [quantity, setQuantity] = useState<number>(0);
+	const [toExport, setToExport] = useState<boolean>(false);
+	const [open, setOpen] = useState<boolean>(false);
 	const classes = useStyles();
 
-	// console.log('data', data);
-	console.log('quanitty', quantity)
+	// console.log('data', data.length);
+	// console.log('origina', original.length)
 
+	/**
+ * OrganizeData function parses each feedback object
+ * and creates custom fields for each individual key
+ * @param {any} data - array of data (feedback objects)
+ * @returns {array} - returns an array of the same feedback objects with all nested fields on same level
+ */
 	const organizeData = (data: any) => {
 		const tempArray: any = [];
 		data.forEach((item: any) => {
@@ -103,44 +116,49 @@ const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
 	}
 
 	useEffect(() => {
-		if (data.length > 0 && data !== exportedData) {
+		if (data.length > 0) {
 			setDisable(false);
-			const dataOrganized: any[] = organizeData(data);
-			setQuantity(dataOrganized.length)
-			setExportedData(dataOrganized);
+			if (original.length === 0) {
+				setOriginal(data)
+			}
 		} else {
 			setDisable(true);
 		}
 	}, [data])
 
 	useEffect(() => {
-
-		if (exportedData.length > 0 && toExport) {
+		//check if incoming data length is longer than original data array length (should be greater)
+		if (data.length > original.length && toExport) {
 			console.log('EXPORTING');
 			// create day stamp, title for export file, and feedback type (Feedback or bugs)
 			const day = new Date().toISOString().split('T')[0];
 			const title = client ? `${client}_${day}.xlsx` : `'Product_${day}.xlsx'`;
 			const dataType = type ? type : 'Feedback';
 
+			// invoke organizeData function to map out custom fields
+			const dataOrganized: any[] = organizeData(data);
+
 			// XLSX functions -> create workbook, create worksheet (map JSON data to excel sheets)
 			const workBook = XLSX.utils.book_new();
-			const workSheet = XLSX.utils.json_to_sheet(exportedData);
+			const workSheet = XLSX.utils.json_to_sheet(dataOrganized);
 			XLSX.utils.book_append_sheet(workBook, workSheet, `${dataType}-Sheet`);
 			// exports XLSX file based on data set above
 			XLSX.writeFile(workBook, title);
+			setOpen(false);
+			setToExport(false)
 		}
-	}, [exportedData])
+	}, [data, toExport])
 
 
 	const handleExport = (event: any) => {
+		// setOpen(true);
 		// on click, fetchMore will call max db scan of 999999
-		fetchMore(999999);
-		// set export to true allows useEffect with exportedData state to export excel file
+		fetchMore(MAX_LIMIT);
 		setToExport(true);
-
-  };
+	};
 
 	return (
+		<React.Fragment>
 		<Tooltip title='Click to export selected or filtered product data into CSV/XLSX file'
 		classes={{
 			tooltip: classes.tooltip,
@@ -155,7 +173,12 @@ const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
 				Export {type}
 				<GetApp style={{ fontSize: '20px' }} />
 			</Button>
-		</Tooltip>
+			</Tooltip>
+
+			{/* <Backdrop className={classes.backdrop} open={open}>
+					<CircularProgress color='inherit' />
+				</Backdrop> */}
+		</React.Fragment>
 	);
 };
 
