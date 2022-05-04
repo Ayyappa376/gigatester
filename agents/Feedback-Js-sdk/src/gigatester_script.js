@@ -3580,7 +3580,7 @@ let GigaTester_StringUtils = {
                 GigaTester.hidden = true;
                 GigaTester_modal.custom_ui.element.hide();
             },
-            useRemote: function () {
+            useRemote: function (btnId, event) {
                 console.log('GigaTester: useRemote called');
                 GigaTester_modal.configs.isRemote = true;
                 GigaTester_modal.custom_ui.element.css("display", "");
@@ -3624,11 +3624,6 @@ let GigaTester_StringUtils = {
                     console.log('GigaTester: error setting contextDetails: value not a map');
                 }
             },
-            // setName: function(name) {
-            //     if (typeof name === "string") {
-            //         GigaTester_modal.name = $.trim(name)
-            //     }
-            // },
             setDefaultCategory: function(category, params) {
                 console.log('GigaTester: setDefaultCategory called with {category, params} =', {category: category, params: params});
                  if (typeof category === "string" && typeof params === "string") {
