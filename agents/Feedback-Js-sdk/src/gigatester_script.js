@@ -2857,6 +2857,7 @@ let GigaTester_StringUtils = {
                                 }
                                 popup_feature_icon.appendTo(popup_dialog);
                                 popup_feature_icon_tooltip.appendTo(popup_feature_icon);
+                                // push popout options container a bit further into view
                                 popup_dialog[0].style.bottom = '-160px';
                                 popup_feature_icon.on("click", function(e){
                                     GigaTester_modal.form_type = "FEEDBACK";

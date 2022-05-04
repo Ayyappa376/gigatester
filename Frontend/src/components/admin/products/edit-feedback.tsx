@@ -768,7 +768,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
         let valueArray = temp.products[0].feedbackAgentSettings.feedbackTypes || [];
         valueArray = [...event.target.value];
-        console.log('valueArray', valueArray)
         temp.products[0].feedbackAgentSettings.feedbackTypes = valueArray;
         setProductParams(temp);
       }
@@ -1124,7 +1123,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   }
 
   const handleFeatureReqTitleChange = (event: any) => {
-    console.log('title', event)
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
