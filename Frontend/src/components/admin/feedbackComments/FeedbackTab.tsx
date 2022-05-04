@@ -474,31 +474,32 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		searchWord,
 		showNoEmptyError,
 		noRawDataUpdate,
+		fetchQuantity,
 	}: IFetchRecursiveData) => {
 		// setBackdropOpen(true);
 		let urlAppend = ``;
-		let numItems = NUMBER_OF_ITEMS_PER_FETCH;
+		let numItems = fetchQuantity ? fetchQuantity : NUMBER_OF_ITEMS_PER_FETCH;
 		if (prodId) {
 			urlAppend += `?prodId=${prodId}`;
 			if (prodVersion) {
 				urlAppend += `&prodVersion=${prodVersion}`;
 			}
 		}
-		if (filterRating) {
+		if (filterRating && filterRating?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterRating=${filterRating.join(',')}`
 				: `?filterRating=${filterRating.join(',')}`;
 			numItems = 500;
 		}
 
-		if (filterSeverity) {
+		if (filterSeverity && filterSeverity?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterSeverity=${filterSeverity.join(',')}`
 				: `?filterSeverity=${filterSeverity.join(',')}`;
 			numItems = 500;
 		}
 
-		if (filterCategory) {
+		if (filterCategory && filterCategory?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterCategory=${filterCategory.join(',')}`
 				: `?filterCategory=${filterCategory.join(',')}`;
@@ -525,8 +526,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				: `?search=${filterDate.startDate}&endDate=${filterDate.endDate}`;
 		}
 
-		urlAppend += urlAppend ? `&item=${numItems}` : `?item=${numItems}`;
-
+		urlAppend += urlAppend ? `&items=${numItems}` : `?items=${numItems}`;
+		console.log('urlAppen', urlAppend)
 		const response: any = await getFeedbackData({ props, urlAppend }).catch(
 			(error) => {
 				const perror = JSON.stringify(error);
@@ -623,7 +624,8 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 	};
 
-	const fetchMore = () => {
+	const fetchMore = (quantity?: number | undefined) => {
+		console.log('fetch more ', quantity);
 		if (prevLastEvalKey !== lastEvaluatedKey.id) {
 			setPrevLastEvalKey(lastEvaluatedKey.id);
 			if (Object.keys(lastEvaluatedKey).length > 0) {
@@ -637,6 +639,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 					filterRating: focusRating,
 					filterCategory: focusCategory,
 					filterDate: dateRange,
+					fetchQuantity: quantity,
 				});
 			} else {
 				setResultsFetched(true);
@@ -1069,6 +1072,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								fetchAgain={fetchMore}
 							/>
 						</div>
 					) : noDataError ? (
@@ -1237,6 +1241,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								severityList={severityList}
 								resultsFetched={resultsFetched}
 								productName={prodNameIdMapping[selectedProdId].name}
+								fetchAgain={fetchMore}
 							/>
 						</div>
 					)}

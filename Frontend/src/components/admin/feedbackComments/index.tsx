@@ -125,10 +125,10 @@ const FeedbackComments = (props: RouteComponentProps & IFeedbackComments) => {
 							background: 'url(magnifying.jpeg)',
 							marginTop: '20px',
 							// @ts-ignore
-							'-webkit-background-size': 'cover',
-							'-moz-background-size': 'cover',
-							'-o-background-size': 'cover',
-							'background-size': 'cover',
+							// '-webkit-background-size': 'cover',
+							// '-moz-background-size': 'cover',
+							// '-o-background-size': 'cover',
+							// 'background-size': 'cover',
 						}}
 					/>
 				</Box>
