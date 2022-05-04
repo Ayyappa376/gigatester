@@ -39,6 +39,7 @@ export interface IFeedbackAgentSettings {
   widgetLookAndFeel: IWidgetLAF;
   bugSettings?: IBugSettings;
   feedbackSettings?: IFeedbackSettings;
+  featureReqSettings?: IFeatureReqSettings;
 }
 
 export interface IBugSettings {
@@ -57,6 +58,15 @@ export interface IFeedbackSettings {
   categories: ICategory[];
   ratingIcon: IRatingIconType;
   ratingLimit: number; //values 1,2,3,4,5
+  dialogMsg?: string;
+  thanksMsg?: string;
+  icon?: string;
+  title?: string;
+  tooltip?: string;
+  reqComments: boolean;
+}
+
+export interface IFeatureReqSettings {
   dialogMsg?: string;
   thanksMsg?: string;
   icon?: string;
@@ -89,10 +99,6 @@ export interface ICustomProperties {
   padding?: string;
 }
 
-// export interface ICustomIcon {
-//   [key: string]: string,
-// }
-
 export interface ICategory {
   feedbacks?: string[];
   name: string;
@@ -114,12 +120,12 @@ export interface IEmailConfiguration {
   feedbackTypes: string[]; //Feedback or bugs
   ratingLimit?: {
     [key: string]: boolean;
-  }; // 0, 1, 2, 3, 4, 5, 6 = all?
+  };
   severityLimit?: {
     [key: string]: boolean;
-  }; // 0, 1, 2, 3, 4, 5, 6 = all?
+  };
   emailText: {
-    [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
+    [key: string]: string; // ex: Feedback : 'Dear customer ....' 
   }
 }
 
@@ -131,6 +137,7 @@ export interface IProductParams {
 export const MAIN_BUTTON = 'MainButton';
 export const FEEDBACK_OPT = 'FeedbackOpt';
 export const BUGS_OPT = 'BugsOpt';
+export const FEATURE_OPT = 'FeatureOpt';
 
 export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
@@ -140,9 +147,10 @@ export type IPlatformType = 'Web' | 'Mobile';
 export const PLATFORM_TYPE_BROWSER: IPlatformType = 'Web';
 export const PLATFORM_TYPE_NATIVE_REACT: IPlatformType = 'Mobile';
 
-export type IFeedbackType = 'FEEDBACK' | 'BUGS';
+export type IFeedbackType = 'FEEDBACK' | 'BUGS' | 'FEATURE_REQUEST';
 export const FEEDBACK_TYPE_FEEDBACK: IFeedbackType = 'FEEDBACK';
 export const FEEDBACK_TYPE_BUGS: IFeedbackType = 'BUGS';
+export const FEEDBACK_TYPE_FEATURE_REQ: IFeedbackType = 'FEATURE_REQUEST';
 
 export type IRatingIconType = 'STAR' | 'HEART' | 'EMOJI';
 export const RATING_ICON_TYPE_STAR: IRatingIconType = 'STAR';

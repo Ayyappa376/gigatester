@@ -3,7 +3,9 @@ import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel,
   FormControlLabel, Checkbox
  } from "@material-ui/core";
 import { buttonStyle, tooltipTheme } from '../../../common/common';
-import { FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
+import {
+  FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
+  FEEDBACK_TYPE_FEATURE_REQ,
   INVOKE_TYPE_MANUAL,
   IProductParams,
   PLATFORM_TYPE_BROWSER,
@@ -191,6 +193,7 @@ const StandardSettings = ({
           >
             <MenuItem key={FEEDBACK_TYPE_FEEDBACK} value={FEEDBACK_TYPE_FEEDBACK}>{'Submit Feedback'}</MenuItem>
             <MenuItem key={FEEDBACK_TYPE_BUGS} value={FEEDBACK_TYPE_BUGS}>{'Submit Bugs'}</MenuItem>
+            <MenuItem key={FEEDBACK_TYPE_FEATURE_REQ} value={FEEDBACK_TYPE_FEATURE_REQ}>{'Submit Feature Request'}</MenuItem>
           </Select>
         </FormControl>
       </Grid>
