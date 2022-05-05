@@ -125,7 +125,7 @@ export interface IEmailConfiguration {
     [key: string]: boolean;
   };
   emailText: {
-    [key: string]: string; // ex: Feedback : 'Dear customer ....' 
+    [key: string]: string; // ex: Feedback : 'Dear customer ....'
   }
 }
 
@@ -175,3 +175,9 @@ export const POS_LEFT_BOTTOM: IWidgetPosition = 'LEFT_BOTTOM';
 export const POS_BOTTOM_RIGHT: IWidgetPosition = 'BOTTOM_RIGHT';
 export const POS_BOTTOM_LEFT: IWidgetPosition = 'BOTTOM_LEFT';
 export const POS_CUSTOM: IWidgetPosition = 'CUSTOM';
+
+export const FeedbackTypesObj: any = {
+  'FEEDBACK': 'Submit Feedback',
+  'BUGS': 'Submit Bugs',
+  'FEATURE_REQUEST': 'Submit Feature Request',
+}

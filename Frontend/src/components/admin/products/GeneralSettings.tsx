@@ -10,6 +10,7 @@ import {
   IProductParams,
   PLATFORM_TYPE_BROWSER,
   PLATFORM_TYPE_NATIVE_REACT,
+  FeedbackTypesObj,
   // EMAIL_MANDATORY,
   // EMAIL_OPTIONAL,
 } from '../../../model';
@@ -92,21 +93,6 @@ const StandardSettings = ({
   handleCaptureSystemDetailsOption,
 }: SettingsProps) => {
   const classes = useStyles();
-
-  const FeedbackTypesObj: any = {
-    'FEEDBACK': {
-      text: 'Submit Feedback',
-      value: FEEDBACK_TYPE_FEEDBACK,
-    },
-    'BUGS': {
-      text: 'Submit Bugs',
-      value: FEEDBACK_TYPE_BUGS,
-    },
-    'FEATURE_REQUEST': {
-      text: 'Submit Feature Request',
-      value: FEEDBACK_TYPE_FEATURE_REQ,
-    }
-  }
 
   return (
     <Grid container spacing={1} style={{borderBottom: 'solid 1px #dddddd', padding: '20px 0'}} >
@@ -209,7 +195,7 @@ const StandardSettings = ({
             renderValue={(selected: any) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                 {selected.map((value: any) => (
-                  <Chip key={value} label={value} />
+                  <Chip key={value} label={FeedbackTypesObj[value]} />
                 ))}
               </Box>
             )}
