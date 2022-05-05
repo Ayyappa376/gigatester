@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 
 interface exportProps {
 	data: any;
-	client: string;
+	client?: string;
 	type?: string;
 	fetchMore: Function;
 }
