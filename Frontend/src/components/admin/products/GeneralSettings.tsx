@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, makeStyles,
-  FormControlLabel, Checkbox
+  FormControlLabel, Checkbox, Chip, OutlinedInput, Box,
  } from "@material-ui/core";
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import {
@@ -93,6 +93,21 @@ const StandardSettings = ({
 }: SettingsProps) => {
   const classes = useStyles();
 
+  const FeedbackTypesObj: any = {
+    'FEEDBACK': {
+      text: 'Submit Feedback',
+      value: FEEDBACK_TYPE_FEEDBACK,
+    },
+    'BUGS': {
+      text: 'Submit Bugs',
+      value: FEEDBACK_TYPE_BUGS,
+    },
+    'FEATURE_REQUEST': {
+      text: 'Submit Feature Request',
+      value: FEEDBACK_TYPE_FEATURE_REQ,
+    }
+  }
+
   return (
     <Grid container spacing={1} style={{borderBottom: 'solid 1px #dddddd', padding: '20px 0'}} >
       <Grid item xs={12} sm={12}>
@@ -177,7 +192,7 @@ const StandardSettings = ({
       <Grid item xs={12} sm={12}>
         <FormControl className={classes.formControl}>
           <InputLabel id={`feedbackTypes`} required={true}>
-            {'What can users submit using this widget (select multiple):'}
+            {'What can users submit using this widget? (select multiple in desired order):'}
           </InputLabel>
           <Select
             name={`select_feedbackTypes`}
@@ -190,6 +205,14 @@ const StandardSettings = ({
               : []
             }
             onChange={(event) => handleFeedbackTypesChange(event)}
+            // input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+            renderValue={(selected: any) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                {selected.map((value: any) => (
+                  <Chip key={value} label={value} />
+                ))}
+              </Box>
+            )}
           >
             <MenuItem key={FEEDBACK_TYPE_FEEDBACK} value={FEEDBACK_TYPE_FEEDBACK}>{'Submit Feedback'}</MenuItem>
             <MenuItem key={FEEDBACK_TYPE_BUGS} value={FEEDBACK_TYPE_BUGS}>{'Submit Bugs'}</MenuItem>

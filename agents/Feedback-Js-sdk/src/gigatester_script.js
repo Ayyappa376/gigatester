@@ -2775,8 +2775,7 @@ let GigaTester_StringUtils = {
                             popup_dialog.remove();
                         }
                     } else {
-                        const typeArray = GigaTester_modal.configs.cuvoTypes.reverse();
-                        typeArray.forEach(function (type) {
+                        GigaTester_modal.configs.cuvoTypes.forEach(function (type) {
                             if (type === 'BUGS') {
                                 let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.bugs_icon + GigaTester_modal.configs.bugs_title + '</gtdiv></popupbtn>');
                                 let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);

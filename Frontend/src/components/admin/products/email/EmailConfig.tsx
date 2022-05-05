@@ -72,7 +72,7 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 			<Box className={classes.configContain}>
 				{check ? (
 					<Box className={classes.emailConfig}>
-						{productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon && type !== 'BUGS' && type !== 'FEATURE_REQUEST' ? (
+						{productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon && type === 'FEEDBACK' ? (
 								<RatingLimitButtons
 									ratingSymbol={productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon}
 									ratingObj={productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.ratingLimit ? productInfo.products[0].emailConfig.ratingLimit : {}}
@@ -82,7 +82,7 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 
 						{check && productInfo.products &&
 						productInfo.products[0] &&
-							productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type !== 'FEEDBACK' && type !== 'FEATURE_REQUEST' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} severitiesObj={(productInfo.products[0] && productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.severityLimit ? productInfo.products[0].emailConfig.severityLimit : {})} /> : null}
+							productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type === 'BUGS' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} severitiesObj={(productInfo.products[0] && productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.severityLimit ? productInfo.products[0].emailConfig.severityLimit : {})} /> : null}
 
 						<TextField
 							className={classes.emailText}
