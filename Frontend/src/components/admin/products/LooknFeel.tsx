@@ -577,9 +577,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.top
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.top
 											: ''
 									}
 									label={'pixels or percentage'}
@@ -602,9 +602,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.bottom
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.bottom
 											: ''
 									}
 									label={'pixels or percentage'}
@@ -627,9 +627,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.right
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.right
 											: ''
 									}
 									label={'pixels or percentage'}
@@ -652,9 +652,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.left
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.left
 											: ''
 									}
 									label={'pixels or percentage'}
@@ -677,9 +677,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.borderRadius
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.borderRadius
 											: ''
 									}
 									label={'pixels or percentage'}
@@ -702,9 +702,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.rotation
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.rotation
 											: ''
 									}
 									label={'0 - 360'}
@@ -727,9 +727,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.margin
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.margin
 											: ''
 									}
 									label={'pixels'}
@@ -752,9 +752,9 @@ const LookAndFeel = ({
 										productParams.products &&
 										productParams.products[0] &&
 										productParams.products[0].feedbackAgentSettings &&
-										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel
-													.custom.padding
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel &&
+										productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom
+											? productParams.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.padding
 											: ''
 									}
 									label={'pixels'}

@@ -33,6 +33,7 @@ export interface FeedbackAgentSettings {
     invokeOn: InvokeType[];
     logo?: string;
     platform: PlatformType;
+    remoteBtns?: RemoteBtnSettings[];
     requireEmail?: boolean; // make email optional or mandatory
     thanksStr?: string;
     title: string;
@@ -98,10 +99,12 @@ export interface CustomProperties {
     top?: string;
 }
 
-// export interface CustomIcon {
-//     [key: string]: string,
-// }
-
+export interface RemoteBtnSettings {
+    name: string;
+    btnId?: string;
+    enabled: boolean;
+}
+  
 export interface EmailConfiguration {
     feedbackTypes: string[]; //Feedback or bugs
     ratingLimit?: {
