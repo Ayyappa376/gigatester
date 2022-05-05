@@ -191,7 +191,6 @@ const StandardSettings = ({
               : []
             }
             onChange={(event) => handleFeedbackTypesChange(event)}
-            // input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
             renderValue={(selected: any) => (
               <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
                 {selected.map((value: any) => (

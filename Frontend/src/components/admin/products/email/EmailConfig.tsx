@@ -3,14 +3,9 @@ import {
 	Grid,
 	Typography,
 	TextField,
-	FormControl,
 	makeStyles,
 	Box,
-	FormControlLabel,
 	Checkbox,
-	Radio,
-	RadioGroup,
-	FormLabel,
 } from '@material-ui/core';
 import RatingLimitButtons from './ratingLimit';
 import SeverityLimitButtons from './severityLimit';
@@ -42,7 +37,6 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 	}, [productInfo]);
 
 	const handleCheck = (event: any, currentType: string) => {
-		// event.stopPropagation();
 		if (check) {
 			setChecked(false);
 			handleEnableEmail(false, currentType)

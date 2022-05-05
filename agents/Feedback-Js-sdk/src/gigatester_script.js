@@ -2774,6 +2774,10 @@ let GigaTester_StringUtils = {
                             GigaTester_modal.form_type = "FEEDBACK";
                             window.GigaTester.open("FEEDBACK");
                             popup_dialog.remove();
+                        } else if (GigaTester_modal.configs.cuvoTypes[0] === 'FEATURE_REQUEST') {
+                            GigaTester_modal.form_type = "FEATURE_REQUEST";
+                            window.GigaTester.open("FEATURE_REQUEST");
+                            popup_dialog.remove();
                         }
                     } else {
                         GigaTester_modal.configs.cuvoTypes.forEach(function (type) {
