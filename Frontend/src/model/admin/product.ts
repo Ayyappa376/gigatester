@@ -36,6 +36,7 @@ export interface IFeedbackAgentSettings {
   videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
   requireEmail?: boolean;
   captureSystemDetails?: boolean;
+  remoteBtns?: IRemoteBtnSettings[];
   widgetLookAndFeel: IWidgetLAF;
   bugSettings?: IBugSettings;
   feedbackSettings?: IFeedbackSettings;
@@ -75,7 +76,7 @@ export interface IWidgetLAF {
   icon?: string;
   position: IWidgetPosition;
   rotation?: string;
-  custom: ICustomProperties;
+  custom?: ICustomProperties;
 }
 
 export interface ICustomProperties {
@@ -89,9 +90,11 @@ export interface ICustomProperties {
   padding?: string;
 }
 
-// export interface ICustomIcon {
-//   [key: string]: string,
-// }
+export interface IRemoteBtnSettings {
+  name: string;
+  btnId?: string;
+  enabled: boolean;
+}
 
 export interface ICategory {
   feedbacks?: string[];

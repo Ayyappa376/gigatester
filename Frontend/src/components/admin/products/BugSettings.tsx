@@ -31,8 +31,6 @@ interface BugSettingProps {
 //  useTrackingSystemSeverity: boolean,
 }
 
-
-
 const renderSeverityDetails = (
   severity: string,
   sevIndex: number,
@@ -485,8 +483,8 @@ const BugSettings = ({
             labelPlacement={'start'}
           />) : ''
           } */}
-        </Grid>
-      </Fragment>
+      </Grid>
+    </Fragment>
   );
 }
 

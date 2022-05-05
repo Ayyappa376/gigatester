@@ -188,6 +188,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             videoAudioMaxDuration: '1.5',
             requireEmail: true,
             captureSystemDetails: true,
+            remoteBtns: [],
             widgetLookAndFeel: {
               bgColor: '#042e5b',
               fgColor: '#ffffff',
@@ -207,9 +208,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
                 margin: '',
                 padding: '',
               },
-              rotation: '0',
-              top: '0',
-              left: '0'
+              rotation: '0'
             }
           };
         }
@@ -943,6 +942,9 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
         temp.products[0].feedbackAgentSettings.widgetLookAndFeel) {
+        if(!temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom) {
+          temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom = {};
+        }
         if (key === 'top') {
           temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.top = property;
           setProductParams(temp);
@@ -968,7 +970,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           temp.products[0].feedbackAgentSettings.widgetLookAndFeel.custom.padding = property;
           setProductParams(temp);
         }
-
       }
     }
   }
@@ -1086,6 +1087,51 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       }
     }
   }
+
+  
+  const handleChangeRemoteBtnSettings = (fieldName: string, event: any, index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.remoteBtns) {
+          if(fieldName === 'name') {
+            temp.products[0].feedbackAgentSettings.remoteBtns[index].name = event.target.value;
+          }
+          if(fieldName === 'btnId') {
+            temp.products[0].feedbackAgentSettings.remoteBtns[index].btnId = event.target.value;
+          }
+          if(fieldName === 'enabled') {
+            temp.products[0].feedbackAgentSettings.remoteBtns[index].enabled = !temp.products[0].feedbackAgentSettings.remoteBtns[index].enabled;
+          }
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const addRemoteBtnSettings = () => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+
+        if(!temp.products[0].feedbackAgentSettings.remoteBtns) {
+          temp.products[0].feedbackAgentSettings.remoteBtns = [];
+        }
+        temp.products[0].feedbackAgentSettings.remoteBtns.push({name: '', btnId: '', enabled: false});
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const deleteRemoteBtnSettings = (index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.remoteBtns) {
+        temp.products[0].feedbackAgentSettings.remoteBtns.splice(index, 1);
+        setProductParams(temp);
+      }
+    }
+  };
 
 //   //Temporarily commented
 //   const handleExtSystemSeverity = (data: any) => {
@@ -1279,9 +1325,9 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,
       addBugSeverity: addBugSeverity,
-//      useTrackingSystemSeverity: useTrackingSystemSeverity,
       handleChangeBugSeverityName: handleChangeBugSeverityName,
       deleteBugSeverity: deleteBugSeverity,
+//      useTrackingSystemSeverity: useTrackingSystemSeverity,
 //      handleTrackingSystemDetails: handleTrackingSystemDetails,
       handleBugTitleChange: handleBugTitleChange,
       handleBugTooltipChange: handleBugTooltipChange,
@@ -1302,6 +1348,9 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleEnableEmail: handleEnableEmail,
       handleEmailRating: handleEmailRating,
       handleEmailSeverity: handleEmailSeverity,
+      handleChangeRemoteBtnSettings: handleChangeRemoteBtnSettings,
+      addRemoteBtnSettings: addRemoteBtnSettings,
+      deleteRemoteBtnSettings: deleteRemoteBtnSettings,
     }
 
     return (
