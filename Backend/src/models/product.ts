@@ -94,7 +94,7 @@ export interface RemoteBtnSettings {
     btnId?: string;
     enabled: boolean;
 }
-  
+
 export interface EmailConfiguration {
     feedbackTypes: string[]; //Feedback or bugs
     ratingLimit?: {
