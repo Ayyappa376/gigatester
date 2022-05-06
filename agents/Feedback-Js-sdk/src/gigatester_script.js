@@ -3518,9 +3518,9 @@ let GigaTester_StringUtils = {
                                 if(remoteBtn.enabled) {
                                     GigaTester_modal.configs.isRemote = true;
                                     GigaTester.hidden = true;
-                                    // if(remoteBtn.btnId && remoteBtn.btnId.trim().length > 0) {
-                                    //     $(document.getElementById(remoteBtn.btnId.trim())).css("display", "");
-                                    // }
+                                    if(remoteBtn.btnId && remoteBtn.btnId.trim().length > 0) {
+                                        $(document.getElementById(remoteBtn.btnId.trim())).css("display", "");
+                                    }
                                 } else {
                                     if(remoteBtn.btnId && remoteBtn.btnId.trim().length > 0) {
                                         $(document.getElementById(remoteBtn.btnId.trim())).css("display", "none");
