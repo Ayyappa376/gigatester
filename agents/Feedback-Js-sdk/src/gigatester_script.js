@@ -2833,7 +2833,7 @@ let GigaTester_StringUtils = {
                 },
                 hideControls: function() {
                     this.custom_ui.button.hide();
-                    this.custom_ui.element.removeAttr("isopen")
+                    this.custom_ui.element.removeAttr("isopen");
                     this.custom_ui.element.css("display", "none");
                 },
                 showControls: function (force_show_form) {
@@ -3613,17 +3613,18 @@ let GigaTester_StringUtils = {
             },
             show: function() {
                 console.log('GigaTester: show called');
-                if(GigaTester.ready && !GigaTester_modal.configs.isRemote) {
+                if(!GigaTester_modal.configs.isRemote) {
                     GigaTester.hidden = false;
                     GigaTester_modal.custom_ui.element.css("display", "");
+                } else {
+                    console.log('GigaTester: show: isRemote is true');
                 }
             },
             hide: function () {
                 console.log('GigaTester: hide called');
                 GigaTester_modal.reset();
                 GigaTester.hidden = true;
-                GigaTester_modal.hideControls();
-//                GigaTester_modal.custom_ui.element.hide();
+                GigaTester_modal.custom_ui.element.hide();
             },
             // useRemote: function (btnId, event) {
             //     console.log('GigaTester: useRemote called');
