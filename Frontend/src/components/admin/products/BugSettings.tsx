@@ -7,14 +7,19 @@ import AddIcon from '@material-ui/icons/Add';
 import { BUGS_OPT, ICategory, IProductParams, TRACKING_SYSTEM_SELF } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
 import IconSelect from './IconSelect';
+import ExtTrackingSystemSettings from './extTrackingSystem/ExtTrackingSystemSettings';
 
 interface BugSettingProps {
   productParams: IProductParams;
   addBugCategory: Function;
   handleChangeBugCategoryName: Function;
+  handleChangeJiraFieldMapping: Function;
+  handleChangeExtSeverityFilter: Function;
+  handleChangeExtCategoryFilter: Function;
   deleteBugCategory: Function;
   addBugStdFeedbackText: Function;
   handleChangeBugStdFeedbackText: Function;
+  handleExtTrackingSystemSync: Function;
   deleteBugStdFeedbackText: Function;
   handleBugTitleChange: Function;
   handleBugTooltipChange: Function;
@@ -26,6 +31,11 @@ interface BugSettingProps {
   deleteBugSeverity: Function;
   handleShowSeverityOption: Function;
 	handleIconChange: Function;
+  handleURLChange: Function,
+  handleAuthChange: Function,
+  handleTrackingSytemProjectDetails: Function,
+  handleSystemTypeChange: Function,
+  handleExtSystemSeverity: Function,
 //  handleTrackingSystemDetails: Function,
 //  handleSetTrackingSystemBugSeverity: Function,
 //  useTrackingSystemSeverity: boolean,
@@ -182,11 +192,15 @@ const BugSettings = ({
   addBugCategory,
   handleChangeBugCategoryName,
   deleteBugCategory,
+  handleChangeJiraFieldMapping,
   addBugStdFeedbackText,
   handleChangeBugStdFeedbackText,
   deleteBugStdFeedbackText,
   addBugSeverity,
   handleChangeBugSeverityName,
+  handleExtTrackingSystemSync,
+  handleChangeExtSeverityFilter,
+  handleChangeExtCategoryFilter,
   deleteBugSeverity,
   handleBugTitleChange,
   handleBugTooltipChange,
@@ -194,8 +208,12 @@ const BugSettings = ({
   handleBugThanksMsgChange,
   handleReqComments,
   handleShowSeverityOption,
-  handleIconChange
-//  handleTrackingSystemDetails,
+  handleIconChange,
+  handleURLChange,
+  handleAuthChange,
+  handleTrackingSytemProjectDetails,
+  handleExtSystemSeverity,
+  handleSystemTypeChange,
 }: BugSettingProps) => {
   const classes = useStyles();
   // const stateVariable = useSelector((state: IRootState) => {
@@ -456,6 +474,23 @@ const BugSettings = ({
             )
           })
         }
+      <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
+        <Grid item xs={10}>
+          <Typography variant="h6">External System Settings:</Typography>
+        </Grid>
+        </Grid>
+               <Grid item xs={12} sm={12} style={{ marginTop: '5px', marginBottom: '10px', border: 'solid 1px #F1F1F1' }}>
+          <Box
+            sx={{
+              width: '100%',
+              marginTop: '5px',
+              marginBottom: '5px',
+            }}
+          >
+        <ExtTrackingSystemSettings productParams={productParams} handleTrackingSytemProjectDetails={handleTrackingSytemProjectDetails} handleSystemTypeChange={handleSystemTypeChange} handleChangeJiraFieldMapping={handleChangeJiraFieldMapping} handleChangeExtSeverityFilter={handleChangeExtSeverityFilter} handleChangeExtCategoryFilter={handleChangeExtCategoryFilter}
+        handleURLChange={handleURLChange} handleExtSystemSeverity={handleExtSystemSeverity} handleAuthChange={handleAuthChange} />
+        </Box>
+        </Grid>
         {/* {productParams && productParams.products && productParams.products[0] &&
           productParams.products[0].trackingSystem ?
           (<FormControlLabel

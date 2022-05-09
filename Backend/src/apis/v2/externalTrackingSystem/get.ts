@@ -1,7 +1,8 @@
 import { API, Handler } from '@apis/index';
 import {
   appLogger,
-  getJIRASeverityDetails,
+  getJiraFieldsList,
+  // getJIRASeverityDetails,
   responseBuilder,
 } from '@utils/index';
 import { Response } from 'express';
@@ -23,6 +24,7 @@ interface ExternalTrackingSystemRequest {
     appToken: string;
     email: string;
     url: string;
+    project: string;
   };
 }
 
@@ -33,7 +35,7 @@ async function handler(
   appLogger.info({ ExternalTrackingSystemRequest: request }, 'Inside Handler');
   const { headers, params, query } = request;
   const {type} = params;
-  const {email, appToken, url} = query;
+  const {email, appToken, url, project} = query;
 //  const { user: { email: userId } } = headers;
   if (!headers.user) {
     const err = new Error('InvalidUser');
@@ -57,8 +59,8 @@ async function handler(
     };
     const externalSystemUrl = url;
     if(type) {
-      severity = await getJIRASeverityDetails(auth, externalSystemUrl);
-      console.log(severity, 'severrity');
+      // severity = await getJIRASeverityDetails(auth, externalSystemUrl);
+      severity = await getJiraFieldsList(auth, externalSystemUrl, project);
       return responseBuilder.ok({Severity: severity }, response);
     }
     return responseBuilder.ok({Severity: severity }, response);

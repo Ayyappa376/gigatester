@@ -34,7 +34,7 @@ export const CONST_BUG_REPORT = 'BUG_REPORT';
 export const CONST_BUG_REPORT_CHART = 'BUG-REPORT-CHART';
 export const CONST_PRODUCT_ALL_VERSION = 'all';
 
-export const NUMBER_OF_ITEMS_PER_FETCH = 20;
+export const NUMBER_OF_ITEMS_PER_FETCH = 50;
  export interface IDateRange {
   startDate: string,
   endDate: string,
