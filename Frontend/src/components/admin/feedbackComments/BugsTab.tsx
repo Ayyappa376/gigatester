@@ -278,7 +278,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
-		if (Object.keys(lastEvaluatedKey).length > 0) {
 			// fetch the results from backend
 			setData([]);
 			setRawData([]);
@@ -288,64 +287,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				filterCategory: focusCategory,
 				filterSeverity: focusSeverity,
+				filterDate: dateRange,
 				searchWord: keyword,
 			});
-		} else {
-			setData(sortTableByDate(data, order));
-		}
+		
 	}, [order]);
-
-	useEffect(() => {
-		if (rawData.length === 0) {
-			return;
-		}
-		if (focusRating.length === 0) {
-			setCurrentDisable('');
-			// setData(rawData);
-			setRawData([]);
-			fetchRecursiveData({
-				filterRating: focusRating,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
-				showNoEmptyError: true,
-				noRawDataUpdate: false,
-				filterDate: dateRange,
-			});
-			getBugChartData({
-				setDataFetchLoader,
-				setBugBarChartSeries,
-				setFeedbackBarChartData,
-				setPieChartSeries,
-				filterRating: focusRating,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
-				filterDate: dateRange,
-			});
-			return;
-		}
-		// fetch the results from backend
-		setResultsFetched(false);
-		setData([]);
-		//setRawData([])
-		fetchRecursiveData({
-			filterRating: focusRating,
-			prodId: selectedProdId,
-			prodVersion: productVersion,
-			showNoEmptyError: true,
-			noRawDataUpdate: false,
-			filterDate: dateRange,
-		});
-		getBugChartData({
-			setDataFetchLoader,
-			setBugBarChartSeries,
-			setFeedbackBarChartData,
-			setPieChartSeries,
-			filterRating: focusRating,
-			prodId: selectedProdId,
-			prodVersion: productVersion,
-			filterDate: dateRange,
-		});
-	}, [focusRating]);
 
 	useEffect(() => {
 		if (rawData.length === 0) {
@@ -361,6 +307,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				showNoEmptyError: true,
 				noRawDataUpdate: false,
+				fetchOrder: order,
 				filterDate: dateRange,
 			});
 			getBugChartData({
@@ -385,6 +332,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: false,
+			fetchOrder: order,
 			filterDate: dateRange,
 		});
 		getBugChartData({
@@ -413,6 +361,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
+				fetchOrder: order,
 				filterDate: dateRange,
 			});
 			getBugChartData({
@@ -442,6 +391,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				showNoEmptyError: true,
 				noRawDataUpdate: false,
+				fetchOrder: order,
 				filterDate: dateRange,
 			});
 			getBugChartData({
@@ -466,6 +416,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: false,
+			fetchOrder: order,
 			filterDate: dateRange,
 		});
 		getBugChartData({
@@ -646,14 +597,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 			setPrevLastEvalKey(lastEvaluatedKey.id);
 			if (Object.keys(lastEvaluatedKey).length > 0) {
 				setResultsFetched(false);
-				// let postData = {
-				// 	type: 'BUG_REPORT',
-				// 	items: '20',
-				// 	lastEvalKey: lastEvaluatedKey,
-				// 	prodId: selectedProdId,
-				// 	prodVersion: productVersion,
-				// }
-				// getFeedbackLastEvalkeyData(postData, stateVariable);
 				fetchRecursiveData({
 					lastEvalKey: lastEvaluatedKey,
 					prodId: selectedProdId,
@@ -663,6 +606,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					filterCategory: focusCategory,
 					filterSeverity: focusSeverity,
 					filterDate: dateRange,
+					fetchOrder: order,
 				});
 			} else {
 				setResultsFetched(true);
@@ -835,6 +779,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				searchWord: keyword,
 				showNoEmptyError: true,
 				filterDate: dateRange,
+				fetchOrder: order,
 				noRawDataUpdate: false,
 			});
 			getBugChartData({
@@ -862,6 +807,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				searchWord: keyword,
 				showNoEmptyError: true,
+				fetchOrder: order,
 				filterDate: dateRange,
 				noRawDataUpdate: false,
 			});

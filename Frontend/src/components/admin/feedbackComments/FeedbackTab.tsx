@@ -262,8 +262,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
-		if (Object.keys(lastEvaluatedKey).length > 0) {
-			// fetch the results from backend
 			setData([]);
 			setRawData([]);
 			fetchRecursiveData({
@@ -272,11 +270,10 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				filterCategory: focusCategory,
 				filterSeverity: focusSeverity,
+				filterRating: focusRating,
+				filterDate: dateRange,
 				searchWord: keyword,
 			});
-		} else {
-			setData(sortTableByDate(data, order));
-		}
 	}, [order]);
 
 	useEffect(() => {
@@ -294,6 +291,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				showNoEmptyError: true,
 				noRawDataUpdate: false,
+				fetchOrder: order,
 				filterDate: dateRange,
 			});
 			getFeedbckChartData({
@@ -318,6 +316,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			noRawDataUpdate: false,
+			fetchOrder: order,
 			filterDate: dateRange,
 		});
 		getFeedbckChartData({
@@ -347,6 +346,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				prodId: selectedProdId,
 				prodVersion: productVersion,
 				showNoEmptyError: true,
+				fetchOrder: order,
 				filterDate: dateRange,
 			});
 			getFeedbckChartData({
@@ -365,55 +365,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
-		if (focusSeverity.length <= 0) {
-			setCurrentDisable('');
-			setRawData([]);
-			setData([]);
-			// setData(rawData);
-			fetchRecursiveData({
-				filterSeverity: focusSeverity,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
-				showNoEmptyError: true,
-				noRawDataUpdate: false,
-			});
-			getFeedbckChartData({
-				setDataFetchLoader,
-				setFeedbackBarChartData,
-				setBugBarChartSeries,
-				setPieChartSeries,
-				prodId: selectedProdId,
-				prodVersion: productVersion,
-				filterDate: dateRange,
-			});
-			return;
-		}
-		// fetch the results from backend
-		setResultsFetched(false);
-		setData([]);
-		setRawData([]);
-		fetchRecursiveData({
-			filterSeverity: focusSeverity,
-			prodId: selectedProdId,
-			prodVersion: productVersion,
-			showNoEmptyError: true,
-			noRawDataUpdate: false,
-		});
-		getFeedbckChartData({
-			setDataFetchLoader,
-			setFeedbackBarChartData,
-			setBugBarChartSeries,
-			setPieChartSeries,
-			prodId: selectedProdId,
-			prodVersion: productVersion,
-			filterDate: dateRange,
-		});
-	}, [focusSeverity]);
-
-	useEffect(() => {
-		if (rawData.length === 0) {
-			return;
-		}
 		if (focusCategory.length <= 0) {
 			setCurrentDisable('');
 			// setData(rawData);
@@ -424,6 +375,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				prodVersion: productVersion,
 				showNoEmptyError: true,
 				filterDate: dateRange,
+				fetchOrder: order,
 				noRawDataUpdate: false,
 			});
 			getFeedbckChartData({
@@ -448,6 +400,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 			prodVersion: productVersion,
 			showNoEmptyError: true,
 			filterDate: dateRange,
+			fetchOrder: order,
 			noRawDataUpdate: false,
 		});
 		getFeedbckChartData({
@@ -477,8 +430,9 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		fetchQuantity,
 	}: IFetchRecursiveData) => {
 		// setBackdropOpen(true);
+		setResultsFetched(false);
 		let urlAppend = ``;
-		let numItems = fetchQuantity ? fetchQuantity : NUMBER_OF_ITEMS_PER_FETCH;
+		let numItems = NUMBER_OF_ITEMS_PER_FETCH;
 		if (prodId) {
 			urlAppend += `?prodId=${prodId}`;
 			if (prodVersion) {
@@ -640,6 +594,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 					filterCategory: focusCategory,
 					filterDate: dateRange,
 					fetchQuantity: quantity,
+					fetchOrder: order,
 				});
 			} else {
 				setResultsFetched(true);
@@ -814,6 +769,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				searchWord: keyword,
 				showNoEmptyError: true,
 				filterDate: dateRange,
+				fetchOrder: order,
 				noRawDataUpdate: false,
 			});
 			getFeedbckChartData({
@@ -839,6 +795,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 				searchWord: keyword,
 				showNoEmptyError: true,
 				filterDate: dateRange,
+				fetchOrder: order,
 				noRawDataUpdate: false,
 			});
 			getFeedbckChartData({
