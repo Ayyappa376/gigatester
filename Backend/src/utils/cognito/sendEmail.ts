@@ -9,7 +9,7 @@ export const sendResetPasswordMessage = async (
     originURL: string
 ): Promise<any> =>
     new Promise<any>((resolve, reject) => {
-        // const site: string = 
+        // const site: string =
         //     (process.env.DB_ENV === 'development') ?
         //         'dev.gigatester.io' :
         //         (process.env.DB_ENV === 'beta') ?
