@@ -1779,7 +1779,7 @@ let GigaTester_StringUtils = {
                             container.hide();
                             $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
                             GigaTester_modal.save_form_state = true;
-                            if(!GigaTester.hidden){
+                            if(!GigaTester_modal.configs.isRemote){
                                 GigaTester_modal.custom_ui.button.show();
                             }
                         }
@@ -3044,7 +3044,7 @@ let GigaTester_StringUtils = {
                     if (e && e.type === "click") {
                         e.preventDefault()
                     }
-                    if (!this.autoHide() && !GigaTester.hidden) {
+                    if (!this.autoHide() && !GigaTester_modal.configs.isRemote) {
                         this.custom_ui.button.show()
                     }
                     this.custom_ui.element.removeAttr("isopen");
@@ -3634,9 +3634,7 @@ let GigaTester_StringUtils = {
                             GigaTester_modal.openControls();
                     }
                     else{
-                    if(GigaTester.hidden){
                     GigaTester_modal.configs.isRemote = true;
-                    }
 //                    GigaTester_modal.custom_ui.element.css("display", "");
                     GigaTester_modal.popOutDialog();
                     }
