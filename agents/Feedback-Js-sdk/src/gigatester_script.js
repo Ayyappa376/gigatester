@@ -764,6 +764,7 @@ let GigaTester_StringUtils = {
                 user_detail: {},
                 context_detail: {},
                 set_screen_default_category: true,
+                save_form_state: false,
                 configs: {
                     isRemote: false,
                     has_video: true,
@@ -904,6 +905,7 @@ let GigaTester_StringUtils = {
                         id: "gigatester_ctrls_container",
                     }).appendTo($(document.body));
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn");
+                    this.custom_ui.button.appendTo(this.custom_ui.element);
                     if (GigaTester_modal.configs.isRemote && GigaTester_modal.configs.isRemote === true) {
                         this.custom_ui.button[0].style.display = 'none';
                     } else {
@@ -913,11 +915,12 @@ let GigaTester_StringUtils = {
                         } else {
                             this.custom_ui.button.text(this.configs.main_button_text);
                         }
-                        this.custom_ui.button.appendTo(this.custom_ui.element);
+
                         this.custom_ui.button[0].style.fontFamily = this.configs.main_button_font;
                         this.custom_ui.button[0].style.fontWeight = this.configs.main_button_fontWeight;
                         this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
                         this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
+                        // this.custom_ui.button[0].style.display = 'none';
                         // const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn")[0];
                         const styleCheck = window.getComputedStyle(this.custom_ui.button[0]);
                         const width = parseInt(styleCheck.width, 10);
@@ -1770,6 +1773,17 @@ let GigaTester_StringUtils = {
                     if (this.custom_ui.events) {
                         return
                     }
+                    $(document.getElementsByClassName('gigatester-ctrls-container')).on('click', function(e) {
+                        let container = $(document.getElementsByClassName('gigatester-ctrl-item'));
+                        if (!$(e.target).closest(container).length) {
+                            container.hide();
+                            $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
+                            GigaTester_modal.save_form_state = true;
+                            if(!GigaTester_modal.configs.isRemote){
+                                GigaTester_modal.custom_ui.button.show();
+                            }
+                        }
+                    });
                     this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.custom_ui.position);
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
@@ -2680,6 +2694,12 @@ let GigaTester_StringUtils = {
                 },
                 popOutDialog: function(){
                     console.log('GigaTester: popOutDialog called');
+                    if(GigaTester_modal.save_form_state){
+                        console.log(GigaTester_modal.form_type);
+                            GigaTester_modal.custom_ui.element.css("display", "");
+                            GigaTester_modal.openControls();
+                            return;
+                    }
                     if($(document.getElementsByClassName("gigatester-popup-dialog"))){
                         $(document.getElementsByClassName("gigatester-popup-dialog")).remove();
                     }
@@ -2745,7 +2765,6 @@ let GigaTester_StringUtils = {
                         }
                         popup_dialog.appendTo(button[0]);
                     }
-
                     if (GigaTester_modal.configs.cuvoTypes.length === 1) {
                         if (GigaTester_modal.configs.cuvoTypes[0] === 'BUGS') {
                             // GigaTester_modal.form_type = "BUGS";
@@ -2848,8 +2867,9 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.show();
                     this.focusControls();
                     if(!GigaTester_modal.configs.isRemote) {
-                        this.custom_ui.element.css("display", "");
+                        this.custom_ui.button.hide();
                     }
+                    this.custom_ui.element.css("display", "");
                     this.custom_ui.element.attr("isopen", "true")
                 },
                 openControls: function () {
@@ -2861,6 +2881,11 @@ let GigaTester_StringUtils = {
                     if ($(document.getElementsByClassName("gigatester-popup-dialog-remote"))) {
                         $(document.getElementsByClassName("gigatester-popup-dialog-remote")).remove();
                     }
+                    if(GigaTester_modal.save_form_state){
+                    if($(document.getElementsByClassName('gigatester-ctrl-item'))){
+                        $(document.getElementsByClassName('gigatester-ctrl-item')).show();
+                    }
+                }
 //                    let open_tool = false;
                     this.controls_step = 2;
 //                    if (!open_tool) {
@@ -3019,7 +3044,7 @@ let GigaTester_StringUtils = {
                     if (e && e.type === "click") {
                         e.preventDefault()
                     }
-                    if (!this.autoHide()) {
+                    if (!this.autoHide() && !GigaTester_modal.configs.isRemote) {
                         this.custom_ui.button.show()
                     }
                     this.custom_ui.element.removeAttr("isopen");
@@ -3041,6 +3066,7 @@ let GigaTester_StringUtils = {
                     this.removeGToverlay();
                     this.removeGTControls();
                     this.removeComments();
+                    GigaTester_modal.save_form_state = false;
                     GigaTester_modal.set_screen_default_category = true;
                     this.form_data['category'] = GigaTester.category || "category";
                     GigaTester_modal.configs.selected_category = []
@@ -3602,9 +3628,16 @@ let GigaTester_StringUtils = {
                         console.log('GigaTester: error in open: either call with no parameters or with parameter "BUGS" or "FEEDBACK"');
                     }
                 } else {
+                    if(GigaTester_modal.save_form_state){
+                        console.log(GigaTester_modal.form_type);
+                            GigaTester_modal.custom_ui.element.css("display", "");
+                            GigaTester_modal.openControls();
+                    }
+                    else{
                     GigaTester_modal.configs.isRemote = true;
 //                    GigaTester_modal.custom_ui.element.css("display", "");
                     GigaTester_modal.popOutDialog();
+                    }
                 }
             },
             close: function() {
@@ -3616,6 +3649,7 @@ let GigaTester_StringUtils = {
                 if(!GigaTester_modal.configs.isRemote) {
                     GigaTester.hidden = false;
                     GigaTester_modal.custom_ui.element.css("display", "");
+                    GigaTester_modal.custom_ui.button.css("display", "");
                 } else {
                     console.log('GigaTester: show: isRemote is true');
                 }
@@ -3624,7 +3658,7 @@ let GigaTester_StringUtils = {
                 console.log('GigaTester: hide called');
                 GigaTester_modal.reset();
                 GigaTester.hidden = true;
-                GigaTester_modal.custom_ui.element.hide();
+                GigaTester_modal.custom_ui.button.hide();
             },
             // useRemote: function (btnId, event) {
             //     console.log('GigaTester: useRemote called');
