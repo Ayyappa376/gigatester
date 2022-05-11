@@ -1,19 +1,8 @@
 export interface OrganizationInfo {
-    addressLine1?: string;
-    addressLine2?: string;
-    city?: string;
-    country: string;
-    email: string;
-    id: string;
+    emailDomains?: string;
     name: string;
     orgPrefix?: string;
-    phone: string;
-    resourceDetails?: ResourceDetails;
-    state?: string;
-    status: string;
-    subdomainURL?: string;
-    website?: string;
-    zipCode?: string;
+    url: string;
 }
 
 export interface ResourceDetails {

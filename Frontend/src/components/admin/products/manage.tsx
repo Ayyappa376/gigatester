@@ -642,9 +642,6 @@ const ManageProducts = (props: any) => {
 										<Typography className='tableHeadText'>Feedback Component</Typography>
 									</TableCell>
 									<TableCell align='center' className='tableHeadCell'>
-										<Typography className='tableHeadText'>External System</Typography>
-									</TableCell>
-									<TableCell align='center' className='tableHeadCell'>
 										<Typography className='tableHeadText'>
 											<Text tid='actions' />
 										</Typography>
@@ -725,25 +722,6 @@ const ManageProducts = (props: any) => {
 													}
 												>
 													<Typography>Configure and Get</Typography>
-												</Button>
-											</TableCell>
-											<TableCell
-												component='th'
-												scope='row'
-												align='center'
-												className='tableCell'
-											>
-												<Button
-													variant='outlined'
-													style={{
-														borderColor: 'rgb(10,34,90)',
-														color: 'rgb(10,34,90)',
-													}}
-													onClick={() =>
-														props.extSystemSettingsClicked(product.id, product.version)
-													}
-												>
-													<Typography>Configure</Typography>
 												</Button>
 											</TableCell>
 											<TableCell align='center' className='tableCell'>

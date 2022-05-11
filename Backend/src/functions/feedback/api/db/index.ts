@@ -1,10 +1,10 @@
 const aws = require('aws-sdk');
 const dynamo = new aws.DynamoDB.DocumentClient();
 const cors = require('cors');
-const axios = require('axios');
 import uuidv1 from 'uuid/v1';
 import { ProductInfo } from '../../../../models/product';
 import { processThankYouEmail } from '../email/emailReply';
+import { processExternalTrackSystem } from '../extTrackingSystem/extTrackingSystem';
 
 cors({
   origin: true,
@@ -63,22 +63,15 @@ try {
             },
             TableName: getTableNameFor('GT_feedback')
           };
-          body = await dynamo.put(tableparams).promise();
-
-          const trackingSystemDetails: any = await getproductTrackingSystemDetails(jsonBody.productKey);
-          if(trackingSystemDetails.uploadToTrackingSystem) {
-            const postJIRA = await postJIRAIncident(
-              {
-                appToken: trackingSystemDetails.auth.authKey,
-                email: trackingSystemDetails.auth.authUser,
-              },
-              JSON.stringify(jsonBody.feedbackComments),
-              trackingSystemDetails.url,
-              jsonBody.feedbackCategory
-            );
-            console.log('JIRA upload', postJIRA);
+          if(jsonBody.feedbackType.toUpperCase() === 'BUG_REPORT' && product.trackingSystem && product.trackingSystem.type === 'JIRA') {
+          const trackingTableParams: any = processExternalTrackSystem(product.trackingSystem, tableparams);
+          console.log('Uploading Bug to Jira', trackingTableParams);
+          if(trackingTableParams) {
+            trackingTableParams.TableName = getTableNameFor('GT_ExtIssueUpload');
+            body = await dynamo.put(trackingTableParams).promise();
           }
-          console.log(trackingSystemDetails);
+          }
+            body = await dynamo.put(tableparams).promise();
 
           const processingEmail: any = await processThankYouEmail(
             jsonBody.userName,
@@ -129,63 +122,6 @@ async function getProductForKey(productKey: string): Promise<any> {
     console.log('feedback-api-db-handler: DynamoDBScan result:', result);
 //    return (result.Items.length > 0) ? result.Items[0].id : '';
     return (result.Items.length > 0) ? result.Items[0] : undefined;
-}
-
-async function getproductTrackingSystemDetails(productKey: string): Promise<string> {
-  const params = {
-      ExpressionAttributeNames: {'#apiKey': 'apiKey'},
-      ExpressionAttributeValues: {':apiKey': productKey},
-      FilterExpression: '#apiKey = :apiKey',
-      TableName: getTableNameFor('GT_Products'),
-  };
-  console.log('feedback-api-db-handler: DynamoDBScan params:', params);
-  const result = await dynamo.scan(params).promise();
-  console.log('feedback-api-db-handler: DynamoDBScan result:', result);
-  return (result.Items.length > 0) ? result.Items[0].trackingSystem : '';
-}
-
-async function postJIRAIncident(
-  auth: any,
-  description: any,
-  externalSystemURL: string,
-  summary: any,
-): Promise<any> {
-  return new Promise((resolve: (item: any) => void, reject: (err: any) => any): any => {
-const data = JSON.stringify({
-  fields: {
-    description,
-    issuetype: {
-      name: 'Bug'
-    },
-    project: {
-      key: 'GTI'
-    },
-    summary
-  }
-});
-const token = `${auth.email}:${auth.appToken}`;
-const encodedToken = Buffer.from(token).toString('base64');
-console.log(encodedToken);
-const config = {
-  data,
-  headers: {
-    'Authorization': 'Basic '+ `${encodedToken}`,
-    'Content-Type': 'application/json',
-  },
-  method: 'post',
-  url: `${externalSystemURL}/rest/api/latest/issue`,
-};
-
-axios(config)
-.then(function (response: any) {
-  console.log(JSON.stringify(response.data));
-  resolve(JSON.stringify(response.data));
-})
-.catch(function (error: any) {
-  console.log(error);
-  reject(error);
-});
-  });
 }
 
 function getTableNameFor(baseTableName: string): string {

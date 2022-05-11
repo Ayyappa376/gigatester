@@ -14,6 +14,7 @@ export interface ProductInfo {
     testSuite?: string[];
     trackingSystem?: TrackingSystem;
     emailConfig?: EmailConfiguration;
+    url?: string;
     version: string;
     [keyName: string]: any;
 }

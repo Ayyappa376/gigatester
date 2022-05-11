@@ -5,17 +5,23 @@ const ses = new aws.SES({ region: config.region });
 
 export const sendResetPasswordMessage = async (
     email: string,
-    password: string
+    password: string,
+    originURL: string
 ): Promise<any> =>
     new Promise<any>((resolve, reject) => {
-        const site: string = (process.env.DB_ENV === 'development') ? 'dev.gigatester.io' : 'beta.gigatester.io';
+        // const site: string =
+        //     (process.env.DB_ENV === 'development') ?
+        //         'dev.gigatester.io' :
+        //         (process.env.DB_ENV === 'beta') ?
+        //             'beta.gigatester.io' :
+        //             'dish.gigatester.io';
         const mailParams = {
             Destination: {
                 ToAddresses: [email],
             },
             Message: {
                 Body: {
-                    Text: { Data: `To change your password, go to ${site} and select login, then enter your email address and a temporary password: ${password}` },
+                    Text: { Data: `To change your password, go to ${originURL} and select login, then enter your email address and a temporary password: ${password}` },
                 },
 
                 Subject: { Data: 'Reset Password' },

@@ -53,7 +53,18 @@ export function getGroupsTableName(): string {
 }
 
 export function getOrganizationsTableName(): string {
-  return `${config.defaults.orgId}_${config.tables.organizations}`;
+  if(process.env.DB_ENV === 'development' || process.env.DB_ENV === 'local') {
+    return `dev_${config.tables.organizations}`;
+  }
+  else if(process.env.DB_ENV === 'beta') {
+    return `beta_${config.tables.organizations}`;
+  }
+  else if(process.env.DB_ENV === 'production') {
+    return `prod_${config.tables.organizations}`; //prod db name
+  }
+  else{
+    return `${process.env.DB_ENV}_${config.defaults.orgId}_${config.tables.organizations}`;
+  }
 }
 
 export function getUsersTableName(): string {

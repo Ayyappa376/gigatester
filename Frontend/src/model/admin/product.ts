@@ -162,6 +162,12 @@ export type ITrackingSystemType = 'SELF' | 'JIRA';
 export const TRACKING_SYSTEM_SELF: ITrackingSystemType = 'SELF';
 export const TRACKING_SYSTEM_JIRA: ITrackingSystemType = 'JIRA';
 
+export type IFeedbotConfigSettingsType = 'CATEGORIES' | 'SEVERITIES' | 'COMMENTS' | 'STANDARD FEEDBACK';
+export const FEEDBOT_CATEGORIES: IFeedbotConfigSettingsType = 'CATEGORIES';
+export const FEEDBOT_SEVERITIES: IFeedbotConfigSettingsType = 'SEVERITIES';
+export const FEEDBOT_COMMENTS: IFeedbotConfigSettingsType = 'COMMENTS';
+export const FEEDBOT_STANDARD_FEEDBACK: IFeedbotConfigSettingsType = 'STANDARD FEEDBACK';
+
 export type IWidgetPosition = 'RIGHT_MIDDLE' | 'RIGHT_BOTTOM' | 'LEFT_MIDDLE' | 'LEFT_BOTTOM' |'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'CUSTOM';
 export const POS_RIGHT_MIDDLE: IWidgetPosition = 'RIGHT_MIDDLE';
 export const POS_RIGHT_BOTTOM: IWidgetPosition = 'RIGHT_BOTTOM';

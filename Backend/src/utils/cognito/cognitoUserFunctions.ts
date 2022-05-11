@@ -188,7 +188,8 @@ export const updateCognitoUserToLowerCase = async (
 
 export const resetUserPassword = async (
   cognitoUser: string,
-  email: string
+  email: string,
+  originURL: string
 ): Promise<any> =>
   new Promise<any>((resolve, reject) => {
     aws.config.update({ region: config.cognito.userPoolRegion });
@@ -205,7 +206,7 @@ export const resetUserPassword = async (
         reject(err);
       } else {
         appLogger.info({ adminSetUserPasswordData: data });
-        await sendResetPasswordMessage(email, params.Password);
+        await sendResetPasswordMessage(email, params.Password, originURL);
         resolve(data);
       }
     });

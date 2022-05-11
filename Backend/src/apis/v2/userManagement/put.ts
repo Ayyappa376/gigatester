@@ -25,6 +25,7 @@ interface UpdateUser {
     temporaryPassword?: string;
   };
   headers: {
+    origin: string;
     user: {
       'cognito:groups': string[];
       'cognito:username': string;
@@ -106,7 +107,7 @@ async function handler(request: UpdateUser, response: Response) {
 //      });
   }
   appLogger.info({ resetPasswordStatus: body.resetPassword });
-  body.resetPassword ? await resetUserPassword(userDetails.id, userDetails.emailId) : await updateDynamoUser(userDetails.id, managerDetails, body);
+  body.resetPassword ? await resetUserPassword(userDetails.id, userDetails.emailId, headers.origin) : await updateDynamoUser(userDetails.id, managerDetails, body);
   return responseBuilder.ok({ message: 'ok' }, response);
 }
 

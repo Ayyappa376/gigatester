@@ -30,7 +30,8 @@ import {
   ICustomProperties,
   FEEDBACK_OPT,
   BUGS_OPT,
-  MAIN_BUTTON
+  MAIN_BUTTON,
+  TRACKING_SYSTEM_SELF
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -154,10 +155,12 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
+
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
             platform: PLATFORM_TYPE_BROWSER,
             feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
+            orgUrl: window.location.hostname,
             bugSettings: {
               categories: [],
               severities: [],
@@ -220,7 +223,11 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             severityLimit: {},
           };
         }
-        console.log('resp', response);
+        if (!response.products[0].trackingSystem) {
+          response.products[0].trackingSystem = {
+            type: TRACKING_SYSTEM_SELF,
+          };
+        }
         setProductParams(response);
         setFeedbackAgentSettingsFetched(true);
       })
@@ -476,6 +483,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].trackingSystem &&
+        temp.products[0].trackingSystem.filters &&
         temp.products[0].feedbackAgentSettings.bugSettings) {
         temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex].name = event.target.value;
         setProductParams(temp);
@@ -483,11 +492,121 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   };
 
+  const handleExtTrackingSystemSync = () => {
+		if (productParams) {
+			const temp: IProductParams | undefined = { ...productParams };
+			if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+			  temp.products[0].trackingSystem) {
+			  setProductParams(temp);
+			}
+		  }
+	}
+
+  const handleURLChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.url = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleAuthChange = (event: any, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.auth[type] = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleTrackingSytemProjectDetails = (event: any, type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.project= event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleSystemTypeChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].trackingSystem) {
+        temp.products[0].trackingSystem.type = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleChangeJiraFieldMapping = (event: any, feedbotField: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].trackingSystem) {
+          if(! temp.products[0].trackingSystem.fieldMappings){
+            temp.products[0].trackingSystem.fieldMappings = {};
+          }
+          temp.products[0].trackingSystem.fieldMappings[feedbotField] = event.target.value;
+          setProductParams(temp);
+      }
+    }
+  }
+
+    const handleChangeExtCategoryFilter = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      let categoryValue  = event.target.value;
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.bugSettings
+        && temp.products[0].trackingSystem) {
+          if(!temp.products[0].trackingSystem.filters){
+            temp.products[0].trackingSystem.filters = {};
+            temp.products[0].trackingSystem.filters.categories={};
+          } else if (!temp.products[0].trackingSystem.filters.categories){
+            temp.products[0].trackingSystem.filters.categories={};
+          }
+        // let categoryValue: any = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex]
+        temp.products[0].trackingSystem.filters.categories[categoryValue] = event.target.checked;
+        setProductParams(temp);
+      }
+    } 
+  }
+
+
+  const handleChangeExtSeverityFilter = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      let severityValue  = event.target.value;
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.bugSettings
+        && temp.products[0].trackingSystem) {
+          if(!temp.products[0].trackingSystem.filters){
+            temp.products[0].trackingSystem.filters = {};
+            temp.products[0].trackingSystem.filters.severities={};
+          }
+          else if (!temp.products[0].trackingSystem.filters.severities){
+            temp.products[0].trackingSystem.filters.severities={};
+          }
+        // let categoryValue: any = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex]
+        temp.products[0].trackingSystem.filters.severities[severityValue] = event.target.checked;
+        setProductParams(temp);
+      }
+    } 
+  }
+
   const deleteBugCategory = (catIndex: number) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings && temp.products[0].feedbackAgentSettings.bugSettings.categories) {
+        let categoryValue: any = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex];
+        if(temp && temp.products && temp.products[0] && temp.products[0].trackingSystem &&
+          temp.products[0].trackingSystem.filters && temp.products[0].trackingSystem.filters.categories
+           && temp.products[0].trackingSystem.filters.categories[categoryValue.name]){
+        delete temp.products[0].trackingSystem.filters.categories[categoryValue.name];
+        }
         temp.products[0].feedbackAgentSettings.bugSettings.categories.splice(catIndex, 1);
         setProductParams(temp);
       }
@@ -587,7 +706,14 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         const temp: IProductParams | undefined = { ...productParams };
         if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
           temp.products[0].feedbackAgentSettings.bugSettings &&
-          temp.products[0].feedbackAgentSettings.bugSettings.severities) {
+          temp.products[0].feedbackAgentSettings.bugSettings.severities
+          && temp.products[0].trackingSystem && temp.products[0].trackingSystem.filters) {
+          let severityValue = temp.products[0].feedbackAgentSettings.bugSettings.severities[sevIndex];
+          if(temp && temp.products && temp.products[0]
+            && temp.products[0].trackingSystem && temp.products[0].trackingSystem.filters
+            && temp.products[0].trackingSystem.filters.severities 
+            && temp.products[0].trackingSystem.filters.severities[severityValue])
+          delete temp.products[0].trackingSystem.filters.severities[severityValue]
           temp.products[0].feedbackAgentSettings.bugSettings.severities.splice(sevIndex, 1);
           setProductParams(temp);
         }
@@ -730,6 +856,23 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         setProductParams(temp);
       }
     }
+  };
+
+  const handleExtSystemSeverity = (data: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+            temp.products[0].feedbackAgentSettings.bugSettings.severities = [];
+      }
+      data.map((item: any) => {
+            if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+            temp.products[0].feedbackAgentSettings.bugSettings) {
+            temp.products[0].feedbackAgentSettings.bugSettings.severities.push(item);
+              }
+          })
+        setProductParams(temp);
+      }
   };
 
   const handleFeedbackTypesChange = (event: any) => {
@@ -1088,7 +1231,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
-  
   const handleChangeRemoteBtnSettings = (fieldName: string, event: any, index: number) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -1314,17 +1456,27 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleChangeFeedbackStdFeedbackText: handleChangeFeedbackStdFeedbackText,
       deleteFeedbackStdFeedbackText: deleteFeedbackStdFeedbackText,
       handleFeedbackTitleChange: handleFeedbackTitleChange,
+      handleURLChange: handleURLChange,
+      handleAuthChange: handleAuthChange,
+      handleTrackingSytemProjectDetails: handleTrackingSytemProjectDetails,
+      handleSystemTypeChange: handleSystemTypeChange,
       handleFeedbackTooltipChange: handleFeedbackTooltipChange,
       handleFeedbackDialogMsgChange: handleFeedbackDialogMsgChange,
       handleFeedbackThanksMsgChange: handleFeedbackThanksMsgChange,
       handleRatingLimitChange: handleRatingLimitChange,
       addBugCategory: addBugCategory,
       handleChangeBugCategoryName: handleChangeBugCategoryName,
+      handleChangeJiraFieldMapping: handleChangeJiraFieldMapping,
+      handleExtTrackingSystemSync: handleExtTrackingSystemSync,
+      handleChangeExtSeverityFilter: handleChangeExtSeverityFilter,
+      handleChangeExtCategoryFilter: handleChangeExtCategoryFilter,
       deleteBugCategory: deleteBugCategory,
       addBugStdFeedbackText: addBugStdFeedbackText,
       handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,
       addBugSeverity: addBugSeverity,
+      handleExtSystemSeverity: handleExtSystemSeverity,
+//      useTrackingSystemSeverity: useTrackingSystemSeverity,
       handleChangeBugSeverityName: handleChangeBugSeverityName,
       deleteBugSeverity: deleteBugSeverity,
 //      useTrackingSystemSeverity: useTrackingSystemSeverity,

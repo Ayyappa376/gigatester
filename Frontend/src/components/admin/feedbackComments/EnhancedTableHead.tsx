@@ -70,7 +70,7 @@ const EnhancedTableHead = (props: EnhancedTableProps) => {
               style={{fontSize: '1.05rem', fontWeight: 500, color: '#666666'}}
             >
               {
-                !searchInitiated && headCell.sortLabel ?
+                 headCell.sortLabel ?
                   <Tooltip title={"Sorted according to this column"}
                     aria-label="sort-active">
                     <TableSortLabel
