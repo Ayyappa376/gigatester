@@ -1231,7 +1231,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
-  
   const handleChangeRemoteBtnSettings = (fieldName: string, event: any, index: number) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };

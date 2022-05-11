@@ -43,16 +43,17 @@ export async function getJIRASeverityDetails(
       // const issueFields: object = {};
       const projsURL = `${externalSystemURL}/rest/api/latest/issue/createmeta?projectKeys=${project}&expand=projects.issuetypes.fields`;
       // https://pinimbus.atlassian.net/rest/api/latest/issue/createmeta?projectKeys=GTI&expand=projects.issuetypes.fields
+      appLogger.info({getJiraFieldsList_projsURL: projsURL});
       HttpRequest.httpRequest('GET', projsURL, undefined, authDetail, {Accept: 'application/json'})
-      .then( async (resProj: any) => {
+      .then((resProj: any) => {
   //      appLogger.info({connectAndFetchFromJIRA: {projsURL, resProj}});
         if (resProj.statusCode < 200 || resProj.statusCode >= 300) {
-          const err = new Error('Error connecting to JIRA');
-          appLogger.error(err, 'Code: ' + resProj.statusCode);
+          const err = new Error('Error connecting to JIRA with Code:' + resProj.statusCode);
+          appLogger.error(err, 'getJiraFieldsList_err');
           reject(err);
         } else {
           const projData = JSON.parse(resProj.body);
-          appLogger.info({projData});
+          appLogger.info({getJiraFieldsList_projData: projData});
           resolve(projData);
         }
       })
