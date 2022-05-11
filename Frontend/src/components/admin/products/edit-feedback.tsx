@@ -155,10 +155,12 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       state: stateVariable,
     })
       .then((response: any) => {
+
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
             platform: PLATFORM_TYPE_BROWSER,
             feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
+            orgUrl: window.location.hostname,
             bugSettings: {
               categories: [],
               severities: [],
@@ -545,8 +547,11 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
         temp.products[0].trackingSystem) {
-        temp.products[0].trackingSystem.fieldMappings[feedbotField] = event.target.value;
-        setProductParams(temp);
+          if(! temp.products[0].trackingSystem.fieldMappings){
+            temp.products[0].trackingSystem.fieldMappings = {};
+          }
+          temp.products[0].trackingSystem.fieldMappings[feedbotField] = event.target.value;
+          setProductParams(temp);
       }
     }
   }
@@ -557,6 +562,12 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       let categoryValue  = event.target.value;
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.bugSettings
         && temp.products[0].trackingSystem) {
+          if(!temp.products[0].trackingSystem.filters){
+            temp.products[0].trackingSystem.filters = {};
+            temp.products[0].trackingSystem.filters.categories={};
+          } else if (!temp.products[0].trackingSystem.filters.categories){
+            temp.products[0].trackingSystem.filters.categories={};
+          }
         // let categoryValue: any = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex]
         temp.products[0].trackingSystem.filters.categories[categoryValue] = event.target.checked;
         setProductParams(temp);
@@ -571,6 +582,13 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       let severityValue  = event.target.value;
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.bugSettings
         && temp.products[0].trackingSystem) {
+          if(!temp.products[0].trackingSystem.filters){
+            temp.products[0].trackingSystem.filters = {};
+            temp.products[0].trackingSystem.filters.severities={};
+          }
+          else if (!temp.products[0].trackingSystem.filters.severities){
+            temp.products[0].trackingSystem.filters.severities={};
+          }
         // let categoryValue: any = temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex]
         temp.products[0].trackingSystem.filters.severities[severityValue] = event.target.checked;
         setProductParams(temp);
