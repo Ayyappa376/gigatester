@@ -9,8 +9,8 @@ import { get, put, scan, update } from './sdk';
 export const createOrganization = async (orgData: OrganizationInfo) => {
   const item: OrganizationInfo = {
     emailDomains: orgData.emailDomains,
-    orgPrefix: `org_${uuidv1()}`,
     name: orgData.name,
+    orgPrefix: `org_${uuidv1()}`,
     url: orgData.url,
   };
 
