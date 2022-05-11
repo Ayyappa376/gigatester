@@ -86,12 +86,23 @@ export default function SignupForm(props: any) {
   const [superUserStateVariable, setSuperUserStateVariable] = useState(
     props.superUserStateVariable
   );
+  const [allowedDomains, setAllowedDomains] = useState(['dish.com', 'gmail.com'])
   
   const validateEmail = (email: string) => {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+    let extention = getSecondPart(String(email).toLowerCase()) || "";
+    if(!re.test(String(email).toLowerCase())) {
+      setValidationMsg("Please enter a valid email");
+    } else if(allowedDomains.indexOf(extention) < 0){
+      setValidationMsg("Please use your official organization email");
+    }    
+    return re.test(String(email).toLowerCase()) && allowedDomains.indexOf(extention) > -1 ? true : false;
   };
+  
+  const getSecondPart = (str: string) =>  {
+    return str.split('@').pop();
+  }
 
   const handleChangeValue = (event: any) => {
     if (userParamState) {
@@ -163,9 +174,10 @@ export default function SignupForm(props: any) {
         setSnackbarOpen(true);
       }
     } else {
-      setSnackbarOpen(true);
+      setErrorMessage('');
+      // setValidationMsg("Please enter a valid email");
       setLoading(false);
-      setValidationMsg("Please enter a valid email");
+      setSnackbarOpen(true);
     }
   };
 

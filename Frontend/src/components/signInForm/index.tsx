@@ -68,6 +68,7 @@ export default function SignInForm(props: any) {
   const { value: oldPassword, bind: bindOldPassword } = useInput("");
   const { value: newPassword, bind: bindNewPassword } = useInput("");
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
+  const [allowedDomains, setAllowedDomains] = useState(['dish.com', 'gmail.com'])
   let userData: any = {}
 
   const handleSuccessfulSignIn = (user: any) => {
@@ -238,18 +239,37 @@ export default function SignInForm(props: any) {
     }
   };
 
+  const validateEmail = (email: string) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let extention = getSecondPart(String(email).toLowerCase()) || "";
+    if(!re.test(String(email).toLowerCase())) {
+      notifyError("Please enter a valid email");
+    } else if(allowedDomains.indexOf(extention) < 0){
+      notifyError("Please use your official organization email");
+    }
+    return re.test(String(email).toLowerCase()) && allowedDomains.indexOf(extention) > -1 ? true : false;
+  };
+  
+  const getSecondPart = (str: string) =>  {
+    return str.split('@').pop();
+  }
+
   const handleSubmit = async (event: React.SyntheticEvent<Element, Event>) => {
-    console.log("In handleSubmit");
     event.preventDefault();
-    setLoading(true);
-    if (verificationCode) {
-      submitForgotPassword();
-    } else if (changePasswordState) {
-      submitChangePassword();
-    } else if (newPasswordState && newSignInUser) {
-      submitNewPasswordRequest(newSignInUser);
-    } else {
-      submitSignInRequest();
+    if(validateEmail(email)){
+      console.log("In handleSubmit");
+      setLoading(true);
+      if (verificationCode) {
+        submitForgotPassword();
+      } else if (changePasswordState) {
+        submitChangePassword();
+      } else if (newPasswordState && newSignInUser) {
+        submitNewPasswordRequest(newSignInUser);
+      } else {
+        submitSignInRequest();
+      }
+    } else {      
     }
   };
 
@@ -323,12 +343,11 @@ export default function SignInForm(props: any) {
               <Box component="form" onSubmit={handleSubmit}>
                 {!newPasswordState && !changePasswordState ? (
                   <Fragment>
-                    <TextField
-                      required
+                    <TextField                      
                       margin="dense"
                       fullWidth
                       id="email"
-                      label="Email"
+                      label="Email *"
                       type="email"
                       {...bindEmail}
                       autoFocus
