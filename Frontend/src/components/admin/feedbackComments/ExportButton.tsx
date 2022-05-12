@@ -131,10 +131,10 @@ const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
 		if (data.length > original.length && toExport) {
 			console.log('EXPORTING');
 			// create day stamp, title for export file, and feedback type (Feedback or bugs)
-			const day = new Date().toISOString().split('T')[0];
-			const title = client ? `${client}_${day}.xlsx` : `'Product_${day}.xlsx'`;
+			let dateTime = new Date().toISOString().split('.')[0];
+			dateTime += '_UTC'
 			const dataType = type ? type : 'Feedback';
-
+			const title = client ? `${client}_${dataType}_${dateTime}.xlsx` : `'Product_${dataType}_${dateTime}.xlsx'`;
 			// invoke organizeData function to map out custom fields
 			const dataOrganized: any[] = organizeData(data);
 

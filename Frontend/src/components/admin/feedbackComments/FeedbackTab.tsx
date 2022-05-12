@@ -481,7 +481,6 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 
 		urlAppend += urlAppend ? `&items=${numItems}` : `?items=${numItems}`;
-		console.log('urlAppen', urlAppend)
 		const response: any = await getFeedbackData({ props, urlAppend }).catch(
 			(error) => {
 				const perror = JSON.stringify(error);
