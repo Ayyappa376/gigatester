@@ -7,11 +7,6 @@ import { URL } from 'url';
 interface GetOrganizations {
   headers: {
     origin: string;
-    user: {
-      'cognito:groups': string[];
-      'cognito:username': string;
-      email: string;
-    };
   };
   params: {
     id: string;
@@ -22,14 +17,8 @@ async function handler(request: GetOrganizations, response: Response) {
   appLogger.info({ GetOrganizations: request }, 'Inside Handler');
 
   const { headers, params } = request;
-  const cognitoUserId = headers.user['cognito:username'];
   const orgURL = new URL(headers.origin);
   const orgId = orgURL.hostname;
-  if (!cognitoUserId) {
-    const err = new Error('InvalidUser');
-    appLogger.error(err, 'Unauthorized');
-    return responseBuilder.unauthorized(err, response);
-  }
   //returns the organizations details and config details of a organization if the organization id is sent - edit organization
   //returns the config details of a organization if the organization id sent as 0 - create organization
   //returns the list of all organizations, if the organization id is not sent - list organizations
