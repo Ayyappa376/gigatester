@@ -72,6 +72,7 @@ export default function SignupForm(props: any) {
   // const stateVariable = useSelector((state: IRootState) => {
   //   return state;
   // });
+  const stateVariable = useSelector((state: IRootState) => state);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState(false);
   const [checkBox, setcheckBox] = useState(false);
@@ -86,7 +87,26 @@ export default function SignupForm(props: any) {
   const [superUserStateVariable, setSuperUserStateVariable] = useState(
     props.superUserStateVariable
   );
-  const [allowedDomains, setAllowedDomains] = useState(['dish.com', 'gmail.com'])
+  const [allowedDomains, setAllowedDomains] = useState(['']);
+  
+  useEffect(() => {
+    Http.get({
+      url: '/api/v2/organizations/1',
+      state: { stateVariable },
+      customHeaders: { 
+        noauthvalidate: 'true'
+      },
+    })
+    .then((response: any) => {
+      if(response){
+        console.log('response',response?.organizationDetails?.emailDomains);      
+        setAllowedDomains(response?.organizationDetails?.emailDomains);
+      }
+    })
+    .catch((error: any) => {
+      console.log(error);      
+    });
+  },[])
   
   const validateEmail = (email: string) => {
     const re =

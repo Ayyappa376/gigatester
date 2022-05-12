@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -18,6 +18,9 @@ import {
 import CloseIcon from '@material-ui/icons/Close';
 import { useActions, saveUserDetails } from "../../actions";
 import { Auth } from "aws-amplify";
+import { Http } from "../../utils";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../reducers";
 import jwtDecode from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import { Text } from "../../common/Language";
@@ -46,6 +49,7 @@ export default function SignInForm(props: any) {
     },
   }));
 
+  const stateVariable = useSelector((state: IRootState) => state);
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(props.openSignin);
   const [changePasswordState, setChangePasswordState] = useState(props.changePassword);
@@ -68,7 +72,7 @@ export default function SignInForm(props: any) {
   const { value: oldPassword, bind: bindOldPassword } = useInput("");
   const { value: newPassword, bind: bindNewPassword } = useInput("");
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
-  const [allowedDomains, setAllowedDomains] = useState(['dish.com', 'gmail.com'])
+  const [allowedDomains, setAllowedDomains] = useState([''])
   let userData: any = {}
 
   const handleSuccessfulSignIn = (user: any) => {
@@ -130,6 +134,25 @@ export default function SignInForm(props: any) {
       type: "error",
     });
   };
+
+  useEffect(() => {
+    Http.get({
+      url: '/api/v2/organizations/1',
+      state: { stateVariable },
+      customHeaders: { 
+        noauthvalidate: 'true'
+      },
+    })
+    .then((response: any) => {
+      if(response){
+        console.log('response',response?.organizationDetails?.emailDomains);      
+        setAllowedDomains(response?.organizationDetails?.emailDomains);
+      }
+    })
+    .catch((error: any) => {
+      console.log(error);      
+    });
+  },[])
 
   const validatePassword = (password: string) => {
     const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$^*.\[\]{}\(\)\?\-\"\!@#%&\/\\,><\':;|_~`+\=])(?=.{8,20})/; //any of these should be allowed ^$*.[]{}()?-"!@#%&/\,><':;|_~`+=
