@@ -2,6 +2,7 @@ import { API, Handler } from '@apis/index';
 import { OrganizationInfo } from '@root/models';
 import { appLogger, getOrganizationDetails, getOrganizationList, responseBuilder } from '@utils/index';
 import { Response } from 'express';
+import { URL } from 'url';
 
 interface GetOrganizations {
   headers: {
@@ -14,7 +15,7 @@ interface GetOrganizations {
   };
   params: {
     id: string;
-  }
+  };
 }
 
 async function handler(request: GetOrganizations, response: Response) {
@@ -23,7 +24,7 @@ async function handler(request: GetOrganizations, response: Response) {
   const { headers, params } = request;
   const cognitoUserId = headers.user['cognito:username'];
   const orgURL = new URL(headers.origin);
-  const orgId = orgURL.hostname
+  const orgId = orgURL.hostname;
   if (!cognitoUserId) {
     const err = new Error('InvalidUser');
     appLogger.error(err, 'Unauthorized');
@@ -37,13 +38,13 @@ async function handler(request: GetOrganizations, response: Response) {
      const organizationList: OrganizationInfo[] = await getOrganizationList();
      appLogger.info({ getOrganizationList: organizationList });
      result = {
-      organizationList: organizationList,
+      organizationList
      };
    } else {
       const organizationDetails: OrganizationInfo = await getOrganizationDetails(orgId);
       result = {
-        organizationDetails: organizationDetails
-      }
+        organizationDetails
+      };
    }
   return responseBuilder.ok(result, response);
 }

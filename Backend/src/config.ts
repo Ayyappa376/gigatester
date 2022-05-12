@@ -63,7 +63,7 @@ export const config: Config = {
   },
   defaults: {
     groups: ['Manager'],
-    orgId: 'dish', // default should be 'www' //nomiso - dev env
+    orgId: 'prod', // default should be 'www' //nomiso - dev env
     quesType: '1234',
     restApiId: {
       beta: 'hq6w582al7',
@@ -76,7 +76,7 @@ export const config: Config = {
       beta: 'beta',
       development: 'dev',
       local: 'dev',
-      production: 'dish', //change to 'prod' for prod-deploy, change based on where to deploy
+      production: 'prod', //change to 'prod' for prod-deploy, change based on where to deploy
     },
     teamName: 'Others',
     usagePlanId: {
