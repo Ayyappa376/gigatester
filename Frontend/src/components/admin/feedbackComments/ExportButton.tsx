@@ -4,6 +4,7 @@ import GetApp from '@material-ui/icons/GetApp';
 import { buttonStyle } from '../../../common/common';
 import IconProgressBar from './IconProgressBar';
 import * as XLSX from 'xlsx';
+import { ILastEvalKey } from './common';
 
 const useStyles = makeStyles((theme) => ({
 	export: {
@@ -29,15 +30,17 @@ interface exportProps {
 	client?: string;
 	type?: string;
 	fetchMore: Function;
+	lastEvaluatedKey?: ILastEvalKey;
 }
 
 const MAX_LIMIT = 999999;
 
-const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
+const ExportBtn = ({ data, client, type, fetchMore, lastEvaluatedKey }: exportProps) => {
 	const [original, setOriginal] = useState<any>([]);
 	const [enable, setDisable] = useState<boolean>(false);
 	const [toExport, setToExport] = useState<boolean>(false);
 	const [open, setOpen] = useState<boolean>(false);
+	const [fetchMoreData, setFetchMoreData] = useState<boolean>(false);
 	const classes = useStyles();
 
 	// console.log('data', data.length);
@@ -127,8 +130,10 @@ const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
 	}, [data])
 
 	useEffect(() => {
+		console.log(lastEvaluatedKey, 'lastEvaluatedKey')
 		//check if incoming data length is longer than original data array length (should be greater)
-		if (data.length > original.length && toExport) {
+		if(lastEvaluatedKey && Object.keys(lastEvaluatedKey).length < 1){
+		if (data.length > 0 && toExport) {
 			console.log('EXPORTING');
 			// create day stamp, title for export file, and feedback type (Feedback or bugs)
 			let dateTime = new Date().toISOString().split('.')[0];
@@ -147,15 +152,23 @@ const ExportBtn = ({ data, client, type, fetchMore }: exportProps) => {
 			setOpen(false);
 			setToExport(false)
 		}
-	}, [data, toExport])
+	}
+	}, [data, toExport, lastEvaluatedKey])
 
 
 	const handleExport = (event: any) => {
 		// setOpen(true);
 		// on click, fetchMore will call max db scan of 999999
-		fetchMore(MAX_LIMIT);
+		setFetchMoreData(true);
 		setToExport(true);
 	};
+
+	useEffect(()=> {
+		console.log('fetchmore called')
+		if(fetchMoreData){
+		fetchMore();
+		}
+	}, [fetchMoreData, lastEvaluatedKey])
 
 	return (
 		<React.Fragment>
