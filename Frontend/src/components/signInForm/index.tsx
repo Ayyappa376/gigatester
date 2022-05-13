@@ -16,7 +16,7 @@ import {
   IconButton,
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-import { useActions, saveUserDetails } from "../../actions";
+import { useActions, saveUserDetails, saveOrganizationDetails } from "../../actions";
 import { Auth } from "aws-amplify";
 import { Http } from "../../utils";
 import { useSelector } from "react-redux";
@@ -54,6 +54,7 @@ export default function SignInForm(props: any) {
   const [dialogOpen, setDialogOpen] = useState(props.openSignin);
   const [changePasswordState, setChangePasswordState] = useState(props.changePassword);
   const saveUserData = useActions(saveUserDetails);
+  const saveOrganizationData = useActions(saveOrganizationDetails);
   const [dialogPage, setDialogPage] = useState("login");
   const [newPasswordState, setNewPasswordState] = useState(false);
   const classes = useStyles();
@@ -136,22 +137,34 @@ export default function SignInForm(props: any) {
   };
 
   useEffect(() => {
-    Http.get({
-      url: '/api/v2/organizations/1',
-      state: { stateVariable },
-      customHeaders: { 
-        noauthvalidate: 'true'
-      },
-    })
-    .then((response: any) => {
-      if(response){
-        console.log('response',response?.organizationDetails?.emailDomains);      
-        setAllowedDomains(response?.organizationDetails?.emailDomains);
-      }
-    })
-    .catch((error: any) => {
-      console.log(error);      
-    });
+    let data: any = {};
+    data = stateVariable.organizationDetails;    
+    if(data?.emailDomains && data?.emailDomains.length > 0){
+      setAllowedDomains(data?.emailDomains);
+    } else {
+      Http.get({
+        url: '/api/v2/organizations/1',
+        state: { stateVariable },
+        customHeaders: { 
+          noauthvalidate: 'true'
+        },
+      })
+      .then((response: any) => {
+        if(response){
+          console.log('response',response?.organizationDetails);      
+          saveOrganizationData({
+            emailDomains: response?.organizationDetails?.emailDomains,
+            name: response?.organizationDetails?.name,
+            orgPrefix: response?.organizationDetails?.orgPrefix,
+            url: response?.organizationDetails?.url,
+          });
+          setAllowedDomains(response?.organizationDetails?.emailDomains);
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);      
+      });
+    }
   },[])
 
   const validatePassword = (password: string) => {

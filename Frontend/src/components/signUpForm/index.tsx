@@ -30,6 +30,7 @@ import { useSelector } from "react-redux";
 import { IRootState } from "../../reducers";
 import { Text } from "../../common/Language";
 import SignInForm from "../signInForm";
+import { useActions, saveOrganizationDetails } from "../../actions";
 //import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 
 const useStyles = makeStyles((theme) => ({
@@ -88,24 +89,36 @@ export default function SignupForm(props: any) {
     props.superUserStateVariable
   );
   const [allowedDomains, setAllowedDomains] = useState(['']);
+  const saveOrganizationData = useActions(saveOrganizationDetails);
   
   useEffect(() => {
-    Http.get({
-      url: '/api/v2/organizations/1',
-      state: { stateVariable },
-      customHeaders: { 
-        noauthvalidate: 'true'
-      },
-    })
-    .then((response: any) => {
-      if(response){
-        console.log('response',response?.organizationDetails?.emailDomains);      
-        setAllowedDomains(response?.organizationDetails?.emailDomains);
-      }
-    })
-    .catch((error: any) => {
-      console.log(error);      
-    });
+    let data: any = {};
+    data = stateVariable.organizationDetails;
+    if(data?.emailDomains && data?.emailDomains.length > 0){
+      setAllowedDomains(data?.emailDomains);
+    } else {
+      Http.get({
+        url: '/api/v2/organizations/1',
+        state: { stateVariable },
+        customHeaders: { 
+          noauthvalidate: 'true'
+        },
+      })
+      .then((response: any) => {
+        if(response){          
+          saveOrganizationData({            
+            emailDomains: response?.organizationDetails?.emailDomains,
+            name: response?.organizationDetails?.name,
+            orgPrefix: response?.organizationDetails?.orgPrefix,
+            url: response?.organizationDetails?.url,
+          });
+          setAllowedDomains(response?.organizationDetails?.emailDomains);
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);      
+      });
+    }
   },[])
   
   const validateEmail = (email: string) => {
