@@ -726,11 +726,19 @@ popupbtn svg{
   margin: 1px;
 }
 popupbtn svg g path{
-  fill: black;
+  fill: #011348;
 }
 popupbtn gtdiv {
   margin: 18px 2px;
-  color: black;
+  color: #011348;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+}
+.gigatester-popup-dialog-remote popupbtn gtdiv {
+  display: table;
+}
+.gigatester-popup-dialog-remote popupbtn gtdiv span {
+  display: table-cell;
+  vertical-align: middle;
 }
 popuptooltip {
   visibility: hidden;
@@ -2204,7 +2212,7 @@ background: #fafbfd;
 
 .gigatester-popup-dialog-remote{
   width: 400px;
-  height: 300px;
+  height: auto;
   background: #fff;
   position: fixed;
   top: 25%;
@@ -2213,22 +2221,26 @@ background: #fafbfd;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: center;
-  padding: 3px;
+  align-items: left;
+  padding: 10px;
   margin: 0 auto;
-  line-height: 20px;
-  color: black;
+  line-height: normal;
+  letter-spacing: normal;
+  word-spacing: normal;
+  color: #011348;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  font-size: 28px;
-  font-weight: 500;
+  font-weight: normal;
+  border-radius: 4px;
   box-shadow: 0 0 10px #5c6c7c;
-  animation: animationAppear 0.2s linear;
+  text-align: left;
+  box-sizing: border-box;
+  animation: animationAppear 0.1s linear 0.05s forwards;
 }
 
 @media (max-width: 1300px) {
   .gigatester-popup-dialog-remote{
     width: 300px;
-    height: 200px;
+    height: auto;
     background: #fff;
     position: fixed;
     top: 25%;
@@ -2237,22 +2249,26 @@ background: #fafbfd;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     padding: 10px;
-    line-height: 20px;
-    color: black;
+    line-height: normal;
+    letter-spacing: normal;
+    word-spacing: normal;
+    color: #011348;
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
-    font-size: 20px;
-    font-weight: 500;
+    font-weight: normal;
+    border-radius: 4px;
     box-shadow: 0 0 10px #5c6c7c;
-    animation: animationAppear 0.2s linear;
-  }
+    text-align: left;
+    box-sizing: border-box;
+    animation: animationAppear 0.1s linear 0.05s forwards;
+    }
 }
 
 @media (max-width: 800px) {
   .gigatester-popup-dialog-remote{
     width: 250px;
-    height: 150px;
+    height: auto;
     background: #fff;
     position: fixed;
     top: 25%;
@@ -2261,21 +2277,29 @@ background: #fafbfd;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     padding: 10px;
     line-height: 20px;
-    color: black;
+    line-height: normal;
+    letter-spacing: normal;
+    word-spacing: normal;
+    color: #011348;
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
-    font-size: 20px;
-    font-weight: 500;
+    font-weight: normal;
+    border-radius: 4px;
     box-shadow: 0 0 10px #5c6c7c;
-    animation: animationAppear 0.2s linear;
-  }
+    text-align: left;
+    box-sizing: border-box;
+    animation: animationAppear 0.1s linear 0.05s forwards;
+    }
 }
 
-popupbtn.remote-title {
+.gigatester-popup-dialog-remote .remote-title {
   color: #011348;
   font-weight: 900;
+  font-size: 22px;
+  align-items: center;
+  text-align: center;
 }
 
 gtvideotoolbar {

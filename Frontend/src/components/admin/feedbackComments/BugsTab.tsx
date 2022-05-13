@@ -453,21 +453,21 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				urlAppend += `&prodVersion=${prodVersion}`;
 			}
 		}
-		if (filterRating) {
+		if (filterRating && filterRating?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterRating=${filterRating.join(',')}`
 				: `?filterRating=${filterRating.join(',')}`;
 			numItems = 500;
 		}
 
-		if (filterSeverity) {
+		if (filterSeverity && filterSeverity?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterSeverity=${filterSeverity.join(',')}`
 				: `?filterSeverity=${filterSeverity.join(',')}`;
 			numItems = 500;
 		}
 
-		if (filterCategory) {
+		if (filterCategory && filterCategory?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterCategory=${filterCategory.join(',')}`
 				: `?filterCategory=${filterCategory.join(',')}`;
@@ -938,8 +938,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								setFocusCategory={setFocusCategory}
 								categoryList={categoryList}
 								severityList={severityList}
-									resultsFetched={resultsFetched}
-									fetchAgain={fetchMore}
+								lastEvaluatedKey={lastEvaluatedKey}
+								resultsFetched={resultsFetched}
+								fetchAgain={fetchMore}
 							/>
 						</div>
 					) : noDataError ? (
@@ -1108,6 +1109,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								lastEvaluatedKey={lastEvaluatedKey}
 								productName={prodNameIdMapping[selectedProdId].name}
 								fetchAgain={fetchMore}
 							/>
