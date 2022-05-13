@@ -19,7 +19,7 @@ export const createGroup = async (groupData: GroupInfo, userId: string): Promise
     children: groupData.children,
     id: `group_${uuidv1()}`,
     name: groupData.name,
-    parent: groupData.parentId
+    parent: groupData.parent
   };
 
   Object.keys(groupData).forEach((val, i) => {

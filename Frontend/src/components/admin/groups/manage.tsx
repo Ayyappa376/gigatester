@@ -143,6 +143,7 @@ const ManageGroups = (props: any) => {
     if(mandatoryFieldCheck(group)) {
       setBackdropOpen(true);
       if(group.id === 'tempId') {
+        console.log(group);
         Http.post({
           url: `/api/v2/groups`,
           body: {
@@ -338,17 +339,17 @@ const ManageGroups = (props: any) => {
       id: 'tempId',
       name: '',
     };
-
+    console.log(parentGroupId, 'parentGroupId')
     if(parentGroupId) {
       newGroup.parent = parentGroupId;
       const parentGroup: IGroupInfo = temp[parentGroupId];
       if(!parentGroup.children) {
         parentGroup.children = [];
       }
-      parentGroup.children.push('');
+      parentGroup.children.push('tempId');
     }
-
     temp[newGroup.id] = newGroup;
+    console.log(temp, 'temp group');
     setGroups(temp);
 
     const tempHasChanges: {[key: string]: boolean} = { ...hasChanges };
@@ -373,6 +374,20 @@ const ManageGroups = (props: any) => {
             className='textFieldStyle'
           />
           <div style={{ cursor: 'pointer' }}>
+          <MuiThemeProvider theme={tooltipTheme}>
+              <Tooltip
+                title={
+                  <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                    <Text tid='addChildGroup' />
+                  </Typography>
+                }
+              >
+                <Typography>
+                  <AddIcon onClick={() => { addChildGroup(group.id); }} />{' '}
+                  <Text tid='addChildGroup' />
+                </Typography>
+              </Tooltip>
+            </MuiThemeProvider>
             {hasChanges[group.id] ? (
               <Button
                 onClick={() => { handleSave(group.id) }}
@@ -390,20 +405,6 @@ const ManageGroups = (props: any) => {
               <Tooltip
                 title={
                   <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                    <Text tid='addChildGroup' />
-                  </Typography>
-                }
-              >
-                <Typography>
-                  <AddIcon onClick={() => { addChildGroup(group.id); }} />{' '}
-                  <Text tid='addChildGroup' />
-                </Typography>
-              </Tooltip>
-            </MuiThemeProvider>
-            <MuiThemeProvider theme={tooltipTheme}>
-              <Tooltip
-                title={
-                  <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
                     <Text tid='delete' />
                   </Typography>
                 }
@@ -417,6 +418,7 @@ const ManageGroups = (props: any) => {
         </Fragment>
       }>
         {group.children && group.children.map((childId: string) => {
+          console.log(group);
           return renderTree(groups[childId])
         })}
       </TreeItem>
@@ -437,13 +439,13 @@ const ManageGroups = (props: any) => {
                   <Tooltip
                     title={
                       <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                        <Text tid='addChildGroup' />
+                        <Text tid='addGroup' />
                       </Typography>
                     }
                   >
                     <Typography>
                       <AddIcon onClick={() => { addChildGroup(); }} />{' '}
-                      <Text tid='addChildGroup' />
+                      <Text tid='addGroup' />
                     </Typography>
                   </Tooltip>
                 </MuiThemeProvider>
