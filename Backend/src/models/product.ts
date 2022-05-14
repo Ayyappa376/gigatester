@@ -27,6 +27,7 @@ export interface TesterStatus {
 export interface FeedbackAgentSettings {
     bugSettings?: BugSettings;
     captureSystemDetails?: boolean;
+    featureReqSettings?: FeatureReqSettings;
     feedbackSettings?: FeedbackSettings;
     feedbackTypes: FeedbackType[];
     invokeDelay?: number; //in seconds
@@ -66,6 +67,15 @@ export interface FeedbackSettings {
     tooltip?: string;
 }
 
+export interface FeatureReqSettings {
+    dialogMsg?: string;
+    icon?: string;
+    reqComments: boolean;
+    thanksMsg?: string;
+    title?: string;
+    tooltip?: string;
+}
+
 export interface WidgetLAF {
     bgColor: string;
     custom?: CustomProperties;
@@ -95,7 +105,7 @@ export interface RemoteBtnSettings {
     btnId?: string;
     enabled: boolean;
 }
-
+  
 export interface EmailConfiguration {
     feedbackTypes: string[]; //Feedback or bugs
     ratingLimit?: {

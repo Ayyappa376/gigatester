@@ -26,7 +26,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 interface exportProps {
-	data?: any;
+	data: any;
 	client?: string;
 	type?: string;
 	fetchMore: Function;
@@ -42,9 +42,6 @@ const ExportBtn = ({ data, client, type, fetchMore, lastEvaluatedKey }: exportPr
 	const [open, setOpen] = useState<boolean>(false);
 	const [fetchMoreData, setFetchMoreData] = useState<boolean>(false);
 	const classes = useStyles();
-
-	// console.log('data', data.length);
-	// console.log('origina', original.length)
 
 	/**
  * OrganizeData function parses each feedback object
@@ -187,10 +184,6 @@ const ExportBtn = ({ data, client, type, fetchMore, lastEvaluatedKey }: exportPr
 				<GetApp style={{ fontSize: '20px' }} />
 			</Button>
 			</Tooltip>
-
-			{/* <Backdrop className={classes.backdrop} open={open}>
-					<CircularProgress color='inherit' />
-				</Backdrop> */}
 		</React.Fragment>
 	);
 };

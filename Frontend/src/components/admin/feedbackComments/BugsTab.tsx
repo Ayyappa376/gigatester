@@ -278,6 +278,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
+		if (Object.keys(lastEvaluatedKey).length > 0) {
 			// fetch the results from backend
 			setData([]);
 			setRawData([]);
@@ -290,7 +291,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 				searchWord: keyword,
 			});
-		
+		} else {
+			setData(sortTableByDate(data, order));
+		}
+	}, [order]);
+
 	}, [order]);
 
 	useEffect(() => {
@@ -443,10 +448,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		searchWord,
 		showNoEmptyError,
 		noRawDataUpdate,
+		fetchQuantity,
 	}: IFetchRecursiveData) => {
 		setResultsFetched(false);
 		let urlAppend = ``;
-		let numItems = NUMBER_OF_ITEMS_PER_FETCH;
+		let numItems = fetchQuantity ? fetchQuantity : NUMBER_OF_ITEMS_PER_FETCH;
 		if (prodId) {
 			urlAppend += `?prodId=${prodId}`;
 			if (prodVersion) {
@@ -592,11 +598,19 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 	};
 
-	const fetchMore = () => {
+	const fetchMore = (quantity?: number | undefined) => {
 		if (prevLastEvalKey !== lastEvaluatedKey.id) {
 			setPrevLastEvalKey(lastEvaluatedKey.id);
 			if (Object.keys(lastEvaluatedKey).length > 0) {
 				setResultsFetched(false);
+				// let postData = {
+				// 	type: 'BUG_REPORT',
+				// 	items: '20',
+				// 	lastEvalKey: lastEvaluatedKey,
+				// 	prodId: selectedProdId,
+				// 	prodVersion: productVersion,
+				// }
+				// getFeedbackLastEvalkeyData(postData, stateVariable);
 				fetchRecursiveData({
 					lastEvalKey: lastEvaluatedKey,
 					prodId: selectedProdId,
@@ -606,7 +620,11 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					filterCategory: focusCategory,
 					filterSeverity: focusSeverity,
 					filterDate: dateRange,
+<<<<<<< HEAD:Frontend/src/components/admin/feedbackComments/BugsTab.tsx
 					fetchOrder: order,
+=======
+					fetchQuantity: quantity,
+>>>>>>> feature-request:Frontend/src/components/admin/feedbackComments/BugsTab.tsx
 				});
 			} else {
 				setResultsFetched(true);

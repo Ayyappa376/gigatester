@@ -1,17 +1,20 @@
 import React, { Fragment } from 'react';
 import { Grid, Typography, TextField, FormControl, MenuItem, Select, InputLabel, makeStyles,
-  FormControlLabel, Checkbox, Button, IconButton
+  FormControlLabel, Checkbox, Button, IconButton, Box, Chip
  } from "@material-ui/core";
 import { buttonStyle, tooltipTheme } from '../../../common/common';
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
-import { FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
+import {
+  FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
+  FEEDBACK_TYPE_FEATURE_REQ,
   INVOKE_TYPE_MANUAL,
   IProductParams,
   PLATFORM_TYPE_BROWSER,
   PLATFORM_TYPE_NATIVE_REACT,
   IRemoteBtnSettings,
+  FeedbackTypesObj,
 } from '../../../model';
 
 interface SettingsProps {
@@ -249,27 +252,35 @@ const StandardSettings = ({
         </Grid>
 
         <Grid item xs={12} sm={12}>
-          <FormControl className={classes.formControl}>
-            <InputLabel id={`feedbackTypes`} required={true}>
-              {'What can users submit using this widget (select multiple):'}
-            </InputLabel>
-            <Select
-              name={`select_feedbackTypes`}
-              multiple
-              value={
-                (productParams && productParams.products && productParams.products[0] &&
-                productParams.products[0].feedbackAgentSettings &&
-                productParams.products[0].feedbackAgentSettings.feedbackTypes)
-                ? productParams.products[0].feedbackAgentSettings.feedbackTypes
-                : []
-              }
-              onChange={(event) => handleFeedbackTypesChange(event)}
-            >
-              <MenuItem key={FEEDBACK_TYPE_FEEDBACK} value={FEEDBACK_TYPE_FEEDBACK}>{'Submit Feedback'}</MenuItem>
-              <MenuItem key={FEEDBACK_TYPE_BUGS} value={FEEDBACK_TYPE_BUGS}>{'Submit Bugs'}</MenuItem>
-            </Select>
-          </FormControl>
-        </Grid>
+        <FormControl className={classes.formControl}>
+          <InputLabel id={`feedbackTypes`} required={true}>
+            {'What can users submit using this widget? (select multiple in desired order):'}
+          </InputLabel>
+          <Select
+            name={`select_feedbackTypes`}
+            multiple
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackTypes)
+              ? productParams.products[0].feedbackAgentSettings.feedbackTypes
+              : []
+            }
+            onChange={(event) => handleFeedbackTypesChange(event)}
+            renderValue={(selected: any) => (
+              <Box sx={{ display: 'flex', flexWrap: 'wrap' }}>
+                {selected.map((value: any) => (
+                  <Chip key={value} label={FeedbackTypesObj[value]} />
+                ))}
+              </Box>
+            )}
+          >
+            <MenuItem key={FEEDBACK_TYPE_FEEDBACK} value={FEEDBACK_TYPE_FEEDBACK}>{'Submit Feedback'}</MenuItem>
+            <MenuItem key={FEEDBACK_TYPE_BUGS} value={FEEDBACK_TYPE_BUGS}>{'Submit Bugs'}</MenuItem>
+            <MenuItem key={FEEDBACK_TYPE_FEATURE_REQ} value={FEEDBACK_TYPE_FEATURE_REQ}>{'Submit Feature Request'}</MenuItem>
+          </Select>
+        </FormControl>
+      </Grid>
 
         <Grid item xs={12} sm={12}>
           <FormControl className={classes.formControl}>
