@@ -9,7 +9,7 @@ import * as systemDetailsReducer from './system';
 import * as organizationReducer from './organization';
 import { IDisplayState } from '../model/display';
 import { ISystemDetails } from '../model/settings';
-import { IOrganizationDetails } from '../model/organization';
+import { IOrganizationInfo } from '../model/organization';
 
 export interface IRootState {
 	assessment: IAssessment;
@@ -17,7 +17,7 @@ export interface IRootState {
 	admin: IAdmin;
 	display: IDisplayState;
 	systemDetails: ISystemDetails;
-	organizationDetails: IOrganizationDetails
+	organizationDetails: IOrganizationInfo
 }
 
 export default (history: History) =>

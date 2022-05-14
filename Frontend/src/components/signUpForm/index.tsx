@@ -31,6 +31,7 @@ import { IRootState } from "../../reducers";
 import { Text } from "../../common/Language";
 import SignInForm from "../signInForm";
 import { useActions, saveOrganizationDetails } from "../../actions";
+import { IOrganizationInfo } from "../../model/organization";
 //import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 
 const useStyles = makeStyles((theme) => ({
@@ -88,14 +89,13 @@ export default function SignupForm(props: any) {
   const [superUserStateVariable, setSuperUserStateVariable] = useState(
     props.superUserStateVariable
   );
-  const [allowedDomains, setAllowedDomains] = useState(['']);
+  const [allowedDomains, setAllowedDomains] = useState<string[] | undefined>(undefined);
   const saveOrganizationData = useActions(saveOrganizationDetails);
   
   useEffect(() => {
-    let data: any = {};
-    data = stateVariable.organizationDetails;
-    if(data?.emailDomains && data?.emailDomains.length > 0){
-      setAllowedDomains(data?.emailDomains);
+    const data: IOrganizationInfo = stateVariable.organizationDetails;    
+    if(data){
+      setAllowedDomains(data.emailDomains);
     } else {
       Http.get({
         url: '/api/v2/organizations/1',
@@ -111,6 +111,7 @@ export default function SignupForm(props: any) {
             name: response?.organizationDetails?.name,
             orgPrefix: response?.organizationDetails?.orgPrefix,
             url: response?.organizationDetails?.url,
+            status: response?.organizationDetails?.status
           });
           setAllowedDomains(response?.organizationDetails?.emailDomains);
         }
@@ -125,12 +126,15 @@ export default function SignupForm(props: any) {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let extention = getSecondPart(String(email).toLowerCase()) || "";
-    if(!re.test(String(email).toLowerCase())) {
+    if(!re.test(email.toLowerCase())) {
       setValidationMsg("Please enter a valid email");
-    } else if(allowedDomains.indexOf(extention) < 0){
+      return false;
+    }
+    if(allowedDomains && allowedDomains.indexOf(extention) < 0){
       setValidationMsg("Please use your official organization email");
-    }    
-    return re.test(String(email).toLowerCase()) && allowedDomains.indexOf(extention) > -1 ? true : false;
+      return false;
+    }
+    return true;
   };
   
   const getSecondPart = (str: string) =>  {

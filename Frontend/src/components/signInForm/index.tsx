@@ -28,6 +28,7 @@ import { useInput } from "../../utils/form";
 import SignupForm from "../signUpForm";
 import SetNewPassword from "./setNewPassword";
 import Notification from "../../common/notification";
+import { IOrganizationInfo } from "../../model/organization";
 declare global {
   interface Window { GigaTester: any; }
 }
@@ -65,6 +66,7 @@ export default function SignInForm(props: any) {
     type: "",
   });
   const [newSignInUser, setNewSignInUser] = useState(undefined);
+  const [allowedDomains, setAllowedDomains] = useState<string[] | undefined>(undefined);
   const history = useHistory();
 
   const { value: email, bind: bindEmail } = useInput("");
@@ -73,7 +75,6 @@ export default function SignInForm(props: any) {
   const { value: oldPassword, bind: bindOldPassword } = useInput("");
   const { value: newPassword, bind: bindNewPassword } = useInput("");
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
-  const [allowedDomains, setAllowedDomains] = useState([''])
   let userData: any = {}
 
   const handleSuccessfulSignIn = (user: any) => {
@@ -137,10 +138,9 @@ export default function SignInForm(props: any) {
   };
 
   useEffect(() => {
-    let data: any = {};
-    data = stateVariable.organizationDetails;    
-    if(data?.emailDomains && data?.emailDomains.length > 0){
-      setAllowedDomains(data?.emailDomains);
+    const data: IOrganizationInfo = stateVariable.organizationDetails;    
+    if(data){
+      setAllowedDomains(data.emailDomains);
     } else {
       Http.get({
         url: '/api/v2/organizations/1',
@@ -157,6 +157,7 @@ export default function SignInForm(props: any) {
             name: response?.organizationDetails?.name,
             orgPrefix: response?.organizationDetails?.orgPrefix,
             url: response?.organizationDetails?.url,
+            status: response?.organizationDetails?.status
           });
           setAllowedDomains(response?.organizationDetails?.emailDomains);
         }
@@ -238,22 +239,20 @@ export default function SignInForm(props: any) {
       setLoading(false);
       return;
     }
-//    if (confirmNewpassword && newPassword === confirmNewpassword) {
-      Auth.completeNewPassword(user, confirmNewpassword, { email: email })
-      .then((newUser) => {
-        if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
-          handleSuccessfulSignIn(newUser);
-        } else {
-          notifyError("Set password failed. Please try again");
-        }
-        setLoading(false);
-      })
-      .catch((e) => {
-        notifyError(e.message);
-        setLoading(false);
-      });
-//    }
-  };
+    Auth.completeNewPassword(user, confirmNewpassword, { email: email })
+    .then((newUser) => {
+      if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
+        handleSuccessfulSignIn(newUser);
+      } else {
+        notifyError("Set password failed. Please try again");
+      }
+      setLoading(false);
+    })
+    .catch((e) => {
+      notifyError(e.message);
+      setLoading(false);
+    });
+};
 
   const submitSignInRequest = async () => {
     try {
@@ -261,7 +260,6 @@ export default function SignInForm(props: any) {
       if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
         setNewSignInUser(user);
         setNewPasswordState(true);
-//        submitNewPasswordRequest(user);
       } else if (user && user.signInUserSession.idToken && user.signInUserSession.accessToken) {
         handleSuccessfulSignIn(user);
       } else {
@@ -279,12 +277,15 @@ export default function SignInForm(props: any) {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let extention = getSecondPart(String(email).toLowerCase()) || "";
-    if(!re.test(String(email).toLowerCase())) {
+    if(!re.test(email.toLowerCase())) {
       notifyError("Please enter a valid email");
-    } else if(allowedDomains.indexOf(extention) < 0){
-      notifyError("Please use your official organization email");
+      return false;
     }
-    return re.test(String(email).toLowerCase()) && allowedDomains.indexOf(extention) > -1 ? true : false;
+    if(allowedDomains && allowedDomains.indexOf(extention) < 0){
+      notifyError("Please use your official organization email");
+      return false;
+    }
+    return true;
   };
   
   const getSecondPart = (str: string) =>  {

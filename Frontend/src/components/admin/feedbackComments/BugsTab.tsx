@@ -296,8 +296,6 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 	}, [order]);
 
-	}, [order]);
-
 	useEffect(() => {
 		if (rawData.length === 0) {
 			return;
@@ -620,11 +618,8 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					filterCategory: focusCategory,
 					filterSeverity: focusSeverity,
 					filterDate: dateRange,
-<<<<<<< HEAD:Frontend/src/components/admin/feedbackComments/BugsTab.tsx
 					fetchOrder: order,
-=======
 					fetchQuantity: quantity,
->>>>>>> feature-request:Frontend/src/components/admin/feedbackComments/BugsTab.tsx
 				});
 			} else {
 				setResultsFetched(true);

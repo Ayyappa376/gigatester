@@ -159,6 +159,12 @@ export const FEEDBACK_TYPE_FEEDBACK: IFeedbackType = 'FEEDBACK';
 export const FEEDBACK_TYPE_BUGS: IFeedbackType = 'BUGS';
 export const FEEDBACK_TYPE_FEATURE_REQ: IFeedbackType = 'FEATURE_REQUEST';
 
+export const FeedbackTypesObj: any = {
+  'FEEDBACK': 'Submit Feedback',
+  'BUGS': 'Submit Bugs',
+  'FEATURE_REQUEST': 'Submit Feature Request',
+}
+
 export type IRatingIconType = 'STAR' | 'HEART' | 'EMOJI';
 export const RATING_ICON_TYPE_STAR: IRatingIconType = 'STAR';
 export const RATING_ICON_TYPE_HEART: IRatingIconType = 'HEART';
@@ -188,9 +194,3 @@ export const POS_LEFT_BOTTOM: IWidgetPosition = 'LEFT_BOTTOM';
 export const POS_BOTTOM_RIGHT: IWidgetPosition = 'BOTTOM_RIGHT';
 export const POS_BOTTOM_LEFT: IWidgetPosition = 'BOTTOM_LEFT';
 export const POS_CUSTOM: IWidgetPosition = 'CUSTOM';
-
-export const FeedbackTypesObj: any = {
-  'FEEDBACK': 'Submit Feedback',
-  'BUGS': 'Submit Bugs',
-  'FEATURE_REQUEST': 'Submit Feature Request',
-}

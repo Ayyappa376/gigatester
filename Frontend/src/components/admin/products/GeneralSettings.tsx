@@ -275,9 +275,9 @@ const StandardSettings = ({
               </Box>
             )}
           >
-            <MenuItem key={FEEDBACK_TYPE_FEEDBACK} value={FEEDBACK_TYPE_FEEDBACK}>{'Submit Feedback'}</MenuItem>
-            <MenuItem key={FEEDBACK_TYPE_BUGS} value={FEEDBACK_TYPE_BUGS}>{'Submit Bugs'}</MenuItem>
-            <MenuItem key={FEEDBACK_TYPE_FEATURE_REQ} value={FEEDBACK_TYPE_FEATURE_REQ}>{'Submit Feature Request'}</MenuItem>
+            <MenuItem key={FEEDBACK_TYPE_FEEDBACK} value={FEEDBACK_TYPE_FEEDBACK}>{FeedbackTypesObj[FEEDBACK_TYPE_FEEDBACK]}</MenuItem>
+            <MenuItem key={FEEDBACK_TYPE_BUGS} value={FEEDBACK_TYPE_BUGS}>{FeedbackTypesObj[FEEDBACK_TYPE_BUGS]}</MenuItem>
+            <MenuItem key={FEEDBACK_TYPE_FEATURE_REQ} value={FEEDBACK_TYPE_FEATURE_REQ}>{FeedbackTypesObj[FEEDBACK_TYPE_FEATURE_REQ]}</MenuItem>
           </Select>
         </FormControl>
       </Grid>

@@ -23,7 +23,7 @@ import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import {
   IProductParams, ICategory,
-  FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
+  FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, FEEDBACK_TYPE_FEATURE_REQ,
   INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY,
   INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
   RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI,
@@ -31,15 +31,9 @@ import {
   PLATFORM_TYPE_NATIVE_REACT,//, EMAIL_MANDATORY, EMAIL_OPTIONAL
   POS_RIGHT_MIDDLE,
   ICustomProperties,
-  FEEDBACK_OPT,
-  BUGS_OPT,
+  FEEDBACK_OPT, BUGS_OPT, FEATURE_OPT,
   MAIN_BUTTON,
-<<<<<<< HEAD:Frontend/src/components/admin/products/edit-feedback.tsx
   TRACKING_SYSTEM_SELF
-=======
-  FEEDBACK_TYPE_FEATURE_REQ,
-  FEATURE_OPT
->>>>>>> feature-request:Frontend/src/components/admin/products/edit-feedback.tsx
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -168,12 +162,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
             platform: PLATFORM_TYPE_BROWSER,
-<<<<<<< HEAD:Frontend/src/components/admin/products/edit-feedback.tsx
-            feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
+            feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS/*, FEEDBACK_TYPE_FEATURE_REQ*/],
             orgUrl: window.location.hostname,
-=======
-            feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, FEEDBACK_TYPE_FEATURE_REQ],
->>>>>>> feature-request:Frontend/src/components/admin/products/edit-feedback.tsx
             bugSettings: {
               categories: [],
               severities: [],
@@ -244,13 +234,11 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             severityLimit: {},
           };
         }
-<<<<<<< HEAD:Frontend/src/components/admin/products/edit-feedback.tsx
         if (!response.products[0].trackingSystem) {
           response.products[0].trackingSystem = {
             type: TRACKING_SYSTEM_SELF,
           };
         }
-=======
         if (!response.products[0].feedbackAgentSettings.featureReqSettings) {
           response.products[0].feedbackAgentSettings.featureReqSettings = {
             icon: '',
@@ -262,7 +250,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           }
         }
         console.log('response', response);
->>>>>>> feature-request:Frontend/src/components/admin/products/edit-feedback.tsx
         setProductParams(response);
         setFeedbackAgentSettingsFetched(true);
       })

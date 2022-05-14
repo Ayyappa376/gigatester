@@ -1,8 +1,9 @@
 export interface OrganizationInfo {
     emailDomains?: string[];
     name: string;
-    orgPrefix?: string;
+    orgPrefix: string;
     url: string;
+    status: string;
 }
 
 export interface ResourceDetails {

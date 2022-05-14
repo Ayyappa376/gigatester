@@ -62,37 +62,6 @@ export default function EditFeedbackTabs(props: any) {
 		setValue(newValue);
 	};
 
-<<<<<<< HEAD:Frontend/src/components/admin/products/tabs.tsx
-  return (
-    <Box sx={{ width: '100%' }}>
-      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-        <Tabs className={classes.tabs} value={value} onChange={handleChange}   variant="scrollable"
-  scrollButtons="auto" aria-label="tabs">
-          <Tab label="General Settings" {...a11yProps(0)} />
-          <Tab label="Feedback Settings" {...a11yProps(1)} />
-          <Tab label="Bugs Settings" {...a11yProps(2)} />
-          <Tab label="Email Setttings" {...a11yProps(3)} />
-          <Tab label="Widget Appearance" {...a11yProps(4)} />
-        </Tabs>
-      </Box>
-      <TabPanel value={value} index={0}>
-        <StandardSettings {...props.settingsProps}/>
-      </TabPanel>
-      <TabPanel value={value} index={1}>
-        <FeedbackSettings {...props.settingsProps}/>
-      </TabPanel>
-      <TabPanel value={value} index={2}>
-        <BugSettings {...props.settingsProps}/>
-      </TabPanel>
-      <TabPanel value={value} index={3}>
-        <EmailSettings {...props.settingsProps}/>
-      </TabPanel>
-      <TabPanel value={value} index={4}>
-        <LookAndFeel {...props.settingsProps}/>
-      </TabPanel>
-    </Box>
-  );
-=======
 	return (
 		<Box sx={{ width: '100%' }}>
 			<Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -131,7 +100,6 @@ export default function EditFeedbackTabs(props: any) {
 			</TabPanel>
 		</Box>
 	);
->>>>>>> feature-request:Frontend/src/components/admin/products/tabs.tsx
 }
 // {tabMap.length > 0
 // 	? tabMap.map((tab: any, index: number) => (
