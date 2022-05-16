@@ -8,4 +8,4 @@ const organizationDetailsReducer = {
     ...organizationValuesReducer,
 }
 
-export const organizationDetails = createReducer<IOrganizationInfo>(defaultState, organizationDetailsReducer);
+export const organizationDetails = createReducer<IOrganizationInfo | null>(defaultState, organizationDetailsReducer);

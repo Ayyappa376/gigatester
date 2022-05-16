@@ -17,7 +17,7 @@ export interface IRootState {
 	admin: IAdmin;
 	display: IDisplayState;
 	systemDetails: ISystemDetails;
-	organizationDetails: IOrganizationInfo
+	organizationDetails: IOrganizationInfo | null;
 }
 
 export default (history: History) =>
