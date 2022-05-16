@@ -296,7 +296,7 @@ const ManageGroups = (props: any) => {
   const deleteGroup = (groupId: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/devices/${groupId}`,
+      url: `/api/v2/groups/${groupId}`,
       state: stateVariable,
     })
     .then((response: any) => {
@@ -418,7 +418,8 @@ const ManageGroups = (props: any) => {
         </Fragment>
       }>
         {group.children && group.children.map((childId: string) => {
-          console.log(group);
+          console.log(group, 'before render tree call');
+          console.log(groups[childId], childId)
           return renderTree(groups[childId])
         })}
       </TreeItem>
@@ -432,7 +433,7 @@ const ManageGroups = (props: any) => {
           <Backdrop className={classes.backdrop} open={backdropOpen}>
             <CircularProgress color='inherit' />
           </Backdrop>
-          <div style={{ width: '100%' }}>
+          <div style={{ width: '100%', display: 'inline-block' }}>
             <Grid container spacing={3}>
               <Grid item sm={5}>
                 <MuiThemeProvider theme={tooltipTheme}>
