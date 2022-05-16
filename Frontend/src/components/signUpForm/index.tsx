@@ -32,7 +32,6 @@ import { Text } from "../../common/Language";
 import SignInForm from "../signInForm";
 import { useActions, saveOrganizationDetails } from "../../actions";
 import { IOrganizationInfo } from "../../model/organization";
-//import { content } from "html2canvas/dist/types/css/property-descriptors/content";
 
 const useStyles = makeStyles((theme) => ({
   bigLogo: {
@@ -93,7 +92,7 @@ export default function SignupForm(props: any) {
   const saveOrganizationData = useActions(saveOrganizationDetails);
   
   useEffect(() => {
-    const data: IOrganizationInfo = stateVariable.organizationDetails;    
+    const data: IOrganizationInfo | null = stateVariable.organizationDetails;    
     if(data){
       setAllowedDomains(data.emailDomains);
     } else {

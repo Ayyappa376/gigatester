@@ -138,7 +138,7 @@ export default function SignInForm(props: any) {
   };
 
   useEffect(() => {
-    const data: IOrganizationInfo = stateVariable.organizationDetails;    
+    const data: IOrganizationInfo | null = stateVariable.organizationDetails;    
     if(data){
       setAllowedDomains(data.emailDomains);
     } else {

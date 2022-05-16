@@ -1,4 +1,4 @@
-import { /*ConfigItem, */OrganizationInfo, STATUS_VERIFY_ORG_ALL, STATUS_VERIFY_ORG_APPROVED, STATUS_VERIFY_ORG_DELETED } from '@models/index';
+import { OrganizationInfo, STATUS_VERIFY_ORG_ACTIVE, STATUS_VERIFY_ORG_ALL, STATUS_VERIFY_ORG_DELETED } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, /*getOrganizationConfig */} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
@@ -11,7 +11,8 @@ export const createOrganization = async (orgData: OrganizationInfo) => {
     emailDomains: orgData.emailDomains,
     name: orgData.name,
     orgPrefix: `org_${uuidv1()}`,
-    url: orgData.url,
+    status: STATUS_VERIFY_ORG_ACTIVE,
+    url: orgData.url
   };
 
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
@@ -105,7 +106,7 @@ export const updateOrganization = async (updateInfo: OrganizationInfo) => {
 };
 
 export const getOrganizationsList = async (queryStatus?: string): Promise<OrganizationInfo[]> => {
-  const status = queryStatus ? queryStatus : STATUS_VERIFY_ORG_APPROVED;
+  const status = queryStatus ? queryStatus : STATUS_VERIFY_ORG_ACTIVE;
 
   let params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
     TableName: TableNames.getOrganizationsTableName(),
