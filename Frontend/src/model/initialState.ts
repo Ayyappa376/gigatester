@@ -79,5 +79,11 @@ export const initialState: IRootState = {
         userpoolRegion:'',
         systemUser: '',
         systemPassword: ''
+    },
+    organizationDetails: {
+        emailDomains: [],
+        name: null,
+        url: null,
+        orgPrefix: null,
     }
 }

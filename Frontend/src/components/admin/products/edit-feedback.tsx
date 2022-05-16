@@ -23,13 +23,15 @@ import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
 import {
   IProductParams, ICategory,
-  FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS,
-  INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY, INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
-  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI, PLATFORM_TYPE_BROWSER, PLATFORM_TYPE_NATIVE_REACT,//, EMAIL_MANDATORY, EMAIL_OPTIONAL
+  FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS, FEEDBACK_TYPE_FEATURE_REQ,
+  INVOKE_TYPE_MANUAL, INVOKE_TYPE_AFTER_DELAY,
+  INVOKE_TYPE_CONTEXT_CHANGE, INVOKE_TYPE_IDLE,
+  RATING_ICON_TYPE_STAR, RATING_ICON_TYPE_HEART, RATING_ICON_TYPE_EMOJI,
+  PLATFORM_TYPE_BROWSER,
+  PLATFORM_TYPE_NATIVE_REACT,//, EMAIL_MANDATORY, EMAIL_OPTIONAL
   POS_RIGHT_MIDDLE,
   ICustomProperties,
-  FEEDBACK_OPT,
-  BUGS_OPT,
+  FEEDBACK_OPT, BUGS_OPT, FEATURE_OPT,
   MAIN_BUTTON,
   TRACKING_SYSTEM_SELF
 } from '../../../model';
@@ -37,6 +39,7 @@ import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
 import Success from '../../success-page';
 import { hostUrl } from '../../../utils/http/constants';
+import { ReposTimeline } from '../../metrics/repository';
 
 const widgetScript: string = `<script>
 window.GigaTester = window.GigaTester || {};
@@ -159,7 +162,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         if (!response.products[0].feedbackAgentSettings) {
           response.products[0].feedbackAgentSettings = {
             platform: PLATFORM_TYPE_BROWSER,
-            feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS],
+            feedbackTypes: [FEEDBACK_TYPE_FEEDBACK, FEEDBACK_TYPE_BUGS/*, FEEDBACK_TYPE_FEATURE_REQ*/],
             orgUrl: window.location.hostname,
             bugSettings: {
               categories: [],
@@ -181,6 +184,14 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               thanksMsg: 'We appriciate your feedback',
               title: 'Give Feedback',
               tooltip: 'Tell us your experience',
+              reqComments: true,
+            },
+            featureReqSettings: {
+              icon: '',
+              dialogMsg: 'Are there any feature or enhacements that could make your experience better?',
+              thanksMsg: 'We appreciate your thoughts and consideration',
+              title: 'Feature Request',
+              tooltip: 'How could this app be better?',
               reqComments: true,
             },
             invokeDelay: 5,
@@ -228,6 +239,17 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             type: TRACKING_SYSTEM_SELF,
           };
         }
+        if (!response.products[0].feedbackAgentSettings.featureReqSettings) {
+          response.products[0].feedbackAgentSettings.featureReqSettings = {
+            icon: '',
+            dialogMsg: 'Are there any feature or enhacements that could make your experience better?',
+            thanksMsg: 'We appreciate your thoughts and consideration',
+            title: 'Feature Request',
+            tooltip: 'How could this app be better?',
+            reqComments: true,
+          }
+        }
+        console.log('response', response);
         setProductParams(response);
         setFeedbackAgentSettingsFetched(true);
       })
@@ -842,6 +864,11 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           temp.products[0].feedbackAgentSettings.feedbackSettings) {
           temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments = !temp.products[0].feedbackAgentSettings.feedbackSettings.reqComments;
         }
+      } else if (type === 'Feature_Request') {
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.featureReqSettings) {
+          temp.products[0].feedbackAgentSettings.featureReqSettings.reqComments = !temp.products[0].feedbackAgentSettings.featureReqSettings.reqComments;
+        }
       }
       setProductParams(temp);
     }
@@ -1218,6 +1245,12 @@ const EditProductfeedbackAgentSettings = (props: any) => {
             }
             break;
           }
+          case FEATURE_OPT: {
+            if (temp.products[0].feedbackAgentSettings.featureReqSettings) {
+              temp.products[0].feedbackAgentSettings.featureReqSettings.icon = iconStr;
+            }
+            break;
+          }
           case MAIN_BUTTON:
           default: {
             if (temp.products[0].feedbackAgentSettings.bugSettings) {
@@ -1231,6 +1264,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  
   const handleChangeRemoteBtnSettings = (fieldName: string, event: any, index: number) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -1274,6 +1308,50 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       }
     }
   };
+
+  const handleFeatureReqTitleChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.featureReqSettings) {
+        temp.products[0].feedbackAgentSettings.featureReqSettings.title = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleFeatureReqTooltipChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.featureReqSettings) {
+        temp.products[0].feedbackAgentSettings.featureReqSettings.tooltip = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handlFeatureReqDialogMsgChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.featureReqSettings) {
+        temp.products[0].feedbackAgentSettings.featureReqSettings.dialogMsg = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleFeatureReqThanksMsgChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.featureReqSettings) {
+        temp.products[0].feedbackAgentSettings.featureReqSettings.thanksMsg = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
 
 //   //Temporarily commented
 //   const handleExtSystemSeverity = (data: any) => {
@@ -1503,6 +1581,10 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleChangeRemoteBtnSettings: handleChangeRemoteBtnSettings,
       addRemoteBtnSettings: addRemoteBtnSettings,
       deleteRemoteBtnSettings: deleteRemoteBtnSettings,
+      handleFeatureReqTitleChange: handleFeatureReqTitleChange,
+      handleFeatureReqTooltipChange: handleFeatureReqTooltipChange,
+      handlFeatureReqDialogMsgChange: handlFeatureReqDialogMsgChange,
+      handleFeatureReqThanksMsgChange: handleFeatureReqThanksMsgChange,
     }
 
     return (

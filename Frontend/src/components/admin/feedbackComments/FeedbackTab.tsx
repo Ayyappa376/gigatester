@@ -1028,6 +1028,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								lastEvaluatedKey={lastEvaluatedKey}
 								fetchAgain={fetchMore}
 							/>
 						</div>
@@ -1196,6 +1197,7 @@ const FeedbackTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								lastEvaluatedKey={lastEvaluatedKey}
 								productName={prodNameIdMapping[selectedProdId].name}
 								fetchAgain={fetchMore}
 							/>

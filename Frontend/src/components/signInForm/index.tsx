@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState, useEffect } from "react";
 import {
   Box,
   Button,
@@ -16,8 +16,11 @@ import {
   IconButton,
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
-import { useActions, saveUserDetails } from "../../actions";
+import { useActions, saveUserDetails, saveOrganizationDetails } from "../../actions";
 import { Auth } from "aws-amplify";
+import { Http } from "../../utils";
+import { useSelector } from "react-redux";
+import { IRootState } from "../../reducers";
 import jwtDecode from "jwt-decode";
 import { useHistory } from "react-router-dom";
 import { Text } from "../../common/Language";
@@ -25,6 +28,7 @@ import { useInput } from "../../utils/form";
 import SignupForm from "../signUpForm";
 import SetNewPassword from "./setNewPassword";
 import Notification from "../../common/notification";
+import { IOrganizationInfo } from "../../model/organization";
 declare global {
   interface Window { GigaTester: any; }
 }
@@ -46,10 +50,12 @@ export default function SignInForm(props: any) {
     },
   }));
 
+  const stateVariable = useSelector((state: IRootState) => state);
   const [loading, setLoading] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(props.openSignin);
   const [changePasswordState, setChangePasswordState] = useState(props.changePassword);
   const saveUserData = useActions(saveUserDetails);
+  const saveOrganizationData = useActions(saveOrganizationDetails);
   const [dialogPage, setDialogPage] = useState("login");
   const [newPasswordState, setNewPasswordState] = useState(false);
   const classes = useStyles();
@@ -60,6 +66,7 @@ export default function SignInForm(props: any) {
     type: "",
   });
   const [newSignInUser, setNewSignInUser] = useState(undefined);
+  const [allowedDomains, setAllowedDomains] = useState<string[] | undefined>(undefined);
   const history = useHistory();
 
   const { value: email, bind: bindEmail } = useInput("");
@@ -129,6 +136,37 @@ export default function SignInForm(props: any) {
       type: "error",
     });
   };
+
+  useEffect(() => {
+    const data: IOrganizationInfo = stateVariable.organizationDetails;    
+    if(data){
+      setAllowedDomains(data.emailDomains);
+    } else {
+      Http.get({
+        url: '/api/v2/organizations/1',
+        state: { stateVariable },
+        customHeaders: { 
+          noauthvalidate: 'true'
+        },
+      })
+      .then((response: any) => {
+        if(response){
+          console.log('response',response?.organizationDetails);      
+          saveOrganizationData({
+            emailDomains: response?.organizationDetails?.emailDomains,
+            name: response?.organizationDetails?.name,
+            orgPrefix: response?.organizationDetails?.orgPrefix,
+            url: response?.organizationDetails?.url,
+            status: response?.organizationDetails?.status
+          });
+          setAllowedDomains(response?.organizationDetails?.emailDomains);
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);      
+      });
+    }
+  },[])
 
   const validatePassword = (password: string) => {
     const re = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[$^*.\[\]{}\(\)\?\-\"\!@#%&\/\\,><\':;|_~`+\=])(?=.{8,20})/; //any of these should be allowed ^$*.[]{}()?-"!@#%&/\,><':;|_~`+=
@@ -201,22 +239,20 @@ export default function SignInForm(props: any) {
       setLoading(false);
       return;
     }
-//    if (confirmNewpassword && newPassword === confirmNewpassword) {
-      Auth.completeNewPassword(user, confirmNewpassword, { email: email })
-      .then((newUser) => {
-        if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
-          handleSuccessfulSignIn(newUser);
-        } else {
-          notifyError("Set password failed. Please try again");
-        }
-        setLoading(false);
-      })
-      .catch((e) => {
-        notifyError(e.message);
-        setLoading(false);
-      });
-//    }
-  };
+    Auth.completeNewPassword(user, confirmNewpassword, { email: email })
+    .then((newUser) => {
+      if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
+        handleSuccessfulSignIn(newUser);
+      } else {
+        notifyError("Set password failed. Please try again");
+      }
+      setLoading(false);
+    })
+    .catch((e) => {
+      notifyError(e.message);
+      setLoading(false);
+    });
+};
 
   const submitSignInRequest = async () => {
     try {
@@ -224,7 +260,6 @@ export default function SignInForm(props: any) {
       if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
         setNewSignInUser(user);
         setNewPasswordState(true);
-//        submitNewPasswordRequest(user);
       } else if (user && user.signInUserSession.idToken && user.signInUserSession.accessToken) {
         handleSuccessfulSignIn(user);
       } else {
@@ -238,18 +273,40 @@ export default function SignInForm(props: any) {
     }
   };
 
+  const validateEmail = (email: string) => {
+    const re =
+      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    let extention = getSecondPart(String(email).toLowerCase()) || "";
+    if(!re.test(email.toLowerCase())) {
+      notifyError("Please enter a valid email");
+      return false;
+    }
+    if(allowedDomains && allowedDomains.indexOf(extention) < 0){
+      notifyError("Please use your official organization email");
+      return false;
+    }
+    return true;
+  };
+  
+  const getSecondPart = (str: string) =>  {
+    return str.split('@').pop();
+  }
+
   const handleSubmit = async (event: React.SyntheticEvent<Element, Event>) => {
-    console.log("In handleSubmit");
     event.preventDefault();
-    setLoading(true);
-    if (verificationCode) {
-      submitForgotPassword();
-    } else if (changePasswordState) {
-      submitChangePassword();
-    } else if (newPasswordState && newSignInUser) {
-      submitNewPasswordRequest(newSignInUser);
-    } else {
-      submitSignInRequest();
+    if(validateEmail(email)){
+      console.log("In handleSubmit");
+      setLoading(true);
+      if (verificationCode) {
+        submitForgotPassword();
+      } else if (changePasswordState) {
+        submitChangePassword();
+      } else if (newPasswordState && newSignInUser) {
+        submitNewPasswordRequest(newSignInUser);
+      } else {
+        submitSignInRequest();
+      }
+    } else {      
     }
   };
 
@@ -323,12 +380,11 @@ export default function SignInForm(props: any) {
               <Box component="form" onSubmit={handleSubmit}>
                 {!newPasswordState && !changePasswordState ? (
                   <Fragment>
-                    <TextField
-                      required
+                    <TextField                      
                       margin="dense"
                       fullWidth
                       id="email"
-                      label="Email"
+                      label="Email *"
                       type="email"
                       {...bindEmail}
                       autoFocus

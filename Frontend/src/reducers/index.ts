@@ -6,8 +6,10 @@ import * as userReducer from './user';
 import * as adminReducer from './admin';
 import * as displayStateReducer from './display';
 import * as systemDetailsReducer from './system';
+import * as organizationReducer from './organization';
 import { IDisplayState } from '../model/display';
 import { ISystemDetails } from '../model/settings';
+import { IOrganizationInfo } from '../model/organization';
 
 export interface IRootState {
 	assessment: IAssessment;
@@ -15,6 +17,7 @@ export interface IRootState {
 	admin: IAdmin;
 	display: IDisplayState;
 	systemDetails: ISystemDetails;
+	organizationDetails: IOrganizationInfo
 }
 
 export default (history: History) =>
@@ -23,5 +26,6 @@ export default (history: History) =>
 		...userReducer,
 		...adminReducer,
 		...displayStateReducer,
-		...systemDetailsReducer
+		...systemDetailsReducer,
+		...organizationReducer
 	});
