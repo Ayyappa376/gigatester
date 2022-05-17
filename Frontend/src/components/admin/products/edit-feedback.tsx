@@ -505,8 +505,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].trackingSystem &&
-        temp.products[0].trackingSystem.filters &&
         temp.products[0].feedbackAgentSettings.bugSettings) {
         temp.products[0].feedbackAgentSettings.bugSettings.categories[catIndex].name = event.target.value;
         setProductParams(temp);
@@ -729,13 +727,19 @@ const EditProductfeedbackAgentSettings = (props: any) => {
         if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
           temp.products[0].feedbackAgentSettings.bugSettings &&
           temp.products[0].feedbackAgentSettings.bugSettings.severities
-          && temp.products[0].trackingSystem && temp.products[0].trackingSystem.filters) {
+          ) {
           let severityValue = temp.products[0].feedbackAgentSettings.bugSettings.severities[sevIndex];
           if(temp && temp.products && temp.products[0]
             && temp.products[0].trackingSystem && temp.products[0].trackingSystem.filters
             && temp.products[0].trackingSystem.filters.severities 
-            && temp.products[0].trackingSystem.filters.severities[severityValue])
+            && temp.products[0].trackingSystem.filters.severities[severityValue]){
           delete temp.products[0].trackingSystem.filters.severities[severityValue]
+            }
+            if(temp && temp.products && temp.products[0]
+              && temp.products[0].emailConfig &&
+              temp.products[0].emailConfig.severityLimit){
+            delete temp.products[0].emailConfig.severityLimit[severityValue]
+              }
           temp.products[0].feedbackAgentSettings.bugSettings.severities.splice(sevIndex, 1);
           setProductParams(temp);
         }
