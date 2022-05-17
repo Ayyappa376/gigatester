@@ -770,6 +770,7 @@ let GigaTester_StringUtils = {
                 // save_form_state: false,
                 configs: {
                     isRemote: false,
+                    remoteBtns: [],
                     has_video: true,
                     isSafari: ( navigator.vendor && navigator.vendor.indexOf('Apple') > -1 &&
                                 navigator.userAgent &&
@@ -3606,12 +3607,14 @@ let GigaTester_StringUtils = {
                         }
                         console.log('data[0].remoteBtns', data[0].remoteBtns);
                         if(data[0].remoteBtns && data[0].remoteBtns.length > 0) {
+                            GigaTester_modal.configs.remoteBtns = [];
                             for(let remoteBtn of data[0].remoteBtns) {
                                 console.log('remoteBtn', remoteBtn);
                                 if(remoteBtn.enabled) {
                                     GigaTester_modal.configs.isRemote = true;
                                     GigaTester.hidden = true;
                                     if(remoteBtn.btnId && remoteBtn.btnId.trim().length > 0) {
+                                        GigaTester_modal.configs.remoteBtns.push(remoteBtn.btnId.trim());
                                         $(document.getElementById(remoteBtn.btnId.trim())).css("display", "");
                                     }
                                 } else {
@@ -3823,6 +3826,17 @@ let GigaTester_StringUtils = {
                     }
                 } else {
                     console.log('GigaTester: error setting default Category: value of either or both the parameters is not a string');
+                }
+            },
+            isRemoteBtnEnabled: function(btnId) {
+                if(btnId) {
+                    if(GigaTester_modal.configs.remoteBtns.includes(btnId)) {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                } else {
+                    console.log('GigaTester: error in open: expected button/link id as parameter');
                 }
             },
             postFeedback: async function(feedbackData) {
