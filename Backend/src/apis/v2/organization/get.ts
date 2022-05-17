@@ -9,7 +9,7 @@ interface GetOrganizations {
     origin: string;
   };
   params: {
-    id: string;
+    id?: string;
   };
 }
 
@@ -17,24 +17,26 @@ async function handler(request: GetOrganizations, response: Response) {
   appLogger.info({ GetOrganizations: request }, 'Inside Handler');
 
   const { headers, params } = request;
-  const orgURL = new URL(headers.origin);
-  const orgId = orgURL.hostname;
-  //returns the organizations details and config details of a organization if the organization id is sent - edit organization
-  //returns the config details of a organization if the organization id sent as 0 - create organization
-  //returns the list of all organizations, if the organization id is not sent - list organizations
   let result: any;
-   if(params.id === '0') {
-     const organizationList: OrganizationInfo[] = await getOrganizationList();
-     appLogger.info({ getOrganizationList: organizationList });
-     result = {
+  if(!params.id) {
+    const organizationList: OrganizationInfo[] = await getOrganizationList();
+    appLogger.info({ getOrganizationList: organizationList });
+    result = {
       organizationList
-     };
-   } else {
-      const organizationDetails: OrganizationInfo = await getOrganizationDetails(orgId);
-      result = {
-        organizationDetails
-      };
-   }
+    };
+  } else if(params.id === '0') {
+    const orgURL = new URL(headers.origin);
+    const orgId = orgURL.hostname;
+    const organizationDetails: OrganizationInfo = await getOrganizationDetails(orgId);
+    result = {
+      organizationDetails
+    };
+  } else {
+    const organizationDetails: OrganizationInfo = await getOrganizationDetails(params.id);
+    result = {
+      organizationDetails
+    };
+  }
   return responseBuilder.ok(result, response);
 }
 
