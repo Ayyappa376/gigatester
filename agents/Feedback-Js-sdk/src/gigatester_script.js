@@ -2174,6 +2174,59 @@ let GigaTester_StringUtils = {
                     let details = navigator.userAgent;
                     let regexp = /android|iphone|kindle|ipad/i;
                     let isMobileDevice = regexp.test(details);
+                    let platformName = platform.name.toLowerCase();
+                    let platformVersion = platform.version.split('.')[0];
+                    switch(platformName) {
+                        case 'chrome':
+                            if(parseInt(platformVersion,10) < 50){
+                                console.log('GigaTester: media unsupported browser version');
+                                display_screenshot = false;
+                                display_video = false;
+                                display_audio = false;
+                            }
+                            break;
+                        case 'firefox':
+                            if(parseInt(platformVersion,10) < 26){
+                                console.log('GigaTester: media unsupported browser version');
+                                display_screenshot = false;
+                                display_video = false;
+                                display_audio = false;
+                            }
+                            break;
+                        case 'opera':
+                            if(parseInt(platformVersion,10) < 36){
+                                console.log('GigaTester: media unsupported browser version');
+                                display_screenshot = false;
+                                display_video = false;
+                                display_audio = false;
+                            }
+                            break;
+                        case 'safari':
+                            if(parseInt(platformVersion,10) < 14){
+                                console.log('GigaTester: media unsupported browser version');
+                                display_screenshot = false;
+                                display_video = false;
+                                display_audio = false;
+                            }
+                            break;
+                        case 'ie':
+                                display_screenshot = false;
+                                display_video = false;
+                                display_audio = false;
+                                break;
+                        case 'edge':
+                            if(parseInt(platformVersion,10) < 79){
+                                console.log('GigaTester: media unsupported browser version');
+                                display_screenshot = false;
+                                display_video = false;
+                                display_audio = false;
+                            }
+                            break;
+                        default:
+                            display_screenshot = true;
+                            display_video = true;
+                            display_audio = true;
+                    }
                     if (isMobileDevice) {
                         console.log("GigaTester: a Mobile Device : " + navigator.userAgent);
                         display_screenshot = false;
