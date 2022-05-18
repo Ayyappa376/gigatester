@@ -143,7 +143,7 @@ export default function SignInForm(props: any) {
       setAllowedDomains(data.emailDomains);
     } else {
       Http.get({
-        url: '/api/v2/organizations/1',
+        url: '/api/v2/organizations/0',
         state: { stateVariable },
         customHeaders: { 
           noauthvalidate: 'true'
@@ -151,7 +151,7 @@ export default function SignInForm(props: any) {
       })
       .then((response: any) => {
         if(response){
-          console.log('response',response?.organizationDetails);      
+          console.log('response', response);      
           saveOrganizationData({
             emailDomains: response?.organizationDetails?.emailDomains,
             name: response?.organizationDetails?.name,
@@ -281,7 +281,7 @@ export default function SignInForm(props: any) {
       notifyError("Please enter a valid email");
       return false;
     }
-    if(allowedDomains && allowedDomains.indexOf(extention) < 0){
+    if(allowedDomains && allowedDomains.length > 0 && allowedDomains.indexOf(extention) < 0){
       notifyError("Please use your official organization email");
       return false;
     }
