@@ -2372,7 +2372,8 @@ gtvideotoolbar {
   border-radius: 4px;
   animation: animationMoveUp 0.3s linear;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
-  cursor: pointer;
+  /* cursor: pointer; */
+  cursor: move;
 }
 gtvideotoolbar btn {
   position: relative;
