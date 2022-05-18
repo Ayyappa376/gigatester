@@ -18,7 +18,7 @@ import { IRootState } from '../../../reducers';
 import SearchField from './SearchField';
 import EnhancedTableHead from './EnhancedTableHead';
 import { updateSignedUrls, useActions } from '../../../actions';
-import { IAppFeedback } from './common';
+import { IAppFeedback, ILastEvalKey } from './common';
 import { getSignedUrl } from './methods';
 import { useInView } from 'react-intersection-observer';
 import { TailSpin } from 'react-loader-spinner';
@@ -54,6 +54,7 @@ interface IProps {
 	severity: boolean;
 	rating: boolean;
 	productName?: string;
+	lastEvaluatedKey?: ILastEvalKey;
 	fetchAgain: Function;
 }
 
@@ -88,6 +89,7 @@ const RenderTable = (props: IProps) => {
 		urls,
 		productName,
 		fetchAgain,
+		lastEvaluatedKey,
 	} = props;
 	const [fetchAllUrls, setFetchAllUrls] = useState(false);
 	const [isBugReport, setBugReport] = useState<boolean>(false);
@@ -193,7 +195,7 @@ const RenderTable = (props: IProps) => {
 
 	return (
 		<Container style={{ marginTop: '1.5rem' }}>
-			<ExportBtn data={tableData} client={productName} type={type} fetchMore={fetchAgain} />
+			<ExportBtn data={tableData} client={productName} type={type} fetchMore={fetchAgain} lastEvaluatedKey={lastEvaluatedKey} />
 			<div className={classes.paper}>
 				<Toolbar className={classes.root}>
 					<Typography

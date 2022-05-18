@@ -1,4 +1,4 @@
-import { /*ConfigItem, */OrganizationInfo, STATUS_VERIFY_ORG_ALL, STATUS_VERIFY_ORG_APPROVED, STATUS_VERIFY_ORG_DELETED, STATUS_VERIFY_ORG_PENDING } from '@models/index';
+import { OrganizationInfo, STATUS_VERIFY_ORG_ACTIVE, STATUS_VERIFY_ORG_ALL, STATUS_VERIFY_ORG_DELETED } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, /*getOrganizationConfig */} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
@@ -8,24 +8,12 @@ import { get, put, scan, update } from './sdk';
 // Creating Organization and validating parameters
 export const createOrganization = async (orgData: OrganizationInfo) => {
   const item: OrganizationInfo = {
-    addressLine1: orgData.addressLine1,
-    city: orgData.city,
-    country: orgData.country,
-    email: orgData.email,
-    id: `org_${uuidv1()}`,
+    emailDomains: orgData.emailDomains,
     name: orgData.name,
-    phone: orgData.phone,
-    state: orgData.state,
-    status: STATUS_VERIFY_ORG_PENDING,
-    zipCode: orgData.zipCode
+    orgPrefix: `org_${uuidv1()}`,
+    status: STATUS_VERIFY_ORG_ACTIVE,
+    url: orgData.url
   };
-
-  if(orgData.addressLine2) {
-    item.addressLine2 = orgData.addressLine2;
-  }
-  if(orgData.website) {
-    item.website = orgData.website;
-  }
 
   const params: DynamoDB.PutItemInput = <DynamoDB.PutItemInput>(<unknown>{
     ConditionExpression: 'attribute_not_exists(id)',
@@ -52,15 +40,23 @@ export const createOrganization = async (orgData: OrganizationInfo) => {
 // };
 
 // fetch organization info
-export const getOrganizationDetails = async (id: string): Promise<OrganizationInfo> => {
+export const getOrganizationDetails = async (url: string): Promise<OrganizationInfo> => {
   const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
     Key: {
-      id,
+      url,
     },
     TableName: TableNames.getOrganizationsTableName(),
   });
   appLogger.info({ getOrganizationDetails_get_params: params });
   return get<OrganizationInfo>(params);
+};
+
+export const getOrganizationList = async (): Promise<OrganizationInfo[]> => {
+  const params: DynamoDB.ScanInput = <DynamoDB.ScanInput>{
+    TableName: TableNames.getOrganizationsTableName(),
+  };
+  appLogger.info({ getOrganizationList_get_params: params });
+  return scan<OrganizationInfo[]>(params);
 };
 
 // disable a organization, if it is deleted
@@ -99,7 +95,7 @@ export const updateOrganization = async (updateInfo: OrganizationInfo) => {
     ExpressionAttributeNames: EAN,
     ExpressionAttributeValues: EAV,
     Key: {
-      id: updateInfo.id,
+      id: updateInfo.url,
     },
     TableName: TableNames.getOrganizationsTableName(),
     UpdateExpression: SET,
@@ -110,7 +106,7 @@ export const updateOrganization = async (updateInfo: OrganizationInfo) => {
 };
 
 export const getOrganizationsList = async (queryStatus?: string): Promise<OrganizationInfo[]> => {
-  const status = queryStatus ? queryStatus : STATUS_VERIFY_ORG_APPROVED;
+  const status = queryStatus ? queryStatus : STATUS_VERIFY_ORG_ACTIVE;
 
   let params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
     TableName: TableNames.getOrganizationsTableName(),

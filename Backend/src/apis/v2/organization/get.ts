@@ -1,62 +1,40 @@
 import { API, Handler } from '@apis/index';
-import { /*ConfigItem, */OrganizationInfo } from '@models/index';
-//import { config } from '@root/config';
-import { appLogger, /*getCreateOrganizationConfig, */getOrganizationDetails, getOrganizationsList, responseBuilder } from '@utils/index';
+import { OrganizationInfo } from '@root/models';
+import { appLogger, getOrganizationDetails, getOrganizationList, responseBuilder } from '@utils/index';
 import { Response } from 'express';
+import { URL } from 'url';
 
 interface GetOrganizations {
   headers: {
-    user: {
-      'cognito:groups': string[];
-      'cognito:username': string;
-      email: string;
-    };
+    origin: string;
   };
   params: {
-    id: string;
-  };
-  query: {
-    status?: string;
+    id?: string;
   };
 }
 
 async function handler(request: GetOrganizations, response: Response) {
   appLogger.info({ GetOrganizations: request }, 'Inside Handler');
 
-  const { headers, params, query } = request;
-  const cognitoUserId = headers.user['cognito:username'];
-
-  if (!cognitoUserId) {
-    const err = new Error('InvalidUser');
-    appLogger.error(err, 'Unauthorized');
-    return responseBuilder.unauthorized(err, response);
-  }
-  //returns the organizations details and config details of a organization if the organization id is sent - edit organization
-  //returns the config details of a organization if the organization id sent as 0 - create organization
-  //returns the list of all organizations, if the organization id is not sent - list organizations
+  const { headers, params } = request;
   let result: any;
-  if (params.id) {
-//    if(params.id === '0') {
-//      const organizationConfig: ConfigItem = await getCreateOrganizationConfig(config.defaults.orgId);
-//      appLogger.info({ getCreateOrganizationConfig: organizationConfig });
-//      result = {
-//        organizationConfig: organizationConfig.config,
-//      };
-//    } else {
-      const organizationDetails: OrganizationInfo = await getOrganizationDetails(params.id);
-      appLogger.info({ getOrganizationDetails: organizationDetails });
-//      const organizationConfig: ConfigItem = await getCreateOrganizationConfig(config.defaults.orgId);
-//      appLogger.info({ getCreateOrganizationConfig: organizationConfig });
-      result = {
-//        organizationConfig: organizationConfig.config,
-        organizations: [organizationDetails],
-      };
-//    }
-  } else {
-    const organizationDetailsList: OrganizationInfo[] = await getOrganizationsList(query.status);
-    appLogger.info({ getOrganizationsList: organizationDetailsList });
+  if(!params.id) {
+    const organizationList: OrganizationInfo[] = await getOrganizationList();
+    appLogger.info({ getOrganizationList: organizationList });
     result = {
-      organizations: organizationDetailsList,
+      organizationList
+    };
+  } else if(params.id === '0') {
+    const orgURL = new URL(headers.origin);
+    const orgId = orgURL.hostname;
+    const organizationDetails: OrganizationInfo = await getOrganizationDetails(orgId);
+    result = {
+      organizationDetails
+    };
+  } else {
+    const organizationDetails: OrganizationInfo = await getOrganizationDetails(params.id);
+    result = {
+      organizationDetails
     };
   }
   return responseBuilder.ok(result, response);
@@ -65,5 +43,5 @@ async function handler(request: GetOrganizations, response: Response) {
 export const api: API = {
   handler: <Handler>(<unknown>handler),
   method: 'get',
-  route: '/api/v2/organizations/:id?',
+  route: '/api/v2/organizations/:id',
 };

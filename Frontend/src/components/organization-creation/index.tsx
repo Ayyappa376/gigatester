@@ -30,7 +30,7 @@ import { useSelector } from "react-redux";
 import { IRootState } from "../../reducers";
 import { Text } from "../../common/Language";
 //import SignInForm from "../signInForm";
-import { IOrganizationInfo, STATUS_VERIFY_ORG_PENDING } from "../../model/admin/organization";
+import { IOrganizationInfo, STATUS_VERIFY_ORG_PENDING } from "../../model/organization";
 
 const useStyles = makeStyles((theme) => ({
   bigLogo: {
