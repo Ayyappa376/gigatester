@@ -767,7 +767,8 @@ let GigaTester_StringUtils = {
                 user_detail: {},
                 context_detail: {},
                 set_screen_default_category: true,
-                // save_form_state: false,
+                save_form_state: false,
+                confirmModal: false,
                 configs: {
                     isRemote: false,
                     has_video: true,
@@ -1785,16 +1786,17 @@ let GigaTester_StringUtils = {
                     if (this.custom_ui.events) {
                         return
                     }
-                    $(document.getElementsByClassName('gigatester-ctrls-container')).on('click', function(e) {
+                    $(document.getElementsByClassName('gigatester-ctrls-container')).unbind().on('click', function(e) {                        
                         let container = $(document.getElementsByClassName('gigatester-ctrl-item'));
                         if (!$(e.target).closest(container).length) {
-                            GigaTester_modal.closeDialog();
-                            // container.hide();
+                            if(!GigaTester_modal.confirmModal){
+                                GigaTester_modal.showConfirmModal();
+                            }
                             // $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
                             // GigaTester_modal.save_form_state = true;
-                            // if(!GigaTester_modal.configs.isRemote){
-                            //     GigaTester_modal.custom_ui.button.show();
-                            // }
+                            if(!GigaTester_modal.configs.isRemote){
+                                GigaTester_modal.custom_ui.button.show();
+                            }
                         }
                     });
 //                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.custom_ui.position);
@@ -1821,6 +1823,41 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.on("click mouseup mousedown", function(e) {
                         e.stopPropagation()
                     })
+                },
+                showConfirmModal: function(){
+                    let container = $(document.getElementsByClassName('gigatester-ctrl-item'));
+                    
+                    let html = '<gtdiv class="gigatester-ctrl-item-send-success" style="height:160px; "> ';
+                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester"> Confirm </gtheader>'                                
+                    html += '<p style="text-align:center;">Start afresh next time or Start from these values next time</p>'
+                    html += '<div class="gigatester-confirm-modal-btns" >'
+                    html += '<button class="gigatester-confirm-modal-save gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text" title="Keep changes. Start from these values next time." >Keep changes</span>' + '</button>'
+                    html += '<button class="gigatester-confirm-modal-close gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text" title="Discard changes. Start afresh next time" >Discard changes</span>' + '</button>'
+                    html += '</div>'
+                    html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " Cuvo" + "</span>" + "</a>" + "</gtfooter>";
+                    html += '</gtdiv>';
+
+                    container.append(html);
+                    this.recording = false;
+                    $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
+                    $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');                                
+                    $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
+                    GigaTester_modal.confirmModal = true;
+
+                    $(document.getElementsByClassName('gigatester-confirm-modal-save')).on('click', function(e) {
+                        GigaTester_modal.save_form_state = true;
+                        container.hide();
+                        $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
+                        $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
+                        $(document.getElementsByClassName('gigatester-ctrl-item-send-success')).css('display', 'none');
+                    })
+                    $(document.getElementsByClassName('gigatester-confirm-modal-close')).on('click', function(e) {                            
+                        $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
+                        let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
+                        GigaTester_modal.save_form_state = false;                                    
+                        close_icon.trigger("click");                            
+                    })
+
                 },
                 storeFormData: function(e) {
                     let field_name = $(e.currentTarget).attr("name");
@@ -2709,12 +2746,12 @@ let GigaTester_StringUtils = {
                 },
                 popOutDialog: function(){
                     console.log('GigaTester: popOutDialog called');
-                    // if(GigaTester_modal.save_form_state){
-                    //     console.log(GigaTester_modal.form_type);
-                    //     GigaTester_modal.custom_ui.element.css("display", "");
-                    //     GigaTester_modal.openControls();
-                    //     return;
-                    // }
+                    if(GigaTester_modal.save_form_state){
+                        console.log(GigaTester_modal.form_type);
+                        GigaTester_modal.custom_ui.element.css("display", "");
+                        GigaTester_modal.openControls();
+                        return;
+                    }
                     if($(document.getElementsByClassName("gigatester-popup-dialog"))){
                         $(document.getElementsByClassName("gigatester-popup-dialog")).remove();
                     }
@@ -2927,13 +2964,16 @@ let GigaTester_StringUtils = {
                     if ($(document.getElementsByClassName("gigatester-popup-dialog-remote"))) {
                         $(document.getElementsByClassName("gigatester-popup-dialog-remote")).remove();
                     }
-                    // if(GigaTester_modal.save_form_state) {
-                    //     if($(document.getElementsByClassName('gigatester-ctrl-item'))){
-                    //         $(document.getElementsByClassName('gigatester-ctrl-item')).show();
-                    //     }
-                    // }
+                    if(GigaTester_modal.save_form_state) {
+                        if($(document.getElementsByClassName('gigatester-ctrl-item'))){
+                            $(document.getElementsByClassName('gigatester-ctrl-item')).show();
+                        }
+                    }
+                    let open_tool = false;
                     this.controls_step = 2;
-                    this.custom_ui.element.attr("isopen", "true")
+                    if (!open_tool) {
+                        this.custom_ui.element.attr("isopen", "true")
+                    }
                 },
                 focusControls: function(e) {
                     this.custom_ui.events.find('input[type="text"],input[type="email"],textarea').filter(":visible").each(function() {
@@ -3109,7 +3149,7 @@ let GigaTester_StringUtils = {
                     this.removeGToverlay();
                     this.removeGTControls();
                     this.removeComments();
-                    // GigaTester_modal.save_form_state = false;
+                    GigaTester_modal.save_form_state = false;
                     GigaTester_modal.set_screen_default_category = true;
                     this.form_data['category'] = GigaTester.category || "category";
                     GigaTester_modal.configs.selected_category = []
@@ -3686,6 +3726,7 @@ let GigaTester_StringUtils = {
             },
             open: function(type) {
                 console.log('GigaTester: open called with type:', type);
+                GigaTester_modal.confirmModal = false;
                 if(type) {
                     if((type === "BUGS") || (type === "FEEDBACK")) {
                         GigaTester_modal.custom_ui.element.css("display", "");
@@ -3695,16 +3736,16 @@ let GigaTester_StringUtils = {
                         console.log('GigaTester: error in open: either call with no parameters or with parameter "BUGS" or "FEEDBACK"');
                     }
                 } else {
-                    // if(GigaTester_modal.save_form_state){
-                    //     console.log(GigaTester_modal.form_type);
-                    //     GigaTester_modal.custom_ui.element.css("display", "");
-                    //     GigaTester_modal.openControls();
-                    // }
-                    // else{
+                    if(GigaTester_modal.save_form_state){
+                        console.log(GigaTester_modal.form_type);
+                        GigaTester_modal.custom_ui.element.css("display", "");
+                        GigaTester_modal.openControls();
+                    }
+                    else{
                         GigaTester_modal.configs.isRemote = true;
                         // GigaTester_modal.custom_ui.element.css("display", "");
                         GigaTester_modal.popOutDialog();
-                    // }
+                    }
                 }
             },
             close: function() {
