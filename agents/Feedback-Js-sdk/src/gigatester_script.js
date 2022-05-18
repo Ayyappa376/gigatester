@@ -781,6 +781,7 @@ let GigaTester_StringUtils = {
                     severities: [], //['Critical', 'High', 'Medium', 'Low'],
                     locale: 'en',
                     display_powered_by: true,
+                    display_email: true,
                     capture_system_details: true,
                     config_data: [],
                     selected_category: [],
@@ -830,6 +831,7 @@ let GigaTester_StringUtils = {
                         bug_title_message: GigaTester_StringRes.get("report_bug_msg"),
                         rating_mandatory: false,
                         email_field: true,
+                        display_email: true,
                         email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
@@ -851,6 +853,7 @@ let GigaTester_StringUtils = {
                         rating_title_message: GigaTester_StringRes.get("give_feedback_msg"),
                         rating_mandatory: true,
                         email_field: true,
+                        display_email: true,
                         email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
@@ -870,6 +873,7 @@ let GigaTester_StringUtils = {
                         allow_attachment: true,
                         reqFeature_title_msg: '',
                         email_field: true,
+                        display_email: true,
                         email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
@@ -2265,7 +2269,7 @@ let GigaTester_StringUtils = {
                     + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
                     + (form_settings.reqFeature_title_msg ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.reqFeature_title_msg + '</gtheader>' : "")
                      + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
-                     + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
+                     + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.display_email ? " hidden": "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
                      + (form_settings.display_category ? '<select  id="category" name="category" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
                      + '<option value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
                      + category_options + "</select>" : "")
@@ -3347,9 +3351,10 @@ let GigaTester_StringUtils = {
                     if(this.form_data['severity'] === "severity"/* || this.form_data['severity'] === ""*/){
                         this.form_data['severity'] = '';//'unknown'
                     }
+                    console.log(GigaTester.email)
                     const postData = {
                         productRating: finalRating,
-                        userName: this.custom_ui.events.find('input[name="email"]').val() ,
+                        userName: this.custom_ui.events.find('input[name="email"]').val() || GigaTester.email,
                         feedbackType: feedbackType,
                         feedbackCategory: this.form_data['category'],
                         bugPriority: this.form_data['severity'],
@@ -3528,6 +3533,9 @@ let GigaTester_StringUtils = {
                             if(data[0].feedbackSettings.reqComments != undefined && data[0].feedbackSettings.reqComments === false) {
                                 GigaTester_modal.form_settings_default['FEEDBACK'].comment_field_mandatory = false;
                             }
+                            if(data[0].feedbackSettings.reqDisplayComments != undefined && data[0].feedbackSettings.reqDisplayComments === false) {
+                                GigaTester_modal.form_settings_default['FEEDBACK'].display_email = false;
+                            }
                         }
                         if(data[0].bugSettings) {
                             if(data[0].bugSettings.icon && data[0].bugSettings.icon.trim().length > 0) {
@@ -3552,6 +3560,9 @@ let GigaTester_StringUtils = {
                                 GigaTester_modal.form_settings_default['BUGS'].display_severity = false;
                                 GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory = false;
                             }
+                            if(data[0].bugSettings.reqDisplayComments != undefined && data[0].bugSettings.reqDisplayComments === false) {
+                                GigaTester_modal.form_settings_default['BUGS'].display_email = false;
+                            }
                         }
                         if (data[0].featureReqSettings) {
                             if(data[0].featureReqSettings.icon && data[0].featureReqSettings.icon.trim().length > 0) {
@@ -3575,6 +3586,9 @@ let GigaTester_StringUtils = {
                             if(data[0].featureReqSettings.showSeverity != undefined && data[0].featureReqSettings.showSeverity === false) {
                                 GigaTester_modal.form_settings_default['FEATURE_REQ'].display_severity = false;
                                 GigaTester_modal.form_settings_default['FEATURE_REQ'].severity_field_mandatory = false;
+                            }
+                            if(data[0].featureReqSettings.reqDisplayComments != undefined && data[0].featureReqSettings.reqDisplayComments === false) {
+                                GigaTester_modal.form_settings_default['FEATURE_REQ'].display_email = false;
                             }
                         }
                         if(data[0].widgetLookAndFeel) {
@@ -3700,6 +3714,9 @@ let GigaTester_StringUtils = {
                                 }
                             })
                         }
+                        if(GigaTester.email){
+                            GigaTester_modal.configs.display_email = false;
+                        }
                         GigaTester_modal.config_loaded = true;
                         GigaTester_modal.addFeedbackButton();
                         GigaTester_modal.checkSelectDependancyload();
@@ -3710,7 +3727,6 @@ let GigaTester_StringUtils = {
                         } else {
                             console.log('GigaTester: starting in visible mode');
                         }
-
                         GigaTester.ready = true;
                     })
                     .catch(function(err) {
