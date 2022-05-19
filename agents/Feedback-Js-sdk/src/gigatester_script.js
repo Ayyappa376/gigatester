@@ -402,7 +402,7 @@ let GigaTester_StringUtils = {
                 },
                 createNewControls: function() {
                     this.screen_recorder_overlay = $("<gtdiv>").attr("id", "gigatester_video_container").appendTo($(document.body));
-                    this.controls = $("<gtvideotoolbar>").appendTo($(document.body));
+                    this.controls = $("<gtvideotoolbar  id='gigatester-gtvideotoolbar' >").appendTo($(document.body));
                     this.mute_button = $("<btn>").addClass("gigatester-video-controls-mute gigatester-video-controls-active").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_mute", true) + "</btn-name>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.mic_icon).appendTo(this.controls);
                     this.pause_button = $("<btn>").addClass("gigatester-video-controls-pause").attr("disabled", true).html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name>" +  "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon).appendTo(this.controls);
                     this.stp_btn = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>"  + "</btn-tooltip>" + GigaTester_Icons.stop_icon).appendTo(this.controls);
@@ -425,6 +425,47 @@ let GigaTester_StringUtils = {
                     this.stop_button.on("mouseleave", function(){
                         $(document.getElementsByClassName('gigatester-video-controls-timer')).removeClass('gigatester-video-controls-timer-show')
                     });
+                    dragElement(document.getElementById("gigatester-gtvideotoolbar"));
+                    function dragElement(elmnt) {
+                        var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+                        if (document.getElementById(elmnt.id + "header")) {
+                          /* if present, the header is where you move the DIV from:*/
+                          document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
+                        } else {
+                          /* otherwise, move the DIV from anywhere inside the DIV:*/
+                          elmnt.onmousedown = dragMouseDown;
+                        }
+                      
+                        function dragMouseDown(e) {
+                          e = e || window.event;
+                          e.preventDefault();
+                          // get the mouse cursor position at startup:
+                          pos3 = e.clientX;
+                          pos4 = e.clientY;
+                          document.onmouseup = closeDragElement;
+                          // call a function whenever the cursor moves:
+                          document.onmousemove = elementDrag;
+                        }
+                      
+                        function elementDrag(e) {
+                          e = e || window.event;
+                          e.preventDefault();
+                          // calculate the new cursor position:
+                          pos1 = pos3 - e.clientX;
+                          pos2 = pos4 - e.clientY;
+                          pos3 = e.clientX;
+                          pos4 = e.clientY;
+                          // set the element's new position:
+                          elmnt.style.top = (elmnt.offsetTop - pos2) > 0 ? (elmnt.offsetTop - pos2) > (screen.height-180) ? (screen.height-210) + "px" :(elmnt.offsetTop - pos2) + "px" : 10 + "px";
+                          elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                        }
+                        
+                        function closeDragElement() {
+                            /* stop moving when mouse button is released:*/
+                            document.onmouseup = null;
+                            document.onmousemove = null;
+                        }
+                    }
                 },
                 removeGTControls: function () {
                     this.screen_recorder_overlay.remove();
@@ -782,6 +823,7 @@ let GigaTester_StringUtils = {
                     severities: [], //['Critical', 'High', 'Medium', 'Low'],
                     locale: 'en',
                     display_powered_by: true,
+                    display_email: true,
                     capture_system_details: true,
                     config_data: [],
                     selected_category: [],
@@ -831,6 +873,7 @@ let GigaTester_StringUtils = {
                         bug_title_message: GigaTester_StringRes.get("report_bug_msg"),
                         rating_mandatory: false,
                         email_field: true,
+                        display_email: true,
                         email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
@@ -852,6 +895,7 @@ let GigaTester_StringUtils = {
                         rating_title_message: GigaTester_StringRes.get("give_feedback_msg"),
                         rating_mandatory: true,
                         email_field: true,
+                        display_email: true,
                         email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
@@ -871,6 +915,7 @@ let GigaTester_StringUtils = {
                         allow_attachment: true,
                         reqFeature_title_msg: '',
                         email_field: true,
+                        display_email: true,
                         email_field_mandatory: true,
                         comment_field: true,
                         comment_field_mandatory: true,
@@ -2302,7 +2347,7 @@ let GigaTester_StringUtils = {
                     + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
                     + (form_settings.reqFeature_title_msg ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.reqFeature_title_msg + '</gtheader>' : "")
                      + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
-                     + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
+                     + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (form_settings.display_email ? " hidden": "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
                      + (form_settings.display_category ? '<select  id="category" name="category" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
                      + '<option value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
                      + category_options + "</select>" : "")
@@ -3387,9 +3432,10 @@ let GigaTester_StringUtils = {
                     if(this.form_data['severity'] === "severity"/* || this.form_data['severity'] === ""*/){
                         this.form_data['severity'] = '';//'unknown'
                     }
+                    console.log(GigaTester.email)
                     const postData = {
                         productRating: finalRating,
-                        userName: this.custom_ui.events.find('input[name="email"]').val() ,
+                        userName: this.custom_ui.events.find('input[name="email"]').val() || GigaTester.email,
                         feedbackType: feedbackType,
                         feedbackCategory: this.form_data['category'],
                         bugPriority: this.form_data['severity'],
@@ -3568,6 +3614,9 @@ let GigaTester_StringUtils = {
                             if(data[0].feedbackSettings.reqComments != undefined && data[0].feedbackSettings.reqComments === false) {
                                 GigaTester_modal.form_settings_default['FEEDBACK'].comment_field_mandatory = false;
                             }
+                            if(data[0].feedbackSettings.reqDisplayComments != undefined && data[0].feedbackSettings.reqDisplayComments === false) {
+                                GigaTester_modal.form_settings_default['FEEDBACK'].display_email = false;
+                            }
                         }
                         if(data[0].bugSettings) {
                             if(data[0].bugSettings.icon && data[0].bugSettings.icon.trim().length > 0) {
@@ -3592,6 +3641,9 @@ let GigaTester_StringUtils = {
                                 GigaTester_modal.form_settings_default['BUGS'].display_severity = false;
                                 GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory = false;
                             }
+                            if(data[0].bugSettings.reqDisplayComments != undefined && data[0].bugSettings.reqDisplayComments === false) {
+                                GigaTester_modal.form_settings_default['BUGS'].display_email = false;
+                            }
                         }
                         if (data[0].featureReqSettings) {
                             if(data[0].featureReqSettings.icon && data[0].featureReqSettings.icon.trim().length > 0) {
@@ -3615,6 +3667,9 @@ let GigaTester_StringUtils = {
                             if(data[0].featureReqSettings.showSeverity != undefined && data[0].featureReqSettings.showSeverity === false) {
                                 GigaTester_modal.form_settings_default['FEATURE_REQ'].display_severity = false;
                                 GigaTester_modal.form_settings_default['FEATURE_REQ'].severity_field_mandatory = false;
+                            }
+                            if(data[0].featureReqSettings.reqDisplayComments != undefined && data[0].featureReqSettings.reqDisplayComments === false) {
+                                GigaTester_modal.form_settings_default['FEATURE_REQ'].display_email = false;
                             }
                         }
                         if(data[0].widgetLookAndFeel) {
@@ -3740,6 +3795,9 @@ let GigaTester_StringUtils = {
                                 }
                             })
                         }
+                        if(GigaTester.email){
+                            GigaTester_modal.configs.display_email = false;
+                        }
                         GigaTester_modal.config_loaded = true;
                         GigaTester_modal.addFeedbackButton();
                         GigaTester_modal.checkSelectDependancyload();
@@ -3750,7 +3808,6 @@ let GigaTester_StringUtils = {
                         } else {
                             console.log('GigaTester: starting in visible mode');
                         }
-
                         GigaTester.ready = true;
                     })
                     .catch(function(err) {
