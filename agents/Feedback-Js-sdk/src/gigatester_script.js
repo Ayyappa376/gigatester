@@ -1901,7 +1901,7 @@ let GigaTester_StringUtils = {
                     $(document.getElementsByClassName('gigatester-confirm-modal-close')).on('click', function(e) {                            
                         $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
                         let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
-                        GigaTester_modal.save_form_state = false;                                    
+                        GigaTester_modal.save_form_state = false;
                         close_icon.trigger("click");                            
                     })
 
@@ -3218,10 +3218,10 @@ let GigaTester_StringUtils = {
                 closeDialog: function(e) {
                     let _doClose = function() {
                         clearTimeout(this.close_timeout);
-                        if(!GigaTester_modal.confirmModal){
-                            GigaTester_modal.showConfirmModal();
-                        } else{
+                        if(GigaTester_modal.confirmModal){
                             this.reset();
+                        } else{
+                            GigaTester_modal.showConfirmModal();
                         }
                     }.bind(this);
                     _doClose()
@@ -3473,6 +3473,7 @@ let GigaTester_StringUtils = {
                           .then(res => res.json())
                           .then(data => {
                             console.log(data)
+                            GigaTester_modal.confirmModal = true;
                             let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html('<gtdiv>' + "<gtspan>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Cuvo" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
