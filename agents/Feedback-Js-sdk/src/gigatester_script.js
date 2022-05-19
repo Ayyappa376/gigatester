@@ -1885,6 +1885,7 @@ let GigaTester_StringUtils = {
 
                     container.append(html);
                     this.recording = false;
+                    $(document.getElementsByClassName('gigatester-ctrl-item-close')).css('display', 'none');
                     $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
                     $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');                                
                     $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
@@ -1893,6 +1894,7 @@ let GigaTester_StringUtils = {
                     $(document.getElementsByClassName('gigatester-confirm-modal-save')).on('click', function(e) {
                         GigaTester_modal.save_form_state = true;
                         container.hide();
+                        $(document.getElementsByClassName('gigatester-ctrl-item-close')).css('display', 'block');
                         $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
                         $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
                         $(document.getElementsByClassName('gigatester-ctrl-item-send-success')).css('display', 'none');
@@ -3218,7 +3220,11 @@ let GigaTester_StringUtils = {
                 closeDialog: function(e) {
                     let _doClose = function() {
                         clearTimeout(this.close_timeout);
-                        this.reset();
+                        if(!GigaTester_modal.confirmModal){
+                            GigaTester_modal.showConfirmModal();
+                        } else{
+                            this.reset();
+                        }
                     }.bind(this);
                     _doClose()
                 },
