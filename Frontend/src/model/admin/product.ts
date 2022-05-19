@@ -52,6 +52,7 @@ export interface IBugSettings {
   title?: string;
   tooltip?: string;
   reqComments: boolean;
+  reqDisplayEmail?: boolean;
   showSeverity: boolean;
 }
 
@@ -65,6 +66,7 @@ export interface IFeedbackSettings {
   title?: string;
   tooltip?: string;
   reqComments: boolean;
+  reqDisplayEmail?: boolean;
 }
 
 export interface IFeatureReqSettings {
@@ -74,6 +76,7 @@ export interface IFeatureReqSettings {
   title?: string;
   tooltip?: string;
   reqComments: boolean;
+  reqDisplayEmail?: boolean;
 }
 
 export interface IWidgetLAF {

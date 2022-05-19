@@ -878,6 +878,29 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleReqDisplayEmail = (type: string) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (type === 'Bugs') {
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.bugSettings) {
+          temp.products[0].feedbackAgentSettings.bugSettings.reqDisplayEmail = !temp.products[0].feedbackAgentSettings.bugSettings.reqDisplayEmail;
+        }
+      } else if (type === 'Feedback') {
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.feedbackSettings) {
+          temp.products[0].feedbackAgentSettings.feedbackSettings.reqDisplayEmail = !temp.products[0].feedbackAgentSettings.feedbackSettings.reqDisplayEmail;
+        }
+      } else if (type === 'Feature_Request') {
+        if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+          temp.products[0].feedbackAgentSettings.featureReqSettings) {
+          temp.products[0].feedbackAgentSettings.featureReqSettings.reqDisplayEmail = !temp.products[0].feedbackAgentSettings.featureReqSettings.reqDisplayEmail;
+        }
+      }
+      setProductParams(temp);
+    }
+  }
+
   const handleShowSeverityOption = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -1530,6 +1553,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleUploadFileMaxSizeChange: handleUploadFileMaxSizeChange,
       handleEmailOption: handleEmailOption,
       handleReqComments: handleReqComments,
+      handleReqDisplayEmail: handleReqDisplayEmail,
       handleCaptureSystemDetailsOption: handleCaptureSystemDetailsOption,
       addFeedbackCategory: addFeedbackCategory,
       handleChangeFeedbackCategoryName: handleChangeFeedbackCategoryName,
