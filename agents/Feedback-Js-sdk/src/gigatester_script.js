@@ -456,8 +456,8 @@ let GigaTester_StringUtils = {
                           pos3 = e.clientX;
                           pos4 = e.clientY;
                           // set the element's new position:
-                          elmnt.style.top = (elmnt.offsetTop - pos2) > 0 ? (elmnt.offsetTop - pos2) > (screen.height-180) ? (screen.height-210) + "px" :(elmnt.offsetTop - pos2) + "px" : 10 + "px";
-                          elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                          elmnt.style.top = (elmnt.offsetTop - pos2) > 0 ? (elmnt.offsetTop - pos2) > ($(window).height()-50) ? ($(window).height()-80) + "px" :(elmnt.offsetTop - pos2) + "px" : 10 + "px";
+                          elmnt.style.left = (elmnt.offsetLeft - pos1) >  0 ? (elmnt.offsetLeft - pos1) > ($(window).width()-180) ? ($(window).width()-210) + "px" : (elmnt.offsetLeft - pos1)  + "px" : 10 + "px";
                         }
                         
                         function closeDragElement() {
