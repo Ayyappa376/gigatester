@@ -22,6 +22,7 @@ interface CategoryProps {
   handleFeedbackThanksMsgChange: Function;
   handleRatingLimitChange: Function;
   handleReqComments: Function;
+  handleReqDisplayEmail: Function;
 	handleIconChange: Function;
 }
 
@@ -155,6 +156,7 @@ const FeedbackSettings = ({
   handleFeedbackThanksMsgChange,
   handleRatingLimitChange,
   handleReqComments,
+  handleReqDisplayEmail,
   handleIconChange
 }: CategoryProps) => {
   const classes = useStyles();
@@ -321,6 +323,28 @@ const FeedbackSettings = ({
             label={
               <Typography color="textSecondary">
                 {"Require general comment field?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.feedbackSettings)
+                  ? productParams.products[0].feedbackAgentSettings.feedbackSettings.reqDisplayEmail
+                  : true}
+                onChange={(event) => handleReqDisplayEmail('Feedback')}
+                value="FeedbackDisplayEmail"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Show email field if default value is set?"}
               </Typography>
             }
             labelPlacement={'start'}

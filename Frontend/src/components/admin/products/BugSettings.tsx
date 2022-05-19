@@ -26,6 +26,7 @@ interface BugSettingProps {
   handleBugDialogMsgChange: Function;
   handleBugThanksMsgChange: Function;
   handleReqComments: Function;
+  handleReqDisplayEmail: Function;
   addBugSeverity: Function;
   handleChangeBugSeverityName: Function;
   deleteBugSeverity: Function;
@@ -207,6 +208,7 @@ const BugSettings = ({
   handleBugDialogMsgChange,
   handleBugThanksMsgChange,
   handleReqComments,
+  handleReqDisplayEmail,
   handleShowSeverityOption,
   handleIconChange,
   handleURLChange,
@@ -386,6 +388,28 @@ const BugSettings = ({
             label={
               <Typography color="textSecondary">
                 {"Require general comment field?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.bugSettings)
+                  ? productParams.products[0].feedbackAgentSettings.bugSettings.reqDisplayEmail
+                  : true}
+                onChange={(event) => handleReqDisplayEmail('Bugs')}
+                value="BugDisplayEmail"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Show email field if default value is set?"}
               </Typography>
             }
             labelPlacement={'start'}
