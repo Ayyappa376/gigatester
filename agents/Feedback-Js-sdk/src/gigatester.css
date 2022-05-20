@@ -3259,7 +3259,7 @@ gtmouseclick {
 .select2-container--classic.select2-container--open .select2-dropdown {
   border-color: #5897fb;
 }
-.gigatester-confirm-modal-btns{
+.gigatester-confirm-modal-btns {
   display: flex;
   justify-content: center;
 }

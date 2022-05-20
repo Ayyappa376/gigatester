@@ -1845,7 +1845,6 @@ let GigaTester_StringUtils = {
                             }
                         }
                     });
-//                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.custom_ui.position);
                     this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item");
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
@@ -1887,7 +1886,7 @@ let GigaTester_StringUtils = {
                     this.recording = false;
                     $(document.getElementsByClassName('gigatester-ctrl-item-close')).css('display', 'none');
                     $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
-                    $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');                                
+                    // $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');                                
                     $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
                     GigaTester_modal.confirmModal = true;
 
@@ -3478,12 +3477,12 @@ let GigaTester_StringUtils = {
                             let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html('<gtdiv>' + "<gtspan>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Cuvo" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
-                            send_button.find(".gigatester-ctrl-item-send-text").text('Send feedback');
+                            send_button.find(".gigatester-ctrl-item-send-text").text(GigaTester_StringRes.get("send"));
                             send_button.removeClass("gigatester-ctrl-item-send-loading");
                             this.recording = false;
                             $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
                             let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
-                            $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
+                            // $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
                             setTimeout(function () {
                                 $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
