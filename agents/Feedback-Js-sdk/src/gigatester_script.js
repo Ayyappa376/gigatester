@@ -76,7 +76,11 @@ const GigaTester_StringRes = {
         form_submit_error: "Error submitting feedback form. Please try again.",
         thank_you_text: "Thank You!",
         thank_you_bug_msg: "We will resolve your concern.",
-        thank_you_feedback_msg: "We appreciate your feedback."
+        thank_you_feedback_msg: "We appreciate your feedback.",
+        confirm_modal_header: "Confirm",
+        confirm_modal_text: "Start afresh next time or Start from these values next time",
+        keep_changes_button: "Keep changes",
+        discard_changes_button: "Discard changes"
     },
     setLocale: function(locale) {
         this.locale = locale
@@ -1873,11 +1877,11 @@ let GigaTester_StringUtils = {
                     let container = $(document.getElementsByClassName('gigatester-ctrl-item'));
                     
                     let html = '<gtdiv class="gigatester-ctrl-item-send-success" style="height:160px; "> ';
-                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester"> Confirm </gtheader>'                                
-                    html += '<p style="text-align:center;">Start afresh next time or Start from these values next time</p>'
+                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">' +  GigaTester_StringRes.get("confirm_modal_header") + '</gtheader>'                                
+                    html += '<p style="text-align:center;">' +  GigaTester_StringRes.get("confirm_modal_text") + '</p>'
                     html += '<div class="gigatester-confirm-modal-btns" >'
-                    html += '<button class="gigatester-confirm-modal-save gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text" title="Keep changes. Start from these values next time." >Keep changes</span>' + '</button>'
-                    html += '<button class="gigatester-confirm-modal-close gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text" title="Discard changes. Start afresh next time" >Discard changes</span>' + '</button>'
+                    html += '<button class="gigatester-confirm-modal-save gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("keep_changes_button") + '</span>' + '</button>'
+                    html += '<button class="gigatester-confirm-modal-close gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("discard_changes_button") + '</span>' + '</button>'
                     html += '</div>'
                     html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " Cuvo" + "</span>" + "</a>" + "</gtfooter>";
                     html += '</gtdiv>';
