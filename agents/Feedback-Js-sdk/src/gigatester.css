@@ -744,6 +744,7 @@ popupbtn gtdiv {
   color: #011348;
   -webkit-text-fill-color: #011348;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  cursor: pointer;
 }
 .gigatester-popup-dialog-remote popupbtn gtdiv {
   display: table;
@@ -2366,8 +2367,10 @@ gtvideotoolbar {
   z-index: 2641483645;
   top: 10px;
   left: 40vw;
+  width: 300px;
+  height: 50px;
   margin: auto;
-  padding: 0 10px 0 14px;
+  padding: 0;
   background: #011348;
   border-radius: 4px;
   animation: animationMoveUp 0.3s linear;
@@ -2385,7 +2388,7 @@ gtvideotoolbar btn {
   width: 40px;
   height: 40px;
   line-height: 40px;
-  margin: 6px;
+  margin: 5px;
   text-align: center;
   cursor: pointer;
   border-radius: 50%;
@@ -2533,7 +2536,7 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer btn-timer-mask {
   animation-play-state: paused;
 }
 gtvideotoolbar .gigatester-video-controls-timer {
-  display: none;
+  /* display: none; */
   color: rgba(53, 76, 95, 0.8);
   -webkit-text-fill-color:rgba(53, 76, 95, 0.8);
   font-size: 14px;
@@ -2541,9 +2544,9 @@ gtvideotoolbar .gigatester-video-controls-timer {
   cursor: default;
   -webkit-font-smoothing: antialiased;
 }
-gtvideotoolbar .gigatester-video-controls-timer-show{
+/* gtvideotoolbar .gigatester-video-controls-timer-show{
   display: block;
-}
+} */
 gtvideotoolbar gtvolume {
   position: absolute;
   top: auto;

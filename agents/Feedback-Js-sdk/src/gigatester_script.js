@@ -405,26 +405,26 @@ let GigaTester_StringUtils = {
                     this.controls = $("<gtvideotoolbar  id='gigatester-gtvideotoolbar' >").appendTo($(document.body));
                     this.mute_button = $("<btn>").addClass("gigatester-video-controls-mute gigatester-video-controls-active").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_mute", true) + "</btn-name>" + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.mic_icon).appendTo(this.controls);
                     this.pause_button = $("<btn>").addClass("gigatester-video-controls-pause").attr("disabled", true).html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name>" +  "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon).appendTo(this.controls);
-                    this.stp_btn = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>"  + "</btn-tooltip>" + GigaTester_Icons.stop_icon).appendTo(this.controls);
-                    this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("remaining_time", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>").appendTo(this.controls);
+                    this.stop_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("recording_finish", true) + "</btn-name>"  + "</btn-tooltip>" + GigaTester_Icons.stop_icon).appendTo(this.controls);
+                    this.timer_anim_button = $("<btn>").addClass("gigatester-video-controls-stop").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("remaining_time", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + "<btn-timer><btn-timer-mask></btn-timer-mask></btn-timer>").appendTo(this.controls);
                     this.timer_button = $("<btn>").addClass("gigatester-video-controls-timer").text(this.getTimerStr()).appendTo(this.controls);
                     this.close_button = $("<btn>").addClass("gigatester-video-controls-close").html("<btn-tooltip>" + "<btn-name>" + GigaTester_StringRes.get("cancel", true) + "</btn-name>"  + "</btn-tooltip>" + "<btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.close_icon).appendTo(this.controls);
                     // if (!this.device_list.audioinput.length) {
                     //     this.is_muted = true;
                     //     this.mute_button.removeClass("gigatester-video-controls-active").attr("disabled", true)
                     // }
-                    this.stop_button.find("btn-timer, btn-timer-mask").css("animation-duration", this.timer + "s");
-                    this.stp_btn.on("click", this.stopGTcapture.bind(this));
+                    this.timer_anim_button.find("btn-timer, btn-timer-mask").css("animation-duration", this.timer + "s");
+                    this.stop_button.on("click", this.stopGTcapture.bind(this));
                     this.close_button.on("click", this.cancelGTcapture.bind(this));
                     this.pause_button.on("click", this.recordingPause.bind(this));
                     this.mute_button.on("click", this.voiceMute.bind(this));
-                    this.stop_button.on("mouseenter", function(){
-                       $(document.getElementsByClassName('gigatester-video-controls-timer')).addClass('gigatester-video-controls-timer-show')
-                        console.log('on')
-                    });
-                    this.stop_button.on("mouseleave", function(){
-                        $(document.getElementsByClassName('gigatester-video-controls-timer')).removeClass('gigatester-video-controls-timer-show')
-                    });
+                    // this.timer_anim_button.on("mouseenter", function(){
+                    //    $(document.getElementsByClassName('gigatester-video-controls-timer')).addClass('gigatester-video-controls-timer-show')
+                    //     console.log('on')
+                    // });
+                    // this.timer_anim_button.on("mouseleave", function(){
+                    //     $(document.getElementsByClassName('gigatester-video-controls-timer')).removeClass('gigatester-video-controls-timer-show')
+                    // });
                     dragElement(document.getElementById("gigatester-gtvideotoolbar"));
                     function dragElement(elmnt) {
                         var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
@@ -456,8 +456,8 @@ let GigaTester_StringUtils = {
                           pos3 = e.clientX;
                           pos4 = e.clientY;
                           // set the element's new position:
-                          elmnt.style.top = (elmnt.offsetTop - pos2) > 0 ? (elmnt.offsetTop - pos2) > (screen.height-180) ? (screen.height-210) + "px" :(elmnt.offsetTop - pos2) + "px" : 10 + "px";
-                          elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+                          elmnt.style.top = (elmnt.offsetTop - pos2) > 0 ? (elmnt.offsetTop - pos2) > ($(window).height()-50) ? ($(window).height()-60) + "px" :(elmnt.offsetTop - pos2) + "px" : 10 + "px";
+                          elmnt.style.left = (elmnt.offsetLeft - pos1) >  0 ? (elmnt.offsetLeft - pos1) > ($(window).width()-300) ? ($(window).width()-310) + "px" : (elmnt.offsetLeft - pos1)  + "px" : 10 + "px";
                         }
                         
                         function closeDragElement() {
@@ -533,7 +533,7 @@ let GigaTester_StringUtils = {
                                     }
                                 };
                                 timer.call(this);
-                                this.stop_button.show();
+                                this.timer_anim_button.show();
                                 this.close_button.show()
                         }.bind(this);
 
@@ -615,7 +615,7 @@ let GigaTester_StringUtils = {
                                 }
                             };
                             timer.call(this);
-                            this.stop_button.show();
+                            this.timer_anim_button.show();
                             this.close_button.show()
                         }.bind(this);
 
@@ -695,7 +695,7 @@ let GigaTester_StringUtils = {
                     return min + ":" + sec
                 },
                 startTimer: function() {
-                    this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
+                    this.timer_anim_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
                     this.timer_timeout = setInterval(function() {
                         let timer_text = this.getTimerStr();
                         this.timer_button.text(timer_text);
@@ -766,13 +766,13 @@ let GigaTester_StringUtils = {
                         case "recording":
                             this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_resume", true) + "</btn-name></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.play_icon);
                             this.recorder.pause();
-                            this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "paused");
+                            this.timer_anim_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "paused");
                             this.stopTimer();
                             break;
                         case "paused":
                             this.pause_button.html("<btn-tooltip><btn-name>" + GigaTester_StringRes.get("recording_pause", true) + "</btn-name></btn-tooltip><btn-tooltip-arrow></btn-tooltip-arrow>" + GigaTester_Icons.pause_icon);
                             this.recorder.resume();
-                            this.stop_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
+                            this.timer_anim_button.find("btn-timer, btn-timer-mask").css("animation-play-state", "running");
                             this.startTimer();
                             break
                     }
@@ -991,6 +991,7 @@ let GigaTester_StringUtils = {
                         this.custom_ui.button[0].style.fontFamily = this.configs.main_button_font;
                         this.custom_ui.button[0].style.fontWeight = this.configs.main_button_fontWeight;
                         this.custom_ui.button[0].style.color = this.configs.main_button_text_color;
+                        this.custom_ui.button[0].style.webkitTextFillColor = this.configs.main_button_text_color;
                         this.custom_ui.button[0].style.backgroundColor = this.configs.main_button_background_color;
                         // this.custom_ui.button[0].style.display = 'none';
                         // const button = document.getElementById("gigatester_ctrls_container").getElementsByClassName("gigatester-btn")[0];
