@@ -3259,3 +3259,23 @@ gtmouseclick {
 .select2-container--classic.select2-container--open .select2-dropdown {
   border-color: #5897fb;
 }
+.gigatester-confirm-modal-btns{
+  display: flex;
+  justify-content: center;
+}
+.gigatester-confirm-modal-btns>button {
+  overflow: hidden;
+  position: relative;
+  display: block;
+  /* height: 40px; */
+  padding: 10px 24px;  
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  font-size: 14px;
+  box-shadow: none;
+  white-space: nowrap;
+  transition: all 0.2s linear;
+  margin-right: 10px;
+}
