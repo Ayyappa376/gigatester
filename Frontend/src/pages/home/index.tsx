@@ -7,6 +7,7 @@ import { Http } from '../../utils';
 import { Auth } from 'aws-amplify';
 import jwtDecode from 'jwt-decode';
 import SignupForm from '../../components/signUpForm';
+import SignInForm from '../../components/signInForm';
 import feedback_img from './feedback_bg.jpg';
 import feedbackagent_img from './feedback_agent.png';
 import feedbackdashboard_img from './feedback_dashboard.png';
@@ -105,7 +106,9 @@ const Home = (props: any) => {
   const setSysDetails = useActions(setSystemDetails);
   const stateVariable = useSelector((state: IRootState) => state);
   const setCurrentPageValue = useActions(setCurrentPage);
-  const [openSignup, setOpenSignup] = useState(false);
+  const [openSignup, setOpenSignup] = useState(props.signUp || false);
+  const [openSignin, setOpenSignin] = useState(props.signIn || false);
+  const [changePassword, setChangePassword] = useState(false);
   const [superUserStateVariable, setSuperUserStateVariable] = useState(stateVariable);
   const [isFetching, setIsFetching] = useState(true);
 
@@ -163,6 +166,17 @@ const Home = (props: any) => {
   const handleCloseSignup = (state: boolean) => {
     setOpenSignup(state);
   };
+
+  const getSigninDialog = (state: boolean) => {
+    setOpenSignin(state);
+  };
+
+  const setSignInState = (state: boolean) => {
+    setOpenSignin(state);
+    if(!state) {
+      setChangePassword(false);
+    }
+  }
 
   if (isFetching) {
     return (
@@ -261,33 +275,50 @@ const Home = (props: any) => {
           <Grid container className={classes.pageSection}>
             <Grid item xs={12} style={{ marginBottom: '40px'}}>
               <Paper className={classes.tryItOut}>
-              <Typography className={classes.headerText}>
-                GigaTester enables Product teams to capture feedback and bugs reported by customers
-                  directly without going through middle layer.
-                  To learn more or want to see a demo, click on the button below to register.
-              </Typography>
-              <Button
-                variant="outlined"
-                onClick={() => getSignupDialog(true)}
-                color="primary"
-                size="large"
-                data-testid="signUp"
-                className={classes.trialBtn}
-              >
-                Let's try out
+                <Typography className={classes.headerText}>
+                  GigaTester enables Product teams to capture feedback and bugs reported by customers
+                    directly without going through middle layer.
+                    To learn more or want to see a demo, click on the button below to register.
+                </Typography>
+                <Button
+                  variant="outlined"
+                  onClick={() => getSignupDialog(true)}
+                  color="primary"
+                  size="large"
+                  data-testid="signUp"
+                  className={classes.trialBtn}
+                >
+                  Let's try out
                 </Button>
-                </Paper>
+                <Button
+                  variant="outlined"
+                  onClick={() => getSigninDialog(true)}
+                  color="primary"
+                  size="large"
+                  data-testid="signIn"
+                  className={classes.trialBtn}
+                >
+                  Login
+                </Button>
+              </Paper>
             </Grid>
           </Grid>
         </Container>
       </Grid>
       {openSignup && (
-      <SignupForm
-        openSignup={openSignup}
-        handleCloseSignup={handleCloseSignup}
-        superUserStateVariable={superUserStateVariable}
-      />
+        <SignupForm
+          openSignup={openSignup}
+          handleCloseSignup={handleCloseSignup}
+          superUserStateVariable={superUserStateVariable}
+        />
       )}
+      {openSignin &&
+        <SignInForm
+          openSignin={openSignin}
+          setSignInState={setSignInState}
+          changePassword={changePassword}
+        />
+      }
     </Container>
   );
 };
