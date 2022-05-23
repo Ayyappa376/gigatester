@@ -46,6 +46,8 @@ gtdiv *{
   color: #fff !important;
   background-color: var(--main-btn-bg) !important;
   color: var(--main-btn-text) !important;
+  -webkit-text-fill-color: #fff !important;
+  -webkit-text-fill-color: var(--main-btn-text) !important;
   cursor: pointer;
   box-shadow: 0 0 10px #5c6c7c;
   box-sizing: border-box;
@@ -64,7 +66,9 @@ gtdiv *{
 }
 .gigatester-input-btn .gigatester-ctrl-item-send-text {
   color: #fff !important;
+  -webkit-text-fill-color: #fff;
   color: var(--main-btn-text) !important;
+  -webkit-text-fill-color: var(--main-btn-text) !important;
 }
 .gigatester-mobile-only {
   display: none;
@@ -101,6 +105,7 @@ gtdiv *{
   font-weight: 600;
   text-align: center;
   -webkit-font-smoothing: antialiased;
+  -webkit-text-fill-color: #fff;
 }
 gttoolbar {
   line-height: normal;
@@ -162,6 +167,7 @@ gttoolbar btn.gigatester-toolbar-tool-done {
   padding: 8px 8px 8px 12px;
   width: auto;
   color: #011348;
+  -webkit-text-fill-color: #011348;
   font-size: 16px;
 }
 gttoolbar btn > btn-tooltip {
@@ -185,6 +191,7 @@ gttoolbar btn > btn-tooltip {
   margin: 0 0 12px 0;
   border-radius: 4px;
   color: #fff;
+  -webkit-text-fill-color: #fff;
   font-size: 11px;
   white-space: nowrap;
   background-color: #011348;
@@ -382,6 +389,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   left: 200px;
   padding: 0 10px;
   color: #fff;
+  -webkit-text-fill-color: #fff;
   background-color: black;
   border-radius: 4px;
   font-size: 12px;
@@ -467,6 +475,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   z-index: 100;
   line-height: 35px;
   color: #fff;
+  -webkit-text-fill-color: #fff;
   font-size: 14px;
   text-align: center;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
@@ -583,6 +592,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   box-shadow: none;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   color: #000;
+  -webkit-text-fill-color: #000;
   background: none;
   box-sizing: border-box;
   scrollbar-width: thin;
@@ -606,6 +616,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
 .gigatester-comment .gigatester-comment-form gtcomment:empty:before {
   content: attr(data-ph);
   color: #999;
+  -webkit-text-fill-color:#999;
   pointer-events: none;
 }
 .gigatester-comment .gigatester-comment-form gtcomment:empty + btn {
@@ -726,17 +737,28 @@ popupbtn svg{
   margin: 1px;
 }
 popupbtn svg g path{
-  fill: black;
+  fill: #011348;
 }
 popupbtn gtdiv {
   margin: 18px 2px;
-  color: black;
+  color: #011348;
+  -webkit-text-fill-color: #011348;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  cursor: pointer;
+}
+.gigatester-popup-dialog-remote popupbtn gtdiv {
+  display: table;
+}
+.gigatester-popup-dialog-remote popupbtn gtdiv span {
+  display: table-cell;
+  vertical-align: middle;
 }
 popuptooltip {
   visibility: hidden;
   width: 120px;
   background-color: black;
   color: #fff;
+  -webkit-text-fill-color: #fff;
   text-align: center;
   border-radius: 4px;
   padding: 5px 0;
@@ -744,6 +766,9 @@ popuptooltip {
   position: absolute;
   top: 15px;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
   /* left: -136px; */
   z-index: 1;
 }
@@ -814,6 +839,8 @@ popupbtn:hover popuptooltip {
   color: #fff;
   background-color: var(--main-btn-bg);
   color: var(--main-btn-text);
+  -webkit-text-fill-color: #fff;
+  -webkit-text-fill-color:  var(--main-btn-text);
   background-image: none;
   text-align: center;
   font-size: 14px;
@@ -872,6 +899,7 @@ popupbtn:hover popuptooltip {
   letter-spacing: normal;
   word-spacing: normal;
   color: #011348;
+  -webkit-text-fill-color: #011348;
   text-align: left;
   box-sizing: border-box;
   animation: animationAppear 0.1s linear 0.05s forwards;
@@ -1038,6 +1066,7 @@ gtclose svg {
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: normal;
   color: rgba(53, 76, 95, 0.4);
+  -webkit-text-fill-color: rgba(53, 76, 95, 0.4);
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtfooter > a > span:last-child {
   display: inline-block;
@@ -1045,14 +1074,17 @@ gtclose svg {
   font-size: 12px;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   color: rgba(53, 76, 95, 0.6);
+  -webkit-text-fill-color: rgba(53, 76, 95, 0.6);
   text-transform: uppercase;
   vertical-align: baseline;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtfooter > a:hover > span:first-child {
   color: rgba(53, 76, 95, 0.6);
+  -webkit-text-fill-color: rgba(53, 76, 95, 0.6);
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtfooter > a:hover > span:last-child {
   color: rgba(53, 76, 95, 0.8);
+  -webkit-text-fill-color: rgba(53, 76, 95, 0.8);
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtfooter > a:hover path:first-child {
   fill: #011348;
@@ -1099,6 +1131,7 @@ gtclose svg {
 }
 .gigatester-video-stop-btn-tooltip{
     color: white;
+    -webkit-text-fill-color: white;
     background: rgba(0, 0, 0, 0.747);
     position: absolute;
     border-radius: 4px;
@@ -1216,6 +1249,7 @@ gtclose svg {
   left: 20px;
   bottom: -25px;
   color: #011348;
+  -webkit-text-fill-color: #011348;
 }
 .gigatester-audio-timer-label{
 position: absolute;
@@ -1275,6 +1309,7 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form {
   color: rgb(50, 50, 50);
+  -webkit-text-fill-color: rgb(50, 50, 50);
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form .gigatester-ctrl-item-form-full {
   min-width: 0;
@@ -1321,6 +1356,7 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-disclaimer a {
   color: #4c545b;
+  -webkit-text-fill-color: #4c545b;
   text-decoration: underline;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-attach-actions {
@@ -1389,6 +1425,7 @@ bottom: -23px;
   line-height: normal;
   border-radius: 4px;
   color: #fff;
+  -webkit-text-fill-color: #fff;
   font-size: 12px;
   white-space: nowrap;
   background-color: #011348;
@@ -1418,6 +1455,7 @@ bottom: -23px;
   border: 1px solid #bfbfbf;
   border-radius: 4px;
   color: rgba(88, 136, 175, 0.4);
+  -webkit-text-fill-color: rgba(88, 136, 175, 0.4);
   font-size: 12px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item #gigatester_remove_attachment_btn {
@@ -1442,6 +1480,9 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item #gigatester_remove_attachment_btn:hover:not([disabled]) {
   border: 1px solid #011348;
+}
+#gigatester_ctrls_container .gigatester-ctrl-item input[type="email"][hidden]{
+  display: none;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"],
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"] {
@@ -1469,6 +1510,7 @@ bottom: -23px;
   user-select: auto;
   margin: 0 0 10px 0;
   color: #011348;
+  -webkit-text-fill-color: #011348;
   outline: none;
 }
 @media (max-width: 800px) {
@@ -1482,6 +1524,7 @@ bottom: -23px;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(88, 136, 175, 0.4);
+  -webkit-text-fill-color:rgba(88, 136, 175, 0.4);
   text-transform: none;
 }
 @media (max-width: 800px) {
@@ -1493,10 +1536,12 @@ bottom: -23px;
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]:-ms-input-placeholder,
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]:-ms-input-placeholder {
   color: #aaa;
+  -webkit-text-fill-color:#aaa;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]::-ms-input-placeholder,
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]::-ms-input-placeholder {
   color: #aaa;
+  -webkit-text-fill-color:#aaa;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]:focus,
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]:focus {
@@ -1521,6 +1566,7 @@ bottom: -23px;
   letter-spacing: normal;
   word-spacing: normal;
   color: #011348;
+  -webkit-text-fill-color:#011348;
   background: #fafbfd;
   box-shadow: none !important;
   outline: none;
@@ -1554,6 +1600,7 @@ bottom: -23px;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(88, 136, 175, 0.4);
+  -webkit-text-fill-color: rgba(88, 136, 175, 0.4);
   text-transform: none;
 }
 @media (max-width: 800px) {
@@ -1563,9 +1610,11 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item select:-ms-input-placeholder {
   color: #aaa;
+  -webkit-text-fill-color: #aaa;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item select::-ms-input-placeholder {
   color: #aaa;
+  -webkit-text-fill-color: #aaa;
 }
 
 #gigatester_ctrls_container .gigatester-ctrl-item textarea {
@@ -1581,6 +1630,7 @@ bottom: -23px;
   letter-spacing: normal;
   word-spacing: normal;
   color: #011348;
+  -webkit-text-fill-color: #011348;
   background: #fafbfd;
   box-shadow: none !important;
   outline: none;
@@ -1609,6 +1659,7 @@ bottom: -23px;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px !important;
   color: rgba(88, 136, 175, 0.4);
+  -webkit-text-fill-color: rgba(88, 136, 175, 0.4);
   text-transform: none;
 }
 @media (max-width: 800px) {
@@ -1618,9 +1669,11 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item textarea:-ms-input-placeholder {
   color: #aaa;
+  -webkit-text-fill-color: #aaa;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item textarea::-ms-input-placeholder {
   color: #aaa;
+  -webkit-text-fill-color: #aaa;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtdiv#gigatester_category_standard_feedback {
   position: relative;
@@ -1657,6 +1710,7 @@ bottom: -23px;
   font-size: 14px;
   font-weight: 400;
   color: #011348;
+  -webkit-text-fill-color: #011348;
   font-family: inherit;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-checkbox-container {
@@ -1728,6 +1782,7 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-checkbox-container .gigatester-checkbox-label a {
   color: #4c545b;
+  -webkit-text-fill-color: #4c545b;
   text-decoration: underline;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-attachment {
@@ -1838,11 +1893,13 @@ bottom: -23px;
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading,
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading:hover {
   color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
   cursor: default;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading .gigatester-ctrl-item-send-text,
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading:hover .gigatester-ctrl-item-send-text {
   color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading:before,
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading:after,
@@ -1910,6 +1967,7 @@ bottom: -23px;
   line-height: auto;
   margin: 0 0 0 8px;
   color: #f80303;
+  -webkit-text-fill-color: #f80303;
   font-size: 13px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-msg {
@@ -1930,6 +1988,7 @@ bottom: -23px;
   line-height: auto;
   margin: 0 0 0 8px;
   color: #011348;
+  -webkit-text-fill-color: #011348;
   font-size: 13px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item-r {
@@ -2116,6 +2175,7 @@ bottom: -23px;
   position: relative;
   top: 20%;
   color: #011348;
+  -webkit-text-fill-color: #011348;
 }
 #gigatester_audio_record_player #gigatester_audio_record_player_stop > svg {
   display: block;
@@ -2157,8 +2217,10 @@ display: inline-block;
 padding: 11px 5px;
 border-radius: 4px;
 color: #011348d0;
+-webkit-text-fill-color: #011348d0;
 border: 2px solid #011348d0;
 background: #fafbfd;
+word-break: break-all;
 }
 #gigatester_video_container {
   position: fixed;
@@ -2193,6 +2255,7 @@ background: #fafbfd;
   padding: 6px;
   line-height: 20px;
   color: black;
+  -webkit-text-fill-color: black;
   font-weight: 600;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   /* left: 10px; */
@@ -2204,7 +2267,7 @@ background: #fafbfd;
 
 .gigatester-popup-dialog-remote{
   width: 400px;
-  height: 300px;
+  height: auto;
   background: #fff;
   position: fixed;
   top: 25%;
@@ -2213,22 +2276,27 @@ background: #fafbfd;
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
-  align-items: center;
-  padding: 3px;
+  align-items: left;
+  padding: 10px;
   margin: 0 auto;
-  line-height: 20px;
-  color: black;
+  line-height: normal;
+  letter-spacing: normal;
+  word-spacing: normal;
+  color: #011348;
+  -webkit-text-fill-color: #011348;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
-  font-size: 28px;
-  font-weight: 500;
+  font-weight: normal;
+  border-radius: 4px;
   box-shadow: 0 0 10px #5c6c7c;
-  animation: animationAppear 0.2s linear;
+  text-align: left;
+  box-sizing: border-box;
+  animation: animationAppear 0.1s linear 0.05s forwards;
 }
 
 @media (max-width: 1300px) {
   .gigatester-popup-dialog-remote{
     width: 300px;
-    height: 200px;
+    height: auto;
     background: #fff;
     position: fixed;
     top: 25%;
@@ -2237,22 +2305,27 @@ background: #fafbfd;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     padding: 10px;
-    line-height: 20px;
-    color: black;
+    line-height: normal;
+    letter-spacing: normal;
+    word-spacing: normal;
+    color: #011348;
+    -webkit-text-fill-color: #011348;
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
-    font-size: 20px;
-    font-weight: 500;
+    font-weight: normal;
+    border-radius: 4px;
     box-shadow: 0 0 10px #5c6c7c;
-    animation: animationAppear 0.2s linear;
-  }
+    text-align: left;
+    box-sizing: border-box;
+    animation: animationAppear 0.1s linear 0.05s forwards;
+    }
 }
 
 @media (max-width: 800px) {
   .gigatester-popup-dialog-remote{
     width: 250px;
-    height: 150px;
+    height: auto;
     background: #fff;
     position: fixed;
     top: 25%;
@@ -2261,21 +2334,31 @@ background: #fafbfd;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    align-items: center;
+    align-items: left;
     padding: 10px;
     line-height: 20px;
-    color: black;
+    line-height: normal;
+    letter-spacing: normal;
+    word-spacing: normal;
+    color: #011348;
+    -webkit-text-fill-color: #011348;
     font-family: "Open Sans", Helvetica, Arial, sans-serif;
-    font-size: 20px;
-    font-weight: 500;
+    font-weight: normal;
+    border-radius: 4px;
     box-shadow: 0 0 10px #5c6c7c;
-    animation: animationAppear 0.2s linear;
-  }
+    text-align: left;
+    box-sizing: border-box;
+    animation: animationAppear 0.1s linear 0.05s forwards;
+    }
 }
 
-popupbtn.remote-title {
+.gigatester-popup-dialog-remote .remote-title {
   color: #011348;
+  -webkit-text-fill-color:#011348;
   font-weight: 900;
+  font-size: 22px;
+  align-items: center;
+  text-align: center;
 }
 
 gtvideotoolbar {
@@ -2284,13 +2367,16 @@ gtvideotoolbar {
   z-index: 2641483645;
   top: 10px;
   left: 40vw;
+  width: 300px;
+  height: 50px;
   margin: auto;
-  padding: 0 10px 0 14px;
+  padding: 0;
   background: #011348;
   border-radius: 4px;
   animation: animationMoveUp 0.3s linear;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
-  cursor: pointer;
+  /* cursor: pointer; */
+  cursor: move;
 }
 gtvideotoolbar btn {
   position: relative;
@@ -2298,10 +2384,11 @@ gtvideotoolbar btn {
   display: block;
   background: #fafbfd;
   color: #fff;
+  -webkit-text-fill-color:#fff;
   width: 40px;
   height: 40px;
   line-height: 40px;
-  margin: 6px;
+  margin: 5px;
   text-align: center;
   cursor: pointer;
   border-radius: 50%;
@@ -2346,6 +2433,7 @@ gtvideotoolbar btn > btn-tooltip {
   margin: 0 0 12px 0;
   border-radius: 4px;
   color: #fff;
+  -webkit-text-fill-color:#fff;
   font-size: 11px;
   white-space: nowrap;
   background-color: #011348;
@@ -2448,16 +2536,17 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer btn-timer-mask {
   animation-play-state: paused;
 }
 gtvideotoolbar .gigatester-video-controls-timer {
-  display: none;
+  /* display: none; */
   color: rgba(53, 76, 95, 0.8);
+  -webkit-text-fill-color:rgba(53, 76, 95, 0.8);
   font-size: 14px;
   font-weight: 700;
   cursor: default;
   -webkit-font-smoothing: antialiased;
 }
-gtvideotoolbar .gigatester-video-controls-timer-show{
+/* gtvideotoolbar .gigatester-video-controls-timer-show{
   display: block;
-}
+} */
 gtvideotoolbar gtvolume {
   position: absolute;
   top: auto;
@@ -3169,4 +3258,24 @@ gtmouseclick {
 
 .select2-container--classic.select2-container--open .select2-dropdown {
   border-color: #5897fb;
+}
+.gigatester-confirm-modal-btns {
+  display: flex;
+  justify-content: center;
+}
+.gigatester-confirm-modal-btns>button {
+  overflow: hidden;
+  position: relative;
+  display: block;
+  /* height: 40px; */
+  padding: 10px 24px;  
+  border-radius: 4px;
+  box-sizing: border-box;
+  font-weight: 400;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
+  font-size: 14px;
+  box-shadow: none;
+  white-space: nowrap;
+  transition: all 0.2s linear;
+  margin-right: 10px;
 }

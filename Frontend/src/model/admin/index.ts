@@ -11,7 +11,6 @@ export * from './device';
 export * from './platform';
 export * from './product';
 export * from './group';
-export * from './organization';
 export * from './create-team';
 export * from './create-user';
 export * from './feedbackComments';

@@ -1,8 +1,9 @@
 export interface OrganizationInfo {
     emailDomains?: string[];
     name: string;
-    orgPrefix?: string;
+    orgPrefix: string;
     url: string;
+    status: string;
 }
 
 export interface ResourceDetails {
@@ -23,7 +24,7 @@ export interface ResourceDetails {
 }
 
 export const STATUS_VERIFY_ORG_PENDING = 'Pending';
-export const STATUS_VERIFY_ORG_APPROVED = 'Approved';
+export const STATUS_VERIFY_ORG_ACTIVE = 'Active';
 export const STATUS_VERIFY_ORG_REJECTED = 'Rejected';
 export const STATUS_VERIFY_ORG_DELETED = 'Deleted';
 export const STATUS_VERIFY_ORG_ALL = 'All';

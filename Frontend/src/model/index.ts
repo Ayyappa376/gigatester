@@ -7,3 +7,4 @@ export * from './feedback';
 export * from './admin';
 export * from './settings';
 export * from './metrics';
+export * from './organization';

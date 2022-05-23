@@ -27,6 +27,7 @@ export interface TesterStatus {
 export interface FeedbackAgentSettings {
     bugSettings?: BugSettings;
     captureSystemDetails?: boolean;
+    featureReqSettings?: FeatureReqSettings;
     feedbackSettings?: FeedbackSettings;
     feedbackTypes: FeedbackType[];
     invokeDelay?: number; //in seconds
@@ -47,6 +48,7 @@ export interface BugSettings {
     dialogMsg?: string;
     icon?: string;
     reqComments?: boolean;
+    reqDisplayEmail?: boolean;
     severities: string[];
     showSeverity: boolean;
     thanksMsg?: string;
@@ -61,6 +63,17 @@ export interface FeedbackSettings {
     ratingIcon: RatingIconType;
     ratingLimit: number; //values 1,2,3,4,5
     reqComments?: boolean;
+    reqDisplayEmail?: boolean;
+    thanksMsg?: string;
+    title?: string;
+    tooltip?: string;
+}
+
+export interface FeatureReqSettings {
+    dialogMsg?: string;
+    icon?: string;
+    reqComments: boolean;
+    reqDisplayEmail?: boolean;
     thanksMsg?: string;
     title?: string;
     tooltip?: string;

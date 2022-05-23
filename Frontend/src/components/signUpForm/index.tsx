@@ -30,7 +30,8 @@ import { useSelector } from "react-redux";
 import { IRootState } from "../../reducers";
 import { Text } from "../../common/Language";
 import SignInForm from "../signInForm";
-//import { content } from "html2canvas/dist/types/css/property-descriptors/content";
+import { useActions, saveOrganizationDetails } from "../../actions";
+import { IOrganizationInfo } from "../../model/organization";
 
 const useStyles = makeStyles((theme) => ({
   bigLogo: {
@@ -72,6 +73,7 @@ export default function SignupForm(props: any) {
   // const stateVariable = useSelector((state: IRootState) => {
   //   return state;
   // });
+  const stateVariable = useSelector((state: IRootState) => state);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [verifyEmail, setVerifyEmail] = useState(false);
   const [checkBox, setcheckBox] = useState(false);
@@ -86,12 +88,58 @@ export default function SignupForm(props: any) {
   const [superUserStateVariable, setSuperUserStateVariable] = useState(
     props.superUserStateVariable
   );
+  const [allowedDomains, setAllowedDomains] = useState<string[] | undefined>(undefined);
+  const saveOrganizationData = useActions(saveOrganizationDetails);
+  
+  useEffect(() => {
+    const data: IOrganizationInfo | null = stateVariable.organizationDetails;    
+    if(data){
+      setAllowedDomains(data.emailDomains);
+    } else {
+      Http.get({
+        url: '/api/v2/organizations/0',
+        state: { stateVariable },
+        customHeaders: { 
+          noauthvalidate: 'true'
+        },
+      })
+      .then((response: any) => {
+        if(response){   
+          console.log(response);       
+          saveOrganizationData({            
+            emailDomains: response?.organizationDetails?.emailDomains,
+            name: response?.organizationDetails?.name,
+            orgPrefix: response?.organizationDetails?.orgPrefix,
+            url: response?.organizationDetails?.url,
+            status: response?.organizationDetails?.status
+          });
+          setAllowedDomains(response?.organizationDetails?.emailDomains);
+        }
+      })
+      .catch((error: any) => {
+        console.log(error);      
+      });
+    }
+  },[])
   
   const validateEmail = (email: string) => {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    return re.test(String(email).toLowerCase());
+    let extention = getSecondPart(String(email).toLowerCase()) || "";
+    if(!re.test(email.toLowerCase())) {
+      setValidationMsg("Please enter a valid email");
+      return false;
+    }
+    if(allowedDomains && allowedDomains.length > 0 && allowedDomains.indexOf(extention) < 0){
+      setValidationMsg("Please use your official organization email");
+      return false;
+    }
+    return true;
   };
+  
+  const getSecondPart = (str: string) =>  {
+    return str.split('@').pop();
+  }
 
   const handleChangeValue = (event: any) => {
     if (userParamState) {
@@ -163,9 +211,10 @@ export default function SignupForm(props: any) {
         setSnackbarOpen(true);
       }
     } else {
-      setSnackbarOpen(true);
+      setErrorMessage('');
+      // setValidationMsg("Please enter a valid email");
       setLoading(false);
-      setValidationMsg("Please enter a valid email");
+      setSnackbarOpen(true);
     }
   };
 

@@ -278,6 +278,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		if (rawData.length === 0) {
 			return;
 		}
+		if (Object.keys(lastEvaluatedKey).length > 0) {
 			// fetch the results from backend
 			setData([]);
 			setRawData([]);
@@ -290,7 +291,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 				filterDate: dateRange,
 				searchWord: keyword,
 			});
-		
+		} else {
+			setData(sortTableByDate(data, order));
+		}
 	}, [order]);
 
 	useEffect(() => {
@@ -443,31 +446,32 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		searchWord,
 		showNoEmptyError,
 		noRawDataUpdate,
+		fetchQuantity,
 	}: IFetchRecursiveData) => {
 		setResultsFetched(false);
 		let urlAppend = ``;
-		let numItems = NUMBER_OF_ITEMS_PER_FETCH;
+		let numItems = fetchQuantity ? fetchQuantity : NUMBER_OF_ITEMS_PER_FETCH;
 		if (prodId) {
 			urlAppend += `?prodId=${prodId}`;
 			if (prodVersion) {
 				urlAppend += `&prodVersion=${prodVersion}`;
 			}
 		}
-		if (filterRating) {
+		if (filterRating && filterRating?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterRating=${filterRating.join(',')}`
 				: `?filterRating=${filterRating.join(',')}`;
 			numItems = 500;
 		}
 
-		if (filterSeverity) {
+		if (filterSeverity && filterSeverity?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterSeverity=${filterSeverity.join(',')}`
 				: `?filterSeverity=${filterSeverity.join(',')}`;
 			numItems = 500;
 		}
 
-		if (filterCategory) {
+		if (filterCategory && filterCategory?.length > 0) {
 			urlAppend += urlAppend
 				? `&filterCategory=${filterCategory.join(',')}`
 				: `?filterCategory=${filterCategory.join(',')}`;
@@ -592,11 +596,19 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 		}
 	};
 
-	const fetchMore = () => {
+	const fetchMore = (quantity?: number | undefined) => {
 		if (prevLastEvalKey !== lastEvaluatedKey.id) {
 			setPrevLastEvalKey(lastEvaluatedKey.id);
 			if (Object.keys(lastEvaluatedKey).length > 0) {
 				setResultsFetched(false);
+				// let postData = {
+				// 	type: 'BUG_REPORT',
+				// 	items: '20',
+				// 	lastEvalKey: lastEvaluatedKey,
+				// 	prodId: selectedProdId,
+				// 	prodVersion: productVersion,
+				// }
+				// getFeedbackLastEvalkeyData(postData, stateVariable);
 				fetchRecursiveData({
 					lastEvalKey: lastEvaluatedKey,
 					prodId: selectedProdId,
@@ -607,6 +619,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 					filterSeverity: focusSeverity,
 					filterDate: dateRange,
 					fetchOrder: order,
+					fetchQuantity: quantity,
 				});
 			} else {
 				setResultsFetched(true);
@@ -938,8 +951,9 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								setFocusCategory={setFocusCategory}
 								categoryList={categoryList}
 								severityList={severityList}
-									resultsFetched={resultsFetched}
-									fetchAgain={fetchMore}
+								lastEvaluatedKey={lastEvaluatedKey}
+								resultsFetched={resultsFetched}
+								fetchAgain={fetchMore}
 							/>
 						</div>
 					) : noDataError ? (
@@ -1108,6 +1122,7 @@ const BugsTab = (props: RouteComponentProps & ChosenProps) => {
 								categoryList={categoryList}
 								severityList={severityList}
 								resultsFetched={resultsFetched}
+								lastEvaluatedKey={lastEvaluatedKey}
 								productName={prodNameIdMapping[selectedProdId].name}
 								fetchAgain={fetchMore}
 							/>

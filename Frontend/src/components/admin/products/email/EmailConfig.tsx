@@ -3,14 +3,9 @@ import {
 	Grid,
 	Typography,
 	TextField,
-	FormControl,
 	makeStyles,
 	Box,
-	FormControlLabel,
 	Checkbox,
-	Radio,
-	RadioGroup,
-	FormLabel,
 } from '@material-ui/core';
 import RatingLimitButtons from './ratingLimit';
 import SeverityLimitButtons from './severityLimit';
@@ -42,7 +37,6 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 	}, [productInfo]);
 
 	const handleCheck = (event: any, currentType: string) => {
-		// event.stopPropagation();
 		if (check) {
 			setChecked(false);
 			handleEnableEmail(false, currentType)
@@ -72,7 +66,7 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 			<Box className={classes.configContain}>
 				{check ? (
 					<Box className={classes.emailConfig}>
-						{productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon && type !== 'BUGS' ? (
+						{productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings && productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon && type === 'FEEDBACK' ? (
 								<RatingLimitButtons
 									ratingSymbol={productInfo.products[0].feedbackAgentSettings.feedbackSettings.ratingIcon}
 									ratingObj={productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.ratingLimit ? productInfo.products[0].emailConfig.ratingLimit : {}}
@@ -82,7 +76,7 @@ const EmailBox = ({ type, productInfo, handleEmailText, handleEnableEmail, handl
 
 						{check && productInfo.products &&
 						productInfo.products[0] &&
-							productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type !== 'FEEDBACK' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} severitiesObj={(productInfo.products[0] && productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.severityLimit ? productInfo.products[0].emailConfig.severityLimit : {})} /> : null}
+							productInfo.products[0].feedbackAgentSettings && productInfo.products[0].feedbackAgentSettings.bugSettings && productInfo.products[0].feedbackAgentSettings.bugSettings.severities && type === 'BUGS' ? <SeverityLimitButtons severities={productInfo.products[0].feedbackAgentSettings.bugSettings.severities} handleEmailSeverity={handleEmailSeverity} severitiesObj={(productInfo.products[0] && productInfo.products[0].emailConfig && productInfo.products[0].emailConfig.severityLimit ? productInfo.products[0].emailConfig.severityLimit : {})} /> : null}
 
 						<TextField
 							className={classes.emailText}
@@ -121,8 +115,8 @@ const useStyles = makeStyles((theme) => ({
 		fontSize: '17px',
 		fontWeight: 'normal',
 		textTransform: 'none',
-		marginRight: '5px',
-		width: '120px',
+		marginRight: '10px',
+		width: 'auto',
 	},
 	details: {
 		fontSize: '15px',
