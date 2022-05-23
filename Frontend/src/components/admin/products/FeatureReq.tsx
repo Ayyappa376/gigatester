@@ -8,6 +8,7 @@ import IconSelect from './IconSelect';
 interface FeatRequestProps {
   productParams: IProductParams;
   handleReqComments: Function;
+  handleReqDisplayEmail: Function;
   handleIconChange: Function;
   handleFeatureReqTitleChange: Function;
   handleFeatureReqTooltipChange: Function;
@@ -46,6 +47,7 @@ const useStyles = makeStyles((theme) => ({
 const FeatureRequestSettings = ({
   productParams,
   handleReqComments,
+  handleReqDisplayEmail,
   handleIconChange,
   handleFeatureReqTitleChange,
   handleFeatureReqTooltipChange,
@@ -220,6 +222,27 @@ const FeatureRequestSettings = ({
             label={
               <Typography color="textSecondary">
                 {"Require general comment field?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
+        </Grid>
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings &&
+                  productParams.products[0].feedbackAgentSettings.featureReqSettings)
+                  ? productParams.products[0].feedbackAgentSettings.featureReqSettings.reqDisplayEmail
+                  : true}
+                onChange={(event) => handleReqDisplayEmail('Feature_Request')}
+                value="FeatureDisplayEmail"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Show email field if default value is set?"}
               </Typography>
             }
             labelPlacement={'start'}
