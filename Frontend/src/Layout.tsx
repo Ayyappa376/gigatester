@@ -22,6 +22,7 @@ import {
   UserProfile,
   ViewAssessment,
   ViewTeams,
+  Home
 } from './pages';
 import { QuestionRenderer } from './components';
 import Dashboard from './components/admin/dashboard';
@@ -62,66 +63,50 @@ const Layout = (props: any) => {
         onActive={handleOnActive}
       />
       <Switch>
-        <Route
-          exact path='/auth'
-          render={() => <Auth {...props} />} />
-        <Route
-          exact path='/logout'
+        {/* <Route exact path='/auth'
+          render={() => <Auth {...props} />} /> */}
+        <Route exact path='/logout'
           render={() => <Logout {...props} />} />
-        <Route
-          exact path='/assessment'
+        {/* <Route exact path='/assessment'
           render={() => <Assessment {...props} />} />
-        <Route
-          exact path='/assessmentselect'
-          render={() => <AssessmentSelect {...props} />} />
-        <Route
-          exact path='/about'
+        <Route exact path='/assessmentselect'
+          render={() => <AssessmentSelect {...props} />} /> */}
+        <Route exact path='/about'
           render={() => <About {...props} />} />
-        <Route
-          exact path='/relogin'
+        <Route exact path='/relogin'
           render={() => <Relogin {...props} />} />
-        <Route
-          exact path='/admin'
+        <Route exact path='/admin'
           render={() => <Admin {...props} />} />
-        <Route
-          exact path='/feedback'
+        <Route exact path='/feedback'
           render={() => <Admin {...props} />} />
-        <Route
-          exact
-          path='/metricSelect'
-          render={() => <MetricSelect metricType={props.metricType} metricSelection={props.metricSelection} {...props} />}
-        />
-        <Route
-          exact
-          path='/assessment/history'
-          render={() => <ViewAssessment {...props} />}
-        />
-        <Route
-          exact path={`/assessment/:assessmentId/question/:index`}
+        <Route exact path='/signin'
+          render={() => <Home signIn={true} signUp={false} {...props} />} />
+        <Route exact path='/signup'
+          render={() => <Home signIn={false} signUp={true} {...props} />} />
+        {/* <Route exact path='/metricSelect'
+          render={() => <MetricSelect metricType={props.metricType} metricSelection={props.metricSelection} {...props} />} />
+        <Route exact path='/assessment/history'
+          render={() => <ViewAssessment {...props} />} />
+        <Route exact path={`/assessment/:assessmentId/question/:index`}
           render={() => <QuestionRenderer {...props} />} />
-        <Route
-          exact
-          path='/result/:assessmentId'
-          render={() => <Result {...props} />}
-        />
-        <Route
-          exact
-          path='/assessment/detail/:assessmentId'
-          render={() => <AssessmentDetail {...props} />}
-        />
-        <Route exact path='/assessment/teams' component={ViewTeams} />
-        <Route
-          exact
-          path='/assessment/teams/:teamId/:assessmentName/:version'
-          render={() => <TeamAssessments {...props} />}
-        />
+        <Route exact path='/result/:assessmentId'
+          render={() => <Result {...props} />} />
+        <Route exact path='/assessment/detail/:assessmentId'
+          render={() => <AssessmentDetail {...props} />} />
+        <Route exact path='/assessment/teams'
+          component={ViewTeams} />
+        <Route exact path='/assessment/teams/:teamId/:assessmentName/:version'
+          render={() => <TeamAssessments {...props} />} /> */}
         <Route exact path='/teamselect'
           render={() => <TeamSelect {...props} />} />
         <Route exact path='/manageSoftwareFiles'
           render={() => <ManageSoftwareFiles {...props} />} />
-        <Route exact path='/error' render={() => <ErrorPage {...props} />} />
-        <Route exact path='/admin/dashboard' render={() => <Dashboard {...props} />} />
-        <Route exact path='/trends' render={() => <Trends {...props} />} />
+        <Route exact path='/error'
+          render={() => <ErrorPage {...props} />} />
+        <Route exact path='/admin/dashboard'
+          render={() => <Dashboard {...props} />} />
+        {/* <Route exact path='/trends'
+          render={() => <Trends {...props} />} /> */}
         <Route
           exact path='/latestNews'
           render={() => <LatestNews {...props} />} />
