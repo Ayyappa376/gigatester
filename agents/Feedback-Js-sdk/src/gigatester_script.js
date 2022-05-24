@@ -3298,7 +3298,7 @@ let GigaTester_StringUtils = {
                         }
                     }
                     if(GigaTester_modal.form_type === "BUGS") {
-                        if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory && (this.form_data['category'] === 'category' || this.form_data['category'] === '')){
+                        if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory && (this.form_data['category'] === 'category' || this.form_data['category'] === '' || this.form_data['category'].length == 0)){
                             dataError = true;
                             GigaTester_modal.setNotifyStatus('Please select a category')
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
@@ -3326,8 +3326,10 @@ let GigaTester_StringUtils = {
                 postMediaContent: function(dataInfo, fileSelected){
                     if($('gtdiv').hasClass('gigatester-ctrl-item-send-error')){
                         $(document.getElementsByClassName('gigatester-ctrl-item-send-error')).remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-send").attr("disabled", false);
                     }
                     let send_button = this.custom_ui.events.find(".gigatester-ctrl-item-send");
+                    send_button.attr("disabled", true);
                     send_button.addClass("gigatester-ctrl-item-send-loading")
                     console.log(dataInfo, 'dataInfo');
                     fetch(`${GigaTester.endpoint}/feedbackMedia/`, {
@@ -3366,6 +3368,7 @@ let GigaTester_StringUtils = {
                                     send_button.removeClass("gigatester-ctrl-item-send-loading");
                                     send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                     send_button.prop("disabled", false);
+                                    send_button.attr("disabled", false);
                                     $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                                 }
                             }
@@ -3376,6 +3379,7 @@ let GigaTester_StringUtils = {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
+                                send_button.attr("disabled", false);
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                             }
                           }
@@ -3399,6 +3403,7 @@ let GigaTester_StringUtils = {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
+                                send_button.attr("disabled", false);
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                             }
                         })
@@ -3499,6 +3504,7 @@ let GigaTester_StringUtils = {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
+                                send_button.attr("disabled", false);
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("form_submit_error")).insertAfter(send_button);
                             } else if (this.controls_step === 3) {
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-msg").text(GigaTester_StringRes.get("form_submit_error")).appendTo($('.gigatester-ctrl-item-send-success'));
