@@ -274,18 +274,20 @@ export default function SignInForm(props: any) {
   };
 
   const validateEmail = (email: string) => {
-    const re =
-      /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    let extention = getSecondPart(String(email).toLowerCase()) || "";
-    if(!re.test(email.toLowerCase())) {
-      notifyError("Please enter a valid email");
-      return false;
-    }
-    if(allowedDomains && allowedDomains.indexOf(extention) < 0){
-      notifyError("Please use your official organization email");
-      return false;
-    }
+    console.log(email, allowedDomains);
     return true;
+    // const re =
+    //   /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    // let extention = getSecondPart(String(email).toLowerCase()) || "";
+    // if(!re.test(email.toLowerCase())) {
+    //   notifyError("Please enter a valid email");
+    //   return false;
+    // }
+    // if(allowedDomains && allowedDomains.indexOf(extention) < 0){
+    //   notifyError("Please use your official organization email");
+    //   return false;
+    // }
+    // return true;
   };
   
   const getSecondPart = (str: string) =>  {

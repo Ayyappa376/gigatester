@@ -203,7 +203,7 @@ export const updateGroup = async (updateInfo: GroupInfo, userId: string): Promis
   return update<GroupInfo>(params);
 };
 
-export const getGroupsList = async (userEmail: string | undefined): Promise<GroupInfo[]> => {
+export const getGroupsList = async (): Promise<GroupInfo[]> => {
   const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
     TableName: TableNames.getGroupsTableName(),
   });

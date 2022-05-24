@@ -4,6 +4,7 @@ export interface ProductInfo {
     description?: string;
     devices?: string[];
     feedbackAgentSettings?: FeedbackAgentSettings;
+    groups?: string[];
     id: string;
     name: string;
     platforms: string[];
