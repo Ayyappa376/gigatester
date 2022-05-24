@@ -123,6 +123,7 @@ export default function SignupForm(props: any) {
   },[])
   
   const validateEmail = (email: string) => {
+    console.log(email, allowedDomains);
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let extention = getSecondPart(String(email).toLowerCase()) || "";

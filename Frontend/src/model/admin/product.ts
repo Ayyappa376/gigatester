@@ -3,6 +3,7 @@ export interface IProductInfo {
   apiKey?: string;
   apiKeyId?: string;
   id: string;
+  groups?: string[];
   version: string;
   name: string;
   description?: string;

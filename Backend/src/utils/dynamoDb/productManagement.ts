@@ -1,7 +1,8 @@
-import { ConfigItem, DeviceInfo, FeedbackAgentSettings, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
+import { ConfigItem, DeviceInfo, FeedbackAgentSettings, GroupInfo, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
 import { appLogger, getDevicesList, getPlatformsList, getProductConfig,  getTestSuites} from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
+import { getGroupsList } from './groupsManagement';
 //import { getUserDocumentFromEmail } from './getUserDocument';
 import { get, put, query, scan, update } from './sdk';
 
@@ -76,6 +77,10 @@ export const getCreateProductConfig = async (
   const devicesKey = 'devices';
   productConfig.config[devicesKey].options = {};
   devices.forEach((val: DeviceInfo) => productConfig.config[devicesKey].options[val.id] = val.name);
+  const groups: GroupInfo[] = await getGroupsList();
+  const groupKey = 'groups';
+  productConfig.config[groupKey].options = {};
+  Object.keys(groups).forEach((val: string) => productConfig.config[groupKey].options[groups[val].id] = groups[val].name);
 
   return productConfig;
 };

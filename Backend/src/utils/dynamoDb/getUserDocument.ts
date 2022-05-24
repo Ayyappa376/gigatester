@@ -1,7 +1,7 @@
-import { AllotedTeam, CreateUserConfig, UserDocument } from '@models/index';
+import { AllotedTeam, CreateUserConfig, GroupInfo, UserDocument } from '@models/index';
 import { config } from '@root/config';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, getUserConfig } from '@utils/index';
+import { appLogger, getGroupsList, getUserConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 // import { getTeams2 } from './getTeams';
 import { get, put, scan, update } from './sdk';
@@ -307,6 +307,11 @@ export const getCreateUserConfig = async (
       }
     }
   });
+  const groups: GroupInfo[] = await getGroupsList();
+  const groupKey = 'groups';
+  userConfig.config[groupKey].options = {};
+  Object.keys(groups).forEach((val: string) => userConfig.config[groupKey].options[groups[val].id] = groups[val].name);
+
 
   const createUserConfig: CreateUserConfig = { config: configDetails, orgId };
   appLogger.info({ createUserConfig_before: createUserConfig });
