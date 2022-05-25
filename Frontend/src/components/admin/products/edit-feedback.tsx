@@ -720,20 +720,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   };
 
-  const addDefaultBugSeverity = () => {
-    if (productParams) {
-      const temp: IProductParams | undefined = { ...productParams };
-      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
-        temp.products[0].feedbackAgentSettings.bugSettings) {
-
-        if(temp.products[0].feedbackAgentSettings.bugSettings.severities.length == 0 ) {
-          temp.products[0].feedbackAgentSettings.bugSettings.severities = ['Critical','High','Medium', 'Low'];
-        }
-        setProductParams(temp);
-      }
-    }
-  }
-
   const deleteBugSeverity = (sevIndex: number) => {
 //    if(!useTrackingSystemSeverity){
       if (productParams) {
@@ -1595,7 +1581,6 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleChangeBugStdFeedbackText: handleChangeBugStdFeedbackText,
       deleteBugStdFeedbackText: deleteBugStdFeedbackText,
       addBugSeverity: addBugSeverity,
-      addDefaultBugSeverity: addDefaultBugSeverity,
       handleExtSystemSeverity: handleExtSystemSeverity,
 //      useTrackingSystemSeverity: useTrackingSystemSeverity,
       handleChangeBugSeverityName: handleChangeBugSeverityName,

@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react';
+import React, { Fragment } from 'react';
 import { Grid, Typography, TextField, Button, IconButton,
   makeStyles, FormControlLabel, Checkbox, Box
 } from "@material-ui/core";
@@ -28,7 +28,6 @@ interface BugSettingProps {
   handleReqComments: Function;
   handleReqDisplayEmail: Function;
   addBugSeverity: Function;
-  addDefaultBugSeverity: Function;
   handleChangeBugSeverityName: Function;
   deleteBugSeverity: Function;
   handleShowSeverityOption: Function;
@@ -199,7 +198,6 @@ const BugSettings = ({
   handleChangeBugStdFeedbackText,
   deleteBugStdFeedbackText,
   addBugSeverity,
-  addDefaultBugSeverity,
   handleChangeBugSeverityName,
   handleExtTrackingSystemSync,
   handleChangeExtSeverityFilter,
@@ -220,14 +218,7 @@ const BugSettings = ({
   handleSystemTypeChange,
 }: BugSettingProps) => {
   const classes = useStyles();
-  // const stateVariable = useSelector((state: IRootState) => {
-  //   return state;
-  // });
 
-  // useEffect(() => {
-  //   addDefaultBugSeverity();
-  // },[]);
-  
   const usingExtTrackingSystem = productParams && productParams.products && productParams.products[0] &&
     productParams.products[0].trackingSystem && productParams.products[0].trackingSystem.type !== TRACKING_SYSTEM_SELF;
 
