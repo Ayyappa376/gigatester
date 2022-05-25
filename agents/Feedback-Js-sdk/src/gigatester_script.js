@@ -3302,7 +3302,7 @@ let GigaTester_StringUtils = {
                             dataError = true;
                             GigaTester_modal.setNotifyStatus('Please select a category')
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
-                        } else if(GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory && (this.form_data['severity'] === 'severity' || this.form_data['severity'] === '')){
+                        } else if(GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory && (this.form_data['severity'] === 'severity' || this.form_data['severity'] === '') && this.configs.severities.length > 0){
                             dataError = true;
                             GigaTester_modal.setNotifyStatus('Please select bug severity')
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);

@@ -224,9 +224,9 @@ const BugSettings = ({
   //   return state;
   // });
 
-  useEffect(() => {
-    addDefaultBugSeverity();
-  },[]);
+  // useEffect(() => {
+  //   addDefaultBugSeverity();
+  // },[]);
   
   const usingExtTrackingSystem = productParams && productParams.products && productParams.products[0] &&
     productParams.products[0].trackingSystem && productParams.products[0].trackingSystem.type !== TRACKING_SYSTEM_SELF;
