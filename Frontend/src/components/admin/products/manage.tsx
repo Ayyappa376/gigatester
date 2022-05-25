@@ -748,7 +748,7 @@ const ManageProducts = (props: any) => {
 															</Typography>
 														</Tooltip>
 													</MuiThemeProvider>
-													<MuiThemeProvider theme={tooltipTheme}>
+													{/* <MuiThemeProvider theme={tooltipTheme}>
 														<Tooltip
 															title={
 																<Typography
@@ -769,7 +769,7 @@ const ManageProducts = (props: any) => {
 																/>
 															</Typography>
 														</Tooltip>
-													</MuiThemeProvider>
+													</MuiThemeProvider> */}
 													<MuiThemeProvider theme={tooltipTheme}>
 														<Tooltip
 															title={

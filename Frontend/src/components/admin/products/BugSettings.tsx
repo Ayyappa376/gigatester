@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Grid, Typography, TextField, Button, IconButton,
   makeStyles, FormControlLabel, Checkbox, Box
 } from "@material-ui/core";
@@ -10,7 +10,7 @@ import IconSelect from './IconSelect';
 import ExtTrackingSystemSettings from './extTrackingSystem/ExtTrackingSystemSettings';
 
 interface BugSettingProps {
-  productParams: IProductParams;
+  productParams: IProductParams;  
   addBugCategory: Function;
   handleChangeBugCategoryName: Function;
   handleChangeJiraFieldMapping: Function;
@@ -28,6 +28,7 @@ interface BugSettingProps {
   handleReqComments: Function;
   handleReqDisplayEmail: Function;
   addBugSeverity: Function;
+  addDefaultBugSeverity: Function;
   handleChangeBugSeverityName: Function;
   deleteBugSeverity: Function;
   handleShowSeverityOption: Function;
@@ -198,6 +199,7 @@ const BugSettings = ({
   handleChangeBugStdFeedbackText,
   deleteBugStdFeedbackText,
   addBugSeverity,
+  addDefaultBugSeverity,
   handleChangeBugSeverityName,
   handleExtTrackingSystemSync,
   handleChangeExtSeverityFilter,
@@ -222,6 +224,10 @@ const BugSettings = ({
   //   return state;
   // });
 
+  // useEffect(() => {
+  //   addDefaultBugSeverity();
+  // },[]);
+  
   const usingExtTrackingSystem = productParams && productParams.products && productParams.products[0] &&
     productParams.products[0].trackingSystem && productParams.products[0].trackingSystem.type !== TRACKING_SYSTEM_SELF;
 
@@ -487,7 +493,7 @@ const BugSettings = ({
         {productParams && productParams.products && productParams.products[0] &&
           productParams.products[0].feedbackAgentSettings &&
           productParams.products[0].feedbackAgentSettings.bugSettings &&
-          productParams.products[0].feedbackAgentSettings.bugSettings.severities &&
+          productParams.products[0].feedbackAgentSettings.bugSettings.severities &&          
           productParams.products[0].feedbackAgentSettings.bugSettings.severities.map((severity: string, index: number) => {
             return renderSeverityDetails(
               severity,

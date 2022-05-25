@@ -76,7 +76,11 @@ const GigaTester_StringRes = {
         form_submit_error: "Error submitting feedback form. Please try again.",
         thank_you_text: "Thank You!",
         thank_you_bug_msg: "We will resolve your concern.",
-        thank_you_feedback_msg: "We appreciate your feedback."
+        thank_you_feedback_msg: "We appreciate your feedback.",
+        confirm_modal_header: "Confirm",
+        confirm_modal_text: "Start afresh next time or Start from these values next time",
+        keep_changes_button: "Keep changes",
+        discard_changes_button: "Discard changes"
     },
     setLocale: function(locale) {
         this.locale = locale
@@ -1845,7 +1849,6 @@ let GigaTester_StringUtils = {
                             }
                         }
                     });
-//                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item gigatester-ctrl-item-" + this.custom_ui.position);
                     this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item");
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
@@ -1874,11 +1877,11 @@ let GigaTester_StringUtils = {
                     let container = $(document.getElementsByClassName('gigatester-ctrl-item'));
                     
                     let html = '<gtdiv class="gigatester-ctrl-item-send-success" style="height:160px; "> ';
-                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester"> Confirm </gtheader>'                                
-                    html += '<p style="text-align:center;">Start afresh next time or Start from these values next time</p>'
+                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">' +  GigaTester_StringRes.get("confirm_modal_header") + '</gtheader>'                                
+                    html += '<p style="text-align:center;">' +  GigaTester_StringRes.get("confirm_modal_text") + '</p>'
                     html += '<div class="gigatester-confirm-modal-btns" >'
-                    html += '<button class="gigatester-confirm-modal-save gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text" title="Keep changes. Start from these values next time." >Keep changes</span>' + '</button>'
-                    html += '<button class="gigatester-confirm-modal-close gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text" title="Discard changes. Start afresh next time" >Discard changes</span>' + '</button>'
+                    html += '<button class="gigatester-confirm-modal-save gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("keep_changes_button") + '</span>' + '</button>'
+                    html += '<button class="gigatester-confirm-modal-close gigatester-input-btn" >' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("discard_changes_button") + '</span>' + '</button>'
                     html += '</div>'
                     html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " Cuvo" + "</span>" + "</a>" + "</gtfooter>";
                     html += '</gtdiv>';
@@ -1887,7 +1890,7 @@ let GigaTester_StringUtils = {
                     this.recording = false;
                     $(document.getElementsByClassName('gigatester-ctrl-item-close')).css('display', 'none');
                     $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
-                    $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');                                
+                    // $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');                                
                     $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
                     GigaTester_modal.confirmModal = true;
 
@@ -3295,11 +3298,11 @@ let GigaTester_StringUtils = {
                         }
                     }
                     if(GigaTester_modal.form_type === "BUGS") {
-                        if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory && (this.form_data['category'] === 'category' || this.form_data['category'] === '')){
+                        if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory && (this.form_data['category'] === 'category' || this.form_data['category'] === '' || this.form_data['category'].length == 0)){
                             dataError = true;
                             GigaTester_modal.setNotifyStatus('Please select a category')
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
-                        } else if(GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory && (this.form_data['severity'] === 'severity' || this.form_data['severity'] === '')){
+                        } else if(GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory && (this.form_data['severity'] === 'severity' || this.form_data['severity'] === '') && this.configs.severities.length > 0){
                             dataError = true;
                             GigaTester_modal.setNotifyStatus('Please select bug severity')
                             setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
@@ -3323,8 +3326,10 @@ let GigaTester_StringUtils = {
                 postMediaContent: function(dataInfo, fileSelected){
                     if($('gtdiv').hasClass('gigatester-ctrl-item-send-error')){
                         $(document.getElementsByClassName('gigatester-ctrl-item-send-error')).remove();
+                        this.custom_ui.events.find(".gigatester-ctrl-item-send").attr("disabled", false);
                     }
                     let send_button = this.custom_ui.events.find(".gigatester-ctrl-item-send");
+                    send_button.attr("disabled", true);
                     send_button.addClass("gigatester-ctrl-item-send-loading")
                     console.log(dataInfo, 'dataInfo');
                     fetch(`${GigaTester.endpoint}/feedbackMedia/`, {
@@ -3363,6 +3368,7 @@ let GigaTester_StringUtils = {
                                     send_button.removeClass("gigatester-ctrl-item-send-loading");
                                     send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                     send_button.prop("disabled", false);
+                                    send_button.attr("disabled", false);
                                     $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                                 }
                             }
@@ -3373,6 +3379,7 @@ let GigaTester_StringUtils = {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
+                                send_button.attr("disabled", false);
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                             }
                           }
@@ -3396,6 +3403,7 @@ let GigaTester_StringUtils = {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
+                                send_button.attr("disabled", false);
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("upload_media_error")).insertAfter(send_button)
                             }
                         })
@@ -3478,12 +3486,12 @@ let GigaTester_StringUtils = {
                             let success_icon = $('<gtdiv class="gigatester-ctrl-item-send-success">').html('<gtdiv>' + "<gtspan>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_headline) + "</gtspan>" + "<p>" + GigaTester_StringUtils.escapeSpecialChars(form_settings.completed_dialog_paragraph, true) + "</p>" + "</gtdiv>" + (this.configs.display_powered_by ? "<gtfooter>" + "<span>Powered by</span>" + "<span>" + " Cuvo" + "</span>"  + "</gtfooter>" : ""));
                             this.custom_ui.events.append(success_icon);
                             this.controls_step = 3;
-                            send_button.find(".gigatester-ctrl-item-send-text").text('Send feedback');
+                            send_button.find(".gigatester-ctrl-item-send-text").text(GigaTester_StringRes.get("send"));
                             send_button.removeClass("gigatester-ctrl-item-send-loading");
                             this.recording = false;
                             $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
                             let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
-                            $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
+                            // $(document.getElementsByClassName('gigatester-ctrl-item-r')).css('width','355px');
                             setTimeout(function () {
                                 $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'block');
                                 $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
@@ -3496,6 +3504,7 @@ let GigaTester_StringUtils = {
                                 send_button.removeClass("gigatester-ctrl-item-send-loading");
                                 send_button.removeClass("gigatester-ctrl-item-send-uploading");
                                 send_button.prop("disabled", false);
+                                send_button.attr("disabled", false);
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-error").text(GigaTester_StringRes.get("form_submit_error")).insertAfter(send_button);
                             } else if (this.controls_step === 3) {
                                 $("<gtdiv>").addClass("gigatester-ctrl-item-send-msg").text(GigaTester_StringRes.get("form_submit_error")).appendTo($('.gigatester-ctrl-item-send-success'));
