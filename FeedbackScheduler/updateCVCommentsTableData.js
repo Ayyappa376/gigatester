@@ -134,9 +134,10 @@ const processData = async() => {
             console.log(product.feedbackAgentSettings.feedbackTypes);
             product.feedbackAgentSettings.feedbackTypes.map(async (feedbackType) => {
     const data = await fetchData (productId, productVersion, startDate, endDate, feedbackType);
-    let description = [];
 
+    let finalCommentArray = [];
     data.forEach((el) => {
+      let description = [];
       if(typeof el.feedbackComments === 'string'){
         //const newComment = convertCommentArrayToString(el.feedbackComments)
         const id = el.id;
@@ -166,46 +167,61 @@ const processData = async() => {
                 }
             }
         }
-    // console.log( temp, 'coms');
-    Object.keys(temp).map((value) => {
-        if(value.toUpperCase() === 'GENERALCOMMENT'){
-        // description += '*GENERAL COMMENT:*\n';
-        description.push(temp[value]);
-        }
-        else if(value.toUpperCase() === 'STANDARDFEEDBACK'){
-        // description += '*STANDARDFEEDBACK:*\n';
-        if(Array.isArray(temp[value])){
-            temp[value].map(commentList => {
-                description.push(commentList);
-            })
-        }
-        else{
-        description.push(temp[value]);
-        }
-        }
-        else{
-        // description += '*SCREENSHOT COMMENT:*\n';
-        screenshotCount = parseInt(value,10);
-        screenshotCount++;
-        // description+= '*'+ screenshotCount +'*\n';
-            if(temp[value].message){
-                if(Array.isArray(temp[value].message)){
-                    temp[value].message.map(commentList => {
-                        if(commentList){
-                        description.push(commentList);
-                        console.log(temp[value].message, commentList, 'non array');
-                        }
-                    })
-                }
+        // console.log( temp, 'coms');
+        Object.keys(temp).map((value) => {
+          if(value.toUpperCase() === 'GENERALCOMMENT'){
+          // description += '*GENERAL COMMENT:*\n';
+          description.push(temp[value]);
+          }
+          else if(value.toUpperCase() === 'STANDARDFEEDBACK'){
+          // description += '*STANDARDFEEDBACK:*\n';
+          if(Array.isArray(temp[value])){
+              temp[value].map(commentList => {
+                  description.push(commentList);
+              })
+          }
+          else{
+          description.push(temp[value]);
+          }
+          }
+          else{
+          // description += '*SCREENSHOT COMMENT:*\n';
+          screenshotCount = parseInt(value,10);
+          screenshotCount++;
+          // description+= '*'+ screenshotCount +'*\n';
+              if(temp[value].message){
+                  if(Array.isArray(temp[value].message)){
+                      temp[value].message.map(commentList => {
+                          if(commentList){
+                          description.push(commentList);
+                          // console.log(temp[value].message, commentList, 'non array');
+                          }
+                      })
+                  }
                 else{
                     description.push(temp[value].message);
                 }
            
             }
         }
-    })
+      })
     // fields[val] = "epic test\n*dssdf*\n{color:#ff5630}dfa{color}"
+    let comments = '';
+      if(description.length > 0){
+        description.map(comment => {
+          comments += comment;
+          comments +=' ';
+        })
       }
+      else{
+        comments = '';
+      }
+      field = {
+        feedbackId: el.id,
+        comment: comments,
+        sentiment: ''}
+      }
+      finalCommentArray.push(field)
     })
     let params = {
         Item: {
@@ -217,8 +233,8 @@ const processData = async() => {
                 endTimestamp: endDate
             },
             feedbackType: feedbackType,
-            comments: description,
-            status: 'R'         
+            comments: finalCommentArray,
+            status: 'UNPROCESSED'         
         },
         TableName: 'dev_CV_Comments_Keywords'
     }
