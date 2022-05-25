@@ -73,14 +73,14 @@ function scan(params) {
 
 const fetchProductList = () => {
     let params  = {
-        TableName: 'dev_GT_Products',
+        TableName: getTableNameFor(GT_Products),
     };
     return scan(params);
 }
 
 const fetchData = (productId, productVersion, startDate, endDate, feedbackType) => {
     let params  = {
-        TableName: 'dev_GT_feedback',
+        TableName: getTableNameFor(GT_feedback),
         ExpressionAttributeNames: {
           "#createdOn": "createdOn",
           "#productId": "productId",
@@ -236,7 +236,7 @@ const processData = async() => {
             comments: finalCommentArray,
             status: 'UNPROCESSED'         
         },
-        TableName: 'dev_CV_Comments_Keywords'
+        TableName: getTableNameFor(dev_CV_Comments_Keywords)
     }
      const success = await put(params);
     })
@@ -245,3 +245,12 @@ const processData = async() => {
     return true
 }
 processData()
+function getTableNameFor(baseTableName) {
+  if(process.env.DB_ENV === 'development') {
+    return `dev_${baseTableName}`;
+  }
+  if(process.env.DB_ENV === 'beta') {
+    return `beta_${baseTableName}`;
+  }
+  return `dev_${baseTableName}`;
+}
