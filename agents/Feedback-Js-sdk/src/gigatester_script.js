@@ -2644,97 +2644,97 @@ let GigaTester_StringUtils = {
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                         console.log("This browser does not support the API yet");
                       }
-                    else{
+                    else {
                         navigator.mediaDevices.getUserMedia({
                             audio: true,
                             video: false
-                        }).then(function(stream){
-                        GigaTester_modal.recording = true;
-                        GigaTester_modal.set_screen_default_category = false;
-                        let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
-                        let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
-                        let timer_button = $("<btn id='gigatester-audio-timer-btn'>").addClass("gigatester-video-controls-timer").text(GigaTester_modal.getTimerStr());
-                        let timer_info_text = $('<gtlabel class="gigatester-audio-timer-label">Remaining Record Time</gtlabel>')
-                        let audio_record_stop = $('<btn id="gigatester_audio_record_player_stop">').html(GigaTester_Icons.mic_icon);
-                        let audio_record_close = $('<btn id="gigatester_audio_record_player_close">').html(GigaTester_Icons.close_icon);
-                        audio_record_close.appendTo(audio_record_overlay);
-                        audio_record_stop.appendTo(audio_record_overlay);
-                        timer_button.appendTo(audio_record_stop);
-                        timer_info_text.appendTo(audio_record_stop);
-                        audio_record_text.appendTo(audio_record_overlay);
-                        audio_record_overlay.appendTo($(document.getElementsByClassName('gigatester-ctrl-item')));
-                        const recorder = new MediaRecorder(stream);
-                        GigaTester_modal.startTimer();
-                        const chunks = [];
-                        recorder.ondataavailable = e => chunks.push(e.data);
-                        recorder.start();
-                        audio_record_close.on('click', function(){
-                            GigaTester_modal.recording = false;
-                            recorder.stop()
-                            stream.getTracks() // get all tracks from the MediaStream
-                            .forEach( track => track.stop());
-                            GigaTester_modal.stopTimer();
-                            GigaTester_modal.countDownStop();
-                            GigaTester_modal.resetTimer();
+                        }).then(function(stream) {
+                            GigaTester_modal.recording = true;
                             GigaTester_modal.set_screen_default_category = false;
-                            GigaTester_modal.recording = false;
-                            GigaTester_modal.saveCheckedCategory();
-                            audio_record_overlay.remove();
-                            GigaTester_modal.setDialogForm();
-                            GigaTester_modal.saveSubCategory();
-                            if(GigaTester_modal.form_data.rating){
-                                GigaTester_modal.selectedRating();
-                            }
-                        })
-                        audio_record_stop.on('click',function () {
-                        recorder.stop()
-                        stream.getTracks() // get all tracks from the MediaStream
-                        .forEach( track => track.stop());
-                        console.log('audio stopped')})
-                        recorder.onstop = e => {
-                            if(!GigaTester_modal.recording){
-                                return
-                            }
-                            else{
-                            GigaTester_modal.stopTimer();
-                            GigaTester_modal.countDownStop();
-                            GigaTester_modal.resetTimer();
-                            $(audio_record_overlay).remove();
-                            GigaTester_modal.form_data.rating =  GigaTester_modal.form_data.rating;
-                            GigaTester_modal.form_data.comment_field =  GigaTester_modal.form_data.comment_field
-                            GigaTester_modal.form_data.category = GigaTester_modal.form_data.category
-                            GigaTester_modal.saveCheckedCategory();
-                            GigaTester_modal.setDialogForm();
-                            GigaTester_modal.saveSubCategory();
-                            if(GigaTester_modal.form_data.rating){
-                                GigaTester_modal.selectedRating();
-                            }
-                            GigaTester_modal.set_screen_default_category = true;
-                            const completeBlob = new Blob(chunks, { type: "audio/wav" });
-                            let src = URL.createObjectURL(completeBlob);
-                            // console.log(src, 'audio blob')
-                            let audio = $('<audio id="gigatester_audio_preview_player" controls loop autoplay preload="auto" src="' + src + '"></audio>');
-                            let audio_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
-                            $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
-                            audio.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
-                            $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
-                            audio_close.insertAfter(audio);
-                            GigaTester_modal.loadAudio(src);
-                            audio_close.on("click", function() {
-                                audio.remove();
-                                GigaTester_modal.form_data.audio_file = '';
+                            let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
+                            let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
+                            let timer_button = $("<btn id='gigatester-audio-timer-btn'>").addClass("gigatester-video-controls-timer").text(GigaTester_modal.getTimerStr());
+                            let timer_info_text = $('<gtlabel class="gigatester-audio-timer-label">Remaining Record Time</gtlabel>')
+                            let audio_record_stop = $('<btn id="gigatester_audio_record_player_stop">').html(GigaTester_Icons.mic_icon);
+                            let audio_record_close = $('<btn id="gigatester_audio_record_player_close">').html(GigaTester_Icons.close_icon);
+                            audio_record_close.appendTo(audio_record_overlay);
+                            audio_record_stop.appendTo(audio_record_overlay);
+                            timer_button.appendTo(audio_record_stop);
+                            timer_info_text.appendTo(audio_record_stop);
+                            audio_record_text.appendTo(audio_record_overlay);
+                            audio_record_overlay.appendTo($(document.getElementsByClassName('gigatester-ctrl-item')));
+                            const recorder = new MediaRecorder(stream);
+                            GigaTester_modal.startTimer();
+                            const chunks = [];
+                            recorder.ondataavailable = e => chunks.push(e.data);
+                            recorder.start();
+                            audio_record_close.on('click', function(){
                                 GigaTester_modal.recording = false;
+                                recorder.stop()
+                                stream.getTracks() // get all tracks from the MediaStream
+                                .forEach( track => track.stop());
+                                GigaTester_modal.stopTimer();
+                                GigaTester_modal.countDownStop();
+                                GigaTester_modal.resetTimer();
                                 GigaTester_modal.set_screen_default_category = false;
+                                GigaTester_modal.recording = false;
                                 GigaTester_modal.saveCheckedCategory();
-                                audio_close.remove();
+                                audio_record_overlay.remove();
                                 GigaTester_modal.setDialogForm();
                                 GigaTester_modal.saveSubCategory();
                                 if(GigaTester_modal.form_data.rating){
                                     GigaTester_modal.selectedRating();
                                 }
                             })
-                          };
-                        }
+                            audio_record_stop.on('click',function () {
+                                recorder.stop()
+                                stream.getTracks() // get all tracks from the MediaStream
+                                .forEach( track => track.stop());
+                                console.log('audio stopped')
+                            })
+                            recorder.onstop = e => {
+                                if(!GigaTester_modal.recording) {
+                                    return;
+                                } else {
+                                    GigaTester_modal.stopTimer();
+                                    GigaTester_modal.countDownStop();
+                                    GigaTester_modal.resetTimer();
+                                    $(audio_record_overlay).remove();
+                                    GigaTester_modal.form_data.rating =  GigaTester_modal.form_data.rating;
+                                    GigaTester_modal.form_data.comment_field =  GigaTester_modal.form_data.comment_field
+                                    GigaTester_modal.form_data.category = GigaTester_modal.form_data.category
+                                    GigaTester_modal.saveCheckedCategory();
+                                    GigaTester_modal.setDialogForm();
+                                    GigaTester_modal.saveSubCategory();
+                                    if(GigaTester_modal.form_data.rating){
+                                        GigaTester_modal.selectedRating();
+                                    }
+                                    GigaTester_modal.set_screen_default_category = true;
+                                    const completeBlob = new Blob(chunks, { type: "audio/wav" });
+                                    let src = URL.createObjectURL(completeBlob);
+                                    // console.log(src, 'audio blob')
+                                    let audio = $('<audio id="gigatester_audio_preview_player" controls loop autoplay preload="auto" src="' + src + '"></audio>');
+                                    let audio_close = $('<button id="gigatester_remove_attachment_btn">').html(GigaTester_Icons.trash_bin_icon);
+                                    $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).text("");
+                                    audio.appendTo($(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')));
+                                    $(document.getElementsByClassName('gigatester-ctrl-item-preview-placeholder')).css('border', 'none')
+                                    audio_close.insertAfter(audio);
+                                    GigaTester_modal.loadAudio(src);
+                                    audio_close.on("click", function() {
+                                        audio.remove();
+                                        GigaTester_modal.form_data.audio_file = '';
+                                        GigaTester_modal.recording = false;
+                                        GigaTester_modal.set_screen_default_category = false;
+                                        GigaTester_modal.saveCheckedCategory();
+                                        audio_close.remove();
+                                        GigaTester_modal.setDialogForm();
+                                        GigaTester_modal.saveSubCategory();
+                                        if(GigaTester_modal.form_data.rating){
+                                            GigaTester_modal.selectedRating();
+                                        }
+                                    })
+                                };
+                            }
                         })
                         .catch(function(err){
                             console.log(err, 'audio err')
@@ -2755,7 +2755,7 @@ let GigaTester_StringUtils = {
                 loadAudio: async function(src) {
                     GigaTester_modal.form_data.audio_file = await fetch(src)
                     .then(r => r.blob()).then(blobFile => new File([blobFile], 'gt_audio_' + GigaTester_modal.UUIDv4() +'.wav', { type: 'audio/wav' }));
-                    console.log(GigaTester_modal.form_dataaudio_file, 'audio file loaded');
+                    // console.log(GigaTester_modal.form_data.audio_file, 'audio file loaded');
                     this.custom_ui.events.find(".gigatester-ctrl-item-screenshot").attr('disabled', 'true');
                     this.custom_ui.events.find(".gigatester-ctrl-item-video").attr('disabled', 'true');
                     this.custom_ui.events.find(".gigatester-ctrl-item-audio").attr('disabled', 'true');
