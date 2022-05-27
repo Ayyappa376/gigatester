@@ -55,34 +55,17 @@ GigaTester.endpoint = \'${hostUrl}\';
 </script>
 `;
 
-const reactCode: string = `import GigaTester from \'GigaTesterFeedback\';
+const reactCode: string = `import Cuvo from '@cuvo/cuvo-react-native';
 
-<GigaTester
-  apiKey = \'YOUR_PRODUCT_API_KEY_GOES_HERE\'
-  productVersion = \'YOUR_PRODUCT_VERSION_GOES_HERE\'
-  endpoint = \'${hostUrl}\'
+<Cuvo
+    isDarkTheme={false}
+    isCustomButton={false}
+    productVersion=\'YOUR_PRODUCT_VERSION_GOES_HERE\'
+    endPoint={\'${hostUrl}\'}
+    apiKey=\'YOUR_PRODUCT_API_KEY_GOES_HERE\'
 />
 `;
 
-// const scriptHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.
-
-// GigaTester.hide() => to hide the Feedback button for full screen video
-// GigaTester.show() => to show Feedback button when user moves the mouse or action is detected.
-// GigaTester.open() => to open GigaTester form dialog
-// GigaTester.open("BUGS") => to show Bug report form dialog
-// GigaTester.open("FEEDBACK") => to show Feedback form dialog
-// GigaTester.close() => to close GigaTester dialog
-// GigaTester.setUserDetails({
-//     email: 'somebody@somewhere.com',
-//     id: 'user_1234567890',
-//     guid: '36429hjhoruhf-rhu3uh-u3hfuhe-hefuw93',
-//     name: 'Some Person'
-//   }) => to set details of the user including the email in GigaTester.
-// GigaTester.setDefaultCategory("Category Name", "BUGS") => To set the default category to show in Bug report form depending on context.
-// GigaTester.setDefaultCategory("Category Name", "FEEDBACK") => To set the default category to show in Feedback form depending on context.
-// `;
-
-// const reactHelpText: string = `The following functions can be used to interact with the GigaTester feedback agent.`;
 const scriptHelpText: string = `Refer the Web Browser integration document for integration details.`;
 
 const reactHelpText: string = `Refer the React Native integration document for integration details.`;
@@ -1445,12 +1428,8 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       productParams.products[0].feedbackAgentSettings.platform &&
       productParams.products[0].feedbackAgentSettings.platform === PLATFORM_TYPE_NATIVE_REACT) {
 
-      instructions = 'To use the react native GigaTester Feedback agent install the module using the command<br/>' +
-        '<i>npm run GigaTesterFeedback</i><br/>' +
-        'Once installed copy the code below and paste in your main App module.' +
-        'Put the import statement at the top of your file.' +
-        'Include the GigaTester component at the begining of your App module.' +
-        'Check detailed help on other intergration options.';
+      instructions = 'Copy the below code and paste it in the main App component file.' +
+        'Check detailed help for package installation, configuration and other intergration options.';
         codeSnippet = reactCode;
         helpText = reactHelpText;
     } else {
