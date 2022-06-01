@@ -127,7 +127,7 @@ const ManageProducts = (props: any) => {
 	const fetchProductList = () => {
 		setBackdropOpen(true);
 		Http.get({
-			url: `/api/v2/products/`,
+			url: `/api/v2/products?type=PRODUCT_CONFIG`,
 			state: stateVariable,
 		})
 			.then((response: any) => {

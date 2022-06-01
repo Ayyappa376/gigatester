@@ -6,5 +6,5 @@ export interface IAuthDetails {
     userDetails: any | null;
     team: string | null;
     roles: string[] | null;
-    teams: ITeamInfo[];
+    teams?: ITeamInfo[];
 }

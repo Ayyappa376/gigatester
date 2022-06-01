@@ -481,7 +481,8 @@ const PageHeader = (props: any) => {
     }
     if (
       userStatus.roles!.indexOf('Admin') === -1 &&
-      userStatus.roles!.indexOf('Manager') !== -1
+      userStatus.roles!.indexOf('Manager') !== -1 ||
+      userStatus.roles!.indexOf('Executive') !== -1
     ) {
       if (currentPage === QUESTION_PAGE_TIMED) {
         return (
@@ -507,6 +508,40 @@ const PageHeader = (props: any) => {
             className={classes.headerItem}
           >
             <Text tid='manage' />
+          </Typography>
+        </div>
+      );
+    }
+    if (
+      userStatus.roles!.indexOf('Member') !== -1 &&
+      userStatus.roles!.indexOf('Manager') === -1 &&
+      userStatus.roles!.indexOf('Executive') === -1 &&
+      userStatus.roles!.indexOf('Admin') === -1
+    ) {
+      if (currentPage === QUESTION_PAGE_TIMED) {
+        return (
+          <div className='header-item'>
+            <Tooltip
+              title={
+                <Typography>
+                  <Text tid='notAvailableDuringThisTest' />
+                </Typography>
+              }
+            >
+              <Typography className={classes.headerItemDisabled}>
+                <Text tid='member' />
+              </Typography>
+            </Tooltip>
+          </div>
+        );
+      }
+      return (
+        <div className='header-item'>
+          <Typography
+            onClick={handleAdminButtonClick}
+            className={classes.headerItem}
+          >
+            <Text tid='member' />
           </Typography>
         </div>
       );

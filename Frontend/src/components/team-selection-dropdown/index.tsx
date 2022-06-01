@@ -70,7 +70,7 @@ const TeamSelectionDropDown = (props: any) => {
           <Select
             value={focusTeam !== '' ? focusTeam : ''}
             onChange={handleChangeFocusTeamValue}
-            disabled={teamList.length === 1}
+            disabled={teamList && teamList.length === 1}
           >
             {teamList &&
               teamList.map((opt: any) => {

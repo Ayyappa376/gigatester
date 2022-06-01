@@ -454,7 +454,8 @@ export default function Admin() {
     if (
       user &&
       user.roles &&
-      user.roles.includes('Manager') &&
+      user.roles.includes('Manager') && !user.roles.includes('Admin') || user &&
+      user.roles && user.roles.includes('Executive') &&
       !user.roles.includes('Admin')
     ) {
       return (
@@ -472,6 +473,32 @@ export default function Admin() {
               <Text tid='manager-description-line2' />
               <br />
               <Text tid='manager-description-line3' />
+            </Typography>
+          </Grid>
+        </Grid>
+      );
+    }
+
+    if (
+      user &&
+      user.roles &&
+      user.roles.includes('Member') && !user.roles.includes('Admin') &&  !user.roles.includes('Executive') &&
+      !user.roles.includes('Manager')
+    ) {
+      return (
+        // tslint:disable-next-line: jsx-wrap-multiline
+        <Grid container spacing={3} className={classes.topMargin}>
+          <Grid item xs={12}>
+            <Typography variant='h4'>
+              <Text tid='member-title' />
+            </Typography>
+            <br />
+            <br />
+            <Typography variant='h5' className={classes.smallText}>
+              <Text tid='member-description-line1' />
+              <br /> <br />
+              <Text tid='member-description-line2' />
+              <br />
             </Typography>
           </Grid>
         </Grid>
@@ -740,6 +767,8 @@ export default function Admin() {
           </List>
         </Fragment>
         }
+        {(user && user.roles && (user.roles.includes('Admin') || user.roles.includes('Manager'))) &&
+        <Fragment>
         <Divider />
         <List disablePadding={true}>
           <ListItem button onClick={handleCreateUser}>
@@ -775,6 +804,8 @@ export default function Admin() {
             <ListItemText primary={<Text tid='manageUsers2' />} />
           </ListItem>
         </List>
+        </Fragment>
+        }
         <Divider />
         {/*<List disablePadding={true}>
           <ListItem button onClick={handleCreateTeam}>
@@ -854,7 +885,7 @@ export default function Admin() {
           </ListItem>
         </List>
         }
-        {(user && user.roles && (user.roles.includes('Admin') || user.roles.includes('Manager'))) &&
+        {(user && user.roles && (user.roles.includes('Admin') || user.roles.includes('Executive') || user.roles.includes('Manager'))) &&
         <Fragment>
           <List disablePadding={true}>
             <ListItem button onClick={handleManageProducts}>

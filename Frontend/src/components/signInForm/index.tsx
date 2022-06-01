@@ -77,11 +77,10 @@ export default function SignInForm(props: any) {
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
   let userData: any = {}
 
-  const handleSuccessfulSignIn = (user: any) => {
+  const handleSuccessfulSignIn = (user: any, mode: any) => {
     const tokenInfo: any = jwtDecode(
       user.signInUserSession.idToken.jwtToken
     );
-    console.log(tokenInfo);
     localStorage.setItem('authToken', user.signInUserSession.idToken.jwtToken);
     saveUserData({
       idToken: user.signInUserSession.idToken.jwtToken,
@@ -92,9 +91,20 @@ export default function SignInForm(props: any) {
         tokenInfo["custom:teamName"] !== ""
           ? tokenInfo["custom:teamName"]
           : "Others",
-      roles: tokenInfo["cognito:groups"],
+      roles: ['Member']
     });
-
+    let userStateVariable = {...stateVariable}
+    userStateVariable.user = {
+      idToken: user.signInUserSession.idToken.jwtToken,
+      accessToken: user.signInUserSession.accessToken,
+      userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+      team:
+        tokenInfo["custom:teamName"] &&
+        tokenInfo["custom:teamName"] !== ""
+          ? tokenInfo["custom:teamName"]
+          : "Others",
+        roles: ['Member']
+    }
     //set the feedback component's context
     userData.email = tokenInfo['email']
     if(typeof window.GigaTester !== 'undefined'){
@@ -102,25 +112,72 @@ export default function SignInForm(props: any) {
       window.GigaTester.setDefaultCategory("Admin-Bug", "BUGS");
       window.GigaTester.setDefaultCategory("Admin", "FEEDBACK");
     }
-
+    if(mode === 'old'){
+    Http.get({
+      url: `/api/v2/admin/users/getusers?email=${userData.email}`,
+      state: userStateVariable,
+    })
+    .then((response: any) => {
+      if(response){   
+        saveUserData({
+          idToken: user.signInUserSession.idToken.jwtToken,
+          accessToken: user.signInUserSession.accessToken,
+          userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+          team:
+            tokenInfo["custom:teamName"] &&
+            tokenInfo["custom:teamName"] !== ""
+              ? tokenInfo["custom:teamName"]
+              : "Others",
+          roles: response.values.roles
+        });
+        if (response.values.roles.length) {
+          if (
+            response.values.roles.includes("Admin") ||
+            response.values.roles.includes("Manager")
+          ) {
+            setLoading(false);
+            return (
+              history.push("/admin"),
+              // setLoading(true),
+              closeDialog()
+            );
+          } else {
+            setLoading(false);
+            return (
+              history.push("/admin"),
+              // setLoading(true),
+              closeDialog()
+            );
+          }
+        }
+      }
+    })
+    .catch((error: any) => {
+      console.log(error);      
+    });
+  }
+  else{
     if (tokenInfo["cognito:groups"].length) {
       if (
         tokenInfo["cognito:groups"].includes("Admin") ||
         tokenInfo["cognito:groups"].includes("Manager")
       ) {
+        setLoading(false);
         return (
           history.push("/admin"),
-          setLoading(true),
+          // setLoading(true),
           closeDialog()
         );
       } else {
+        setLoading(false);
         return (
-          history.push("/profile"),
-          setLoading(true),
+          history.push("/admin"),
+          // setLoading(true),
           closeDialog()
         );
       }
     }
+  }
   };
 
   const notifyError = (message: string) => {
@@ -150,8 +207,7 @@ export default function SignInForm(props: any) {
         },
       })
       .then((response: any) => {
-        if(response){
-          console.log('response', response);      
+        if(response){      
           saveOrganizationData({
             emailDomains: response?.organizationDetails?.emailDomains,
             name: response?.organizationDetails?.name,
@@ -242,11 +298,13 @@ export default function SignInForm(props: any) {
     Auth.completeNewPassword(user, confirmNewpassword, { email: email })
     .then((newUser) => {
       if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
-        handleSuccessfulSignIn(newUser);
+        setLoading(false);
+        handleSuccessfulSignIn(newUser, 'new');
       } else {
         notifyError("Set password failed. Please try again");
+        setLoading(false);
       }
-      setLoading(false);
+
     })
     .catch((e) => {
       notifyError(e.message);
@@ -260,12 +318,13 @@ export default function SignInForm(props: any) {
       if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
         setNewSignInUser(user);
         setNewPasswordState(true);
+        setLoading(false);
       } else if (user && user.signInUserSession.idToken && user.signInUserSession.accessToken) {
-        handleSuccessfulSignIn(user);
+        handleSuccessfulSignIn(user, 'old');
       } else {
         notifyError("Login failed. Please try again.");
+        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       let e: any = error;
       notifyError(e.message);

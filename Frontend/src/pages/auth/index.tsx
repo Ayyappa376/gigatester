@@ -72,7 +72,7 @@ const Auth = (props: any) => {
           accessToken: tokens.accessToken,
           userDetails: jwtDecode(tokens.idToken),
           team: teamId,
-          roles: tokenInfo['cognito:groups'],
+          roles: ['Member'],
         });
       } else {
         console.error('Error while setting in local storage--');

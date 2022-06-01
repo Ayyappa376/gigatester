@@ -62,7 +62,7 @@ export const config: Config = {
     origin: true,
   },
   defaults: {
-    groups: ['Manager'],
+    groups: ['Member'],
     orgId: 'prod', // default should be 'www' //nomiso - dev env
     quesType: '1234',
     restApiId: {
