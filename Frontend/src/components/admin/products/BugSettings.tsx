@@ -10,7 +10,7 @@ import IconSelect from './IconSelect';
 import ExtTrackingSystemSettings from './extTrackingSystem/ExtTrackingSystemSettings';
 
 interface BugSettingProps {
-  productParams: IProductParams;
+  productParams: IProductParams;  
   addBugCategory: Function;
   handleChangeBugCategoryName: Function;
   handleChangeJiraFieldMapping: Function;
@@ -218,9 +218,6 @@ const BugSettings = ({
   handleSystemTypeChange,
 }: BugSettingProps) => {
   const classes = useStyles();
-  // const stateVariable = useSelector((state: IRootState) => {
-  //   return state;
-  // });
 
   const usingExtTrackingSystem = productParams && productParams.products && productParams.products[0] &&
     productParams.products[0].trackingSystem && productParams.products[0].trackingSystem.type !== TRACKING_SYSTEM_SELF;
@@ -487,7 +484,7 @@ const BugSettings = ({
         {productParams && productParams.products && productParams.products[0] &&
           productParams.products[0].feedbackAgentSettings &&
           productParams.products[0].feedbackAgentSettings.bugSettings &&
-          productParams.products[0].feedbackAgentSettings.bugSettings.severities &&
+          productParams.products[0].feedbackAgentSettings.bugSettings.severities &&          
           productParams.products[0].feedbackAgentSettings.bugSettings.severities.map((severity: string, index: number) => {
             return renderSeverityDetails(
               severity,
