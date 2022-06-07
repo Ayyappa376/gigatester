@@ -1869,8 +1869,14 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.on("keyup", 'input[name="email"]', this.storeFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.storeFormData.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.storeFormData.bind(this));
-                    this.custom_ui.events.on("click mouseup mousedown", function(e) {
-                        e.stopPropagation()
+                    this.custom_ui.events.on("keydown keypress", 'textarea[name="description"]', function(e) {
+                        e.stopPropagation();
+                    });
+                    this.custom_ui.events.on("keydown keypress", 'input[name="email"]', function(e) {
+                        e.stopPropagation();
+                    });
+                    this.custom_ui.events.on("click mouseup mousedown keydown keyup keypress", function(e) {
+                        e.stopPropagation();
                     })
                 },
                 showConfirmModal: function(){
