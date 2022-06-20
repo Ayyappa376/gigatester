@@ -376,8 +376,7 @@ export default function SignInForm(props: any) {
   };
 
   const onSignUp = () => {
-    setOpenSignUp(true);
-    setDialogPage("signUp");
+    props.openSignUpForm();    
   };
 
   const getSignInForm = (state: boolean) => {
@@ -412,123 +411,137 @@ export default function SignInForm(props: any) {
     setDialogPage("login");    
   };
   
-  return (
-    <Fragment>
-      <Dialog
-        className={classes.dialogPaper}
-        open={dialogOpen}
-        aria-labelledby="form-dialog-title"
-        onClose={closeDialog}
-        fullWidth={dialogPage === "signUp"}
-      >
-        <DialogTitle
-          id="form-dialog-title"
-          style={{ textAlign: "center", padding: "30px 0px" }}
+  const signInForm = () => {
+    return (
+      <Fragment>
+        <Dialog
+          className={classes.dialogPaper}
+          open={dialogOpen}
+          aria-labelledby="form-dialog-title"
+          onClose={closeDialog}
+          fullWidth={dialogPage === "signUp"}
         >
-          <Typography style={{ fontSize: "26px" }}>
-            <Text tid={"gigaTester"} />
-          </Typography>
-          <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {dialogPage === "login" ? (
-            <Container component="main" maxWidth="xs">
-              {!newPasswordState && !changePasswordState ? (
-                <Typography variant="h6">
-                  <Text tid={dialogPage} />
-                </Typography>
-              ) : (
-                <div/>
-              )}
-              <CssBaseline />
-              <Box component="form" onSubmit={handleSubmit}>
+          <DialogTitle
+            id="form-dialog-title"
+            style={{ textAlign: "center", padding: "30px 0px" }}
+          >
+            <Typography style={{ fontSize: "26px" }}>
+              <Text tid={"gigaTester"} />
+            </Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            {/* {dialogPage === "login" ? ( */}
+              <Container component="main" maxWidth="xs">
                 {!newPasswordState && !changePasswordState ? (
-                  <Fragment>
-                    <TextField                      
-                      margin="dense"
-                      fullWidth
-                      id="email"
-                      label="Email *"
-                      type="email"
-                      {...bindEmail}
-                      autoFocus
-                    />
-                    <TextField
-                      margin="dense"
-                      fullWidth
-                      label="Password"
-                      type="password"
-                      id="password"
-                      {...bindPassword}
-                    />
-                  </Fragment>
+                  <Typography variant="h6">
+                    <Text tid={dialogPage} />
+                  </Typography>
                 ) : (
-                  <SetNewPassword
-                    bindNewPassword={bindNewPassword}
-                    bindConfirmNewPassword={bindConfirmNewPassword}
-                    bindVerificationCode={bindVerificationCode}
-                    forgotPassword={forgotPassword}
-                    bindOldPassword={bindOldPassword}
-                    changePasswordState={changePasswordState}
-                  />
+                  <div/>
                 )}
-                <br />
-                <br />
-                <br />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  type="submit"
-                  disabled={loading}
-                  style={{ textAlign: "center" }}
-                >
-                  {loading && (
-                    <CircularProgress size={20} style={{ marginRight: 20 }} />
+                <CssBaseline />
+                <Box component="form" onSubmit={handleSubmit}>
+                  {!newPasswordState && !changePasswordState ? (
+                    <Fragment>
+                      <TextField                      
+                        margin="dense"
+                        fullWidth
+                        id="email"
+                        label="Email *"
+                        type="email"
+                        {...bindEmail}
+                        autoFocus
+                      />
+                      <TextField
+                        margin="dense"
+                        fullWidth
+                        label="Password"
+                        type="password"
+                        id="password"
+                        {...bindPassword}
+                      />
+                    </Fragment>
+                  ) : (
+                    <SetNewPassword
+                      bindNewPassword={bindNewPassword}
+                      bindConfirmNewPassword={bindConfirmNewPassword}
+                      bindVerificationCode={bindVerificationCode}
+                      forgotPassword={forgotPassword}
+                      bindOldPassword={bindOldPassword}
+                      changePasswordState={changePasswordState}
+                    />
                   )}
-                  {!newPasswordState && !changePasswordState ? <Text tid={"signIn"} /> : "Send"}
-                </Button>
-              </Box>
-              <br />
-              {!newPasswordState && !changePasswordState && (
-                <Fragment>
-                  <Grid container>
-                    <Grid item xs>
-                      <Link
-                        component="button"
-                        variant="body2"
-                        onClick={onForgotPassword}
-                      >
-                        {"Forgot password?"}
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      {"Don't have an account yet? "} 
-                      <Link
-                        component="button"
-                        variant="body2"
-                        onClick={onSignUp}
-                      >
-                        <Text tid={"signUp"} />
-                      </Link>
-                    </Grid>
-                  </Grid>
                   <br />
-                </Fragment>
-              )}
-            </Container>
-          ) : (
-            <SignupForm
-              openSignup={openSignUp}
-              handleCloseSignup={handleCloseSignup}
-              superUserStateVariable={stateVariable}
-            />
-          )}
-        </DialogContent>
-      </Dialog>
-      <Notification notify={notify} setNotify={setNotify} />
-    </Fragment>
-  );
+                  <br />
+                  <br />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    type="submit"
+                    disabled={loading}
+                    style={{ textAlign: "center" }}
+                  >
+                    {loading && (
+                      <CircularProgress size={20} style={{ marginRight: 20 }} />
+                    )}
+                    {!newPasswordState && !changePasswordState ? <Text tid={"signIn"} /> : "Send"}
+                  </Button>
+                </Box>
+                <br />
+                {!newPasswordState && !changePasswordState && (
+                  <Fragment>
+                    <Grid container>
+                      <Grid item xs>
+                        <Link
+                          component="button"
+                          variant="body2"
+                          onClick={onForgotPassword}
+                        >
+                          {"Forgot password?"}
+                        </Link>
+                      </Grid>
+                      <Grid item>
+                        {"Don't have an account yet? "} 
+                        <Link
+                          component="button"
+                          variant="body2"
+                          onClick={onSignUp}
+                        >
+                          <Text tid={"signUp"} />
+                        </Link>
+                      </Grid>
+                    </Grid>
+                    <br />
+                  </Fragment>
+                )}
+              </Container>
+            {/* ) : (
+              <SignupForm
+                openSignup={openSignUp}
+                handleCloseSignup={handleCloseSignup}
+                superUserStateVariable={stateVariable}
+              />
+            )} */}
+          </DialogContent>
+        </Dialog>
+        <Notification notify={notify} setNotify={setNotify} />
+      </Fragment>
+    );
+  }
+
+  return dialogPage === "login" ? (
+    <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
+      {signInForm()}
+    </Container>
+  ) : (
+    <SignupForm
+      openSignup={openSignUp}
+      handleCloseSignup={handleCloseSignup}
+      superUserStateVariable={stateVariable}
+    />
+  )
 }

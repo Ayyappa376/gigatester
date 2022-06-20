@@ -936,6 +936,11 @@ const PageHeader = (props: any) => {
     );
   };
 
+  const openSignUpForm = () => {
+    setSignInState(false);
+    setOpenSignup(true);
+  }
+
   return (
     <Fragment>
       <div className={classes.topBar}>
@@ -997,6 +1002,7 @@ const PageHeader = (props: any) => {
           openSignin={openSignin}
           setSignInState={setSignInState}
           changePassword={changePassword}
+          openSignUpForm={openSignUpForm}
         />
       }
       {openSignup && (

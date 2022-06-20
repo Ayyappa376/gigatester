@@ -193,6 +193,11 @@ const Home = (props: any) => {
     );
   }
 
+  const openSignUpForm = () => {
+    setSignInState(false);
+    setOpenSignup(true);
+  }
+  
   return (
     <Container
       maxWidth='xl'
@@ -317,6 +322,7 @@ const Home = (props: any) => {
           openSignin={openSignin}
           setSignInState={setSignInState}
           changePassword={changePassword}
+          openSignUpForm={openSignUpForm}
         />
       }
     </Container>

@@ -127,7 +127,7 @@ export default function SignupForm(props: any) {
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let extention = getSecondPart(String(email).toLowerCase()) || "";
-    if(!re.test(email.toLowerCase())) {
+    if(!email || !re.test(email.toLowerCase())) {
       setValidationMsg("Please enter a valid email");
       return false;
     }
@@ -152,7 +152,7 @@ export default function SignupForm(props: any) {
 
   const getSignInPage = () => {
     setOpenSignin(true);
-    props.handleCloseSignup(false);
+    // props.handleCloseSignup(false);
   };
 
   const closeAlert = () => {
@@ -219,6 +219,10 @@ export default function SignupForm(props: any) {
       setSnackbarOpen(true);
     }
   };
+
+  const openSignUpForm = () => {
+    setOpenSignin(false);
+  }
 
   const signUpForm = () => {
     return (
@@ -385,7 +389,12 @@ export default function SignupForm(props: any) {
   };
 
   return openSignin ? (
-    <SignInForm openSignin={openSignin} setSignInState={setSignInState} changePassword={false} />
+    <SignInForm 
+      openSignin={openSignin} 
+      setSignInState={setSignInState} 
+      changePassword={false} 
+      openSignUpForm={openSignUpForm} 
+    />
   ) : (
     <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
       {signUpDialog()}
