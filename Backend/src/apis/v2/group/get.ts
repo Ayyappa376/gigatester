@@ -41,13 +41,7 @@ async function handler(request: GetGroups, response: Response) {
     appLogger.info({ getGroupDetails: groupDetails });
     result = groupDetails;
   } else {
-    const userEmail = (headers.user['cognito:groups'][0] === 'Admin')
-    ? 'admin'
-    : (headers.user['cognito:groups'][0] === 'Manager')
-      ? headers.user.email
-      : undefined;
-
-    const groupDetailsList: GroupInfo[] = await getGroupsList(userEmail);
+    const groupDetailsList: GroupInfo[] = await getGroupsList();
     appLogger.info({ getGroupsList: groupDetailsList });
     result = {};
     groupDetailsList.forEach((group: GroupInfo) => {

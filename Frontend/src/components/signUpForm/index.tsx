@@ -123,10 +123,11 @@ export default function SignupForm(props: any) {
   },[])
   
   const validateEmail = (email: string) => {
+    console.log(email, allowedDomains);
     const re =
       /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
     let extention = getSecondPart(String(email).toLowerCase()) || "";
-    if(!re.test(email.toLowerCase())) {
+    if(!email || !re.test(email.toLowerCase())) {
       setValidationMsg("Please enter a valid email");
       return false;
     }
@@ -151,6 +152,7 @@ export default function SignupForm(props: any) {
 
   const getSignInPage = () => {
     setOpenSignin(true);
+    // props.handleCloseSignup(false);
   };
 
   const closeAlert = () => {
@@ -217,6 +219,10 @@ export default function SignupForm(props: any) {
       setSnackbarOpen(true);
     }
   };
+
+  const openSignUpForm = () => {
+    setOpenSignin(false);
+  }
 
   const signUpForm = () => {
     return (
@@ -296,7 +302,8 @@ export default function SignupForm(props: any) {
               labelPlacement="end"
             />
             {"I agree to the"} <Link >{"Privacy and Terms and Conditions"} </Link>
-{"of this site."}<br />
+            {"of this site."}
+            <br />
           </Grid>
           <br />
           <br />
@@ -304,7 +311,7 @@ export default function SignupForm(props: any) {
           <Grid item xs={8} sm={8}>
             {"Already have an account. "} 
             <Link onClick={getSignInPage} component="button" variant="body2">
-              {" Login here."}
+              <Text tid={"signIn"} />
             </Link>
           </Grid>
           <Grid item xs={4} sm={4} style={{display: 'flex', justifyContent: 'flex-end'}}>
@@ -320,7 +327,7 @@ export default function SignupForm(props: any) {
               {loading && (
                 <CircularProgress size={20} style={{ marginRight: 20 }} />
               )}
-              Sign Up
+              <Text tid={"signUp"} />
             </Button>
           </Grid>
         </Grid>
@@ -382,7 +389,12 @@ export default function SignupForm(props: any) {
   };
 
   return openSignin ? (
-    <SignInForm openSignin={openSignin} setSignInState={setSignInState} changePassword={false} />
+    <SignInForm 
+      openSignin={openSignin} 
+      setSignInState={setSignInState} 
+      changePassword={false} 
+      openSignUpForm={openSignUpForm} 
+    />
   ) : (
     <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
       {signUpDialog()}

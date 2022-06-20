@@ -139,7 +139,7 @@ function Assessment(props: IAssessmentProps) {
     fetchAssessmentSummary(selectedAssessmentType, userTeam);
     if (assessmentTypeData.status === 'success') {
       assessmentTypeData.data.questionnaires.forEach((el: any) => {
-        if (el.questionnaireId === selectedAssessmentType.questionnaireId) {
+        if (el.questionnaireId === selectedAssessmentType.questionnaireId && userAllTeams) {
           setLeftDisplayText(el.displayName);
           const team: ITeamInfo[] = userAllTeams.filter((team: ITeamInfo) => team.teamId === userTeam)
           setCenterDisplayText(`Team: ${team[0].teamName}`);
@@ -319,7 +319,7 @@ function Assessment(props: IAssessmentProps) {
     // );
     return (
       <Fragment>
-        {assessmentSummary.status === 'success' && userAllTeams.length > 0
+        {assessmentSummary.status === 'success' && userAllTeams && userAllTeams.length > 0
           ? renderStartAssessmentComponent()
           : summaryApiWaitLoading()}
       </Fragment>

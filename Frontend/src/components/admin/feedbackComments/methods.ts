@@ -204,7 +204,7 @@ export const getProductDetails = async ({
 	productVersion,
 }: productDetails) => {
 	Http.get({
-		url: `/api/v2/products`,
+		url: `/api/v2/products?type=VIEW_FEEDBACK`,
 	})
 		.then((response: any) => {
 			if (

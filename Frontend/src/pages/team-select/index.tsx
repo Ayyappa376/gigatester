@@ -9,7 +9,7 @@ import {
   Snackbar,
   SnackbarContent,
 } from '@material-ui/core';
-import biglogo from '../../logo/big-logo.jpg';
+import biglogo from '../../logo/cuvo-logo.png';
 import { Http } from '../../utils';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../reducers';

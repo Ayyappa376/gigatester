@@ -57,7 +57,8 @@ async function handler(
   }
   if (
     headers.user['cognito:groups'][0] !== 'Manager' &&
-    headers.user['cognito:groups'][0] !== 'Admin'
+    headers.user['cognito:groups'][0] !== 'Admin' &&
+    headers.user['cognito:groups'][0] !== 'Member'
   ) {
     const err = new Error('InvalidUser');
     appLogger.error(err, 'Forbidden');

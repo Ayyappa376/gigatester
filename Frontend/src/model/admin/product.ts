@@ -3,6 +3,7 @@ export interface IProductInfo {
   apiKey?: string;
   apiKeyId?: string;
   id: string;
+  groups?: string[];
   version: string;
   name: string;
   description?: string;
@@ -57,6 +58,7 @@ export interface IBugSettings {
 }
 
 export interface IFeedbackSettings {
+  type: IFeedbackFlowType;
   categories: ICategory[];
   ratingIcon: IRatingIconType;
   ratingLimit: number; //values 1,2,3,4,5
@@ -112,6 +114,8 @@ export interface IRemoteBtnSettings {
 export interface ICategory {
   feedbacks?: string[];
   name: string;
+  positiveFeedbacks?: string[];
+  negativeFeedbacks?: string[];
 }
 
 export interface ITrackingSystem {
@@ -167,6 +171,10 @@ export const FeedbackTypesObj: any = {
   'BUGS': 'Submit Bugs',
   'FEATURE_REQUEST': 'Submit Feature Request',
 }
+
+export type IFeedbackFlowType = 'STATIC' | 'DYNAMIC';
+export const FEEDBACK_FLOW_STATIC: IFeedbackFlowType = 'STATIC';
+export const FEEDBACK_FLOW_DYNAMIC: IFeedbackFlowType = 'DYNAMIC';
 
 export type IRatingIconType = 'STAR' | 'HEART' | 'EMOJI';
 export const RATING_ICON_TYPE_STAR: IRatingIconType = 'STAR';

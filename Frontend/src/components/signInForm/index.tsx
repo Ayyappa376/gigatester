@@ -58,6 +58,7 @@ export default function SignInForm(props: any) {
   const saveOrganizationData = useActions(saveOrganizationDetails);
   const [dialogPage, setDialogPage] = useState("login");
   const [newPasswordState, setNewPasswordState] = useState(false);
+  const [openSignUp, setOpenSignUp] = useState(false);  
   const classes = useStyles();
   const [forgotPassword, setForgotPassword] = useState(false);
   const [notify, setNotify] = useState({
@@ -77,11 +78,10 @@ export default function SignInForm(props: any) {
   const { value: confirmNewpassword, bind: bindConfirmNewPassword } = useInput("");
   let userData: any = {}
 
-  const handleSuccessfulSignIn = (user: any) => {
+  const handleSuccessfulSignIn = (user: any, mode: any) => {
     const tokenInfo: any = jwtDecode(
       user.signInUserSession.idToken.jwtToken
     );
-    console.log(tokenInfo);
     localStorage.setItem('authToken', user.signInUserSession.idToken.jwtToken);
     saveUserData({
       idToken: user.signInUserSession.idToken.jwtToken,
@@ -92,9 +92,20 @@ export default function SignInForm(props: any) {
         tokenInfo["custom:teamName"] !== ""
           ? tokenInfo["custom:teamName"]
           : "Others",
-      roles: tokenInfo["cognito:groups"],
+      roles: ['Member']
     });
-
+    let userStateVariable = {...stateVariable}
+    userStateVariable.user = {
+      idToken: user.signInUserSession.idToken.jwtToken,
+      accessToken: user.signInUserSession.accessToken,
+      userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+      team:
+        tokenInfo["custom:teamName"] &&
+        tokenInfo["custom:teamName"] !== ""
+          ? tokenInfo["custom:teamName"]
+          : "Others",
+        roles: ['Member']
+    }
     //set the feedback component's context
     userData.email = tokenInfo['email']
     if(typeof window.GigaTester !== 'undefined'){
@@ -102,25 +113,72 @@ export default function SignInForm(props: any) {
       window.GigaTester.setDefaultCategory("Admin-Bug", "BUGS");
       window.GigaTester.setDefaultCategory("Admin", "FEEDBACK");
     }
-
+    if(mode === 'old'){
+    Http.get({
+      url: `/api/v2/admin/users/getusers?email=${userData.email}`,
+      state: userStateVariable,
+    })
+    .then((response: any) => {
+      if(response){   
+        saveUserData({
+          idToken: user.signInUserSession.idToken.jwtToken,
+          accessToken: user.signInUserSession.accessToken,
+          userDetails: jwtDecode(user.signInUserSession.idToken.jwtToken),
+          team:
+            tokenInfo["custom:teamName"] &&
+            tokenInfo["custom:teamName"] !== ""
+              ? tokenInfo["custom:teamName"]
+              : "Others",
+          roles: response.values.roles
+        });
+        if (response.values.roles.length) {
+          if (
+            response.values.roles.includes("Admin") ||
+            response.values.roles.includes("Manager")
+          ) {
+            setLoading(false);
+            return (
+              history.push("/admin"),
+              // setLoading(true),
+              closeDialog()
+            );
+          } else {
+            setLoading(false);
+            return (
+              history.push("/admin"),
+              // setLoading(true),
+              closeDialog()
+            );
+          }
+        }
+      }
+    })
+    .catch((error: any) => {
+      console.log(error);      
+    });
+  }
+  else{
     if (tokenInfo["cognito:groups"].length) {
       if (
         tokenInfo["cognito:groups"].includes("Admin") ||
         tokenInfo["cognito:groups"].includes("Manager")
       ) {
+        setLoading(false);
         return (
           history.push("/admin"),
-          setLoading(true),
+          // setLoading(true),
           closeDialog()
         );
       } else {
+        setLoading(false);
         return (
-          history.push("/profile"),
-          setLoading(true),
+          history.push("/admin"),
+          // setLoading(true),
           closeDialog()
         );
       }
     }
+  }
   };
 
   const notifyError = (message: string) => {
@@ -150,8 +208,7 @@ export default function SignInForm(props: any) {
         },
       })
       .then((response: any) => {
-        if(response){
-          console.log('response', response);      
+        if(response){      
           saveOrganizationData({
             emailDomains: response?.organizationDetails?.emailDomains,
             name: response?.organizationDetails?.name,
@@ -242,11 +299,13 @@ export default function SignInForm(props: any) {
     Auth.completeNewPassword(user, confirmNewpassword, { email: email })
     .then((newUser) => {
       if (newUser && newUser.signInUserSession.idToken && newUser.signInUserSession.accessToken) {
-        handleSuccessfulSignIn(newUser);
+        setLoading(false);
+        handleSuccessfulSignIn(newUser, 'new');
       } else {
         notifyError("Set password failed. Please try again");
+        setLoading(false);
       }
-      setLoading(false);
+
     })
     .catch((e) => {
       notifyError(e.message);
@@ -260,12 +319,13 @@ export default function SignInForm(props: any) {
       if (user && user.challengeName === "NEW_PASSWORD_REQUIRED") {
         setNewSignInUser(user);
         setNewPasswordState(true);
+        setLoading(false);
       } else if (user && user.signInUserSession.idToken && user.signInUserSession.accessToken) {
-        handleSuccessfulSignIn(user);
+        handleSuccessfulSignIn(user, 'old');
       } else {
         notifyError("Login failed. Please try again.");
+        setLoading(false);
       }
-      setLoading(false);
     } catch (error) {
       let e: any = error;
       notifyError(e.message);
@@ -316,7 +376,7 @@ export default function SignInForm(props: any) {
   };
 
   const onSignUp = () => {
-    setDialogPage("signUp");
+    props.openSignUpForm();    
   };
 
   const getSignInForm = (state: boolean) => {
@@ -346,118 +406,142 @@ export default function SignInForm(props: any) {
     }
   };
 
-  return (
-    <Fragment>
-      <Dialog
-        className={classes.dialogPaper}
-        open={dialogOpen}
-        aria-labelledby="form-dialog-title"
-        onClose={closeDialog}
-        fullWidth={dialogPage === "signUp"}
-      >
-        <DialogTitle
-          id="form-dialog-title"
-          style={{ textAlign: "center", padding: "30px 0px" }}
+  const handleCloseSignup = (state: boolean) => {
+    setOpenSignUp(state);
+    setDialogPage("login");    
+  };
+  
+  const signInForm = () => {
+    return (
+      <Fragment>
+        <Dialog
+          className={classes.dialogPaper}
+          open={dialogOpen}
+          aria-labelledby="form-dialog-title"
+          onClose={closeDialog}
+          fullWidth={dialogPage === "signUp"}
         >
-          <Typography style={{ fontSize: "26px" }}>
-            <Text tid={"gigaTester"} />
-          </Typography>
-          <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
-            <CloseIcon />
-          </IconButton>
-        </DialogTitle>
-        <DialogContent>
-          {dialogPage === "login" ? (
-            <Container component="main" maxWidth="xs">
-              {!newPasswordState && !changePasswordState ? (
-                <Typography variant="h6">
-                  <Text tid={dialogPage} />
-                </Typography>
-              ) : (
-                <div/>
-              )}
-              <CssBaseline />
-              <Box component="form" onSubmit={handleSubmit}>
+          <DialogTitle
+            id="form-dialog-title"
+            style={{ textAlign: "center", padding: "30px 0px" }}
+          >
+            <Typography style={{ fontSize: "26px" }}>
+              <Text tid={"gigaTester"} />
+            </Typography>
+            <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
+              <CloseIcon />
+            </IconButton>
+          </DialogTitle>
+          <DialogContent>
+            {/* {dialogPage === "login" ? ( */}
+              <Container component="main" maxWidth="xs">
                 {!newPasswordState && !changePasswordState ? (
-                  <Fragment>
-                    <TextField                      
-                      margin="dense"
-                      fullWidth
-                      id="email"
-                      label="Email *"
-                      type="email"
-                      {...bindEmail}
-                      autoFocus
-                    />
-                    <TextField
-                      margin="dense"
-                      fullWidth
-                      label="Password"
-                      type="password"
-                      id="password"
-                      {...bindPassword}
-                    />
-                  </Fragment>
+                  <Typography variant="h6">
+                    <Text tid={dialogPage} />
+                  </Typography>
                 ) : (
-                  <SetNewPassword
-                    bindNewPassword={bindNewPassword}
-                    bindConfirmNewPassword={bindConfirmNewPassword}
-                    bindVerificationCode={bindVerificationCode}
-                    forgotPassword={forgotPassword}
-                    bindOldPassword={bindOldPassword}
-                    changePasswordState={changePasswordState}
-                  />
+                  <div/>
                 )}
-                <br />
-                <br />
-                <br />
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="medium"
-                  type="submit"
-                  disabled={loading}
-                  style={{ textAlign: "center" }}
-                >
-                  {loading && (
-                    <CircularProgress size={20} style={{ marginRight: 20 }} />
+                <CssBaseline />
+                <Box component="form" onSubmit={handleSubmit}>
+                  {!newPasswordState && !changePasswordState ? (
+                    <Fragment>
+                      <TextField                      
+                        margin="dense"
+                        fullWidth
+                        id="email"
+                        label="Email *"
+                        type="email"
+                        {...bindEmail}
+                        autoFocus
+                      />
+                      <TextField
+                        margin="dense"
+                        fullWidth
+                        label="Password"
+                        type="password"
+                        id="password"
+                        {...bindPassword}
+                      />
+                    </Fragment>
+                  ) : (
+                    <SetNewPassword
+                      bindNewPassword={bindNewPassword}
+                      bindConfirmNewPassword={bindConfirmNewPassword}
+                      bindVerificationCode={bindVerificationCode}
+                      forgotPassword={forgotPassword}
+                      bindOldPassword={bindOldPassword}
+                      changePasswordState={changePasswordState}
+                    />
                   )}
-                  {!newPasswordState && !changePasswordState ? "Login" : "Send"}
-                </Button>
-              </Box>
-              <br />
-              {!newPasswordState && !changePasswordState && (
-                <Fragment>
-                  <Grid container>
-                    <Grid item xs>
-                      <Link
-                        component="button"
-                        variant="body2"
-                        onClick={onForgotPassword}
-                      >
-                        {"Forgot password?"}
-                      </Link>
-                    </Grid>
-                    <Grid item>
-                      {/* <Link
-                        component="button"
-                        variant="body2"
-                        onClick={onSignUp}
-                      >
-                        {"Don't have an account? Sign Up"}
-                      </Link> */}
-                    </Grid>
-                  </Grid>
                   <br />
-                </Fragment>
-              )}
-            </Container>
-          ) : (
-            <SignupForm getSignInForm={getSignInForm} />
-          )}
-        </DialogContent>
-      </Dialog>
-      <Notification notify={notify} setNotify={setNotify} />
-    </Fragment>
-  );
+                  <br />
+                  <br />
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    size="medium"
+                    type="submit"
+                    disabled={loading}
+                    style={{ textAlign: "center" }}
+                  >
+                    {loading && (
+                      <CircularProgress size={20} style={{ marginRight: 20 }} />
+                    )}
+                    {!newPasswordState && !changePasswordState ? <Text tid={"signIn"} /> : "Send"}
+                  </Button>
+                </Box>
+                <br />
+                {!newPasswordState && !changePasswordState && (
+                  <Fragment>
+                    <Grid container>
+                      <Grid item xs>
+                        <Link
+                          component="button"
+                          variant="body2"
+                          onClick={onForgotPassword}
+                        >
+                          {"Forgot password?"}
+                        </Link>
+                      </Grid>
+                      <Grid item>
+                        {"Don't have an account yet? "} 
+                        <Link
+                          component="button"
+                          variant="body2"
+                          onClick={onSignUp}
+                        >
+                          <Text tid={"signUp"} />
+                        </Link>
+                      </Grid>
+                    </Grid>
+                    <br />
+                  </Fragment>
+                )}
+              </Container>
+            {/* ) : (
+              <SignupForm
+                openSignup={openSignUp}
+                handleCloseSignup={handleCloseSignup}
+                superUserStateVariable={stateVariable}
+              />
+            )} */}
+          </DialogContent>
+        </Dialog>
+        <Notification notify={notify} setNotify={setNotify} />
+      </Fragment>
+    );
+  }
+
+  return dialogPage === "login" ? (
+    <Container component="main" maxWidth="sm" style={{ paddingBottom: "20px" }}>
+      {signInForm()}
+    </Container>
+  ) : (
+    <SignupForm
+      openSignup={openSignUp}
+      handleCloseSignup={handleCloseSignup}
+      superUserStateVariable={stateVariable}
+    />
+  )
 }

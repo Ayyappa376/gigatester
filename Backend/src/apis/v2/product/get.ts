@@ -1,7 +1,7 @@
 import { API, Handler } from '@apis/index';
 import {ConfigItem, ProductInfo  } from '@models/index';
 import { config } from '@root/config';
-import { appLogger, getCreateProductConfig, getProductDetails, getProductsList, responseBuilder } from '@utils/index';
+import { appLogger, getCreateProductConfig, getProductDetails, getProductsList, getUserProductsList, responseBuilder } from '@utils/index';
 import { Response } from 'express';
 
 interface GetProducts {
@@ -16,15 +16,18 @@ interface GetProducts {
     id: string;
     version: string;
   };
+  query: {
+    type?: string;
+  };
 }
 
 async function handler(request: GetProducts, response: Response) {
   appLogger.info({ GetProducts: request }, 'Inside Handler');
-
-  const { headers } = request;
-  const { params } = request;
+  const { headers, params, query } = request;
+  const { type } = query;
   const cognitoUserId = headers.user['cognito:username'];
-  if (!cognitoUserId) {
+  const email = headers.user.email;
+  if(!cognitoUserId) {
     const err = new Error('InvalidUser');
     appLogger.error(err, 'Unauthorized');
     return responseBuilder.unauthorized(err, response);
@@ -33,7 +36,13 @@ async function handler(request: GetProducts, response: Response) {
   //returns the config details of a product if the product id sent as 0 - create product
   //returns the list of all products, if the product id is not sent - list products
   let result: any;
-  if (params.id) {
+    if(type && !params.id) {
+      const productDetailsList: ProductInfo[] = await getUserProductsList(email, type);
+      appLogger.info({ getProductsList: productDetailsList });
+      result = {
+        products: productDetailsList,
+      };
+    } else if (params.id && !type) {
     if(params.id === '0') {
       const productConfig: ConfigItem = await getCreateProductConfig(config.defaults.orgId);
       appLogger.info({ getCreateProductConfig: productConfig });

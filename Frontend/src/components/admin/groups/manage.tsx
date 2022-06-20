@@ -4,7 +4,11 @@ import {
   makeStyles,
   Container,
   Paper,
-  TextField,
+  Table,
+  TableHead,
+  TableRow,
+  TableCell,
+  TableBody,
   Button,
   CircularProgress,
   Backdrop,
@@ -13,15 +17,14 @@ import {
   MuiThemeProvider,
   Snackbar,
   SnackbarContent,
-  Tooltip
+  Tooltip,
+  TextField,
 } from '@material-ui/core';
-import TreeView from '@material-ui/lab/TreeView';
-import TreeItem from '@material-ui/lab/TreeItem';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
@@ -34,7 +37,8 @@ import PageSizeDropDown from '../../common/page-size-dropdown';
 import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-import { IGroupInfo } from '../../../model/admin/group';
+import { IGroupInfo, IPlatformInfo } from '../../../model';
+import { TreeItem, TreeView } from '@material-ui/lab';
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -53,11 +57,6 @@ const useStyles = makeStyles((theme) => ({
     zIndex: theme.zIndex.drawer + 1,
     color: '#fff',
   },
-  treeRoot: {
-    height: 110,
-    flexGrow: 1,
-    maxWidth: 400,
-  },
 }));
 
 const ManageGroups = (props: any) => {
@@ -65,29 +64,62 @@ const ManageGroups = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
+  const [fetchGroups, setfetchGroups] = React.useState(false);
+  const [allPlatforms, setAllPlatforms] = React.useState<Object[]>([]);
+  const [groups, setGroups] = useState<{[key: string]: IGroupInfo}>({});
   const [fetchedGroups, setFetchedGroups] = React.useState(false);
-//  const [allGroups, setAllGroups] = React.useState<IGroupInfo[]>([]);
   const [backdropOpen, setBackdropOpen] = React.useState(false);
   const [openModal, setOpenModal] = useState(false);
-  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
-//  const [searchString, setSearchString] = useState('');
-  const [groups, setGroups] = useState<{[key: string]: IGroupInfo}>({});
-  const [hasChanges, setHasChanges] = useState<{[key: string]: boolean}>({});
-//  const [searchButtonPressed, setSearchButtonPressed] = useState(false);
-//  const [itemsPerPage, setItemsPerPage] = useState(10);
-//  const [currentPage, setCurrentPage] = useState(1);
-//  const [numberOfGroups, setNumberOfGroups] = useState(0);
-//  const [itemLimit, setItemLimit] = useState({
-//    lowerLimit: 0,
-//    upperLimit: 9,
-//  });
-//  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
-//  const [orderBy, setOrderBy] = useState('name');
+  const [deletePlatformId, setDeletePlatformId] = useState('');
+  const [searchString, setSearchString] = useState('');
+  const [platforms, setPlatforms] = useState<IPlatformInfo[]>([]);
+  const [searchButtonPressed, setSearchButtonPressed] = useState(false);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [numberOfPlatforms, setNumberOfPlatforms] = useState(0);
+  const [itemLimit, setItemLimit] = useState({
+    lowerLimit: 0,
+    upperLimit: 9,
+  });
+  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+  const [orderBy, setOrderBy] = useState('name');
   const [failure, setFailure] = useState(false);
   const [failureMessage, setFailureMessage] = useState(
     <Text tid='somethingWentWrong' />
   );
   let msgFailure = failureMessage;
+
+  const fetchPlatformList = () => {
+    setBackdropOpen(true);
+    Http.get({
+      url: `/api/v2/platforms/`,
+      state: stateVariable,
+    })
+      .then((response: any) => {
+        response.platforms.sort((a: IPlatformInfo, b: IPlatformInfo) => {
+          return a.name.localeCompare(b.name);
+        });
+        setfetchGroups(true);
+        setAllPlatforms(response.platforms);
+        setPlatforms(response.platforms);
+        setBackdropOpen(false);
+        if(typeof window.GigaTester !== 'undefined'){
+          window.GigaTester.setDefaultCategory("Platform-Bug", "BUGS");
+          window.GigaTester.setDefaultCategory("Platform", "FEEDBACK");
+        }
+      })
+      .catch((error: any) => {
+        setfetchGroups(true);
+        setBackdropOpen(false);
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          props.history.push('/error');
+        }
+      });
+  };
 
   const fetchGroupList = () => {
     setBackdropOpen(true);
@@ -102,7 +134,7 @@ const ManageGroups = (props: any) => {
       setFetchedGroups(true);
 //      setAllGroups(response);
       setGroups(response);
-      initializeHasChanges(Object.keys(response));
+      console.log(response);
       setBackdropOpen(false);
     })
     .catch((error: any) => {
@@ -124,156 +156,99 @@ const ManageGroups = (props: any) => {
 //    setCurrentPage(1);
   }, []);
 
-  const initializeHasChanges = (groupIds: string[]) => {
-    const tempHasChanges: {[key: string]: boolean} = {};
-    groupIds.forEach((id: string) => tempHasChanges[id] = false);
-    setHasChanges(tempHasChanges);
-  }
+  useEffect(() => {
+    setNumberOfPlatforms(platforms.length);
+  }, [platforms]);
 
-  const mandatoryFieldCheck = (group: IGroupInfo): boolean => {
-    return (group.name !== '');
-  };
+  useEffect(() => {
+    fetchPlatformList();
+    setSearchString('');
+    setCurrentPage(1);
+  }, []);
 
-//  useEffect(() => {
-//    setNumberOfGroups(groups.length);
-//  }, [groups]);
+  useEffect(() => {
+    if (searchButtonPressed) {
+      setSearchButtonPressed(false);
+      const searchedItems: any = [];
+      if (searchString === '') {
+        setPlatforms([]);
+      }
+      allPlatforms.forEach((el: any) => {
+        if (el.name.toLowerCase().includes(searchString.toLowerCase())) {
+          searchedItems.push(el);
+        }
+      });
+      setPlatforms(searchedItems);
+      setCurrentPage(1);
+    }
+  }, [searchButtonPressed]);
 
-  const handleSave = (groupId: string) => {
-    const group: IGroupInfo = groups[groupId];
-    if(mandatoryFieldCheck(group)) {
-      setBackdropOpen(true);
-      if(group.id === 'tempId') {
-        Http.post({
-          url: `/api/v2/groups`,
-          body: {
-            group: { ...group, id: '' }
-          },
-          state: stateVariable,
-        })
-        .then((response: any) => {
-          setBackdropOpen(false);
-          fetchGroupList();
-        })
-        .catch((error: any) => {
-          setBackdropOpen(false);
-          handleSaveError(error);
-        });
-      } else {
-        Http.put({
-          url: `/api/v2/groups`,
-          body: {
-            group: { ...group }
-          },
-          state: stateVariable,
-        })
-        .then((response: any) => {
-          setBackdropOpen(false);
-          fetchGroupList();
-        })
-        .catch((error: any) => {
-          setBackdropOpen(false);
-          handleSaveError(error);
-        });
+  useEffect(() => {
+    calculateLimits();
+  }, [currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+    calculateLimits();
+  }, [itemsPerPage]);
+
+  useEffect(() => {
+    if (platforms !== []) {
+      const tempSortedPlatforms = [...platforms];
+      if (order === 'asc') {
+        if (orderBy === 'platform') {
+          setPlatforms(tempSortedPlatforms.sort(comparePlatform));
+        }
+      }
+      if (order === 'desc') {
+        if (orderBy === 'platform') {
+          setPlatforms(tempSortedPlatforms.sort(comparePlatformD));
+        }
       }
     }
-  };
+  }, [order, orderBy]);
 
-  const handleSaveError = (error: any) => {
-    const perror = JSON.stringify(error);
-    const object = JSON.parse(perror);
-    if (object.code === 400) {
-      setFailureMessage(object.apiError.msg);
-    } else if (object.code === 401) {
-      props.history.push('/relogin');
-    } else {
-      setFailureMessage(<Text tid='somethingWentWrong' />);
-      setFailure(true);
-    }
+  function comparePlatform(a: IPlatformInfo, b: IPlatformInfo) {
+    return a.name.localeCompare(b.name);
   }
 
-  // useEffect(() => {
-  //   if (searchButtonPressed) {
-  //     setSearchButtonPressed(false);
-  //     const searchedItems: any = [];
-  //     if (searchString === '') {
-  //       setGroups([]);
-  //     }
-  //     allGroups.forEach((el: any) => {
-  //       if (el.groupName.toLowerCase().includes(searchString.toLowerCase())) {
-  //         searchedItems.push(el);
-  //       }
-  //     });
-  //     setGroups(searchedItems);
-  //     setCurrentPage(1);
-  //   }
-  // }, [searchButtonPressed]);
+  function comparePlatformD(a: IPlatformInfo, b: IPlatformInfo) {
+    return b.name.localeCompare(a.name);
+  }
 
-  // useEffect(() => {
-  //   calculateLimits();
-  // }, [currentPage]);
+  const handleRequestSort = (property: string) => {
+    if (orderBy === property) {
+      setOrder(order === 'asc' ? 'desc' : 'asc');
+    } else {
+      setOrder('asc');
+      setOrderBy(property);
+    }
+  };
 
-  // useEffect(() => {
-  //   setCurrentPage(1);
-  //   calculateLimits();
-  // }, [itemsPerPage]);
+  const calculateLimits = () => {
+    const lowerLimit = (currentPage - 1) * itemsPerPage;
+    const upperLimit = lowerLimit + itemsPerPage - 1;
+    setItemLimit({ lowerLimit, upperLimit });
+  };
 
-  // useEffect(() => {
-  //   if (groups !== []) {
-  //     const tempSortedGroups = [...groups];
-  //     if (order === 'asc') {
-  //       if (orderBy === 'group') {
-  //         setGroups(tempSortedGroups.sort(compareGroup));
-  //       }
-  //     }
-  //     if (order === 'desc') {
-  //       if (orderBy === 'group') {
-  //         setGroups(tempSortedGroups.sort(compareGroupD));
-  //       }
-  //     }
-  //   }
-  // }, [order, orderBy]);
+  const handleSearch = (str?: string) => {
+    if (typeof str !== 'undefined') {
+      setSearchString(str);
+    }
+    setSearchButtonPressed(true);
+  };
 
-  // function compareGroup(a: IGroupInfo, b: IGroupInfo) {
-  //   return a.name.localeCompare(b.name);
-  // }
+  const handleChangeItemsPerPage = (event: any) => {
+    const value = parseInt(event.target.value, 10);
+    setItemsPerPage(value);
+  };
 
-  // function compareGroupD(a: IGroupInfo, b: IGroupInfo) {
-  //   return b.name.localeCompare(a.name);
-  // }
+  const handlePaginationClick = (event: number) => {
+    setCurrentPage(event);
+  };
 
-  // const handleRequestSort = (property: string) => {
-  //   if (orderBy === property) {
-  //     setOrder(order === 'asc' ? 'desc' : 'asc');
-  //   } else {
-  //     setOrder('asc');
-  //     setOrderBy(property);
-  //   }
-  // };
-
-  // const calculateLimits = () => {
-  //   const lowerLimit = (currentPage - 1) * itemsPerPage;
-  //   const upperLimit = lowerLimit + itemsPerPage - 1;
-  //   setItemLimit({ lowerLimit, upperLimit });
-  // };
-
-  // const handleSearch = (str?: string) => {
-  //   if (typeof str !== 'undefined') {
-  //     setSearchString(str);
-  //   }
-  //   setSearchButtonPressed(true);
-  // };
-
-  // const handleChangeItemsPerPage = (event: any) => {
-  //   const value = parseInt(event.target.value, 10);
-  //   setItemsPerPage(value);
-  // };
-
-  // const handlePaginationClick = (event: number) => {
-  //   setCurrentPage(event);
-  // };
-
-  const deleteClicked = (groupId: string) => {
-    setSelectedGroupId(groupId);
+  const deleteClicked = (platformId: string) => {
+    setDeletePlatformId(platformId);
     setOpenModal(true);
   };
 
@@ -282,98 +257,69 @@ const ManageGroups = (props: any) => {
   };
 
   const modalYesClicked = () => {
-    if (selectedGroupId.length > 0) {
-      deleteGroup(selectedGroupId);
+    if (deletePlatformId !== '') {
+      deletePlatform(deletePlatformId);
       setOpenModal(false);
     }
   };
 
-  const handleClose = () => {
-    setFailure(false);
-  };
+  
 
-  const deleteGroup = (groupId: string) => {
+  const deletePlatform = (platformId: string) => {
     setBackdropOpen(true);
     Http.deleteReq({
-      url: `/api/v2/devices/${groupId}`,
+      url: `/api/v2/platforms/${platformId}`,
       state: stateVariable,
     })
-    .then((response: any) => {
-      setBackdropOpen(false);
-      setSelectedGroupId('');
-      fetchGroupList();
-    })
-    .catch((error) => {
-      const perror = JSON.stringify(error);
-      const object = JSON.parse(perror);
-      if (object.code === 400) {
-        setFailureMessage(object.apiError.msg);
-      } else if (object.code === 401) {
-        props.history.push('/relogin');
-      } else {
-        setFailureMessage(<Text tid='somethingWentWrong' />);
-        setFailure(true);
-      }
-      setBackdropOpen(false);
-      setSelectedGroupId('');
-      fetchGroupList();
-    });
+      .then((response: any) => {
+        setBackdropOpen(false);
+        setDeletePlatformId('');
+        fetchPlatformList();
+      })
+      .catch((error) => {
+        const perror = JSON.stringify(error);
+        const object = JSON.parse(perror);
+        if (object.code === 400) {
+          setFailureMessage(object.apiError.msg);
+        } else if (object.code === 401) {
+          props.history.push('/relogin');
+        } else {
+          setFailureMessage(<Text tid='somethingWentWrong' />);
+          setFailure(true);
+        }
+        setBackdropOpen(false);
+        fetchPlatformList();
+      });
   };
 
-  const handleChangeValue = (event: any, groupId: string) => {
-    const temp: {[key: string]: IGroupInfo} = { ...groups };
-    const group: IGroupInfo = temp[groupId];
-
-    group.name = event.target.value;
-    setGroups(temp);
-
-    const tempHasChanges: {[key: string]: boolean} = { ...hasChanges };
-    tempHasChanges[groupId] = true;
-    setHasChanges(tempHasChanges);
-  };
-
-  const addChildGroup = (parentGroupId?: string) => {
-    const temp: {[key: string]: IGroupInfo} = { ...groups };
-    const newGroup: IGroupInfo = {
-      id: 'tempId',
-      name: '',
-    };
-
-    if(parentGroupId) {
-      newGroup.parent = parentGroupId;
-      const parentGroup: IGroupInfo = temp[parentGroupId];
-      if(!parentGroup.children) {
-        parentGroup.children = [];
-      }
-      parentGroup.children.push('');
-    }
-
-    temp[newGroup.id] = newGroup;
-    setGroups(temp);
-
-    const tempHasChanges: {[key: string]: boolean} = { ...hasChanges };
-    tempHasChanges[newGroup.id] = true;
-    setHasChanges(tempHasChanges);
-  };
-
-  const renderTree = (group: IGroupInfo) => {
+  const renderTreeAction = (group: IGroupInfo) => {
     return(
-      <TreeItem key={group.id} nodeId={group.id} label={
+      <TreeItem key={group.id} nodeId={group.id} expandIcon={false} label={
         <Fragment>
-          <TextField
-            required={true}
-            type='string'
-            id={group.id}
-            name={group.id}
-            value={group.name ? group.name : ''}
-            label={'Group Name:'}
-            onChange={(event) => handleChangeValue(event, group.id)}
-            fullWidth
-            autoComplete='off'
-            className='textFieldStyle'
-          />
-          <div style={{ cursor: 'pointer' }}>
-            {hasChanges[group.id] ? (
+          <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'flex-end' }}>
+          <MuiThemeProvider theme={tooltipTheme}>
+                            <Tooltip
+                              title={
+                                <Typography
+                                  style={{
+                                    fontSize: '12px',
+                                    textAlign: 'center',
+                                  }}
+                                >
+                                  <Text tid='edit' />
+                                </Typography>
+                              }
+                            >
+                              <Typography style={{ padding: '0 6px' }}>
+                                <EditIcon
+                                  onClick={() => {
+                                    props.editClicked(group.id);
+                                  }}
+                                />
+                              </Typography>
+                            </Tooltip>
+                          </MuiThemeProvider>
+            {/* {hasChanges[group.id] ? (
               <Button
                 onClick={() => { handleSave(group.id) }}
                 className={classes.backButton}
@@ -385,21 +331,7 @@ const ManageGroups = (props: any) => {
               <Button className={classes.backButton} disabled variant='outlined'>
                 <Text tid='save' />
               </Button>
-            )}
-            <MuiThemeProvider theme={tooltipTheme}>
-              <Tooltip
-                title={
-                  <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                    <Text tid='addChildGroup' />
-                  </Typography>
-                }
-              >
-                <Typography>
-                  <AddIcon onClick={() => { addChildGroup(group.id); }} />{' '}
-                  <Text tid='addChildGroup' />
-                </Typography>
-              </Tooltip>
-            </MuiThemeProvider>
+            )} */}
             <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
@@ -417,13 +349,65 @@ const ManageGroups = (props: any) => {
         </Fragment>
       }>
         {group.children && group.children.map((childId: string) => {
+          console.log(group, 'before render tree call');
+          console.log(groups[childId], childId)
+          return renderTreeAction(groups[childId])
+        })}
+      </TreeItem>
+    )
+  };
+  const renderTree = (group: IGroupInfo) => {
+    return(
+      <TreeItem key={group.id} nodeId={group.id} label={
+        <Fragment>
+          <Typography>
+          {group.name ? group.name : ''}
+          </Typography>
+          <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'flex-end' }}>
+          {/* <MuiThemeProvider theme={tooltipTheme}>
+              <Tooltip
+                title={
+                  <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                    <Text tid='addChildGroup' />
+                  </Typography>
+                }
+              >
+                <Typography style={{position: 'relative', top: '-21px', right: '-82px'}}>
+                  <AddIcon onClick={() => { addChildGroup(group.id); }} />{' '}
+                  <Text tid='addChildGroup' />
+                </Typography>
+              </Tooltip>
+            </MuiThemeProvider> */}
+            {/* {hasChanges[group.id] ? (
+              <Button
+                onClick={() => { handleSave(group.id) }}
+                className={classes.backButton}
+                variant='outlined'
+              >
+                <Text tid='save' />
+              </Button>
+            ) : (
+              <Button className={classes.backButton} disabled variant='outlined'>
+                <Text tid='save' />
+              </Button>
+            )} */}
+          </div>
+        </Fragment>
+      }>
+        {group.children && group.children.map((childId: string) => {
+          console.log(group, 'before render tree call');
+          console.log(groups[childId], childId)
           return renderTree(groups[childId])
         })}
       </TreeItem>
     )
   };
 
-  const renderGroupsTree = () => {
+  const handleClose = () => {
+    setFailure(false);
+  };
+
+  const renderPlatformsTable = () => {
     return (
       <Fragment>
         <Container maxWidth='md' component='div' className='containerRoot'>
@@ -433,53 +417,52 @@ const ManageGroups = (props: any) => {
           <div style={{ width: '100%' }}>
             <Grid container spacing={3}>
               <Grid item sm={5}>
-                <MuiThemeProvider theme={tooltipTheme}>
-                  <Tooltip
-                    title={
-                      <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                        <Text tid='addChildGroup' />
-                      </Typography>
-                    }
-                  >
-                    <Typography>
-                      <AddIcon onClick={() => { addChildGroup(); }} />{' '}
-                      <Text tid='addChildGroup' />
-                    </Typography>
-                  </Tooltip>
-                </MuiThemeProvider>
+                <Button
+                  className={classes.backButton}
+                  variant='outlined'
+                  onClick={() => {
+                    props.editClicked(0);
+                  }}
+                >
+                  <AddIcon fontSize='large' /> <Text tid='createGroup' />
+                </Button>
               </Grid>
               <Grid item sm={5}>
-                {/* <SearchControl
+                <SearchControl
                   searchString={searchString}
                   handleSearch={handleSearch}
-                /> */}
+                />
               </Grid>
               <Grid item sm={2}>
-                {/* <PageSizeDropDown
+                <PageSizeDropDown
                   handleChange={handleChangeItemsPerPage}
                   itemCount={itemsPerPage}
-                /> */}
+                />
               </Grid>
             </Grid>
           </div>
           <Paper className='tableArea'>
-            <TreeView
+          <TreeView
               className='treeRoot'
               defaultCollapseIcon={<ExpandMoreIcon />}
               defaultExpanded={['root']}
               defaultExpandIcon={<ChevronRightIcon />}
             >
-              {groups && Object.keys(groups).map((groupId: string) => {
-                return (!groups[groupId].parent) ? renderTree(groups[groupId]) : ''
-              })}
-            </TreeView>
-            {/*<Table className='table'>
+            <Table className='table'>
               <TableHead className='tableHead'>
                 <TableRow>
                   <TableCell className='tableHeadCell'>
-                    <Typography className='tableHeadText'>
-                      <Text tid='manageGroups2' />
-                    </Typography>
+                    <TableSortLabel
+                      active={orderBy === 'platform'}
+                      direction={orderBy === 'platform' ? order : 'asc'}
+                      onClick={() => {
+                        handleRequestSort('platform');
+                      }}
+                    >
+                      <Typography className='tableHeadText'>
+                        <Text tid='manageGroups' />
+                      </Typography>
+                    </TableSortLabel>
                   </TableCell>
                   <TableCell align='center' className='tableHeadCell'>
                     <Typography className='tableHeadText'>
@@ -489,8 +472,9 @@ const ManageGroups = (props: any) => {
                 </TableRow>
               </TableHead>
               <TableBody>
-                {groups.map((row: IGroupInfo, index: number) => {
+                {Object.keys(groups).map((row: any, index: number) => {
                   return (
+                    !groups[row].parent ? 
                     <TableRow
                       key={index}
                       style={
@@ -504,70 +488,45 @@ const ManageGroups = (props: any) => {
                         scope='row'
                         className='tableCell'
                       >
-                        <Typography className='tableBodyText'>
-                          {row.name}
-                        </Typography>
+                        {renderTree(groups[row])}
                       </TableCell>
                       <TableCell align='center' className='tableCell'>
-                        <div className={classes.actionsBlock}>
-                          <MuiThemeProvider theme={tooltipTheme}>
-                            <Tooltip
-                              title={
-                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                                  <Text tid='edit' />
-                                </Typography>
-                              }
-                            >
-                              <Typography style={{ padding: '0 6px' }}>
-                                <EditIcon onClick={() => { props.editClicked(row.id); }}/>
-                              </Typography>
-                            </Tooltip>
-                          </MuiThemeProvider>
-                          <MuiThemeProvider theme={tooltipTheme}>
-                            <Tooltip
-                              title={
-                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                                  <Text tid='delete' />
-                                </Typography>
-                              }
-                            >
-                              <Typography style={{ padding: '0 6px' }}>
-                                <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
-                              </Typography>
-                            </Tooltip>
-                          </MuiThemeProvider>
+                        <div
+                          className={classes.actionsBlock}
+                          style={{ cursor: 'pointer' }}
+                        >
+                          {renderTreeAction(groups[row])}
                         </div>
                       </TableCell>
                     </TableRow>
+                                        :  ''
                   );
+
                 })}
               </TableBody>
-            </Table>*/}
+            </Table>
+            </TreeView>
           </Paper>
+          <Fragment>
+            <RenderPagination
+              pageRangeDisplayed={10}
+              activePage={currentPage}
+              itemsCountPerPage={itemsPerPage}
+              totalItemsCount={numberOfPlatforms}
+              handleChange={handlePaginationClick}
+            />
+          </Fragment>
           <div className='bottomButtonsContainer'>
-            {/*<Button
+            <Button
               className={classes.backButton}
               variant='outlined'
               onClick={props.goBack}
             >
               <Text tid='goBack' />
-            </Button>*/}
-            {/*hasChanges ? (
-            <Button
-              onClick={() => { handleSave() }}
-              className={classes.backButton}
-              variant='outlined'
-            >
-              <Text tid='save' />
             </Button>
-          ) : (
-            <Button className={classes.backButton} disabled variant='outlined'>
-              <Text tid='save' />
-            </Button>
-          )*/}
           </div>
           <ModalComponent
-            message={'deleteGroupConfirmMessage'}
+            message={'deletePlatformConfirmMessage'}
             openModal={openModal}
             handleModalYesClicked={modalYesClicked}
             handleModalNoClicked={modalNoClicked}
@@ -592,8 +551,8 @@ const ManageGroups = (props: any) => {
 
   return (
     <Fragment>
-      {fetchedGroups ? (
-        renderGroupsTree()
+      {fetchGroups ? (
+        renderPlatformsTable()
       ) : (
         <Container className='loaderStyle'>
           <Loader />

@@ -14,12 +14,12 @@ export const createGroup = async (groupData: GroupInfo, userId: string): Promise
     appLogger.error(err);
     throw err;
   }
-
+  console.log(groupData, 'ggggggggggggggg');
   const item: GroupInfo = {
     children: groupData.children,
     id: `group_${uuidv1()}`,
     name: groupData.name,
-    parent: groupData.parentId
+    parent: groupData.parent
   };
 
   Object.keys(groupData).forEach((val, i) => {
@@ -59,7 +59,7 @@ export const createGroup = async (groupData: GroupInfo, userId: string): Promise
     });
 
     appLogger.info({ createGroup_put_parentParams: parentParams });
-    return put<GroupInfo>(parentParams).catch((e) => new Promise((resove: any, reject: any) => {
+    put<GroupInfo>(parentParams).catch((e) => new Promise((resove: any, reject: any) => {
       appLogger.error({ createGroup_put_parentParams_error: e });
       reject(e);
     }));
@@ -106,7 +106,7 @@ export const getGroupDetails = async (id: string): Promise<GroupInfo> => {
 // delete a group, if it is in draft state only
 export const deleteGroup = async (id: string): Promise<GroupInfo | undefined> => {
   const item: GroupInfo = await getGroupDetails(id);
-
+  console.log(item, 'itttttttttttttttttt');
   //remove this group from the list of children of its parent
   if(item.parent) {
     const parentItem = await getGroupDetails(item.parent);
@@ -119,7 +119,7 @@ export const deleteGroup = async (id: string): Promise<GroupInfo | undefined> =>
       });
 
       appLogger.info({ createGroup_put_parentParams: parentParams });
-      return put<GroupInfo>(parentParams).catch((e) => new Promise((resove: any, reject: any) => {
+      put<GroupInfo>(parentParams).catch((e) => new Promise((resove: any, reject: any) => {
         appLogger.error({ createGroup_put_parentParams_error: e });
         reject(e);
       }));
@@ -203,7 +203,7 @@ export const updateGroup = async (updateInfo: GroupInfo, userId: string): Promis
   return update<GroupInfo>(params);
 };
 
-export const getGroupsList = async (userEmail: string | undefined): Promise<GroupInfo[]> => {
+export const getGroupsList = async (): Promise<GroupInfo[]> => {
   const params: DynamoDB.UpdateItemInput = <DynamoDB.UpdateItemInput>(<unknown>{
     TableName: TableNames.getGroupsTableName(),
   });

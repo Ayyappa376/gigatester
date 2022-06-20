@@ -1,7 +1,7 @@
-import { AllotedTeam, CreateUserConfig, UserDocument } from '@models/index';
+import { AllotedTeam, CreateUserConfig, GroupInfo, UserDocument } from '@models/index';
 import { config } from '@root/config';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, getUserConfig } from '@utils/index';
+import { appLogger, getGroupsList, getUserConfig } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 // import { getTeams2 } from './getTeams';
 import { get, put, scan, update } from './sdk';
@@ -281,14 +281,18 @@ export const getCreateUserConfig = async (
 ): Promise<CreateUserConfig> => {
   const userConfig = await getUserConfig(orgId);
   appLogger.info({ getUserConfig: userConfig });
-
+  const groups: GroupInfo[] = await getGroupsList();
   const configDetails = {};
   Object.keys(userConfig.config).forEach((val: any) => {
     configDetails[val] = {};
     configDetails[val].displayName = userConfig.config[val].displayName;
     configDetails[val].Mandatory = userConfig.config[val].mandatory;
     configDetails[val].type = userConfig.config[val].type;
-    if (userConfig.config[val].options) {
+    if(val === 'groups') {
+      configDetails[val].options = {};
+      Object.keys(groups).forEach((value: string) => configDetails[val].options[groups[value].id] = groups[value].name);
+    }
+    if(userConfig.config[val].options && val !== 'groups') {
       configDetails[val].options = [];
       if (
         userConfig.config[val].options.custom &&
@@ -307,7 +311,6 @@ export const getCreateUserConfig = async (
       }
     }
   });
-
   const createUserConfig: CreateUserConfig = { config: configDetails, orgId };
   appLogger.info({ createUserConfig_before: createUserConfig });
   // const teamList: any = await getTeams2(order).then((teams: any) =>

@@ -1,702 +1,292 @@
-import React, { useState, useEffect, Fragment } from 'react';
+import React, { useEffect, useState, Fragment } from 'react';
 import {
-  Grid,
-  makeStyles,
-  MuiThemeProvider,
-  TextField,
   Typography,
-  Button,
-  FormControl,
+  makeStyles,
   Container,
-  MenuItem,
-  Select,
-  InputLabel,
-  Input,
-  Chip,
+  Paper,
+  TextField,
+  Button,
+  CircularProgress,
+  Backdrop,
+  Grid,
+  TableSortLabel,
+  MuiThemeProvider,
   Snackbar,
   SnackbarContent,
-  Tooltip,
+  Tooltip
 } from '@material-ui/core';
+import TreeView from '@material-ui/lab/TreeView';
+import TreeItem from '@material-ui/lab/TreeItem';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
 import ClearIcon from '@material-ui/icons/Clear';
 import AddIcon from '@material-ui/icons/Add';
-import { default as MaterialLink } from '@material-ui/core/Link';
+import EditIcon from '@material-ui/icons/Edit';
 import { useSelector } from 'react-redux';
 import { IRootState } from '../../../reducers';
 import Loader from '../../loader';
-import { IServiceInfo, /*ITeamAttributes*/IFieldConfigAttributes, ITeamParams, IObjectConfigDetails } from '../../../model';
 import { Http } from '../../../utils';
-import Success from '../../success-page';
-//import MapMetricsTools from '../map-metrics-tools';
 import { withRouter } from 'react-router-dom';
-import { MANAGE_GROUPS } from '../../../pages/admin';
+import { ModalComponent } from '../../modal';
 import { buttonStyle, tooltipTheme } from '../../../common/common';
+import SearchControl from '../../common/searchControl';
+import PageSizeDropDown from '../../common/page-size-dropdown';
+import RenderPagination from '../../common/pagination';
 import { Text } from '../../../common/Language';
 import '../../../css/assessments/style.css';
-
-import  {MAX_SERVICE_HIERARCHY_LEVEL, OTHER_STRING } from '../create-team';
-
-const ITEM_HEIGHT = 48;
-const ITEM_PADDING_TOP = 8;
-const MenuProps = {
-  PaperProps: {
-    style: {
-      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
-      width: 250,
-    },
-  },
-};
+import { IGroupInfo } from '../../../model/admin/group';
 
 const useStyles = makeStyles((theme) => ({
-  button: {
-    marginTop: '36px',
+  actionsBlock: {
+    display: 'flex',
+    flexWrap: 'wrap',
+    marginLeft: '20%',
+  },
+  backButton: {
+    // marginTop: '36px',
     position: 'relative',
     minWidth: '10%',
+    right: '-50px',
     marginRight: '20px',
     ...buttonStyle,
   },
-  grid: {
-    marginTop: theme.spacing(2),
-    width: '90%'
+  backdrop: {
+    zIndex: theme.zIndex.drawer + 1,
+    color: '#fff',
   },
-  grid2: {
-    marginTop: theme.spacing(2),
-    marginLeft: theme.spacing(5),
-    border: '1px solid #dadde9',
-    width: '95%'
-  },
-  formControl: {
-    minWidth: '100%',
-  },
-  chips: {
-    display: 'flex',
-    flexWrap: 'wrap',
-  },
-  chip: {
-    margin: 2,
+  treeRoot: {
+    height: 110,
+    flexGrow: 1,
+    maxWidth: 400,
   },
 }));
 
 const EditGroup = (props: any) => {
   const classes = useStyles();
-  const [teamPosted, setTeamPosted] = useState(false);
-  const [failure, setFailure] = useState(false);
-  const [teamDataFetched, setTeamDataFetched] = useState(false);
-  const [failureMessage, setFailureMessage] = useState(
-    <Text tid='somethingWentWrong' />
-  );
   const stateVariable = useSelector((state: IRootState) => {
     return state;
   });
-  const [teamState, setTeamState] = React.useState<ITeamParams | undefined>();
-  const [mapCollectors, setMapCollectors] = useState(false);
+  const [fetchedGroups, setFetchedGroups] = React.useState(false);
+//  const [allGroups, setAllGroups] = React.useState<IGroupInfo[]>([]);
+  const [backdropOpen, setBackdropOpen] = React.useState(false);
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedGroupId, setSelectedGroupId] = useState<string>('');
+//  const [searchString, setSearchString] = useState('');
+  const [groups, setGroups] = useState<{[key: string]: IGroupInfo}>({});
+  const [hasChanges, setHasChanges] = useState<{[key: string]: boolean}>({});
+//  const [searchButtonPressed, setSearchButtonPressed] = useState(false);
+//  const [itemsPerPage, setItemsPerPage] = useState(10);
+//  const [currentPage, setCurrentPage] = useState(1);
+//  const [numberOfGroups, setNumberOfGroups] = useState(0);
+//  const [itemLimit, setItemLimit] = useState({
+//    lowerLimit: 0,
+//    upperLimit: 9,
+//  });
+//  const [order, setOrder] = useState<'asc' | 'desc'>('desc');
+//  const [orderBy, setOrderBy] = useState('name');
+  const [failure, setFailure] = useState(false);
+  const [failureMessage, setFailureMessage] = useState(
+    <Text tid='somethingWentWrong' />
+  );
   let msgFailure = failureMessage;
-  let msgSuccess = <Text tid='platformDetailsUpdatedSuccessfully' />;
+
+  const fetchGroupList = () => {
+    setBackdropOpen(true);
+    Http.get({
+      url: `/api/v2/groups`,
+      state: stateVariable,
+    })
+    .then((response: any) => {
+//      response.sort((a: IGroupInfo, b: IGroupInfo) => {
+//        return a.name.localeCompare(b.name);
+//      });
+      setFetchedGroups(true);
+//      setAllGroups(response);
+      setGroups(response);
+      initializeHasChanges(Object.keys(response));
+      setBackdropOpen(false);
+    })
+    .catch((error: any) => {
+      setFetchedGroups(true);
+      setBackdropOpen(false);
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        props.history.push('/error');
+      }
+    })
+  };
 
   useEffect(() => {
-    Http.get({
-      url: `/api/v2/admin/createteam/${props.teamId} `,
-      state: stateVariable,
-    })
-      .then((response: any) => {
-        fixMultiSelectValuesAndSave(response);
-      })
-      .catch((error: any) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          props.history.push('/error');
-        }
-        setFailure(true);
-      });
+    fetchGroupList();
+//    setSearchString('');
+//    setCurrentPage(1);
   }, []);
 
-  const handleSave = (isMapCollectors?: boolean) => {
-    const postData = teamState;
-    Http.put({
-      url: `/api/v2/admin/createteam`,
-      body: {
-        ...postData,
-      },
-      state: stateVariable,
-    })
-      .then((response: any) => {
-        if (isMapCollectors) {
-          setMapCollectors(true);
-        } else {
-          setTeamPosted(true);
-        }
-      })
-      .catch((error: any) => {
-        const perror = JSON.stringify(error);
-        const object = JSON.parse(perror);
-        if (object.code === 400) {
-          setFailureMessage(object.apiError.msg);
-        } else if (object.code === 401) {
-          props.history.push('/relogin');
-        } else {
-          setFailureMessage(<Text tid='somethingWentWrong' />);
-          setFailure(true);
-        }
-      });
+  const initializeHasChanges = (groupIds: string[]) => {
+    const tempHasChanges: {[key: string]: boolean} = {};
+    groupIds.forEach((id: string) => tempHasChanges[id] = false);
+    setHasChanges(tempHasChanges);
+  }
+
+  const mandatoryFieldCheck = (group: IGroupInfo): boolean => {
+    return (group.name !== '');
   };
 
-  const fixMultiSelectValuesAndSave = (response: ITeamParams) => {
-    if (response.values) {
-      fixOtherValuesMultiSelect(response.teamConfig, response.values);
-      if (response.values.services) {
-        fixServicesMultiSelectValues(response.serviceConfig, response.values.services);
-      }
-    }
-    setTeamState(response);
-    setTeamDataFetched(true);
-  };
+//  useEffect(() => {
+//    setNumberOfGroups(groups.length);
+//  }, [groups]);
 
-  const fixServicesMultiSelectValues = (config: IObjectConfigDetails, services: any[]) => {
-    services.forEach((service: any) => {
-      fixOtherValuesMultiSelect(config, service);
-      if (service.services) {
-        fixServicesMultiSelectValues(config, service.services);
-      }
-    });
-  };
-
-  const fixOtherValuesMultiSelect = (config: IObjectConfigDetails, values: any) => {
-    Object.keys(config).forEach((el) => {
-      if (config[el].type === 'multi-list' && values && values[el]) {
-        values[el].forEach((opt: any, index: number) => {
-          if (config[el].options &&
-            ((config[el].options.custom && !config[el].options.custom.includes(opt)) ||
-              (config[el].options.customFixed && !config[el].options.customFixed.includes(opt)))) {
-            //            const index = response.values[el].indexOf(opt);
-            values![el][index] = `${OTHER_STRING}:${opt}`;
-          }
+  const handleSave = (groupId: string) => {
+    const group: IGroupInfo = groups[groupId];
+    if(mandatoryFieldCheck(group)) {
+      setBackdropOpen(true);
+      if(group.id === 'tempId') {
+        console.log(group);
+        Http.post({
+          url: `/api/v2/groups`,
+          body: {
+            group: { ...group, id: '' }
+          },
+          state: stateVariable,
+        })
+        .then((response: any) => {
+          setBackdropOpen(false);
+          fetchGroupList();
+        })
+        .catch((error: any) => {
+          setBackdropOpen(false);
+          handleSaveError(error);
+        });
+      } else {
+        Http.put({
+          url: `/api/v2/groups`,
+          body: {
+            group: { ...group }
+          },
+          state: stateVariable,
+        })
+        .then((response: any) => {
+          setBackdropOpen(false);
+          fetchGroupList();
+        })
+        .catch((error: any) => {
+          setBackdropOpen(false);
+          handleSaveError(error);
         });
       }
-    });
-  };
-
-  const getMultiListOtherTextValue = (values: any) => {
-    let ret_value = '';
-    if (values) {
-      values.forEach((el: string) => {
-        if (el.includes(`${OTHER_STRING}:`)) {
-          ret_value = el.substring(6);
-        }
-      });
-    }
-    return ret_value;
-  };
-
-  function mandatoryFieldsCheck(): boolean {
-    //    let countFilledElements = 0;
-    //    let totalCount = 0;
-    let check: boolean = true;
-    // tslint:disable-next-line: ter-arrow-parens
-    if (!teamState) {
-      return false;
-    }
-    Object.keys(teamState.teamConfig).forEach((el) => {
-      if (teamState.teamConfig[el].mandatory) {
-        if (!teamState.values || !teamState.values[el]) {
-          check = false;
-        } else if ((teamState.teamConfig[el].type === 'multi-list') &&
-          (teamState.values[el].length === 0)) {
-          check = false;
-        }
-      }
-    });
-
-    if (teamState.values && teamState.values.services && !mandatoryServicesFieldsCheck(teamState.values.services)) {
-      check = false;
-    }
-    return check;
-
-    /*
-        Object.keys(teamState.teamConfig).map((el) => {
-          if (teamState.teamConfig[el].mandatory) {
-            if (teamState && teamState.values && teamState.values[el]) {
-              if (teamState.teamConfig[el].type === 'multi-list') {
-                if (teamState.values[el].length > 0) {
-                  countFilledElements = countFilledElements + 1;
-                }
-              } else {
-                countFilledElements = countFilledElements + 1;
-              }
-            }
-            totalCount = totalCount + 1;
-          }
-        });
-        if (totalCount === countFilledElements) {
-          return true;
-        }
-        return false;
-      */
-  }
-
-  function mandatoryServicesFieldsCheck(services: IServiceInfo[]): boolean {
-    let check: boolean = true;
-
-    if (!teamState) {
-      return false;
-    }
-
-    services.forEach((service: IServiceInfo) => {
-      Object.keys(teamState.serviceConfig).forEach((el) => {
-        if (teamState.serviceConfig[el].mandatory) {
-          if (!service[el]) {
-            check = false;
-          } else if ((service[el].type === 'multi-list') && (service[el].length === 0)) {
-            check = false;
-          }
-        }
-      });
-
-      if (service.services && !mandatoryServicesFieldsCheck(service.services)) {
-        check = false;
-      }
-    });
-    return check;
-  }
-
-  const handleChangeValue = (event: any, key: string, indexPath: number[]) => {
-    if (teamState) {
-      const temp: ITeamParams | null | undefined = { ...teamState };
-      let values: any = temp.values;
-      for (let i: number = 0; i < indexPath.length; i++) {
-        if (values && values.services) {
-          values = values.services[indexPath[i]];
-        } else {
-          values = null;
-        }
-      }
-
-      if (values) {
-        values[key] = event.target.value;
-        setTeamState(temp);
-      }
     }
   };
 
-  const handleChangeOtherValueList = (event: any, key: string, indexPath: number[]) => {
-    if (teamState) {
-      const temp: ITeamParams | null | undefined = { ...teamState };
-      let values: any = temp.values;
-      for (let i: number = 0; i < indexPath.length; i++) {
-        if (values && values.services) {
-          values = values.services[indexPath[i]];
-        } else {
-          values = null;
-        }
-      }
-
-      if (values) {
-        if (event.target.value === '') {
-          values[key] = OTHER_STRING;
-        } else {
-          values[key] = event.target.value;
-        }
-        setTeamState(temp);
-      }
-    }
-  };
-
-  const returnIndexOfOther = (array: string[]) => {
-    let index = -1;
-    array.forEach((el, i) => {
-      if (el.includes(OTHER_STRING)) {
-        index = i;
-      }
-    });
-    return index;
-  };
-
-  const handleChangeOtherMultilist = (event: any, key: string, indexPath: number[]) => {
-    if (teamState) {
-      const temp: ITeamParams | null | undefined = { ...teamState };
-      let values: any = temp.values;
-      for (let i: number = 0; i < indexPath.length; i++) {
-        if (values && values.services) {
-          values = values.services[indexPath[i]];
-        } else {
-          values = null;
-        }
-      }
-
-      if (values) {
-        const updatedString = `${OTHER_STRING}: ${event.target.value}`;
-        const valueArray = values[key] || [];
-        const indexOfOther = returnIndexOfOther(valueArray);
-        valueArray[indexOfOther] = updatedString;
-        values[key] = valueArray;
-        setTeamState(temp);
-      }
-    }
-  };
-
-  const handleChangeMultiValue = (event: any, key: string, indexPath: number[]) => {
-    if (teamState) {
-      const temp: ITeamParams | null | undefined = { ...teamState };
-      let values: any = temp.values;
-      for (let i: number = 0; i < indexPath.length; i++) {
-        if (values && values.services) {
-          values = values.services[indexPath[i]];
-        } else {
-          values = null;
-        }
-      }
-
-      if (values) {
-        let valueArray = values[key] || [];
-        valueArray = [...event.target.value];
-        values[key] = valueArray;
-        setTeamState(temp);
-      }
-    }
-  };
-
-  const includesOther = (array: string[]) => {
-    let otherExist = false;
-    array.forEach((el) => {
-      if (el.includes(OTHER_STRING)) {
-        otherExist = true;
-      }
-    });
-    return otherExist;
-  };
-
-  const renderChips = (selected: any) => {
-    return (
-      <div className={classes.chips}>
-        {(selected as string[]).map((value) => {
-          const val = value.includes(`${OTHER_STRING}:`) ? OTHER_STRING : value;
-          return <Chip key={val} label={val} className={classes.chip} />;
-        })}
-      </div>
-    );
-  };
-
-  const removeOthersText = (values: string[]) => {
-    const val = values.forEach((el) => {
-      if (el.includes(`${OTHER_STRING}:`)) {
-        return OTHER_STRING;
-      }
-      return el;
-    });
-    return val;
-  };
-
-  const addService = (indexPath: number[]) => {
-    if (teamState) {
-      const temp: ITeamParams | null | undefined = { ...teamState };
-      let values: any = temp.values;
-      for (let i: number = 0; i < indexPath.length; i++) {
-        if (values && values.services) {
-          values = values.services[indexPath[i]];
-        } else {
-          values = null;
-        }
-      }
-
-      if (values) {
-        if (!values.services) {
-          values.services = [];
-        }
-        values.services.push({ name: '', active: 'true' });
-        setTeamState(temp);
-      }
+  const handleSaveError = (error: any) => {
+    const perror = JSON.stringify(error);
+    const object = JSON.parse(perror);
+    if (object.code === 400) {
+      setFailureMessage(object.apiError.msg);
+    } else if (object.code === 401) {
+      props.history.push('/relogin');
+    } else {
+      setFailureMessage(<Text tid='somethingWentWrong' />);
+      setFailure(true);
     }
   }
 
-  const deleteService = (indexPath: number[]) => {
-    if (teamState) {
-      const temp: ITeamParams | null | undefined = { ...teamState };
-      let values: any = temp.values;
-      for (let i: number = 0; i < indexPath.length; i++) {
-        if (values && values.services) {
-          values = values.services[indexPath[i]];
-        } else {
-          values = null;
-        }
-      }
+  // useEffect(() => {
+  //   if (searchButtonPressed) {
+  //     setSearchButtonPressed(false);
+  //     const searchedItems: any = [];
+  //     if (searchString === '') {
+  //       setGroups([]);
+  //     }
+  //     allGroups.forEach((el: any) => {
+  //       if (el.groupName.toLowerCase().includes(searchString.toLowerCase())) {
+  //         searchedItems.push(el);
+  //       }
+  //     });
+  //     setGroups(searchedItems);
+  //     setCurrentPage(1);
+  //   }
+  // }, [searchButtonPressed]);
 
-      if (values) {
-        values.active = 'false';
-        setTeamState(temp);
-      }
-    }
-  }
+  // useEffect(() => {
+  //   calculateLimits();
+  // }, [currentPage]);
 
-  // const handleMapMetricsBackButton = () => {
-  //   if (props.isMapCollectors) {
-  //     props.goBack(MANAGE_GROUPS);
+  // useEffect(() => {
+  //   setCurrentPage(1);
+  //   calculateLimits();
+  // }, [itemsPerPage]);
+
+  // useEffect(() => {
+  //   if (groups !== []) {
+  //     const tempSortedGroups = [...groups];
+  //     if (order === 'asc') {
+  //       if (orderBy === 'group') {
+  //         setGroups(tempSortedGroups.sort(compareGroup));
+  //       }
+  //     }
+  //     if (order === 'desc') {
+  //       if (orderBy === 'group') {
+  //         setGroups(tempSortedGroups.sort(compareGroupD));
+  //       }
+  //     }
+  //   }
+  // }, [order, orderBy]);
+
+  // function compareGroup(a: IGroupInfo, b: IGroupInfo) {
+  //   return a.name.localeCompare(b.name);
+  // }
+
+  // function compareGroupD(a: IGroupInfo, b: IGroupInfo) {
+  //   return b.name.localeCompare(a.name);
+  // }
+
+  // const handleRequestSort = (property: string) => {
+  //   if (orderBy === property) {
+  //     setOrder(order === 'asc' ? 'desc' : 'asc');
   //   } else {
-  //     setMapCollectors(false);
+  //     setOrder('asc');
+  //     setOrderBy(property);
   //   }
   // };
 
-  // const renderMapCollectors = () => {
-  //   props.mapMetricsClicked(props.teamId);
-  //   return (
-  //     <MapMetricsTools teamId={props.teamId} />
-  //   )
-  // }
+  // const calculateLimits = () => {
+  //   const lowerLimit = (currentPage - 1) * itemsPerPage;
+  //   const upperLimit = lowerLimit + itemsPerPage - 1;
+  //   setItemLimit({ lowerLimit, upperLimit });
+  // };
 
-  const handleMapCollectorsButton = () => {
-    handleSave(true);
+  // const handleSearch = (str?: string) => {
+  //   if (typeof str !== 'undefined') {
+  //     setSearchString(str);
+  //   }
+  //   setSearchButtonPressed(true);
+  // };
+
+  // const handleChangeItemsPerPage = (event: any) => {
+  //   const value = parseInt(event.target.value, 10);
+  //   setItemsPerPage(value);
+  // };
+
+  // const handlePaginationClick = (event: number) => {
+  //   setCurrentPage(event);
+  // };
+
+  const deleteClicked = (groupId: string) => {
+    setSelectedGroupId(groupId);
+    setOpenModal(true);
   };
 
-  const renderElements = (key: string, config: IObjectConfigDetails, values: any, indexPath: number[]) => {
-    const element: IFieldConfigAttributes = config[key];
-    //    const values = teamState ? teamState.values : null;
-    switch (element.type) {
-      case 'string':
-        return (
-          <TextField
-            required={element.mandatory}
-            type='string'
-            id={`${key}_${indexPath.join('_')}`}
-            name={`${key}_${indexPath.join('_')}`}
-            value={values ? (values[key] ? values[key] : '') : ''}
-            label={element.displayName}
-//            disabled={key === 'teamName'}
-            onChange={(event) => handleChangeValue(event, key, indexPath)}
-            fullWidth
-            autoComplete='off'
-            className='textFieldStyle'
-          />
-        );
-      case 'number':
-        return (
-          <div className='numberInput'>
-            <TextField
-              required={element.mandatory}
-              type='number'
-              id={`${key}_${indexPath.join('_')}`}
-              name={`${key}_${indexPath.join('_')}`}
-              value={values ? (values[key] ? values[key] : '') : ''}
-              label={element.displayName}
-              onChange={(event) => handleChangeValue(event, key, indexPath)}
-              fullWidth
-              autoComplete='off'
-              InputProps={{ disableUnderline: true }}
-              className='textFieldStyle'
-            />
-          </div>
-        );
-      case 'list':
-        return (
-          <Fragment>
-            <FormControl className={classes.formControl}>
-              <InputLabel
-                id={`label_${key}_${indexPath.join('_')}`}
-                required={element.mandatory}
-              >
-                {element.displayName}
-              </InputLabel>
-              <Select
-                name={`select_${key}_${indexPath.join('_')}`}
-                value={
-                  values
-                    ? values[key]
-                      ? element.options
-                        ? element.options.custom
-                          ? element.options.custom.split(',').includes(values[key])
-                            ? values[key]
-                            : OTHER_STRING
-                          : element.options.customFixed
-                            ? element.options.customFixed.split(',').includes(values[key])
-                              ? values[key]
-                              : OTHER_STRING
-                            : OTHER_STRING
-                        : OTHER_STRING
-                      : ''
-                    : ''
-                }
-                onChange={(event) => handleChangeValue(event, key, indexPath)}
-              >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
-                    return (
-                      <MenuItem key={opt} value={opt}>
-                        {opt}
-                      </MenuItem>
-                    );
-                  })
-                ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
-                      return (
-                        <MenuItem key={opt} value={opt}>
-                          {opt}
-                        </MenuItem>
-                      );
-                    })
-                  ) : (
-                    <div />
-                  )
-                )}
-                <MenuItem key={OTHER_STRING} value={OTHER_STRING}>
-                  <Text tid='other' />
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              required={element.mandatory}
-              type='string'
-              id={`text_${key}_${indexPath.join('_')}`}
-              name={`text_${key}_${indexPath.join('_')}`}
-              disabled={
-                !values || !values[key] ||
-                (element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) ||
-                (element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
-              }
-              label={`(specify, if ${OTHER_STRING})`}
-              value={
-                values &&
-                values[key] &&
-                !(element.options && element.options.custom && element.options.custom.split(',').includes(values[key])) &&
-                !(element.options && element.options.customFixed && element.options.customFixed.split(',').includes(values[key]))
-                ? values[key] === OTHER_STRING
-                  ? ''
-                  : values[key]
-                : ''
-              }
-              onChange={(event) => handleChangeOtherValueList(event, key, indexPath)}
-              autoComplete='off'
-              className='textFieldStyle'
-            />
-          </Fragment>
-        );
-      case 'list-no-others':
-        return (
-          <FormControl className={classes.formControl}>
-            <InputLabel
-              id={`label_${key}_${indexPath.join('_')}`}
-              required={element.mandatory}
-            >
-              {element.displayName}
-            </InputLabel>
-            <Select
-              name={`select_${key}_${indexPath.join('_')}`}
-              value={
-                values
-                  ? values[key]
-                    ? element.options
-                      ? element.options.custom
-                        ? element.options.custom.split(',').includes(values[key])
-                          ? values[key]
-                          : ''
-                        : element.options.customFixed
-                          ? element.options.customFixed.split(',').includes(values[key])
-                            ? values[key]
-                            : ''
-                          : ''
-                      : ''
-                    : ''
-                  : ''
-              }
-              onChange={(event) => handleChangeValue(event, key, indexPath)}
-            >
-              {element.options && element.options.custom ? (
-                element.options.custom.split(',').map((opt: string) => {
-                  return (
-                    <MenuItem key={opt} value={opt}>
-                      {opt}
-                    </MenuItem>
-                  );
-                })
-              ) : (
-                element.options && element.options.customFixed ? (
-                  element.options.customFixed.split(',').map((opt: string) => {
-                    return (
-                      <MenuItem key={opt} value={opt}>
-                        {opt}
-                      </MenuItem>
-                    );
-                  })
-                ) : (
-                  <div />
-                )
-              )}
-            </Select>
-          </FormControl>
-        );
-      case 'multi-list':
-        return (
-          <Fragment>
-            <FormControl className={classes.formControl}>
-              <InputLabel
-                id={`label_${key}_${indexPath.join('_')}`}
-                required={element.mandatory}
-              >
-                {element.displayName}
-              </InputLabel>
-              <Select
-                id={`select_${key}_${indexPath.join('_')}`}
-                name={`select${key}_${indexPath.join('_')}`}
-                multiple
-                value={
-                  values
-                    ? values[key]
-                      ? values[key] !== ''
-                        ? removeOthersText(values[key])
-                        : []
-                      : []
-                    : []
-                }
-                onChange={(event) => handleChangeMultiValue(event, key, indexPath)}
-                input={<Input id='select-multiple-chip' />}
-                renderValue={renderChips}
-                MenuProps={MenuProps}
-              >
-                {element.options && element.options.custom ? (
-                  element.options.custom.split(',').map((opt: string) => {
-                    return (
-                      <MenuItem key={opt} value={opt}>
-                        {opt}
-                      </MenuItem>
-                    );
-                  })
-                ) : (
-                  element.options && element.options.customFixed ? (
-                    element.options.customFixed.split(',').map((opt: string) => {
-                      return (
-                        <MenuItem key={opt} value={opt}>
-                          {opt}
-                        </MenuItem>
-                      );
-                    })
-                  ) : (
-                    <div />
-                  )
-                )}
-                <MenuItem key={OTHER_STRING} value={OTHER_STRING}>
-                  <Text tid='other' />
-                </MenuItem>
-              </Select>
-            </FormControl>
-            <TextField
-              required={element.mandatory}
-              type='string'
-              id={`text_${key}_${indexPath.join('_')}`}
-              name={`text_${key}_${indexPath.join('_')}`}
-              disabled={!(values && values[key] && includesOther(values[key]))}
-              value={
-                values
-                  ? values[key]
-                    ? getMultiListOtherTextValue(values[key])
-                    : ''
-                  : ''
-              }
-              label={'(specify, if ${OTHER_STRING})'}
-              onChange={(event) => handleChangeOtherMultilist(event, key, indexPath)}
-              autoComplete='off'
-              className='textFieldStyle'
-            />
-          </Fragment>
-        );
+  const modalNoClicked = () => {
+    setOpenModal(false);
+  };
+
+  const modalYesClicked = () => {
+    if (selectedGroupId.length > 0) {
+      deleteGroup(selectedGroupId);
+      setOpenModal(false);
     }
   };
 
@@ -704,20 +294,114 @@ const EditGroup = (props: any) => {
     setFailure(false);
   };
 
-  const renderService = (service: IServiceInfo, indexPath: number[]) => {
-    return (
-      <Fragment>
-        <Grid item xs={11}>
-          {Object.keys(teamState!.serviceConfig).map((el: string) => {
-            return (
-              <div key={el} style={{ padding: '5px' }}>
-                {renderElements(el, teamState!.serviceConfig, service, indexPath)}
-              </div>
-            );
-          })}
-        </Grid>
-        <Grid item xs={1}>
-          <div style={{ cursor: 'pointer' }}>
+  const deleteGroup = (groupId: string) => {
+    setBackdropOpen(true);
+    Http.deleteReq({
+      url: `/api/v2/groups/${groupId}`,
+      state: stateVariable,
+    })
+    .then((response: any) => {
+      setBackdropOpen(false);
+      setSelectedGroupId('');
+      fetchGroupList();
+    })
+    .catch((error) => {
+      const perror = JSON.stringify(error);
+      const object = JSON.parse(perror);
+      if (object.code === 400) {
+        setFailureMessage(object.apiError.msg);
+      } else if (object.code === 401) {
+        props.history.push('/relogin');
+      } else {
+        setFailureMessage(<Text tid='somethingWentWrong' />);
+        setFailure(true);
+      }
+      setBackdropOpen(false);
+      setSelectedGroupId('');
+      fetchGroupList();
+    });
+  };
+
+  const handleChangeValue = (event: any, groupId: string) => {
+    const temp: {[key: string]: IGroupInfo} = { ...groups };
+    const group: IGroupInfo = temp[groupId];
+
+    group.name = event.target.value;
+    setGroups(temp);
+
+    const tempHasChanges: {[key: string]: boolean} = { ...hasChanges };
+    tempHasChanges[groupId] = true;
+    setHasChanges(tempHasChanges);
+  };
+
+  const addChildGroup = (parentGroupId?: string) => {
+    const temp: {[key: string]: IGroupInfo} = { ...groups };
+    const newGroup: IGroupInfo = {
+      id: 'tempId',
+      name: '',
+    };
+    console.log(parentGroupId, 'parentGroupId')
+    if(parentGroupId) {
+      newGroup.parent = parentGroupId;
+      const parentGroup: IGroupInfo = temp[parentGroupId];
+      if(!parentGroup.children) {
+        parentGroup.children = [];
+      }
+      parentGroup.children.push('tempId');
+    }
+    temp[newGroup.id] = newGroup;
+    console.log(temp, 'temp group');
+    setGroups(temp);
+
+    const tempHasChanges: {[key: string]: boolean} = { ...hasChanges };
+    tempHasChanges[newGroup.id] = true;
+    setHasChanges(tempHasChanges);
+  };
+
+  const renderTree = (group: IGroupInfo) => {
+    return(
+      <TreeItem key={group.id} nodeId={group.id} label={
+        <Fragment>
+          <TextField
+            required={true}
+            type='string'
+            id={group.id}
+            name={group.id}
+            value={group.name ? group.name : ''}
+            label={'Group Name:'}
+            onChange={(event) => handleChangeValue(event, group.id)}
+            fullWidth
+            autoComplete='off'
+            className='textFieldStyle'
+          />
+          <div style={{ cursor: 'pointer', display: 'flex', justifyContent: 'flex-end' }}>
+          <MuiThemeProvider theme={tooltipTheme}>
+              <Tooltip
+                title={
+                  <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                    <Text tid='addChildGroup' />
+                  </Typography>
+                }
+              >
+                <Typography style={{position: 'relative', top: '-21px', right: '-82px'}}>
+                  <AddIcon onClick={() => { addChildGroup(group.id); }} />{' '}
+                  {/* <Text tid='addChildGroup' /> */}
+                </Typography>
+              </Tooltip>
+            </MuiThemeProvider>
+            {hasChanges[group.id] ? (
+              <Button
+                onClick={() => { handleSave(group.id) }}
+                className={classes.backButton}
+                variant='outlined'
+              >
+                <Text tid='save' />
+              </Button>
+            ) : (
+              <Button className={classes.backButton} disabled variant='outlined'>
+                <Text tid='save' />
+              </Button>
+            )}
             <MuiThemeProvider theme={tooltipTheme}>
               <Tooltip
                 title={
@@ -726,186 +410,194 @@ const EditGroup = (props: any) => {
                   </Typography>
                 }
               >
-                <Typography>
-                  <ClearIcon onClick={() => { deleteService(indexPath); }} />
+                <Typography style={{ padding: '0 6px', position: 'relative', top: '-20px' }}>
+                  <ClearIcon onClick={() => { deleteClicked(group.id); }}/>
                 </Typography>
               </Tooltip>
             </MuiThemeProvider>
           </div>
-        </Grid>
-        {(indexPath.length < MAX_SERVICE_HIERARCHY_LEVEL) ?
-          (
-            <Grid container spacing={3} className={classes.grid}>
-              <Typography color='textSecondary' style={{paddingLeft: '25px'}}>
-                <Text tid='serviceSubComponents' />
-              </Typography>
-              {service.services && service.services.map((subService: IServiceInfo, index: number) => {
-                if (subService.active === 'true') {
-                  return (
-                    <Grid container spacing={3} className={classes.grid2} key={index}>
-                      {renderService(subService, [...indexPath, index])}
-                    </Grid>
-                  );
-                }
-              })}
-              <Grid item xs={1}>
-                <div style={{ cursor: 'pointer' }}>
-                  <MuiThemeProvider theme={tooltipTheme}>
-                    <Tooltip
-                      title={
-                        <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
-                          <Text tid='addServiceSubComponents' />
-                        </Typography>
-                      }
-                    >
-                      <Typography>
-                        <AddIcon
-                          fontSize='large'
-                          onClick={() => {
-                            addService(indexPath);
-                          }}
-                        />{' '}
-                      </Typography>
-                    </Tooltip>
-                  </MuiThemeProvider>
-                </div>
-              </Grid>
-            </Grid>
-          ) : (<div />)
-        }
-      </Fragment>
-    );
-  }
-
-  const renderFormData = () => {
-    if (teamPosted) {
-      return (
-        <Fragment>
-          <Success message={msgSuccess} />
-          <div className='bottomButtonsContainer'>
-            <Button
-              className={classes.button}
-              variant='outlined'
-              onClick={() => {
-                props.goBack(MANAGE_GROUPS);
-              }}
-            >
-              <Text tid='goBack' />
-            </Button>
-          </div>
         </Fragment>
-      );
-    }
+      }>
+        {group.children && group.children.map((childId: string) => {
+          console.log(group, 'before render tree call');
+          console.log(groups[childId], childId)
+          return renderTree(groups[childId])
+        })}
+      </TreeItem>
+    )
+  };
 
+  const renderGroupsTree = () => {
     return (
       <Fragment>
-        <Grid container spacing={3} className={classes.grid}>
-          {Object.keys(teamState!.teamConfig).map((el) => {
-            return (
-              <Grid key={el} item xs={12}>
-                {renderElements(el, teamState!.teamConfig, teamState!.values, [])}
-              </Grid>
-            );
-          })}
-          <Grid container spacing={3} className={classes.grid}>
-            <Typography  color='textSecondary' style={{paddingLeft: '25px'}}>
-              <Text tid='serviceComponents' />
-            </Typography>
-            {teamState!.values!.services && teamState!.values!.services.map((service: IServiceInfo, index: number) => {
-              if (service.active === 'true') {
-                return (
-                  <Grid container spacing={3} className={classes.grid2} key={index}>
-                    {renderService(service, [index])}
-                  </Grid>
-                );
-              }
-            })}
-            <Grid item xs={1}>
-              <div style={{ cursor: 'pointer' }}>
+        <Container maxWidth='md' component='div' className='containerRoot'>
+          <Backdrop className={classes.backdrop} open={backdropOpen}>
+            <CircularProgress color='inherit' />
+          </Backdrop>
+          <div style={{ width: '100%', display: 'flex' }}>
+            <Grid container spacing={3}>
+              <Grid item sm={5}>
                 <MuiThemeProvider theme={tooltipTheme}>
                   <Tooltip
-                    title={
-                      <Typography style={{fontSize: '12px', textAlign: 'center' }}>
-                        <Text tid='addServiceComponents' />
+                    title={ 
+                      <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                        <Text tid='addGroup' />
                       </Typography>
                     }
                   >
                     <Typography>
-                      <AddIcon
-                        fontSize='large'
-                        onClick={() => {
-                          addService([]);
-                        }}
-                      />{' '}
+                      <AddIcon onClick={() => { props.editClicked(0); }} />{' '}
+                      <Text tid='addGroup' />
                     </Typography>
                   </Tooltip>
                 </MuiThemeProvider>
-              </div>
+              </Grid>
+              <Grid item sm={5}>
+                {/* <SearchControl
+                  searchString={searchString}
+                  handleSearch={handleSearch}
+                /> */}
+              </Grid>
+              <Grid item sm={2}>
+                {/* <PageSizeDropDown
+                  handleChange={handleChangeItemsPerPage}
+                  itemCount={itemsPerPage}
+                /> */}
+              </Grid>
             </Grid>
-          </Grid>
-        </Grid>
-        <div className='bottomButtonsContainer'>
-          <Button
-            className={classes.button}
-            variant='outlined'
-            onClick={() => {
-              props.goBack(MANAGE_GROUPS);
-            }}
-          >
-            <Text tid='goBack' />
-          </Button>
-          {mandatoryFieldsCheck() ? (
+          </div>
+          <Paper className='tableArea'>
+            <TreeView
+              className='treeRoot'
+              defaultCollapseIcon={<ExpandMoreIcon />}
+              defaultExpanded={['root']}
+              defaultExpandIcon={<ChevronRightIcon />}
+            >
+              {groups && Object.keys(groups).map((groupId: string) => {
+                return (!groups[groupId].parent) ? renderTree(groups[groupId]) : ''
+              })}
+            </TreeView>
+            {/*<Table className='table'>
+              <TableHead className='tableHead'>
+                <TableRow>
+                  <TableCell className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='manageGroups2' />
+                    </Typography>
+                  </TableCell>
+                  <TableCell align='center' className='tableHeadCell'>
+                    <Typography className='tableHeadText'>
+                      <Text tid='actions' />
+                    </Typography>
+                  </TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {groups.map((row: IGroupInfo, index: number) => {
+                  return (
+                    <TableRow
+                      key={index}
+                      style={
+                        index % 2
+                          ? { background: '#EFEFEF' }
+                          : { background: 'white' }
+                      }
+                    >
+                      <TableCell
+                        component='th'
+                        scope='row'
+                        className='tableCell'
+                      >
+                        <Typography className='tableBodyText'>
+                          {row.name}
+                        </Typography>
+                      </TableCell>
+                      <TableCell align='center' className='tableCell'>
+                        <div className={classes.actionsBlock}>
+                          <MuiThemeProvider theme={tooltipTheme}>
+                            <Tooltip
+                              title={
+                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                  <Text tid='edit' />
+                                </Typography>
+                              }
+                            >
+                              <Typography style={{ padding: '0 6px' }}>
+                                <EditIcon onClick={() => { props.editClicked(row.id); }}/>
+                              </Typography>
+                            </Tooltip>
+                          </MuiThemeProvider>
+                          <MuiThemeProvider theme={tooltipTheme}>
+                            <Tooltip
+                              title={
+                                <Typography style={{ fontSize: '12px', textAlign: 'center' }}>
+                                  <Text tid='delete' />
+                                </Typography>
+                              }
+                            >
+                              <Typography style={{ padding: '0 6px' }}>
+                                <ClearIcon onClick={() => { deleteClicked(row.id); }}/>
+                              </Typography>
+                            </Tooltip>
+                          </MuiThemeProvider>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+              </TableBody>
+            </Table>*/}
+          </Paper>
+          <div className='bottomButtonsContainer'>
+            {/*<Button
+              className={classes.backButton}
+              variant='outlined'
+              onClick={props.goBack}
+            >
+              <Text tid='goBack' />
+            </Button>*/}
+            {/*hasChanges ? (
             <Button
-              onClick={() => {
-                handleSave(false)
-              }}
-              className={classes.button}
+              onClick={() => { handleSave() }}
+              className={classes.backButton}
               variant='outlined'
             >
               <Text tid='save' />
             </Button>
           ) : (
-            <Button className={classes.button} disabled variant='outlined'>
+            <Button className={classes.backButton} disabled variant='outlined'>
               <Text tid='save' />
             </Button>
-          )}
-          <Button
-            className={classes.button}
-            onClick={handleMapCollectorsButton}
-            variant='outlined'
-          >
-            <Text tid='mapCollectors' />
-          </Button>
-          <Snackbar
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            open={failure}
-            onClose={handleClose}
-            autoHideDuration={9000}
-          >
-            <SnackbarContent
-              style={{
-                backgroundColor: '#dd0000',
-              }}
-              message={msgFailure}
-            />
-          </Snackbar>
-        </div>
+          )*/}
+          </div>
+          <ModalComponent
+            message={'deleteGroupConfirmMessage'}
+            openModal={openModal}
+            handleModalYesClicked={modalYesClicked}
+            handleModalNoClicked={modalNoClicked}
+          />
+        </Container>
+        <Snackbar
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          open={failure}
+          onClose={handleClose}
+          autoHideDuration={9000}
+        >
+          <SnackbarContent
+            style={{
+              backgroundColor: '#dd0000',
+            }}
+            message={msgFailure}
+          />
+        </Snackbar>
       </Fragment>
     );
   };
 
-  // const renderForm = () => {
-  //   return renderFormData();
-  // };
-
   return (
     <Fragment>
-      {teamDataFetched ? (
-        mapCollectors ? (
-          props.mapMetricsClicked(props.teamId)
-        ) : (
-          renderFormData()
-        )
+      {fetchedGroups ? (
+        renderGroupsTree()
       ) : (
         <Container className='loaderStyle'>
           <Loader />
