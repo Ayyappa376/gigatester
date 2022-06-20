@@ -1236,7 +1236,13 @@ const EditProductfeedbackAgentSettings = (props: any) => {
   }
  
   const handleFeedbackFlowChange = (event: any) => {
-    console.log(event);
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.type = event.target.value;
+        setProductParams(temp);
+      }
+    }
   }
 
   const handleIconChange = (event: any) => {

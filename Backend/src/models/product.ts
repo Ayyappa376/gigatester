@@ -1,183 +1,207 @@
-export interface ProductInfo {
-    apiKey?: string;
-    apiKeyId?: string;
-    description?: string;
-    devices?: string[];
-    feedbackAgentSettings?: FeedbackAgentSettings;
-    groups?: string[];
-    id: string;
-    name: string;
-    platforms: string[];
-    software?: string;
-    softwareType?: string;
-    status: string;
-    testers?: TesterStatus[];
-    testSuite?: string[];
-    trackingSystem?: TrackingSystem;
-    emailConfig?: EmailConfiguration;
-    url?: string;
-    version: string;
-    [keyName: string]: any;
+// import  { IObjectConfigDetails } from '..';
+export interface IProductInfo {
+  apiKey?: string;
+  apiKeyId?: string;
+  id: string;
+  groups?: string[];
+  version: string;
+  name: string;
+  description?: string;
+  devices?: string[];
+  software?: string;
+  softwareType?: string;
+  platforms: string[];
+  testSuite?: string[];
+  testers?: ITesterStatus[];
+  feedbackAgentSettings?: IFeedbackAgentSettings;
+  status: string;
+  trackingSystem?: ITrackingSystem;
+  emailConfig?: IEmailConfiguration;
+  [keyName: string]: any;
 }
 
-export interface TesterStatus {
-    approved: boolean;
-    id: string;
+export interface ITesterStatus {
+  id: string;
+  approved: boolean;
 }
 
-export interface FeedbackAgentSettings {
-    bugSettings?: BugSettings;
-    captureSystemDetails?: boolean;
-    featureReqSettings?: FeatureReqSettings;
-    feedbackSettings?: FeedbackSettings;
-    feedbackTypes: FeedbackType[];
-    invokeDelay?: number; //in seconds
-    invokeOn: InvokeType[];
-    logo?: string;
-    platform: PlatformType;
-    remoteBtns?: RemoteBtnSettings[];
-    requireEmail?: boolean; // make email optional or mandatory
-    thanksStr?: string;
-    title: string;
-    uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
-    videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
-    widgetLookAndFeel: WidgetLAF;
+export interface IFeedbackAgentSettings {
+  platform: IPlatformType;
+  feedbackTypes: IFeedbackType[];
+  logo?: string;
+  invokeDelay?: number; //in minutes
+  invokeOn: IInvokeType[];
+  thanksStr?: string;
+  title: string;
+  uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1024
+  videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
+  requireEmail?: boolean;
+  captureSystemDetails?: boolean;
+  remoteBtns?: IRemoteBtnSettings[];
+  widgetLookAndFeel: IWidgetLAF;
+  bugSettings?: IBugSettings;
+  feedbackSettings?: IFeedbackSettings;
+  featureReqSettings?: IFeatureReqSettings;
 }
 
-export interface BugSettings {
-    categories: Category[];
-    dialogMsg?: string;
-    icon?: string;
-    reqComments?: boolean;
-    reqDisplayEmail?: boolean;
-    severities: string[];
-    showSeverity: boolean;
-    thanksMsg?: string;
-    title?: string;
-    tooltip?: string;
+export interface IBugSettings {
+  categories: ICategory[];
+  severities: string[];
+  dialogMsg?: string;
+  thanksMsg?: string;
+  icon?: string;
+  title?: string;
+  tooltip?: string;
+  reqComments: boolean;
+  reqDisplayEmail?: boolean;
+  showSeverity: boolean;
 }
 
-export interface FeedbackSettings {
-    categories: Category[];
-    dialogMsg?: string;
-    icon?: string;
-    ratingIcon: RatingIconType;
-    ratingLimit: number; //values 1,2,3,4,5
-    reqComments?: boolean;
-    reqDisplayEmail?: boolean;
-    thanksMsg?: string;
-    title?: string;
-    tooltip?: string;
+export interface IFeedbackSettings {
+  type: IFeedbackFlowType;
+  categories: ICategory[];
+  ratingIcon: IRatingIconType;
+  ratingLimit: number; //values 1,2,3,4,5
+  dialogMsg?: string;
+  thanksMsg?: string;
+  icon?: string;
+  title?: string;
+  tooltip?: string;
+  reqComments: boolean;
+  reqDisplayEmail?: boolean;
 }
 
-export interface FeatureReqSettings {
-    dialogMsg?: string;
-    icon?: string;
-    reqComments: boolean;
-    reqDisplayEmail?: boolean;
-    thanksMsg?: string;
-    title?: string;
-    tooltip?: string;
+export interface IFeatureReqSettings {
+  dialogMsg?: string;
+  thanksMsg?: string;
+  icon?: string;
+  title?: string;
+  tooltip?: string;
+  reqComments: boolean;
+  reqDisplayEmail?: boolean;
 }
 
-export interface WidgetLAF {
-    bgColor: string;
-    custom?: CustomProperties;
-    fgColor: string;
-    font: string;
-    fontStyle: string;
-    fontWeight: number;
-    icon?: string;
-    position: WidgetPosition;
-    rotation?: string;
-    text: string;
+export interface IWidgetLAF {
+  bgColor: string;
+  fgColor: string;
+  font: string;
+  fontWeight: number;
+  fontStyle: string;
+  text: string;
+  icon?: string;
+  position: IWidgetPosition;
+  rotation?: string;
+  custom?: ICustomProperties;
 }
 
-export interface CustomProperties {
-    borderRadius?: string;
-    bottom?: string;
-    left?: string;
-    margin?: string;
-    padding?: string;
-    right?: string;
-    rotation?: string;
-    top?: string;
+export interface ICustomProperties {
+  top?: string;
+  bottom?: string;
+  left?: string;
+  right?: string;
+  borderRadius?: string;
+  rotation?: string;
+  margin?: string;
+  padding?: string;
 }
 
-export interface RemoteBtnSettings {
-    name: string;
-    btnId?: string;
-    enabled: boolean;
+export interface IRemoteBtnSettings {
+  name: string;
+  btnId?: string;
+  enabled: boolean;
 }
 
-export interface EmailConfiguration {
-    feedbackTypes: string[]; //Feedback or bugs
-    ratingLimit?: {
-        [key: string]: boolean;
-      }; // 0, 1, 2, 3, 4, 5, 6 = all?
-      severityLimit?: {
-        [key: string]: boolean;
-      }; // 0, 1, 2, 3, 4, 5, 6 = all?
-    emailText: {
-      [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
-    };
+export interface ICategory {
+  feedbacks?: string[];
+  name: string;
+  positiveFeedbacks?: string[];
+  negativeFeedbacks?: string[];
+}
+
+export interface ITrackingSystem {
+  auth: {
+      [key: string]: string;
+  };
+  project: string;
+//  severity: boolean;
+  type: ITrackingSystemType;
+  url: string;
+//  uploadToTrackingSystem: boolean;
+  [key: string]: any;
+}
+
+export interface IEmailConfiguration {
+  feedbackTypes: string[]; //Feedback or bugs
+  ratingLimit?: {
+    [key: string]: boolean;
+  };
+  severityLimit?: {
+    [key: string]: boolean;
+  };
+  emailText: {
+    [key: string]: string; // ex: Feedback : 'Dear customer ....'
   }
-
-export interface Category {
-    feedbacks?: string[];
-    name: string;
 }
 
-export interface TrackingSystem {
-    auth: {
-        [key: string]: string;
-    };
-    project: string;
-//    severity: boolean;
-    type: TrackingSystemType;
-//    uploadToTrackingSystem: boolean;
-    url: string;
-    [key: string]: any;
+export interface IProductParams {
+  productConfig: any;
+  products?: IProductInfo[];
 }
+
+export const MAIN_BUTTON = 'MainButton';
+export const FEEDBACK_OPT = 'FeedbackOpt';
+export const BUGS_OPT = 'BugsOpt';
+export const FEATURE_OPT = 'FeatureOpt';
 
 export const STATUS_PRODUCT_ACTIVE = 'active';
 export const STATUS_PRODUCT_DELETED = 'deleted';
 //export const STATUS_PRODUCT_ARCHIVED = 'archived';
 
-export type PlatformType = 'Web' | 'Mobile';
-export const PLATFORM_TYPE_BROWSER: PlatformType = 'Web';
-export const PLATFORM_TYPE_NATIVE_REACT: PlatformType = 'Mobile';
+export type IPlatformType = 'Web' | 'Mobile';
+export const PLATFORM_TYPE_BROWSER: IPlatformType = 'Web';
+export const PLATFORM_TYPE_NATIVE_REACT: IPlatformType = 'Mobile';
 
-export type FeedbackType = 'FEEDBACK' | 'BUGS';
-export const FEEDBACK_TYPE_FEEDBACK: FeedbackType = 'FEEDBACK';
-export const FEEDBACK_TYPE_BUGS: FeedbackType = 'BUGS';
+export type IFeedbackType = 'FEEDBACK' | 'BUGS' | 'FEATURE_REQUEST';
+export const FEEDBACK_TYPE_FEEDBACK: IFeedbackType = 'FEEDBACK';
+export const FEEDBACK_TYPE_BUGS: IFeedbackType = 'BUGS';
+export const FEEDBACK_TYPE_FEATURE_REQ: IFeedbackType = 'FEATURE_REQUEST';
 
-export type RatingIconType = 'STAR' | 'HEART' | 'EMOJI';
-export const RATING_ICON_TYPE_STAR: RatingIconType = 'STAR';
-export const RATING_ICON_TYPE_HEART: RatingIconType = 'HEART';
-export const RATING_ICON_TYPE_EMOJI: RatingIconType = 'EMOJI';
+export const FeedbackTypesObj: any = {
+  'FEEDBACK': 'Submit Feedback',
+  'BUGS': 'Submit Bugs',
+  'FEATURE_REQUEST': 'Submit Feature Request',
+}
 
-// export type SeverityType = 'Critical' | 'High' | 'Medium' | 'Low';
-// export const SEVERITY_TYPE_CRITICAL: SeverityType = 'Critical';
-// export const SEVERITY_TYPE_HIGH: SeverityType = 'High';
-// export const SEVERITY_TYPE_MEDIUM: SeverityType = 'Medium';
-// export const SEVERITY_TYPE_LOW: SeverityType = 'Low';
+export type IFeedbackFlowType = 'STATIC' | 'DYNAMIC';
+export const FEEDBACK_FLOW_STATIC: IFeedbackFlowType = 'STATIC';
+export const FEEDBACK_FLOW_DYNAMIC: IFeedbackFlowType = 'DYNAMIC';
 
-export type InvokeType = 'MANUAL' | 'AFTER_DELAY' | 'CONTEXT_CHANGE' | 'IDLE';
-export const INVOKE_TYPE_MANUAL: InvokeType = 'MANUAL';
-export const INVOKE_TYPE_AFTER_DELAY: InvokeType = 'AFTER_DELAY';
-export const INVOKE_TYPE_CONTEXT_CHANGE: InvokeType = 'CONTEXT_CHANGE';
-export const INVOKE_TYPE_IDLE: InvokeType = 'IDLE';
+export type IRatingIconType = 'STAR' | 'HEART' | 'EMOJI';
+export const RATING_ICON_TYPE_STAR: IRatingIconType = 'STAR';
+export const RATING_ICON_TYPE_HEART: IRatingIconType = 'HEART';
+export const RATING_ICON_TYPE_EMOJI: IRatingIconType = 'EMOJI';
 
-export type TrackingSystemType = 'SELF' | 'JIRA';
-export const TRACKING_SYSTEM_SELF: TrackingSystemType = 'SELF';
-export const TRACKING_SYSTEM_JIRA: TrackingSystemType = 'JIRA';
+export type IInvokeType = 'MANUAL' | 'AFTER_DELAY' | 'CONTEXT_CHANGE' | 'IDLE';
+export const INVOKE_TYPE_MANUAL: IInvokeType = 'MANUAL';
+export const INVOKE_TYPE_AFTER_DELAY: IInvokeType = 'AFTER_DELAY';
+export const INVOKE_TYPE_CONTEXT_CHANGE: IInvokeType = 'CONTEXT_CHANGE';
+export const INVOKE_TYPE_IDLE: IInvokeType = 'IDLE';
 
-export type WidgetPosition = 'RIGHT_MIDDLE' | 'RIGHT_BOTTOM' | 'LEFT_MIDDLE' | 'LEFT_BOTTOM' |'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'CUSTOM';
-export const POS_RIGHT_MIDDLE: WidgetPosition = 'RIGHT_MIDDLE';
-export const POS_RIGHT_BOTTOM: WidgetPosition = 'RIGHT_BOTTOM';
-export const POS_LEFT_MIDDLE: WidgetPosition = 'LEFT_MIDDLE';
-export const POS_LEFT_BOTTOM: WidgetPosition = 'LEFT_BOTTOM';
-export const POS_BOTTOM_RIGHT: WidgetPosition = 'BOTTOM_RIGHT';
-export const POS_BOTTOM_LEFT: WidgetPosition = 'BOTTOM_LEFT';
-export const POS_CUSTOM: WidgetPosition = 'CUSTOM';
+export type ITrackingSystemType = 'SELF' | 'JIRA';
+export const TRACKING_SYSTEM_SELF: ITrackingSystemType = 'SELF';
+export const TRACKING_SYSTEM_JIRA: ITrackingSystemType = 'JIRA';
+
+export type IFeedbotConfigSettingsType = 'CATEGORIES' | 'SEVERITIES' | 'COMMENTS' | 'STANDARD FEEDBACK';
+export const FEEDBOT_CATEGORIES: IFeedbotConfigSettingsType = 'CATEGORIES';
+export const FEEDBOT_SEVERITIES: IFeedbotConfigSettingsType = 'SEVERITIES';
+export const FEEDBOT_COMMENTS: IFeedbotConfigSettingsType = 'COMMENTS';
+export const FEEDBOT_STANDARD_FEEDBACK: IFeedbotConfigSettingsType = 'STANDARD FEEDBACK';
+
+export type IWidgetPosition = 'RIGHT_MIDDLE' | 'RIGHT_BOTTOM' | 'LEFT_MIDDLE' | 'LEFT_BOTTOM' |'BOTTOM_RIGHT' | 'BOTTOM_LEFT' | 'CUSTOM';
+export const POS_RIGHT_MIDDLE: IWidgetPosition = 'RIGHT_MIDDLE';
+export const POS_RIGHT_BOTTOM: IWidgetPosition = 'RIGHT_BOTTOM';
+export const POS_LEFT_MIDDLE: IWidgetPosition = 'LEFT_MIDDLE';
+export const POS_LEFT_BOTTOM: IWidgetPosition = 'LEFT_BOTTOM';
+export const POS_BOTTOM_RIGHT: IWidgetPosition = 'BOTTOM_RIGHT';
+export const POS_BOTTOM_LEFT: IWidgetPosition = 'BOTTOM_LEFT';
+export const POS_CUSTOM: IWidgetPosition = 'CUSTOM';
