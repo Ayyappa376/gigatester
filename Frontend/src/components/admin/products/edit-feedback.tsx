@@ -1234,7 +1234,10 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       }
     }
   }
-
+ 
+  const handleFeedbackFlowChange = (event: any) => {
+    console.log(event);
+  }
 
   const handleIconChange = (event: any) => {
     const { type, iconStr } = event;
@@ -1581,6 +1584,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleMainBtnRotation: handleMainBtnRotation,
       handleMainBtnCustom: handleMainBtnCustom,
       handleIconChange: handleIconChange,
+      handleFeedbackFlowChange: handleFeedbackFlowChange,
       handleEmailText: handleEmailText,
       handleEnableEmail: handleEnableEmail,
       handleEmailRating: handleEmailRating,

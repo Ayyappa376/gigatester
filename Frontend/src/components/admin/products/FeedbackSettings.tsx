@@ -24,6 +24,7 @@ interface CategoryProps {
   handleReqComments: Function;
   handleReqDisplayEmail: Function;
 	handleIconChange: Function;
+  handleFeedbackFlowChange: Function;
 }
 
 const useStyles = makeStyles((theme) => ({
@@ -157,13 +158,44 @@ const FeedbackSettings = ({
   handleRatingLimitChange,
   handleReqComments,
   handleReqDisplayEmail,
-  handleIconChange
+  handleIconChange,
+  handleFeedbackFlowChange
 }: CategoryProps) => {
   const classes = useStyles();
 
   return (
     <Fragment>
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
+      <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`feedback_title`}
+            name={`feedback_title`}
+            label='Text for the feedback option'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.title)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.title
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackFlowChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 15 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.title ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.title.length)}/15 characters` : null}
+          />
+        </Grid>
         <Grid item xs={12} sm={12}>
           <TextField
             required
