@@ -1,5 +1,5 @@
 import React, { useState, Fragment } from 'react';
-import bigLogo from '../../logo/big-logo.jpg';
+import bigLogo from '../../logo/cuvo-logo.png';
 import {
   ClickAwayListener,
   Paper,
@@ -66,8 +66,9 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '48px',
   },
   bigLogo: {
-    height: '40px',
-    padding: theme.spacing(1),
+    height: '50px',
+    // padding: theme.spacing(1),
+    padding: '4px',
   },
   appBar: {
     minWidth: '100%',
@@ -237,7 +238,7 @@ const PageHeader = (props: any) => {
             </div>
             <div className='header-item'>
               <Typography onClick={onRegister} className={classes.headerItem}>
-                <Text tid='register' />
+                <Text tid='signUp' />
               </Typography>
             </div>
           </Fragment>
@@ -942,10 +943,10 @@ const PageHeader = (props: any) => {
         <div className='topbar-header-links'>
           <div className='header-container'>
             {/* {<LanguageSelector />} */}
-            {renderHomeButton()}
+            {/* {renderHomeButton()} */}
             {/* renderAboutUsButton() */}
             {/* renderFeedbackButton() */}
-            {renderContactUsButton()}
+            {/* {renderContactUsButton()} */}
             {renderAdminPage()}
             {/* renderManageSoftwareFiles() */}
             {/* {renderViewMetrics()} */}

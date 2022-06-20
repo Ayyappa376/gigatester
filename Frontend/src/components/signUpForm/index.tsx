@@ -152,6 +152,7 @@ export default function SignupForm(props: any) {
 
   const getSignInPage = () => {
     setOpenSignin(true);
+    props.handleCloseSignup(false);
   };
 
   const closeAlert = () => {
@@ -297,7 +298,8 @@ export default function SignupForm(props: any) {
               labelPlacement="end"
             />
             {"I agree to the"} <Link >{"Privacy and Terms and Conditions"} </Link>
-{"of this site."}<br />
+            {"of this site."}
+            <br />
           </Grid>
           <br />
           <br />
@@ -305,7 +307,7 @@ export default function SignupForm(props: any) {
           <Grid item xs={8} sm={8}>
             {"Already have an account. "} 
             <Link onClick={getSignInPage} component="button" variant="body2">
-              {" Login here."}
+              <Text tid={"signIn"} />
             </Link>
           </Grid>
           <Grid item xs={4} sm={4} style={{display: 'flex', justifyContent: 'flex-end'}}>
@@ -321,7 +323,7 @@ export default function SignupForm(props: any) {
               {loading && (
                 <CircularProgress size={20} style={{ marginRight: 20 }} />
               )}
-              Sign Up
+              <Text tid={"signUp"} />
             </Button>
           </Grid>
         </Grid>

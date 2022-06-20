@@ -107,7 +107,7 @@ const Home = (props: any) => {
   const stateVariable = useSelector((state: IRootState) => state);
   const setCurrentPageValue = useActions(setCurrentPage);
   const [openSignup, setOpenSignup] = useState(props.signUp || false);
-  const [openSignin, setOpenSignin] = useState(props.signIn || false);
+  const [openSignin, setOpenSignin] = useState(props.signIn || true);
   const [changePassword, setChangePassword] = useState(false);
   const [superUserStateVariable, setSuperUserStateVariable] = useState(stateVariable);
   const [isFetching, setIsFetching] = useState(true);
@@ -200,7 +200,7 @@ const Home = (props: any) => {
         root: classes.root,
       }}
     >
-      <Grid container>
+      {/* <Grid container>
         <Grid container className={classes.sectionTop}>
           <Grid item xs={12} sm={7} style={{ padding: '50px', paddingTop: "170px" }}>
             <Typography variant='h4'>
@@ -304,7 +304,7 @@ const Home = (props: any) => {
             </Grid>
           </Grid>
         </Container>
-      </Grid>
+      </Grid> */}
       {openSignup && (
         <SignupForm
           openSignup={openSignup}

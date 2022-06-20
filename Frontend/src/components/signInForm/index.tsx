@@ -58,6 +58,7 @@ export default function SignInForm(props: any) {
   const saveOrganizationData = useActions(saveOrganizationDetails);
   const [dialogPage, setDialogPage] = useState("login");
   const [newPasswordState, setNewPasswordState] = useState(false);
+  const [openSignUp, setOpenSignUp] = useState(false);  
   const classes = useStyles();
   const [forgotPassword, setForgotPassword] = useState(false);
   const [notify, setNotify] = useState({
@@ -375,6 +376,7 @@ export default function SignInForm(props: any) {
   };
 
   const onSignUp = () => {
+    setOpenSignUp(true);
     setDialogPage("signUp");
   };
 
@@ -405,6 +407,11 @@ export default function SignInForm(props: any) {
     }
   };
 
+  const handleCloseSignup = (state: boolean) => {
+    setOpenSignUp(state);
+    setDialogPage("login");    
+  };
+  
   return (
     <Fragment>
       <Dialog
@@ -481,7 +488,7 @@ export default function SignInForm(props: any) {
                   {loading && (
                     <CircularProgress size={20} style={{ marginRight: 20 }} />
                   )}
-                  {!newPasswordState && !changePasswordState ? "Login" : "Send"}
+                  {!newPasswordState && !changePasswordState ? <Text tid={"signIn"} /> : "Send"}
                 </Button>
               </Box>
               <br />
@@ -498,13 +505,14 @@ export default function SignInForm(props: any) {
                       </Link>
                     </Grid>
                     <Grid item>
-                      {/* <Link
+                      {"Don't have an account yet? "} 
+                      <Link
                         component="button"
                         variant="body2"
                         onClick={onSignUp}
                       >
-                        {"Don't have an account? Sign Up"}
-                      </Link> */}
+                        <Text tid={"signUp"} />
+                      </Link>
                     </Grid>
                   </Grid>
                   <br />
@@ -512,7 +520,11 @@ export default function SignInForm(props: any) {
               )}
             </Container>
           ) : (
-            <SignupForm getSignInForm={getSignInForm} />
+            <SignupForm
+              openSignup={openSignUp}
+              handleCloseSignup={handleCloseSignup}
+              superUserStateVariable={stateVariable}
+            />
           )}
         </DialogContent>
       </Dialog>
