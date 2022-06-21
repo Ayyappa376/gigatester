@@ -2082,7 +2082,11 @@ bottom: -23px;
     box-shadow: none;
   }
 }
-
+.gigatester-ctrl-item-label {
+  font-size: 14px;
+  font-weight: 300;
+  color: #040000;
+}
 #gigatester_ctrls_container[drawing="true"] {
   position: static;
   top: auto;

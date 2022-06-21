@@ -2350,16 +2350,21 @@ let GigaTester_StringUtils = {
                      + (form_settings.bug_title_message ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.bug_title_message + '</gtheader>' : "")
                      + (form_settings.reqFeature_title_msg ? '<gtheader class="gigatester-bug-help-message"> ' + form_settings.reqFeature_title_msg + '</gtheader>' : "")
                      + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
+                     + '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label">Email Address'+ (form_settings.email_field_mandatory ? "" : " (optional)") +'</label>'
                      + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (GigaTester.email ? form_settings.hide_email ? " hidden": "" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
+                     + (form_settings.categoryHeading ? '<label for="categoryHeading" class="gigatester-ctrl-item-label">' + form_settings.categoryHeading + (form_settings.category_field_mandatory ? "" : " (optional)") + '</label>': '')
                      + (form_settings.display_category ? '<select  id="category" name="category" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
                      + '<option value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
                      + category_options + "</select>" : "")
                      + (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '')
+                     + (form_settings.severityHeading ? '<label for="severityHeading" class="gigatester-ctrl-item-label" >'+ form_settings.severityHeading + (form_settings.severity_field_mandatory ? "" : " (optional)") +'</label>' : "")
                      + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
                      + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>"
                      + severity_options + "</select>" : "")
+                     + (form_settings.generalCommentsHeading ? '<label for="generalCommentsHeading">'+ form_settings.generalCommentsHeading + (form_settings.comment_field_mandatory ? "" : " (optional)") +'</label>' : "")
                      + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + (form_settings.comment_field_mandatory ? " *" : "") + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                      + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
+                     + '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label">Please attach screenshot/audio/screen recording to help troubleshoot (optional)</label>'
                      + '<gtdiv class="gigatester-ctrl-item-preview-placeholder">' + GigaTester_StringRes.get("attachment_msg") + '</gtdiv>'
                      + (display_screenshot || display_audio || display_video || display_attachment ?
                         '<gtdiv class="gigatester-ctrl-item-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
@@ -3641,6 +3646,15 @@ let GigaTester_StringUtils = {
                             if(data[0].feedbackSettings.reqDisplayEmail != undefined && data[0].feedbackSettings.reqDisplayEmail === true) {
                                 GigaTester_modal.form_settings_default['FEEDBACK'].hide_email = false;
                             }
+                            if(data[0].feedbackSettings.categoryHeading && data[0].feedbackSettings.categoryHeading.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['FEEDBACK'].categoryHeading = data[0].feedbackSettings.categoryHeading.trim();
+                            }
+                            if(data[0].feedbackSettings.stdFeedbackHeading && data[0].feedbackSettings.stdFeedbackHeading.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['FEEDBACK'].stdFeedbackHeading = data[0].feedbackSettings.stdFeedbackHeading.trim();
+                            }
+                            if(data[0].feedbackSettings.generalCommentsHeading && data[0].feedbackSettings.generalCommentsHeading.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['FEEDBACK'].generalCommentsHeading = data[0].feedbackSettings.generalCommentsHeading.trim();
+                            }
                         }
                         if(data[0].bugSettings) {
                             if(data[0].bugSettings.icon && data[0].bugSettings.icon.trim().length > 0) {
@@ -3667,6 +3681,18 @@ let GigaTester_StringUtils = {
                             }
                             if(data[0].bugSettings.reqDisplayEmail != undefined && data[0].bugSettings.reqDisplayEmail === true) {
                                 GigaTester_modal.form_settings_default['BUGS'].hide_email = false;
+                            }
+                            if(data[0].bugSettings.categoryHeading && data[0].bugSettings.categoryHeading.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['BUGS'].categoryHeading = data[0].bugSettings.categoryHeading.trim();
+                            }
+                            if(data[0].bugSettings.severityHeading && data[0].bugSettings.severityHeading.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['BUGS'].severityHeading = data[0].bugSettings.severityHeading.trim();
+                            }
+                            if(data[0].bugSettings.stdFeedbackHeading && data[0].bugSettings.stdFeedbackHeading.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['BUGS'].stdFeedbackHeading = data[0].bugSettings.stdFeedbackHeading.trim();
+                            }
+                            if(data[0].bugSettings.generalCommentsHeading && data[0].bugSettings.generalCommentsHeading.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['BUGS'].generalCommentsHeading = data[0].bugSettings.generalCommentsHeading.trim();
                             }
                         }
                         if (data[0].featureReqSettings) {
