@@ -15,7 +15,7 @@ const CategoryList = (
     // handleChangeFeedbackStdFeedbackText: Function,
     // deleteFeedbackStdFeedbackText: Function
   ) => {
-    const { category, catIndex, handleChangeFeedbackCategoryName, handleChangeFeedbackStdFeedbackText, deleteFeedbackCategory, addFeedbackStdFeedbackText, deleteFeedbackStdFeedbackText } = props
+    const { category, catIndex, feedbackFlowType, handleChangeFeedbackCategoryName, handleChangeFeedbackStdFeedbackText, deleteFeedbackCategory, addFeedbackStdFeedbackText, deleteFeedbackStdFeedbackText } = props
     return (
       <Fragment key={catIndex}>
         <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
@@ -60,7 +60,7 @@ const CategoryList = (
                 <AddIcon /> Feedback Text
               </Button>
             </LightTooltip>
-          </Grid>
+          </Grid> 
           {category.feedbacks &&
             category.feedbacks.map((feedback: string, index: number) => {
               return (
@@ -96,7 +96,7 @@ const CategoryList = (
               );
             })
           }
-                  <Grid item xs={6}>
+          {feedbackFlowType === 'DYNAMIC' ? (<><Grid item xs={6}>
             <Typography>Positive Feedback:</Typography>
           </Grid>
           <Grid item xs={5} style={{ textAlign: "center" }}>
@@ -195,7 +195,7 @@ const CategoryList = (
                 </Grid>
               );
             })
-          }
+          }</>)  : ''}
         </Grid>
       </Fragment>
     );

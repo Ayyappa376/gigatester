@@ -58,6 +58,7 @@ const useStyles = makeStyles((theme) => ({
 const renderCategoryDetails = (
   category: ICategory,
   catIndex: number,
+  feedbackFlowType: IFeedbackFlowType,
   handleChangeFeedbackCategoryName: Function,
   deleteFeedbackCategory: Function,
   addFeedbackStdFeedbackText: Function,
@@ -65,7 +66,7 @@ const renderCategoryDetails = (
   deleteFeedbackStdFeedbackText: Function
 ) => {
    return  (
-   <CategoryList category={category} catIndex={catIndex} 
+   <CategoryList category={category} catIndex={catIndex} feedbackFlowType={feedbackFlowType}
     handleChangeFeedbackCategoryName={handleChangeFeedbackCategoryName}
    deleteFeedbackCategory={deleteFeedbackCategory} addFeedbackStdFeedbackText={addFeedbackStdFeedbackText}
    handleChangeFeedbackStdFeedbackText={handleChangeFeedbackStdFeedbackText} deleteFeedbackStdFeedbackText={deleteFeedbackStdFeedbackText} />
@@ -521,8 +522,15 @@ const FeedbackSettings = ({
           productParams.products[0].feedbackAgentSettings.feedbackSettings.categories &&
           productParams.products[0].feedbackAgentSettings.feedbackSettings.categories.map((category: ICategory, index: number
             ) => {
+              const feedbackFlowType = (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.type)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.type
+                : 'STATIC'
             return renderCategoryDetails(category,
               index,
+              feedbackFlowType,
               handleChangeFeedbackCategoryName,
               deleteFeedbackCategory,
               addFeedbackStdFeedbackText,
