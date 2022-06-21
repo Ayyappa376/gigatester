@@ -5,28 +5,9 @@ import { Grid, Typography, TextField, FormControl, MenuItem, Select,
 import { LightTooltip } from '../../common/tooltip';
 import CategoryList from './categoryList';
 import AddIcon from '@material-ui/icons/Add';
-import { FEEDBACK_OPT, ICategory, IProductParams, FEEDBACK_FLOW_STATIC, IFeedbackFlowType, FEEDBACK_FLOW_DYNAMIC } from '../../../model';
+import { FEEDBACK_OPT, ICategory, IProductParams, FEEDBACK_FLOW_STATIC, IFeedbackFlowType, FEEDBACK_FLOW_DYNAMIC, IFeedbackSettingProps } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
 import IconSelect from './IconSelect';
-
-interface CategoryProps {
-  productParams: IProductParams;
-  addFeedbackCategory: Function;
-  handleChangeFeedbackCategoryName: Function;
-  deleteFeedbackCategory: Function;
-  addFeedbackStdFeedbackText: Function;
-  handleChangeFeedbackStdFeedbackText: Function;
-  deleteFeedbackStdFeedbackText: Function;
-  handleFeedbackTitleChange: Function;
-  handleFeedbackTooltipChange: Function;
-  handleFeedbackDialogMsgChange: Function;
-  handleFeedbackThanksMsgChange: Function;
-  handleRatingLimitChange: Function;
-  handleReqComments: Function;
-  handleReqDisplayEmail: Function;
-	handleIconChange: Function;
-  handleFeedbackFlowChange: Function;
-}
 
 const useStyles = makeStyles((theme) => ({
   actionsBlock: {
@@ -55,194 +36,6 @@ const useStyles = makeStyles((theme) => ({
 	},
 }));
 
-const renderCategoryDetails = (
-  category: ICategory,
-  catIndex: number,
-  feedbackFlowType: IFeedbackFlowType,
-  handleChangeFeedbackCategoryName: Function,
-  deleteFeedbackCategory: Function,
-  addFeedbackStdFeedbackText: Function,
-  handleChangeFeedbackStdFeedbackText: Function,
-  deleteFeedbackStdFeedbackText: Function
-) => {
-   return  (
-   <CategoryList category={category} catIndex={catIndex} feedbackFlowType={feedbackFlowType}
-    handleChangeFeedbackCategoryName={handleChangeFeedbackCategoryName}
-   deleteFeedbackCategory={deleteFeedbackCategory} addFeedbackStdFeedbackText={addFeedbackStdFeedbackText}
-   handleChangeFeedbackStdFeedbackText={handleChangeFeedbackStdFeedbackText} deleteFeedbackStdFeedbackText={deleteFeedbackStdFeedbackText} />
-   )
-  // return (
-  //   <Fragment key={catIndex}>
-  //     <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
-  //       <Grid item xs={10} sm={10}>
-  //         <TextField
-  //           required
-  //           type='string'
-  //           id={`category_${catIndex}`}
-  //           name={`category_${catIndex}`}
-  //           label='Category Name'
-  //           value={category.name}
-  //           fullWidth
-  //           onChange={(event) => handleChangeFeedbackCategoryName(event, catIndex)}
-  //           autoComplete='off'
-  //           className='textFieldStyle'
-  //         />
-  //       </Grid>
-  //       <Grid item xs={2} sm={2}>
-  //         <LightTooltip
-  //           title={'Delete this Category'}
-  //           aria-label='delete this category'
-  //         >
-  //           <IconButton size='small' onClick={() => deleteFeedbackCategory(catIndex)} >
-  //             <ClearIcon />
-  //           </IconButton>
-  //         </LightTooltip>
-  //       </Grid>
-  //       {/* <Grid item xs={1}></Grid> */}
-  //       <Grid item xs={6}>
-  //         <Typography>Standard Feedback:</Typography>
-  //       </Grid>
-  //       <Grid item xs={5} style={{ textAlign: "center" }}>
-  //         <LightTooltip
-  //           title={'Add a standard Feedback text'}
-  //           aria-label='Add a standard Feedback text'
-  //         >
-  //           <Button size='small' variant="outlined" onClick={() => addFeedbackStdFeedbackText(catIndex)} >
-  //             <AddIcon /> Feedback Text
-  //           </Button>
-  //         </LightTooltip>
-  //       </Grid>
-  //       {category.feedbacks &&
-  //         category.feedbacks.map((feedback: string, index: number) => {
-  //           return (
-  //             <Grid key={index} container spacing={1}>
-  //               <Grid item xs={1} sm={1}></Grid>
-  //               <Grid item xs={10} sm={10}>
-  //                 <TextField
-  //                   required
-  //                   type='string'
-  //                   id={`feedback_${catIndex}_${index}`}
-  //                   name={`feedback_${catIndex}_${index}`}
-  //                   label='Feedback text'
-  //                   value={feedback ? feedback : ''}
-  //                   fullWidth
-  //                   onChange={(event) => handleChangeFeedbackStdFeedbackText(event, catIndex, index)}
-  //                   autoComplete='off'
-  //                   className='textFieldStyle'
-  //                 />
-  //               </Grid>
-  //               <Grid item xs={1} sm={1}>
-  //                 <LightTooltip
-  //                   title={'Delete this standard Feedback'}
-  //                   aria-label='Delete this standard Feedback'
-  //                 >
-  //                   <IconButton size='small' onClick={() => deleteFeedbackStdFeedbackText(catIndex, index)} >
-  //                     <ClearIcon />
-  //                   </IconButton>
-  //                 </LightTooltip>
-  //               </Grid>
-  //             </Grid>
-  //           );
-  //         })
-  //       }
-  //               <Grid item xs={6}>
-  //         <Typography>Positive Feedback:</Typography>
-  //       </Grid>
-  //       <Grid item xs={5} style={{ textAlign: "center" }}>
-  //         <LightTooltip
-  //           title={'Add a positive Feedback text'}
-  //           aria-label='Add a positive Feedback text'
-  //         >
-  //           <Button size='small' variant="outlined" onClick={() => addFeedbackStdFeedbackText(catIndex)} >
-  //             <AddIcon /> Feedback Text
-  //           </Button>
-  //         </LightTooltip>
-  //       </Grid>
-  //       {category.feedbacks &&
-  //         category.feedbacks.map((feedback: string, index: number) => {
-  //           return (
-  //             <Grid key={index} container spacing={1}>
-  //               <Grid item xs={1} sm={1}></Grid>
-  //               <Grid item xs={10} sm={10}>
-  //                 <TextField
-  //                   required
-  //                   type='string'
-  //                   id={`feedback_${catIndex}_${index}`}
-  //                   name={`feedback_${catIndex}_${index}`}
-  //                   label='Feedback text'
-  //                   value={feedback ? feedback : ''}
-  //                   fullWidth
-  //                   onChange={(event) => handleChangeFeedbackStdFeedbackText(event, catIndex, index)}
-  //                   autoComplete='off'
-  //                   className='textFieldStyle'
-  //                 />
-  //               </Grid>
-  //               <Grid item xs={1} sm={1}>
-  //                 <LightTooltip
-  //                   title={'Delete this standard Feedback'}
-  //                   aria-label='Delete this standard Feedback'
-  //                 >
-  //                   <IconButton size='small' onClick={() => deleteFeedbackStdFeedbackText(catIndex, index)} >
-  //                     <ClearIcon />
-  //                   </IconButton>
-  //                 </LightTooltip>
-  //               </Grid>
-  //             </Grid>
-  //           );
-  //         })
-  //       }
-  //         <Grid item xs={6}>
-  //         <Typography>Negative Feedback:</Typography>
-  //       </Grid>
-  //               <Grid item xs={5} style={{ textAlign: "center" }}>
-  //         <LightTooltip
-  //           title={'Add a negative Feedback text'}
-  //           aria-label='Add a negative Feedback text'
-  //         >
-  //           <Button size='small' variant="outlined" onClick={() => addFeedbackStdFeedbackText(catIndex)} >
-  //             <AddIcon /> Feedback Text
-  //           </Button>
-  //         </LightTooltip>
-  //       </Grid>
-  //       {category.feedbacks &&
-  //         category.feedbacks.map((feedback: string, index: number) => {
-  //           return (
-  //             <Grid key={index} container spacing={1}>
-  //               <Grid item xs={1} sm={1}></Grid>
-  //               <Grid item xs={10} sm={10}>
-  //                 <TextField
-  //                   required
-  //                   type='string'
-  //                   id={`feedback_${catIndex}_${index}`}
-  //                   name={`feedback_${catIndex}_${index}`}
-  //                   label='Feedback text'
-  //                   value={feedback ? feedback : ''}
-  //                   fullWidth
-  //                   onChange={(event) => handleChangeFeedbackStdFeedbackText(event, catIndex, index)}
-  //                   autoComplete='off'
-  //                   className='textFieldStyle'
-  //                 />
-  //               </Grid>
-  //               <Grid item xs={1} sm={1}>
-  //                 <LightTooltip
-  //                   title={'Delete this standard Feedback'}
-  //                   aria-label='Delete this standard Feedback'
-  //                 >
-  //                   <IconButton size='small' onClick={() => deleteFeedbackStdFeedbackText(catIndex, index)} >
-  //                     <ClearIcon />
-  //                   </IconButton>
-  //                 </LightTooltip>
-  //               </Grid>
-  //             </Grid>
-  //           );
-  //         })
-  //       }
-  //     </Grid>
-  //   </Fragment>
-  // );
-};
-
-
 const FeedbackSettings = ({
   productParams,
   addFeedbackCategory,
@@ -259,10 +52,24 @@ const FeedbackSettings = ({
   handleReqComments,
   handleReqDisplayEmail,
   handleIconChange,
-  handleFeedbackFlowChange
-}: CategoryProps) => {
+  handleFeedbackFlowChange,
+  handleChangeFeedbackStdPositiveFeedbackText,
+  handleChangeFeedbackStdNegativeFeedbackText,
+  addFeedbackStdPositiveFeedbackText,
+  addFeedbackStdNegativeFeedbackText,
+  deleteFeedbackStdPositiveFeedbackText,
+  deleteFeedbackStdNegativeFeedbackText,
+  handleFeedbackGeneralCommentsHeadingChange,
+  handleFeedbackCategoryHeadingChange,
+  handleFeedbackStdFeedbackHeadingChange
+}: IFeedbackSettingProps) => {
   const classes = useStyles();
-
+  const feedbackFlowType = (productParams && productParams.products && productParams.products[0] &&
+    productParams.products[0].feedbackAgentSettings &&
+    productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+    productParams.products[0].feedbackAgentSettings.feedbackSettings.type)
+    ? productParams.products[0].feedbackAgentSettings.feedbackSettings.type
+    : FEEDBACK_FLOW_STATIC
   return (
     <Fragment>
       <Grid container spacing={1} style={{ borderBottom: 'solid 1px #dddddd', padding: '20px 0' }} >
@@ -279,7 +86,7 @@ const FeedbackSettings = ({
                 productParams.products[0].feedbackAgentSettings.feedbackSettings &&
                 productParams.products[0].feedbackAgentSettings.feedbackSettings.type)
                 ? productParams.products[0].feedbackAgentSettings.feedbackSettings.type
-                : ''
+                : FEEDBACK_FLOW_STATIC
               }
               onChange={(event) => handleFeedbackFlowChange(event)}
             >
@@ -404,6 +211,99 @@ const FeedbackSettings = ({
           <TextField
             required
             type='string'
+            id={`feedback_catListHeader`}
+            name={`feedback_catListHeader`}
+            label='Message to be displayed on top of category list'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackCategoryHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading.length)}/85 characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`feedback_stdFeedbackHeader`}
+            name={`feedback_stdFeedbackHeader`}
+            label='Message to be displayed on top of standard Feedback text'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackStdFeedbackHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading.length)}/85 characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`feedback_commentsHeader`}
+            name={`feedback_commentsHeader`}
+            label='Message to be displayed on top of Comments text box'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackGeneralCommentsHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading.length)}/85 characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
             id={`feedback_thanksMsg`}
             name={`feedback_thanksMsg`}
             label='Message to be displayed after the user submits a feedback'
@@ -477,9 +377,11 @@ const FeedbackSettings = ({
 
         <Grid item xs={12} sm={12}>
           <FormControl style={{ minWidth: '100%' }}>
-            <InputLabel id={`ratingLimit`} required={true}>
+            {(feedbackFlowType === FEEDBACK_FLOW_DYNAMIC) ? (<InputLabel id={`ratingLimit`} required={true}>
+              {'The star rating below which negative comments are shown'}
+            </InputLabel>) : (<InputLabel id={`ratingLimit`} required={true}>
               {'The star rating till which detailed feedback will be requested'}
-            </InputLabel>
+            </InputLabel>)}
             <Select
               name={`select_ratingLimit`}
               value={
@@ -522,21 +424,15 @@ const FeedbackSettings = ({
           productParams.products[0].feedbackAgentSettings.feedbackSettings.categories &&
           productParams.products[0].feedbackAgentSettings.feedbackSettings.categories.map((category: ICategory, index: number
             ) => {
-              const feedbackFlowType = (productParams && productParams.products && productParams.products[0] &&
-                productParams.products[0].feedbackAgentSettings &&
-                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
-                productParams.products[0].feedbackAgentSettings.feedbackSettings.type)
-                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.type
-                : 'STATIC'
-            return renderCategoryDetails(category,
-              index,
-              feedbackFlowType,
-              handleChangeFeedbackCategoryName,
-              deleteFeedbackCategory,
-              addFeedbackStdFeedbackText,
-              handleChangeFeedbackStdFeedbackText,
-              deleteFeedbackStdFeedbackText);
-            })}
+            return  <CategoryList category={category} catIndex={index} feedbackFlowType={feedbackFlowType}
+            handleChangeFeedbackCategoryName={handleChangeFeedbackCategoryName}
+           deleteFeedbackCategory={deleteFeedbackCategory} addFeedbackStdFeedbackText={addFeedbackStdFeedbackText}
+           handleChangeFeedbackStdFeedbackText={handleChangeFeedbackStdFeedbackText} deleteFeedbackStdFeedbackText={deleteFeedbackStdFeedbackText}
+           handleChangeFeedbackStdPositiveFeedbackText = {handleChangeFeedbackStdPositiveFeedbackText} handleChangeFeedbackStdNegativeFeedbackText = {handleChangeFeedbackStdNegativeFeedbackText}
+           addFeedbackStdPositiveFeedbackText={addFeedbackStdPositiveFeedbackText} addFeedbackStdNegativeFeedbackText={addFeedbackStdNegativeFeedbackText} 
+           deleteFeedbackStdPositiveFeedbackText={deleteFeedbackStdPositiveFeedbackText} deleteFeedbackStdNegativeFeedbackText={deleteFeedbackStdNegativeFeedbackText}/>
+            }
+            )}
       </Grid>
     </Fragment>
   );

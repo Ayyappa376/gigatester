@@ -4,43 +4,10 @@ import { Grid, Typography, TextField, Button, IconButton,
 } from "@material-ui/core";
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
-import { BUGS_OPT, ICategory, IProductParams, TRACKING_SYSTEM_SELF } from '../../../model';
+import { BUGS_OPT, ICategory, IProductParams, TRACKING_SYSTEM_SELF, IBugSettingProps } from '../../../model';
 import ClearIcon from '@material-ui/icons/Clear';
 import IconSelect from './IconSelect';
 import ExtTrackingSystemSettings from './extTrackingSystem/ExtTrackingSystemSettings';
-
-interface BugSettingProps {
-  productParams: IProductParams;  
-  addBugCategory: Function;
-  handleChangeBugCategoryName: Function;
-  handleChangeJiraFieldMapping: Function;
-  handleChangeExtSeverityFilter: Function;
-  handleChangeExtCategoryFilter: Function;
-  deleteBugCategory: Function;
-  addBugStdFeedbackText: Function;
-  handleChangeBugStdFeedbackText: Function;
-  handleExtTrackingSystemSync: Function;
-  deleteBugStdFeedbackText: Function;
-  handleBugTitleChange: Function;
-  handleBugTooltipChange: Function;
-  handleBugDialogMsgChange: Function;
-  handleBugThanksMsgChange: Function;
-  handleReqComments: Function;
-  handleReqDisplayEmail: Function;
-  addBugSeverity: Function;
-  handleChangeBugSeverityName: Function;
-  deleteBugSeverity: Function;
-  handleShowSeverityOption: Function;
-	handleIconChange: Function;
-  handleURLChange: Function,
-  handleAuthChange: Function,
-  handleTrackingSytemProjectDetails: Function,
-  handleSystemTypeChange: Function,
-  handleExtSystemSeverity: Function,
-//  handleTrackingSystemDetails: Function,
-//  handleSetTrackingSystemBugSeverity: Function,
-//  useTrackingSystemSeverity: boolean,
-}
 
 const renderSeverityDetails = (
   severity: string,
@@ -199,7 +166,7 @@ const BugSettings = ({
   deleteBugStdFeedbackText,
   addBugSeverity,
   handleChangeBugSeverityName,
-  handleExtTrackingSystemSync,
+  // handleExtTrackingSystemSync,
   handleChangeExtSeverityFilter,
   handleChangeExtCategoryFilter,
   deleteBugSeverity,
@@ -216,7 +183,11 @@ const BugSettings = ({
   handleTrackingSytemProjectDetails,
   handleExtSystemSeverity,
   handleSystemTypeChange,
-}: BugSettingProps) => {
+  handleBugGeneralCommentsHeadingChange,
+  handleBugCategoryHeadingChange,
+  handleBugStdFeedbackHeadingChange,
+  handleBugSeverityHeadingChange
+}: IBugSettingProps) => {
   const classes = useStyles();
 
   const usingExtTrackingSystem = productParams && productParams.products && productParams.products[0] &&
@@ -335,6 +306,130 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg ?
               `${(productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg.length)}/80 characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_catListHeader`}
+            name={`bug_catListHeader`}
+            label='Message to be displayed on top of category list'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.categoryHeading)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.categoryHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugCategoryHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.categoryHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.categoryHeading.length)}/85 characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_severityListHeader`}
+            name={`bug_severityListHeader`}
+            label='Message to be displayed on top of severity list'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.severityHeading)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.severityHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugSeverityHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.severityHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.severityHeading.length)}/85 characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_stdFeedbackHeader`}
+            name={`bug_stdFeedbackHeader`}
+            label='Message to be displayed on top of standard Feedback text'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugStdFeedbackHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading.length)}/85 characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`bug_commentsHeader`}
+            name={`bug_commentsHeader`}
+            label='Message to be displayed on top of Comments text box'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings &&
+                productParams.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading)
+                ? productParams.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleBugGeneralCommentsHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 85 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings &&
+              productParams.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading.length)}/85 characters` : null}
           />
         </Grid>
 

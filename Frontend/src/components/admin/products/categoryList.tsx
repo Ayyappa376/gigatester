@@ -2,24 +2,38 @@ import React, { Fragment } from 'react';
 import { Grid, Typography, TextField, FormControl, MenuItem, Select,
     InputLabel, Button, makeStyles, IconButton, FormControlLabel,
     Checkbox, Box } from "@material-ui/core";
-import { ICategory } from '../../../model';
+import { FEEDBACK_FLOW_DYNAMIC, ICategory, IFeedbackFlowType, ICategoryList } from '../../../model';
+import { Alert } from '@material-ui/lab';
 import { LightTooltip } from '../../common/tooltip';
 import AddIcon from '@material-ui/icons/Add';
 import ClearIcon from '@material-ui/icons/Clear';
 
+const useStyles = makeStyles((theme) => ({
+  info: {
+		display: 'flex',
+		flexDirection: 'row',
+		justifyContent: 'flex-start',
+		alignItems: 'center',
+		width: 'max-content',
+		height: '20px',
+		fontSize: '13px',
+		padding: '5px',
+		marginBottom: '10px',
+		borderRadius: '10px',
+	},
+}));
+
+
 const CategoryList = (
-    props: any
-    // handleChangeFeedbackCategoryName: Function,
-    // deleteFeedbackCategory: Function,
-    // addFeedbackStdFeedbackText: Function,
-    // handleChangeFeedbackStdFeedbackText: Function,
-    // deleteFeedbackStdFeedbackText: Function
+    props: ICategoryList
   ) => {
-    const { category, catIndex, feedbackFlowType, handleChangeFeedbackCategoryName, handleChangeFeedbackStdFeedbackText, deleteFeedbackCategory, addFeedbackStdFeedbackText, deleteFeedbackStdFeedbackText } = props
+    const { category, catIndex, feedbackFlowType, handleChangeFeedbackCategoryName, handleChangeFeedbackStdFeedbackText, deleteFeedbackCategory, addFeedbackStdFeedbackText, deleteFeedbackStdFeedbackText, handleChangeFeedbackStdPositiveFeedbackText, handleChangeFeedbackStdNegativeFeedbackText, addFeedbackStdPositiveFeedbackText,
+      addFeedbackStdNegativeFeedbackText, deleteFeedbackStdPositiveFeedbackText, deleteFeedbackStdNegativeFeedbackText } = props;
+      const classes = useStyles();
     return (
       <Fragment key={catIndex}>
         <Grid container spacing={1} style={{ border: 'solid 1px #aaaaaa', padding: '8px', margin: '4px' }}>
-          <Grid item xs={10} sm={10}>
+          <Grid item xs={11} sm={11}>
             <TextField
               required
               type='string'
@@ -33,7 +47,7 @@ const CategoryList = (
               className='textFieldStyle'
             />
           </Grid>
-          <Grid item xs={2} sm={2}>
+          <Grid item xs={1} sm={1}>
             <LightTooltip
               title={'Delete this Category'}
               aria-label='delete this category'
@@ -46,10 +60,13 @@ const CategoryList = (
             </LightTooltip>
           </Grid>
           {/* <Grid item xs={1}></Grid> */}
-          <Grid item xs={6}>
-            <Typography>Standard Feedback:</Typography>
+          <Grid item xs={9} style={{width: 'max-content'}}>
+            <Typography style={{paddingLeft: '10px'}}>Standard Feedback:</Typography>
+            <Alert className={classes.info} severity='info'>
+											Standard text appears for all the rating.
+						</Alert>
           </Grid>
-          <Grid item xs={5} style={{ textAlign: "center" }}>
+          <Grid item xs={3} style={{ textAlign: "center" }}>
             <LightTooltip
               title={'Add a standard Feedback text'}
               aria-label='Add a standard Feedback text'
@@ -96,23 +113,26 @@ const CategoryList = (
               );
             })
           }
-          {feedbackFlowType === 'DYNAMIC' ? (<><Grid item xs={6}>
-            <Typography>Positive Feedback:</Typography>
+          {feedbackFlowType === FEEDBACK_FLOW_DYNAMIC ? (<><Grid item xs={9} style={{width: 'max-content'}}>
+            <Typography style={{paddingLeft: '10px'}}>Positive Feedback:</Typography>
+            <Alert className={classes.info} severity='info'>
+											Standard text appears for rating greater than or equal to selected rating limit.
+						</Alert>
           </Grid>
-          <Grid item xs={5} style={{ textAlign: "center" }}>
+          <Grid item xs={3} style={{ textAlign: "center" }}>
             <LightTooltip
               title={'Add a positive Feedback text'}
               aria-label='Add a positive Feedback text'
             >
               <Button size='small' variant="outlined"
-               onClick={() => addFeedbackStdFeedbackText(catIndex)} 
+               onClick={() => addFeedbackStdPositiveFeedbackText(catIndex)} 
                >
                 <AddIcon /> Feedback Text
               </Button>
             </LightTooltip>
           </Grid>
-          {category.feedbacks &&
-            category.feedbacks.map((feedback: string, index: number) => {
+          {category.positiveFeedbacks &&
+            category.positiveFeedbacks.map((feedback: string, index: number) => {
               return (
                 <Grid key={index} container spacing={1}>
                   <Grid item xs={1} sm={1}></Grid>
@@ -120,12 +140,12 @@ const CategoryList = (
                     <TextField
                       required
                       type='string'
-                      id={`feedback_${catIndex}_${index}`}
-                      name={`feedback_${catIndex}_${index}`}
+                      id={`positivefeedback_${catIndex}_${index}`}
+                      name={`positivefeedback_${catIndex}_${index}`}
                       label='Feedback text'
                       value={feedback ? feedback : ''}
                       fullWidth
-                      onChange={(event) => handleChangeFeedbackStdFeedbackText(event, catIndex, index)}
+                      onChange={(event) => handleChangeFeedbackStdPositiveFeedbackText(event, catIndex, index)}
                       autoComplete='off'
                       className='textFieldStyle'
                     />
@@ -136,7 +156,7 @@ const CategoryList = (
                       aria-label='Delete this standard Feedback'
                     >
                       <IconButton size='small'
-                       onClick={() => deleteFeedbackStdFeedbackText(catIndex, index)} 
+                       onClick={() => deleteFeedbackStdPositiveFeedbackText(catIndex, index)} 
                        >
                         <ClearIcon />
                       </IconButton>
@@ -146,23 +166,26 @@ const CategoryList = (
               );
             })
           }
-            <Grid item xs={6}>
-            <Typography>Negative Feedback:</Typography>
+            <Grid item xs={9} style={{width: 'max-content'}}>
+            <Typography style={{paddingLeft: '10px'}}>Negative Feedback:</Typography>
+            <Alert className={classes.info} severity='info'>
+											Standard text appears for rating lesser than selected rating limit.
+						</Alert>
           </Grid>
-                  <Grid item xs={5} style={{ textAlign: "center" }}>
+                  <Grid item xs={3} style={{ textAlign: "center" }}>
             <LightTooltip
               title={'Add a negative Feedback text'}
               aria-label='Add a negative Feedback text'
             >
               <Button size='small' variant="outlined"
-               onClick={() => addFeedbackStdFeedbackText(catIndex)} 
+               onClick={() => addFeedbackStdNegativeFeedbackText(catIndex)} 
                >
                 <AddIcon /> Feedback Text
               </Button>
             </LightTooltip>
           </Grid>
-          {category.feedbacks &&
-            category.feedbacks.map((feedback: string, index: number) => {
+          {category.negativeFeedbacks &&
+            category.negativeFeedbacks.map((feedback: string, index: number) => {
               return (
                 <Grid key={index} container spacing={1}>
                   <Grid item xs={1} sm={1}></Grid>
@@ -175,7 +198,7 @@ const CategoryList = (
                       label='Feedback text'
                       value={feedback ? feedback : ''}
                       fullWidth
-                      // onChange={(event) => handleChangeFeedbackStdFeedbackText(event, catIndex, index)}
+                      onChange={(event) => handleChangeFeedbackStdNegativeFeedbackText(event, catIndex, index)}
                       autoComplete='off'
                       className='textFieldStyle'
                     />
@@ -186,7 +209,7 @@ const CategoryList = (
                       aria-label='Delete this standard Feedback'
                     >
                       <IconButton size='small'
-                       onClick={() => deleteFeedbackStdFeedbackText(catIndex, index)} 
+                       onClick={() => deleteFeedbackStdNegativeFeedbackText(catIndex, index)} 
                        >
                         <ClearIcon />
                       </IconButton>
