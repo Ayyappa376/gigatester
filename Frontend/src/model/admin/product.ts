@@ -47,6 +47,10 @@ export interface IFeedbackAgentSettings {
 export interface IBugSettings {
   categories: ICategory[];
   severities: string[];
+  categoryHeading?: string; 
+  severityHeading?: string;
+  stdFeedbackHeading?: string;
+  generalCommentsHeading?: string;
   dialogMsg?: string;
   thanksMsg?: string;
   icon?: string;
@@ -60,6 +64,9 @@ export interface IBugSettings {
 export interface IFeedbackSettings {
   type: IFeedbackFlowType;
   categories: ICategory[];
+  categoryHeading?: string; 
+  stdFeedbackHeading?: string;
+  generalCommentsHeading?: string;
   ratingIcon: IRatingIconType;
   ratingLimit: number; //values 1,2,3,4,5
   dialogMsg?: string;

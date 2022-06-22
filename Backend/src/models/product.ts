@@ -1,143 +1,153 @@
 export interface ProductInfo {
-    apiKey?: string;
-    apiKeyId?: string;
-    description?: string;
-    devices?: string[];
-    feedbackAgentSettings?: FeedbackAgentSettings;
-    groups?: string[];
-    id: string;
-    name: string;
-    platforms: string[];
-    software?: string;
-    softwareType?: string;
-    status: string;
-    testers?: TesterStatus[];
-    testSuite?: string[];
-    trackingSystem?: TrackingSystem;
-    emailConfig?: EmailConfiguration;
-    url?: string;
-    version: string;
-    [keyName: string]: any;
+  apiKey?: string;
+  apiKeyId?: string;
+  description?: string;
+  devices?: string[];
+  feedbackAgentSettings?: FeedbackAgentSettings;
+  groups?: string[];
+  id: string;
+  name: string;
+  platforms: string[];
+  software?: string;
+  softwareType?: string;
+  status: string;
+  testers?: TesterStatus[];
+  testSuite?: string[];
+  trackingSystem?: TrackingSystem;
+  emailConfig?: EmailConfiguration;
+  url?: string;
+  version: string;
+  [keyName: string]: any;
 }
 
 export interface TesterStatus {
-    approved: boolean;
-    id: string;
+  approved: boolean;
+  id: string;
 }
 
 export interface FeedbackAgentSettings {
-    bugSettings?: BugSettings;
-    captureSystemDetails?: boolean;
-    featureReqSettings?: FeatureReqSettings;
-    feedbackSettings?: FeedbackSettings;
-    feedbackTypes: FeedbackType[];
-    invokeDelay?: number; //in seconds
-    invokeOn: InvokeType[];
-    logo?: string;
-    platform: PlatformType;
-    remoteBtns?: RemoteBtnSettings[];
-    requireEmail?: boolean; // make email optional or mandatory
-    thanksStr?: string;
-    title: string;
-    uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
-    videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
-    widgetLookAndFeel: WidgetLAF;
+  bugSettings?: BugSettings;
+  captureSystemDetails?: boolean;
+  featureReqSettings?: FeatureReqSettings;
+  feedbackSettings?: FeedbackSettings;
+  feedbackTypes: FeedbackType[];
+  invokeDelay?: number; //in seconds
+  invokeOn: InvokeType[];
+  logo?: string;
+  platform: PlatformType;
+  remoteBtns?: RemoteBtnSettings[];
+  requireEmail?: boolean; // make email optional or mandatory
+  thanksStr?: string;
+  title: string;
+  uploadFileMaxSize: string; //in MB, allowed values 200, 400, 600, 800 or 1000
+  videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
+  widgetLookAndFeel: WidgetLAF;
 }
 
 export interface BugSettings {
-    categories: Category[];
-    dialogMsg?: string;
-    icon?: string;
-    reqComments?: boolean;
-    reqDisplayEmail?: boolean;
-    severities: string[];
-    showSeverity: boolean;
-    thanksMsg?: string;
-    title?: string;
-    tooltip?: string;
+  categories: Category[];
+  categoryHeading?: string;
+  dialogMsg?: string;
+  generalCommentsHeading?: string;
+  icon?: string;
+  reqComments?: boolean;
+  reqDisplayEmail?: boolean;
+  severities: string[];
+  severityHeading?: string;
+  showSeverity: boolean;
+  stdFeedbackHeading?: string;
+  thanksMsg?: string;
+  title?: string;
+  tooltip?: string;
 }
 
 export interface FeedbackSettings {
-    categories: Category[];
-    dialogMsg?: string;
-    icon?: string;
-    ratingIcon: RatingIconType;
-    ratingLimit: number; //values 1,2,3,4,5
-    reqComments?: boolean;
-    reqDisplayEmail?: boolean;
-    thanksMsg?: string;
-    title?: string;
-    tooltip?: string;
+  categories: Category[];
+  categoryHeading?: string;
+  dialogMsg?: string;
+  generalCommentsHeading?: string;
+  icon?: string;
+  ratingIcon: RatingIconType;
+  ratingLimit: number; //values 1,2,3,4,5
+  reqComments?: boolean;
+  reqDisplayEmail?: boolean;
+  stdFeedbackHeading?: string;
+  thanksMsg?: string;
+  title?: string;
+  tooltip?: string;
+  type: FeedbackFlowType;
 }
 
 export interface FeatureReqSettings {
-    dialogMsg?: string;
-    icon?: string;
-    reqComments: boolean;
-    reqDisplayEmail?: boolean;
-    thanksMsg?: string;
-    title?: string;
-    tooltip?: string;
+  dialogMsg?: string;
+  icon?: string;
+  reqComments: boolean;
+  reqDisplayEmail?: boolean;
+  thanksMsg?: string;
+  title?: string;
+  tooltip?: string;
 }
 
 export interface WidgetLAF {
-    bgColor: string;
-    custom?: CustomProperties;
-    fgColor: string;
-    font: string;
-    fontStyle: string;
-    fontWeight: number;
-    icon?: string;
-    position: WidgetPosition;
-    rotation?: string;
-    text: string;
+  bgColor: string;
+  custom?: CustomProperties;
+  fgColor: string;
+  font: string;
+  fontStyle: string;
+  fontWeight: number;
+  icon?: string;
+  position: WidgetPosition;
+  rotation?: string;
+  text: string;
 }
 
 export interface CustomProperties {
-    borderRadius?: string;
-    bottom?: string;
-    left?: string;
-    margin?: string;
-    padding?: string;
-    right?: string;
-    rotation?: string;
-    top?: string;
+  borderRadius?: string;
+  bottom?: string;
+  left?: string;
+  margin?: string;
+  padding?: string;
+  right?: string;
+  rotation?: string;
+  top?: string;
 }
 
 export interface RemoteBtnSettings {
-    name: string;
-    btnId?: string;
-    enabled: boolean;
+  name: string;
+  btnId?: string;
+  enabled: boolean;
 }
 
 export interface EmailConfiguration {
-    feedbackTypes: string[]; //Feedback or bugs
-    ratingLimit?: {
-        [key: string]: boolean;
-      }; // 0, 1, 2, 3, 4, 5, 6 = all?
-      severityLimit?: {
-        [key: string]: boolean;
-      }; // 0, 1, 2, 3, 4, 5, 6 = all?
-    emailText: {
-      [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
-    };
-  }
+  feedbackTypes: string[]; //Feedback or bugs
+  ratingLimit?: {
+      [key: string]: boolean;
+    }; // 0, 1, 2, 3, 4, 5, 6 = all?
+    severityLimit?: {
+      [key: string]: boolean;
+    }; // 0, 1, 2, 3, 4, 5, 6 = all?
+  emailText: {
+    [key: string]: string; // ex: Feedback : 'Dear customer ....' or Bug: 'Dear customer, ...'
+  };
+}
 
 export interface Category {
-    feedbacks?: string[];
-    name: string;
+  feedbacks?: string[];
+  name: string;
+  positiveFeedbacks?: string[];
+  negativeFeedbacks?: string[];
 }
 
 export interface TrackingSystem {
-    auth: {
-        [key: string]: string;
-    };
-    project: string;
+  auth: {
+      [key: string]: string;
+  };
+  project: string;
 //    severity: boolean;
-    type: TrackingSystemType;
+  type: TrackingSystemType;
 //    uploadToTrackingSystem: boolean;
-    url: string;
-    [key: string]: any;
+  url: string;
+  [key: string]: any;
 }
 
 export const STATUS_PRODUCT_ACTIVE = 'active';
@@ -162,6 +172,10 @@ export const RATING_ICON_TYPE_EMOJI: RatingIconType = 'EMOJI';
 // export const SEVERITY_TYPE_HIGH: SeverityType = 'High';
 // export const SEVERITY_TYPE_MEDIUM: SeverityType = 'Medium';
 // export const SEVERITY_TYPE_LOW: SeverityType = 'Low';
+
+export type FeedbackFlowType = 'STATIC' | 'DYNAMIC';
+export const FEEDBACK_FLOW_STATIC: FeedbackFlowType = 'STATIC';
+export const FEEDBACK_FLOW_DYNAMIC: FeedbackFlowType = 'DYNAMIC';
 
 export type InvokeType = 'MANUAL' | 'AFTER_DELAY' | 'CONTEXT_CHANGE' | 'IDLE';
 export const INVOKE_TYPE_MANUAL: InvokeType = 'MANUAL';

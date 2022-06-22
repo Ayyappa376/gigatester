@@ -33,7 +33,8 @@ import {
   ICustomProperties,
   FEEDBACK_OPT, BUGS_OPT, FEATURE_OPT,
   MAIN_BUTTON,
-  TRACKING_SYSTEM_SELF
+  TRACKING_SYSTEM_SELF,
+  FEEDBACK_FLOW_STATIC
 } from '../../../model';
 import { MANAGE_PRODUCTS } from '../../../pages/admin';
 import { LightTooltip } from '../../common/tooltip';
@@ -159,6 +160,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
               showSeverity: true,
             },
             feedbackSettings: {
+              type: FEEDBACK_FLOW_STATIC,
               categories: [],
               ratingIcon: RATING_ICON_TYPE_STAR,
               ratingLimit: 2,
@@ -453,6 +455,36 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   };
 
+  const handleChangeFeedbackStdPositiveFeedbackText = (event: any, catIndex: number, index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
+        if (tempCat.positiveFeedbacks) {
+          tempCat.positiveFeedbacks[index] = event.target.value;
+          setProductParams(temp);
+        }
+      }
+    }
+  };
+
+  const handleChangeFeedbackStdNegativeFeedbackText = (event: any, catIndex: number, index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
+        if (tempCat.negativeFeedbacks) {
+          tempCat.negativeFeedbacks[index] = event.target.value;
+          setProductParams(temp);
+        }
+      }
+    }
+  };
+
   const deleteFeedbackStdFeedbackText = (catIndex: number, index: number) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -468,6 +500,38 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   };
 
+  const deleteFeedbackStdPositiveFeedbackText = (catIndex: number, index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
+        if (tempCat.positiveFeedbacks) {
+          tempCat.positiveFeedbacks.splice(index, 1);
+          setProductParams(temp);
+        }
+      }
+    }
+  };
+
+
+  const deleteFeedbackStdNegativeFeedbackText = (catIndex: number, index: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
+        if (tempCat.negativeFeedbacks) {
+          tempCat.negativeFeedbacks.splice(index, 1);
+          setProductParams(temp);
+        }
+      }
+    }
+  };
+
+
   const addFeedbackStdFeedbackText = (catIndex: number) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -479,6 +543,38 @@ const EditProductfeedbackAgentSettings = (props: any) => {
           tempCat.feedbacks = [];
         }
         tempCat.feedbacks.push('');
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const addFeedbackStdPositiveFeedbackText = (catIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
+        if (!tempCat.positiveFeedbacks) {
+          tempCat.positiveFeedbacks = [];
+        }
+        tempCat.positiveFeedbacks.push('');
+        setProductParams(temp);
+      }
+    }
+  };
+
+  const addFeedbackStdNegativeFeedbackText = (catIndex: number) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex]) {
+        const tempCat = temp.products[0].feedbackAgentSettings.feedbackSettings.categories[catIndex];
+        if (!tempCat.negativeFeedbacks) {
+          tempCat.negativeFeedbacks = [];
+        }
+        tempCat.negativeFeedbacks.push('');
         setProductParams(temp);
       }
     }
@@ -789,6 +885,83 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
         temp.products[0].feedbackAgentSettings.feedbackSettings) {
         temp.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleFeedbackCategoryHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleFeedbackStdFeedbackHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleFeedbackGeneralCommentsHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleBugCategoryHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.categoryHeading = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleBugStdFeedbackHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleBugGeneralCommentsHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleBugSeverityHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.bugSettings) {
+        temp.products[0].feedbackAgentSettings.bugSettings.severityHeading = event.target.value;
         setProductParams(temp);
       }
     }
@@ -1234,7 +1407,16 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       }
     }
   }
-
+ 
+  const handleFeedbackFlowChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings && temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.type = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
 
   const handleIconChange = (event: any) => {
     const { type, iconStr } = event;
@@ -1538,8 +1720,14 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleChangeFeedbackCategoryName: handleChangeFeedbackCategoryName,
       deleteFeedbackCategory: deleteFeedbackCategory,
       addFeedbackStdFeedbackText: addFeedbackStdFeedbackText,
+      addFeedbackStdPositiveFeedbackText: addFeedbackStdPositiveFeedbackText,
+      addFeedbackStdNegativeFeedbackText: addFeedbackStdNegativeFeedbackText,
       handleChangeFeedbackStdFeedbackText: handleChangeFeedbackStdFeedbackText,
+      handleChangeFeedbackStdPositiveFeedbackText: handleChangeFeedbackStdPositiveFeedbackText,
+      handleChangeFeedbackStdNegativeFeedbackText: handleChangeFeedbackStdNegativeFeedbackText,
       deleteFeedbackStdFeedbackText: deleteFeedbackStdFeedbackText,
+      deleteFeedbackStdPositiveFeedbackText: deleteFeedbackStdPositiveFeedbackText,
+      deleteFeedbackStdNegativeFeedbackText: deleteFeedbackStdNegativeFeedbackText,
       handleFeedbackTitleChange: handleFeedbackTitleChange,
       handleURLChange: handleURLChange,
       handleAuthChange: handleAuthChange,
@@ -1548,6 +1736,13 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleFeedbackTooltipChange: handleFeedbackTooltipChange,
       handleFeedbackDialogMsgChange: handleFeedbackDialogMsgChange,
       handleFeedbackThanksMsgChange: handleFeedbackThanksMsgChange,
+      handleFeedbackCategoryHeadingChange: handleFeedbackCategoryHeadingChange,
+      handleFeedbackGeneralCommentsHeadingChange: handleFeedbackGeneralCommentsHeadingChange,
+      handleFeedbackStdFeedbackHeadingChange: handleFeedbackStdFeedbackHeadingChange,
+      handleBugCategoryHeadingChange: handleBugCategoryHeadingChange,
+      handleBugGeneralCommentsHeadingChange: handleBugGeneralCommentsHeadingChange,
+      handleBugStdFeedbackHeadingChange: handleBugStdFeedbackHeadingChange,
+      handleBugSeverityHeadingChange: handleBugSeverityHeadingChange,
       handleRatingLimitChange: handleRatingLimitChange,
       addBugCategory: addBugCategory,
       handleChangeBugCategoryName: handleChangeBugCategoryName,
@@ -1581,6 +1776,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleMainBtnRotation: handleMainBtnRotation,
       handleMainBtnCustom: handleMainBtnCustom,
       handleIconChange: handleIconChange,
+      handleFeedbackFlowChange: handleFeedbackFlowChange,
       handleEmailText: handleEmailText,
       handleEnableEmail: handleEnableEmail,
       handleEmailRating: handleEmailRating,
