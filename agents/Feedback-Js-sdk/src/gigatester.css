@@ -1353,6 +1353,10 @@ bottom: -23px;
   display: flex;
   align-items: center;
 }
+.gigatester-ctrl-category-radio [type=radio]:checked, [type=radio]:not(:checked) {
+  position: relative !important;
+  opacity: 1 !important;  
+}
 
 .gigatester-ctrl-category-radio label{
   font-weight: 500;
