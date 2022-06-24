@@ -1377,13 +1377,14 @@ bottom: -23px;
 .gigatester-ctrl-category-radio label{
   font-weight: 500;
   font-size: 16px;
-  line-height: 20px;  
+  line-height: 20px; 
+  margin-left: 5px;
 }
 .gigatester-ctrl-item-category input[type="radio"]:checked+label {
   color: #0157FF;
 }
 
-.category-radio{
+.gigatester-ctrl-category-radio .category-radio {
   width: 22px; 
   height: 22px;
 }
