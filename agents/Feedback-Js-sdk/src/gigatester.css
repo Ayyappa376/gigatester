@@ -71,8 +71,14 @@ gtdiv *{
   -webkit-text-fill-color: var(--main-btn-text) !important;
 }
 .gigatester-dialog-scroll {
-  margin-left: 60px;
-  margin-right: 50px;
+  padding: 12px 72px 12px 62px;
+  height: 100%;
+  overflow-y: scroll;
+  /* margin-left: 60px;
+  margin-right: 50px; */
+}
+.gigatester-dialog-scroll::-webkit-scrollbar {
+  width: 5px;
 }
 .gigatester-dialog-scroll-head{
   display: flex;
@@ -901,14 +907,14 @@ popupbtn:hover popuptooltip {
   max-width: 96%;
   max-height: 100vh;
   margin: 0;
-  padding: 12px;
+  /* padding: 12px; */
   border: none;
   overflow: visible;
   position: fixed;
   z-index: 2347483645;
   top: auto;
   bottom: 0;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   background-color: #fff;
   box-shadow: 0 0 10px #5c6c7c;
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
@@ -1256,9 +1262,11 @@ gtclose svg {
   > gtdiv.inactive:not(.highlight)
   svg
   .star {
-  fill: #ffffff;
-  stroke: #011348;
-  stroke-width: 1px;
+  fill: #040000;
+  opacity: 0.2;
+  /* fill: #ffffff; */
+  /* stroke: #011348; */
+  /* stroke-width: 1px; */
 }
 #gigatester_ctrls_container
   .gigatester-ctrl-item
@@ -1879,6 +1887,19 @@ bottom: -23px;
   left: 0;
   border-radius: 4px;
 }
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-confirm-modal{
+  padding: 12px 72px 0px 62px;
+  margin-bottom: 30px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-confirm-modal .gigatester-ctrl-item-header {
+  text-align: center;
+}
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-confirm-modal > gtfooter{
+  bottom: -35px !important;
+}
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv {
   position: absolute;
   top: 60%;
@@ -2142,6 +2163,7 @@ bottom: -23px;
   background: transparent;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item {
+  /* overflow-y: scroll; */
   position: absolute;
   top: auto;
   right: 0;
@@ -2152,6 +2174,9 @@ bottom: -23px;
   transform: none;
   box-shadow: 0 0 10px #5c6c7c;
   animation: animationAppear 0.1s linear 0.05s forwards;
+}
+#gigatester_ctrls_container .gigatester-ctrl-item::-webkit-scrollbar {
+  width: 5px;
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item {
