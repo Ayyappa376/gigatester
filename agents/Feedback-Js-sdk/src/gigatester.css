@@ -1879,13 +1879,21 @@ bottom: -23px;
   opacity: 0 !important;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success {
-  position: relative;
-  height: 100px;
-  top: 0;
-  right: 0;
+  /* position: relative; */
+  /* height: 100px; */
+  /* top: 0; */
+  /* right: 0;
   bottom: 0;
-  left: 0;
-  border-radius: 4px;
+  left: 0; */
+  /* border-radius: 4px; */
+  padding: 12px 72px 0px 62px;
+  margin-bottom: 30px;
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
+}
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtfooter{
+  bottom: -35px !important;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-confirm-modal{
   padding: 12px 72px 0px 62px;
