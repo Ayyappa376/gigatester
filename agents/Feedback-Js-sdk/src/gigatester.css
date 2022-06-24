@@ -980,7 +980,7 @@ gtclose svg {
   position: absolute;
   top: 25px;
   /* right: 0; */
-  display: flex;
+  display: flex !important;
   align-items: center;
   left: -25px;
   height: 50px;
