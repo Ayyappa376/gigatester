@@ -996,7 +996,12 @@ gtclose svg {
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item gtclose {
     top: 10px;
-    right: 10px;
+    right: 15px;
+    left: auto;
+    background: none;
+  }
+  #gigatester_ctrls_container .gigatester-ctrl-item gtclose svg{
+    fill: #000000;
   }
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-logo, .gigatester-ctrl-item-logo {
