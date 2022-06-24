@@ -1,6 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
 :root {
-  --main-btn-bg: #011348;
+  --main-btn-bg: #0157FF;
   --main-btn-text: #ffffff;
 }
 
@@ -69,6 +69,15 @@ gtdiv *{
   -webkit-text-fill-color: #fff;
   color: var(--main-btn-text) !important;
   -webkit-text-fill-color: var(--main-btn-text) !important;
+}
+.gigatester-dialog-scroll {
+  margin-left: 60px;
+  margin-right: 50px;
+}
+.gigatester-dialog-scroll-head{
+  display: flex;
+  margin-top: 36px;
+  justify-content: space-between;
 }
 .gigatester-mobile-only {
   display: none;
@@ -730,6 +739,11 @@ popupbtn {
   position: relative;
   top: 0px;
   left: 0px;
+  background-color: #ffffff;
+  margin: 10px 0px;
+  padding: 10px 30px;
+  border: 1px solid #DADFDF;
+  border-radius: 12px;
 }
 popupbtn svg{
   width: 50px;
@@ -747,11 +761,14 @@ popupbtn gtdiv {
   cursor: pointer;
 }
 .gigatester-popup-dialog-remote popupbtn gtdiv {
-  display: table;
+  display: flex;
 }
 .gigatester-popup-dialog-remote popupbtn gtdiv span {
   display: table-cell;
   vertical-align: middle;
+}
+.gigatester-popup-dialog-remote popupbtn gtdiv div {
+  display: block;
 }
 popuptooltip {
   visibility: hidden;
@@ -876,8 +893,8 @@ popupbtn:hover popuptooltip {
   border-bottom: 2px solid transparent;
 } */
 #gigatester_ctrls_container .gigatester-ctrl-item {
-  width: 760px;
-  height: auto;
+  width: 732px;
+  height: 100%;
   line-height: normal;
   min-width: 0;
   min-height: 0;
@@ -955,17 +972,20 @@ gtclose svg {
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtclose {
   position: absolute;
-  top: 0;
-  right: 0;
-  height: 20px;
-  width: 20px;
-  background: none;
+  top: 25px;
+  /* right: 0; */
+  display: flex;
+  align-items: center;
+  left: -25px;
+  height: 50px;
+  width: 50px;
+  background: #0157FF;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtclose svg{
   font-size: 10px;
-  height: 10px;
-  width: 10px;
-  fill: #011348;
+  height: 18px;
+  width: 18px;
+  fill: #ffffff;
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item gtclose {
@@ -973,9 +993,9 @@ gtclose svg {
     right: 10px;
   }
 }
-#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-logo {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-logo, .gigatester-ctrl-item-logo {
   width: auto;
-  height: auto;
+  height: 60px;
   line-height: normal;
   min-width: 0;
   min-height: 0;
@@ -988,17 +1008,17 @@ gtclose svg {
   border-radius: 0;
   background: none;
   display: block;
-  max-height: 36px;
-  margin: 24px auto 32px auto;
+  /* max-height: 36px; */
+  /* margin: 24px auto 32px auto; */
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-header {
     width: auto;
     height: auto;
     line-height: normal;
     min-width: 0;
-    font-size: 22px;
+    font-size: 34px;
     font-weight: 800;
-    text-align: center;
+    text-align: left;
     min-height: 0;
     max-width: none;
     max-height: none;
@@ -1009,9 +1029,14 @@ gtclose svg {
     border-radius: 0;
     background: none;
     display: block;
-    max-height: 36px;
-    margin: 20px auto 20px auto;
-  }
+    /* max-height: 36px; */
+    color: #040000;
+    /* margin: 20px auto 20px auto; */
+}
+.gigatester-ctrl-item-sub-header{
+  font-size: 16px;
+  color: #040000;
+}
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-step {
   width: auto;
   height: auto;
@@ -1031,7 +1056,9 @@ gtclose svg {
 #gigatester_ctrls_container .gigatester-ctrl-item gtfooter {
   display: block;
   height: 16px;
-  font-size:10px;
+  font-size:16px;
+  color: #040000;
+  opacity: 0.3;
   line-height: 20px;
   margin: 10px 0 0 0;
   padding: 0;
@@ -1291,6 +1318,40 @@ bottom: -23px;
   background: none;
   position: relative;
   display: block;
+}
+.gigatester-ctrl-item-category{
+  margin-top: 50px;  
+  padding: 25px 35px;
+  border: 1px solid #000000;
+  border-radius: 12px;  
+}
+.gigatester-ctrl-item-category .gigatester-ctrl-item-label {
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 35px;
+}
+.gigatester-ctrl-item-category .gigatester-ctrl-category-container{
+  margin-top: 45px;
+  margin-bottom: 45px;
+}
+.gigatester-ctrl-category-radio{
+  padding: 5px;
+  display: flex;
+  align-items: center;
+}
+
+.gigatester-ctrl-category-radio label{
+  font-weight: 500;
+  font-size: 16px;
+  line-height: 20px;  
+}
+.gigatester-ctrl-item-category input[type="radio"]:checked+label {
+  color: #0157FF;
+}
+
+.category-radio{
+  width: 22px; 
+  height: 22px;
 }
 
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-options::-webkit-scrollbar {
@@ -1874,7 +1935,10 @@ bottom: -23px;
   display: block;
   height: 40px;
   padding: 0 24px;
-  margin: 20px 0 0 103px;
+  /* margin: 20px 0 0 103px; */
+  background-color: #0157FF;
+  margin-top: 30px;
+  width: 100%;
   border-radius: 4px;
   box-sizing: border-box;
   font-weight: 400;
@@ -2058,9 +2122,9 @@ bottom: -23px;
   background: transparent;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item {
-  position: relative;
+  position: absolute;
   top: auto;
-  right: auto;
+  right: 0;
   bottom: auto;
   left: auto;
   margin: auto;
@@ -2239,16 +2303,28 @@ word-break: break-all;
   font-weight: 700;
 }
 #gigatester-popup-dialog-close{
-  position: absolute;
+  /* position: absolute;
   top: 0;
   right: 0;
   height: 20px;
-  width: 20px;
+  width: 20px; */
+  position: absolute;
+  top: 25px;
+  /* right: 0; */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  left: -25px;
+  height: 50px;
+  width: 50px;
+  background: #0157FF;
+  border-radius: 50%;
 }
 #gigatester-popup-dialog-close svg{
   font-size: 10px;
-  height: 10px;
-  width: 10px;
+  height: 18px;
+  width: 18px;
+  fill: #ffffff;
 }
 .gigatester-popup-dialog{
   height: auto;
@@ -2270,16 +2346,16 @@ word-break: break-all;
 }
 
 .gigatester-popup-dialog-remote{
-  width: 400px;
-  height: auto;
-  background: #fff;
+  width: 740px;
+  height: 100%;
+  background: #F7F8F8;
   position: fixed;
-  top: 25%;
-  left: 38%;
+  top: 0;
+  right: 0;
   transform: rotate(0deg);
   display: flex;
   flex-direction: column;
-  justify-content: space-evenly;
+  /* justify-content: space-evenly; */
   align-items: left;
   padding: 10px;
   margin: 0 auto;
@@ -2295,6 +2371,7 @@ word-break: break-all;
   text-align: left;
   box-sizing: border-box;
   animation: animationAppear 0.1s linear 0.05s forwards;
+  padding: 60px;
 }
 
 @media (max-width: 1300px) {
@@ -2358,11 +2435,12 @@ word-break: break-all;
 
 .gigatester-popup-dialog-remote .remote-title {
   color: #011348;
-  -webkit-text-fill-color:#011348;
-  font-weight: 900;
-  font-size: 22px;
-  align-items: center;
-  text-align: center;
+  -webkit-text-fill-color:#011348;  
+  display: block;
+  font-size: 34px;
+  font-weight: 800;
+  /* align-items: center; */
+  text-align: left;
 }
 
 gtvideotoolbar {

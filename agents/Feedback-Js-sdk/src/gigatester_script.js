@@ -80,7 +80,8 @@ const GigaTester_StringRes = {
         confirm_modal_header: "Confirm",
         confirm_modal_text: "Start afresh next time or Start from these values next time",
         keep_changes_button: "Keep changes",
-        discard_changes_button: "Discard changes"
+        discard_changes_button: "Discard changes",
+        main_title: "We value your opinion",
     },
     setLocale: function(locale) {
         this.locale = locale
@@ -2024,7 +2025,7 @@ let GigaTester_StringUtils = {
                         if(GigaTester_modal.configs.bugs_default_category){
                             GigaTester.setDefaultCategory(GigaTester_modal.configs.bugs_default_category.trim(), "BUGS")
                         }
-                        else{
+                        else if(GigaTester_modal.form_data['category'].trim() == ""){
                             GigaTester_modal.form_data['category'] = [];
                         }
                     }
@@ -2234,8 +2235,13 @@ let GigaTester_StringUtils = {
                     console.log("GigaTester: setRoutings called");
                     let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.close_icon + "</gtclose>";
                     html += '<gtdiv class="gigatester-dialog-scroll">';
-                    html += '<gtheader class="gigatester-ctrl-item-header" title="GigaTester">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
-                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : "";
+                    html += '<gtdiv class="gigatester-dialog-scroll-head">'
+                    html += '<div>'
+                    html += '<gtheader class="gigatester-ctrl-item-header" title="Cuvo">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
+                    html += '<gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">Please share your feedback</gtheader>'
+                    html += '</div>'
+                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : `<img class="gigatester-ctrl-item-logo" src="./src/sling_logo.png">`;
+                    html += '</gtdiv>'
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
                     html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " Cuvo" + "</span>" + "</a>" + "</gtfooter>";
                     html += '</gtdiv>';
@@ -2334,9 +2340,9 @@ let GigaTester_StringUtils = {
                     let category_options = "";
                     let category_options_radio = "";
                     if(form_settings.display_category){
-                        this.configs.categories.forEach(function(category) {
-                            category_options_radio += '<input type="radio" id="category_radio" name="category_options_radio" value="'+category+'">'
-                            + '<label for="html">'+category+'</label><br>'
+                        this.configs.categories.forEach(function(category,index) {
+                            category_options_radio += `<div class="gigatester-ctrl-category-radio" ><input type="radio" class="category-radio" id="category_radio_${index}" name="category_options_radio" value="${category}">`
+                            + `<label for="category_radio_${index}" >${category}</label><br></div>`
                         }.bind(this))
                     }
                     if (form_settings.display_category) {
@@ -2352,8 +2358,11 @@ let GigaTester_StringUtils = {
                     let html = "";
                     if(this.dynamic_form_type == 'radio'){
                         html += '<form class="gigatester-ctrl-item-options">'
-                        + (form_settings.categoryHeading ? '<label for="categoryHeading" class="gigatester-ctrl-item-label">' + form_settings.categoryHeading + (form_settings.category_field_mandatory ? "" : " (optional)") + '</label>': '')
-                        + category_options_radio
+                        + '<div class="gigatester-ctrl-item-category" >'
+                        // + (form_settings.categoryHeading ? '<label for="categoryHeading" class="gigatester-ctrl-item-label">' + form_settings.categoryHeading + (form_settings.category_field_mandatory ? "" : " (optional)") + '</label>': '')
+                        + (form_settings.categoryHeading ? "" : '<label for="categoryHeading" class="gigatester-ctrl-item-label">Please tell us with one you want to provide feedback on</label>')
+                        + '<div class="gigatester-ctrl-category-container" >'+ category_options_radio + '</div>'
+                        + '</div>'
                         + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">Next</span>' + "</button>"
                         + "</form>";
                         // html +=  (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '');
@@ -2412,7 +2421,7 @@ let GigaTester_StringUtils = {
                 //     });
                 // });
                 // $('#category').val(['']).trigger('change');
-                    if(GigaTester_modal.configs.rating_limit > 4){
+                    if(2 > 4){
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                         this.focusControls();
                     }
@@ -2892,8 +2901,10 @@ let GigaTester_StringUtils = {
                         popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>');
                     }
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
-                    let pop_up_title = $('<gtheader class="remote-title">' + GigaTester_modal.configs.title + '</gtheader>')
-
+                    let pop_up_title = $('<gtdiv class="gigatester-dialog-scroll-head"><div><gtheader class="remote-title">' + GigaTester_modal.configs.title + 
+                    '</gtheader><gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">Please share your feedback</gtheader>'+
+                    '</div><img class="gigatester-ctrl-item-logo" src="./src/sling_logo.png"></gtdiv>')
+                    
                     if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
                         && GigaTester_modal.configs.main_button_rotation !== '0'){
                         let pop_up_rotate = '0';
@@ -2964,7 +2975,7 @@ let GigaTester_StringUtils = {
 
                         GigaTester_modal.configs.cuvoTypes.forEach(function (type) {
                             if (type === 'BUGS') {
-                                let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.bugs_icon + '<span>' + GigaTester_modal.configs.bugs_title + '</span></gtdiv></popupbtn>');
+                                let popup_bug_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.bugs_icon + '<div><div>' + GigaTester_modal.configs.bugs_title + '</div><div>'+GigaTester_modal.configs.bugs_tooltip_msg+'</div></div></gtdiv></popupbtn>');
                                 let popup_bug_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.bugs_tooltip_msg);
                                 if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM' || currentPosition === 'BOTTOM_LEFT') {
                                     popup_bug_icon_tooltip[0].style.right = '-136px';
@@ -3280,6 +3291,7 @@ let GigaTester_StringUtils = {
                     this.removeGTControls();
                     this.removeComments();
                     GigaTester_modal.save_form_state = false;
+                    GigaTester_modal.dynamic_form_type = "radio";
                     GigaTester_modal.set_screen_default_category = true;
                     this.form_data['category'] = GigaTester.category || "category";
                     GigaTester_modal.configs.selected_category = []
@@ -3321,23 +3333,7 @@ let GigaTester_StringUtils = {
                         }
                     }
                     if(GigaTester_modal.form_type === "BUGS") {
-                        if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory &&
-                            this.configs.config_data[0].bugSettings.categories.length > 0 &&
-                            (this.form_data['category'] === 'category' || this.form_data['category'] === '' || this.form_data['category'].length == 0)
-                        ){
-                            dataError = true;
-                            GigaTester_modal.setNotifyStatus('Please select a category')
-                            setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
-                        } else if(GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory &&
-                            this.configs.severities.length > 0 &&
-                            (this.form_data['severity'] === 'severity' || this.form_data['severity'] === '')
-                        ){
-                            dataError = true;
-                            GigaTester_modal.setNotifyStatus('Please select bug severity')
-                            setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
-                        }
-                    } else if(GigaTester_modal.form_type === "FEEDBACK") {
-                        if(this.dynamic_form_type == 'radio'){                            
+                        if(this.dynamic_form_type == 'radio'){
                             var ele = document.getElementsByName('category_options_radio');
                             let x;
                             for(let i = 0; i < ele.length; i++) {
@@ -3346,10 +3342,53 @@ let GigaTester_StringUtils = {
                                 }                                
                             }
                             console.log("changeeeeeeeeeeeeeeee",x)
-                            this.form_data['category'] = x;
-                            this.dynamic_form_type = 'category';
-                            GigaTester_modal.setDialogForm();
-                            dataError = true;
+                            if(x){
+                                this.form_data['category'] = x;
+                                this.dynamic_form_type = 'category';
+                                GigaTester_modal.setDialogForm();
+                                dataError = true;
+                            } else{
+                                GigaTester_modal.setNotifyStatus('Please select a category');
+                                setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                                dataError = true;
+                            }
+                        } else if (this.dynamic_form_type == 'category'){
+                            if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory &&
+                                this.configs.config_data[0].bugSettings.categories.length > 0 &&
+                                (this.form_data['category'] === 'category' || this.form_data['category'] === '' || this.form_data['category'].length == 0)
+                            ){
+                                dataError = true;
+                                GigaTester_modal.setNotifyStatus('Please select a category')
+                                setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                            } else if(GigaTester_modal.form_settings_default['BUGS'].severity_field_mandatory &&
+                                this.configs.severities.length > 0 &&
+                                (this.form_data['severity'] === 'severity' || this.form_data['severity'] === '')
+                            ){
+                                dataError = true;
+                                GigaTester_modal.setNotifyStatus('Please select bug severity')
+                                setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                            }
+                        }
+                    } else if(GigaTester_modal.form_type === "FEEDBACK") {
+                        if(this.dynamic_form_type == 'radio'){                
+                            var ele = document.getElementsByName('category_options_radio');
+                            let x;
+                            for(let i = 0; i < ele.length; i++) {
+                                if(ele[i].checked){
+                                    x = ele[i].value;
+                                }                                
+                            }
+                            console.log("changeeeeeeeeeeeeeeee",x)
+                            if(x){
+                                this.form_data['category'] = x;
+                                this.dynamic_form_type = 'category';
+                                GigaTester_modal.setDialogForm();
+                                dataError = true;
+                            } else {
+                                GigaTester_modal.setNotifyStatus('Please provide your rating')
+                                setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                                dataError = true;
+                            }
                         } else if (this.dynamic_form_type == 'category'){
                             if(GigaTester_modal.form_settings_default['FEEDBACK'].rating_mandatory &&
                                 this.form_data.rating < 1){
