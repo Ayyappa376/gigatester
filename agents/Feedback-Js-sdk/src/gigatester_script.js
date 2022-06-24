@@ -2232,13 +2232,14 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events = null
                 },
                 setRoutings: function() {
+                    let form_settings = this.getFormSettings(this.form_type);
                     console.log("GigaTester: setRoutings called");
                     let html = '<gtclose class="gigatester-ctrl-item-close" title="' + GigaTester_StringRes.get("close") + '">' + GigaTester_Icons.close_icon + "</gtclose>";
                     html += '<gtdiv class="gigatester-dialog-scroll">';
                     html += '<gtdiv class="gigatester-dialog-scroll-head">'
                     html += '<div>'
                     html += '<gtheader class="gigatester-ctrl-item-header" title="Cuvo">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
-                    html += '<gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">Please share your feedback</gtheader>'
+                    html += '<gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">'+GigaTester_StringUtils.escapeSpecialChars(form_settings.rating_title_message)+'</gtheader>'
                     html += '</div>'
                     html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : `<img class="gigatester-ctrl-item-logo" src="./src/sling_logo.png">`;
                     html += '</gtdiv>'
@@ -2369,7 +2370,7 @@ let GigaTester_StringUtils = {
                     } else if(this.dynamic_form_type == 'category'){
                         // let html = "";
                         html += '<form class="gigatester-ctrl-item-options">'
-                        + (form_settings.rating_title_message ? '<div class="gigatester-ctrl-item-help-message">' + GigaTester_StringUtils.escapeSpecialChars(form_settings.rating_title_message) + "</div>" : "")
+                        // + (form_settings.rating_title_message ? '<div class="gigatester-ctrl-item-help-message">' + GigaTester_StringUtils.escapeSpecialChars(form_settings.rating_title_message) + "</div>" : "")
                         + (form_settings.rating_type ? "<gtrating>" + '<gtdiv data-rating="star_1" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_2" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_3" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_4" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + '<gtdiv data-rating="star_5" class="inactive">' + GigaTester_Icons.star_icon + "</gtdiv>" + "</gtrating>"
                         + "<gtdiv class='gigatester-ctrl-item-loader-toggle'><gtloader id='gigatester-loader'></gtloader></gtdiv>" : "")
                         + '<gtdiv class="gigatester-ctrl-item-form"' + (form_settings.rating_type && form_settings.rating_mandatory ? ' style="display:none;"' : "") + ">"
@@ -2379,7 +2380,7 @@ let GigaTester_StringUtils = {
                         + '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label">Email Address'+ (form_settings.email_field_mandatory ? "" : " (optional)") +'</label>'
                         + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (GigaTester.email ? form_settings.hide_email ? " hidden": "" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
                         // + (form_settings.categoryHeading ? '<label for="categoryHeading" class="gigatester-ctrl-item-label">' + form_settings.categoryHeading + (form_settings.category_field_mandatory ? "" : " (optional)") + '</label>': '')
-                        + `<label for="categoryHeading" class="gigatester-ctrl-item-label">Please tell us with one is not working not well in ${this.form_data.category}?</label>`
+                        + `<label for="categoryHeading" class="gigatester-ctrl-item-label">Please tell us with one is not working not well in "${this.form_data.category}"?</label>`
                         + (form_settings.display_category ? '<select style="display:none" id="category" name="category" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
                         + '<option value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
                         + category_options + "</select>" : "")
@@ -2388,10 +2389,12 @@ let GigaTester_StringUtils = {
                         + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
                         + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>"
                         + severity_options + "</select>" : "")
-                        + (form_settings.generalCommentsHeading ? '<label for="generalCommentsHeading">'+ form_settings.generalCommentsHeading + (form_settings.comment_field_mandatory ? "" : " (optional)") +'</label>' : "")
+                        // + (form_settings.generalCommentsHeading ? "" : '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label" >'+ form_settings.generalCommentsHeading + (form_settings.comment_field_mandatory ? "" : " (optional)") +'</label>')
+                        + (form_settings.generalCommentsHeading ? "" : '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label" >'+`Please tell us more what needs be improved in “${this.form_data.category}”? (optional)`+ (form_settings.comment_field_mandatory ? "" : " (optional)") +'</label>')
                         + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + (form_settings.comment_field_mandatory ? " *" : "") + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                         + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
                         + '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label">Please attach screenshot/audio/screen recording to help troubleshoot (optional)</label>'
+                        + '<div class="gigatester-ctrl-item-attach-container">'
                         + '<gtdiv class="gigatester-ctrl-item-preview-placeholder">' + GigaTester_StringRes.get("attachment_msg") + '</gtdiv>'
                         + (display_screenshot || display_audio || display_video || display_attachment ?
                             '<gtdiv class="gigatester-ctrl-item-attach-actions" data-item="' + data_item + '">' + "<gtdiv>"
@@ -2404,6 +2407,7 @@ let GigaTester_StringUtils = {
                         + (display_attachment ?'<btn class="gigatester-ctrl-item-add-attachment">' + GigaTester_Icons.paperclip_icon + "<gtdiv>" + GigaTester_StringRes.get("attach_file") + "</gtdiv>"
                         + "<gttooltip>" + GigaTester_StringRes.get("attach_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
                         + "</gtdiv>" + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
+                        + '</div>'
                         + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("send") + "</span>" + "</button>"
                         + '</gtdiv></gtdiv>'
                         + "</gtdiv>"
@@ -2456,7 +2460,7 @@ let GigaTester_StringUtils = {
                         this.custom_ui.events.find('.gigatester-ctrl-item-step').find('select[name="severity"]').val(default_severity)
                     }
                     // console.log(default_email, "default email");                    
-                    this.custom_ui.events.find('.gigatester-ctrl-item-step').find('.gigatester-ctrl-item-preview-placeholder').css('border', '1px solid #bfbfbf')
+                    // this.custom_ui.events.find('.gigatester-ctrl-item-step').find('.gigatester-ctrl-item-preview-placeholder').css('border', '1px solid #bfbfbf')
                     setTimeout(()=>{
                         GigaTester_modal.saveSubCategory();
                     },10);
