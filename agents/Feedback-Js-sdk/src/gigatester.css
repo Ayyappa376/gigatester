@@ -29,7 +29,7 @@ gtdiv *{
 #gigatester_screencapture_area{
   position: relative;
 }
-.gigatester-input-btn {
+.gigatester-input-btn, .gigatester-ctrl-item-next {
   position: relative;
   display: block;
   margin: 0;
@@ -53,6 +53,7 @@ gtdiv *{
   box-sizing: border-box;
   outline: none;
 }
+
 .gigatester-input-btn::-moz-focus-inner {
   padding: 0;
   border: 0;
@@ -60,9 +61,12 @@ gtdiv *{
 .gigatester-input-btn:focus {
   box-shadow: 1px 1px 4px #5c6c7c inset;
 }
-.gigatester-input-btn:disabled {
+.gigatester-input-btn:disabled, .gigatester-ctrl-item-next:disabled {
   box-shadow: none;
   cursor: not-allowed;
+  background: #040000 !important;
+  opacity: 0.2 !important;
+  border-radius: 4px;
 }
 .gigatester-input-btn .gigatester-ctrl-item-send-text {
   color: #fff !important;
@@ -639,7 +643,13 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   cursor: default;
   float: right;
 }
-.gigatester-comment .gigatester-comment-form .gigatester-input-btn {
+.gigatester-ctrl-item-button-container{
+  display: flex;
+}
+.gigatester-ctrl-item-button-container > button:nth-child(1){
+  margin-right: 10px;
+}
+.gigatester-comment .gigatester-comment-form .gigatester-input-btn, .gigatester-ctrl-item-next {
   height: 30px;
   line-height: 30px;
   padding: 0 14px;
@@ -1066,16 +1076,21 @@ gtclose svg {
 
 #gigatester_ctrls_container .gigatester-ctrl-item gtfooter {
   display: block;
-  height: 16px;
+  /* height: 16px; */
   font-size:16px;
   color: #040000;
   opacity: 0.3;
-  line-height: 20px;
-  margin: 10px 0 0 0;
+  /* line-height: 20px; */
+  /* margin: 10px 0 0 0; */
   padding: 0;
   text-align: center;
   box-sizing: border-box;
   user-select: none;
+  /* height:30px; */
+  /* margin-top: 10px; */
+  /* clear: both; */
+  /* width:100%; */
+  position: relative;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item gtfooter svg {
   display: inline-block;
@@ -1279,7 +1294,8 @@ gtclose svg {
   > gtdiv.preview:not(.highlight)
   svg
   .star {
-  fill: #ffffff;
+    fill: #040000;
+    opacity: 0.2;
 }
 #gigatester_video_preview_player{
   height: 160px;
@@ -1322,7 +1338,7 @@ bottom: -23px;
   height: auto;
   line-height: normal;
   min-width: 0;
-  min-height: 0;
+  min-height: calc(100vh - 200px);
   max-width: none;
   margin: 0;
   padding: 0;
@@ -1345,8 +1361,8 @@ bottom: -23px;
   line-height: 35px;
 }
 .gigatester-ctrl-item-category .gigatester-ctrl-category-container{
-  margin-top: 45px;
-  margin-bottom: 45px;
+  margin-top: 25px;
+  margin-bottom: 10px;
 }
 .gigatester-ctrl-category-radio{
   padding: 5px;
@@ -1987,12 +2003,13 @@ bottom: -23px;
   right: 0;
   bottom: 2px;
 }
-#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send {
+#gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send, .gigatester-ctrl-item-next {
   overflow: hidden;
   position: relative;
   display: block;
   height: 40px;
   padding: 0 24px;
+  margin-bottom: 36px;
   /* margin: 20px 0 0 103px; */
   background-color: #0157FF;
   margin-top: 30px;

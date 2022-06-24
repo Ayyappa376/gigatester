@@ -1861,7 +1861,9 @@ let GigaTester_StringUtils = {
                     this.custom_ui.events.on("mouseleave", "gtrating > gtdiv", this.unRatingPreview.bind(this));
                     this.custom_ui.events.on("change", ".gigatester-ctrl-item-attachment", this.uploadAttachment.bind(this));
                     this.custom_ui.events.on("submit", ".gigatester-ctrl-item-options", this.validateFields.bind(this));
+                    this.custom_ui.events.on("click", ".gigatester-ctrl-item-next", this.backButton.bind(this));
                     this.custom_ui.events.on("change", 'select[name="category"]', this.changeCategory.bind(this));
+                    this.custom_ui.events.on("change", 'input:radio[name="category_options_radio"]', this.changeCategoryRadio.bind(this));
                     this.custom_ui.events.on("change", 'select[name="severity"]', this.changeSeverity.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-video", this.startScreenRecorder.bind(this));
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-audio", this.recordAudio.bind(this));
@@ -2341,8 +2343,9 @@ let GigaTester_StringUtils = {
                     let category_options = "";
                     let category_options_radio = "";
                     if(form_settings.display_category){
+                        console.log("categ",this.form_data.category);
                         this.configs.categories.forEach(function(category,index) {
-                            category_options_radio += `<div class="gigatester-ctrl-category-radio" ><input type="radio" class="category-radio" id="category_radio_${index}" name="category_options_radio" value="${category}">`
+                            category_options_radio += `<div class="gigatester-ctrl-category-radio" ><input type="radio" class="category-radio" tabindex="0" id="category_radio_${index}" name="category_options_radio" value="${category}" ${this.form_data.category == category ? 'checked' : ''}>`
                             + `<label for="category_radio_${index}" >${category}</label><br></div>`
                         }.bind(this))
                     }
@@ -2364,7 +2367,10 @@ let GigaTester_StringUtils = {
                         // + (form_settings.categoryHeading ? "" : '<label for="categoryHeading" class="gigatester-ctrl-item-label">Please tell us with one you want to provide feedback on</label>')
                         + '<div class="gigatester-ctrl-category-container" >'+ category_options_radio + '</div>'
                         + '</div>'
-                        + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">Next</span>' + "</button>"
+                        + '<div class="gigatester-ctrl-item-button-container" >'
+                        + '<button disabled class="gigatester-ctrl-item-next" type="button"><span class="gigatester-ctrl-item-back-text">Back</span>' + "</button>"
+                        + '<button class="gigatester-ctrl-item-send gigatester-input-btn" disabled>' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">Next</span>' + "</button>"
+                        + '</div>'
                         + "</form>";
                         // html +=  (form_settings.display_category ? '<gtdiv id="gigatester_category_standard_feedback"></gtdiv>' : '');
                     } else if(this.dynamic_form_type == 'category'){
@@ -2379,7 +2385,7 @@ let GigaTester_StringUtils = {
                         + '<gtdiv class="gigatester-ctrl-item-form-full"><gtdiv class="gigatester-ctrl-item-form-left">'
                         + '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label">Email Address'+ (form_settings.email_field_mandatory ? "" : " (optional)") +'</label>'
                         + (form_settings.email_field ? '<input type="email" name="email" placeholder="' + GigaTester_StringRes.get("your_email") + '"' + (form_settings.email_field_mandatory ? " required" : "") + (GigaTester.email ? form_settings.hide_email ? " hidden": "" : "") + (form_settings.email_field_disable ? " disabled" : "") + ">" : "")
-                        + (form_settings.categoryHeading ? '<label for="categoryHeading" class="gigatester-ctrl-item-label">"<b>'+this.form_data.category+'</b>"' + form_settings.categoryHeading + (form_settings.category_field_mandatory ? "" : " (optional)") + '</label>': '')
+                        + (form_settings.categoryHeading ? '<label for="categoryHeading" class="gigatester-ctrl-item-label">"<b>'+this.form_data.category+'</b>" :' + form_settings.categoryHeading + (form_settings.category_field_mandatory ? "" : " (optional)") + '</label>': '')
                         // + `<label for="categoryHeading" class="gigatester-ctrl-item-label">Please tell us with one is not working not well in "${this.form_data.category}"?</label>`
                         + (form_settings.display_category ? '<select style="display:none" id="category" name="category" ' + (form_settings.category_field_mandatory ? " required" : "") + ">"
                         + '<option value="category" selected disabled>' + GigaTester_StringRes.get("select_category") + "</option>"
@@ -2389,7 +2395,7 @@ let GigaTester_StringUtils = {
                         + (form_settings.display_severity ? '<select id="severity" name="severity" style="width:100%"' + (form_settings.severity_field_mandatory ? " required" : "") + ">"
                         + '<option value="severity" selected disabled>' + GigaTester_StringRes.get("select_severity") + "</option>"
                         + severity_options + "</select>" : "")
-                        + (form_settings.generalCommentsHeading ? '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label">"<b>'+this.form_data.category+'</b>"'+ form_settings.generalCommentsHeading + (form_settings.comment_field_mandatory ? "" : " (optional)") +'</label>' : "")
+                        + (form_settings.generalCommentsHeading ? '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label">"<b>'+this.form_data.category+'</b>" :'+ form_settings.generalCommentsHeading + (form_settings.comment_field_mandatory ? "" : " (optional)") +'</label>' : "")
                         // + (form_settings.generalCommentsHeading ? "" : '<label for="generalCommentsHeading" class="gigatester-ctrl-item-label" >'+`Please tell us more what needs be improved in “${this.form_data.category}”? (optional)`+ (form_settings.comment_field_mandatory ? "" : " (optional)") +'</label>')
                         + (form_settings.comment_field ? '<textarea name="description" data-gramm_editor="false" placeholder="' + (GigaTester_StringUtils.escapeSpecialChars(form_settings.comment_field_placeholder) || GigaTester_StringRes.get("your_comment")) + (form_settings.comment_field_mandatory ? " *" : "") + '"' + (form_settings.comment_field_mandatory ? " required" : "") + "></textarea>" : "")
                         + '</gtdiv><gtdiv class="gigatester-ctrl-item-form-right">'
@@ -2408,7 +2414,10 @@ let GigaTester_StringUtils = {
                         + "<gttooltip>" + GigaTester_StringRes.get("attach_file") + "</gttooltip>" + '<div class="gigatester-screenshot-preview-checkmark">' + GigaTester_Icons.checkmark + "</div>" + "</btn>" : "")
                         + "</gtdiv>" + '<input type="file" class="gigatester-ctrl-item-attachment">' + "</gtdiv>" : "")
                         + '</div>'
+                        + '<div class="gigatester-ctrl-item-button-container" >'
+                        + '<button class="gigatester-ctrl-item-next" type="button"><span class="gigatester-ctrl-item-back-text">Back</span>' + "</button>"
                         + '<button class="gigatester-ctrl-item-send gigatester-input-btn">' + '<span class="gigatester-ctrl-item-send-progress"></span>' + '<span class="gigatester-ctrl-item-send-text">' +  GigaTester_StringRes.get("send") + "</span>" + "</button>"
+                        + '</div>'
                         + '</gtdiv></gtdiv>'
                         + "</gtdiv>"
                         + "</form>";
@@ -2425,7 +2434,8 @@ let GigaTester_StringUtils = {
                 //     });
                 // });
                 // $('#category').val(['']).trigger('change');
-                    if(2 > 4){
+                    console.log("type",form_settings?.type);
+                    if(GigaTester_modal.configs.rating_limit > 4 && form_settings?.type == "STATIC"){
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                         this.focusControls();
                     }
@@ -3127,6 +3137,25 @@ let GigaTester_StringUtils = {
                 changeCategory: function(e) {
                     this.categories = this.custom_ui.events.find('select[name="category"]').val()
                 },
+                backButton: function(e){
+                    let form_settings = this.getFormSettings(this.form_type);
+                    console.log("back button clcickd",form_settings, GigaTester_modal);
+                    if(GigaTester_modal.dynamic_form_type == "category"){
+                        this.dynamic_form_type = 'radio';
+                        GigaTester_modal.setDialogForm();
+                    }
+                },
+                changeCategoryRadio: function(e){
+                    var ele = document.getElementsByName('category_options_radio');
+                    let x;
+                    for(let i = 0; i < ele.length; i++) {
+                        if(ele[i].checked){
+                            x = ele[i].value;
+                        }                                
+                    }
+                    $('.gigatester-input-btn').removeAttr('disabled');
+                    console.log("categpry",x);
+                },
                 changeSeverity: function(e) {
                     this.severity = this.custom_ui.events.find('select[name="severity"]').val()
                 },
@@ -3193,15 +3222,15 @@ let GigaTester_StringUtils = {
                         this.form_data.rating = rating.slice(rating.length -1, rating.length)
                         // console.log('GigaTester : max commented rating limit', GigaTester_modal.configs.rating_limit)
                     }
-                    if (this.form_data.rating <= GigaTester_modal.configs.rating_limit && GigaTester_modal.configs.rating_limit === 5) {
+                    if (this.form_data.rating <= GigaTester_modal.configs.rating_limit && GigaTester_modal.configs.rating_limit === 5 || form_settings.type == "DYNAMIC") {
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
-                    this.focusControls()
+                        this.focusControls()
                     } else if (this.form_data.rating <= GigaTester_modal.configs.rating_limit && GigaTester_modal.configs.rating_limit !== 5) {
                         this.custom_ui.events.find(".gigatester-ctrl-item-form").show();
                         this.custom_ui.events.off("click", "gtrating > gtdiv");
                         this.custom_ui.events.off("mouseenter", "gtrating > gtdiv");
                         this.custom_ui.events.off("mouseleave", "gtrating > gtdiv");
-                    } else{
+                    } else if(form_settings.type == "STATIC"){
                         this.post();
                     }
                 },
@@ -3563,7 +3592,7 @@ let GigaTester_StringUtils = {
                         userDetails: GigaTester.userDetails || GigaTester_modal.user_detail,
                         contextDetails: GigaTester.contextDetails || GigaTester_modal.context_detail,
                       }
-                    // console.log(postData, 'GigaTester: post Data:')
+                    // console.log('GigaTester: post Data:', postData )
 
                       fetch(`${GigaTester.endpoint}/feedback/`, {
                         method: 'POST',
@@ -3725,6 +3754,9 @@ let GigaTester_StringUtils = {
                             }
                             if(data[0].feedbackSettings.categoryHeading && data[0].feedbackSettings.categoryHeading.trim().length > 0) {
                                 GigaTester_modal.form_settings_default['FEEDBACK'].categoryHeading = data[0].feedbackSettings.categoryHeading.trim();
+                            }
+                            if(data[0].feedbackSettings.type && data[0].feedbackSettings.type.trim().length > 0) {
+                                GigaTester_modal.form_settings_default['FEEDBACK'].type = data[0].feedbackSettings.type.trim();
                             }
                             if(data[0].feedbackSettings.stdFeedbackHeading && data[0].feedbackSettings.stdFeedbackHeading.trim().length > 0) {
                                 GigaTester_modal.form_settings_default['FEEDBACK'].stdFeedbackHeading = data[0].feedbackSettings.stdFeedbackHeading.trim();
