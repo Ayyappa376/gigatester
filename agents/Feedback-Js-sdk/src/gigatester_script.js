@@ -2326,7 +2326,7 @@ let GigaTester_StringUtils = {
                     html += '<gtheader class="gigatester-ctrl-item-header" title="Cuvo">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
                     html += '<gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">'+GigaTester_StringUtils.escapeSpecialChars(form_settings.rating_title_message)+'</gtheader>'
                     html += '</div>'
-                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : `<img class="gigatester-ctrl-item-logo" src="./src/sling_logo.png">`;
+                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : `<img class="gigatester-ctrl-item-logo" src="https://s3.amazonaws.com/prod.gigatester.io/dist/feedback-agent/browser/sling_logo.png">`;
                     html += '</gtdiv>'
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
                     html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " Cuvo" + "</span>" + "</a>" + "</gtfooter>";
@@ -3057,8 +3057,8 @@ let GigaTester_StringUtils = {
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let pop_up_title = $('<gtdiv class="gigatester-dialog-scroll-head"><div><gtheader class="remote-title">' + GigaTester_modal.configs.title + 
                     '</gtheader><gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">Please share your feedback</gtheader>'+
-                    '</div><img class="gigatester-ctrl-item-logo" src="./src/sling_logo.png"></gtdiv>')
-                    
+                    '</div><img class="gigatester-ctrl-item-logo" src="https://s3.amazonaws.com/prod.gigatester.io/dist/feedback-agent/browser/sling_logo.png"></gtdiv>')
+        
                     if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
                         && GigaTester_modal.configs.main_button_rotation !== '0'){
                         let pop_up_rotate = '0';
