@@ -1005,6 +1005,7 @@ let GigaTester_StringUtils = {
                     }
                     this.custom_ui.element = $("<gtdiv>").addClass("gigatester-ctrls-container").attr({
                         id: "gigatester_ctrls_container",
+                        tabindex: "0",
                     }).appendTo($(document.body));
                     this.custom_ui.button = $("<gtdiv>").addClass("gigatester-btn");
                     this.custom_ui.button.appendTo(this.custom_ui.element);
@@ -1878,7 +1879,7 @@ let GigaTester_StringUtils = {
                             }
                         }
                     });
-                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item");
+                    this.custom_ui.events = $("<gtdiv>").addClass("gigatester-ctrl-item").attr({tabindex: "0"});
                     this.setRoutings();
                     this.custom_ui.events.appendTo(this.custom_ui.element);
                     this.custom_ui.events.on("click", ".gigatester-ctrl-item-close", this.closeDialog.bind(this));
@@ -2646,6 +2647,9 @@ let GigaTester_StringUtils = {
                     this.focusControls();
                 },
                 recordImage: async function(e){
+                    if (typeof e !== "undefined" && $(e.currentTarget).attr("disabled")) {
+                        return
+                    }
                     GigaTester_modal.canvas_mode = true;
                     GigaTester_modal.saveCheckedCategory();
                     GigaTester_modal.set_screen_default_category = false;
@@ -2854,6 +2858,9 @@ let GigaTester_StringUtils = {
                     GigaTester_modal.configs.audio_time = GigaTester_modal.configs.config_data[0].videoAudioMaxDuration * 60 || 180;
                 },
                 recordAudio: async function(e){
+                    if (typeof e !== "undefined" && $(e.currentTarget).attr("disabled")) {
+                        return
+                    }
                     if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
                         console.log("This browser does not support the API yet");
                       }
@@ -3293,14 +3300,15 @@ let GigaTester_StringUtils = {
                     //         return false
                     //     }
                     // })
-                    $("gigatester-email").attr('disabled', false);
-                    $("gigatester-description").attr('disabled', false);
+                    $("#gigatester-email").attr('disabled', false);
+                    $("#gigatester-description").attr('disabled', false);
                     this.custom_ui.events.find('input[type="text"],input[type="email"],textarea').each(function() {
                         if ($(this).val() === "") {
                             $(this).focus();
                             // return false
                         }
                     })
+                    
                 },
                 changeCategory: function(e) {
                     this.categories = this.custom_ui.events.find('select[name="gigatester-category"]').val()
@@ -3365,9 +3373,12 @@ let GigaTester_StringUtils = {
                     }
                 },
                 selectAttachment: function(e) {
-                    if ($(e.currentTarget).attr("disabled")) {
+                    if (typeof e !== "undefined" && $(e.currentTarget).attr("disabled")) {
                         return
                     }
+                    // if ($(e.currentTarget).attr("disabled")) {
+                    //     return
+                    // }
                     this.custom_ui.events.find(".gigatester-ctrl-item-attachment").click()
                 },
                 selectedRating: function(){
