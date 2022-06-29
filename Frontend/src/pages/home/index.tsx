@@ -112,11 +112,11 @@ const Home = (props: any) => {
   const [superUserStateVariable, setSuperUserStateVariable] = useState(stateVariable);
   const [isFetching, setIsFetching] = useState(true);
  
-  useEffect(() => {  
-    if(stateVariable?.user && stateVariable?.user.idToken){      
+  useEffect(() => {
+    if(stateVariable?.user && stateVariable?.user.idToken){
       props.history.push('/admin');
     }
-  },[stateVariable]);
+  },[]);
 
   useEffect(() => {
     setCurrentPageValue('');
