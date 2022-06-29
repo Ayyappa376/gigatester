@@ -1385,7 +1385,7 @@ bottom: -23px;
   color: #0157FF;
 }
 
-.gigatester-ctrl-category-radio .category-radio {
+.gigatester-ctrl-category-radio .gigatester-category-radio {
   width: 20px; 
   height: 20px;
 }
@@ -1405,9 +1405,19 @@ bottom: -23px;
   border-radius: 5px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  overflow-y: auto;
+  overflow-x: auto;
+  justify-content: center;
   color: rgb(50, 50, 50);
   -webkit-text-fill-color: rgb(50, 50, 50);
 }
+/*
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form .gigatester-ctrl-item-form-full {
   min-width: 0;
   min-height: 0;
@@ -1415,12 +1425,12 @@ bottom: -23px;
   overflow-y: auto;
   overflow-x: hidden;
   justify-content: center;
-  /* display: flex; */
+  /* display: flex; * /
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form-full .gigatester-ctrl-item-form-left,
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form-full .gigatester-ctrl-item-form-right {
   width: 100%;
-  /* padding: 10px; */
+  /* padding: 10px; * /
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-form .gigatester-ctrl-item-form-full {
@@ -1432,6 +1442,7 @@ bottom: -23px;
     padding: 0 !important;
   }
 }
+*/
 
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-disclaimer {
   width: auto;
@@ -1621,12 +1632,14 @@ bottom: -23px;
   box-shadow: none !important;
   box-sizing: border-box;
   animation: none;
-  -webkit-user-select: auto;
-  user-select: auto;
   margin: 0 0 10px 0;
   color: #011348;
   -webkit-text-fill-color: #011348;
   outline: none;
+  pointer-events: all !important;
+  /* user-select: all !important;
+  -webkit-user-select: all !important;
+  -moz-user-select: all !important; */
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"],
@@ -1653,11 +1666,13 @@ bottom: -23px;
   color: #aaa;
   -webkit-text-fill-color:#aaa;
 }
+/*
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]::-ms-input-placeholder,
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]::-ms-input-placeholder {
   color: #aaa;
   -webkit-text-fill-color:#aaa;
 }
+*/
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"]:focus,
 #gigatester_ctrls_container .gigatester-ctrl-item input[type="email"]:focus {
   border: 1px solid #011348;
