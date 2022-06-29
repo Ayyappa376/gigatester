@@ -1945,14 +1945,17 @@ bottom: -23px;
   transform: translateY(-50%);
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-confirm-modal .gigatester-ctrl-item-header {
-  text-align: center;
+  display: flex;
+  justify-content: center;
+  position: relative;
+  top: -50px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-confirm-modal > gtfooter{
   bottom: -35px !important;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv {
   position: absolute;
-  top: 60%;
+  top: 70%;
   left: 0;
   right: 0;
   transform: translateY(-50%);
