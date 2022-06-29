@@ -365,7 +365,7 @@ export default function SignupForm(props: any) {
           className={classes.dialogPaper}
           open={dialogOpen}
           aria-labelledby="form-dialog-title"
-          onClose={closeDialog}
+          // onClose={closeDialog}
           fullWidth={true}
         >
           <DialogTitle
@@ -375,9 +375,9 @@ export default function SignupForm(props: any) {
             <Typography variant="h4">
               <Text tid={"gigaTester"} />
             </Typography>
-            <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
+            {/* <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
               <CloseIcon />
-            </IconButton>
+            </IconButton> */}
           </DialogTitle>
           <DialogContent style={{ marginBottom: "20px" }}>
             <CssBaseline />

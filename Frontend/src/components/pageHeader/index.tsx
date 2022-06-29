@@ -231,7 +231,7 @@ const PageHeader = (props: any) => {
           // </Tooltip>
         ) : (
           <Fragment>
-            <div className='header-item'>
+            {/* <div className='header-item'>
               <Typography onClick={onLogin} className={classes.headerItem}>
                 <Text tid='login' />
               </Typography>
@@ -240,7 +240,7 @@ const PageHeader = (props: any) => {
               <Typography onClick={onRegister} className={classes.headerItem}>
                 <Text tid='signUp' />
               </Typography>
-            </div>
+            </div> */}
           </Fragment>
         )
     );

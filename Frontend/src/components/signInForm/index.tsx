@@ -418,7 +418,7 @@ export default function SignInForm(props: any) {
           className={classes.dialogPaper}
           open={dialogOpen}
           aria-labelledby="form-dialog-title"
-          onClose={closeDialog}
+          // onClose={closeDialog}
           fullWidth={dialogPage === "signUp"}
         >
           <DialogTitle
@@ -428,9 +428,9 @@ export default function SignInForm(props: any) {
             <Typography style={{ fontSize: "26px" }}>
               <Text tid={"gigaTester"} />
             </Typography>
-            <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
+            {/* <IconButton aria-label="close" className={classes.closeButton} onClick={closeDialog}>
               <CloseIcon />
-            </IconButton>
+            </IconButton> */}
           </DialogTitle>
           <DialogContent>
             {/* {dialogPage === "login" ? ( */}
