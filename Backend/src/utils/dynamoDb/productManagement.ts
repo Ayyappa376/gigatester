@@ -1,6 +1,8 @@
 import { ConfigItem, DeviceInfo, FeedbackAgentSettings, GroupInfo, PlatformInfo, ProductInfo, STATUS_PRODUCT_ACTIVE, STATUS_PRODUCT_DELETED, TestSuite } from '@models/index';
 import * as TableNames from '@utils/dynamoDb/getTableNames';
-import { appLogger, getDevicesList, getPlatformsList, getProductConfig,  getTestSuites, getUserDocumentFromEmail} from '@utils/index';
+import { appLogger, getDevicesList, getPlatformsList, getProductConfig,  getTestSuites,
+  //  getUserDocumentFromEmail
+  } from '@utils/index';
 import { DynamoDB } from 'aws-sdk';
 import { getGroupsList } from './groupsManagement';
 //import { getUserDocumentFromEmail } from './getUserDocument';
@@ -106,45 +108,45 @@ export const getProductsList = async (): Promise<ProductInfo[]> => {
   return scan<ProductInfo[]>(params);
 };
 
-const getProductList = async(products: ProductInfo[], type: string) => {
-  const productList: any = [];
-  if(products && products.length > 0) {
-  const prod = products.map(async(product: ProductInfo) => {
-    if(type === 'PRODUCT_CONFIG') {
-      switch(product.role) {
-          case 'Executive':
-          case 'Manager':
-          case 'Admin':
-            const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
-              Key: {
-                id: product.productId,
-                version: product.version,
-              },
-              TableName: TableNames.getProductsTableName(),
-            });
-            const productData = await get<ProductInfo[]>(params);
-            productList.push(productData);
-            break;
-            default:
-              appLogger.info({ getProductsList_scan_params: productList });
-      }
-    }
-    });
-      const productFetch = await Promise.all(prod);
-      appLogger.info({ getProductsList_scan_params: productFetch });
-    }
-    return productList;
-};
+// const getProductList = async(products: ProductInfo[], type: string) => {
+//   const productList: any = [];
+//   if(products && products.length > 0) {
+//   const prod = products.map(async(product: ProductInfo) => {
+//     if(type === 'PRODUCT_CONFIG') {
+//       switch(product.role) {
+//           case 'Executive':
+//           case 'Manager':
+//           case 'Admin':
+//             const params: DynamoDB.GetItemInput = <DynamoDB.GetItemInput>(<unknown>{
+//               Key: {
+//                 id: product.productId,
+//                 version: product.version,
+//               },
+//               TableName: TableNames.getProductsTableName(),
+//             });
+//             const productData = await get<ProductInfo[]>(params);
+//             productList.push(productData);
+//             break;
+//             default:
+//               appLogger.info({ getProductsList_scan_params: productList });
+//       }
+//     }
+//     });
+//       const productFetch = await Promise.all(prod);
+//       appLogger.info({ getProductsList_scan_params: productFetch });
+//     }
+//     return productList;
+// };
 
 export const getUserProductsList = async (email: string, type: string): Promise<ProductInfo[]> => {
-  const getUserDetails: any = await getUserDocumentFromEmail(email);
-  if(getUserDetails[0].roles && getUserDetails[0].roles.includes('Admin')) {
+  // const getUserDetails: any = await getUserDocumentFromEmail(email);
+  // if(getUserDetails[0].roles && getUserDetails[0].roles.includes('Admin')) {
     const allProductsList: any = await getProductsList();
     return allProductsList;
-  }
-  const products: ProductInfo[] = getUserDetails[0].products;
-  const productsList: any = await getProductList(products, type);
-  return productsList;
+  // }
+  // const products: ProductInfo[] = getUserDetails[0].products;
+  // const productsList: any = await getProductList(products, type);
+  // return productsList;
 };
 
 export const deleteProduct = async (id: string, version: string): Promise<ProductInfo> => {

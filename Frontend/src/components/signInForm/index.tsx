@@ -92,7 +92,7 @@ export default function SignInForm(props: any) {
         tokenInfo["custom:teamName"] !== ""
           ? tokenInfo["custom:teamName"]
           : "Others",
-      roles: ['Member']
+      roles: ['Manager']
     });
     let userStateVariable = {...stateVariable}
     userStateVariable.user = {
@@ -104,7 +104,7 @@ export default function SignInForm(props: any) {
         tokenInfo["custom:teamName"] !== ""
           ? tokenInfo["custom:teamName"]
           : "Others",
-        roles: ['Member']
+        roles: ['Manager']
     }
     //set the feedback component's context
     userData.email = tokenInfo['email']
