@@ -1955,7 +1955,7 @@ bottom: -23px;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv {
   position: absolute;
-  top: 60%;
+  top: 70%;
   left: 0;
   right: 0;
   transform: translateY(-50%);

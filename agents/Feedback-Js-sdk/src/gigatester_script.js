@@ -1930,7 +1930,7 @@ let GigaTester_StringUtils = {
                     $(document.getElementsByClassName('gigatester-ctrl-item-close')).css('display', 'none');
                     $(document.getElementsByClassName('gigatester-dialog-scroll')).css('display', 'none');
                     $(document.getElementById('gigatester-loader')).removeClass("gigatester-ctrl-item-loader")
-                    GigaTester_modal.confirmModal = true;
+                    // GigaTester_modal.confirmModal = true;
 
                     $(document.getElementsByClassName('gigatester-confirm-modal-save')).on('click', function(e) {
                         GigaTester_modal.save_form_state = true;
@@ -1946,6 +1946,7 @@ let GigaTester_StringUtils = {
                         $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
                         let close_icon = $(document.getElementsByClassName('gigatester-ctrl-item-close'));
                         GigaTester_modal.save_form_state = false;
+                        GigaTester_modal.confirmModal = true;
                         close_icon.trigger("click");                            
                     })
 
@@ -1954,7 +1955,7 @@ let GigaTester_StringUtils = {
                     const prefix = "gigatester-";
                     let field_name = $(e.currentTarget).attr("name");
                     if(field_name.startsWith(prefix)) {
-                        field_name = field_name.substr(prefix.length());
+                        field_name = field_name.substr(prefix.length);
                     }
                     if (field_name && typeof this.form_data[field_name] !== "undefined") {
                         this.form_data[field_name] = $(e.currentTarget).val()
