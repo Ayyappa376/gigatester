@@ -82,7 +82,7 @@ const GigaTester_StringRes = {
         thank_you_feedback_msg: "We appreciate your feedback.",
         thank_you_feature_msg: "We appreciate your suggestion.",
         confirm_modal_header: "Confirm",
-        confirm_modal_text: "Start afresh next time or Start from these values next time",
+        confirm_modal_text: "Discard your changes to start fresh next time, or keep your feedback for later",
         keep_changes_button: "Keep changes",
         discard_changes_button: "Discard changes",
         main_title: "We value your opinion",
@@ -838,6 +838,7 @@ let GigaTester_StringUtils = {
                     config_data: [],
                     selected_category: [],
                     rating_limit: 2,
+                    logo: "",
                     title: "Cuvo",
                     main_button_icon: '',
                     main_button_text: "FEEDBACK",
@@ -1869,9 +1870,10 @@ let GigaTester_StringUtils = {
                     $(document.getElementsByClassName('gigatester-ctrls-container')).unbind().on('click', function(e) {                        
                         let container = $(document.getElementsByClassName('gigatester-ctrl-item'));
                         if (!$(e.target).closest(container).length) {
-                            if(!GigaTester_modal.confirmModal){
-                                GigaTester_modal.showConfirmModal();
-                            }
+                            this.closeDialog();
+                            // if(!GigaTester_modal.confirmModal){
+                            //     GigaTester_modal.showConfirmModal();
+                            // }
                             // $(document.getElementsByClassName('gigatester-ctrls-container')).attr("isopen", "false");
                             // GigaTester_modal.save_form_state = true;
                             if(!GigaTester_modal.configs.isRemote){
@@ -2346,10 +2348,10 @@ let GigaTester_StringUtils = {
                     html += '<gtdiv class="gigatester-dialog-scroll">';
                     html += '<gtdiv class="gigatester-dialog-scroll-head">'
                     html += '<div>'
-                    html += '<gtheader class="gigatester-ctrl-item-header" title="Cuvo">'+ GigaTester_StringUtils.escapeSpecialChars(this.configs.title) + '</gtheader>'
-                    html += '<gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">'+GigaTester_StringUtils.escapeSpecialChars(form_settings.rating_title_message)+'</gtheader>'
+                    html += '<gtheader class="gigatester-ctrl-item-header" title="Title">'+ (form_settings.flow_type === 'STATIC' ? GigaTester_StringUtils.escapeSpecialChars(this.configs.title) : GigaTester_StringUtils.escapeSpecialChars(this.configs.feedback_title)) + '</gtheader>'
+                    html += '<gtheader class="gigatester-ctrl-item-sub-header" title="Sub-title">'+ (form_settings.flow_type === 'STATIC' ? GigaTester_StringUtils.escapeSpecialChars(form_settings.rating_title_message) : GigaTester_StringUtils.escapeSpecialChars(form_settings.feedback_title_message)) + '</gtheader>'
                     html += '</div>'
-                    html += this.configs.logo ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '">' : `<img class="gigatester-ctrl-item-logo" src="https://s3.amazonaws.com/prod.gigatester.io/dist/feedback-agent/browser/sling_logo.png">`;
+                    html += (this.configs.logo && this.configs.logo.length > 0) ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '"/>' : '';
                     html += '</gtdiv>'
                     html += '<gtdiv class="gigatester-ctrl-item-step" data-step="2"></gtdiv>';
                     html += "<gtfooter>" + "<span>Powered by</span>" + "<span class='gigatester-footer'>" + " Cuvo" + "</span>" + "</a>" + "</gtfooter>";
@@ -2543,7 +2545,7 @@ let GigaTester_StringUtils = {
                             });
 
                             let email_heading_text = '<label for="gigatester-email" class="gigatester-ctrl-item-label">Email Address'+ (form_settings.email_field_mandatory ? " (required)" : " (optional)") +'</label>';
-                            let subCategory_heading_text = (form_settings.subCategory_heading ? '<label class="gigatester-ctrl-item-label"><b>' + this.form_data.category + '</b> : ' + form_settings.subCategory_heading + (form_settings.category_field_mandatory ? " (required)" : " (optional)") + '</label>': '');
+                            let subCategory_heading_text = (form_settings.subCategory_heading ? '<label class="gigatester-ctrl-item-label"><b>' + this.form_data.category + '</b> : ' + form_settings.subCategory_heading + /*(form_settings.category_field_mandatory ? " (required)" : " (optional)") + */'</label>': '');
                             let comment_heading_text = (form_settings.comment_field_heading ? '<label for="gigatester-description" class="gigatester-ctrl-item-label"><b>' + this.form_data.category + '</b> : ' + form_settings.comment_field_heading + (form_settings.comment_field_mandatory ? " (required)" : " (optional)") +'</label>' : "");
 
                             html += '<form class="gigatester-ctrl-item-options">'
@@ -2873,7 +2875,7 @@ let GigaTester_StringUtils = {
                             GigaTester_modal.recording = true;
                             GigaTester_modal.set_screen_default_category = false;
                             let audio_record_overlay = $('<div id="gigatester_audio_record_player"></div>');
-                            let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on Mic icon to stop audio recording.')
+                            let audio_record_text = $('<gtdiv id="gigatester_audio_record_player_text"></gtdiv>').html('Please click on the mic icon to stop recording audio.')
                             let timer_button = $("<btn id='gigatester-audio-timer-btn'>").addClass("gigatester-video-controls-timer").text(GigaTester_modal.getTimerStr());
                             let timer_info_text = $('<gtlabel class="gigatester-audio-timer-label">Remaining Record Time</gtlabel>')
                             let audio_record_stop = $('<btn id="gigatester_audio_record_player_stop">').html(GigaTester_Icons.mic_icon);
@@ -3083,9 +3085,13 @@ let GigaTester_StringUtils = {
                         popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>');
                     }
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
-                    let pop_up_title = $('<gtdiv class="gigatester-dialog-scroll-head"><div><gtheader class="remote-title">' + GigaTester_modal.configs.title + 
-                    '</gtheader><gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">Please share your feedback</gtheader>'+
-                    '</div><img class="gigatester-ctrl-item-logo" src="https://s3.amazonaws.com/prod.gigatester.io/dist/feedback-agent/browser/sling_logo.png"></gtdiv>')
+                    let pop_up_title = $('<gtdiv class="gigatester-dialog-scroll-head">' +
+                    '<div>' +
+                    '<gtheader class="remote-title">' + GigaTester_modal.configs.title + '</gtheader>' +
+                    // '<gtheader class="gigatester-ctrl-item-sub-header" title="Cuvo">Please share your feedback</gtheader>' +
+                    '</div>' +
+                    ((this.configs.logo && this.configs.logo.length > 0) ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '"/>' : '') +
+                    '</gtdiv>')
         
                     if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
                         && GigaTester_modal.configs.main_button_rotation !== '0'){
@@ -4143,6 +4149,9 @@ let GigaTester_StringUtils = {
                         }
                         if(data[0].title && data[0].title.trim().length > 0) {
                             GigaTester_modal.configs.title = data[0].title.trim();
+                        }
+                        if(data[0].logo && data[0].logo.trim().length > 0) {
+                            GigaTester_modal.configs.logo = data[0].logo.trim();
                         }
                         if(data[0].videoAudioMaxDuration && data[0].videoAudioMaxDuration > 0) {
                             GigaTester_modal.configs.screen_record_time = data[0].videoAudioMaxDuration * 60;

@@ -112,19 +112,20 @@ gtdiv *{
   /* background: rgba(76, 84, 91, 0.8); */
   background: #F06767;
   color: #fff;
+  -webkit-text-fill-color: #fff;
   border-radius: 4px;
   cursor: pointer;
   box-sizing: border-box;
   opacity: 0;
   transform: translate(-38%, 200%);
   animation: animationAppearMoveDown 0.2s linear 0.8s forwards;
+  -webkit-animation: animationAppearMoveDown 0.2s linear 0.8s forwards;
   white-space: nowrap;
   font-size: 16px;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-weight: 600;
   text-align: center;
   -webkit-font-smoothing: antialiased;
-  -webkit-text-fill-color: #fff;
 }
 gttoolbar {
   line-height: normal;
@@ -282,6 +283,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker {
   box-shadow: 0 0 10px rgb(0 0 0 / 10%);
   white-space: nowrap;
   animation: animationReappear 0.1s linear forwards;
+  -webkit-animation: animationReappear 0.1s linear forwards;
 }
 gttoolbar .gigatester-toolbar-tool-color gtcolorpicker:before {
   content: "";
@@ -357,6 +359,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   background: none;
   cursor: crosshair;
   animation: animationAppear 0.1s linear;
+  -webkit-animation: animationAppear 0.1s linear;
 }
 .gigatester-overlay canvas {
   display: block;
@@ -483,6 +486,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   cursor: pointer;
   transition: all 0.1s linear;
   animation: animationAppearZoom 0.1s;
+  -webkit-animation: animationAppearZoom 0.1s;
   box-sizing: border-box;
 }
 .gigatester-comment .gigatester-comment-pin span {
@@ -515,6 +519,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
 .gigatester-comment .gigatester-comment-pin:after {
   opacity: 0.3;
   animation: animationDisappearZoom 2s ease-in 1.5s infinite;
+  -webkit-animation: animationDisappearZoom 2s ease-in 1.5s infinite;
 }
 .gigatester-comment .gigatester-comment-form {
   line-height: normal;
@@ -536,6 +541,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
   filter: drop-shadow(0 0 8px rgba(0, 0, 0, 0.2));
   box-sizing: border-box;
   animation: fadeIn 0.1s;
+  -webkit-animation: fadeIn 0.1s;
 }
 @media (max-width: 800px) {
   .gigatester-comment .gigatester-comment-form {
@@ -553,6 +559,7 @@ gttoolbar .gigatester-toolbar-tool-color gtcolorpicker > gtdiv span {
     opacity: 0;
     transform: translateY(-20px);
     animation: animationReappear 0.1s linear 0.2s forwards;
+    -webkit-animation: animationReappear 0.1s linear 0.2s forwards;
   }
 }
 .gigatester-comment .gigatester-comment-form[xdirection="right"] {
@@ -906,6 +913,7 @@ popupbtn:hover popuptooltip {
   bottom: auto;
   transform: rotate(90deg);
   animation: animationMoveLeft 0.2s linear;
+  -webkit-animation: animationMoveLeft 0.2s linear;
   border-bottom: 2px solid transparent;
 } */
 #gigatester_ctrls_container .gigatester-ctrl-item {
@@ -936,6 +944,7 @@ popupbtn:hover popuptooltip {
   text-align: left;
   box-sizing: border-box;
   animation: animationAppear 0.1s linear 0.05s forwards;
+  -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item {
@@ -953,6 +962,7 @@ popupbtn:hover popuptooltip {
     max-height: 100vh;
     opacity: 1;
     animation: animationAppearMoveUp 0.1s linear;
+    -webkit-animation: animationAppearMoveUp 0.1s linear;
   }
 }
 gtclose {
@@ -1052,11 +1062,13 @@ gtclose svg {
     display: block;
     /* max-height: 36px; */
     color: #040000;
+    -webkit-text-fill-color: #040000;
     /* margin: 20px auto 20px auto; */
 }
 .gigatester-ctrl-item-sub-header{
   font-size: 16px;
   color: #040000;
+  -webkit-text-fill-color: #040000;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-step {
   width: auto;
@@ -1079,6 +1091,7 @@ gtclose svg {
   /* height: 16px; */
   font-size:16px;
   color: #040000;
+  -webkit-text-fill-color: #040000;
   opacity: 0.3;
   /* line-height: 20px; */
   /* margin: 10px 0 0 0; */
@@ -1163,6 +1176,7 @@ gtclose svg {
   width: 12px;
   height: 12px;
   animation: animationRotate 0.8s linear infinite;
+  -webkit-animation: animationRotate 0.8s linear infinite;
 }
 #gigatester-video-stop-btn-container{
 
@@ -1383,6 +1397,7 @@ bottom: -23px;
 }
 .gigatester-ctrl-item-category input[type="radio"]:checked+label {
   color: #0157FF;
+  -webkit-text-fill-color: #0157FF;
 }
 
 .gigatester-ctrl-category-radio .gigatester-category-radio {
@@ -1632,14 +1647,14 @@ bottom: -23px;
   box-shadow: none !important;
   box-sizing: border-box;
   animation: none;
+  -webkit-animation: none;
   margin: 0 0 10px 0;
   color: #011348;
   -webkit-text-fill-color: #011348;
   outline: none;
-  pointer-events: all !important;
-  /* user-select: all !important;
-  -webkit-user-select: all !important;
-  -moz-user-select: all !important; */
+  pointer-events: auto !important;
+  user-select: auto !important;
+  -webkit-user-select: auto !important;
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item input[type="text"],
@@ -1703,6 +1718,7 @@ bottom: -23px;
   border: 1px solid #bfbfbf;
   box-sizing: border-box;
   animation: none;
+  -webkit-animation: none;
   -webkit-user-select: auto;
   user-select: auto;
   height: 40px;
@@ -1767,6 +1783,7 @@ bottom: -23px;
   border: 1px solid #bfbfbf;
   box-sizing: border-box;
   animation: none;
+  -webkit-animation: none;
   -webkit-user-select: auto;
   user-select: auto;
   margin: 7px 0 10px 0;
@@ -1971,6 +1988,7 @@ bottom: -23px;
   margin: auto;
   font-size: 64px;
   animation: animationExpandContract 0.8s;
+  -webkit-animation: animationExpandContract 0.8s;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success > gtdiv
   svg {
@@ -2015,6 +2033,7 @@ bottom: -23px;
   width: 64px;
   height: 64px;
   animation: animationExpandContract 0.8s;
+  -webkit-animation: animationExpandContract 0.8s;
   fill: #011348;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-success gtfooter {
@@ -2050,6 +2069,7 @@ bottom: -23px;
   height: 18px;
   fill: #fff;
   animation: animationAppearMoveUp 0.1s;
+  -webkit-animation: animationAppearMoveUp 0.1s;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading,
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading:hover {
@@ -2082,6 +2102,7 @@ bottom: -23px;
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-loading:hover:after {
   border-left-color: rgba(255, 255, 255, 0.9);
   animation: animationRotate 0.8s linear infinite;
+  -webkit-animation: animationRotate 0.8s linear infinite;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-uploading,
 #gigatester_ctrls_container .gigatester-ctrl-item .gigatester-ctrl-item-send-uploading:hover {
@@ -2158,6 +2179,7 @@ bottom: -23px;
   left: auto;
   transform: translateY(-50%);
   animation: animationAppearMoveLeft 0.2s;
+  -webkit-animation: animationAppearMoveLeft 0.2s;
 }
 @media (max-width: 800px) {
   #gigatester_ctrls_container .gigatester-ctrl-item-r {
@@ -2167,6 +2189,7 @@ bottom: -23px;
     left: 0;
     transform: none;
     animation: none;
+    -webkit-animation: none;
   }
 }
 @media (max-width: 800px) {
@@ -2230,6 +2253,7 @@ bottom: -23px;
   transform: none;
   box-shadow: 0 0 10px #5c6c7c;
   animation: animationAppear 0.1s linear 0.05s forwards;
+  -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
 }
 #gigatester_ctrls_container .gigatester-ctrl-item::-webkit-scrollbar {
   width: 5px;
@@ -2243,7 +2267,9 @@ bottom: -23px;
     bottom: 0;
     opacity: 1;
     transform: none;
+    -webkit-transform: none;
     animation: none;
+    -webkit-animation: none;
     box-shadow: none;
   }
 }
@@ -2252,6 +2278,7 @@ bottom: -23px;
   margin-top: 10px;
   font-weight: 500;
   color: #040000;
+  -webkit-text-fill-color: #040000;
 }
 #gigatester_ctrls_container[drawing="true"] {
   position: static;
@@ -2445,6 +2472,7 @@ word-break: break-all;
   /* bottom: -118px; */
   box-shadow: 0 0 10px #5c6c7c;
   animation: animationAppear 0.2s linear;
+  -webkit-animation: animationAppear 0.2s linear;
 }
 
 .gigatester-popup-dialog-remote{
@@ -2473,6 +2501,7 @@ word-break: break-all;
   text-align: left;
   box-sizing: border-box;
   animation: animationAppear 0.1s linear 0.05s forwards;
+  -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
   padding: 60px;
 }
 
@@ -2502,6 +2531,7 @@ word-break: break-all;
     text-align: left;
     box-sizing: border-box;
     animation: animationAppear 0.1s linear 0.05s forwards;
+    -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
     }
 }
 
@@ -2532,7 +2562,8 @@ word-break: break-all;
     text-align: left;
     box-sizing: border-box;
     animation: animationAppear 0.1s linear 0.05s forwards;
-    }
+    -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
+  }
 }
 
 .gigatester-popup-dialog-remote .remote-title {
@@ -2558,6 +2589,7 @@ gtvideotoolbar {
   background: #011348;
   border-radius: 4px;
   animation: animationMoveUp 0.3s linear;
+  -webkit-animation: animationMoveUp 0.3s linear;
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   /* cursor: pointer; */
   cursor: move;
@@ -2706,7 +2738,9 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer {
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
   background: linear-gradient(90deg, #08eeee 50%, #011348 50%);
   animation: gt-btnTimer 10s steps(360, start) forwards;
+  -webkit-animation: gt-btnTimer 10s steps(360, start) forwards;
   animation-play-state: paused;
+  -webkit-animation-play-state: paused;
 }
 gtvideotoolbar btn.gigatester-video-controls-stop btn-timer btn-timer-mask {
   position: absolute;
@@ -2717,7 +2751,9 @@ gtvideotoolbar btn.gigatester-video-controls-stop btn-timer btn-timer-mask {
   border-radius: 100% 0 0 100%/50% 0 0 50%;
   transform-origin: 100% 50%;
   animation: gt-btnMask 10s steps(180, start) forwards;
+  -webkit-animation: gt-btnMask 10s steps(180, start) forwards;
   animation-play-state: paused;
+  -webkit-animation-play-state: paused;
 }
 gtvideotoolbar .gigatester-video-controls-timer {
   /* display: none; */
@@ -2762,15 +2798,19 @@ gtvideotoolbar gtvolume gtdiv:nth-child(3) {
 }
 gtvideotoolbar gtvolume.hasvolume gtdiv {
   animation: gt-micVolume 0.5s linear infinite;
+  -webkit-animation: gt-micVolume 0.5s linear infinite;
 }
 gtvideotoolbar gtvolume.hasvolume gtdiv:nth-child(1) {
   animation-delay: 0.2s;
+  -webkit-animation-delay: 0.2s;
 }
 gtvideotoolbar gtvolume.hasvolume gtdiv:nth-child(1) {
   animation-delay: 0.4s;
+  -webkit-animation-delay: 0.4s;
 }
 gtvideotoolbar gtvolume.hasvolume gtdiv:nth-child(1) {
   animation-delay: 0.3s;
+  -webkit-animation-delay: 0.3s;
 }
 gtvideooverlay {
   display: block;
@@ -2790,156 +2830,139 @@ gtmouseclick {
   opacity: 0;
   transform: scale(0);
   animation: clickEffect 0.4s ease-in;
+  -webkit-animation: clickEffect 0.4s ease-in;
   pointer-events: none;
   background-color: rgba(40, 120, 240, 0.2);
 }
 @keyframes clickEffect {
-  0% {
-    opacity: 0;
-    transform: scale(0);
-  }
-  25% {
-    opacity: 1;
-  }
-  50% {
-    opacity: 0.8;
-    transform: scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: scale(0);
-  }
+  0% { opacity: 0; transform: scale(0); }
+  25% { opacity: 1; }
+  50% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0); }
+}
+@-webkit-keyframes clickEffect {
+  0% { opacity: 0; transform: scale(0); }
+  25% { opacity: 1; }
+  50% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(0); }
 }
 @keyframes gt-micVolume {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.6);
-  }
-  100% {
-    transform: scale(1);
-  }
+  0% { transform: scale(1); }
+  50% { transform: scale(1.6); }
+  100% { transform: scale(1); }
+}
+@-webkit-keyframes gt-micVolume {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.6); }
+  100% { transform: scale(1); }
 }
 @keyframes gt-btnTimer {
-  100% {
-    transform: rotate(360deg);
-  }
+  100% { transform: rotate(360deg); }
+}
+@-webkit-keyframes gt-btnTimer {
+  100% { transform: rotate(360deg); }
 }
 @keyframes gt-btnMask {
-  0% {
-    background: #011348;
-    transform: rotate(0deg);
-  }
-  50% {
-    background: #011348;
-    transform: rotate(-180deg);
-  }
-  50.01% {
-    background: #08eeee;
-    transform: rotate(0deg);
-  }
-  100% {
-    background: #08eeee;
-    transform: rotate(-180deg);
-  }
+  0% { background: #011348; transform: rotate(0deg); }
+  50% { background: #011348; transform: rotate(-180deg); }
+  50.01% { background: #08eeee; transform: rotate(0deg); }
+  100% { background: #08eeee; transform: rotate(-180deg); }
+}
+@-webkit-keyframes gt-btnMask {
+  0% { background: #011348; transform: rotate(0deg); }
+  50% { background: #011348; transform: rotate(-180deg); }
+  50.01% { background: #08eeee; transform: rotate(0deg); }
+  100% { background: #08eeee; transform: rotate(-180deg); }
 }
 @keyframes animationReappear {
-  to {
-    opacity: 1;
-    transform: none;
-  }
+  to { opacity: 1; transform: none; }
+}
+@-webkit-keyframes animationReappear {
+  to { opacity: 1; transform: none; }
 }
 @keyframes animationAppear {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 1;
-  }
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@-webkit-keyframes animationAppear {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 @keyframes animationAppearMoveUp {
-  from {
-    opacity: 0;
-    transform: translateY(50%);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(50%); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@-webkit-keyframes animationAppearMoveUp {
+  from { opacity: 0; transform: translateY(50%); }
+  to { opacity: 1; transform: translateY(0); }
 }
 @keyframes animationAppearMoveDown {
-  from {
-    opacity: 0;
-    top: 0;
-  }
-  to {
-    opacity: 1;
-    top: 20px;
-  }
+  from { opacity: 0; top: 0; }
+  to { opacity: 1; top: 20px; }
+}
+@-webkit-keyframes animationAppearMoveDown {
+  from { opacity: 0; top: 0; }
+  to { opacity: 1; top: 20px; }
 }
 @keyframes animationAppearMoveLeft {
-  from {
-    opacity: 0.5;
-    margin-right: -10px;
-  }
-  to {
-    margin-right: 0;
-  }
+  from { opacity: 0.5; margin-right: -10px; }
+  to { opacity: 1; margin-right: 0; }
+}
+@-webkit-keyframes animationAppearMoveLeft {
+  from { opacity: 0.5; margin-right: -10px; }
+  to { opacity: 1; margin-right: 0; }
 }
 @keyframes animationMoveUp {
-  from {
-    transform: translateY(100%);
-  }
-  to {
-    transform: translateY(0);
-  }
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@-webkit-keyframes animationMoveUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
 }
 @keyframes animationMoveLeft {
-  from {
-    margin-right: -100px;
-  }
-  to {
-    margin-right: 0;
-  }
+  from { margin-right: -100px; }
+  to { margin-right: 0; }
+}
+@-webkit-keyframes animationMoveLeft {
+  from { margin-right: -100px; }
+  to { margin-right: 0; }
 }
 @keyframes animationRotate {
-  from {
-    transform: rotate(0);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
+}
+@-webkit-keyframes animationRotate {
+  from { transform: rotate(0); }
+  to { transform: rotate(360deg); }
 }
 @keyframes animationAppearZoom {
-  from {
-    transform: scale(0);
-  }
-  to {
-    transform: scale(1);
-  }
+  from { transform: scale(0); }
+  to { transform: scale(1); }
+}
+@-webkit-keyframes animationAppearZoom {
+  from { transform: scale(0); }
+  to { transform: scale(1); }
 }
 @keyframes animationDisappearZoom {
-  50% {
-    transform: scale(4);
-  }
-  51% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 0;
-  }
+  50% { transform: scale(4); }
+  51% { opacity: 0; }
+  100% { opacity: 0; }
+}
+@-webkit-keyframes animationDisappearZoom {
+  50% { transform: scale(4); }
+  51% { opacity: 0; }
+  100% { opacity: 0; }
 }
 @keyframes animationExpandContract {
-  0% {
-    transform: scale3d(1, 1, 1);
-  }
-  50% {
-    transform: scale3d(1.1, 1.1, 1.1);
-  }
-  100% {
-    transform: scale3d(1, 1, 1);
-  }
+  0% { transform: scale3d(1, 1, 1); }
+  50% { transform: scale3d(1.1, 1.1, 1.1); }
+  100% { transform: scale3d(1, 1, 1); }
+}
+@-webkit-keyframes animationExpandContract {
+  0% { transform: scale3d(1, 1, 1); }
+  50% { transform: scale3d(1.1, 1.1, 1.1); }
+  100% { transform: scale3d(1, 1, 1); }
 }
 
 .select2-container {
@@ -2958,6 +2981,7 @@ gtmouseclick {
     font-size: 14px;
     font-weight: 400;
     color: #011348;
+    -webkit-text-fill-color: #011348;
     user-select: none;
     -webkit-user-select: none; }
     .select2-container .select2-selection--single .select2-selection__rendered {
@@ -3017,7 +3041,9 @@ gtmouseclick {
   font-family: "Open Sans", Helvetica, Arial, sans-serif !important;
   font-size: 14px;
   font-weight: 400;
-  color: #011348}
+  color: #011348;
+  -webkit-text-fill-color: #011348;
+}
 
 .select2-results__option {
   padding: 6px;
@@ -3086,13 +3112,16 @@ gtmouseclick {
   border-radius: 4px; }
   .select2-container--default .select2-selection--single .select2-selection__rendered {
     color: #afb8d1;
+    -webkit-text-fill-color: #afb8d1;
     line-height: 28px; }
   .select2-container--default .select2-selection--single .select2-selection__clear {
     cursor: pointer;
     float: right;
     font-weight: bold; }
   .select2-container--default .select2-selection--single .select2-selection__placeholder {
-    color: #afb8d1; }
+    color: #afb8d1;
+    -webkit-text-fill-color: #afb8d1;
+  }
   .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 26px;
     position: absolute;
@@ -3129,6 +3158,7 @@ gtmouseclick {
   border-width: 0 4px 5px 4px; }
   .select2-search__field::placeholder{
     color:#afb8d1;
+    -webkit-text-fill-color: #afb8d1;
   }
 .select2-container--default .select2-selection--multiple {
   background-color: #fafbfd;
@@ -3138,6 +3168,7 @@ gtmouseclick {
   font-size: 14px;
   font-weight: 400;
   color: #011348;
+  -webkit-text-fill-color: #011348;
   cursor: text; }
   .select2-container--default .select2-selection--multiple .select2-selection__rendered {
     box-sizing: border-box;
@@ -3166,12 +3197,15 @@ gtmouseclick {
     padding: 0 5px; }
   .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
     color: #999;
+    -webkit-text-fill-color: #999;
     cursor: pointer;
     display: inline-block;
     font-weight: bold;
     margin-right: 2px; }
     .select2-container--default .select2-selection--multiple .select2-selection__choice__remove:hover {
-      color: #333; }
+      color: #333;
+      -webkit-text-fill-color: #333
+    }
 
 .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-selection__choice, .select2-container--default[dir="rtl"] .select2-selection--multiple .select2-search--inline {
   float: right; }
@@ -3223,7 +3257,9 @@ gtmouseclick {
   padding: 0; }
 
 .select2-container--default .select2-results__option[aria-disabled=true] {
-  color: #999; }
+  color: #999;
+  -webkit-text-fill-color: #999;
+}
 
 .select2-container--default .select2-results__option[aria-selected=true] {
   background-color: #ddd; }
@@ -3250,7 +3286,9 @@ gtmouseclick {
 
 .select2-container--default .select2-results__option--highlighted[aria-selected] {
   background-color: #5897fb;
-  color: white; }
+  color: white;
+  -webkit-text-fill-color: white;
+}
 
 .select2-container--default .select2-results__group {
   cursor: default;
@@ -3271,6 +3309,7 @@ gtmouseclick {
     border: 1px solid #5897fb; }
   .select2-container--classic .select2-selection--single .select2-selection__rendered {
     color: #444;
+    -webkit-text-fill-color: #444;
     line-height: 28px; }
   .select2-container--classic .select2-selection--single .select2-selection__clear {
     cursor: pointer;
@@ -3278,7 +3317,9 @@ gtmouseclick {
     font-weight: bold;
     margin-right: 10px; }
   .select2-container--classic .select2-selection--single .select2-selection__placeholder {
-    color: #999; }
+    color: #999;
+    -webkit-text-fill-color: #999;
+  }
   .select2-container--classic .select2-selection--single .select2-selection__arrow {
     background-color: #ddd;
     border: none;
@@ -3360,6 +3401,7 @@ gtmouseclick {
     list-style: none;
     margin: 0;
     color: #011348;
+    -webkit-text-fill-color: #011348;
     padding: 0 5px; }
   .select2-container--classic .select2-selection--multiple .select2-selection__clear {
     display: none; }
@@ -3374,12 +3416,15 @@ gtmouseclick {
     padding: 0 5px; }
   .select2-container--classic .select2-selection--multiple .select2-selection__choice__remove {
     color: #888;
+    -webkit-text-fill-color: #888;
     cursor: pointer;
     display: inline-block;
     font-weight: bold;
     margin-right: 2px; }
     .select2-container--classic .select2-selection--multiple .select2-selection__choice__remove:hover {
-      color: #555; }
+      color: #555;
+      -webkit-text-fill-color: #555;
+    }
 
 .select2-container--classic[dir="rtl"] .select2-selection--multiple .select2-selection__choice {
   float: right;
@@ -3429,11 +3474,15 @@ gtmouseclick {
   padding: 0; }
 
 .select2-container--classic .select2-results__option[aria-disabled=true] {
-  color: grey; }
+  color: grey;
+  -webkit-text-fill-color: grey;
+}
 
 .select2-container--classic .select2-results__option--highlighted[aria-selected] {
   background-color: #3875d7;
-  color: white; }
+  color: white;
+  -webkit-text-fill-color: white;
+}
 
 .select2-container--classic .select2-results__group {
   cursor: default;
