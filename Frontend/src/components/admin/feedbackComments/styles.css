@@ -1,0 +1,12 @@
+.apexcharts-tooltip-text-label, .apexcharts-tooltip-text-value {  
+  color: #ffffff;
+}
+
+.apexcharts-tooltip-text{
+  max-width: 500px;
+}
+.apexcharts-tooltip{
+  overflow: auto;
+  white-space: inherit;
+  word-wrap: break-word;
+}

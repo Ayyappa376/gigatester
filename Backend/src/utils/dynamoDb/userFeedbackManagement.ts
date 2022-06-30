@@ -453,7 +453,7 @@ export const getCategoriesList = ({prodId, prodVersion, chartType}: {chartType: 
     return resolve(severityList);
   });
 
-export const processPieChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
+export const processPieChartData = async({data, prodId, prodVersion, chartType, filterCategory}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string, filterCategory?:string}) => {
   if(prodId) {
     // const categories: string[] = await getCategoriesList({prodId, prodVersion, chartType});
     const categoryData: ProcessedData = {};
@@ -477,10 +477,31 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
             }
           }
         } else if(item.feedbackCategory && (item.feedbackCategory !== '')) {
-          if(!categoryData[item.feedbackCategory]) {
-            categoryData[item.feedbackCategory] = 1;
+          if(filterCategory){
+            let feedbackComments = typeof item?.feedbackComments === 'string' ? JSON.parse(item?.feedbackComments) : item?.feedbackComments;            
+            let comments = feedbackComments?.standardFeedback ? feedbackComments.standardFeedback : feedbackComments[item.feedbackCategory] ? feedbackComments[item.feedbackCategory] : [];            
+            if(comments.length > 0){
+              for(const comment of comments) {
+                let name = item.feedbackCategory+' - '+comment
+                if(!categoryData[name]) {
+                  categoryData[name] = 1; 
+                } else {                
+                  categoryData[name] += 1; 
+                }
+              }
+            } else{
+              if(categoryData[unknownKey]) {
+                categoryData[unknownKey] += 1;
+              } else {
+                categoryData[unknownKey] = 1;
+              }
+            } 
           } else {
-            categoryData[item.feedbackCategory] += 1;
+            if(!categoryData[item.feedbackCategory]) {
+              categoryData[item.feedbackCategory] = 1;
+            } else {
+              categoryData[item.feedbackCategory] += 1;
+            }
           }
         } else {
           if(categoryData[unknownKey]) {
@@ -496,17 +517,17 @@ export const processPieChartData = async({data, prodId, prodVersion, chartType}:
   return {};
 };
 
-const processFeedbackChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string})  => {
+const processFeedbackChartData = async({data, prodId, prodVersion, chartType, filterCategory}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string, filterCategory?: string})  => {
   const barChartData = feedbackProcessBarChartData(data);
-  const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
+  const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType, filterCategory});
   return {
     barChartData, pieChartData
   };
 };
 
-const processBugReportChartData = async({data, prodId, prodVersion, chartType}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string}) => {
+const processBugReportChartData = async({data, prodId, prodVersion, chartType, filterCategory}: {chartType: string; data: AppFeedback[]; prodId?: string; prodVersion?: string, filterCategory?:string}) => {
   const barChartData = await bugProcessBarChartData({data, prodId, prodVersion, chartType});
-  const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType});
+  const pieChartData = await processPieChartData({data, prodId, prodVersion, chartType, filterCategory});
   return {
     barChartData, pieChartData
   };
@@ -519,5 +540,5 @@ export const getChartData = async({type, prodId,search, prodVersion, startDate, 
   }
   const itemList: ItemsData = await getUserFeedbackListForChart({type: chartType, prodId, prodVersion, search, filterCategory, filterRating, filterSeverity, startDate, endDate});
   const data: AppFeedback[] = itemList.Items;
-  return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType}) : processBugReportChartData({data, prodId, prodVersion, chartType});
+  return type === 'FEEDBACK-CHART' ? processFeedbackChartData({data, prodId, prodVersion, chartType, filterCategory}) : processBugReportChartData({data, prodId, prodVersion, chartType, filterCategory});
 };

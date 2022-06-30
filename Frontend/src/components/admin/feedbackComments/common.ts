@@ -374,6 +374,13 @@ export const getPieChartOptions = (pieChartSeries: any, feedbackType: string) =>
     dataLabels: {
       enabled: true,
     },
+    tooltip: {
+      enabled: true,
+      theme: false,
+      style: {
+        fontSize: '12px',        
+      },
+    },
     // gives total value for pie chart
     // title: {
     //   text: 'Total - ' + Object.values(pieChartSeries).reduce((a : any, b: any) => a + b, 0),
@@ -403,6 +410,7 @@ export const getPieChartOptions = (pieChartSeries: any, feedbackType: string) =>
       position: 'right',
       offsetY: 0,
       height: 230,
+      width: 190,
     }
   }
 }
