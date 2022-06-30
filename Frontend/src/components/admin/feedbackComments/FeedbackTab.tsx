@@ -42,7 +42,7 @@ import RenderCategoryFilter from './RenderCategoryFilter';
 import ExportBtn from './ExportButton';
 import SearchField from './SearchField';
 import { last } from 'lodash';
-
+import './styles.css';
 interface ChosenProps {
 	productInfoProp: any;
 	productVersion: any;
