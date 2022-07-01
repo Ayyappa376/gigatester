@@ -783,15 +783,18 @@ popupbtn gtdiv {
   font-family: "Open Sans", Helvetica, Arial, sans-serif;
   cursor: pointer;
 }
-.gigatester-popup-dialog-remote popupbtn gtdiv {
-  display: flex;
+/* .gigatester-popup-dialog-remote popupbtn gtdiv { */
+.gigatester-popup-dialog popupbtn gtdiv {
+    display: flex;
 }
-.gigatester-popup-dialog-remote popupbtn gtdiv span {
+/* .gigatester-popup-dialog-remote popupbtn gtdiv span { */
+.gigatester-popup-dialog popupbtn gtdiv span {
   display: table-cell;
   vertical-align: middle;
 }
-.gigatester-popup-dialog-remote popupbtn gtdiv div {
-  display: block;
+/* .gigatester-popup-dialog-remote popupbtn gtdiv div { */
+.gigatester-popup-dialog popupbtn gtdiv div {
+    display: block;
 }
 popuptooltip {
   visibility: hidden;
@@ -2456,7 +2459,35 @@ word-break: break-all;
   fill: #ffffff;
 }
 .gigatester-popup-dialog{
-  height: auto;
+  width: 740px;
+  height: 100%;
+  background: #F7F8F8;
+  position: fixed;
+  top: 0;
+  right: 0;
+  /* transform: rotate(0deg); */
+  display: flex;
+  flex-direction: column;
+  /* justify-content: space-evenly; */
+  align-items: left;
+  padding: 10px;
+  margin: 0 auto;
+  line-height: normal;
+  letter-spacing: normal;
+  word-spacing: normal;
+  color: #011348;
+  -webkit-text-fill-color: #011348;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-weight: normal;
+  border-radius: 0;
+  box-shadow: 0 0 10px #5c6c7c;
+  text-align: left;
+  box-sizing: border-box;
+  animation: animationAppear 0.1s linear 0.05s forwards;
+  -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
+  padding: 60px;
+  z-index: 2347483645;
+  /* height: auto;
   width: 80px;
   background: #fff;
   position: absolute;
@@ -2466,16 +2497,16 @@ word-break: break-all;
   color: black;
   -webkit-text-fill-color: black;
   font-weight: 600;
-  font-family: "Open Sans", Helvetica, Arial, sans-serif;
+  font-family: "Open Sans", Helvetica, Arial, sans-serif; */
   /* left: 10px; */
   /* transform: rotate( 270deg ); */
   /* bottom: -118px; */
-  box-shadow: 0 0 10px #5c6c7c;
+  /* box-shadow: 0 0 10px #5c6c7c;
   animation: animationAppear 0.2s linear;
-  -webkit-animation: animationAppear 0.2s linear;
+  -webkit-animation: animationAppear 0.2s linear; */
 }
 
-.gigatester-popup-dialog-remote{
+/* .gigatester-popup-dialog-remote{
   width: 740px;
   height: 100%;
   background: #F7F8F8;
@@ -2485,7 +2516,7 @@ word-break: break-all;
   transform: rotate(0deg);
   display: flex;
   flex-direction: column;
-  /* justify-content: space-evenly; */
+  /* justify-content: space-evenly; * /
   align-items: left;
   padding: 10px;
   margin: 0 auto;
@@ -2503,9 +2534,9 @@ word-break: break-all;
   animation: animationAppear 0.1s linear 0.05s forwards;
   -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
   padding: 60px;
-}
+} */
 
-@media (max-width: 1300px) {
+/* @media (max-width: 1300px) {
   .gigatester-popup-dialog-remote{
     width: 300px;
     height: auto;
@@ -2533,41 +2564,22 @@ word-break: break-all;
     animation: animationAppear 0.1s linear 0.05s forwards;
     -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
     }
-}
+} */
 
 @media (max-width: 800px) {
-  .gigatester-popup-dialog-remote{
-    width: 250px;
-    height: auto;
-    background: #fff;
-    position: fixed;
-    top: 25%;
-    left: 25%;
-    transform: rotate(0deg);
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: left;
-    padding: 10px;
-    line-height: 20px;
-    line-height: normal;
-    letter-spacing: normal;
-    word-spacing: normal;
-    color: #011348;
-    -webkit-text-fill-color: #011348;
-    font-family: "Open Sans", Helvetica, Arial, sans-serif;
-    font-weight: normal;
-    border-radius: 4px;
-    box-shadow: 0 0 10px #5c6c7c;
-    text-align: left;
-    box-sizing: border-box;
-    animation: animationAppear 0.1s linear 0.05s forwards;
-    -webkit-animation: animationAppear 0.1s linear 0.05s forwards;
+  .gigatester-popup-dialog{
+    width: 100%;
+    height: 100%;
   }
+  /* .gigatester-popup-dialog-remote{
+    width: 100%;
+    height: 100%;
+  } */
 }
 
-.gigatester-popup-dialog-remote .remote-title {
-  color: #011348;
+/* .gigatester-popup-dialog-remote .remote-title { */
+.gigatester-popup-dialog .remote-title {
+    color: #011348;
   -webkit-text-fill-color:#011348;  
   display: block;
   font-size: 34px;

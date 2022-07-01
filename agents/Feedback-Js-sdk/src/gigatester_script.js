@@ -3074,16 +3074,16 @@ let GigaTester_StringUtils = {
                     if($(document.getElementsByClassName("gigatester-popup-dialog"))){
                         $(document.getElementsByClassName("gigatester-popup-dialog")).remove();
                     }
-                    if($(document.getElementsByClassName("gigatester-popup-dialog-remote"))){
-                        $(document.getElementsByClassName("gigatester-popup-dialog-remote")).remove();
-                    }
+                    // if($(document.getElementsByClassName("gigatester-popup-dialog-remote"))){
+                    //     $(document.getElementsByClassName("gigatester-popup-dialog-remote")).remove();
+                    // }
 
                     let popup_dialog;
-                    if (GigaTester_modal.configs.isRemote) {
-                        popup_dialog =  $('<gtdiv class="gigatester-popup-dialog-remote"></gtdiv>');
-                    } else {
+                    // if (GigaTester_modal.configs.isRemote) {
+                    //     popup_dialog =  $('<gtdiv class="gigatester-popup-dialog-remote"></gtdiv>');
+                    // } else {
                         popup_dialog = $('<gtdiv class="gigatester-popup-dialog"></gtdiv>');
-                    }
+                    // }
                     let popup_dialog_close = $('<btn id="gigatester-popup-dialog-close">').html(GigaTester_Icons.close_icon);
                     let pop_up_title = $('<gtdiv class="gigatester-dialog-scroll-head">' +
                     '<div>' +
@@ -3093,55 +3093,56 @@ let GigaTester_StringUtils = {
                     ((this.configs.logo && this.configs.logo.length > 0) ? '<img class="gigatester-ctrl-item-logo" src="' + GigaTester_StringUtils.escapeSpecialChars(this.configs.logo) + '"/>' : '') +
                     '</gtdiv>')
         
-                    if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
-                        && GigaTester_modal.configs.main_button_rotation !== '0'){
-                        let pop_up_rotate = '0';
-                        if (GigaTester_modal.configs.main_button_rotation === '180') {
-                            pop_up_rotate = '180'
-                        } else if (GigaTester_modal.configs.main_button_rotation === '270') {
-                            pop_up_rotate = '90'
-                        } else if (GigaTester_modal.configs.main_button_rotation === '90') {
-                            pop_up_rotate = '270'
-                        }
-                        popup_dialog[0].style.transform = `rotate(${pop_up_rotate}deg)`
-                    }
+                    // if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
+                    //     && GigaTester_modal.configs.main_button_rotation !== '0'){
+                    //     let pop_up_rotate = '0';
+                    //     if (GigaTester_modal.configs.main_button_rotation === '180') {
+                    //         pop_up_rotate = '180'
+                    //     } else if (GigaTester_modal.configs.main_button_rotation === '270') {
+                    //         pop_up_rotate = '90'
+                    //     } else if (GigaTester_modal.configs.main_button_rotation === '90') {
+                    //         pop_up_rotate = '270'
+                    //     }
+                    //     popup_dialog[0].style.transform = `rotate(${pop_up_rotate}deg)`
+                    // }
                     const currentPosition = GigaTester_modal.configs.main_button_position;
                     const button = $(document.getElementsByClassName("gigatester-btn"));
                     const styleCheck = window.getComputedStyle(this.custom_ui.button[0]);
                     const btnWidth = parseInt(styleCheck.width, 10);
                     const btnHeight = parseInt(styleCheck.height, 10);
 
-                    if (GigaTester_modal.configs.isRemote) {
-                        popup_dialog[0].style.transform = 'rotate(0deg)';
-                        popup_dialog.appendTo(document.body);
-                    } else {
-                        if (currentPosition === 'RIGHT_MIDDLE') {
-                            popup_dialog[0].style.bottom = '-114px';
-                            // popup_dialog[0].style.bottom = `-${(btnWidth - btnHeight) - 20}px`
-                        } else if (currentPosition === 'RIGHT_BOTTOM') {
-                            popup_dialog[0].style.left = `${btnWidth-150}px`;//'-55px'; //'-10px';
-                            popup_dialog[0].style.bottom = '-114px';
-                        } else if (currentPosition === 'LEFT_MIDDLE') {
-                            popup_dialog[0].style.bottom = '-114px';
-                        } else if (currentPosition === 'LEFT_BOTTOM') {
-                            popup_dialog[0].style.left = `${btnWidth-50}px`;//'70px'; //'60px';
-                            popup_dialog[0].style.bottom = '-114px';
-                        } else if (currentPosition === 'BOTTOM_RIGHT' || currentPosition === 'BOTTOM_LEFT') {
-                            popup_dialog[0].style.top = '-175px';
-                        } else if (currentPosition === 'CUSTOM') {
-                            if(GigaTester_modal.configs.main_button_top && GigaTester_modal.configs.main_button_top !== '') {
-                                popup_dialog[0].style.top = `${btnHeight}px`;
-                            }
-                            if(GigaTester_modal.configs.main_button_bottom && GigaTester_modal.configs.main_button_bottom !== '') {
-                                popup_dialog[0].style.top = '-175px';
-                            }
-                            if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
-                            && GigaTester_modal.configs.main_button_rotation !== '0') {
-                                popup_dialog[0].style.bottom = '-114px';
-                            }
-                        }
-                        popup_dialog.appendTo(button[0]);
-                    }
+                    // if (GigaTester_modal.configs.isRemote) {
+                    //     popup_dialog[0].style.transform = 'rotate(0deg)';
+                    //     popup_dialog.appendTo(document.body);
+                    // } else {
+                    //     if (currentPosition === 'RIGHT_MIDDLE') {
+                    //         popup_dialog[0].style.bottom = '-114px';
+                    //         // popup_dialog[0].style.bottom = `-${(btnWidth - btnHeight) - 20}px`
+                    //     } else if (currentPosition === 'RIGHT_BOTTOM') {
+                    //         popup_dialog[0].style.left = `${btnWidth-150}px`;//'-55px'; //'-10px';
+                    //         popup_dialog[0].style.bottom = '-114px';
+                    //     } else if (currentPosition === 'LEFT_MIDDLE') {
+                    //         popup_dialog[0].style.bottom = '-114px';
+                    //     } else if (currentPosition === 'LEFT_BOTTOM') {
+                    //         popup_dialog[0].style.left = `${btnWidth-50}px`;//'70px'; //'60px';
+                    //         popup_dialog[0].style.bottom = '-114px';
+                    //     } else if (currentPosition === 'BOTTOM_RIGHT' || currentPosition === 'BOTTOM_LEFT') {
+                    //         popup_dialog[0].style.top = '-175px';
+                    //     } else if (currentPosition === 'CUSTOM') {
+                    //         if(GigaTester_modal.configs.main_button_top && GigaTester_modal.configs.main_button_top !== '') {
+                    //             popup_dialog[0].style.top = `${btnHeight}px`;
+                    //         }
+                    //         if(GigaTester_modal.configs.main_button_bottom && GigaTester_modal.configs.main_button_bottom !== '') {
+                    //             popup_dialog[0].style.top = '-175px';
+                    //         }
+                    //         if(GigaTester_modal.configs.main_button_rotation && GigaTester_modal.configs.main_button_rotation !== ''
+                    //         && GigaTester_modal.configs.main_button_rotation !== '0') {
+                    //             popup_dialog[0].style.bottom = '-114px';
+                    //         }
+                    //     }
+                    //     popup_dialog.appendTo(button[0]);
+                    // }
+                    popup_dialog.appendTo($(document.getElementsByClassName("gigatester-ctrls-container")))
                     if (GigaTester_modal.configs.cuvoTypes.length === 1) {
                         if (GigaTester_modal.configs.cuvoTypes[0] === 'BUGS') {
                             // GigaTester_modal.form_type = "BUGS";
@@ -3151,15 +3152,15 @@ let GigaTester_StringUtils = {
                             // GigaTester_modal.form_type = "FEEDBACK";
                             window.GigaTester.open("FEEDBACK");
                             popup_dialog.remove();
-                        } else if (GigaTester_modal.configs.cuvoTypes[0] === 'FEATURE_REQUEST') {
-                            GigaTester_modal.form_type = "FEATURE_REQUEST";
-                            window.GigaTester.open("FEATURE_REQUEST");
+                        } else if (GigaTester_modal.configs.cuvoTypes[0] === 'FEATURE_REQ') {
+                            GigaTester_modal.form_type = "FEATURE_REQ";
+                            window.GigaTester.open("FEATURE_REQ");
                             popup_dialog.remove();
                         }
                     } else {
-                        if (GigaTester_modal.configs.isRemote) {
+                        // if (GigaTester_modal.configs.isRemote) {
                             pop_up_title.appendTo(popup_dialog);
-                        }
+                        // }
 
                         GigaTester_modal.configs.cuvoTypes.forEach(function (type) {
                             if (type === 'BUGS') {
@@ -3216,7 +3217,7 @@ let GigaTester_StringUtils = {
                                     e.stopPropagation();
                                     e.preventDefault();
                                 })
-                            } else if (type === 'FEATURE_REQUEST') {
+                            } else if (type === 'FEATURE_REQ') {
                                 let popup_feature_icon = $('<popupbtn><gtdiv>' + GigaTester_modal.configs.feature_req_icon + GigaTester_modal.configs.feature_req_title + '</gtdiv></popupbtn>');
                                 let popup_feature_icon_tooltip = $('<popuptooltip></popuptooltip').html(GigaTester_modal.configs.feature_req_tooltip_msg);
                                 if (currentPosition === 'LEFT_MIDDLE' || currentPosition === 'LEFT_BOTTOM'|| currentPosition === 'BOTTOM_LEFT') {
@@ -3286,9 +3287,9 @@ let GigaTester_StringUtils = {
                     if ($(document.getElementsByClassName("gigatester-popup-dialog"))) {
                         $(document.getElementsByClassName("gigatester-popup-dialog")).remove();
                     }
-                    if ($(document.getElementsByClassName("gigatester-popup-dialog-remote"))) {
-                        $(document.getElementsByClassName("gigatester-popup-dialog-remote")).remove();
-                    }
+                    // if ($(document.getElementsByClassName("gigatester-popup-dialog-remote"))) {
+                    //     $(document.getElementsByClassName("gigatester-popup-dialog-remote")).remove();
+                    // }
                     if(GigaTester_modal.save_form_state) {
                         if($(document.getElementsByClassName('gigatester-ctrl-item'))){
                             $(document.getElementsByClassName('gigatester-ctrl-item')).show();
@@ -3623,26 +3624,26 @@ let GigaTester_StringUtils = {
                         }
                     }
                     if(GigaTester_modal.form_type === "BUGS") {
-                        if(this.dynamic_form_step == 'radio'){
-                            var ele = document.getElementsByName('gigatester-category_options_radio');
-                            let x;
-                            for(let i = 0; i < ele.length; i++) {
-                                if(ele[i].checked){
-                                    x = ele[i].value;
+                        if((GigaTester_modal.form_settings_default['BUGS'].flow_type === 'DYNAMIC') && (this.dynamic_form_step == 'radio')) {
+                            let catOptions = document.getElementsByName('gigatester-category_options_radio');
+                            let catOptionValue;
+                            for(let i = 0; i < catOptions.length; i++) {
+                                if(catOptions[i].checked){
+                                    catOptionValue = catOptions[i].value;
                                 }                                
                             }
-                            console.log("changeeeeeeeeeeeeeeee",x)
-                            if(x){
-                                this.form_data['category'] = x;
+                            console.log("bugs - categoryOption",catOptionValue)
+                            if(catOptionValue){
+                                this.form_data['category'] = catOptionValue;
                                 this.dynamic_form_step = 'category';
                                 GigaTester_modal.setDialogForm();
 //                                dataError = true;
                             } else{
-                                GigaTester_modal.setNotifyStatus('Please select a category');
+                                GigaTester_modal.setNotifyStatus('Please select a category')
                                 setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                                 dataError = true;
                             }
-                        } else if (this.dynamic_form_step == 'category'){
+                        } else /*if (this.dynamic_form_step == 'category') */ {
                             if(GigaTester_modal.form_settings_default['BUGS'].category_field_mandatory &&
                                 this.configs.config_data[0].bugSettings.categories.length > 0 &&
                                 (this.form_data['category'] === 'category' || this.form_data['category'] === '' || this.form_data['category'].length == 0)
@@ -3660,26 +3661,26 @@ let GigaTester_StringUtils = {
                             }
                         }
                     } else if(GigaTester_modal.form_type === "FEEDBACK") {
-                        if(this.dynamic_form_step == 'radio'){                
-                            var ele = document.getElementsByName('gigatester-category_options_radio');
-                            let x;
-                            for(let i = 0; i < ele.length; i++) {
-                                if(ele[i].checked){
-                                    x = ele[i].value;
+                        if((GigaTester_modal.form_settings_default['FEEDBACK'].flow_type === 'DYNAMIC') && (this.dynamic_form_step == 'radio')) {               
+                            let catOptions = document.getElementsByName('gigatester-category_options_radio');
+                            let catOptionValue;
+                            for(let i = 0; i < catOptions.length; i++) {
+                                if(catOptions[i].checked){
+                                    catOptionValue = catOptions[i].value;
                                 }                                
                             }
-                            console.log("changeeeeeeeeeeeeeeee",x)
-                            if(x){
-                                this.form_data['category'] = x;
+                            console.log("feedback - categoryOption",catOptionValue)
+                            if(catOptionValue){
+                                this.form_data['category'] = catOptionValue;
                                 this.dynamic_form_step = 'category';
                                 GigaTester_modal.setDialogForm();
-                                dataError = true;
+                                // dataError = true;
                             } else {
-                                GigaTester_modal.setNotifyStatus('Please provide your rating')
+                                GigaTester_modal.setNotifyStatus('Please select a category')
                                 setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
                                 dataError = true;
                             }
-                        } else if (this.dynamic_form_step == 'category'){
+                        } else /*if (this.dynamic_form_step == 'category')*/ {
                             if(GigaTester_modal.form_settings_default['FEEDBACK'].rating_mandatory &&
                                 this.form_data.rating < 1){
                                 dataError = true;
@@ -3689,6 +3690,36 @@ let GigaTester_StringUtils = {
                             this.configs.config_data[0].feedbackSettings.categories.length > 0 &&
                             (this.form_data['category'] === 'category' || this.form_data['category'] === '')
                             ){
+                                dataError = true;
+                                GigaTester_modal.setNotifyStatus('Please select a category')
+                                setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                            }
+                        }
+                    } else if(GigaTester_modal.form_type === "FEATURE_REQ") {
+                        if((GigaTester_modal.form_settings_default['FEATURE_REQ'].flow_type === 'DYNAMIC') && (this.dynamic_form_step == 'radio')) {               
+                            let catOptions = document.getElementsByName('gigatester-category_options_radio');
+                            let catOptionValue;
+                            for(let i = 0; i < catOptions.length; i++) {
+                                if(catOptions[i].checked){
+                                    catOptionValue = catOptions[i].value;
+                                }                                
+                            }
+                            console.log("feature req - categoryOption",catOptionValue)
+                            if(catOptionValue){
+                                this.form_data['category'] = catOptionValue;
+                                this.dynamic_form_step = 'category';
+                                GigaTester_modal.setDialogForm();
+                                // dataError = true;
+                            } else {
+                                GigaTester_modal.setNotifyStatus('Please select a category')
+                                setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
+                                dataError = true;
+                            }
+                        } else /*if (this.dynamic_form_step == 'category')*/ {
+                            if(GigaTester_modal.form_settings_default['FEATURE_REQ'].category_field_mandatory &&
+                            this.configs.config_data[0].feedbackSettings.categories.length > 0 &&
+                            (this.form_data['category'] === 'category' || this.form_data['category'] === '')
+                            ) {
                                 dataError = true;
                                 GigaTester_modal.setNotifyStatus('Please select a category')
                                 setTimeout(()=> GigaTester_modal.clearNotifyStatus(), 4000);
@@ -3822,7 +3853,6 @@ let GigaTester_StringUtils = {
                     if(this.form_data['severity'] === "severity"/* || this.form_data['severity'] === ""*/){
                         this.form_data['severity'] = '';//'unknown'
                     }
-                    console.log(GigaTester.email)
                     const postData = {
                         productRating: finalRating,
                         userName: this.custom_ui.events.find('input[name="gigatester-email"]').val() || this.form_data.email || GigaTester.email,
