@@ -61,7 +61,8 @@ export interface IBugSettingProps {
     handleRatingLimitChange: Function;
     handleReqComments: Function;
     handleReqDisplayEmail: Function;
-      handleIconChange: Function;
+    handleIconChange: Function;
+    handleFeedbackRatingHeadingChange: Function;
     handleFeedbackFlowChange: Function;
     handleChangeFeedbackStdPositiveFeedbackText: Function;
     handleChangeFeedbackStdNegativeFeedbackText: Function;

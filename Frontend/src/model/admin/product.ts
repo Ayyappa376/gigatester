@@ -29,6 +29,7 @@ export interface IFeedbackAgentSettings {
   platform: IPlatformType;
   feedbackTypes: IFeedbackType[];
   logo?: string;
+  showLogo?: boolean;
   invokeDelay?: number; //in minutes
   invokeOn: IInvokeType[];
   thanksStr?: string;
@@ -37,6 +38,7 @@ export interface IFeedbackAgentSettings {
   videoAudioMaxDuration: string; //in min, allowed values 0.5, 1, 1.5, 2, 2.5 or 3
   requireEmail?: boolean;
   captureSystemDetails?: boolean;
+  subtitle?: string;
   remoteBtns?: IRemoteBtnSettings[];
   widgetLookAndFeel: IWidgetLAF;
   bugSettings?: IBugSettings;
@@ -67,6 +69,7 @@ export interface IFeedbackSettings {
   categoryHeading?: string; 
   stdFeedbackHeading?: string;
   generalCommentsHeading?: string;
+  ratingHeading?: string;
   ratingIcon: IRatingIconType;
   ratingLimit: number; //values 1,2,3,4,5
   dialogMsg?: string;

@@ -846,6 +846,16 @@ const EditProductfeedbackAgentSettings = (props: any) => {
     }
   }
 
+  const handleSubtitleChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.subtitle = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
   const handleFeedbackTitleChange = (event: any) => {
     if (productParams) {
       const temp: IProductParams | undefined = { ...productParams };
@@ -896,6 +906,17 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
         temp.products[0].feedbackAgentSettings.feedbackSettings) {
         temp.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading = event.target.value;
+        setProductParams(temp);
+      }
+    }
+  }
+
+  const handleFeedbackRatingHeadingChange = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings &&
+        temp.products[0].feedbackAgentSettings.feedbackSettings) {
+        temp.products[0].feedbackAgentSettings.feedbackSettings.ratingHeading = event.target.value;
         setProductParams(temp);
       }
     }
@@ -1056,6 +1077,16 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       setProductParams(temp);
     }
   }
+
+  const handleShowLogoOption = (event: any) => {
+    if (productParams) {
+      const temp: IProductParams | undefined = { ...productParams };
+      if (temp && temp.products && temp.products[0] && temp.products[0].feedbackAgentSettings) {
+        temp.products[0].feedbackAgentSettings.showLogo = !temp.products[0].feedbackAgentSettings.showLogo;
+        setProductParams(temp);
+      }
+    }
+  };
 
   const handleShowSeverityOption = (event: any) => {
     if (productParams) {
@@ -1707,6 +1738,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handlePlatformTypeChange: handlePlatformTypeChange,
       handleInvokeDelayChange: handleInvokeDelayChange,
       handleTitleChange: handleTitleChange,
+      handleSubtitleChange: handleSubtitleChange,
       handleThanksStrChange: handleThanksStrChange,
       handleVideoAudioMaxDurationChange: handleVideoAudioMaxDurationChange,
       handleInvokeOnChange: handleInvokeOnChange,
@@ -1739,6 +1771,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleFeedbackCategoryHeadingChange: handleFeedbackCategoryHeadingChange,
       handleFeedbackGeneralCommentsHeadingChange: handleFeedbackGeneralCommentsHeadingChange,
       handleFeedbackStdFeedbackHeadingChange: handleFeedbackStdFeedbackHeadingChange,
+      handleFeedbackRatingHeadingChange: handleFeedbackRatingHeadingChange,
       handleBugCategoryHeadingChange: handleBugCategoryHeadingChange,
       handleBugGeneralCommentsHeadingChange: handleBugGeneralCommentsHeadingChange,
       handleBugStdFeedbackHeadingChange: handleBugStdFeedbackHeadingChange,
@@ -1766,6 +1799,7 @@ const EditProductfeedbackAgentSettings = (props: any) => {
       handleBugDialogMsgChange: handleBugDialogMsgChange,
       handleBugThanksMsgChange: handleBugThanksMsgChange,
       handleShowSeverityOption: handleShowSeverityOption,
+      handleShowLogoOption: handleShowLogoOption,
       handleMainBtnTitleChange: handleMainBtnTitleChange,
       handleMainBtnColor: handleMainBtnColor,
       handleMainBtnTextColor: handleMainBtnTextColor,

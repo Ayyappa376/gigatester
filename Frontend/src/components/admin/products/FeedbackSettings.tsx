@@ -61,7 +61,8 @@ const FeedbackSettings = ({
   deleteFeedbackStdNegativeFeedbackText,
   handleFeedbackGeneralCommentsHeadingChange,
   handleFeedbackCategoryHeadingChange,
-  handleFeedbackStdFeedbackHeadingChange
+  handleFeedbackStdFeedbackHeadingChange,
+  handleFeedbackRatingHeadingChange
 }: IFeedbackSettingProps) => {
   const classes = useStyles();
   const feedbackFlowType = (productParams && productParams.products && productParams.products[0] &&
@@ -114,7 +115,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackTitleChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 15 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -122,7 +123,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.title ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.title.length)}/15 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.title.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -164,7 +165,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackTooltipChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 45 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -172,7 +173,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip.length)}/45 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.tooltip.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -195,7 +196,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 80 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -203,7 +204,38 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg.length)}/80 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.dialogMsg.length)}/ 256characters` : null}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required
+            type='string'
+            id={`feedback_ratingHeader`}
+            name={`feedback_ratingHeader`}
+            label='Message to be displayed on top of ratings'
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+                productParams.products[0].feedbackAgentSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+                productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingHeading)
+                ? productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingHeading
+                : ''
+            }
+            fullWidth
+            onChange={(event) => handleFeedbackRatingHeadingChange(event)}
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 256 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings &&
+              productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingHeading ?
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.ratingHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -226,7 +258,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackCategoryHeadingChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -234,7 +266,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.categoryHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -257,7 +289,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackStdFeedbackHeadingChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -265,7 +297,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.stdFeedbackHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -288,7 +320,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackGeneralCommentsHeadingChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -296,7 +328,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.generalCommentsHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -319,7 +351,7 @@ const FeedbackSettings = ({
             onChange={(event) => handleFeedbackThanksMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -327,7 +359,7 @@ const FeedbackSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings &&
               productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.feedbackSettings.thanksMsg.length)}/256 characters` : null}
           />
         </Grid>
 

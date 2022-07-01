@@ -215,7 +215,7 @@ const BugSettings = ({
             onChange={(event) => handleBugTitleChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 15 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -223,7 +223,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.title ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.title.length)}/15 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.title.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -266,7 +266,7 @@ const BugSettings = ({
             onChange={(event) => handleBugTooltipChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 45 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -274,7 +274,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.tooltip ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.tooltip.length)}/45 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.tooltip.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -297,7 +297,7 @@ const BugSettings = ({
             onChange={(event) => handleBugDialogMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 80 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -305,7 +305,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg.length)}/80 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.dialogMsg.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -328,7 +328,7 @@ const BugSettings = ({
             onChange={(event) => handleBugCategoryHeadingChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -336,7 +336,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.categoryHeading ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.categoryHeading.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.categoryHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -359,7 +359,7 @@ const BugSettings = ({
             onChange={(event) => handleBugSeverityHeadingChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -367,7 +367,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.severityHeading ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.severityHeading.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.severityHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -390,7 +390,7 @@ const BugSettings = ({
             onChange={(event) => handleBugStdFeedbackHeadingChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -398,7 +398,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.stdFeedbackHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -421,7 +421,7 @@ const BugSettings = ({
             onChange={(event) => handleBugGeneralCommentsHeadingChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -429,7 +429,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.generalCommentsHeading.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -452,7 +452,7 @@ const BugSettings = ({
             onChange={(event) => handleBugThanksMsgChange(event)}
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 85 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
@@ -460,7 +460,7 @@ const BugSettings = ({
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings &&
               productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg ?
-              `${(productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg.length)}/85 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.bugSettings.thanksMsg.length)}/256 characters` : null}
           />
         </Grid>
 

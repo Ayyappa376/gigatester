@@ -21,6 +21,7 @@ interface SettingsProps {
   productParams: IProductParams,
   handleTitleChange: Function,
   handleThanksStrChange: Function,
+  handleSubtitleChange: Function,
   handleVideoAudioMaxDurationChange: Function,
   handleInvokeOnChange: Function,
   handleInvokeDelayChange: Function,
@@ -28,6 +29,7 @@ interface SettingsProps {
   handleFeedbackTypesChange: Function,
   handlePlatformTypeChange: Function,
   handleEmailOption: Function,
+  handleShowLogoOption: Function,
   handleCaptureSystemDetailsOption: Function,
   handleChangeRemoteBtnSettings: Function,
   addRemoteBtnSettings: Function,
@@ -156,12 +158,14 @@ const StandardSettings = ({
   handleInvokeDelayChange,
   handleTitleChange,
   handleThanksStrChange,
+  handleSubtitleChange,
   handleVideoAudioMaxDurationChange,
   handleInvokeOnChange,
   handleFeedbackTypesChange,
   handleUploadFileMaxSizeChange,
   handlePlatformTypeChange,
   handleEmailOption,
+  handleShowLogoOption,
   handleCaptureSystemDetailsOption,
   handleChangeRemoteBtnSettings,
   addRemoteBtnSettings,
@@ -217,8 +221,37 @@ const StandardSettings = ({
             }}
             helperText={`${(productParams && productParams.products && productParams.products[0] &&
               productParams.products[0].feedbackAgentSettings &&
-              productParams.products[0].feedbackAgentSettings.title.length)}/15 characters`}
-            inputProps={{maxLength: 15}}
+              productParams.products[0].feedbackAgentSettings.title.length)}/256 characters`}
+            inputProps={{maxLength: 256}}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <TextField
+            required={true}
+            type='string'
+            id={`subtitleStr`}
+            name={`subtitleStr`}
+            value={
+              (productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.subtitle)
+              ? productParams.products[0].feedbackAgentSettings.subtitle
+              : ''
+            }
+            label={'A subtitle to display on top of dialog'}
+            onChange={(event) => handleSubtitleChange(event)}
+            fullWidth
+            autoComplete='off'
+            className='textFieldStyle'
+            inputProps={{ maxLength: 256 }}
+            FormHelperTextProps={{
+              className: classes.helperText
+            }}
+            helperText={productParams && productParams.products && productParams.products[0] &&
+              productParams.products[0].feedbackAgentSettings &&
+              productParams.products[0].feedbackAgentSettings.thanksStr ?
+              `${(productParams.products[0].feedbackAgentSettings.thanksStr.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -240,14 +273,14 @@ const StandardSettings = ({
             fullWidth
             autoComplete='off'
             className='textFieldStyle'
-            inputProps={{ maxLength: 60 }}
+            inputProps={{ maxLength: 256 }}
             FormHelperTextProps={{
               className: classes.helperText
             }}
             helperText={productParams && productParams.products && productParams.products[0] &&
               productParams.products[0].feedbackAgentSettings &&
               productParams.products[0].feedbackAgentSettings.thanksStr ?
-              `${(productParams.products[0].feedbackAgentSettings.thanksStr.length)}/60 characters` : null}
+              `${(productParams.products[0].feedbackAgentSettings.thanksStr.length)}/256 characters` : null}
           />
         </Grid>
 
@@ -334,48 +367,6 @@ const StandardSettings = ({
         </Grid>
 
         <Grid item xs={12} sm={12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-              checked={(productParams && productParams.products && productParams.products[0] &&
-                  productParams.products[0].feedbackAgentSettings)
-                  ? productParams.products[0].feedbackAgentSettings.requireEmail
-                  : true}
-                onChange={(event) => handleEmailOption(event)}
-                value="requireEmail"
-              />
-            }
-            label={
-              <Typography color="textSecondary">
-                {"Email field mandatory?"}
-              </Typography>
-            }
-            labelPlacement={'start'}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={12}>
-          <FormControlLabel
-            control={
-              <Checkbox
-                checked={(productParams && productParams.products && productParams.products[0] &&
-                  productParams.products[0].feedbackAgentSettings)
-                  ? productParams.products[0].feedbackAgentSettings.captureSystemDetails
-                  : true}
-                onChange={(event) => handleCaptureSystemDetailsOption(event)}
-                value="captureSystemDetails"
-              />
-            }
-            label={
-              <Typography color="textSecondary">
-                {"Capture User's system details?"}
-              </Typography>
-            }
-            labelPlacement={'start'}
-          />
-        </Grid>
-
-        <Grid item xs={12} sm={12}>
           <FormControl className={classes.formControl}>
             <InputLabel id={`invokeOn`} required={true}>
               {'How will the feedback dialog be invoked (can select multiple):'}
@@ -419,6 +410,69 @@ const StandardSettings = ({
             autoComplete='off'
             InputProps={{ disableUnderline: true }}
             className='textFieldStyle'
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings)
+                  ? productParams.products[0].feedbackAgentSettings.requireEmail
+                  : true}
+                onChange={(event) => handleEmailOption(event)}
+                value="requireEmail"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Email field mandatory?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+              checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings)
+                  ? productParams.products[0].feedbackAgentSettings.showLogo
+                  : true}
+                onChange={(event) => handleShowLogoOption(event)}
+                value="showLogo"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Show logo?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
+          />
+        </Grid>
+
+        <Grid item xs={12} sm={12}>
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={(productParams && productParams.products && productParams.products[0] &&
+                  productParams.products[0].feedbackAgentSettings)
+                  ? productParams.products[0].feedbackAgentSettings.captureSystemDetails
+                  : true}
+                onChange={(event) => handleCaptureSystemDetailsOption(event)}
+                value="captureSystemDetails"
+              />
+            }
+            label={
+              <Typography color="textSecondary">
+                {"Capture User's system details?"}
+              </Typography>
+            }
+            labelPlacement={'start'}
           />
         </Grid>
       </Grid>
