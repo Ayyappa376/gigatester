@@ -5,7 +5,7 @@ phases:
       - n 14.18.3
   pre_build:
     commands:
-      - echo Installing source NPM dependencies...
+      - echo Installing source NPM dependencies........
       - npm install
   build:
     commands:
